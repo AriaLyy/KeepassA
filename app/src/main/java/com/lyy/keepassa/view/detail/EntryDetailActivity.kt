@@ -174,7 +174,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     handleAttr()
     handleTime()
 
-    if (!KeepassAUtil.instance.isDisplayLoadingAnim()) {
+    if (window.sharedElementEnterTransition == null || !KeepassAUtil.instance.isDisplayLoadingAnim()) {
       showContent(true)
       return
     }

@@ -109,7 +109,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    if (!KeepassAUtil.instance.isDisplayLoadingAnim()){
+    if (window.enterTransition == null || !KeepassAUtil.instance.isDisplayLoadingAnim()){
       loadData()
       return
     }

@@ -28,7 +28,7 @@
 
 
   <SwitchPreference
-      android:defaultValue="false"
+      android:defaultValue="true"
       android:summaryOff="@string/set_key_title_close_load_anim_turn_off"
       android:summaryOn="@string/set_key_title_close_load_anim_turn_on"
       android:title="@string/set_key_title_close_load_anim"
