@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/ripple_primary_selector"
+    android:clickable="true"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingTop="8dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="8dp"
+    >
+
+  <androidx.appcompat.widget.AppCompatImageView
+      android:id="@+id/icon"
+      android:layout_width="36dp"
+      android:layout_height="36dp"
+      android:layout_centerVertical="true"
+      app:srcCompat="@drawable/ic_android"
+      />
+
+  <TextView
+      android:id="@+id/title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="24dp"
+      android:layout_toRightOf="@+id/icon"
+      android:text="标题"
+      android:textColor="@color/black"
+      android:textSize="@dimen/text_size_normal"
+      />
+
+  <TextView
+      android:id="@+id/des"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/title"
+      android:layout_alignLeft="@+id/title"
+      android:layout_marginTop="4dp"
+      android:text="描述描述描述描述描述描述描述"
+      android:textColor="@color/text_gray_color"
+      android:textSize="@dimen/text_size_small"
+      />
+
+
+</RelativeLayout>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="saf_key">storage_access_framework_key</string>
+    <bool name="saf_default">false</bool>
+
+    <string name="roundsFix_key">roundsFix</string>
+    <integer name="roundsFix_default">100000</integer>
+</resources>

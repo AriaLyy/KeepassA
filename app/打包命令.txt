@@ -1,0 +1,3 @@
+./gradlew assembleRelease  --> ./gradlew resguardRelease
+或
+./gradlew assemble渠道Release  --> ./gradlew resguard渠道Release

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+
+  <RelativeLayout
+      android:id="@+id/content"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/background_color"
+      android:orientation="vertical"
+      app:expand_h="320dp"
+      >
+    <!--      app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"-->
+
+    <RelativeLayout
+        android:id="@+id/head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+
+      <TextView
+          android:id="@+id/title"
+          android:layout_width="match_parent"
+          android:layout_height="48dp"
+          android:background="@color/white"
+          android:gravity="center"
+          android:text="@string/hint_select_path_type"
+          android:textColor="@color/text_black_color"
+          android:textSize="@dimen/text_size_biggest"
+          />
+
+      <androidx.appcompat.widget.AppCompatImageButton
+          android:id="@+id/close"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_alignParentRight="true"
+          android:background="@drawable/ripple_primary_selector"
+          app:srcCompat="@drawable/ic_close"
+
+          />
+
+      <View
+          android:id="@+id/line"
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:layout_below="@+id/title"
+          android:background="@color/line_color"
+          />
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/head"
+        />
+
+  </RelativeLayout>
+
+
+</layout>

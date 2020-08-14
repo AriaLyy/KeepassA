@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+  <item
+      android:id="@+id/undo"
+      android:icon="@drawable/ic_undo"
+      android:title="@string/undo_entry"
+      app:showAsAction="ifRoom" />
+
+  <item
+      android:id="@+id/copy_user"
+      android:icon="@drawable/ic_user"
+      android:title="@string/copy_user_name"
+      app:showAsAction="ifRoom" />
+
+  <item
+      android:id="@+id/copy_pw"
+      android:icon="@drawable/ic_password"
+      android:title="@string/copy_password"
+      app:showAsAction="ifRoom" />
+
+  <item
+      android:id="@+id/copy_totp"
+      android:icon="@drawable/ic_totp"
+      android:title="@string/copy_totp"
+      app:showAsAction="ifRoom" />
+
+
+  <item
+      android:id="@+id/del"
+      android:icon="@drawable/ic_del"
+      android:title="@string/del_entry"
+      app:showAsAction="ifRoom" />
+
+</menu>

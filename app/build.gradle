@@ -1,0 +1,270 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'channel'
+
+android {
+  compileSdkVersion rootProject.ext.compileSdkVersion
+  buildToolsVersion rootProject.ext.buildToolsVersion
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
+
+  defaultConfig {
+    applicationId "com.lyy.keepassa"
+    minSdkVersion rootProject.ext.minSdkVersion
+    targetSdkVersion rootProject.ext.targetSdkVersion
+    versionCode 18
+    versionName "1.0.1.2"
+    multiDexEnabled true
+    vectorDrawables.useSupportLibrary = true
+
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+    // so 版本
+    ndk.abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+
+    //指定room.schemaLocation生成的文件路径，用于版本升级
+    javaCompileOptions {
+      annotationProcessorOptions {
+        arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+      }
+    }
+    // 只保留以下语言包
+    resConfigs "zh-rCN", "zh-rTW", "en"
+  }
+
+  signingConfigs {
+    release {
+      def properties = new Properties()
+      def inputStream = project.rootProject.file('local.properties').newDataInputStream()
+      properties.load( inputStream )
+
+      storeFile file(properties.getProperty('storeFile'))
+      storePassword properties.getProperty('storePassword')
+      keyAlias properties.getProperty('keyAlias')
+      keyPassword properties.getProperty('keyPassword')
+      v1SigningEnabled true // v1 签名
+      v2SigningEnabled true // v2 签名
+    }
+  }
+
+  buildTypes {
+
+    debug {
+      debuggable = true
+      // 下面两个是debug-db的参数
+      //      resValue("string", "PORT_NUMBER", "8080") // 端口
+      resValue("string", "DB_PASSWORD_keepassA.db", "stVz7QxFgzA7yMnH") // sqlcipher 加密密码
+      consumerProguardFiles 'proguard-rules.pro'
+    }
+
+    release {
+      //zipAlignEnabled true //开启Zipalign优化
+      debuggable false
+      minifyEnabled true
+      shrinkResources true // 移除无用资源
+      //      multiDexKeepFile file('multidex-config.txt')
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+      consumerProguardFiles 'proguard-rules.pro' // wcdb 需要增加这个混淆
+      signingConfig signingConfigs.release
+    }
+  }
+
+  dataBinding {
+    enabled = true
+  }
+
+  testOptions {
+    unitTests.includeAndroidResources = true
+    unitTests.returnDefaultValues = true
+  }
+
+  externalNativeBuild {
+    cmake {
+      path "src/main/jni/CMakeLists.txt"
+    }
+  }
+  ndkVersion = rootProject.ext.ndkVersion
+
+  lintOptions {
+    checkReleaseBuilds false
+    // Or, if you prefer, you can continue to check for errors in release builds,
+    // but continue the build even when errors are found:
+    abortOnError false
+  }
+
+  //  flavorDimensions "app"
+  // 渠道配置 https://developer.android.google.cn/studio/build/build-variants.html?hl=zh-cn
+  //  productFlavors {
+  //    dev {
+  //      dimension "app"
+  //      versionNameSuffix "-dev"
+  //    }
+  //    release {
+  //      dimension "app"
+  //      versionNameSuffix "-release"
+  //    }
+  //  }
+  //
+  //  // 批量渠道包值替换
+  //  productFlavors.all { flavor ->
+  //    // 友盟、极光推送渠道包， UMENG_CHANNEL 是根据你AndroidManifest.xml来配置的，请看下面。
+  //    flavor.manifestPlaceholders = [CHANNEL: name]
+  //  }
+}
+
+configurations {
+  // 配置不同的渠道加载不同的module
+  playImplementation {}
+}
+
+/**
+ * 根据已有基础包重新生成多渠道包
+ * 如果是自动生成渠道包，见https://github.com/Tencent/VasDolly
+ */
+rebuildChannel {
+  //指定渠道文件
+  channelFile = file("${project.getProjectDir()}/channel")
+  //  baseDebugApk = 已有Debug APK
+  // 已有Release APK
+  baseReleaseApk = new File("${project.buildDir}/AndResGuardFinal.apk")
+  //默认为new File(project.buildDir, "rebuildChannel/debug")
+  //  debugOutputDir = Debug渠道包输出目录
+  //默认为new File(project.buildDir, "rebuildChannel/release")
+  // Release渠道包输出目录
+  releaseOutputDir = new File("${project.buildDir}/outputs/channels")
+  //快速模式：生成渠道包时不进行校验（速度可以提升10倍以上，默认为false）
+  isFastMode = false
+  //低内存模式（仅针对V2签名，默认为false）：只把签名块、中央目录和EOCD读取到内存，不把最大头的内容块读取到内存，在手机上合成APK时，可以使用该模式
+  lowMemory = false
+}
+
+// 配置 AndResGuard 于 channel 前执行
+// 这几行代码表示reBuildChannel任务是依赖于resguardRelease任务的，也就是说先执行完资源混淆后再执行多渠道打包。
+afterEvaluate {
+  tasks.getByName('reBuildChannel') {
+    dependsOn('resguardRelease')
+  }
+}
+
+dependencies {
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+  // 测试模块
+  testImplementation rootProject.ext.junit
+  androidTestImplementation rootProject.ext.runner
+  androidTestImplementation rootProject.ext.androidXJunit
+  androidTestImplementation rootProject.ext.espresso
+  androidTestImplementation rootProject.ext.androidXRules
+
+  //    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+  // 数据库如果加密的话使用这个
+  debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
+
+
+  // kotlin
+  def livedata_ktx_version = "2.3.0-alpha06"
+  implementation rootProject.ext.kotlinJdk
+  // kotlin 反射依赖
+  implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+  // Androidx 组件，包括了协程
+  implementation rootProject.ext.androidXKtx
+  implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$livedata_ktx_version"
+  implementation "androidx.lifecycle:lifecycle-livedata-ktx:$livedata_ktx_version"
+  //  implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$livedata_ktx_version"
+  //  kapt "androidx.lifecycle:lifecycle-compiler:$livedata_ktx_version"
+
+
+  // =========================== android 组件 start =====================================
+  implementation rootProject.ext.appcompat
+  implementation rootProject.ext.material
+  implementation rootProject.ext.recyclerview
+  implementation rootProject.ext.multidex
+  implementation "androidx.cardview:cardview:1.0.0"
+  implementation project(path: ':Frame')
+  implementation project(path: ':KeepassLib')
+  implementation project(path: ':UIWidget')
+
+  // viewpager2
+  implementation "androidx.viewpager2:viewpager2:1.0.0"
+
+  // android 设置库
+  implementation "androidx.preference:preference:1.1.1"
+  // workmanager
+  def work_version = "2.3.4"
+  implementation "androidx.work:work-runtime:$work_version"
+
+  // room
+  def room_version = "2.2.4"
+  //  implementation "androidx.room:room-runtime:$room_version"
+  kapt "androidx.room:room-compiler:$room_version"
+  implementation "androidx.room:room-ktx:$room_version" // ktx 扩展插件
+
+  // 加密工具，需要23版本
+  //  implementation "androidx.security:security-crypto:1.0.0-rc01"
+  implementation 'com.google.crypto.tink:tink-android:1.4.0-rc1'
+
+  // android 自动填充工具
+  implementation "androidx.autofill:autofill:1.0.0"
+
+  // 下拉刷新控件
+  implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+  // =========================== android 组件 end =====================================
+
+  // =========================== 三方库 start =====================================
+  // 状态栏
+  implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
+  // 大图浏览
+  implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
+  // eventbus
+  implementation 'org.greenrobot:eventbus:3.1.1'
+
+  // json 动画库
+  implementation 'com.airbnb.android:lottie:3.4.1'
+
+  // glide
+  implementation 'com.github.bumptech.glide:glide:4.11.0'
+  annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+  //  debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.1' // 2.1 之后不需要再代码中初始化
+
+  // bugly
+  implementation 'com.tencent.bugly:crashreport:latest.release'
+  implementation 'com.tencent.bugly:nativecrashreport:latest.release'
+
+  // dropbox
+  implementation 'com.dropbox.core:dropbox-core-sdk:3.1.3'
+
+  // webdav
+  implementation 'com.thegrizzlylabs.sardine-android:sardine-android:0.6'
+
+  //wcdb 数据库加密
+  implementation 'com.tencent.wcdb:wcdb-android:1.0.8'
+  implementation 'com.tencent.wcdb:room:1.0.8' // 代替 room-runtime，同时也不需要再引用 wcdb-android
+
+  // 富文本
+  implementation 'com.zzhoujay.richtext:richtext:3.0.8'
+
+  // 腾讯多渠道 VasDolly
+  implementation 'com.leon.channel:helper:2.0.3'
+
+  // XP/调试/多开/模拟器/root 判断
+  implementation 'com.lahm.library:easy-protector-release:latest.release'
+  implementation project(path: ':KeepassIcon')
+
+  // // =========================== 三方库 end =====================================
+
+  //  implementation 'com.arialyy.aria:core:3.8.5'
+  //  annotationProcessor 'com.arialyy.aria:compiler:3.7.10'
+  //  implementation 'com.arialyy.aria:ftpComponent:3.7.10'
+  //  implementation 'com.arialyy.aria:m3u8Component:3.7.10'
+}
+
+apply from: 'AndResGuard.gradle'

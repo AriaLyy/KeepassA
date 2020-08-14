@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/bg_white_radius_2"
+      android:elevation="4dp"
+      android:minWidth="@dimen/dialog_min_width"
+      android:orientation="vertical">
+
+    <com.lyy.keepassa.widget.BubbleTextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical"
+        android:text="title"
+        android:textColor="@color/text_blue_color"
+        android:textSize="@dimen/text_size_biggest"
+        app:icon_size="24dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+      <TextView
+          android:id="@+id/msg"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="16dp"
+          android:maxHeight="400dp"
+          android:text="xxx"
+          android:textColor="@color/text_black_color"
+          android:textSize="@dimen/text_size_normal" />
+
+    </androidx.core.widget.NestedScrollView>
+
+
+    <LinearLayout
+        android:id="@+id/btns"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="4dp"
+        android:orientation="horizontal">
+
+      <Button
+          android:id="@+id/cancel"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="4dp"
+          android:background="@drawable/ripple_white_selector"
+          android:text="@string/cancel"
+          android:textColor="@color/text_gray_color" />
+
+      <Button
+          android:id="@+id/enter"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="4dp"
+          android:background="@drawable/ripple_white_selector"
+          android:text="@string/enter"
+          android:textColor="@color/text_blue_color" />
+
+      <Button
+          android:id="@+id/cover"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/ripple_white_selector"
+          android:text="@string/cover"
+          android:textColor="@color/text_blue_color"
+          android:visibility="gone" />
+
+    </LinearLayout>
+
+  </LinearLayout>
+</layout>

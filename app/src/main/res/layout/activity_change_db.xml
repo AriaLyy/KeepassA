@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/background_color"
+      android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/kpa_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_white_selector"
+        android:clickable="true"
+        android:descendantFocusability="blocksDescendants"
+        android:padding="16dp">
+
+      <androidx.appcompat.widget.AppCompatImageView
+          android:id="@+id/app_icon"
+          android:layout_width="70dp"
+          android:layout_height="70dp"
+          android:transitionName="@string/transition_app_icon"
+          app:srcCompat="@mipmap/ic_launcher" />
+
+      <com.lyy.keepassa.widget.BubbleTextView
+          android:id="@+id/db_name"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/app_icon"
+          android:layout_marginTop="8dp"
+          android:gravity="center_vertical"
+          android:singleLine="true"
+          android:text="dbname"
+          android:textColor="@color/text_black_color"
+          android:textSize="@dimen/text_size_normal"
+          android:textStyle="bold"
+          android:transitionName="@string/transition_db_name"
+          app:icon_size="24dp"
+          app:right_icon="@drawable/ic_eco" />
+
+      <TextView
+          android:id="@+id/db_version"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/db_name"
+          android:layout_alignStart="@+id/db_name"
+          android:text="des"
+          android:textColor="@color/text_gray_color"
+          android:textSize="@dimen/text_size_small"
+          android:transitionName="@string/transition_db_version" />
+
+      <androidx.appcompat.widget.AppCompatImageView
+          android:id="@+id/arrow"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignTop="@+id/db_name"
+          android:layout_toEndOf="@+id/db_name"
+          android:transitionName="@string/transition_db_little"
+          app:srcCompat="@drawable/ic_arrow_down" />
+
+      <androidx.appcompat.widget.AppCompatImageView
+          android:id="@+id/close"
+          android:layout_width="30dp"
+          android:layout_height="30dp"
+          android:layout_alignParentEnd="true"
+          android:background="@drawable/ripple_white_selector"
+          android:clickable="true"
+          app:srcCompat="@drawable/ic_primary_close" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color" />
+
+
+    <TextView
+        android:id="@+id/change_db"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_white_selector"
+        android:clickable="true"
+        android:drawableStart="@drawable/ic_change"
+        android:drawablePadding="16dp"
+        android:gravity="center_vertical"
+        android:paddingStart="32dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:text="@string/change_db"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/text_size_normal" />
+
+    <TextView
+        android:id="@+id/app_setting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_white_selector"
+        android:clickable="true"
+        android:drawableStart="@drawable/ic_app"
+        android:drawablePadding="16dp"
+        android:gravity="center_vertical"
+        android:paddingStart="32dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:text="@string/app_setting"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/text_size_normal" />
+
+    <TextView
+        android:id="@+id/change_setting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_white_selector"
+        android:clickable="true"
+        android:drawableStart="@drawable/ic_setting"
+        android:drawablePadding="16dp"
+        android:gravity="center_vertical"
+        android:paddingStart="32dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:text="@string/db_setting"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/text_size_normal" />
+
+    <TextView
+        android:id="@+id/tvDonate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_white_selector"
+        android:clickable="true"
+        android:drawableStart="@drawable/ic_favorite_24px"
+        android:drawablePadding="16dp"
+        android:gravity="center_vertical"
+        android:paddingStart="32dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:text="@string/donate"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/text_size_normal" />
+
+
+    <TextView
+        android:id="@+id/app_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_white_selector"
+        android:clickable="true"
+        android:drawableStart="@drawable/ic_star_rate"
+        android:drawablePadding="16dp"
+        android:gravity="center_vertical"
+        android:paddingStart="32dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:text="@string/set_key_praise_value"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/text_size_normal" />
+
+    <TextView
+        android:id="@+id/app_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_white_selector"
+        android:clickable="true"
+        android:drawableStart="@drawable/ic_feedback_24px"
+        android:drawablePadding="16dp"
+        android:gravity="center_vertical"
+        android:paddingStart="32dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:text="@string/app_feedback"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/text_size_normal" />
+
+
+  </LinearLayout>
+</layout>

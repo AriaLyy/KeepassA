@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/background_color"
+      >
+
+    <include layout="@layout/layout_action_bar" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/pass_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/hint_len"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:background="@color/transparent"
+        android:gravity="center"
+        android:hint="@string/hint_pass_null"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/text_size_biggest"
+        />
+
+    <TextView
+        android:id="@+id/hint_len"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/pass_len_layout"
+        android:layout_marginStart="16dp"
+        android:text="@string/len"
+        android:textColor="@color/text_gray_color"
+        android:textSize="@dimen/text_size_normal"
+        />
+
+    <LinearLayout
+        android:id="@+id/pass_len_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/case_layout"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        >
+
+      <EditText
+          android:id="@+id/pass_len"
+          android:layout_width="60dp"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:gravity="center_horizontal"
+          android:inputType="number"
+          />
+
+      <com.lyy.keepassa.widget.discreteSeekBar.DiscreteSeekBar
+          android:id="@+id/pass_len_progress"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_centerVertical="true"
+          android:layout_gravity="center_vertical"
+          app:dsb_max="16"
+          app:dsb_min="3"
+          app:dsb_mirrorForRtl="true"
+          app:dsb_value="6"
+          />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/case_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/cancel"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
+        android:orientation="vertical"
+        >
+
+      <CheckBox
+          android:id="@+id/upper"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/upper"
+          android:textColor="@color/text_black_color"
+          android:textSize="@dimen/text_size_normal"
+          />
+
+      <CheckBox
+          android:id="@+id/lower"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="4dp"
+          android:text="@string/lower"
+          android:textColor="@color/text_black_color"
+          android:textSize="@dimen/text_size_normal"
+          />
+
+      <CheckBox
+          android:id="@+id/numer"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="4dp"
+          android:text="@string/numer"
+          android:textColor="@color/text_black_color"
+          android:textSize="@dimen/text_size_normal"
+          />
+
+      <CheckBox
+          android:id="@+id/minus"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="4dp"
+          android:text="@string/minus"
+          android:textColor="@color/text_black_color"
+          android:textSize="@dimen/text_size_normal"
+          />
+
+      <CheckBox
+          android:id="@+id/underline"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="4dp"
+          android:text="@string/underline"
+          android:textColor="@color/text_black_color"
+          android:textSize="@dimen/text_size_normal"
+          />
+
+      <CheckBox
+          android:id="@+id/space"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="4dp"
+          android:text="@string/space"
+          android:textColor="@color/text_black_color"
+          android:textSize="@dimen/text_size_normal"
+          />
+
+      <CheckBox
+          android:id="@+id/special"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="4dp"
+          android:text="@string/special"
+          android:textColor="@color/text_black_color"
+          android:textSize="@dimen/text_size_normal"
+          />
+
+      <CheckBox
+          android:id="@+id/bracket"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="4dp"
+          android:text="@string/bracket"
+          android:textColor="@color/text_black_color"
+          android:textSize="@dimen/text_size_normal"
+          />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/ripple_white_selector"
+        android:drawableLeft="@drawable/ic_close"
+        android:gravity="center"
+        android:text="@string/cancel"
+        android:textColor="@color/text_blue_color"
+        android:textSize="@dimen/text_size_normal"
+        />
+
+
+    <TextView
+        android:id="@+id/enter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/ripple_white_selector"
+        android:drawableLeft="@drawable/ic_done"
+        android:gravity="center"
+        android:text="@string/enter"
+        android:textColor="@color/text_blue_color"
+        android:textSize="@dimen/text_size_normal"
+        />
+
+  </RelativeLayout>
+</layout>

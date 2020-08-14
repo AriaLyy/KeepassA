@@ -1,0 +1,148 @@
+<resources>
+
+  <!-- Base application theme. -->
+  <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
+    <item name="android:windowIsTranslucent">true</item>
+    <!--    处理状态栏颜色 -->
+    <!--    <item name="android:windowTranslucentStatus">false</item>-->
+    <!--    <item name="android:windowTranslucentNavigation">false</item>-->
+    <item name="android:statusBarColor">@color/colorPrimary</item>
+  </style>
+
+  <!-- 设置Toolbar标题字体的颜色大小 -->
+  <!--  app:titleTextAppearance="@style/Toolbar.TitleText"-->
+  <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <item name="android:textSize">@dimen/text_size_biggest</item><!--toolbar标题字体大小-->
+    <item name="android:textColor">@color/text_black_color</item><!--toolbar标题字体颜色-->
+  </style>
+
+  <!-- 设置Toolbar 子标题subtitle标题字体的大小 -->
+  <!--  app:subtitleTextAppearance="@style/Toolbar.SubTitleText"-->
+  <style name="Toolbar.SubTitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <item name="android:textSize">@dimen/text_size_normal</item><!--子标题字体大小-->
+    <item name="android:textColor">@color/text_black_color</item><!--子标题字体颜色-->
+  </style>
+
+  <!--toolbar mean的字体颜色和大小-->
+  <!--  app:theme="@style/ToolbarTheme"-->
+  <style name="ToolbarMenuTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="actionMenuTextColor">@color/text_black_color</item> <!--menu字体颜色-->
+    <item name="android:textSize">@dimen/text_size_normal</item> <!--menu字体大小-->
+  </style>
+
+  <style name="Toolbar.Def" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="navigationIcon">@drawable/ic_up</item>
+    <item name="subtitleTextAppearance">@style/Toolbar.SubTitleText</item>
+    <item name="theme">@style/ToolbarMenuTheme</item>
+    <item name="titleTextAppearance">@style/Toolbar.TitleText</item>
+    <item name="android:layout_height">48dp</item>
+    <item name="android:background">@color/white</item>
+  </style>
+
+  <!-- 设置CollapsingToolbarLayout标题 展开的字体的颜色大小 -->
+  <!--  app:expandedTitleTextAppearance="@style/Toolbar.TitleText"-->
+  <style name="CollapsingToolbarLayout.ExpandedTitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <item name="android:textColor">@color/text_black_color</item><!--toolbar标题字体颜色-->
+    <item name="android:textSize">36sp</item>
+  </style>
+
+  <!-- 设置CollapsingToolbarLayout标题 收缩后的字体的颜色大小 -->
+  <style name="CollapsingToolbarLayout.CollapsedTitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <item name="android:textColor">@color/text_black_color</item><!--toolbar标题字体颜色-->
+    <item name="android:textSize">@dimen/text_size_biggest</item>
+  </style>
+
+  <style name="dialogStyle" parent="@android:style/Animation.Dialog">
+    <item name="android:windowEnterAnimation">@anim/dialog_y_enter</item>
+    <!-- 进入时的动画 -->
+    <item name="android:windowExitAnimation">@anim/dialog_y_exit</item>
+    <!-- 退出时的动画 -->
+  </style>
+
+  <!-- 对话框样式 -->
+  <style name="Theme.Light.Dialog" parent="android:style/Theme.Dialog">
+    <item name="android:windowBackground">@android:color/transparent</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowIsFloating">true</item>
+    <item name="android:windowContentOverlay">@null</item>
+    <item name="android:scrollHorizontally">true</item>
+  </style>
+
+  <!--全屏并且带有状态栏的对话框-->
+  <style name="FullScreenDialog" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowIsFloating">false</item>
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+  </style>
+
+  <style name="PathTypeDialogAnim" parent="android:Animation">
+    <item name="android:windowEnterAnimation">@anim/dialog_y_enter</item>
+    <item name="android:windowExitAnimation">@anim/dialog_y_exit</item>
+  </style>
+
+  <!-- InputEditTextLayout 错误样式 -->
+  <style name="InputEditTextErrorStyle" parent="TextAppearance.AppCompat">
+    <item name="android:textSize">@dimen/text_size_small</item>
+    <item name="android:textColor">@color/error_color</item>
+  </style>
+
+  <!-- InputEditTextLayout hint样式 -->
+  <style name="InputEditTextHintStyle" parent="TextAppearance.AppCompat">
+    <item name="android:textSize">@dimen/text_size_small</item>
+    <item name="android:textColor">@color/colorAccent</item>
+  </style>
+
+  <!-- InputEditTextLayout 长度统计样式 -->
+  <style name="InputEditTextOverAppearance" parent="TextAppearance.AppCompat">
+    <item name="android:textSize">@dimen/text_size_small</item>
+    <item name="android:textColor">@color/text_blue_color</item>
+  </style>
+
+  <style name="TabLayoutStyle">
+    <item name="tabInlineLabel">true</item>
+    <item name="tabIndicatorColor">@color/colorPrimary</item>
+    <item name="tabSelectedTextColor">@color/colorPrimary</item>
+    <item name="tabTextColor">@color/text_gray_color</item>
+  </style>
+
+  <style name="EntryDetailTextStyle">
+    <item name="android:drawablePadding">26dp</item>
+    <item name="android:paddingStart">6dp</item>
+    <item name="android:gravity">center_vertical</item>
+    <item name="android:paddingTop">8dp</item>
+    <item name="android:paddingBottom">8dp</item>
+    <item name="android:textColor">@color/text_black_color</item>
+    <item name="android:textSize">@dimen/text_size_normal</item>
+    <item name="icon_size">24dp</item>
+    <item name="android:background">@drawable/ripple_white_selector</item>
+  </style>
+
+  <style name="NoAnimDialog">
+    <item name="android:windowAnimationStyle">@null</item>
+  </style>
+
+  <style name="TextInputLayoutStyle">
+    <item name="endIconTint">@color/icon_grey_color</item>
+  </style>
+
+  <!-- 标题字体 -->
+  <style name="TitleTextStyle">
+    <item name="android:textSize">@dimen/text_size_big</item>
+    <item name="android:textColor">@color/text_black_color</item>
+  </style>
+
+  <!-- 内容字体 -->
+  <style name="ContentTextStyle">
+    <item name="android:textSize">@dimen/text_size_normal</item>
+    <item name="android:textColor">@color/text_gray_color</item>
+  </style>
+
+
+</resources>
+

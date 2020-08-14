@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!--  带下标的seekbar start -->
+  <style name="Widget.DiscreteSeekBar" parent="android:Widget">
+    <item name="dsb_indicatorTextAppearance">@style/Widget.DiscreteIndicatorTextAppearance</item>
+    <item name="dsb_progressColor">@color/dsb_progress_color_list</item>
+    <item name="dsb_trackColor">@color/dsb_track_color_list</item>
+    <item name="dsb_rippleColor">@color/dsb_ripple_color_list</item>
+    <item name="dsb_indicatorColor">@color/dsb_progress_color</item>
+    <item name="dsb_indicatorElevation">4dp</item>
+    <item name="dsb_mirrorForRtl">true</item>
+  </style>
+
+  <style name="Widget.DiscreteIndicatorTextAppearance" parent="android:TextAppearance.Small">
+    <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+    <item name="android:padding">6dp</item>
+  </style>
+  <!--  带下标的seekbar end -->
+
+  <!--  验证码-->
+  <style name="verify_tx_style">
+    <item name="android:layout_height">@dimen/short_item_h</item>
+    <item name="android:layout_width">@dimen/short_item_w</item>
+    <item name="android:background">@color/transparent</item>
+    <item name="android:gravity">center</item>
+    <item name="android:textColor">@color/text_black_color</item>
+    <item name="android:textSize">@dimen/text_size_normal</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:inputType">textPassword</item>
+  </style>
+
+</resources>

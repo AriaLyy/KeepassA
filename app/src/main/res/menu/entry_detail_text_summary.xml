@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+  <item
+      android:id="@+id/copy_clip"
+      android:icon="@drawable/ic_clipbord"
+      android:title="@string/copy_to_clip"
+      app:showAsAction="ifRoom" />
+
+  <item
+      android:id="@+id/show_pass"
+      android:icon="@drawable/ic_view_black"
+      android:title="@string/show_pass"
+      app:showAsAction="ifRoom" />
+
+  <item
+      android:id="@+id/open_url"
+      android:icon="@drawable/ic_net"
+      android:title="@string/ope_url"
+      app:showAsAction="ifRoom" />
+
+</menu>

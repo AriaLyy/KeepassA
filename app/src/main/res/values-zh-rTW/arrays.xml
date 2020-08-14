@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+  <string-array name="quick_pass_type_entries">
+    <item>數據庫密碼前面%s位</item>
+    <item>數據庫密碼末尾%s位</item>
+  </string-array>
+
+
+  <string-array name="clean_clip_entries">
+    <item>30秒</item>
+    <item>1分鐘</item>
+    <item>2分鐘</item>
+    <item>5分鐘</item>
+  </string-array>
+
+
+  <string-array name="quick_lock_entries">
+    <item>2分鐘</item>
+    <item>5分鐘</item>
+    <item>10分鐘</item>
+    <item>20分鐘</item>
+  </string-array>
+
+  <string-array name="out_db_entries">
+    <item>Keepass2數據庫</item>
+    <item>不加密的XML文件</item>
+    <item>不加密的CSV文件</item>
+  </string-array>
+
+
+  <string-array name="main_items">
+    <item>文件管理器</item>
+    <item>Dropbox</item>
+    <!--    <item>OneDrive</item>-->
+    <!--    <item>GoogleDrive</item>-->
+    <item>WebDav</item>
+    <!--    <item>Ftp</item>-->
+    <item>歷史紀錄</item>
+    <!--    <item>Other</item>-->
+  </string-array>
+
+  <string-array name="path_type">
+    <item>文件管理器</item>
+    <item>Dropbox</item>
+<!--    <item>OneDrive</item>-->
+<!--    <item>GoogleDrive</item>-->
+<!--    <item>WebDav</item>-->
+<!--    <item>Ftp</item>-->
+<!--    <item>SFtp</item>-->
+  </string-array>
+
+  <string-array name="path_type_des">
+    <item>文件管理器</item>
+    <item>Dropbox</item>
+<!--    <item>OneDrive</item>-->
+<!--    <item>GoogleDrive</item>-->
+<!--    <item>WebDav</item>-->
+<!--    <item>Ftp</item>-->
+<!--    <item>SFtp</item>-->
+  </string-array>
+
+  <string-array name="v3_add_mor_item">
+    <item>備註</item>
+    <item>文件附件</item>
+    <item>失效時間</item>
+  </string-array>
+
+  <string-array name="v4_add_mor_item">
+    <item>備註</item>
+    <item>標簽</item>
+    <item>覆蓋鏈接</item>
+    <item>失效時間</item>
+    <item>自定義字段</item>
+    <item>文件附件</item>
+  </string-array>
+
+  <!--  创建数据库时的默认群组 -->
+  <string-array name="create_normal_group">
+    <item>郵箱</item>
+    <item>工作</item>
+    <item>財務</item>
+    <item>娛樂</item>
+    <item>回收站</item>
+  </string-array>
+</resources>

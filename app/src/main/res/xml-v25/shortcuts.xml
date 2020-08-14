@@ -1,0 +1,54 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+  <shortcut
+      android:enabled="true"
+      android:icon="@drawable/ic_add_blue_24px"
+      android:shortcutDisabledMessage="@string/create_entry"
+      android:shortcutId="add"
+      android:shortcutLongLabel="@string/create_entry"
+      android:shortcutShortLabel="@string/create_entry">
+    <intent
+        android:action="android.intent.action.VIEW"
+        android:targetClass="com.lyy.keepassa.view.create.CreateEntryActivity"
+        android:targetPackage="com.lyy.keepassa" >
+
+      <extra
+          android:name="isShortcuts"
+          android:value="true" />
+
+    </intent>
+    <!-- If your shortcut is associated with multiple intents, include them
+         here. The last intent in the list determines what the user sees when
+         they launch this shortcut. -->
+    <categories android:name="android.shortcut.conversation" />
+  </shortcut>
+  <!-- Specify more shortcuts here. -->
+
+  <shortcut
+      android:enabled="true"
+      android:icon="@drawable/ic_search"
+      android:shortcutDisabledMessage="@string/search"
+      android:shortcutId="search"
+      android:shortcutLongLabel="@string/search"
+      android:shortcutShortLabel="@string/search">
+    <intent
+        android:action="android.intent.action.VIEW"
+        android:targetClass="com.lyy.keepassa.view.main.MainActivity"
+        android:targetPackage="com.lyy.keepassa">
+
+      <extra
+          android:name="isShortcuts"
+          android:value="true" />
+
+      <extra
+          android:name="shortcutsType"
+          android:value="1" />
+
+    </intent>
+    <!-- If your shortcut is associated with multiple intents, include them
+         here. The last intent in the list determines what the user sees when
+         they launch this shortcut. -->
+    <categories android:name="android.shortcut.conversation" />
+  </shortcut>
+
+
+</shortcuts>

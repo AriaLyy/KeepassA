@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/background_color"
+      android:orientation="vertical">
+
+    <include layout="@layout/layout_action_bar" />
+
+    <FrameLayout
+        android:id="@+id/flSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@+id/kpa_toolbar">
+
+      <View
+          android:id="@+id/vBg"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:background="@color/grey600" />
+
+      <TextView
+          android:id="@+id/closeHint"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="start|center_vertical"
+          android:layout_marginStart="72dp"
+          android:text="@string/disable"
+          android:textColor="@color/white"
+          android:textSize="@dimen/text_size_big" />
+
+      <androidx.appcompat.widget.SwitchCompat
+          android:id="@+id/swBt"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="end|center_vertical"
+          android:layout_marginEnd="16dp"
+          app:thumbTint="@color/white"
+          app:trackTint="#44F1F1F1" />
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/flContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/flSwitch" />
+
+
+  </RelativeLayout>
+</layout>

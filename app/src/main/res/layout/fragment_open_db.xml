@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/background_color"
+      android:orientation="vertical"
+      >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/content"
+        >
+      <com.airbnb.lottie.LottieAnimationView
+          android:id="@+id/anim"
+          android:layout_width="match_parent"
+          android:layout_height="150dp"
+          android:layout_centerVertical="true"
+          app:lottie_autoPlay="true"
+          app:lottie_loop="false"
+          />
+
+      <TextView
+          android:id="@+id/head"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:gravity="center"
+          android:text="@string/welcome"
+          android:textColor="@color/text_black_color"
+          android:textSize="24sp"
+          android:visibility="gone"
+          />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        >
+
+      <com.lyy.keepassa.widget.BubbleTextView
+          android:id="@+id/db"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="24dp"
+          android:layout_marginRight="24dp"
+          android:drawablePadding="4dp"
+          android:ellipsize="middle"
+          android:gravity="center_vertical"
+          android:singleLine="true"
+          android:text="@string/db"
+          android:textColor="@color/text_black_color"
+          android:textSize="@dimen/text_size_normal"
+          app:icon_size="24dp"
+          app:left_icon="@drawable/ic_android"
+          />
+
+      <com.google.android.material.textfield.TextInputLayout
+          android:id="@+id/db_name_layout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/db"
+          android:layout_marginLeft="24dp"
+          android:layout_marginRight="24dp"
+          android:layout_marginTop="16dp"
+          android:background="@color/transparent"
+          app:endIconTint="@color/icon_grey_color"
+          app:errorTextAppearance="@style/InputEditTextErrorStyle"
+          app:hintTextAppearance="@style/InputEditTextHintStyle"
+          app:passwordToggleDrawable="@drawable/selector_password"
+          app:passwordToggleEnabled="true"
+          >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/transparent"
+            android:hint="@string/password"
+            android:imeOptions="actionDone"
+            android:inputType="textPassword"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:singleLine="true"
+            android:textColor="@color/text_black_grey_color"
+            android:textColorHint="@color/text_hint_color"
+            android:textSize="@dimen/text_size_normal"
+            android:transitionName="@string/transition_db_name"
+            />
+
+      </com.google.android.material.textfield.TextInputLayout>
+
+      <RelativeLayout
+          android:id="@+id/key_layout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/db_name_layout"
+          android:layout_marginLeft="24dp"
+          android:layout_marginRight="24dp"
+          android:layout_marginTop="8dp"
+          >
+
+        <CheckBox
+            android:id="@+id/cb_key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="8dp"
+            android:text="@string/need_key"
+            android:textColor="@color/text_black_color"
+            android:textSize="@dimen/text_size_normal"
+            />
+
+        <FrameLayout
+            android:id="@+id/key_layout_wrap"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/input_pass_key_h"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@+id/cb"
+            android:visibility="gone"
+            >
+
+          <TextView
+              android:id="@+id/key"
+              android:layout_width="wrap_content"
+              android:layout_height="@dimen/input_pass_key_h"
+              android:layout_gravity="center_vertical|end"
+              android:layout_marginLeft="16dp"
+              android:layout_marginRight="16dp"
+              android:clickable="true"
+              android:ellipsize="middle"
+              android:gravity="center_vertical"
+              android:singleLine="true"
+              android:text="@string/key"
+              android:textColor="@color/text_black_color"
+              android:textSize="@dimen/text_size_normal"
+              />
+
+        </FrameLayout>
+      </RelativeLayout>
+
+    </RelativeLayout>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/fingerprint"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_above="@+id/line"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        app:lottie_cacheComposition="true"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="false"
+        app:lottie_fileName="fingerprint_anim.json"
+        />
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/open"
+        android:background="@color/line_color"
+        />
+
+    <Button
+        android:id="@+id/change_db"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="16dp"
+        android:background="@drawable/ripple_white_selector"
+        android:text="@string/change_db"
+        android:textColor="@color/text_blue_color"
+        android:textSize="@dimen/text_size_normal"
+        />
+
+    <Button
+        android:id="@+id/open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/ripple_white_selector"
+        android:text="@string/open"
+        android:textColor="@color/text_blue_color"
+        android:textSize="@dimen/text_size_normal"
+        />
+  </RelativeLayout>
+</layout>

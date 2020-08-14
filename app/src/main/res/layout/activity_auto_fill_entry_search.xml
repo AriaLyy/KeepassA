@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/background_color"
+      android:orientation="vertical"
+      >
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/bg_white_radius_2"
+        android:elevation="4dp"
+        android:imeOptions="actionSearch"
+        app:goIcon="@drawable/ic_search"
+        app:queryHint="@string/hint_query"
+        app:searchIcon="@drawable/ic_view_headline_24px"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/search"
+        android:layout_alignStart="@+id/search"
+        android:layout_alignEnd="@+id/search"
+        android:background="@drawable/bg_white_radius_2"
+        />
+
+    <LinearLayout
+        android:id="@+id/no_entry_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        >
+
+      <androidx.appcompat.widget.AppCompatImageView
+          android:layout_width="50dp"
+          android:layout_height="50dp"
+          android:layout_gravity="center_horizontal"
+          android:src="@drawable/ic_no_record"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_horizontal"
+          android:layout_marginTop="4dp"
+          android:text="@string/no_matching_entry"
+          android:textColor="@color/text_black_color"
+          android:textSize="@dimen/text_size_bigger"
+          />
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/ex_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:src="@drawable/ic_add"
+        app:backgroundTint="@color/colorPrimary"
+        app:elevation="2dp"
+        app:fabCustomSize="@dimen/fab_bt_size"
+        app:layout_behavior=".widget.FabScrollBehavior"
+        />
+
+  </RelativeLayout>
+
+</layout>

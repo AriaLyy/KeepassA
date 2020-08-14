@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/ripple_white_selector"
+    android:paddingTop="8dp"
+    >
+
+  <TextView
+      android:id="@+id/title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textColor="@color/text_black_grey_color"
+      android:textSize="@dimen/text_size_small"
+      />
+
+  <TextView
+      android:id="@+id/value"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/title"
+      android:layout_alignParentStart="true"
+      android:layout_marginTop="4dp"
+      android:layout_toLeftOf="@+id/more"
+      android:text="sss"
+      android:textColor="@color/text_black_grey_color"
+      android:textSize="@dimen/text_size_small"
+      />
+
+  <androidx.appcompat.widget.AppCompatImageView
+      android:id="@+id/more"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignTop="@+id/value"
+      android:layout_alignBottom="@+id/value"
+      android:layout_alignParentRight="true"
+      app:srcCompat="@drawable/ic_more_read"
+      />
+
+  <View
+      android:id="@+id/line"
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_below="@+id/value"
+      android:layout_marginTop="8dp"
+      android:background="@color/line_color"
+      />
+
+</RelativeLayout>

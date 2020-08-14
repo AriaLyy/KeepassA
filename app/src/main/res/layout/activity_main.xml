@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+  <androidx.coordinatorlayout.widget.CoordinatorLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/background_color">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/head_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:minHeight="48dp">
+
+      <RelativeLayout
+          android:id="@+id/head_toolbar"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@drawable/ripple_white_selector"
+          android:clickable="true"
+          android:descendantFocusability="blocksDescendants"
+          android:paddingLeft="16dp"
+          android:paddingTop="8dp"
+          android:paddingRight="16dp"
+          android:paddingBottom="8dp"
+          app:layout_scrollFlags="scroll|enterAlways|snap|snapMargins">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/app_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:transitionName="@string/transition_app_icon"
+            app:srcCompat="@mipmap/ic_launcher" />
+
+        <com.lyy.keepassa.widget.BubbleTextView
+            android:id="@+id/db_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@+id/app_icon"
+            android:ellipsize="middle"
+            android:gravity="center_vertical"
+            android:maxLength="20"
+            android:singleLine="true"
+            android:text="dbname"
+            android:textColor="@color/text_black_color"
+            android:textSize="@dimen/text_size_normal"
+            android:textStyle="bold"
+            android:transitionName="@string/transition_db_name"
+            app:icon_size="24dp"
+            app:right_icon="@drawable/ic_eco" />
+
+        <TextView
+            android:id="@+id/db_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/db_name"
+            android:layout_alignBottom="@+id/app_icon"
+            android:text="des"
+            android:textColor="@color/text_gray_color"
+            android:textSize="@dimen/text_size_small"
+            android:transitionName="@string/transition_db_version" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/db_name"
+            android:transitionName="@string/transition_db_little"
+            app:srcCompat="@drawable/ic_arrow_down" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/lock"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="8dp"
+            android:layout_toLeftOf="@+id/search"
+            android:background="@drawable/ripple_white_selector"
+            android:clickable="true"
+            app:srcCompat="@drawable/ic_lock_24px" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/search"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/ripple_white_selector"
+            android:clickable="true"
+            app:srcCompat="@drawable/ic_search" />
+
+      </RelativeLayout>
+
+      <com.google.android.material.tabs.TabLayout
+          android:id="@+id/tab"
+          style="@style/TabLayoutStyle"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          app:layout_scrollFlags="noScroll"
+          app:tabInlineLabel="true">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/selector_ic_tab_history"
+            android:text="@string/history" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/db"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/selector_ic_tab_db"
+            android:text="@string/all" />
+      </com.google.android.material.tabs.TabLayout>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/vp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <com.lyy.keepassa.widget.MainExpandFloatActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_behavior="com.lyy.keepassa.widget.MainExpandFloatActionButtonBehavior" />
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+  </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

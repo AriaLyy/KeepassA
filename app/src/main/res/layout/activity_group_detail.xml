@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+
+  <androidx.coordinatorlayout.widget.CoordinatorLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/background_color"
+      >
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:minHeight="@dimen/bar_height"
+        >
+
+      <com.google.android.material.appbar.CollapsingToolbarLayout
+          android:id="@+id/ctlCollapsingLayout"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:elevation="4dp"
+          app:collapsedTitleGravity="left"
+          app:collapsedTitleTextAppearance="@style/CollapsingToolbarLayout.CollapsedTitleText"
+          app:contentScrim="@color/white"
+          app:expandedTitleGravity="left|bottom"
+          app:expandedTitleTextAppearance="@style/CollapsingToolbarLayout.ExpandedTitleText"
+          app:layout_scrollFlags="scroll|exitUntilCollapsed|snap|snapMargins"
+          app:scrimAnimationDuration="1200"
+          app:scrimVisibleHeightTrigger="150dp"
+          app:statusBarScrim="@color/white"
+          app:title="Group"
+          app:titleEnabled="true"
+          >
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/kpa_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bar_height"
+            android:background="@color/white"
+            app:layout_collapseMode="pin"
+            app:navigationIcon="@drawable/ic_up"
+            app:subtitleTextAppearance="@style/Toolbar.SubTitleText"
+            app:theme="@style/ToolbarMenuTheme"
+            app:titleTextAppearance="@style/Toolbar.TitleText"
+            />
+      </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        />
+
+    <com.lyy.keepassa.widget.EmptyDataFillView
+        android:id="@+id/empty_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <com.lyy.keepassa.widget.MainExpandFloatActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_behavior="com.lyy.keepassa.widget.MainExpandFloatActionButtonBehavior"
+        />
+
+
+  </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

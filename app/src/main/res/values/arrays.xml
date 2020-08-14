@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string-array name="quick_pass_len_entries">
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+    <item>6</item>
+  </string-array>
+
+  <string-array name="quick_pass_len_value">
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+    <item>6</item>
+  </string-array>
+
+  <string-array name="quick_pass_type_entries">
+    <item>Database password in front of %s</item>
+    <item>%s at the end of the database password</item>
+  </string-array>
+
+  <string-array name="quick_pass_type_value">
+    <item>1</item>
+    <item>2</item>
+  </string-array>
+
+  <string-array name="clean_clip_entries">
+    <item>30 second</item>
+    <item>1 minute</item>
+    <item>2 minute</item>
+    <item>5 minute</item>
+  </string-array>
+
+  <string-array name="clean_clip_value">
+    <item>30</item>
+    <item>60</item>
+    <item>120</item>
+    <item>300</item>
+  </string-array>
+
+  <string-array name="quick_lock_entries">
+    <item>2 minute</item>
+    <item>5 minute</item>
+    <item>10 minute</item>
+    <item>20 minute</item>
+  </string-array>
+
+  <string-array name="quick_lock_value">
+    <item>120</item>
+    <item>300</item>
+    <item>600</item>
+    <item>1200</item>
+  </string-array>
+
+
+  <string-array name="out_db_entries">
+    <item>Keepass2 database</item>
+    <item>Unencrypted XML file</item>
+    <item>Unencrypted CSV file</item>
+  </string-array>
+
+  <string-array name="out_db_value">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
+
+  <string-array name="main_items">
+    <item>File manager</item>
+    <item>Dropbox</item>
+    <!--    <item>OneDrive</item>-->
+    <!--    <item>GoogleDrive</item>-->
+    <item>WebDav</item>
+    <!--    <item>Ftp</item>-->
+    <item>history record</item>
+    <!--    <item>Other</item>-->
+  </string-array>
+
+  <integer-array name="main_item_icons">
+    <item>@drawable/ic_android</item>
+    <item>@drawable/ic_dropbox</item>
+    <!--    <item>@drawable/ic_onedrive</item>-->
+    <!--    <item>@drawable/ic_google_drive</item>-->
+    <item>@drawable/ic_http</item>
+    <!--    <item>@drawable/ic_ftp</item>-->
+    <item>@drawable/ic_history</item>
+    <!--    <item>@drawable/ic_other</item>-->
+  </integer-array>
+
+  <!--  see DbOpenType -->
+  <integer-array name="main_item_types">
+    <item>0</item>
+    <item>1</item>
+    <!--    <item>2</item>-->
+    <!--    <item>3</item>-->
+    <item>4</item>
+    <!--    <item>5</item>-->
+    <item>6</item>
+  </integer-array>
+
+  <string-array name="path_type">
+    <item>File manager</item>
+    <item>Dropbox</item>
+<!--    <item>OneDrive</item>-->
+<!--    <item>GoogleDrive</item>-->
+<!--    <item>WebDav</item>-->
+<!--    <item>Ftp</item>-->
+<!--    <item>SFtp</item>-->
+  </string-array>
+
+  <string-array name="path_type_des">
+    <item>File manager</item>
+    <item>Dropbox</item>
+<!--    <item>OneDrive</item>-->
+<!--    <item>GoogleDrive</item>-->
+<!--    <item>WebDav</item>-->
+<!--    <item>Ftp</item>-->
+<!--    <item>SFtp</item>-->
+  </string-array>
+
+
+  <string-array name="v3_add_mor_item">
+    <item>Note</item>
+    <item>Attachment</item>
+    <item>Expiration date</item>
+  </string-array>
+
+  <string-array name="v4_add_mor_item">
+    <item>Note</item>
+    <item>Tag</item>
+    <item>Cover link</item>
+    <item>Expiration date</item>
+    <item>Custom field</item>
+    <item>Attachment</item>
+  </string-array>
+
+  <string-array name="choose_language_entries">
+    <item>English</item>
+    <item>简体中文</item>
+    <item>繁体中文</item>
+  </string-array>
+
+  <string-array name="choose_language_value">
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+  </string-array>
+
+  <string-array name="create_normal_group">
+    <item>Email box</item>
+    <item>Work</item>
+    <item>Finance</item>
+    <item>Recreation</item>
+    <item>Recycle bin</item>
+  </string-array>
+</resources>

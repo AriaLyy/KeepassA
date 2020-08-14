@@ -1,0 +1,48 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <PreferenceCategory app:title="@string/safety_set">
+
+    <ListPreference
+        app:defaultValue="120"
+        app:entries="@array/clean_clip_entries"
+        app:entryValues="@array/clean_clip_value"
+        app:icon="@drawable/ic_clipbord"
+        app:key="@string/set_key_clean_clip_time"
+        app:summary="@string/clean_clip_time_summary"
+        app:title="@string/clean_clip_time" />
+
+    <ListPreference
+        app:defaultValue="300"
+        app:entries="@array/quick_lock_entries"
+        app:entryValues="@array/quick_lock_value"
+        app:icon="@drawable/ic_setting_lock"
+        app:key="@string/set_key_auto_lock_db_time"
+        app:summary="@string/auto_lock_db_time_summary"
+        app:title="@string/auto_lock_db_time" />
+
+  </PreferenceCategory>
+
+  <PreferenceCategory app:title="@string/db_handle">
+
+    <Preference
+        app:icon="@drawable/ic_key_gray"
+        app:key="@string/set_key_modify_db_pass"
+        app:title="@string/modify_db_pass" />
+
+    <EditTextPreference
+        app:icon="@drawable/ic_tab_db_gray"
+        app:key="@string/set_key_modify_db_name"
+        app:title="@string/modify_db_name" />
+
+    <ListPreference
+        app:defaultValue="120"
+        app:entries="@array/out_db_entries"
+        app:entryValues="@array/out_db_value"
+        app:icon="@drawable/ic_out_db"
+        app:isPreferenceVisible="false"
+        app:key="@string/set_key_out_db"
+        app:title="@string/out_db" />
+
+  </PreferenceCategory>
+
+</PreferenceScreen>

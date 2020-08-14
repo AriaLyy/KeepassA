@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/bg_white_radius_2"
+      android:minWidth="@dimen/dialog_min_width"
+      android:orientation="vertical"
+      >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:text="@string/add_custom_str"
+        android:textColor="@color/text_blue_color"
+        android:textSize="@dimen/text_size_biggest"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/str_key_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:startIconDrawable="@drawable/ic_title_24px"
+        app:startIconTint="@color/icon_grey_color"
+        >
+
+      <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/str_key"
+          android:layout_width="match_parent"
+          android:layout_height="48dp"
+          android:background="@color/transparent"
+          android:hint="@string/hint_input_attr_str_key"
+          android:imeOptions="actionNext"
+          android:singleLine="true"
+          android:textColor="@color/text_black_grey_color"
+          android:textColorHint="@color/text_hint_color"
+          android:textSize="@dimen/text_size_normal"
+          >
+
+      </com.google.android.material.textfield.TextInputEditText>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/str_value_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:startIconDrawable="@drawable/ic_text_fields_24px"
+        app:startIconTint="@color/icon_grey_color"
+        >
+
+      <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/str_value"
+          android:layout_width="match_parent"
+          android:layout_height="48dp"
+          android:background="@color/transparent"
+          android:hint="@string/hint_input_attr_str_value"
+          android:imeOptions="actionNext"
+          android:singleLine="true"
+          android:textColor="@color/text_black_grey_color"
+          android:textColorHint="@color/text_hint_color"
+          android:textSize="@dimen/text_size_normal"
+          >
+
+      </com.google.android.material.textfield.TextInputEditText>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <CheckBox
+        android:id="@+id/cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/hint_protect_str"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/text_size_normal"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:orientation="horizontal"
+        >
+
+      <Button
+          android:id="@+id/cancel"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/ripple_white_selector"
+          android:text="@string/cancel"
+          android:textColor="@color/text_gray_color"
+          />
+
+      <Button
+          android:id="@+id/enter"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/ripple_white_selector"
+          android:text="@string/enter"
+          android:textColor="@color/text_blue_color"
+          />
+
+    </LinearLayout>
+
+
+  </LinearLayout>
+</layout>

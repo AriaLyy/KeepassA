@@ -1,0 +1,26 @@
+{
+  "name": "KeepassA",
+  "version": "1.0.0",
+  "description": "使用[commitizen](https://github.com/commitizen/cz-cli)进行提交",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "cz-conventional-changelog": "^3.2.0",
+    "cz-customizable": "^6.3.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitee.com:laoyuyu/KeepassA.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    }
+  }
+}

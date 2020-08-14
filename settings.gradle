@@ -1,0 +1,8 @@
+include ':HWImp'
+include ':app', ':Frame', ':KeepassLib'
+rootProject.name='KeepassA'
+include ':IBaseApi'
+include ':PlayImp'
+include ':Demo'
+include ':KeepassIcon'
+include ':UIWidget'

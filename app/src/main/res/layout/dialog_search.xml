@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+  <RelativeLayout
+      android:id="@+id/bg"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/mask"
+      >
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/bg_white_radius_2"
+        android:elevation="4dp"
+        android:imeOptions="actionSearch"
+        app:goIcon="@drawable/ic_search"
+        app:queryHint="@string/hint_query"
+        app:searchIcon="@drawable/ic_view_headline_24px"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/search"
+        android:layout_alignStart="@+id/search"
+        android:layout_alignEnd="@+id/search"
+        android:background="@drawable/bg_white_radius_2"
+        />
+  </RelativeLayout>
+</layout>

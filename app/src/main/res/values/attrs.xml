@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <declare-styleable name="HorizontalProgressBarWithNumber">
+    <attr name="progress_unreached_color" format="color" />
+    <attr name="progress_reached_color" format="color" />
+    <attr name="progress_reached_bar_height" format="dimension" />
+    <attr name="progress_unreached_bar_height" format="dimension" />
+    <attr name="progress_text_size" format="dimension" />
+    <attr name="progress_text_color" format="color" />
+    <attr name="progress_text_offset" format="dimension" />
+    <attr name="progress_text_visibility" format="enum">
+      <enum name="visible" value="0" />
+      <enum name="invisible" value="1" />
+    </attr>
+    <attr name="progress_show_percent" format="boolean" />
+  </declare-styleable>
+
+  <declare-styleable name="RoundProgressBarWidthNumber">
+    <attr name="radius" format="dimension" />
+    <!--    是否是倒计时-->
+    <attr name="progress_countdown" format="boolean" />
+  </declare-styleable>
+
+  <declare-styleable name="EmptyDataFillView">
+    <attr name="edf_text" format="string" />
+    <attr name="edf_icon" format="reference" />
+  </declare-styleable>
+
+  <declare-styleable name="ShortPasswordView">
+    <attr name="passLen" format="reference" />
+  </declare-styleable>
+
+  <declare-styleable name="BubbleTextView">
+    <attr name="left_icon" format="reference" />
+    <attr name="top_icon" format="reference" />
+    <attr name="right_icon" format="reference" />
+    <attr name="bottom_icon" format="reference" />
+    <attr name="icon_size" format="dimension">
+      <enum name="smaller" value="25" />
+    </attr>
+  </declare-styleable>
+
+  <declare-styleable name="BubbleRadioButton">
+    <attr name="rb_right_icon" format="reference" />
+    <attr name="rb_icon_size" format="dimension">
+      <enum name="smaller" value="25" />
+    </attr>
+  </declare-styleable>
+
+  <declare-styleable name="ExpandTextView">
+    <attr name="expand_tt_icon" format="reference" />
+    <attr name="expand_tt_title" format="string|reference" />
+  </declare-styleable>
+
+  <declare-styleable name="RecyclerViewContentBehavior_Layout">
+    <attr name="expand_h" format="dimension" />
+  </declare-styleable>
+
+  <declare-styleable name="SimpleItemView">
+    <attr name="icon" format="reference" />
+    <attr name="title" format="string|reference" />
+    <attr name="des" format="string|reference" />
+  </declare-styleable>
+
+  <declare-styleable name="Theme">
+    <attr name="discreteSeekBarStyle" format="reference" />
+  </declare-styleable>
+  <declare-styleable name="DiscreteSeekBar">
+    <attr name="dsb_min" format="integer|dimension" />
+    <attr name="dsb_max" format="integer|dimension" />
+    <attr name="dsb_value" format="integer|dimension" />
+    <attr name="dsb_mirrorForRtl" format="boolean" />
+    <attr name="dsb_allowTrackClickToDrag" format="boolean" />
+    <attr name="dsb_progressColor" format="color|reference" />
+    <attr name="dsb_trackColor" format="color|reference" />
+    <attr name="dsb_indicatorTextAppearance" format="reference" />
+    <attr name="dsb_indicatorColor" format="color|reference" />
+    <attr name="dsb_indicatorElevation" format="dimension" />
+    <attr name="dsb_indicatorFormatter" format="string|reference" />
+    <attr name="dsb_rippleColor" format="color|reference" />
+    <attr name="dsb_indicatorPopupEnabled" format="boolean" />
+    <attr name="dsb_trackHeight" format="integer|dimension" />
+    <attr name="dsb_scrubberHeight" format="integer|dimension" />
+    <attr name="dsb_thumbSize" format="integer|dimension" />
+    <attr name="dsb_indicatorSeparation" format="integer|dimension" />
+  </declare-styleable>
+
+
+</resources>

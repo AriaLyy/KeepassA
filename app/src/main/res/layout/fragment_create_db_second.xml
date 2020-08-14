@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+  <androidx.core.widget.NestedScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/background_color"
+      android:orientation="vertical"
+      android:overScrollMode="never"
+      android:padding="16dp"
+      >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          >
+
+        <TextView
+            android:gravity="center_vertical"
+            android:id="@+id/db_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:text="@string/db"
+            android:textColor="@color/text_black_color"
+            android:textSize="@dimen/text_size_big"
+            />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="26dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="8dp"
+            android:background="@color/line_color"
+            />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/db_name"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginLeft="8dp"
+            android:background="@color/transparent"
+            android:enabled="false"
+            android:focusable="false"
+            android:hint="@string/db_name"
+            android:imeOptions="actionDone"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:singleLine="true"
+            android:textColor="@color/text_black_color"
+            android:textColorHint="@color/text_hint_color"
+            android:textSize="@dimen/text_size_normal"
+            android:transitionName="@string/transition_db_name"
+            />
+      </LinearLayout>
+
+      <com.lyy.keepassa.widget.BubbleTextView
+          android:id="@+id/encrypt_type"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:drawablePadding="4dp"
+          android:gravity="center_vertical"
+          android:text="@string/encrypt_type"
+          android:textColor="@color/text_black_color"
+          android:textSize="@dimen/text_size_big"
+          app:icon_size="20dp"
+          app:right_icon="@drawable/ic_help_filled"
+          />
+
+      <RadioGroup
+          android:id="@+id/encrypt_group"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:orientation="horizontal"
+          >
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:tag="1"
+            android:text="@string/encrypt_type_1"
+            android:textColor="@color/text_black_color"
+            android:textSize="@dimen/text_size_normal"
+            />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_weight="1"
+            android:tag="2"
+            android:text="@string/encrypt_type_2"
+            android:textColor="@color/text_black_color"
+            android:textSize="@dimen/text_size_normal"
+            />
+      </RadioGroup>
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:text="@string/password"
+          android:textColor="@color/text_black_color"
+          android:textSize="@dimen/text_size_big"
+          />
+
+      <com.google.android.material.textfield.TextInputLayout
+          android:id="@+id/password_layout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          app:counterEnabled="true"
+          app:counterMaxLength="16"
+          app:counterOverflowTextAppearance="@style/InputEditTextErrorStyle"
+          app:counterTextAppearance="@style/InputEditTextOverAppearance"
+          app:errorEnabled="true"
+          app:errorIconDrawable="@drawable/ic_info_filled"
+          app:errorTextAppearance="@style/InputEditTextErrorStyle"
+          app:helperText="@string/helper_create_pass"
+          app:helperTextTextColor="@color/text_gray_color"
+          app:passwordToggleEnabled="true"
+          >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/transparent"
+            android:hint="@string/hint_input_password"
+            android:imeOptions="actionNext"
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:textColor="@color/text_black_grey_color"
+            android:textColorHint="@color/text_hint_color"
+            android:textSize="@dimen/text_size_normal"
+            >
+
+        </com.google.android.material.textfield.TextInputEditText>
+
+      </com.google.android.material.textfield.TextInputLayout>
+
+      <com.google.android.material.textfield.TextInputLayout
+          android:id="@+id/enter_password_layout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          app:errorEnabled="true"
+          app:errorTextAppearance="@style/InputEditTextErrorStyle"
+          app:helperTextTextColor="@color/text_gray_color"
+          app:hintTextAppearance="@style/InputEditTextHintStyle"
+          app:startIconTint="@color/icon_grey_color"
+          >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/enter_password"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/transparent"
+            android:hint="@string/hint_enter_password"
+            android:imeOptions="actionDone"
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:textColor="@color/text_black_grey_color"
+            android:textColorHint="@color/text_hint_color"
+            android:textSize="@dimen/text_size_normal"
+            >
+
+        </com.google.android.material.textfield.TextInputEditText>
+
+      </com.google.android.material.textfield.TextInputLayout>
+
+      <FrameLayout
+          android:id="@+id/pass_key_layout_wrap"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/create_pass_key_h"
+          >
+
+        <RelativeLayout
+            android:id="@+id/pass_key_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/create_pass_key_h"
+            android:layout_gravity="center_vertical"
+            >
+
+          <com.lyy.keepassa.widget.BubbleTextView
+              android:id="@+id/pass_key"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:drawablePadding="4dp"
+              android:gravity="center_vertical"
+              android:text="@string/pass_key"
+              android:textColor="@color/text_black_color"
+              android:textSize="@dimen/text_size_big"
+              app:icon_size="20dp"
+              app:right_icon="@drawable/ic_help_filled"
+              />
+
+          <EditText
+              android:id="@+id/pass_key_name"
+              android:layout_width="match_parent"
+              android:layout_height="48dp"
+              android:layout_below="@+id/pass_key"
+              android:layout_marginTop="4dp"
+              android:layout_marginRight="8dp"
+              android:layout_toLeftOf="@+id/choose_bt"
+              android:background="@color/transparent"
+              android:enabled="false"
+              android:gravity="center_vertical"
+              android:hint="@string/hint_set_pass_key"
+              android:singleLine="true"
+              android:textColor="@color/text_black_grey_color"
+              android:textColorHint="@color/text_hint_color"
+              android:textSize="@dimen/text_size_normal"
+              />
+
+          <Button
+              android:id="@+id/choose_bt"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignTop="@+id/pass_key_name"
+              android:layout_alignParentRight="true"
+              android:background="@drawable/ripple_white_selector"
+              android:text="@string/choose_pass_key"
+              android:textColor="@color/text_orange_color"
+              android:textSize="@dimen/text_size_normal"
+              />
+
+        </RelativeLayout>
+
+      </FrameLayout>
+    </LinearLayout>
+
+
+  </androidx.core.widget.NestedScrollView>
+
+</layout>

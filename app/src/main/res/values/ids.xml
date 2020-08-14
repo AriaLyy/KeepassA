@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <integer-array name="path_type_img">
+    <item>@drawable/ic_android</item>
+    <item>@drawable/ic_dropbox</item>
+    <item>@drawable/ic_onedrive</item>
+    <item>@drawable/ic_google_drive</item>
+    <item>@drawable/ic_http</item>
+    <item>@drawable/ic_ftp</item>
+    <item>@drawable/ic_ssh</item>
+  </integer-array>
+
+  <integer-array name="v3_add_more_icon">
+    <item>@drawable/ic_notice</item>
+    <item>@drawable/ic_attr_file</item>
+    <item>@drawable/ic_lose_time</item>
+  </integer-array>
+
+  <integer-array name="v4_add_more_icon">
+    <item>@drawable/ic_notice</item>
+    <item>@drawable/ic_tag</item>
+    <item>@drawable/ic_net</item>
+    <item>@drawable/ic_lose_time</item>
+    <item>@drawable/ic_attr_str</item>
+    <item>@drawable/ic_attr_file</item>
+  </integer-array>
+
+</resources>

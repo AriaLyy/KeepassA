@@ -1,0 +1,61 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+  compileSdkVersion rootProject.ext.compileSdkVersion
+  buildToolsVersion rootProject.ext.buildToolsVersion
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+
+  defaultConfig {
+    applicationId "com.lyy.demo"
+    minSdkVersion rootProject.ext.minSdkVersion
+    targetSdkVersion rootProject.ext.targetSdkVersion
+    versionCode 1
+    versionName "1.0"
+
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  }
+
+  dataBinding {
+    enabled = true
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+  }
+}
+
+dependencies {
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+  // 测试模块
+  testImplementation rootProject.ext.junit
+  androidTestImplementation rootProject.ext.runner
+  androidTestImplementation rootProject.ext.androidXJunit
+  // kotlin
+  implementation rootProject.ext.kotlinJdk
+  implementation rootProject.ext.androidXKtx
+
+  implementation rootProject.ext.appcompat
+  implementation rootProject.ext.material
+  implementation rootProject.ext.recyclerview
+  implementation rootProject.ext.multidex
+  implementation project(path: ':Frame')
+  implementation project(path: ':KeepassLib')
+
+  // 生物识别库，指纹，人脸识别
+  implementation 'androidx.biometric:biometric:1.0.1'
+
+  // 加密工具，需要23版本
+  //  implementation "androidx.security:security-crypto:1.0.0-rc01"
+  implementation 'com.google.crypto.tink:tink-android:1.4.0-rc1'
+  implementation 'com.zzhoujay.richtext:richtext:3.0.8'
+}

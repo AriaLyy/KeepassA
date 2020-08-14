@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/ripple_white_selector"
+    >
+
+  <RelativeLayout
+      android:id="@+id/titleLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_toStartOf="@+id/more"
+      >
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:textColor="@color/text_gray_color"
+        android:textSize="@dimen/text_size_smallest"
+        />
+
+    <com.lyy.keepassa.widget.ProgressBar.RoundProgressBarWidthNumber
+        android:id="@+id/rpbBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/title"
+        android:progress="60"
+        android:visibility="gone"
+        app:radius="8dp"
+        app:progress_text_color="@color/text_blue_color"
+        app:progress_text_size="8sp"
+        app:progress_show_percent="false"
+        app:progress_unreached_bar_height="1dp"
+        />
+
+
+  </RelativeLayout>
+
+
+  <TextView
+      android:id="@+id/value"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentStart="true"
+      android:layout_below="@+id/titleLayout"
+      android:layout_marginTop="4dp"
+      android:layout_toStartOf="@+id/more"
+      android:text="sss"
+      android:textColor="@color/text_black_grey_color"
+      android:textSize="@dimen/text_size_smaller"
+      />
+
+  <androidx.appcompat.widget.AppCompatImageView
+      android:id="@+id/more"
+      android:layout_width="16dp"
+      android:layout_height="16dp"
+      android:layout_alignParentEnd="true"
+      android:layout_centerVertical="true"
+      app:srcCompat="@drawable/ic_more_read"
+      />
+
+</RelativeLayout>

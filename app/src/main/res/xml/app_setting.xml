@@ -1,0 +1,79 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <PreferenceCategory app:title="@string/safety_set">
+
+    <SwitchPreference
+        app:defaultValue="false"
+        app:icon="@drawable/ic_security_24px"
+        app:key="@string/set_quick_unlock"
+        app:summary="@string/des_quick_unlock"
+        app:title="@string/open_quick_unlock" />
+
+    <ListPreference
+        android:defaultValue="1"
+        android:icon="@drawable/ic_password"
+        android:summary="@string/quick_pass_type_summary"
+        app:dependency="@string/set_quick_unlock"
+        app:entries="@array/quick_pass_type_entries"
+        app:entryValues="@array/quick_pass_type_value"
+        app:key="@string/set_quick_pass_type"
+        app:title="@string/quick_pass_type" />
+
+    <ListPreference
+        android:defaultValue="3"
+        android:icon="@drawable/ic_linear_scale"
+        android:summary="@string/quick_pass_len_summary"
+        android:title="@string/quick_pass_len_title"
+        app:dependency="@string/set_quick_unlock"
+        app:entries="@array/quick_pass_len_entries"
+        app:entryValues="@array/quick_pass_len_value"
+        app:key="@string/set_quick_pass_len" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:title="@string/set_open_auto_fill_title"
+        app:icon="@drawable/ic_auto_fill"
+        app:key="@string/set_open_auto_fill" />
+
+    <Preference
+        app:icon="@drawable/ic_fingerprint"
+        app:isPreferenceVisible="true"
+        app:key="@string/set_key_fingerprint_unlock"
+        app:title="@string/fingerprint_unlock">
+
+      <intent
+          android:targetClass="com.lyy.keepassa.view.fingerprint.FingerprintActivity"
+          android:targetPackage="com.lyy.keepassa" />
+
+    </Preference>
+
+
+  </PreferenceCategory>
+
+  <PreferenceCategory app:title="@string/other_set">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:summary="@string/set_delete_no_into_recycle_bin_des"
+        android:title="@string/set_delete_no_into_recycle_bin"
+        app:icon="@drawable/ic_delete_sweep"
+        app:key="@string/set_key_delete_no_recycle_bin" />
+
+    <ListPreference
+        android:icon="@drawable/ic_language_24px"
+        android:title="@string/set_key_value"
+        app:entries="@array/choose_language_entries"
+        app:entryValues="@array/choose_language_value"
+        app:key="@string/set_key_language" />
+
+    <Preference
+        app:icon="@drawable/ic_version"
+        app:isPreferenceVisible="true"
+        app:key="@string/set_key_version_log"
+        app:title="@string/version_log" />
+
+  </PreferenceCategory>
+
+
+</PreferenceScreen>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!--设置key-->
+  <string name="set_key_clean_clip_time" translatable="false">clean_clip_time</string>
+  <string name="set_key_auto_lock_db_time" translatable="false">auto_lock_db_time</string>
+  <string name="set_key_fingerprint_unlock" translatable="false">fingerprint_unlock</string>
+  <string name="set_key_modify_db_name" translatable="false">modify_db_name</string>
+  <string name="set_key_out_db" translatable="false">out_db</string>
+  <string name="set_quick_unlock" translatable="false">set_qulick_unlock</string>
+  <string name="set_quick_pass_len" translatable="false">set_quick_pass_len</string>
+
+  <string name="set_quick_pass_type" translatable="false">set_quick_pass_type</string>
+  <string name="set_key_modify_db_pass" translatable="false">set_key_modify_db_pass</string>
+  <string name="set_open_auto_fill" translatable="false">set_open_auto_fill</string>
+  <string name="set_key_praise" translatable="false">set_key_praise</string>
+  <string name="set_key_delete_no_recycle_bin" translatable="false">set_key_delete_no_recycle_bin</string>
+
+  <string name="set_key_version_log" translatable="false">set_key_version_log</string>
+
+  <!-- 分享动画元素的信息 -->
+  <string name="transition_db_name" translatable="false">transitionDbName</string>
+  <string name="transition_app_icon" translatable="false">transitionAppIcon</string>
+  <string name="transition_entry_icon" translatable="false">transition_entry_icon</string>
+  <string name="transition_db_version" translatable="false">transitionDbVersion</string>
+  <string name="transition_db_little" translatable="false">transitionDbLittle</string>
+  <string name="set_key_language" translatable="false">set_key_language</string>
+
+<!--  activity 堆栈-->
+  <string name="affinity_main" translatable="false">affinity.main</string>
+</resources>

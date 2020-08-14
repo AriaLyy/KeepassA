@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+  <FrameLayout
+      android:layout_width="@dimen/fab_bt_size"
+      android:layout_height="@dimen/fab_bt_size"
+      android:layout_marginBottom="16dp"
+      >
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/add_group"
+        android:layout_width="@dimen/fab_bt_size"
+        android:layout_height="@dimen/fab_bt_size"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_circle"
+        android:clickable="true"
+        android:src="@drawable/ic_fab_dir"
+        android:visibility="gone"
+        />
+  </FrameLayout>
+
+  <FrameLayout
+      android:layout_width="@dimen/fab_bt_size"
+      android:layout_height="@dimen/fab_bt_size"
+      android:layout_marginBottom="16dp"
+      >
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/add_key"
+        android:layout_width="@dimen/fab_bt_size"
+        android:layout_height="@dimen/fab_bt_size"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_circle"
+        android:clickable="true"
+        android:src="@drawable/ic_key"
+        android:visibility="gone"
+        />
+  </FrameLayout>
+
+
+  <com.google.android.material.floatingactionbutton.FloatingActionButton
+      android:id="@+id/ex_fab"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:clickable="true"
+      android:src="@drawable/ic_add"
+      app:backgroundTint="@color/colorPrimary"
+      app:elevation="2dp"
+      app:fabCustomSize="@dimen/fab_bt_size"
+      app:layout_behavior=".widget.FabScrollBehavior"
+      />
+
+</LinearLayout>
