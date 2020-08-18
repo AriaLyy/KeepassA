@@ -18,6 +18,7 @@ import com.lyy.keepassa.event.ModifyDbNameEvent
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.view.dialog.DonateDialog
 import com.lyy.keepassa.view.setting.SettingActivity
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
@@ -27,7 +28,7 @@ import org.greenrobot.eventbus.ThreadMode.MAIN
  */
 class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClickListener {
 
-  private lateinit var module:MainModule
+  private lateinit var module: MainModule
 
   override fun onCreate(savedInstanceState: Bundle?) {
     useAnim = false
@@ -58,6 +59,7 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
     binding.changeDb.setOnClickListener(this)
     binding.appFeedback.setOnClickListener(this)
     binding.appFavorite.setOnClickListener(this)
+    binding.tvDonate.setOnClickListener(this)
     module.setEcoIcon(this, binding.dbName)
   }
 
@@ -131,6 +133,9 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
         } else {
           HitUtil.toaskShort(getString(R.string.send_email_fail))
         }
+//        startActivity(Intent(Intent.ACTION_VIEW).apply {
+//          data = Uri.parse("https://github.com/AriaLyy/KeepassA/issues")
+//        })
       }
       R.id.app_favorite -> {
         if (AndroidUtils.hasAnyMarket(this)) {
@@ -142,6 +147,10 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
         } else {
           HitUtil.toaskShort(getString(R.string.mark_not_exit))
         }
+      }
+      R.id.tvDonate -> {
+        val donateDialog = DonateDialog()
+        donateDialog.show()
       }
     }
   }

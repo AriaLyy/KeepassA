@@ -206,12 +206,12 @@
 <b>If you already have a keeppass database, then you need to authorize KeeppassA to access the 【apps/KeepassA】 folder in KeeppassA and save the keeppass database to the 【Application / KeepassA】 folder after authorization is complete. </b><br /><br />
 If you are creating a new keeppass database, the above operations will not be needed. After you create the database, keeppassA will automatically create the corresponding folder and upload the database to the 【Apps/KeepassA】 directory of dropbox. ]]></string>
   <string name="cover">Cover</string>
-  <string name="file_conflict_msg">Conflict between cloud data and local data:\n %s</string>
+  <string name="file_conflict_msg">Conflict between cloud data and local data, Please select the coverage method. The conflicting entries are:\n %s</string>
   <string name="merge">Merge</string>
   <string name="sync_db">Synchronous database</string>
   <string name="net_error">Network abnormal</string>
-  <string name="cover_local">Overwrite local data</string>
-  <string name="cover_cloud">Overwrite cloud data</string>
+  <string name="cover_local">Local</string>
+  <string name="cover_cloud">Cloud</string>
   <string name="auth">Auth</string>
   <string name="invalid">Invalid</string>
   <string name="no_file">No file</string>
@@ -248,5 +248,5 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="hint_security_red">Note that your phone has been rooted and the database is in a very dangerous environment</string>
   <string name="hint_security_yellow">Warning, running in the simulator, this environment will bring some unpredictable risks to the database</string>
   <string name="donate">Donate</string>
-  <string name="donate_desc">KeepassA is an open source software. If you like our software, please consider donating to us to support our work.</string>
+  <string name="donate_desc">[KeepassA](https://github.com/AriaLyy/KeepassA) is an open source software. If you like our software, please consider donating to us to support our work, Thank you very much.</string>
 </resources>

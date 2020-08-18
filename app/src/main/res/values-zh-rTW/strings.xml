@@ -203,12 +203,12 @@
 <b>如果您已經擁有來一個keepass數據庫，那麼，您需要先在KeepassA中授權KeepassA訪問【應用/KeepassA】文件夾的權限，並在授權後完成後將keepass數據庫保存到【應用/KeepassA】文件夾中。</b ><br/><br />
 如果您是新建keepass數據庫，將不需要上面的操作，在您創建數據庫完成後，keepassA將會自動創建對應文件夾，並將數據庫上傳到dropbox的【應用/KeepassA】目錄下。]]></string>
   <string name="cover">覆蓋</string>
-  <string name="file_conflict_msg">雲端數據和本地數據出現衝突：\n %s</string>
+  <string name="file_conflict_msg">雲端數據和本地數據出現衝突，请选择覆盖方式，冲突的条目有：\n %s</string>
   <string name="merge">合併</string>
   <string name="sync_db">同步數據庫</string>
   <string name="net_error">網路異常</string>
-  <string name="cover_local">覆蓋本地數據</string>
-  <string name="cover_cloud">覆蓋雲端數據</string>
+  <string name="cover_local">本地</string>
+  <string name="cover_cloud">雲端</string>
   <string name="auth">授權</string>
   <string name="invalid">無效</string>
   <string name="no_file">沒有文件</string>
@@ -246,6 +246,6 @@
   <string name="hint_security_red">注意，您的手機已經被root了，數據庫處於一個非常危險的環境中</string>
   <string name="hint_security_yellow">警告，運用運行於模擬器中，該環境會給數據庫帶來一些不可預測的風險</string>
   <string name="donate">捐贈</string>
-  <string name="donate_desc">KeepassA是一款開源軟件，如果您喜歡我們的軟件，請考慮給我們捐贈，以支持我們的工作。</string>
+  <string name="donate_desc">[KeepassA](https://github.com/AriaLyy/KeepassA)是一款開源軟件，如果您喜歡我們的軟件，請考慮給我們捐贈，以支持我們的工作，非常感謝您。</string>
 
 </resources>

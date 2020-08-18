@@ -50,9 +50,9 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
     }
     if (BuildConfig.DEBUG) {
 //      binding.uri.setText("https://dav.jianguoyun.com/dav/keeppass/yuyu_pw_db_test.kdbx")
-//      binding.uri.setText("https://dav.jianguoyun.com/dav/keeppass/密码.kdbx")
-//      binding.userName.setText("511455842@qq.com")
-//      binding.password.setText("aux8q3tnmg9nqnq7")
+      binding.uri.setText("https://dav.jianguoyun.com/dav/keeppass/密码.kdbx")
+      binding.userName.setText("511455842@qq.com")
+      binding.password.setText("aux8q3tnmg9nqnq7")
     }
 
     binding.enter.setOnClickListener {

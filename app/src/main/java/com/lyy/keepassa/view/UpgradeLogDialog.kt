@@ -14,9 +14,9 @@ import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.databinding.DialogUpgradeBinding
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.LanguageUtil
-import com.lyy.keepassa.widget.toPx
 import com.lyy.keepassa.view.dialog.WebDavLoginDialog
 import com.lyy.keepassa.view.fingerprint.FingerprintActivity
+import com.lyy.keepassa.widget.toPx
 import com.zzhoujay.richtext.RichText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -110,11 +110,13 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
             WebDavLoginDialog().show()
             return true
           }
-
         }
       }
     } else {
       Log.d(TAG, "url = $url")
+      startActivity(Intent(Intent.ACTION_VIEW).apply {
+        data = Uri.parse(url)
+      })
     }
     return false
   }

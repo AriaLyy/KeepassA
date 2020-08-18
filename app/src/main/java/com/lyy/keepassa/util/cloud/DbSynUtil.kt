@@ -111,16 +111,15 @@ object DbSynUtil : SynStateCode {
     if (cloudFileInfo == null) {
       Log.i(TAG, "云端文件不存在，开始上传文件")
       return uploadFile(util, context, record)
-    } else {
-      if (cloudFileInfo.contentHash != null) {
-        if (util.checkContentHash(cloudFileInfo.contentHash, record.getDbUri())) {
-          Log.i(TAG, "云端文件和本地文件的hash一致，忽略该上传")
-          return STATE_SUCCEED
-        }
-      }
-      Log.i(TAG, "云端文件存在，开始同步数据")
-      return synUploadFile(util, context, record)
     }
+    if (cloudFileInfo.contentHash != null
+        && util.checkContentHash(cloudFileInfo.contentHash, record.getDbUri())
+    ) {
+      Log.i(TAG, "云端文件和本地文件的hash一致，忽略该上传")
+      return STATE_SUCCEED
+    }
+    Log.i(TAG, "云端文件存在，开始同步数据")
+    return synUploadFile(util, context, record)
   }
 
   /**

@@ -1,3 +1,5 @@
+#### 1.1
+
 #### 1.0.1.2
 - 重构[指纹解锁设置界面](route://keepassA.com/kpa?activity=FingerprintActivity)
 - 增加下拉同步数据库功能

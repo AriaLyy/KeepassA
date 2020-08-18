@@ -33,9 +33,14 @@ class KeyStoreUtil {
   }
 
   init {
-    keyStore.load(null)
-    if (keyStore.getKey(keystoreAlias, keyStorePass) == null) {
-      generateKey()
+    try {
+      keyStore.load(null)
+      if (keyStore.getKey(keystoreAlias, keyStorePass) == null) {
+        generateKey()
+      }
+    }catch (e:Exception){
+      e.printStackTrace()
+      deleteKeyStore()
     }
   }
 

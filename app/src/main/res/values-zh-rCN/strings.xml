@@ -209,9 +209,9 @@
 <b>如果您已经拥有了一个keepass数据库，那么，您需要先在KeepassA中授权KeepassA访问【应用/KeepassA】文件夹的权限，并在授权完成后将keepass数据库保存到【应用/KeepassA】文件夹中。</b><br/><br />
 如果您是新建的keepass数据库，将不需要上面的操作，在您创建完成数据库后，keepassA将会自动创建对应文件夹，并将数据库上传到dropbox的【应用/KeepassA】目录下。]]></string>
   <string name="cover">覆盖</string>
-  <string name="file_conflict_msg">云端数据和本地数据出现冲突：\n %s</string>
-  <string name="cover_local">覆盖本地数据</string>
-  <string name="cover_cloud">覆盖云端数据</string>
+  <string name="file_conflict_msg">云端数据和本地数据出现冲突，请选择覆盖方式，冲突的条目有：\n %s</string>
+  <string name="cover_local">本地</string>
+  <string name="cover_cloud">云端</string>
   <string name="merge">合并</string>
   <string name="sync_db">同步数据库</string>
   <string name="net_error">网络异常</string>
@@ -252,7 +252,7 @@
   <string name="hint_security_red">注意，您的手机已经被root了，数据库处于一个非常危险的环境中</string>
   <string name="hint_security_yellow">警告，运用运行于模拟器中，该环境会给数据库带来一些不可预测的风险</string>
   <string name="donate">捐赠</string>
-  <string name="donate_desc">KeepassA是一款开源软件，如果您喜欢我们的软件，请考虑给我们捐赠，以支持我们的工作。</string>
+  <string name="donate_desc">[KeepassA](https://github.com/AriaLyy/KeepassA)是一款开源软件，如果您喜欢我们的软件，请考虑给我们捐赠，以支持我们的工作，非常感谢您。</string>
 
 </resources>
 

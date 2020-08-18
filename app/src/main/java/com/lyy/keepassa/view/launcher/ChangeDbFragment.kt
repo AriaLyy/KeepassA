@@ -87,7 +87,7 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
         })
     RvItemClickSupport.addTo(binding.list)
         .setOnItemClickListener { _, position, _ ->
-          if (KeepassAUtil.isFastClick()) {
+          if (KeepassAUtil.isFastClick() || activity == null) {
             return@setOnItemClickListener
           }
           when (data[position].id) {

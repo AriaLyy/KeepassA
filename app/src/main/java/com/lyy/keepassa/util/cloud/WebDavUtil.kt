@@ -8,6 +8,7 @@ import com.arialyy.frame.util.StringUtil
 import com.lyy.keepassa.entity.DbRecord
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import java.io.FileOutputStream
+import java.net.URLEncoder
 import java.nio.channels.Channels
 import java.util.Date
 import java.util.UUID
@@ -71,9 +72,9 @@ object WebDavUtil : ICloudUtil {
     return "/"
   }
 
-  override suspend fun getFileList(path: String): List<CloudFileInfo>? {
+  override suspend fun getFileList(cloudPath: String): List<CloudFileInfo>? {
     sardine ?: return null
-    val resources = sardine!!.list(path)
+    val resources = sardine!!.list(convertUrl(cloudPath))
     if (resources == null || resources.isEmpty()) {
       return null
     }
@@ -100,7 +101,7 @@ object WebDavUtil : ICloudUtil {
     Log.i(TAG, "获取文件信息，cloudPath：$cloudPath")
     try {
       sardine ?: return null
-      val resources = sardine!!.list(cloudPath)
+      val resources = sardine!!.list(convertUrl(cloudPath))
       if (resources == null || resources.isEmpty()) {
         return null
       }
@@ -117,7 +118,7 @@ object WebDavUtil : ICloudUtil {
   override suspend fun delFile(cloudPath: String): Boolean {
     sardine ?: return false
     try {
-      sardine!!.delete(cloudPath)
+      sardine!!.delete(convertUrl(cloudPath))
     } catch (e: Exception) {
       e.printStackTrace()
       return false
@@ -127,7 +128,7 @@ object WebDavUtil : ICloudUtil {
 
   override suspend fun getFileServiceModifyTime(cloudPath: String): Date {
     sardine ?: return Date()
-    val cloudInfo = getFileInfo(cloudPath)
+    val cloudInfo = getFileInfo(convertUrl(cloudPath))
     cloudInfo ?: return Date()
     return cloudInfo.serviceModifyDate
   }
@@ -154,14 +155,21 @@ object WebDavUtil : ICloudUtil {
     filePath: Uri
   ): String? {
     sardine ?: return null
-    val cloudPath = dbRecord.cloudDiskPath
+    val cloudPath = convertUrl(dbRecord.cloudDiskPath.toString())
     val token = sardine!!.lock(cloudPath)
     val ips = sardine!!.get(cloudPath)
-    val fileInfo = getFileInfo(cloudPath!!)
+    val fileInfo = getFileInfo(cloudPath)
     val fic = Channels.newChannel(ips)
     val foc = FileOutputStream(filePath.toFile()).channel
     foc.transferFrom(fic, 0, fileInfo!!.size)
     sardine!!.unlock(cloudPath, token)
     return filePath.toString()
+  }
+
+  /**
+   * 将含有中文的url进行格式化
+   */
+  private fun convertUrl(url: String): String {
+    return url
   }
 }
