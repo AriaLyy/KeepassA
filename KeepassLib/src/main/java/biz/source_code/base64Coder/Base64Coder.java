@@ -1,16 +1,11 @@
-// Copyright 2003-2010 Christian d'Heureuse, Inventec Informatik AG, Zurich, Switzerland
-// www.source-code.biz, www.inventec.ch/chdh
-//
-// This module is multi-licensed and may be used under the terms
-// of any of the following licenses:
-//
-//  EPL, Eclipse Public License, http://www.eclipse.org/legal
-//  LGPL, GNU Lesser General Public License, http://www.gnu.org/licenses/lgpl.html
-//  AL, Apache License, http://www.apache.org/licenses
-//  BSD, BSD License, http://www.opensource.org/licenses/bsd-license.php
-//
-// Please contact the author if you need another license.
-// This module is provided "as is", without warranties of any kind.
+/*
+ * Copyright (C) 2020 AriaLyy(https://github.com/AriaLyy/KeepassA)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, you can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
 
 package biz.source_code.base64Coder;
 
