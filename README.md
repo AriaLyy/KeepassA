@@ -5,6 +5,7 @@
 <img src="https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-18-112704.png" height=800, width=400>
 <img src="https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-16-140111.png" height=800, width=400>
 <img src="https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-18-105755.png" height=800, width=400>
+<img src="https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-18-112904.png" height=800, width=400>
 
 
 ## Features
@@ -21,7 +22,7 @@ And added many commonly used functions on the original basis:
 
 ## Contributions
 * Add features by making a **[pull request](https://help.github.com/articles/about-pull-requests/)**.
-* Help to translate KeePassA to your language by sending a [pull request](https://help.github.com/articles/about-pull-requests/)).
+* Help to translate KeePassA to your language by sending a [pull request](https://help.github.com/articles/about-pull-requests/).
 
 ## Donate
 for a better service and a quick development of your features.</br>
