@@ -66,12 +66,12 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     // 进入系统多任务，界面变空白，设置无法截图
-    if (!BuildConfig.DEBUG){
+//    if (!BuildConfig.DEBUG){
       window.setFlags(
           WindowManager.LayoutParams.FLAG_SECURE,
           WindowManager.LayoutParams.FLAG_SECURE
       )
-    }
+//    }
     if (useAnim) {
       setWindowAnim()
     }
