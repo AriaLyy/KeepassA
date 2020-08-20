@@ -29,7 +29,6 @@ import com.lyy.keepassa.service.multidatasetservice.StructureParser
 import com.lyy.keepassa.service.multidatasetservice.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
-import com.lyy.keepassa.util.PermissionsUtil
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
 
