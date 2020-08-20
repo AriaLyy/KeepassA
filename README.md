@@ -1,11 +1,11 @@
 # KeepassA
-![KeepassA](https://github.com/AriaLyy/KeepassA/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)</br>
-<img src="https://github.com/AriaLyy/KeepassA/blob/master/img/x.png" height=800, width=400>
-<img src="https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-16-123728.png" height=800, width=400>
-<img src="https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-18-112704.png" height=800, width=400>
-<img src="https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-16-140111.png" height=800, width=400>
-<img src="https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-18-105755.png" height=800, width=400>
-<img src="https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-18-112904.png" height=800, width=400>
+![KeepassA](https://github.com/AriaLyy/KeepassA/blob/master/app/src/main/res/mipmap-xxhdpi/ic_launcher.png)</br>
+<img src="https://github.com/AriaLyy/KeepassA/blob/master/img/x.png" height=600, width=300>
+<img src="https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-16-123728.png" height=600, width=300>
+<img src="https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-18-112704.png" height=600, width=300>
+<img src="https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-16-140111.png" height=600, width=300>
+<img src="https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-18-105755.png" height=600, width=300>
+<img src="https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-18-112904.png" height=600, width=300>
 
 
 ## Features
@@ -43,10 +43,10 @@ Other questions? You can read the [issues](https://github.com/AriaLyy/KeepassA/i
 * [KeeWeb](https://keeweb.info/)is a web version that is also compatible with KeePass files.
 
 ## License
-/*
- * Copyright (C) 2020 AriaLyy(https://github.com/AriaLyy/KeepassA)
- *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, you can obtain one at http://mozilla.org/MPL/2.0/.
- */
+```
+ Copyright (C) 2020 AriaLyy(https://github.com/AriaLyy/KeepassA)
+ 
+ This Source Code Form is subject to the terms of the Mozilla Public
+ License, v. 2.0. If a copy of the MPL was not distributed with this
+ file, you can obtain one at http://mozilla.org/MPL/2.0/.
+```
