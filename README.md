@@ -1,11 +1,10 @@
 # KeepassA
-![KeepassA](https://github.com/AriaLyy/KeepassA/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)
-
-![main](https://github.com/AriaLyy/KeepassA/blob/master/img/x.png)
-![db_change](https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-16-123728.png)
-![fingerprint](https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-18-112704.png)
-![search](https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-16-140111.png)
-![autofill](https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-18-105755.png)
+![KeepassA](https://github.com/AriaLyy/KeepassA/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)</br>
+<img src="https://github.com/AriaLyy/KeepassA/blob/master/img/x.png" height=800, width=400>
+<img src="https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-16-123728.png" height=800, width=400>
+<img src="https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-18-112704.png" height=800, width=400>
+<img src="https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-16-140111.png" height=800, width=400>
+<img src="https://github.com/AriaLyy/KeepassA/blob/master/img/device-2020-08-18-105755.png" height=800, width=400>
 
 
 ## Features
@@ -25,7 +24,7 @@ And added many commonly used functions on the original basis:
 * Help to translate KeePassA to your language by sending a [pull request](https://help.github.com/articles/about-pull-requests/)).
 
 ## Donate
-for a better service and a quick development of your features.
+for a better service and a quick development of your features.</br>
 <img src="https://raw.githubusercontent.com/AriaLyy/Aria/master/img/ali_pay.png" width=336 height=336/>
 <img src="https://raw.githubusercontent.com/AriaLyy/Aria/master/img/wx_pay.png" width=336 height=336/>
 
