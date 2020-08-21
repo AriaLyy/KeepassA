@@ -2,13 +2,13 @@
 module.exports = {
 
   types: [
-   {value: 'feat :sparkles:',     name: '特性:    一个新的特性'},
-   {value: 'fix :bug:',     name: '修复:    修复一个Bug'},
-   {value: 'doc :books:',     name: '文档:    变更的只有文档'},
-   {value: 'performance :racehorse:',     name: '性能:    提升性能'},
-   {value: 'test :rotating_light:',     name: '测试:    添加一个测试'},
-   {value: 'rollback :hammer:',     name: '回滚:    代码回退'},
-   {value: 'release :tada:',     name: '回滚:    代码回退'}
+   {value: ':sparkles:',     name: '特性:    一个新的特性'},
+   {value: ':bug:',     name: '修复:    修复一个Bug'},
+   {value: ':books:',     name: '文档:    变更的只有文档'},
+   {value: ':racehorse:',     name: '性能:    提升性能'},
+   {value: ':rotating_light:',     name: '测试:    添加一个测试'},
+   {value: ':hammer:',     name: '回滚:    代码回退'},
+   {value: ':tada:',     name: '回滚:    代码回退'}
   ],
 
   scopes: [
