@@ -109,7 +109,6 @@ android {
       }
       fdroid{
         dimension "app"
-        versionNameSuffix "-fdroid"
       }
     }
   //
