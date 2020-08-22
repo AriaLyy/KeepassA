@@ -23,6 +23,7 @@ import com.lyy.keepassa.BuildConfig;
 import com.lyy.keepassa.baseapi.INotFreeLibService;
 import com.lyy.keepassa.dao.AppDatabase;
 import com.lyy.keepassa.entity.DbRecord;
+import com.lyy.keepassa.nofreelib.BuglyConfig;
 import com.lyy.keepassa.util.AutoLockDbUtil;
 import com.lyy.keepassa.util.KeepassAUtil;
 import com.lyy.keepassa.util.LanguageUtil;
@@ -79,7 +80,7 @@ public class BaseApp extends MultiDexApplication {
     if (BuildConfig.DEBUG) {
       System.setProperty("kotlinx.coroutines.debug", "on");
     } else {
-      if (BuildConfig.BUILD_TYPE != "fdroid"){
+      if (BuildConfig.FLAVOR != "fdroid"){
         initNotFreeLib();
       }
     }

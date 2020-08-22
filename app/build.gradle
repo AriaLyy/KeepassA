@@ -237,8 +237,7 @@ dependencies {
   //  debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.1' // 2.1 之后不需要再代码中初始化
 
   // bugly
-  debugImplementation project(path: ':NoFreeLib')
-  releaseImplementation project(path: ':NoFreeLib')
+  devImplementation project(path: ':NoFreeLib')
 
   // dropbox
   implementation 'com.dropbox.core:dropbox-core-sdk:3.1.3'
