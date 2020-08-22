@@ -1,7 +1,9 @@
 #ifndef HEADER_MODES_H
 # define HEADER_MODES_H
 
-# include  "/Users/aria/dev/android/sdk/ndk/21/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/9.0.8/include/stddef.h"
+//# include  "/Users/aria/dev/android/sdk/ndk/21/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/9.0.8/include/stddef.h"
+
+#include <stddef.h>
 
 typedef void (*block128_f)(const unsigned char in[16],
                            unsigned char out[16], const void *key);
