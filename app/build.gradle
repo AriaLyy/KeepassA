@@ -76,17 +76,6 @@ android {
       consumerProguardFiles 'proguard-rules.pro' // wcdb 需要增加这个混淆
       signingConfig signingConfigs.release
     }
-
-    fdroid {
-      //zipAlignEnabled true //开启Zipalign优化
-      debuggable false
-      minifyEnabled true
-      shrinkResources true // 移除无用资源
-      //      multiDexKeepFile file('multidex-config.txt')
-      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-      consumerProguardFiles 'proguard-rules.pro' // wcdb 需要增加这个混淆
-      signingConfig signingConfigs.release
-    }
   }
 
   dataBinding {
@@ -112,18 +101,18 @@ android {
     abortOnError false
   }
 
-  //  flavorDimensions "app"
-  // 渠道配置 https://developer.android.google.cn/studio/build/build-variants.html?hl=zh-cn
-  //  productFlavors {
-  //    dev {
-  //      dimension "app"
-  //      versionNameSuffix "-dev"
-  //    }
-  //    release {
-  //      dimension "app"
-  //      versionNameSuffix "-release"
-  //    }
-  //  }
+    flavorDimensions "app"
+//   渠道配置 https://developer.android.google.cn/studio/build/build-variants.html?hl=zh-cn
+    productFlavors {
+      dev {
+        dimension "app"
+        versionNameSuffix "-dev"
+      }
+      fdroid{
+        dimension "app"
+        versionNameSuffix "-fdroid"
+      }
+    }
   //
   //  // 批量渠道包值替换
   //  productFlavors.all { flavor ->
