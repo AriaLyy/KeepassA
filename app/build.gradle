@@ -76,6 +76,17 @@ android {
       consumerProguardFiles 'proguard-rules.pro' // wcdb 需要增加这个混淆
       signingConfig signingConfigs.release
     }
+
+    fdroid {
+      //zipAlignEnabled true //开启Zipalign优化
+      debuggable false
+      minifyEnabled true
+      shrinkResources true // 移除无用资源
+      //      multiDexKeepFile file('multidex-config.txt')
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+      consumerProguardFiles 'proguard-rules.pro' // wcdb 需要增加这个混淆
+      signingConfig signingConfigs.release
+    }
   }
 
   dataBinding {
@@ -192,6 +203,7 @@ dependencies {
   implementation project(path: ':Frame')
   implementation project(path: ':KeepassLib')
   implementation project(path: ':UIWidget')
+  implementation project(path: ":BaseApi")
 
   // viewpager2
   implementation "androidx.viewpager2:viewpager2:1.0.0"
@@ -236,8 +248,8 @@ dependencies {
   //  debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.1' // 2.1 之后不需要再代码中初始化
 
   // bugly
-  implementation 'com.tencent.bugly:crashreport:latest.release'
-  implementation 'com.tencent.bugly:nativecrashreport:latest.release'
+  debugImplementation project(path: ':NoFreeLib')
+  releaseImplementation project(path: ':NoFreeLib')
 
   // dropbox
   implementation 'com.dropbox.core:dropbox-core-sdk:3.1.3'

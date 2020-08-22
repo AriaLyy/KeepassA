@@ -35,7 +35,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionInflater
 import com.arialyy.frame.util.KeyStoreUtil
-import com.google.android.material.snackbar.Snackbar
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
@@ -51,7 +50,6 @@ import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.getArgument
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.main.MainActivity
-import com.tencent.bugly.crashreport.BuglyLog
 import java.io.IOException
 
 /**
@@ -89,7 +87,6 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
 
 
     setDbName(openDbRecord)
-    //    binding.password.setText("Xiaotaiyan123")
     handleKeyUri(openDbRecord.getDbKeyUri())
 
     binding.cbKey.setOnCheckedChangeListener { _, isChecked ->
@@ -202,7 +199,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
                     )
                     openDb(pass)
                   } catch (e: Exception) {
-                    BuglyLog.e(TAG, "指纹解锁失败", e)
+                    e.printStackTrace()
                     keyStoreUtil.deleteKeyStore()
                     HitUtil.snackLong(mRootView, getString(R.string.hint_fingerprint_modify))
                     binding.fingerprint.visibility = View.GONE

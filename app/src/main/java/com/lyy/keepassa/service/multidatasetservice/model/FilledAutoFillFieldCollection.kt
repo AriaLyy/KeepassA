@@ -17,7 +17,7 @@ import android.view.View
 import android.view.autofill.AutofillId
 import android.view.autofill.AutofillValue
 import com.google.gson.annotations.Expose
-import com.tencent.bugly.crashreport.BuglyLog
+import com.lyy.keepassa.util.KLog
 import java.util.HashMap
 
 /**
@@ -57,7 +57,7 @@ class FilledAutoFillFieldCollection @JvmOverloads constructor(
       for (autofillField in autofillFields) {
         val autofillId = autofillField.autoFillId
         if (autofillId == null){
-          BuglyLog.e(TAG, "autofillId == null")
+          KLog.e(TAG, "autofillId == null")
           break
         }
 

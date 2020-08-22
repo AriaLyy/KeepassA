@@ -31,7 +31,6 @@ import com.lyy.keepassa.service.multidatasetservice.model.AutoFillFieldMetadataC
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.view.launcher.LauncherActivity
-import com.tencent.bugly.crashreport.BuglyLog
 
 /**
  * This is a class containing helper methods for building Autofill Datasets and Responses.
@@ -272,7 +271,6 @@ object AutoFillHelper {
       loop@ for (fillField in fillFields) {
         val fillId = fillField.autoFillId
         if (fillId == null) {
-          BuglyLog.e(TAG, "autofill == null")
           break
         }
         val fillType = fillField.autoFillType
@@ -339,7 +337,6 @@ object AutoFillHelper {
       loop@ for (fillField in fillFields) {
         val fillId = fillField.autoFillId
         if (fillId == null) {
-          BuglyLog.e(TAG, "autofill == null")
           break
         }
         val fillType = fillField.autoFillType

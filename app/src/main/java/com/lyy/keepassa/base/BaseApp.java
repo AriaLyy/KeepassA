@@ -20,6 +20,7 @@ import com.arialyy.frame.util.KeyStoreUtil;
 import com.keepassdroid.Database;
 import com.leon.channel.helper.ChannelReaderUtil;
 import com.lyy.keepassa.BuildConfig;
+import com.lyy.keepassa.baseapi.INotFreeLibService;
 import com.lyy.keepassa.dao.AppDatabase;
 import com.lyy.keepassa.entity.DbRecord;
 import com.lyy.keepassa.util.AutoLockDbUtil;
@@ -27,11 +28,12 @@ import com.lyy.keepassa.util.KeepassAUtil;
 import com.lyy.keepassa.util.LanguageUtil;
 import com.lyy.keepassa.util.QuickUnLockUtil;
 import com.lyy.keepassa.view.DbPathType;
-import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.wcdb.database.SQLiteCipherSpec;
 import com.tencent.wcdb.room.db.WCDBOpenHelperFactory;
 import com.zzhoujay.richtext.RichText;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.ServiceLoader;
 
 public class BaseApp extends MultiDexApplication {
 
@@ -77,7 +79,9 @@ public class BaseApp extends MultiDexApplication {
     if (BuildConfig.DEBUG) {
       System.setProperty("kotlinx.coroutines.debug", "on");
     } else {
-      initBugly();
+      if (BuildConfig.BUILD_TYPE != "fdroid"){
+        initNotFreeLib();
+      }
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       KeyStoreUtil.Companion.setKeyStorePass(QuickUnLockUtil.getDbPass().toCharArray());
@@ -94,15 +98,14 @@ public class BaseApp extends MultiDexApplication {
   }
 
   /**
-   * 仅仅正式环境中上传日志
+   * 使用spi机制初始化自由软件
    */
-  private void initBugly() {
-    // 用户控制
-    CrashReport.setIsDevelopmentDevice(this, BuildConfig.DEBUG); // 测试不打开
-    CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(this);
-    strategy.setAppChannel(getChannel());
-    CrashReport.initCrashReport(getApplicationContext(), "59fc0ec759", BuildConfig.DEBUG,
-        strategy);
+  private void initNotFreeLib() {
+    ServiceLoader<INotFreeLibService> loader = ServiceLoader.load(INotFreeLibService.class);
+    Iterator<INotFreeLibService> iterator = loader.iterator();
+    while (iterator.hasNext()) {
+      iterator.next().initLib(this, BuildConfig.DEBUG, getChannel(), null);
+    }
   }
 
   /**

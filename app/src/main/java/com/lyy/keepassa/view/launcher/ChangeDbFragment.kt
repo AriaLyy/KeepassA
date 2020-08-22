@@ -34,6 +34,7 @@ import com.lyy.keepassa.databinding.FragmentChangeDbBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.util.HitUtil
+import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KeepassAUtil.takePermission
 import com.lyy.keepassa.util.cloud.DropboxUtil
@@ -48,7 +49,6 @@ import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.dialog.MsgDialog.OnBtClickListener
 import com.lyy.keepassa.view.dialog.WebDavLoginDialog
 import com.lyy.keepassa.view.launcher.ChangeDbFragment.Adataer.Holder
-import com.tencent.bugly.crashreport.BuglyLog
 import org.greenrobot.eventbus.EventBus
 import java.util.ArrayList
 
@@ -140,7 +140,7 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
    */
   private fun changeWebDav() {
     if (!isAdded){
-      BuglyLog.e(TAG, "webDav fragment 还没加载到activity中")
+      KLog.e(TAG, "webDav fragment 还没加载到activity中")
       return
     }
     val dialog = WebDavLoginDialog()
@@ -152,7 +152,7 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
    */
   private fun changeDropbox() {
     if (!isAdded){
-      BuglyLog.e(TAG, "dropbox fragment 还没加载到activity中")
+      KLog.e(TAG, "dropbox fragment 还没加载到activity中")
       return
     }
     if (DropboxUtil.isAuth()) {

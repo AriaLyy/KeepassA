@@ -37,7 +37,6 @@ import com.lyy.keepassa.view.UpgradeLogDialog
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.widget.BubbleTextView
 import com.lyy.keepassa.widget.BubbleTextView.OnIconClickListener
-import com.tencent.bugly.crashreport.BuglyLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -63,7 +62,7 @@ class MainModule : BaseModule() {
       vector?.setTint(context.resources.getColor(R.color.red))
       msg = context.getString(R.string.hint_security_red)
     } else if (EasyProtectorLib.checkIsRunningInEmulator(context) {
-          BuglyLog.d(TAG, it)
+//          BuglyLog.d(TAG, it)
         }) {
       vector?.setTint(context.resources.getColor(R.color.yellow))
       msg = context.getString(R.string.hint_security_yellow)

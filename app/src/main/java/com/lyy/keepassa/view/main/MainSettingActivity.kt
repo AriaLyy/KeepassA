@@ -122,29 +122,29 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
         KeepassAUtil.turnLauncher(this)
       }
       R.id.app_feedback -> {
-        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-          data = Uri.parse("mailto:") // 确保只有邮件应用能接收
-          putExtra(Intent.EXTRA_EMAIL, arrayOf("dornkpa@gmail.com"))
-          putExtra(Intent.EXTRA_SUBJECT, "Hello, KeepassA")
-          putExtra(
-              Intent.EXTRA_TEXT,
-              getString(
-                  R.string.feedback_email_msg, AndroidUtils.getDeviceBrand(),
-                  AndroidUtils.getDeviceModel(), AndroidUtils.getSystemVersion(),
-                  AndroidUtils.getMetrics(this@MainSettingActivity),
-                  AndroidUtils.getVersionName(this@MainSettingActivity)
-              )
-          )
-          addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
-        if (emailIntent.resolveActivity(packageManager) != null) {
-          startActivity(emailIntent)
-        } else {
-          HitUtil.toaskShort(getString(R.string.send_email_fail))
-        }
-//        startActivity(Intent(Intent.ACTION_VIEW).apply {
-//          data = Uri.parse("https://github.com/AriaLyy/KeepassA/issues")
-//        })
+//        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+//          data = Uri.parse("mailto:") // 确保只有邮件应用能接收
+//          putExtra(Intent.EXTRA_EMAIL, arrayOf("dornkpa@gmail.com"))
+//          putExtra(Intent.EXTRA_SUBJECT, "Hello, KeepassA")
+//          putExtra(
+//              Intent.EXTRA_TEXT,
+//              getString(
+//                  R.string.feedback_email_msg, AndroidUtils.getDeviceBrand(),
+//                  AndroidUtils.getDeviceModel(), AndroidUtils.getSystemVersion(),
+//                  AndroidUtils.getMetrics(this@MainSettingActivity),
+//                  AndroidUtils.getVersionName(this@MainSettingActivity)
+//              )
+//          )
+//          addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//        }
+//        if (emailIntent.resolveActivity(packageManager) != null) {
+//          startActivity(emailIntent)
+//        } else {
+//          HitUtil.toaskShort(getString(R.string.send_email_fail))
+//        }
+        startActivity(Intent(Intent.ACTION_VIEW).apply {
+          data = Uri.parse("https://github.com/AriaLyy/KeepassA/issues")
+        })
       }
       R.id.app_favorite -> {
         if (AndroidUtils.hasAnyMarket(this)) {

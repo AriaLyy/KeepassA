@@ -24,8 +24,8 @@ And added many commonly used functions on the original basis:
 
 ## Donate
 for a better service and a quick development of your features.</br>
-<img src="https://raw.githubusercontent.com/AriaLyy/Aria/master/img/ali_pay.png" width=200 height=200/>
-<img src="https://raw.githubusercontent.com/AriaLyy/Aria/master/img/wx_pay.png" width=200 height=200/>
+<img src="https://raw.githubusercontent.com/AriaLyy/Aria/master/img/ali_pay.png" width=150 height=150/>
+<img src="https://raw.githubusercontent.com/AriaLyy/Aria/master/img/wx_pay.png" width=150 height=150/>
 
 
 ## Download

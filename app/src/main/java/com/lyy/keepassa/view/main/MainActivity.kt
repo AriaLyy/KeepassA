@@ -41,7 +41,6 @@ import com.lyy.keepassa.view.create.CreateGroupDialog
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.search.SearchDialog
 import com.lyy.keepassa.widget.MainExpandFloatActionButton
-import com.tencent.bugly.crashreport.BuglyLog
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 
@@ -99,7 +98,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         showSearchDialog()
       }
       if (BaseApp.isLocked) {
-        BuglyLog.w(TAG, "数据库已锁定，进入解锁界面")
         KeepassAUtil.reOpenDb(this)
         return
       }
