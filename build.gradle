@@ -17,7 +17,7 @@ buildscript {
     // 腾讯多渠道打包工具：VasDolly
     classpath 'com.leon.channel:plugin:2.0.3'
     // 华为的
-    classpath 'com.huawei.agconnect:agcp:1.2.1.301'
+    //classpath 'com.huawei.agconnect:agcp:1.2.1.301'
     classpath 'com.novoda:bintray-release:0.9.1'
   }
 }
