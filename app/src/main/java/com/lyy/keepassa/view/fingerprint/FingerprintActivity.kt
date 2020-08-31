@@ -121,6 +121,10 @@ class FingerprintActivity : BaseActivity<ActivityFingerprintBinding>() {
    * 切换fragment改变背景
    */
   private fun changeBg(isChecked: Boolean) {
+    val view = findViewById<View>(R.id.vBg)
+    if (isDestroyed || isFinishing || !view.isAttachedToWindow){
+      return
+    }
     if (isChecked) {
       // 打开
       binding.closeHint.text = getString(R.string.open1)
@@ -140,7 +144,6 @@ class FingerprintActivity : BaseActivity<ActivityFingerprintBinding>() {
           .commitAllowingStateLoss()
     }
 
-    val view = findViewById<View>(R.id.vBg)
     val finalRadius = view.width.coerceAtLeast(view.height)
     val anim = ViewAnimationUtils.createCircularReveal(
         view, if (isChecked) view.right else 0, 0, 0f, finalRadius.toFloat()

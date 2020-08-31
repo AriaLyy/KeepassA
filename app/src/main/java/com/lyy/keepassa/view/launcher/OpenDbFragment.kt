@@ -42,6 +42,7 @@ import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentOpenDbBinding
 import com.lyy.keepassa.entity.DbRecord
 import com.lyy.keepassa.util.HitUtil
+import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KeepassAUtil.takePermission
 import com.lyy.keepassa.util.NotificationUtil
@@ -177,14 +178,16 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
                   errorCode: Int,
                   errString: CharSequence
                 ) {
+                  if (!isAdded) {
+                    KLog.e(TAG, "Fragment没有被加载")
+                    return
+                  }
                   val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
                     "${getString(R.string.verify_finger)}${getString(R.string.cancel)}"
                   } else {
                     getString(R.string.verify_finger_fail)
                   }
-                  if (isAdded){
-                    HitUtil.snackShort(mRootView, str)
-                  }
+                  HitUtil.snackShort(mRootView, str)
                 }
 
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
@@ -200,27 +203,35 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
                     openDb(pass)
                   } catch (e: Exception) {
                     e.printStackTrace()
-                    keyStoreUtil.deleteKeyStore()
-                    HitUtil.snackLong(mRootView, getString(R.string.hint_fingerprint_modify))
-                    binding.fingerprint.visibility = View.GONE
-                    modlue.deleteFingerprint(requireContext(), openDbRecord.localDbUri)
-                    e.printStackTrace()
+                    deleteBiomKey()
                   }
                 }
 
                 override fun onAuthenticationFailed() {
                   super.onAuthenticationFailed()
-                  if (isAdded){
+                  if (isAdded) {
                     HitUtil.snackShort(mRootView, getString(R.string.verify_finger_fail))
                   }
                 }
               })
-          // Displays the "log in" prompt.
-          biometricPrompt.authenticate(
-              promptInfo, CryptoObject(keyStoreUtil.getDecryptCipher(quickUnlockRecord.passIv))
-          )
+          try {
+            // Displays the "log in" prompt.
+            biometricPrompt.authenticate(
+                promptInfo, CryptoObject(keyStoreUtil.getDecryptCipher(quickUnlockRecord.passIv))
+            )
+          } catch (e: Exception) {
+            e.printStackTrace()
+            deleteBiomKey()
+          }
         })
+  }
 
+  @TargetApi(Build.VERSION_CODES.M)
+  private fun deleteBiomKey() {
+    keyStoreUtil.deleteKeyStore()
+    HitUtil.snackLong(mRootView, getString(R.string.hint_fingerprint_modify))
+    binding.fingerprint.visibility = View.GONE
+    modlue.deleteFingerprint(requireContext(), openDbRecord.localDbUri)
   }
 
   /**

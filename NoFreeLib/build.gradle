@@ -32,6 +32,6 @@ dependencies {
   implementation rootProject.ext.kotlinJdk
   implementation rootProject.ext.androidXKtx
   implementation project(path: ":BaseApi")
-  implementation 'com.tencent.bugly:crashreport:latest.release'
-  implementation 'com.tencent.bugly:nativecrashreport:latest.release'
+  api 'com.tencent.bugly:crashreport:latest.release'
+  api 'com.tencent.bugly:nativecrashreport:latest.release'
 }

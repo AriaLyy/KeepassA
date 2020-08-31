@@ -24,6 +24,7 @@ import com.keepassdroid.utils.Types
 import com.keepassdroid.utils.UriUtil
 import com.lahm.library.EasyProtectorLib
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.base.Constance
@@ -134,15 +135,18 @@ class MainModule : BaseModule() {
    * 显示版本日志对话框，显示逻辑：
    * 配置文件的版本号不存在，或当前版本号大于配置文件的版本号
    */
-  fun showVersionLog(context: Context) {
+  fun showVersionLog(activity: BaseActivity<*>) {
     viewModelScope.launch {
       withContext(Dispatchers.IO) {
         delay(2000)
       }
+      if (activity.isDestroyed || activity.isFinishing) {
+        return@launch
+      }
       val sharedPreferences =
-        context.getSharedPreferences(Constance.PRE_FILE_NAME, Context.MODE_PRIVATE)
+        activity.getSharedPreferences(Constance.PRE_FILE_NAME, Context.MODE_PRIVATE)
       val versionCode = sharedPreferences.getInt(Constance.VERSION_CODE, -1)
-      if (versionCode < 0 || versionCode < AndroidUtils.getVersionCode(context)) {
+      if (versionCode < 0 || versionCode < AndroidUtils.getVersionCode(activity)) {
         UpgradeLogDialog().show()
       }
     }
@@ -183,7 +187,7 @@ class MainModule : BaseModule() {
     val list = withContext(Dispatchers.IO) {
       val dao = BaseApp.appDatabase.entryRecordDao()
       val records = dao.getRecord(BaseApp.dbRecord.localDbUri)
-      if (records.isEmpty()) {
+      if (records.isNullOrEmpty()) {
         null
       } else {
         val temp = ArrayList<SimpleItemEntity>()

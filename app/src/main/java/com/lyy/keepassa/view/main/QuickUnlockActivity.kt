@@ -164,12 +164,14 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
             HitUtil.snackShort(mRootView, getString(R.string.verify_finger_fail))
           }
         })
-    // Displays the "log in" prompt.
-    biometricPrompt.authenticate(
-        promptInfo,
-        CryptoObject(keyStoreUtil.getDecryptCipher(fingerRecord!!.passIv))
-    )
-
+    try {
+      biometricPrompt.authenticate(
+          promptInfo,
+          CryptoObject(keyStoreUtil.getDecryptCipher(fingerRecord!!.passIv))
+      )
+    } catch (e: Exception) {
+      e.printStackTrace()
+    }
   }
 
   private fun startBgAnim() {
@@ -276,7 +278,14 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
           val id = data.getSerializableExtra(AutoFillEntrySearchActivity.EXTRA_ENTRY_ID)
           setResult(
               Activity.RESULT_OK,
-              BaseApp.KDB.pm.entries[id]?.let { KeepassAUtil.getFillResponse(this, intent, it, apkPkgName) }
+              BaseApp.KDB.pm.entries[id]?.let {
+                KeepassAUtil.getFillResponse(
+                    this,
+                    intent,
+                    it,
+                    apkPkgName
+                )
+              }
           )
         }
 

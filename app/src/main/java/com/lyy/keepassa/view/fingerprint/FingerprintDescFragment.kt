@@ -28,6 +28,7 @@ import com.lyy.keepassa.databinding.FragmentFingerprintDesxBinding
 import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.VibratorUtil
+import java.lang.Exception
 
 /**
  * 指纹解锁描述
@@ -113,6 +114,9 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
             errString: CharSequence
           ) {
             goBackCheckStat()
+            if (!isAdded){
+              return
+            }
             val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
               "${getString(R.string.verify_finger)}${getString(R.string.cancel)}"
             } else {
@@ -161,11 +165,17 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
             HitUtil.snackShort(mRootView, getString(R.string.verify_finger_fail))
           }
         })
-    // Displays the "log in" prompt.
-    biometricPrompt.authenticate(
-        promptInfo,
-        CryptoObject(keyStoreUtil.getEncryptCipher())
-    )
+    try {
+      // Displays the "log in" prompt.
+      biometricPrompt.authenticate(
+          promptInfo,
+          CryptoObject(keyStoreUtil.getEncryptCipher())
+      )
+    }catch (e: Exception){
+      keyStoreUtil.deleteKeyStore()
+      e.printStackTrace()
+    }
+
   }
 
 }
