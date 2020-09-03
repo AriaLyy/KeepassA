@@ -186,3 +186,6 @@
     void notifyChange(java.lang.String, java.lang.String, long[], long[], long[]);
 }
 ################# wcdb-end ##################
+-keep class com.com.lyy.keepassa.baseapi.*{ *; }
+-dontwarn com.com.lyy.keepassa.baseapi.**
+-keep class * implements com.com.lyy.keepassa.baseapi.INotFreeLibService{ *; }

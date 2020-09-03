@@ -1,3 +1,6 @@
+#### 1.2 (2020/9/2)
+- 修復一些討厭的崩潰問題
+
 #### 1.1 (2020/8/21)
 - KeepassA開源了，已經託管在[github](https://github.com/AriaLyy/KeepassA)上
 - 修復了一些討厭的bug

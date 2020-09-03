@@ -21,8 +21,8 @@ android {
     applicationId "com.lyy.keepassa"
     minSdkVersion rootProject.ext.minSdkVersion
     targetSdkVersion rootProject.ext.targetSdkVersion
-    versionCode 19
-    versionName "1.1"
+    versionCode 20
+    versionName "1.2"
     multiDexEnabled true
     vectorDrawables.useSupportLibrary = true
 
@@ -107,9 +107,9 @@ android {
       dev {
         dimension "app"
       }
-      fdroid{
-        dimension "app"
-      }
+//      fdroid{
+//        dimension "app"
+//      }
     }
   //
   //  // 批量渠道包值替换

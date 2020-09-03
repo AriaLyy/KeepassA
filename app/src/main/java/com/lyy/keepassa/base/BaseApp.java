@@ -24,11 +24,12 @@ import com.lyy.keepassa.baseapi.INotFreeLibService;
 import com.lyy.keepassa.dao.AppDatabase;
 import com.lyy.keepassa.entity.DbRecord;
 import com.lyy.keepassa.util.AutoLockDbUtil;
+import com.lyy.keepassa.util.HitUtil;
 import com.lyy.keepassa.util.KeepassAUtil;
 import com.lyy.keepassa.util.LanguageUtil;
 import com.lyy.keepassa.util.QuickUnLockUtil;
-import com.lyy.keepassa.util.cloud.WebDavUtil;
 import com.lyy.keepassa.view.DbPathType;
+import com.tencent.bugly.crashreport.BuglyLog;
 import com.tencent.wcdb.database.SQLiteCipherSpec;
 import com.tencent.wcdb.room.db.WCDBOpenHelperFactory;
 import com.zzhoujay.richtext.RichText;
@@ -80,7 +81,7 @@ public class BaseApp extends MultiDexApplication {
     if (BuildConfig.DEBUG) {
       System.setProperty("kotlinx.coroutines.debug", "on");
     } else {
-      if (BuildConfig.FLAVOR.equals("fdroid")){
+      if (!BuildConfig.FLAVOR.equals("fdroid")){
         initNotFreeLib();
       }
     }
@@ -99,7 +100,7 @@ public class BaseApp extends MultiDexApplication {
   }
 
   /**
-   * 使用spi机制初始化自由软件
+   * 使用spi机制初始化非自由软件
    */
   private void initNotFreeLib() {
     ServiceLoader<INotFreeLibService> loader = ServiceLoader.load(INotFreeLibService.class);

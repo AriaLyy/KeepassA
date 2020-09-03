@@ -1,3 +1,6 @@
+#### 1.2 (2020/9/2)
+- Fix some nasty crashes
+
 #### 1.1 (2020/8/21)
 - KeepassA is open source and has been hosted on [github](https://github.com/AriaLyy/KeepassA)
 - Fixed some annoying bugs
