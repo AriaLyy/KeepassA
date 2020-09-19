@@ -253,6 +253,13 @@
   <string name="hint_security_yellow">警告，运用运行于模拟器中，该环境会给数据库带来一些不可预测的风险</string>
   <string name="donate">捐赠</string>
   <string name="donate_desc">[KeepassA](https://github.com/AriaLyy/KeepassA)是一款开源软件，如果您喜欢我们的软件，请考虑给我们捐赠，以支持我们的工作，非常感谢您。</string>
-
+  <string name="dev_birthday">今天是开发者生日🎂，请我喝一瓶快乐水🎉🎉？</string>
+  <string name="totp_defaule">默认 RFC 6238令牌设置</string>
+  <string name="totp_steam">Steam令牌设置</string>
+  <string name="totp_custom">使用自定义设置</string>
+  <string name="totp_custom_hint">自定义设置</string>
+  <string name="totp_Arithmetic">算法：</string>
+  <string name="totp_time">时间(s)：</string>
+  <string name="totp_len">长度：</string>
 </resources>
 

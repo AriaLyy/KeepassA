@@ -11,6 +11,7 @@ package com.lyy.keepassa.view.main
 
 import android.content.Context
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
@@ -30,11 +31,13 @@ import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.entity.DbRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
+import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.view.UpgradeLogDialog
+import com.lyy.keepassa.view.dialog.DonateDialog
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.widget.BubbleTextView
 import com.lyy.keepassa.widget.BubbleTextView.OnIconClickListener
@@ -42,6 +45,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.joda.time.DateTime
 
 class MainModule : BaseModule() {
 
@@ -259,6 +263,36 @@ class MainModule : BaseModule() {
     }
 
     emit(data)
+  }
+
+  fun checkDevBirthdayData(context: Context) {
+//    val dt = DateTime(2020, 10, 2, 0, 0)
+    val dt = DateTime(System.currentTimeMillis())
+    if (dt.monthOfYear == 10 && dt.dayOfMonth == 2) {
+      showDevBirthdayDialog(context)
+    }
+  }
+
+  private fun showDevBirthdayDialog(context: Context) {
+    val dialog = MsgDialog.generate {
+      msgTitle = context.getString(R.string.donate)
+      msgContent = context.getString(R.string.dev_birthday)
+      setCancelBtText("NO")
+      setEnterBtText("YES")
+      build()
+    }
+    dialog.setOnBtClickListener(object : MsgDialog.OnBtClickListener {
+      override fun onBtClick(
+        type: Int,
+        view: View
+      ) {
+        if (type == MsgDialog.TYPE_ENTER) {
+          DonateDialog().show()
+        }
+      }
+    })
+
+    dialog.show()
   }
 
 }

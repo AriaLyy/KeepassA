@@ -249,4 +249,12 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="hint_security_yellow">Warning, running in the simulator, this environment will bring some unpredictable risks to the database</string>
   <string name="donate">Donate</string>
   <string name="donate_desc">[KeepassA](https://github.com/AriaLyy/KeepassA) is an open source software. If you like our software, please consider donating to us to support our work, Thank you very much.</string>
+  <string name="dev_birthday">Today is the developer’s birthday🎂, would you like me to drink a bottle of Coke🎉🎉?</string>
+  <string name="totp_defaule">Default RFC 6238 token settings</string>
+  <string name="totp_steam">Steam token settings</string>
+  <string name="totp_custom">Use custom settings</string>
+  <string name="totp_custom_hint">Custom settings </string>
+  <string name="totp_Arithmetic">Arithmetic: </string>
+  <string name="totp_time">Time(s): </string>
+  <string name="totp_len">Length: </string>
 </resources>

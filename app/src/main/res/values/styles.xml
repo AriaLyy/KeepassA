@@ -1,7 +1,7 @@
 <resources>
 
   <!-- Base application theme. -->
-  <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+  <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.Light.Bridge">
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
     <item name="colorPrimary">@color/colorPrimary</item>
@@ -12,6 +12,8 @@
     <!--    <item name="android:windowTranslucentStatus">false</item>-->
     <!--    <item name="android:windowTranslucentNavigation">false</item>-->
     <item name="android:statusBarColor">@color/colorPrimary</item>
+
+    <!-- New MaterialComponents attributes. -->
   </style>
 
   <!-- 设置Toolbar标题字体的颜色大小 -->
@@ -143,6 +145,10 @@
     <item name="android:textColor">@color/text_gray_color</item>
   </style>
 
+  <style name="RadioButtonStyle">
+    <item name="android:textSize">@dimen/text_size_normal</item>
+    <item name="android:textColor">@color/text_black_color</item>
+  </style>
 
 </resources>
 

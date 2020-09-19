@@ -45,7 +45,7 @@
       <com.google.android.material.textfield.TextInputEditText
           android:id="@+id/uri"
           android:layout_width="match_parent"
-          android:layout_height="48dp"
+          android:layout_height="wrap_content"
           android:background="@color/transparent"
           android:hint="@string/hint_webdav_url"
           android:imeOptions="actionNext"
@@ -74,7 +74,7 @@
       <com.google.android.material.textfield.TextInputEditText
           android:id="@+id/user_name"
           android:layout_width="match_parent"
-          android:layout_height="48dp"
+          android:layout_height="wrap_content"
           android:background="@color/transparent"
           android:hint="@string/hint_input_user_name"
           android:imeOptions="actionNext"
@@ -104,7 +104,7 @@
       <com.google.android.material.textfield.TextInputEditText
           android:id="@+id/password"
           android:layout_width="match_parent"
-          android:layout_height="48dp"
+          android:layout_height="wrap_content"
           android:background="@color/transparent"
           android:hint="@string/password"
           android:imeOptions="actionNext"

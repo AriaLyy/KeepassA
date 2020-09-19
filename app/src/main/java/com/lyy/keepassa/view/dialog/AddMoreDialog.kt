@@ -47,21 +47,21 @@ class AddMoreDialog(val data: List<SimpleItemEntity>) : BaseBottomSheetDialogFra
 
   override fun init(savedInstanceState: Bundle?) {
     super.init(savedInstanceState)
-    adapter = Adapter(context!!, data)
+    adapter = Adapter(requireContext(), data)
     binding.list.adapter = adapter
     binding.list.setHasFixedSize(true)
     binding.list.layoutManager = LinearLayoutManager(context)
     RvItemClickSupport.addTo(binding.list)
-        .setOnItemClickListener { recyclerView, position, v ->
+        .setOnItemClickListener { _, position, v ->
           listener?.onItemClick(position, data[position], v)
         }
   }
 
-  public fun setOnItemClickListener(listener: OnItemClickListener) {
+  fun setOnItemClickListener(listener: OnItemClickListener) {
     this.listener = listener
   }
 
-  public fun notifyData() {
+  fun notifyData() {
     adapter.notifyDataSetChanged()
   }
 

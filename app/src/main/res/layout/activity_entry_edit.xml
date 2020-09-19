@@ -42,7 +42,7 @@
           <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/title"
               android:layout_width="match_parent"
-              android:layout_height="48dp"
+              android:layout_height="wrap_content"
               android:background="@color/transparent"
               android:hint="@string/hint_input_title"
               android:imeOptions="actionNext"
@@ -70,7 +70,7 @@
           <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/user"
               android:layout_width="match_parent"
-              android:layout_height="48dp"
+              android:layout_height="wrap_content"
               android:background="@color/transparent"
               android:hint="@string/hint_input_user_name"
               android:imeOptions="actionNext"
@@ -114,7 +114,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
                 android:background="@color/transparent"
                 android:hint="@string/password"
                 android:imeOptions="actionNext"
@@ -157,7 +157,7 @@
           <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/enter_password"
               android:layout_width="match_parent"
-              android:layout_height="48dp"
+              android:layout_height="wrap_content"
               android:background="@color/transparent"
               android:hint="@string/hint_enter_password"
               android:imeOptions="actionDone"
@@ -185,7 +185,7 @@
           <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/url"
               android:layout_width="match_parent"
-              android:layout_height="48dp"
+              android:layout_height="wrap_content"
               android:background="@color/transparent"
               android:hint="@string/hint_input_url"
               android:imeOptions="actionNext"
@@ -214,7 +214,7 @@
           <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/notice"
               android:layout_width="match_parent"
-              android:layout_height="48dp"
+              android:layout_height="wrap_content"
               android:background="@color/transparent"
               android:hint="@string/notice"
               android:imeOptions="actionNext"
@@ -321,7 +321,7 @@
           <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/tag"
               android:layout_width="match_parent"
-              android:layout_height="48dp"
+              android:layout_height="wrap_content"
               android:background="@color/transparent"
               android:hint="@string/hint_input_tag"
               android:imeOptions="actionNext"
@@ -349,7 +349,7 @@
           <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/cover_url"
               android:layout_width="match_parent"
-              android:layout_height="48dp"
+              android:layout_height="wrap_content"
               android:background="@color/transparent"
               android:hint="@string/hint_input_cover_url"
               android:imeOptions="actionNext"

@@ -32,7 +32,7 @@
       <com.google.android.material.textfield.TextInputEditText
           android:id="@+id/str_key"
           android:layout_width="match_parent"
-          android:layout_height="48dp"
+          android:layout_height="wrap_content"
           android:background="@color/transparent"
           android:hint="@string/hint_input_attr_str_key"
           android:imeOptions="actionNext"
@@ -59,7 +59,7 @@
       <com.google.android.material.textfield.TextInputEditText
           android:id="@+id/str_value"
           android:layout_width="match_parent"
-          android:layout_height="48dp"
+          android:layout_height="wrap_content"
           android:background="@color/transparent"
           android:hint="@string/hint_input_attr_str_value"
           android:imeOptions="actionNext"

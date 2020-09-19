@@ -132,6 +132,7 @@
     <item>Expiration date</item>
     <item>Custom field</item>
     <item>Attachment</item>
+    <item>TOTP</item>
   </string-array>
 
   <string-array name="choose_language_entries">
@@ -152,5 +153,11 @@
     <item>Finance</item>
     <item>Recreation</item>
     <item>Recycle bin</item>
+  </string-array>
+
+  <string-array name="totp_arithmetic" >
+    <item>SHA-1</item>
+    <item>SHA-256</item>
+    <item>SHA-512</item>
   </string-array>
 </resources>

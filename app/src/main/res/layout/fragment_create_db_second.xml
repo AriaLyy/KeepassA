@@ -47,7 +47,7 @@
             android:id="@+id/db_name"
             android:gravity="center_vertical"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:background="@color/transparent"
             android:enabled="false"
@@ -136,7 +136,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:background="@color/transparent"
             android:hint="@string/hint_input_password"
             android:imeOptions="actionNext"
@@ -166,7 +166,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/enter_password"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:background="@color/transparent"
             android:hint="@string/hint_enter_password"
             android:imeOptions="actionDone"

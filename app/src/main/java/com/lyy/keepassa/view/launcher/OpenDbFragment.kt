@@ -49,6 +49,7 @@ import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.getArgument
+import com.lyy.keepassa.view.dialog.CreateTotpDialog
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.main.MainActivity
 import java.io.IOException

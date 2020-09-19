@@ -23,6 +23,7 @@
     <item>@drawable/ic_lose_time</item>
     <item>@drawable/ic_attr_str</item>
     <item>@drawable/ic_attr_file</item>
+    <item>@drawable/ic_totp</item>
   </integer-array>
 
 </resources>

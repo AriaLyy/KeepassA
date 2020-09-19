@@ -74,6 +74,7 @@
     <item>失效時間</item>
     <item>自定義字段</item>
     <item>文件附件</item>
+    <item>TOTP</item>
   </string-array>
 
   <!--  创建数据库时的默认群组 -->

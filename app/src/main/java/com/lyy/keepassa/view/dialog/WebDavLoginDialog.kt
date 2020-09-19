@@ -62,6 +62,7 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
       if (KeepassAUtil.isFastClick()) {
         return@setOnClickListener
       }
+
       val pass = binding.password.text.toString()
           .trim()
       val uri = binding.uri.text.toString()

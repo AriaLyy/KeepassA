@@ -153,6 +153,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       }
 
     })
+    module.checkDevBirthdayData(this)
   }
 
   @Subscribe(threadMode = MAIN)

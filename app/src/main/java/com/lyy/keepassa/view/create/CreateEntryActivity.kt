@@ -195,7 +195,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     if (type == TYPE_NEW_TYPE_ENTRY || type == TYPE_EDIT_ENTRY || isFromAutoFillSave) {
       isInitData = true
       initData()
-    }else{
+    } else {
       pwEntry = if (BaseApp.isV4) {
         PwEntryV4(BaseApp.KDB.pm.rootGroup as PwGroupV4)
       } else {
@@ -327,6 +327,9 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
               }
               R.drawable.ic_attr_file -> { // 附件
                 KeepassAUtil.openSysFileManager(this@CreateEntryActivity, "*/*", getFileRequestCode)
+              }
+              R.drawable.ic_totp -> { // totp
+
               }
             }
             addMoreDialog!!.dismiss()
