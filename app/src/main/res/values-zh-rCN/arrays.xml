@@ -68,12 +68,12 @@
 
   <string-array name="v4_add_mor_item">
     <item>备注</item>
-    <item>标签</item>
-    <item>覆盖链接</item>
-    <item>失效时间</item>
     <item>自定义字段</item>
     <item>文件附件</item>
     <item>TOTP</item>
+    <item>标签</item>
+    <item>覆盖链接</item>
+    <item>失效时间</item>
   </string-array>
 
   <!--  创建数据库时的默认群组 -->

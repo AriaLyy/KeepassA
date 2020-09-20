@@ -39,7 +39,7 @@ class ExpandStrAttrView(
   /**
    * 高级属性的view点击事件
    */
-  public interface OnAttrStrViewClickListener {
+  interface OnAttrStrViewClickListener {
     fun onClickListener(
       v: AttrStrItemView,
       key: String,
@@ -70,10 +70,7 @@ class ExpandStrAttrView(
     if (data.isNotEmpty()) {
       var i = 0
       for (d in data) {
-        val child =
-          AttrStrItemView(
-              context, d.key, d.value
-          )
+        val child = AttrStrItemView(context, d.key, d.value)
         child.setOnClickListener(this)
         child.isClickable = true
         addView(child, i)
@@ -89,8 +86,7 @@ class ExpandStrAttrView(
     value: ProtectedString
   ) {
     data[key] = value
-    val child =
-      AttrStrItemView(context, key, value)
+    val child = AttrStrItemView(context, key, value)
     child.setOnClickListener(this)
     addView(child, childCount)
     childMap[key] = child
@@ -142,7 +138,7 @@ class ExpandStrAttrView(
   /**
    * 隐藏
    */
-  public fun hint() {
+  fun hint() {
     if (expandAnim != null && expandAnim!!.isRunning) {
       expandAnim!!.cancel()
     }

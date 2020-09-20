@@ -62,7 +62,9 @@ class AddMoreDialog(val data: List<SimpleItemEntity>) : BaseBottomSheetDialogFra
   }
 
   fun notifyData() {
-    adapter.notifyDataSetChanged()
+    if (this::adapter.isInitialized){
+      adapter.notifyDataSetChanged()
+    }
   }
 
   /**

@@ -26,8 +26,10 @@ import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedBinary
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
+import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.OtpUtil
 import com.lyy.keepassa.widget.toPx
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -71,14 +73,14 @@ class ExpandTextView(
   /**
    * 展开事件
    */
-  public interface OnExpandListener {
+  interface OnExpandListener {
     fun onExpand(isExpand: Boolean)
   }
 
   /**
    * 高级属性的view点击事件
    */
-  public interface OnAttrViewClickListener {
+  interface OnAttrViewClickListener {
     fun onClickListener(
       v: View,
       position: Int
@@ -173,14 +175,14 @@ class ExpandTextView(
   /**
    * 设置高级属性的view点击事件
    */
-  public fun setOnAttrViewClickListener(listener: OnAttrViewClickListener) {
+  fun setOnAttrViewClickListener(listener: OnAttrViewClickListener) {
     this.strViewListener = listener
   }
 
   /**
    * 设置展开事件监听
    */
-  public fun setOnExpandListener(listener: OnExpandListener) {
+  fun setOnExpandListener(listener: OnExpandListener) {
     this.listener = listener
   }
 
@@ -309,14 +311,20 @@ class ExpandTextView(
    */
   private fun startAutoGetOtp() {
     if (otpPassItem == null || otpPassItem?.pb == null || entryV4 == null) {
-      Log.e(TAG, "无法自动获取otp密码")
+      KLog.e(TAG, "无法自动获取otp密码")
       return
     }
+    val p = OtpUtil.getOtpPass(entryV4!!)
+    if (p.second.isNullOrEmpty()){
+      KLog.e(TAG, "无法自动获取otp密码")
+      return
+    }
+
     otpPassItem!!.pb.visibility = View.VISIBLE
     otpPassItem!!.pb.setCountdown(true)
 
     scope.launch(Dispatchers.Main) {
-      val p = KdbUtil.getOtpPass(entryV4!!)
+
       Log.d(TAG, p.toString())
       val time = p.first
       otpPassItem!!.pb.max = time

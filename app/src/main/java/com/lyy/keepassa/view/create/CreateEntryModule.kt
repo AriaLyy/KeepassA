@@ -27,9 +27,14 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.SimpleItemEntity
+import com.lyy.keepassa.entity.TotpType
+import com.lyy.keepassa.entity.TotpType.CUSTOM
+import com.lyy.keepassa.entity.TotpType.DEFAULT
+import com.lyy.keepassa.entity.TotpType.STEAM
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
+import com.lyy.keepassa.view.dialog.CreateTotpDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
@@ -39,6 +44,19 @@ import java.util.UUID
  * 创建条目、群组的module
  */
 class CreateEntryModule : BaseModule() {
+
+  /**
+   * 是否已经存在totp
+   * @return false 不存在
+   */
+  fun hasTotp(pwEntryV4: PwEntryV4):Boolean{
+    pwEntryV4.strings.forEach {
+      if (it.value.isOtpPass){
+        return true
+      }
+    }
+    return false
+  }
 
   /**
    * 自动填充进行保存数据时，搜索条目信息，如果条目不存在，新建条目
@@ -72,7 +90,7 @@ class CreateEntryModule : BaseModule() {
       val appName = KDBAutoFillRepository.getAppName(context, apkPkgName)
       entry.setTitle(appName ?: "newEntry", BaseApp.KDB.pm)
       entry.icon = PwIconStandard(0)
-    }else{
+    } else {
       entry = listStorage[0]
       Log.w(TAG, "已存在含有【$apkPkgName】的条目，将更新条目")
     }

@@ -257,4 +257,5 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="totp_Arithmetic">Arithmetic: </string>
   <string name="totp_time">Time(s): </string>
   <string name="totp_len">Length: </string>
+  <string name="totp_key_error">Failed to generate totp code, abnormal key</string>
 </resources>

@@ -31,6 +31,7 @@ import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.util.ClipboardUtil
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.OtpUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.view.ChoseDirActivity
@@ -99,7 +100,7 @@ class EntryPopMenu(
           HitUtil.toaskShort(context.getString(R.string.hint_copy_pass))
         }
         R.id.copy_totp -> {
-          val totpPass = KdbUtil.getOtpPass(entry as PwEntryV4)
+          val totpPass = OtpUtil.getOtpPass(entry as PwEntryV4)
           if (totpPass.second == null) {
             HitUtil.toaskShort(
                 "${context.getString(R.string.create_totp)}${context.getString(R.string.fail)}"

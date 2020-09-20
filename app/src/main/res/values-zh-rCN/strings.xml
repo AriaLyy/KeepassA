@@ -261,5 +261,6 @@
   <string name="totp_Arithmetic">算法：</string>
   <string name="totp_time">时间(s)：</string>
   <string name="totp_len">长度：</string>
+  <string name="totp_key_error">生成totp代码失败，key异常</string>
 </resources>
 

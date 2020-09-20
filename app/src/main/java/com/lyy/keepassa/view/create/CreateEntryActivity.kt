@@ -49,9 +49,11 @@ import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KeepassAUtil.getFileInfo
 import com.lyy.keepassa.util.KeepassAUtil.takePermission
+import com.lyy.keepassa.util.putArgument
 import com.lyy.keepassa.view.ChooseIconActivity
 import com.lyy.keepassa.view.ChoseDirActivity
 import com.lyy.keepassa.view.dialog.AddMoreDialog
+import com.lyy.keepassa.view.dialog.CreateTotpDialog
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.dialog.TimerDialog
@@ -322,35 +324,41 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
                 showOtherItem(binding.noticeLayout, false)
               }
               R.drawable.ic_attr_str -> { // 自定义字段
-                val dialog = CreateCustomStrDialog()
-                dialog.show(supportFragmentManager, "create_custom_dialog")
+                CreateCustomStrDialog().show()
               }
               R.drawable.ic_attr_file -> { // 附件
                 KeepassAUtil.openSysFileManager(this@CreateEntryActivity, "*/*", getFileRequestCode)
               }
               R.drawable.ic_totp -> { // totp
-
+                CreateTotpDialog().apply {
+                  putArgument("isEdit", false)
+                  putArgument("entryTitle", pwEntry.title)
+                  putArgument("entryUserName", pwEntry.username)
+                }.show()
               }
             }
             addMoreDialog!!.dismiss()
           }
         })
-      } else {
-        if (BaseApp.isV4) {
-          if (binding.tagLayout.isVisible) {
-            addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_tag })
-          }
-          if (binding.coverUrlLayout.isVisible) {
-            addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_net })
-          }
-          if (binding.loseTime.isVisible) {
-            addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_lose_time })
-          }
-          if (binding.noticeLayout.isVisible) {
-            addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_notice })
-          }
-          addMoreDialog!!.notifyData()
+      }
+
+      if (BaseApp.isV4) {
+        if (binding.tagLayout.isVisible) {
+          addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_tag })
         }
+        if (binding.coverUrlLayout.isVisible) {
+          addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_net })
+        }
+        if (binding.loseTime.isVisible) {
+          addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_lose_time })
+        }
+        if (binding.noticeLayout.isVisible) {
+          addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_notice })
+        }
+        if (module.hasTotp(pwEntry as PwEntryV4)){
+          addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_totp })
+        }
+        addMoreDialog!!.notifyData()
       }
       addMoreDialog!!.show(supportFragmentManager, "add_more_dialog")
     }
@@ -596,11 +604,11 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       attrStrMap.remove(oldKey)
       attrStrMap[event.key] = event.str
       binding.attrStrs.updateKeyValue(event.updateView, event.key, event.str)
-    } else {
-      showStrLayout()
-      binding.attrStrs.addValue(event.key, event.str)
-      attrStrMap[event.key] = event.str
+      return
     }
+    showStrLayout()
+    binding.attrStrs.addValue(event.key, event.str)
+    attrStrMap[event.key] = event.str
   }
 
   /**
@@ -727,6 +735,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     super.onActivityResult(requestCode, resultCode, data)
     if (resultCode == Activity.RESULT_OK && data != null) {
       when (requestCode) {
+        // 处理图标
         iconRequestCode -> {
           val type =
             data.getIntExtra(
@@ -738,20 +747,25 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
             binding.titleLayout.endIconDrawable =
               resources.getDrawable(IconUtil.getIconById(icon.iconId), theme)
             customIcon = PwIconCustom.ZERO
-          } else if (type == ChooseIconActivity.ICON_TYPE_CUSTOM) {
+            return
+          }
+          if (type == ChooseIconActivity.ICON_TYPE_CUSTOM) {
             customIcon =
               data.getSerializableExtra(ChooseIconActivity.KEY_DATA) as PwIconCustom
             binding.titleLayout.endIconDrawable =
               IconUtil.convertCustomIcon2Drawable(this, customIcon!!)
           }
         }
+        // 处理获取密码
         passRequestCode -> {
           binding.password.setText(data.getStringExtra(GeneratePassActivity.DATA_PASS_WORD))
           binding.enterPassword.setText(data.getStringExtra(GeneratePassActivity.DATA_PASS_WORD))
         }
+        // 处理群组选择
         groupDirRequestCode -> {
           createEntry(data.getSerializableExtra(ChoseDirActivity.DATA_PARENT) as PwGroupId)
         }
+        // 处理附件
         getFileRequestCode -> {
           data.data?.takePermission()
           addAttrFile(data.data)

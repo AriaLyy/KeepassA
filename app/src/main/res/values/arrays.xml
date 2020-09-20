@@ -127,12 +127,12 @@
 
   <string-array name="v4_add_mor_item">
     <item>Note</item>
-    <item>Tag</item>
-    <item>Cover link</item>
-    <item>Expiration date</item>
     <item>Custom field</item>
     <item>Attachment</item>
     <item>TOTP</item>
+    <item>Tag</item>
+    <item>Cover link</item>
+    <item>Expiration date</item>
   </string-array>
 
   <string-array name="choose_language_entries">
