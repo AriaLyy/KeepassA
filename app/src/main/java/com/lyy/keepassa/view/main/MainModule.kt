@@ -188,6 +188,10 @@ class MainModule : BaseModule() {
    * 获取历史记录
    */
   fun getEntryHistoryRecord() = liveData {
+    if (BaseApp.dbRecord == null){
+      emit(null)
+      return@liveData
+    }
     val list = withContext(Dispatchers.IO) {
       val dao = BaseApp.appDatabase.entryRecordDao()
       val records = dao.getRecord(BaseApp.dbRecord.localDbUri)
@@ -200,7 +204,7 @@ class MainModule : BaseModule() {
           val item = SimpleItemEntity()
           item.title = record.title
           item.obj = entry
-          item.subTitle = record.userName
+          item.subTitle = KdbUtil.getUserName(entry)
           item.time = record.time
           temp.add(item)
         }

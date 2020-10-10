@@ -58,6 +58,8 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
       binding.uri.setText(webDavDbName)
     }
 
+//    binding.uri.setText("http://192.168.1.2:5555/WebDAV/keepass.kdbx")
+
     binding.enter.setOnClickListener {
       if (KeepassAUtil.isFastClick()) {
         return@setOnClickListener

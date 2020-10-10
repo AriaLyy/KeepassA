@@ -22,7 +22,6 @@ import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityFingerprintBinding
 import com.lyy.keepassa.util.FingerprintUtil
-import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.view.dialog.MsgDialog
 
 /**
@@ -51,7 +50,7 @@ class FingerprintActivity : BaseActivity<ActivityFingerprintBinding>() {
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
     module = ViewModelProvider(this).get(FingerprintModule::class.java)
-    if (!FingerprintUtil.hasBiometricPrompt(this)) {
+    if (!FingerprintUtil.hasBiometricPrompt(this) || BaseApp.dbRecord == null) {
       finishAfterTransition()
       return
     }
@@ -122,7 +121,7 @@ class FingerprintActivity : BaseActivity<ActivityFingerprintBinding>() {
    */
   private fun changeBg(isChecked: Boolean) {
     val view = findViewById<View>(R.id.vBg)
-    if (isDestroyed || isFinishing || !view.isAttachedToWindow){
+    if (isDestroyed || isFinishing || !view.isAttachedToWindow) {
       return
     }
     if (isChecked) {

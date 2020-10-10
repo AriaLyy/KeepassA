@@ -385,13 +385,13 @@ object KeepassAUtil {
               || str.key.startsWith("OTP", ignoreCase = true))
       ) {
         addOTPPass = true
-        map["TOTP"]?.isOtpPass = true
-        map["otp"]?.isOtpPass = true
         val totpPass = OtpUtil.getOtpPass(entryV4)
         if (TextUtils.isEmpty(totpPass.second)) {
           continue
         }
-        map["TOTP"] = ProtectedString(true, totpPass.second)
+        val totpPassStr = ProtectedString(true, totpPass.second)
+        totpPassStr.isOtpPass = true
+        map["TOTP"] = totpPassStr
       }
     }
 
