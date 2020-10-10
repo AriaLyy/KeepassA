@@ -257,6 +257,8 @@
   <string name="totp_len">長度：</string>
   <string name="totp_key_error">生成totp代碼失敗，key異常</string>
   <string name="sort">排序</string>
-  <string name="sort_chart_desc">首字母降序</string>
-  <string name="sort_chart_asc">首字母升序</string>
+  <string name="sort_chart_desc">首字母降序(Z->A)</string>
+  <string name="sort_chart_asc">首字母升序(A->Z)</string>
+  <string name="sort_time_asc">按時間升序</string>
+  <string name="sort_time_desc">按時間降序</string>
 </resources>

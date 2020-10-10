@@ -101,8 +101,6 @@ public abstract class PwEntry implements Cloneable, PwDataInf, Serializable {
 
   public abstract String getNotes(boolean decodeRef, PwDatabase db);
 
-  public abstract Date getCreationTime();
-
   public abstract Date getLastModificationTime();
 
   public abstract Date getLastAccessTime();

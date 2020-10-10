@@ -257,6 +257,8 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="totp_len">Length: </string>
   <string name="totp_key_error">Failed to generate totp code, abnormal key</string>
   <string name="sort">Sort</string>
-  <string name="sort_chart_desc">First letter descending</string>
-  <string name="sort_chart_asc">First letter ascending</string>
+  <string name="sort_chart_desc">First letter descending(Z->A)</string>
+  <string name="sort_chart_asc">First letter ascending(A->Z)</string>
+  <string name="sort_time_asc">Time ascending</string>
+  <string name="sort_time_desc">Time descending</string>
 </resources>

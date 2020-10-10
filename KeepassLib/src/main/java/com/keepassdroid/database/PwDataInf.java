@@ -9,11 +9,15 @@
 
 package com.keepassdroid.database;
 
+import java.util.Date;
+
 /**
  * @author lyy
  */
 public interface PwDataInf {
 
   PwGroup getParent();
+
+  Date getCreationTime();
 
 }

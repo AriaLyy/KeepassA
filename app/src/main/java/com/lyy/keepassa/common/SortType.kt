@@ -8,6 +8,9 @@
 package com.lyy.keepassa.common
 
 enum class SortType {
+  NONE,
   CHAR_DESC,
-  CHAR_ASC
+  CHAR_ASC,
+  TIME_DESC,
+  TIME_ASC
 }

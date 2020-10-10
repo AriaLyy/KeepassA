@@ -88,6 +88,10 @@ public class PwGroupV3 extends PwGroup {
     return parent;
   }
 
+  @Override public Date getCreationTime() {
+    return tCreation.getJDate();
+  }
+
   @Override
   public PwGroupId getId() {
     return new PwGroupIdV3(groupId);

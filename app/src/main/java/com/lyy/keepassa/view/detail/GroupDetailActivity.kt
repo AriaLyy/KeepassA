@@ -29,6 +29,9 @@ import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.common.SortType.CHAR_ASC
 import com.lyy.keepassa.common.SortType.CHAR_DESC
+import com.lyy.keepassa.common.SortType.NONE
+import com.lyy.keepassa.common.SortType.TIME_ASC
+import com.lyy.keepassa.common.SortType.TIME_DESC
 import com.lyy.keepassa.databinding.ActivityGroupDetailBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
@@ -103,23 +106,28 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
 
   private fun initMenu() {
     binding.kpaToolbar.setOnMenuItemClickListener {
-      when (it.itemId) {
-        R.id.sort_down -> {
-          module.sortData(CHAR_DESC, entryData)
-              .observe(this, Observer { sortData ->
-                entryData.clear()
-                entryData.addAll(sortData)
-                adapter.notifyDataSetChanged()
-              })
+      val type = when (it.itemId) {
+        R.id.sort_down_by_char -> {
+          CHAR_DESC
         }
-        R.id.sort_up -> {
-          module.sortData(CHAR_ASC, entryData)
-              .observe(this, Observer { sortData ->
-                entryData.clear()
-                entryData.addAll(sortData)
-                adapter.notifyDataSetChanged()
-              })
+        R.id.sort_up_by_char -> {
+          CHAR_ASC
         }
+        R.id.sort_down_by_time -> {
+          TIME_DESC
+        }
+        R.id.sort_up_by_time -> {
+          TIME_ASC
+        }
+        else -> NONE
+      }
+      if (type != NONE){
+        module.sortData(type, entryData)
+            .observe(this, Observer { sortData ->
+              entryData.clear()
+              entryData.addAll(sortData)
+              adapter.notifyDataSetChanged()
+            })
       }
       return@setOnMenuItemClickListener true
     }

@@ -39,6 +39,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.DialogQuickUnlockBinding
 import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.util.HitUtil
+import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
@@ -181,6 +182,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
           "LottieCacheLock"
       )
 //      binding.anim.addAnimatorUpdateListener {
+//        KLog.d(TAG, "anim is running")
 //        if (binding.anim.frame == 102) {
 //          binding.anim.cancelAnimation()
 //          binding.anim.frame = 102

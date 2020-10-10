@@ -10,14 +10,25 @@
     <menu>
 
       <item
-          android:id="@+id/sort_down"
+          android:id="@+id/sort_down_by_char"
           android:title="@string/sort_chart_desc"
           app:showAsAction="withText" />
 
       <item
-          android:id="@+id/sort_up"
+          android:id="@+id/sort_up_by_char"
           android:title="@string/sort_chart_asc"
           app:showAsAction="withText" />
+
+      <item
+          android:id="@+id/sort_down_by_time"
+          android:title="@string/sort_time_desc"
+          app:showAsAction="withText" />
+
+      <item
+          android:id="@+id/sort_up_by_time"
+          android:title="@string/sort_time_asc"
+          app:showAsAction="withText" />
+
     </menu>
 
   </item>

@@ -10,6 +10,9 @@ package com.lyy.keepassa.view.detail
 import android.content.Context
 import androidx.lifecycle.liveData
 import com.arialyy.frame.util.PinyinUtil
+import com.keepassdroid.database.PwDataInf
+import com.keepassdroid.database.PwEntry
+import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupId
 import com.lyy.keepassa.R
@@ -17,6 +20,10 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.common.SortType
 import com.lyy.keepassa.common.SortType.CHAR_ASC
+import com.lyy.keepassa.common.SortType.CHAR_DESC
+import com.lyy.keepassa.common.SortType.NONE
+import com.lyy.keepassa.common.SortType.TIME_ASC
+import com.lyy.keepassa.common.SortType.TIME_DESC
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KdbUtil
 
@@ -70,14 +77,32 @@ class GroupDetailModule : BaseModule() {
     for (item in data) {
       map[item] = PinyinUtil.getFirstSpellChar(item.title)
     }
-    return if (sortType == CHAR_ASC) {
-      map.toList()
-          .sortedBy { it.second }
-          .toMap().keys
-    } else {
-      map.toList()
-          .sortedByDescending { it.second }
-          .toMap().keys
+    return when (sortType) {
+      CHAR_ASC -> {
+        map.toList()
+            .sortedBy { it.second }
+            .toMap().keys
+      }
+      CHAR_DESC -> {
+        map.toList()
+            .sortedByDescending { it.second }
+            .toMap().keys
+      }
+      TIME_ASC -> {
+        map.toList()
+            .sortedBy {
+              (it.first.obj as PwDataInf).creationTime.time
+            }
+            .toMap().keys
+      }
+      TIME_DESC -> {
+        map.toList()
+            .sortedByDescending { (it.first.obj as PwDataInf).creationTime.time }
+            .toMap().keys
+      }
+      NONE -> {
+        emptySet()
+      }
     }
   }
 
