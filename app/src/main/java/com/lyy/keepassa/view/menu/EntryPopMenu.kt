@@ -65,8 +65,7 @@ class EntryPopMenu(
     val inflater: MenuInflater = popup.menuInflater
     inflater.inflate(R.menu.pop_entry_summary, popup.menu)
 
-    popup.menu.findItem(R.id.undo)
-        .isVisible = isInRecycleBin
+    popup.menu.findItem(R.id.undo).isVisible = isInRecycleBin
     var hasOtp = false
     if (BaseApp.isV4) {
       for (d in (entry as PwEntryV4).strings) {
@@ -76,8 +75,7 @@ class EntryPopMenu(
         }
       }
     }
-    popup.menu.findItem(R.id.copy_totp)
-        .isVisible = hasOtp
+    popup.menu.findItem(R.id.copy_totp).isVisible = hasOtp
 
     // 以下代码为强制显示icon
     val mPopup = ReflectionUtil.getField(PopupMenu::class.java, "mPopup")
@@ -132,7 +130,7 @@ class EntryPopMenu(
     val deleteDirectly = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
         .getBoolean(context.getString(R.string.set_key_delete_no_recycle_bin), false)
 
-    if (deleteDirectly){
+    if (deleteDirectly) {
       loadDialog = LoadingDialog(context)
       loadDialog.show()
       handleDelEntry()
@@ -196,7 +194,8 @@ class EntryPopMenu(
         return@withContext DbSynUtil.STATE_SAVE_DB_FAIL
       }
 
-      EventBus.getDefault().post(DelEvent(entry))
+      EventBus.getDefault()
+          .post(DelEvent(entry))
 
       if (code == DbSynUtil.STATE_SUCCEED) {
         HitUtil.toaskShort(

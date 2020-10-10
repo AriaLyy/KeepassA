@@ -27,6 +27,8 @@ import com.keepassdroid.database.PwGroupId
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.common.SortType.CHAR_ASC
+import com.lyy.keepassa.common.SortType.CHAR_DESC
 import com.lyy.keepassa.databinding.ActivityGroupDetailBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
@@ -55,7 +57,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
     const val KEY_IS_IN_RECYCLE_BIN = "KEY_IS_IN_RECYCLE_BIN"
   }
 
-  private lateinit var module: DetailModule
+  private lateinit var module: GroupDetailModule
   private lateinit var adapter: SimpleEntryAdapter
   private val entryData = ArrayList<SimpleItemEntity>()
   private var curx = 0
@@ -85,7 +87,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
         BaseApp.isV4 && BaseApp.KDB.pm.recycleBin != null && BaseApp.KDB.pm.recycleBin.id == groupId
     }
 
-    module = ViewModelProvider(this).get(DetailModule::class.java)
+    module = ViewModelProvider(this).get(GroupDetailModule::class.java)
     val title = intent.getStringExtra(KEY_TITLE)
     binding.ctlCollapsingLayout.title = title
     binding.kpaToolbar.title = title
@@ -93,9 +95,34 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       finishAfterTransition()
     }
 
-//    binding.toolbar.inflateMenu(R.menu.menu_group_detail)
+    binding.kpaToolbar.inflateMenu(R.menu.menu_group_detail)
     initList()
     initFab()
+    initMenu()
+  }
+
+  private fun initMenu() {
+    binding.kpaToolbar.setOnMenuItemClickListener {
+      when (it.itemId) {
+        R.id.sort_down -> {
+          module.sortData(CHAR_DESC, entryData)
+              .observe(this, Observer { sortData ->
+                entryData.clear()
+                entryData.addAll(sortData)
+                adapter.notifyDataSetChanged()
+              })
+        }
+        R.id.sort_up -> {
+          module.sortData(CHAR_ASC, entryData)
+              .observe(this, Observer { sortData ->
+                entryData.clear()
+                entryData.addAll(sortData)
+                adapter.notifyDataSetChanged()
+              })
+        }
+      }
+      return@setOnMenuItemClickListener true
+    }
   }
 
   private fun initFab() {

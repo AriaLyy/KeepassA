@@ -9,6 +9,8 @@
 
 package com.lyy.keepassa.view.dialog
 
+import android.content.ActivityNotFoundException
+import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import android.view.View
@@ -43,9 +45,7 @@ class DonateDialog : BaseDialog<DialogDonateBinding>(), View.OnClickListener {
   override fun onClick(v: View?) {
     when (v?.id) {
       R.id.rlAliPay -> {
-        startActivity(Intent(Intent.ACTION_VIEW).apply {
-          data = Uri.parse("https://qr.alipay.com/fkx19330ftk0okdlwzdk968")
-        })
+        startAliPay()
       }
       R.id.rlPayPal -> {
         startActivity(Intent(Intent.ACTION_VIEW).apply {
@@ -54,5 +54,41 @@ class DonateDialog : BaseDialog<DialogDonateBinding>(), View.OnClickListener {
       }
     }
     dismiss()
+  }
+
+  private fun startAliPay() {
+    val qrCode = "https://qr.alipay.com/fkx19330ftk0okdlwzdk968"
+    if (startAliPayIntentUrl(qrCode)) {
+      return
+    }
+    startActivity(Intent(Intent.ACTION_VIEW).apply {
+      data = Uri.parse(qrCode)
+    })
+  }
+
+  /**
+   * 打开 Intent Scheme Url
+   *
+   * @param qrCodeUrl Intent 跳转地址
+   * @return 是否成功调用
+   */
+  private fun startAliPayIntentUrl(
+    qrCodeUrl: String
+  ): Boolean {
+    return try {
+      val cn = ComponentName(
+          "com.eg.android.AlipayGphone",
+          "com.alipay.mobile.quinox.SchemeLauncherActivity"
+      )
+      val intent = Intent(Intent.ACTION_VIEW).apply {
+        component = cn
+        data =
+          Uri.parse("alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=${qrCodeUrl}?_s=web-other&_t=${System.currentTimeMillis()}")
+      }
+      startActivity(intent)
+      true
+    } catch (e: ActivityNotFoundException) {
+      false
+    }
   }
 }

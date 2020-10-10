@@ -38,7 +38,7 @@ import org.greenrobot.eventbus.EventBus
 /**
  * 条目详情
  */
-class DetailModule : BaseModule() {
+class EntryDetailModule : BaseModule() {
 
   /**
    * 保存附件到sd卡
@@ -123,49 +123,7 @@ class DetailModule : BaseModule() {
     }
   }
 
-  /**
-   * 获取v3版本的group数据
-   */
-  fun getGroupData(
-    context: Context,
-    groupId: PwGroupId
-  ) = liveData {
 
-    val group = BaseApp.KDB.pm.groups[groupId]
-    if (group != null) {
-      emit(convertGroup(context, group))
-    } else {
-      emit(null)
-    }
-
-  }
-
-  private fun convertGroup(
-    context: Context,
-    group: PwGroup
-  ): ArrayList<SimpleItemEntity> {
-    val data = ArrayList<SimpleItemEntity>()
-    for (cGroup in group.childGroups) {
-      val item = SimpleItemEntity()
-      item.title = cGroup.name
-      item.subTitle =
-        context.getString(
-            R.string.hint_group_desc, KdbUtil.getGroupEntryNum(cGroup)
-            .toString()
-        )
-      item.obj = cGroup
-      data.add(item)
-    }
-
-    for (entry in group.childEntries) {
-      val item = SimpleItemEntity()
-      item.title = entry.title
-      item.subTitle = entry.username
-      item.obj = entry
-      data.add(item)
-    }
-    return data
-  }
 
   /**
    * 获取项目的属性字段，只有v4版本才有自定义属性字段

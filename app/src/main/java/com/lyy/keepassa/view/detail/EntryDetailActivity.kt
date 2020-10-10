@@ -62,7 +62,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     const val KEY_ENTRY_ID = "KEY_ENTRY_ID"
   }
 
-  private lateinit var module: DetailModule
+  private lateinit var module: EntryDetailModule
   private lateinit var pwEntry: PwEntry
   private lateinit var loadDialog: LoadingDialog
   private var isInRecycleBin = false
@@ -76,7 +76,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
     EventBusHelper.reg(this)
-    module = ViewModelProvider(this).get(DetailModule::class.java)
+    module = ViewModelProvider(this).get(EntryDetailModule::class.java)
     val uuid = intent.getSerializableExtra(KEY_ENTRY_ID)
     if (uuid == null) {
       HitUtil.toaskShort(getString(R.string.error_entry_id_null))

@@ -12,6 +12,7 @@ package com.lyy.demo
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,7 +26,7 @@ import com.lyy.demo.databinding.ActivityMainBinding
 
 class MainActivity : AbsActivity<ActivityMainBinding>() {
 
-  private val strings = mutableListOf("uri权限管理", "指纹加密数据", "指纹校验", "富文本", "注册码")
+  private val strings = mutableListOf("uri权限管理", "指纹加密数据", "指纹校验", "富文本", "注册码", "捐赠", "首字母")
 
   override fun setLayoutId(): Int {
     return R.layout.activity_main
@@ -39,25 +40,62 @@ class MainActivity : AbsActivity<ActivityMainBinding>() {
     list.layoutManager = LinearLayoutManager(this)
     list.setHasFixedSize(true)
     adapter.notifyDataSetChanged()
-    RvItemClickSupport.addTo(list).setOnItemClickListener { _, position, _ ->
-      when (position) {
-        0 -> { // uri权限管理
-          startActivity(Intent(this, UriActivity::class.java))
+    RvItemClickSupport.addTo(list)
+        .setOnItemClickListener { _, position, _ ->
+          when (position) {
+            0 -> { // uri权限管理
+              startActivity(Intent(this, UriActivity::class.java))
+            }
+            1 -> { // 指纹加密数据
+              startActivity(Intent(this, FingerprintActivity::class.java))
+            }
+            2 -> { // 指纹校验
+              startActivity(Intent(this, FingerprintVerifyActivity::class.java))
+            }
+            3 -> { // 富文本
+              startActivity(Intent(this, RichTextActivity::class.java))
+            }
+            4 -> { // 注册码
+              startActivity(Intent(this, RegCodeActivity::class.java))
+            }
+            5 -> { // 捐赠
+              startActivity(Intent(this, DonateActivity::class.java))
+            }
+            6 -> { //拼音首字母
+              startActivity(Intent(this, PinyinActivity::class.java))
+            }
+          }
         }
-        1 -> { // 指纹加密数据
-          startActivity(Intent(this, FingerprintActivity::class.java))
-        }
-        2 -> { // 指纹校验
-          startActivity(Intent(this, FingerprintVerifyActivity::class.java))
-        }
-        3 -> { // 富文本
-          startActivity(Intent(this, RichTextActivity::class.java))
-        }
-        4 -> { // 注册码
-          startActivity(Intent(this, RegCodeActivity::class.java))
-        }
-      }
-    }
+  }
+
+  override fun onRestart() {
+    super.onRestart()
+    Log.d(TAG, "A onRestart")
+  }
+
+  override fun onStart() {
+    super.onStart()
+    Log.d(TAG, "A onStart")
+  }
+
+  override fun onResume() {
+    super.onResume()
+    Log.d(TAG, "A onResume")
+  }
+
+  override fun onPause() {
+    super.onPause()
+    Log.d(TAG, "A onPause")
+  }
+
+  override fun onStop() {
+    super.onStop()
+    Log.d(TAG, "A onStop")
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    Log.d(TAG, "A onDestroy")
   }
 
   private class Adapter(
