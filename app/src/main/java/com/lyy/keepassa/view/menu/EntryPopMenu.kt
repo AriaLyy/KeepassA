@@ -30,6 +30,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.util.ClipboardUtil
 import com.lyy.keepassa.util.HitUtil
+import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.OtpUtil
 import com.lyy.keepassa.util.VibratorUtil
@@ -56,6 +57,7 @@ class EntryPopMenu(
   private val x: Int,
   private val isInRecycleBin: Boolean = false
 ) : IPopMenu {
+  private val TAG = "EntryPopMenu"
   private val popup: PopupMenu = PopupMenu(context, view, Gravity.START)
   private val help: MenuPopupHelper
   private lateinit var loadDialog: LoadingDialog
@@ -88,13 +90,15 @@ class EntryPopMenu(
           delEntry()
         }
         R.id.copy_user -> {
+          val userName = KdbUtil.getUserName(entry)
           ClipboardUtil.get()
-              .copyDataToClip(entry.username)
+              .copyDataToClip(userName)
           HitUtil.toaskShort(context.getString(R.string.hint_copy_user))
         }
         R.id.copy_pw -> {
+          val pass = KdbUtil.getPassword(entry)
           ClipboardUtil.get()
-              .copyDataToClip(entry.password)
+              .copyDataToClip(pass)
           HitUtil.toaskShort(context.getString(R.string.hint_copy_pass))
         }
         R.id.copy_totp -> {
@@ -104,8 +108,8 @@ class EntryPopMenu(
                 "${context.getString(R.string.create_totp)}${context.getString(R.string.fail)}"
             )
           } else {
-            Log.d("TAG", "totp pass = $totpPass")
-            ClipboardUtil.get().copyDataToClip(totpPass.second!!)
+            ClipboardUtil.get()
+                .copyDataToClip(totpPass.second!!)
             HitUtil.toaskShort(context.getString(R.string.hint_copy_totp))
           }
         }

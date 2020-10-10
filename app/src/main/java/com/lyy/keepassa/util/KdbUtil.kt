@@ -9,9 +9,6 @@
 
 package com.lyy.keepassa.util
 
-import android.annotation.SuppressLint
-import android.net.Uri
-import android.text.TextUtils
 import android.util.Log
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
@@ -24,13 +21,32 @@ import com.keepassdroid.database.PwIconStandard
 import com.keepassdroid.database.helper.KDBHandlerHelper
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.util.cloud.DbSynUtil
-import com.lyy.keepassa.util.totp.Base32String
-import com.lyy.keepassa.util.totp.TokenCalculator
-import com.lyy.keepassa.util.totp.TokenCalculator.HashAlgorithm
 import java.util.UUID
 
 object KdbUtil {
   private val TAG = javaClass.simpleName
+
+  /**
+   * 获取用户名，如果是引用其它条目的，解析其引用
+   */
+  fun getUserName(entry: PwEntry): String {
+    val userName = entry.username
+    return if (userName.startsWith("{REF:", ignoreCase = true)) entry.getUsername(
+        true,
+        BaseApp.KDB.pm
+    ) else userName
+  }
+
+  /**
+   * 获取密码，如果是引用其它条目的，解析其引用
+   */
+  fun getPassword(entry: PwEntry): String {
+    val pass = entry.password
+    return if (pass.startsWith("{REF:", ignoreCase = true)) entry.getPassword(
+        true,
+        BaseApp.KDB.pm
+    ) else pass
+  }
 
   /**
    * 删除分组
@@ -121,7 +137,8 @@ object KdbUtil {
     uploadDb: Boolean = false
   ): Int {
     if (save) {
-      KDBHandlerHelper.getInstance(BaseApp.APP).saveEntry(BaseApp.KDB, entry)
+      KDBHandlerHelper.getInstance(BaseApp.APP)
+          .saveEntry(BaseApp.KDB, entry)
     } else {
       BaseApp.KDB.pm.addEntryTo(entry, entry.parent)
     }
@@ -216,7 +233,6 @@ object KdbUtil {
     }
 
   }
-
 
   /**
    * 获取组中的条目数

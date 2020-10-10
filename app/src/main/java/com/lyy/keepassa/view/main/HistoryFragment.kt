@@ -29,6 +29,7 @@ import com.lyy.keepassa.entity.EntryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.util.EventBusHelper
+import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import com.lyy.keepassa.view.menu.EntryPopMenu
@@ -182,7 +183,7 @@ class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
     } else {
       val item = SimpleItemEntity()
       item.title = entry.title
-      item.subTitle = entry.username
+      item.subTitle = KdbUtil.getUserName(entry)
       item.obj = entry
       item.time = time
       item

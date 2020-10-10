@@ -30,6 +30,7 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.service.multidatasetservice.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KLog
+import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.view.launcher.LauncherActivity
 
 /**
@@ -300,9 +301,9 @@ object AutoFillHelper {
 
           View.AUTOFILL_TYPE_TEXT -> {
             if (fillField.isPassword) {
-              dataSetBuilder.setValue(fillId, AutofillValue.forText(pwEntry.password))
+              dataSetBuilder.setValue(fillId, AutofillValue.forText(KdbUtil.getPassword(pwEntry)))
             } else {
-              dataSetBuilder.setValue(fillId, AutofillValue.forText(pwEntry.username))
+              dataSetBuilder.setValue(fillId, AutofillValue.forText(KdbUtil.getUserName(pwEntry)))
             }
             setValueAtLeastOnce = true
           }

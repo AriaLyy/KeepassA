@@ -126,7 +126,7 @@ class GroupDetailModule : BaseModule() {
     for (entry in group.childEntries) {
       val item = SimpleItemEntity()
       item.title = entry.title
-      item.subTitle = entry.username
+      item.subTitle = KdbUtil.getUserName(entry)
       item.obj = entry
       data.add(item)
     }
