@@ -43,7 +43,11 @@
   <color name="bg_first_create_db">#84BA55</color>
   <color name="bg_second_create_db">#49A064</color>
 
-  <color name="icon_grey_color">#333333</color>
+  <color name="color_icon_grey">#333333</color>
+  <color name="color_ime_background">#E7EAED</color>
+  <color name="color_ime_icon">#4E85DB</color>
+  <color name="color_ime_pressed">#CBCBCB</color>
+  <color name="color_ime_no_press">#FFFFFF</color>
 
 
 </resources>

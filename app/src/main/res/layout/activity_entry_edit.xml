@@ -35,7 +35,7 @@
             android:layout_marginEnd="16dp"
             app:endIconDrawable="@drawable/ic_add_photo_alternate_24px"
             app:endIconMode="custom"
-            app:endIconTint="@color/icon_grey_color"
+            app:endIconTint="@color/color_icon_grey"
             app:startIconDrawable="@drawable/ic_title_24px"
             >
 
@@ -64,7 +64,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             app:startIconDrawable="@drawable/ic_user"
-            app:startIconTint="@color/icon_grey_color"
+            app:startIconTint="@color/color_icon_grey"
             >
 
           <com.google.android.material.textfield.TextInputEditText
@@ -100,7 +100,7 @@
               android:layout_toStartOf="@+id/pass_generate"
               app:counterOverflowTextAppearance="@style/InputEditTextErrorStyle"
               app:counterTextAppearance="@style/InputEditTextOverAppearance"
-              app:endIconTint="@color/icon_grey_color"
+              app:endIconTint="@color/color_icon_grey"
               app:errorEnabled="true"
               app:errorIconDrawable="@drawable/ic_info_filled"
               app:errorTextAppearance="@style/InputEditTextErrorStyle"
@@ -108,7 +108,7 @@
               app:helperTextTextColor="@color/text_gray_color"
               app:passwordToggleEnabled="true"
               app:startIconDrawable="@drawable/ic_password"
-              app:startIconTint="@color/icon_grey_color"
+              app:startIconTint="@color/color_icon_grey"
               >
 
             <com.google.android.material.textfield.TextInputEditText
@@ -151,7 +151,7 @@
             app:helperTextTextColor="@color/text_gray_color"
             app:hintTextAppearance="@style/InputEditTextHintStyle"
             app:startIconDrawable="@drawable/ic_password"
-            app:startIconTint="@color/icon_grey_color"
+            app:startIconTint="@color/color_icon_grey"
             >
 
           <com.google.android.material.textfield.TextInputEditText
@@ -179,7 +179,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             app:startIconDrawable="@drawable/ic_net"
-            app:startIconTint="@color/icon_grey_color"
+            app:startIconTint="@color/color_icon_grey"
             >
 
           <com.google.android.material.textfield.TextInputEditText
@@ -208,7 +208,7 @@
             android:layout_marginEnd="16dp"
             android:visibility="gone"
             app:startIconDrawable="@drawable/ic_notice"
-            app:startIconTint="@color/icon_grey_color"
+            app:startIconTint="@color/color_icon_grey"
             >
 
           <com.google.android.material.textfield.TextInputEditText
@@ -315,7 +315,7 @@
             android:layout_marginEnd="16dp"
             android:visibility="gone"
             app:startIconDrawable="@drawable/ic_tag"
-            app:startIconTint="@color/icon_grey_color"
+            app:startIconTint="@color/color_icon_grey"
             >
 
           <com.google.android.material.textfield.TextInputEditText
@@ -343,7 +343,7 @@
             android:layout_marginEnd="16dp"
             android:visibility="gone"
             app:startIconDrawable="@drawable/ic_net"
-            app:startIconTint="@color/icon_grey_color"
+            app:startIconTint="@color/color_icon_grey"
             >
 
           <com.google.android.material.textfield.TextInputEditText

@@ -72,7 +72,7 @@
           android:layout_marginRight="24dp"
           android:layout_marginTop="16dp"
           android:background="@color/transparent"
-          app:endIconTint="@color/icon_grey_color"
+          app:endIconTint="@color/color_icon_grey"
           app:errorTextAppearance="@style/InputEditTextErrorStyle"
           app:hintTextAppearance="@style/InputEditTextHintStyle"
           app:passwordToggleDrawable="@drawable/selector_password"

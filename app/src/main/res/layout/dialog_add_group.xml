@@ -44,7 +44,7 @@
         app:endIconCheckable="true"
         app:endIconDrawable="@drawable/ic_img_choose"
         app:endIconMode="custom"
-        app:endIconTint="@color/icon_grey_color"
+        app:endIconTint="@color/color_icon_grey"
         app:errorTextAppearance="@style/InputEditTextErrorStyle"
         app:helperText="@string/help_create_group"
         app:helperTextTextColor="@color/text_gray_color"

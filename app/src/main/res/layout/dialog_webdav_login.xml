@@ -39,7 +39,7 @@
         app:helperText="@string/helper_webdav"
         app:helperTextTextColor="@color/text_gray_color"
         app:startIconDrawable="@drawable/ic_http"
-        app:startIconTint="@color/icon_grey_color"
+        app:startIconTint="@color/color_icon_grey"
         >
 
       <com.google.android.material.textfield.TextInputEditText
@@ -68,7 +68,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         app:startIconDrawable="@drawable/ic_user"
-        app:startIconTint="@color/icon_grey_color"
+        app:startIconTint="@color/color_icon_grey"
         >
 
       <com.google.android.material.textfield.TextInputEditText
@@ -98,7 +98,7 @@
         android:layout_marginTop="8dp"
         app:passwordToggleEnabled="true"
         app:startIconDrawable="@drawable/ic_password"
-        app:startIconTint="@color/icon_grey_color"
+        app:startIconTint="@color/color_icon_grey"
         >
 
       <com.google.android.material.textfield.TextInputEditText

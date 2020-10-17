@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_ime_background"
+    android:paddingBottom="16dp">
+
+  <View
+      android:id="@+id/line"
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="@color/color_ime_icon"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <ImageView
+      android:id="@+id/btLock"
+      style="@style/ImeKeyStyle"
+      android:layout_width="60dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="16dp"
+      android:src="@drawable/ic_ime_lock"
+      android:text="lock"
+      app:layout_constraintEnd_toStartOf="@+id/btAccount"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/line" />
+
+  <ImageView
+      android:id="@+id/btAccount"
+      style="@style/ImeKeyStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:src="@drawable/ic_ime_user"
+      android:text="account"
+      app:layout_constraintEnd_toStartOf="@+id/btPass"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintStart_toEndOf="@+id/btLock"
+      app:layout_constraintTop_toTopOf="@+id/btLock" />
+
+  <TextView
+      android:id="@+id/btPass"
+      style="@style/ImeKeyStyle"
+      android:layout_width="0dp"
+      android:layout_height="40dp"
+      android:gravity="center"
+      android:src="@drawable/ic_ime_password"
+      android:text="* * *"
+      android:textColor="@color/color_ime_icon"
+      app:layout_constraintBottom_toBottomOf="@+id/btLock"
+      app:layout_constraintEnd_toStartOf="@+id/btClose"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintStart_toEndOf="@+id/btAccount"
+      app:layout_constraintTop_toTopOf="@+id/btLock" />
+
+  <ImageView
+      android:id="@+id/btClose"
+      style="@style/ImeKeyStyle"
+      android:layout_width="60dp"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="8dp"
+      android:src="@drawable/ic_ime_close"
+      android:text="close"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintStart_toEndOf="@+id/btPass"
+      app:layout_constraintTop_toTopOf="@+id/btLock" />
+
+
+  <ImageView
+      android:id="@+id/btChangeIme"
+      style="@style/ImeKeyStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="16dp"
+      android:src="@drawable/ic_ime_keyboard"
+      android:text="ime"
+      app:layout_constraintEnd_toStartOf="@+id/btTotp"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/btLock" />
+
+  <ImageView
+      android:id="@+id/btTotp"
+      style="@style/ImeKeyStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:src="@drawable/ic_totp"
+      android:text="totp"
+      android:visibility="visible"
+      app:layout_constraintEnd_toStartOf="@+id/btOtherInfo"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintStart_toEndOf="@+id/btChangeIme"
+      app:layout_constraintTop_toTopOf="@+id/btChangeIme" />
+
+  <ImageView
+      android:id="@+id/btOtherInfo"
+      style="@style/ImeKeyStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:src="@drawable/ic_ime_other_info"
+      android:text="other"
+      app:layout_constraintEnd_toStartOf="@+id/btBackspace"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintStart_toEndOf="@+id/btTotp"
+      app:layout_constraintTop_toTopOf="@+id/btChangeIme" />
+
+  <ImageView
+      android:id="@+id/btBackspace"
+      style="@style/ImeKeyStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:src="@drawable/ic_ime_backspace"
+      android:text="del"
+      app:layout_constraintEnd_toStartOf="@+id/btEnter"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintStart_toEndOf="@+id/btOtherInfo"
+      app:layout_constraintTop_toTopOf="@+id/btChangeIme" />
+
+  <ImageView
+      android:id="@+id/btEnter"
+      style="@style/ImeKeyStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="8dp"
+      android:src="@drawable/ic_ime_enter"
+      android:text="enter"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintStart_toEndOf="@+id/btBackspace"
+      app:layout_constraintTop_toTopOf="@+id/btChangeIme" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

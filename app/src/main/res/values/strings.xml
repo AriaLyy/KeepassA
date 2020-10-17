@@ -261,4 +261,5 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="sort_chart_asc">First letter ascending(A->Z)</string>
   <string name="sort_time_asc">Time ascending</string>
   <string name="sort_time_desc">Time descending</string>
+  <string name="ime_label">KeepassA security keyboard</string>
 </resources>

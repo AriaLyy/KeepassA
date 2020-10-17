@@ -7,8 +7,8 @@
   <uses-permission android:name="android.permission.ACTION_OPEN_DOCUMENT" />
   <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
-  <uses-permission android:name="android.permission.VIBRATE"/>
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+  <uses-permission android:name="android.permission.VIBRATE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
   <application
       android:name=".base.BaseApp"
@@ -59,9 +59,11 @@
       </intent-filter>
 
       <intent-filter tools:ignore="AppLinkUrlError">
-        <action android:name="android.intent.action.VIEW"/>
-        <category android:name="android.intent.category.DEFAULT"/>
-        <category android:name="android.intent.category.BROWSABLE"/>
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
         <data android:scheme="file" />
         <data android:scheme="content" />
         <data android:mimeType="application/octet-stream" />
@@ -145,6 +147,18 @@
     </service>
 
     <service android:name=".service.DbOpenNotificationService" />
+
+    <service
+        android:name=".service.input.InputIMEService"
+        android:label="@string/ime_label"
+        android:permission="android.permission.BIND_INPUT_METHOD">
+      <intent-filter>
+        <action android:name="android.view.InputMethod" />
+      </intent-filter>
+      <meta-data
+          android:name="android.view.im"
+          android:resource="@xml/input_method" />
+    </service>
 
     <service android:name="com.lyy.keepassa.service.UploadDbService" />
 

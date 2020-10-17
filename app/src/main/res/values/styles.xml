@@ -130,7 +130,7 @@
   </style>
 
   <style name="TextInputLayoutStyle">
-    <item name="endIconTint">@color/icon_grey_color</item>
+    <item name="endIconTint">@color/color_icon_grey</item>
   </style>
 
   <!-- 标题字体 -->
@@ -145,9 +145,19 @@
     <item name="android:textColor">@color/text_gray_color</item>
   </style>
 
+  <!-- radiobt 风格 -->
   <style name="RadioButtonStyle">
     <item name="android:textSize">@dimen/text_size_normal</item>
     <item name="android:textColor">@color/text_black_color</item>
+  </style>
+
+  <!-- 键盘按钮风格 -->
+  <style name="ImeKeyStyle">
+    <item name="android:layout_marginStart">8dp</item>
+    <item name="android:clickable">true</item>
+    <item name="android:paddingBottom">8dp</item>
+    <item name="android:paddingTop">8dp</item>
+    <item name="android:background">@drawable/bg_ime_key</item>
   </style>
 
 </resources>

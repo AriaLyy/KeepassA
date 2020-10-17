@@ -267,5 +267,6 @@
   <string name="sort_chart_asc">首字母升序(A->Z)</string>
   <string name="sort_time_asc">按时间升序</string>
   <string name="sort_time_desc">按时间降序</string>
+  <string name="ime_label">KeepassA 安全键盘</string>
 </resources>
 

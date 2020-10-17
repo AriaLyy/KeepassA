@@ -160,7 +160,7 @@
           app:errorTextAppearance="@style/InputEditTextErrorStyle"
           app:helperTextTextColor="@color/text_gray_color"
           app:hintTextAppearance="@style/InputEditTextHintStyle"
-          app:startIconTint="@color/icon_grey_color"
+          app:startIconTint="@color/color_icon_grey"
           >
 
         <com.google.android.material.textfield.TextInputEditText
