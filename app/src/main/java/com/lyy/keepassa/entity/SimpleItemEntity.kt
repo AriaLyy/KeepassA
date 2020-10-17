@@ -16,4 +16,5 @@ class SimpleItemEntity {
   var id: Int = -1
   var time: Long = 0
   lateinit var obj: Any
+  var isSelected: Boolean = false
 }

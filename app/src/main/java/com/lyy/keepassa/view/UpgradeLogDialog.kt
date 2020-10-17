@@ -13,6 +13,7 @@ import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.provider.Settings
 import android.text.TextUtils
 import android.util.Log
 import androidx.core.content.edit
@@ -117,6 +118,10 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
           }
           "WebDavLoginDialog" -> {
             WebDavLoginDialog().show()
+            return true
+          }
+          "ime" -> {
+            startActivity(Intent(Settings.ACTION_INPUT_METHOD_SETTINGS))
             return true
           }
         }

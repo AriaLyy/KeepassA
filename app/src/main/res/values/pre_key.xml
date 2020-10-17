@@ -12,6 +12,7 @@
   <string name="set_quick_pass_type" translatable="false">set_quick_pass_type</string>
   <string name="set_key_modify_db_pass" translatable="false">set_key_modify_db_pass</string>
   <string name="set_open_auto_fill" translatable="false">set_open_auto_fill</string>
+  <string name="set_key_open_kpa_ime" translatable="false">set_key_open_kpa_ime</string>
   <string name="set_key_praise" translatable="false">set_key_praise</string>
   <string name="set_key_delete_no_recycle_bin" translatable="false">set_key_delete_no_recycle_bin</string>
 

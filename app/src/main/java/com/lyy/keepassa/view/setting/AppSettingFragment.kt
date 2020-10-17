@@ -63,6 +63,17 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     setQuickUnLock()
     setFingerPrint()
     setVersionLog()
+    setIme()
+  }
+
+  /**
+   * 处理安全键盘
+   */
+  private fun setIme(){
+    findPreference<Preference>(getString(R.string.set_key_open_kpa_ime))?.setOnPreferenceClickListener {
+      startActivity(Intent(Settings.ACTION_INPUT_METHOD_SETTINGS))
+      true
+    }
   }
 
   /**

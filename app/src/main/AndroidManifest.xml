@@ -20,7 +20,9 @@
       android:supportsRtl="true"
       android:theme="@style/AppTheme.NoActionBar"
       tools:ignore="GoogleAppIndexingWarning">
-    <activity android:name=".view.launcher.LauncherActivity"> <!-- taskAffinity 指定activity栈，可以使用finishAffinity关闭该栈中的activity -->
+    <activity android:name=".view.launcher.LauncherActivity"
+        android:launchMode="singleTask"
+        > <!-- taskAffinity 指定activity栈，可以使用finishAffinity关闭该栈中的activity -->
       <!--        android:windowSoftInputMode="stateVisible|adjustResize"-->
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />

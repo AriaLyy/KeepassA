@@ -268,5 +268,6 @@
   <string name="sort_time_asc">按时间升序</string>
   <string name="sort_time_desc">按时间降序</string>
   <string name="ime_label">KeepassA 安全键盘</string>
+  <string name="set_open_kpa_ime_title">打开安全键盘</string>
 </resources>
 

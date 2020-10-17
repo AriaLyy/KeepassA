@@ -23,6 +23,7 @@ object OtpUtil {
 
   /**
    * 获取totp密码
+   * @return first period， second 密码
    */
   @SuppressLint("DefaultLocale") fun getOtpPass(entry: PwEntryV4): Pair<Int, String?> {
     var isSteam = false

@@ -37,6 +37,12 @@
         app:key="@string/set_open_auto_fill" />
 
     <Preference
+        android:defaultValue="false"
+        android:title="@string/set_open_kpa_ime_title"
+        app:icon="@drawable/ic_keyboard"
+        app:key="@string/set_key_open_kpa_ime" />
+
+    <Preference
         app:icon="@drawable/ic_fingerprint"
         app:isPreferenceVisible="true"
         app:key="@string/set_key_fingerprint_unlock"

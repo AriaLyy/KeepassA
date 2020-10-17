@@ -6,12 +6,22 @@
     android:background="@color/color_ime_background"
     android:paddingBottom="16dp">
 
+
   <View
       android:id="@+id/line"
       android:layout_width="match_parent"
       android:layout_height="1dp"
-      android:background="@color/color_ime_icon"
+      android:background="@color/line_color"
       app:layout_constraintTop_toTopOf="parent" />
+
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rvContent"
+      android:layout_width="match_parent"
+      android:layout_height="50dp"
+      android:layout_marginTop="16dp"
+      android:visibility="gone"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/line" />
 
   <ImageView
       android:id="@+id/btLock"
@@ -24,7 +34,7 @@
       app:layout_constraintEnd_toStartOf="@+id/btAccount"
       app:layout_constraintHorizontal_bias="0.5"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/line" />
+      app:layout_constraintTop_toBottomOf="@+id/rvContent" />
 
   <ImageView
       android:id="@+id/btAccount"
