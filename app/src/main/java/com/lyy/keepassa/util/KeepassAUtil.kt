@@ -128,7 +128,7 @@ object KeepassAUtil {
         ac.finish()
       }
     } else {
-      context.startActivity(Intent(context, QuickUnlockActivity::class.java))
+      QuickUnlockActivity.startQuickUnlockActivity(context)
     }
 
   }

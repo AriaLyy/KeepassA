@@ -78,6 +78,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     }
   }
 
+  override fun onResume() {
+    super.onResume()
+    
+  }
+
   override fun setLayoutId(): Int {
     return R.layout.activity_main
   }

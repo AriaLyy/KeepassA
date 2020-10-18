@@ -28,6 +28,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.util.OtpUtil
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
@@ -45,6 +46,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
   private lateinit var candidatesList: RecyclerView
   private val candidatesData = arrayListOf<SimpleItemEntity>()
   private lateinit var candidatesAdapter: CandidatesAdapter
+  private var imeOption = EditorInfo.IME_ACTION_GO
 
   /**
    * 当 IME 首次显示时，系统会调用 onCreateInputView() 回调。在此方法的实现中，您可以创建要在 IME 窗口中显示的布局，并将布局返回系统。
@@ -100,6 +102,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     restarting: Boolean
   ) {
     super.onStartInputView(info, restarting)
+    imeOption = info?.imeOptions ?: EditorInfo.IME_ACTION_GO
     candidatesData.clear()
     candidatesAdapter.notifyDataSetChanged()
     candidatesList.visibility = View.GONE
@@ -117,7 +120,19 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     when (v.id) {
       // 锁定
       R.id.btLock -> {
-
+        if (BaseApp.KDB == null || BaseApp.isLocked) {
+          return
+        }
+        BaseApp.isLocked = true
+        NotificationUtil.startDbLocked(this)
+        val isOpenQuickLock = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
+            .getBoolean(applicationContext.getString(R.string.set_quick_unlock), false)
+        if (isOpenQuickLock) {
+          return
+        }
+        BaseApp.KDB.clear(this)
+        BaseApp.KDB = null
+        return
       }
 
       // 用户名
@@ -126,7 +141,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
           return
         }
         showEntryList(searchEntry(appPkgName))
-        if (curEntry == null){
+        if (curEntry == null) {
           return
         }
         fillData(KdbUtil.getUserName(curEntry!!))
@@ -138,7 +153,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
           return
         }
         showEntryList(searchEntry(appPkgName))
-        if (curEntry == null){
+        if (curEntry == null) {
           return
         }
         fillData(KdbUtil.getPassword(curEntry!!))
@@ -161,7 +176,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
           return
         }
         showEntryList(searchEntry(appPkgName))
-        if (curEntry == null){
+        if (curEntry == null) {
           return
         }
         OtpUtil.getOtpPass(curEntry as PwEntryV4).second?.let { fillData(it) }
@@ -182,12 +197,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
 
       // 回车键
       R.id.btEnter -> {
-//        MsgDialog.generate {
-//          msgTitle = "1111"
-//          msgContent = "2222"
-//          build()
-//        }.show()
-//        requestHideSelf(InputMethodManager.HIDE_IMPLICIT_ONLY)
+        ic?.performEditorAction(imeOption)
       }
     }
   }
@@ -196,11 +206,11 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
    * 如果有多个条目，显示条目列表
    */
   private fun showEntryList(entries: List<PwEntry>) {
-    if (entries.isNullOrEmpty()){
+    if (entries.isNullOrEmpty()) {
       candidatesList.visibility = View.GONE
       return
     }
-    if (entries.size == 1){
+    if (entries.size == 1) {
       candidatesList.visibility = View.GONE
       curEntry = entries[0]
       return
@@ -210,7 +220,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       val item = SimpleItemEntity()
       item.title = pwEntry.title
       item.obj = pwEntry
-      if (index == 0){
+      if (index == 0) {
         item.isSelected = true
         curEntry = pwEntry
       }
@@ -232,9 +242,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
   private fun dbIsOpen(): Boolean {
     if (BaseApp.KDB == null || BaseApp.isLocked) {
       if (BaseApp.KDB == null) {
-        startActivity(Intent(this, LauncherActivity::class.java).apply {
-          flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        })
+        LauncherActivity.startLauncherActivity(this, Intent.FLAG_ACTIVITY_NEW_TASK)
         return false
       }
 
@@ -242,9 +250,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
           .getBoolean(applicationContext.getString(R.string.set_quick_unlock), false)
 
       if (isOpenQuickLock) {
-        startActivity(Intent(this, QuickUnlockActivity::class.java).apply {
-          flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        })
+        QuickUnlockActivity.startQuickUnlockActivity(this, Intent.FLAG_ACTIVITY_NEW_TASK)
       }
       return false
     }

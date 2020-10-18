@@ -318,6 +318,23 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     const val KEY_SAVE_USER_NAME = "KEY_SAVE_USER_NAME"
     const val KEY_SAVE_PASS = "KEY_SAVE_PASS"
 
+    internal fun startLauncherActivity(context: Context, flags:Int = -1){
+      context.startActivity(Intent(context, LauncherActivity::class.java).apply {
+        if (flags != -1){
+          this.flags = flags
+        }
+      })
+    }
+
+    /**
+     * 从通知进入登录页
+     */
+    internal fun createLauncherPending(context: Context): PendingIntent {
+      return Intent(context, LauncherActivity::class.java).let { notificationIntent ->
+        PendingIntent.getActivity(context, 0, notificationIntent, 0)
+      }
+    }
+
     /**
      * 数据库未解锁
      * @param apkPackageName 第三方apk包名

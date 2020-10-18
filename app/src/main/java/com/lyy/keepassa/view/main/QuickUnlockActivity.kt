@@ -39,7 +39,6 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.DialogQuickUnlockBinding
 import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
@@ -318,7 +317,27 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
     const val REQUEST_SEARCH_ENTRY_CODE = 0xa2
 
     /**
-     * 快速解锁界面
+     * 从通知进入快速解锁页
+     */
+    internal fun createQuickUnlockPending(context: Context): PendingIntent {
+      return Intent(context, QuickUnlockActivity::class.java).let { notificationIntent ->
+        PendingIntent.getActivity(context, 0, notificationIntent, 0)
+      }
+    }
+
+    internal fun startQuickUnlockActivity(
+      context: Context,
+      flags: Int = -1
+    ) {
+      context.startActivity(Intent(context, QuickUnlockActivity::class.java).apply {
+        if (flags != -1){
+          this.flags = flags
+        }
+      })
+    }
+
+    /**
+     * 从自动填充快速解锁界面
      */
     internal fun getQuickUnlockSenderForResponse(
       context: Context,

@@ -123,10 +123,9 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
       return
     }
     NotificationUtil.startDbLocked(this)
-    val launcherIntent = Intent(this, LauncherActivity::class.java)
     BaseApp.KDB.clear(this)
     BaseApp.KDB = null
-    startActivity(launcherIntent)
+    LauncherActivity.startLauncherActivity(this)
     finish()
   }
 

@@ -114,14 +114,17 @@ class DbOpenNotificationService : Service() {
    * 数据库启用快速解锁
    */
   private fun createQuickUnlockNotify(): Notification {
-    return createDbNotify(getText(R.string.notify_quick_unlock_start), createQuickUnlockPending())
+    return createDbNotify(
+        getText(R.string.notify_quick_unlock_start),
+        QuickUnlockActivity.createQuickUnlockPending(this)
+    )
   }
 
   /**
    * 数据库已锁定
    */
   private fun createDbLockedNotify(): Notification {
-    return createDbNotify(getText(R.string.notify_db_locked), createLauncherPending())
+    return createDbNotify(getText(R.string.notify_db_locked), LauncherActivity.createLauncherPending(this))
   }
 
   private fun createDbNotify(
@@ -148,29 +151,13 @@ class DbOpenNotificationService : Service() {
     return builder.build()
   }
 
-  /**
-   * 登录页
-   */
-  private fun createLauncherPending(): PendingIntent {
-    return Intent(this, LauncherActivity::class.java).let { notificationIntent ->
-      PendingIntent.getActivity(this, 0, notificationIntent, 0)
-    }
-  }
+
 
   /**
    * 主页
    */
   private fun createMainPending(): PendingIntent {
     return Intent(this, MainActivity::class.java).let { notificationIntent ->
-      PendingIntent.getActivity(this, 0, notificationIntent, 0)
-    }
-  }
-
-  /**
-   * 快速解锁页
-   */
-  private fun createQuickUnlockPending(): PendingIntent {
-    return Intent(this, QuickUnlockActivity::class.java).let { notificationIntent ->
       PendingIntent.getActivity(this, 0, notificationIntent, 0)
     }
   }
