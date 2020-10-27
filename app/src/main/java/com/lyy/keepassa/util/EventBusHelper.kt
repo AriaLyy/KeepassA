@@ -10,11 +10,24 @@
 package com.lyy.keepassa.util
 
 import android.app.Activity
+import android.inputmethodservice.InputMethodService
 import androidx.fragment.app.Fragment
 import com.lyy.keepassa.view.menu.IPopMenu
 import org.greenrobot.eventbus.EventBus
 
 object EventBusHelper {
+
+  fun reg(inputService: InputMethodService){
+    if (!EventBus.getDefault().isRegistered(inputService)) {
+      EventBus.getDefault().register(inputService)
+    }
+  }
+
+  fun unReg(inputService: InputMethodService) {
+    if (EventBus.getDefault().isRegistered(inputService)) {
+      EventBus.getDefault().unregister(inputService)
+    }
+  }
 
   fun reg(activity: Activity) {
     if (!EventBus.getDefault().isRegistered(activity)) {

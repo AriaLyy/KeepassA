@@ -92,6 +92,10 @@
           android:resource="@xml/shortcuts" />
     </activity>
 
+    <activity android:name=".service.input.EntryOtherInfoDialog"
+      android:theme="@style/DialogActivityStyle"
+        />
+
     <activity android:name=".view.search.AutoFillEntrySearchActivity" />
 
     <activity

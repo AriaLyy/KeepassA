@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
+
   <RelativeLayout
+      style="@style/DialogLayoutStyle"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:animateLayoutChanges="true"
-      android:background="@drawable/bg_white_radius_2"
-      android:orientation="vertical"
-      >
+      android:orientation="vertical">
 
 
     <TextView
         android:id="@+id/tvTitle"
+        style="@style/TitleTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:paddingBottom="16dp"
         android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         android:text="@string/version_log"
-        android:textStyle="bold"
-        style="@style/TitleTextStyle"
-        />
+        android:textStyle="bold" />
 
 
     <View
@@ -27,23 +26,20 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/tvTitle"
-        android:background="@color/line_color"
-        />
+        android:background="@color/line_color" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/vLine1"
-        android:layout_below="@+id/vLine"
-        >
+        android:layout_below="@+id/vLine">
 
       <TextView
           android:id="@+id/tvContent"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:clickable="false"
-          android:padding="16dp"
-          />
+          android:padding="16dp" />
 
     </ScrollView>
 
@@ -52,19 +48,17 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_above="@+id/btEnter"
-        android:background="@color/line_color"
-        />
+        android:background="@color/line_color" />
 
     <Button
         android:id="@+id/btEnter"
+        style="@style/TitleTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@drawable/ripple_white_selector"
         android:text="@string/enter"
-        android:textColor="@color/text_blue_color"
-        style="@style/TitleTextStyle"
-        />
+        android:textColor="@color/text_blue_color" />
 
   </RelativeLayout>
 </layout>

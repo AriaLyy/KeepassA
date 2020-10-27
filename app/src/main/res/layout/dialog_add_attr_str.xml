@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
   <LinearLayout
+      style="@style/DialogLayoutStyle"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/bg_white_radius_2"
       android:minWidth="@dimen/dialog_min_width"
-      android:orientation="vertical"
-      >
+      android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
@@ -16,8 +15,7 @@
         android:gravity="center"
         android:text="@string/add_custom_str"
         android:textColor="@color/text_blue_color"
-        android:textSize="@dimen/text_size_biggest"
-        />
+        android:textSize="@dimen/text_size_biggest" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/str_key_layout"
@@ -26,8 +24,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         app:startIconDrawable="@drawable/ic_title_24px"
-        app:startIconTint="@color/color_icon_grey"
-        >
+        app:startIconTint="@color/color_icon_grey">
 
       <com.google.android.material.textfield.TextInputEditText
           android:id="@+id/str_key"
@@ -39,8 +36,7 @@
           android:singleLine="true"
           android:textColor="@color/text_black_grey_color"
           android:textColorHint="@color/text_hint_color"
-          android:textSize="@dimen/text_size_normal"
-          >
+          android:textSize="@dimen/text_size_normal">
 
       </com.google.android.material.textfield.TextInputEditText>
 
@@ -53,8 +49,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         app:startIconDrawable="@drawable/ic_text_fields_24px"
-        app:startIconTint="@color/color_icon_grey"
-        >
+        app:startIconTint="@color/color_icon_grey">
 
       <com.google.android.material.textfield.TextInputEditText
           android:id="@+id/str_value"
@@ -66,8 +61,7 @@
           android:singleLine="true"
           android:textColor="@color/text_black_grey_color"
           android:textColorHint="@color/text_hint_color"
-          android:textSize="@dimen/text_size_normal"
-          >
+          android:textSize="@dimen/text_size_normal">
 
       </com.google.android.material.textfield.TextInputEditText>
 
@@ -82,15 +76,13 @@
         android:layout_marginEnd="16dp"
         android:text="@string/hint_protect_str"
         android:textColor="@color/text_black_color"
-        android:textSize="@dimen/text_size_normal"
-        />
+        android:textSize="@dimen/text_size_normal" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
       <Button
           android:id="@+id/cancel"
@@ -98,8 +90,7 @@
           android:layout_height="wrap_content"
           android:background="@drawable/ripple_white_selector"
           android:text="@string/cancel"
-          android:textColor="@color/text_gray_color"
-          />
+          android:textColor="@color/text_gray_color" />
 
       <Button
           android:id="@+id/enter"
@@ -107,8 +98,7 @@
           android:layout_height="wrap_content"
           android:background="@drawable/ripple_white_selector"
           android:text="@string/enter"
-          android:textColor="@color/text_blue_color"
-          />
+          android:textColor="@color/text_blue_color" />
 
     </LinearLayout>
 

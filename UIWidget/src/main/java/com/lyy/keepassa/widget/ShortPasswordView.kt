@@ -88,9 +88,15 @@ class ShortPasswordView(
         before: Int,
         count: Int
       ) {
+        if (tvs.isEmpty()) {
+          return
+        }
         inputContent = passEt.text.toString()
         if (inputCompleteListener != null) {
           if (TextUtils.isEmpty(inputContent)) {
+            for (i in 0 until passLen) {
+              tvs[i].setText("")
+            }
             return
           }
           if (inputContent.length >= passLen) {
@@ -99,9 +105,7 @@ class ShortPasswordView(
             inputCompleteListener!!.invalidContent()
           }
         }
-        if (tvs.isEmpty()) {
-          return
-        }
+
         for (i in 0 until passLen) {
           if (i < inputContent.length) {
             tvs[i].setText(inputContent[i].toString())

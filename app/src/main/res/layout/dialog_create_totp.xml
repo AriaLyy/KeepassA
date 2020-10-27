@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <androidx.constraintlayout.widget.ConstraintLayout
+      style="@style/DialogLayoutStyle"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="wrap_content"
       android:animateLayoutChanges="true"
-      android:background="@drawable/bg_white_radius_2"
       android:minWidth="@dimen/dialog_min_width">
 
 

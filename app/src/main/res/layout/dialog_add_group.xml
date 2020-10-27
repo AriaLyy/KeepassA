@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
   <LinearLayout
+      style="@style/DialogLayoutStyle"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/bg_white_radius_2"
-      android:elevation="4dp"
       android:minWidth="@dimen/dialog_min_width"
-      android:orientation="vertical"
-      >
+      android:orientation="vertical">
 
     <TextView
         android:id="@+id/title"
@@ -20,14 +17,12 @@
         android:gravity="center"
         android:text="@string/create_group"
         android:textColor="@color/text_blue_color"
-        android:textSize="@dimen/text_size_biggest"
-        />
+        android:textSize="@dimen/text_size_biggest" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/line_color"
-        />
+        android:background="@color/line_color" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/group_name_layout"
@@ -48,8 +43,7 @@
         app:errorTextAppearance="@style/InputEditTextErrorStyle"
         app:helperText="@string/help_create_group"
         app:helperTextTextColor="@color/text_gray_color"
-        app:hintTextAppearance="@style/InputEditTextHintStyle"
-        >
+        app:hintTextAppearance="@style/InputEditTextHintStyle">
 
       <com.google.android.material.textfield.TextInputEditText
           android:id="@+id/group_name"
@@ -64,8 +58,7 @@
           android:textColor="@color/text_black_grey_color"
           android:textColorHint="@color/text_hint_color"
           android:textSize="@dimen/text_size_normal"
-          android:transitionName="@string/transition_db_name"
-          />
+          android:transitionName="@string/transition_db_name" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -74,8 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
       <Button
           android:id="@+id/cancel"
@@ -83,8 +75,7 @@
           android:layout_height="wrap_content"
           android:background="@drawable/ripple_white_selector"
           android:text="@string/cancel"
-          android:textColor="@color/text_gray_color"
-          />
+          android:textColor="@color/text_gray_color" />
 
       <Button
           android:id="@+id/enter"
@@ -92,8 +83,7 @@
           android:layout_height="wrap_content"
           android:background="@drawable/ripple_white_selector"
           android:text="@string/enter"
-          android:textColor="@color/text_blue_color"
-          />
+          android:textColor="@color/text_blue_color" />
 
     </LinearLayout>
 

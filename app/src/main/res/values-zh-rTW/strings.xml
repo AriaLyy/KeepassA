@@ -263,4 +263,8 @@
   <string name="sort_time_desc">按時間降序</string>
   <string name="ime_label">KeepassA 安全鍵盤</string>
   <string name="set_open_kpa_ime_title">打開安全鍵盤</string>
+  <string name="no_totp_token">該應用沒有設置totp令牌</string>
+  <string name="ime_entry_other_info">填充其它字段</string>
+  <string name="url">網址</string>
+  <string name="hint_not_nore_info">没有更多信息</string>
 </resources>

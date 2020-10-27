@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <LinearLayout
+      style="@style/DialogLayoutStyle"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/bg_white_radius_2"
       android:minWidth="@dimen/dialog_min_width"
-      android:orientation="vertical"
-      >
+      android:orientation="vertical">
 
     <TextView
         android:id="@+id/title"
@@ -19,28 +17,25 @@
         android:gravity="center"
         android:text="WebDav"
         android:textColor="@color/text_blue_color"
-        android:textSize="@dimen/text_size_biggest"
-        />
+        android:textSize="@dimen/text_size_biggest" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/line_color"
-        />
+        android:background="@color/line_color" />
 
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/uri_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         app:helperText="@string/helper_webdav"
         app:helperTextTextColor="@color/text_gray_color"
         app:startIconDrawable="@drawable/ic_http"
-        app:startIconTint="@color/color_icon_grey"
-        >
+        app:startIconTint="@color/color_icon_grey">
 
       <com.google.android.material.textfield.TextInputEditText
           android:id="@+id/uri"
@@ -53,8 +48,7 @@
           android:singleLine="true"
           android:textColor="@color/text_black_grey_color"
           android:textColorHint="@color/text_hint_color"
-          android:textSize="@dimen/text_size_normal"
-          >
+          android:textSize="@dimen/text_size_normal">
 
       </com.google.android.material.textfield.TextInputEditText>
 
@@ -64,12 +58,11 @@
         android:id="@+id/user_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         app:startIconDrawable="@drawable/ic_user"
-        app:startIconTint="@color/color_icon_grey"
-        >
+        app:startIconTint="@color/color_icon_grey">
 
       <com.google.android.material.textfield.TextInputEditText
           android:id="@+id/user_name"
@@ -82,8 +75,7 @@
           android:singleLine="true"
           android:textColor="@color/text_black_grey_color"
           android:textColorHint="@color/text_hint_color"
-          android:textSize="@dimen/text_size_normal"
-          >
+          android:textSize="@dimen/text_size_normal">
 
       </com.google.android.material.textfield.TextInputEditText>
 
@@ -93,13 +85,12 @@
         android:id="@+id/password_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         app:passwordToggleEnabled="true"
         app:startIconDrawable="@drawable/ic_password"
-        app:startIconTint="@color/color_icon_grey"
-        >
+        app:startIconTint="@color/color_icon_grey">
 
       <com.google.android.material.textfield.TextInputEditText
           android:id="@+id/password"
@@ -112,8 +103,7 @@
           android:singleLine="true"
           android:textColor="@color/text_black_grey_color"
           android:textColorHint="@color/text_hint_color"
-          android:textSize="@dimen/text_size_normal"
-          >
+          android:textSize="@dimen/text_size_normal">
 
       </com.google.android.material.textfield.TextInputEditText>
 
@@ -125,8 +115,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginTop="16dp"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
       <Button
           android:id="@+id/cancel"
@@ -134,8 +123,7 @@
           android:layout_height="wrap_content"
           android:background="@drawable/ripple_white_selector"
           android:text="@string/cancel"
-          android:textColor="@color/text_gray_color"
-          />
+          android:textColor="@color/text_gray_color" />
 
       <Button
           android:id="@+id/enter"
@@ -143,8 +131,7 @@
           android:layout_height="wrap_content"
           android:background="@drawable/ripple_white_selector"
           android:text="@string/login"
-          android:textColor="@color/text_blue_color"
-          />
+          android:textColor="@color/text_blue_color" />
 
     </LinearLayout>
 

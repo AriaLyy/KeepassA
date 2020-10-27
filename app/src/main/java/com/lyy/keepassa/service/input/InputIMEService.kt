@@ -26,12 +26,22 @@ import com.keepassdroid.database.PwEntryV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.SimpleItemEntity
+import com.lyy.keepassa.event.FillInfoEvent
+import com.lyy.keepassa.util.EventBusHelper
+import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.util.OtpUtil
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode.MAIN
 
 /**
  * 输入法
@@ -102,6 +112,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     restarting: Boolean
   ) {
     super.onStartInputView(info, restarting)
+    EventBusHelper.reg(this)
     imeOption = info?.imeOptions ?: EditorInfo.IME_ACTION_GO
     candidatesData.clear()
     candidatesAdapter.notifyDataSetChanged()
@@ -122,6 +133,9 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       R.id.btLock -> {
         if (BaseApp.KDB == null || BaseApp.isLocked) {
           return
+        }
+        if (appPkgName == packageName) {
+          LauncherActivity.startLauncherActivity(this, Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         BaseApp.isLocked = true
         NotificationUtil.startDbLocked(this)
@@ -179,7 +193,13 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         if (curEntry == null) {
           return
         }
-        OtpUtil.getOtpPass(curEntry as PwEntryV4).second?.let { fillData(it) }
+        val totp = OtpUtil.getOtpPass(curEntry as PwEntryV4)
+        if (totp.second.isNullOrEmpty()) {
+          HitUtil.toaskShort(getString(R.string.no_totp_token))
+          return
+        } else {
+          fillData(totp.second!!)
+        }
       }
 
       // 其它信息
@@ -188,6 +208,8 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
           return
         }
         showEntryList(searchEntry(appPkgName))
+
+        showMoreInfoDialog()
       }
 
       // 回退键
@@ -200,6 +222,31 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         ic?.performEditorAction(imeOption)
       }
     }
+  }
+
+  /**
+   * 显示更多信息的对话框，点击item自动填充
+   */
+  private fun showMoreInfoDialog() {
+    startActivity(Intent(this, EntryOtherInfoDialog::class.java).apply {
+      putExtra(EntryOtherInfoDialog.KEY_DATA, curEntry?.uuid)
+      flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    })
+  }
+
+  @Subscribe(threadMode = MAIN)
+  fun onFillOtherInfo(event: FillInfoEvent) {
+    MainScope().launch (Dispatchers.IO){
+      delay(600)
+      withContext(Dispatchers.Main){
+        fillData(event.infoStr)
+      }
+    }
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    EventBusHelper.unReg(this)
   }
 
   /**

@@ -9,7 +9,9 @@
 
 package com.keepassdroid.database.security;
 
-public class ProtectedString {
+import java.io.Serializable;
+
+public class ProtectedString implements Serializable {
 
   private String string;
   private boolean protect;

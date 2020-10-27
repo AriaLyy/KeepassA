@@ -71,7 +71,7 @@ object PinyinUtil {
    * 获取一个汉字的首字母
    */
   private fun getFirstLetter(ch: Char): Char? {
-    var uniCode: ByteArray? = null
+    val uniCode: ByteArray
     uniCode = try {
       ch.toString()
           .toByteArray(charset("GBK"))

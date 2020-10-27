@@ -15,9 +15,9 @@ import android.util.Log
 import androidx.core.net.toFile
 import com.arialyy.frame.util.StringUtil
 import com.lyy.keepassa.entity.DbRecord
+import com.tencent.bugly.crashreport.BuglyLog
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import java.io.FileOutputStream
-import java.net.URLEncoder
 import java.nio.channels.Channels
 import java.util.Date
 import java.util.UUID
@@ -50,13 +50,18 @@ object WebDavUtil : ICloudUtil {
     userName: String,
     password: String
   ): Boolean {
-    sardine = OkHttpSardine()
-    sardine?.let {
-      it.setCredentials(userName, password)
-      // 1、创建临时文件
-      it.put(uri, "${UUID.randomUUID()}".toByteArray(Charsets.UTF_8))
-      // 2、删除云端文件
-      it.delete(uri)
+    try {
+      sardine = OkHttpSardine()
+      sardine?.let {
+        it.setCredentials(userName, password)
+        // 1、创建临时文件
+        it.put(uri, "${UUID.randomUUID()}".toByteArray(Charsets.UTF_8))
+        // 2、删除云端文件
+        it.delete(uri)
+      }
+    } catch (e: Exception) {
+      BuglyLog.e(TAG, "checkLogin", e)
+      return false
     }
     return true
   }
@@ -65,7 +70,7 @@ object WebDavUtil : ICloudUtil {
    * 进行登录
    * 创建一个小文件上传成成功后并删除
    */
-  suspend fun login(
+  fun login(
     uri: String,
     userName: String,
     password: String
@@ -83,15 +88,20 @@ object WebDavUtil : ICloudUtil {
 
   override suspend fun getFileList(cloudPath: String): List<CloudFileInfo>? {
     sardine ?: return null
-    val resources = sardine!!.list(convertUrl(cloudPath))
-    if (resources == null || resources.isEmpty()) {
-      return null
-    }
     val list = ArrayList<CloudFileInfo>()
-    for (file in resources) {
-      list.add(
-          CloudFileInfo(file.path, file.name, file.modified, file.contentLength, file.isDirectory)
-      )
+    try {
+      val resources = sardine!!.list(convertUrl(cloudPath))
+      if (resources == null || resources.isEmpty()) {
+        return null
+      }
+
+      for (file in resources) {
+        list.add(
+            CloudFileInfo(file.path, file.name, file.modified, file.contentLength, file.isDirectory)
+        )
+      }
+    } catch (e: Exception) {
+      BuglyLog.e(TAG, "获取文件列表失败", e)
     }
     return list
   }
@@ -119,6 +129,7 @@ object WebDavUtil : ICloudUtil {
           file.path, file.name, file.modified, file.contentLength, file.isDirectory
       )
     } catch (e: Exception) {
+      BuglyLog.e(TAG, "获取文件信息失败", e)
       e.printStackTrace()
     }
     return null
@@ -129,7 +140,7 @@ object WebDavUtil : ICloudUtil {
     try {
       sardine!!.delete(convertUrl(cloudPath))
     } catch (e: Exception) {
-      e.printStackTrace()
+      BuglyLog.e(TAG, "删除文件失败", e)
       return false
     }
     return true
@@ -147,14 +158,19 @@ object WebDavUtil : ICloudUtil {
     dbRecord: DbRecord
   ): Boolean {
     sardine ?: return false
-    sardine!!.put(
-        dbRecord.cloudDiskPath, Uri.parse(dbRecord.localDbUri)
-        .toFile(), "*/*"
-    )
-    val info = getFileInfo(dbRecord.cloudDiskPath!!)
-    if (info != null) {
-      DbSynUtil.serviceModifyTime = info.serviceModifyDate
+    try {
+      sardine!!.put(
+          dbRecord.cloudDiskPath, Uri.parse(dbRecord.localDbUri)
+          .toFile(), "*/*"
+      )
+      val info = getFileInfo(dbRecord.cloudDiskPath!!)
+      if (info != null) {
+        DbSynUtil.serviceModifyTime = info.serviceModifyDate
+      }
+    } catch (e: Exception) {
+      BuglyLog.e(TAG, "上传文件失败", e)
     }
+
     return true
   }
 
@@ -165,13 +181,18 @@ object WebDavUtil : ICloudUtil {
   ): String? {
     sardine ?: return null
     val cloudPath = convertUrl(dbRecord.cloudDiskPath.toString())
-    val token = sardine!!.lock(cloudPath)
-    val ips = sardine!!.get(cloudPath)
-    val fileInfo = getFileInfo(cloudPath)
-    val fic = Channels.newChannel(ips)
-    val foc = FileOutputStream(filePath.toFile()).channel
-    foc.transferFrom(fic, 0, fileInfo!!.size)
-    sardine!!.unlock(cloudPath, token)
+    try {
+      val token = sardine!!.lock(cloudPath)
+      val ips = sardine!!.get(cloudPath)
+      val fileInfo = getFileInfo(cloudPath)
+      val fic = Channels.newChannel(ips)
+      val foc = FileOutputStream(filePath.toFile()).channel
+      foc.transferFrom(fic, 0, fileInfo!!.size)
+      sardine!!.unlock(cloudPath, token)
+    } catch (e: Exception) {
+      BuglyLog.e(TAG, "下载文件失败", e)
+      return null
+    }
     return filePath.toString()
   }
 
