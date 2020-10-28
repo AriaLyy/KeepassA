@@ -49,7 +49,6 @@ import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.getArgument
-import com.lyy.keepassa.view.dialog.CreateTotpDialog
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.main.MainActivity
 import java.io.IOException
@@ -414,17 +413,19 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
       if (resultCode == Activity.RESULT_OK) {
         if (data == null || data.data == null) {
           binding.cbKey.isChecked = false
-        } else {
-          data.data?.takePermission()
-          openDbRecord.keyUri = data.data.toString()
-          binding.key.text = getString(
-              R.string.key1, UriUtil.getFileNameFromUri(requireContext(), data.data)
-          )
+          return
         }
-      } else {
-        if (binding.cbKey.isChecked) {
-          binding.cbKey.isChecked = false
-        }
+
+        data.data?.takePermission()
+        openDbRecord.keyUri = data.data.toString()
+        binding.key.text = getString(
+            R.string.key1, UriUtil.getFileNameFromUri(requireContext(), data.data)
+        )
+        return
+      }
+
+      if (binding.cbKey.isChecked) {
+        binding.cbKey.isChecked = false
       }
     }
   }

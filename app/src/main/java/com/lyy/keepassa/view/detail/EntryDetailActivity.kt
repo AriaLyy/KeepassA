@@ -78,9 +78,10 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     EventBusHelper.reg(this)
     module = ViewModelProvider(this).get(EntryDetailModule::class.java)
     val uuid = intent.getSerializableExtra(KEY_ENTRY_ID)
-    if (uuid == null) {
+    if (uuid == null || BaseApp.KDB.pm == null){
       HitUtil.toaskShort(getString(R.string.error_entry_id_null))
       finishAfterTransition()
+      BaseApp.isLocked = true
       return
     }
     val toolbar = findViewById<Toolbar>(R.id.kpa_toolbar)

@@ -267,4 +267,5 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="ime_entry_other_info">Fill in other fields</string>
   <string name="url">URL</string>
   <string name="hint_not_nore_info">No more information</string>
+  <string name="error_uri_grant_permission">Uri authorization failed</string>
 </resources>

@@ -1,3 +1,14 @@
+#### 1.4 (2020/10/28)
+- 升級kotlin版本
+- 增加群組排序功能
+- 增加字段引用功能
+- 增加[安全鍵盤](route://keepassA.com/kpa?activity=ime)
+
+![ime](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/ime.png)
+- 修復快速解鎖界面，無法刪除所有短密碼的問題
+- 修復webdav登陸超時導致的崩潰問題
+- 修復一些討厭的崩潰問題
+
 #### 1.3 (2020/9/22)
 - 增加TOTP令牌設置功能，編輯條目，點擊添加更多按鈕便可以顯示該功能界面
 

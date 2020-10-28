@@ -33,6 +33,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.InputStream
 
 /**
  * 版本升级对话框
@@ -50,9 +51,22 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
       var context = ""
       val fileName = "version_log/version_log_${getVersionSuffix()}.md"
       withContext(Dispatchers.IO) {
-        val ins = requireContext().assets.open(fileName)
-        context = String(ins.readBytes())
-        ins.close()
+
+//        val ins  = requireContext().assets.open(fileName)
+//        context = String(ins.readBytes())
+//        ins.close()
+
+        var ins:InputStream?=null
+        try {
+          ins  = requireContext().assets.open(fileName)
+        }catch (e:Exception){
+          ins = requireContext().assets.open("version_log/version_log_en.md")
+          e.printStackTrace()
+        }
+        ins?.let {
+          context = String(it.readBytes())
+          it.close()
+        }
       }
       RichText.fromMarkdown(context)
           .urlClick { url ->

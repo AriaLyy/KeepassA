@@ -61,14 +61,15 @@ class SearchModule : BaseModule() {
     BaseApp.KDB.pm.rootGroup.searchEntries(sp, listStorage)
     if (listStorage.isEmpty()) {
       emit(null)
-    } else {
-      for (entry in listStorage) {
-        val item = KeepassAUtil.convertPwEntry2Item(entry)
-        item.id = 2
-        data.add(item)
-      }
-      emit(data)
+      return@liveData
     }
+
+    for (entry in listStorage) {
+      val item = KeepassAUtil.convertPwEntry2Item(entry)
+      item.id = 2
+      data.add(item)
+    }
+    emit(data)
   }
 
   /**
@@ -90,7 +91,7 @@ class SearchModule : BaseModule() {
   /**
    * 转换记录为列表实体
    */
-  fun convertRecord2Item(record: SearchRecord): SimpleItemEntity {
+  private fun convertRecord2Item(record: SearchRecord): SimpleItemEntity {
     val item = SimpleItemEntity()
     item.time = record.time
     item.title = record.title

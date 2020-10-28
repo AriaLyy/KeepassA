@@ -68,6 +68,7 @@ import java.io.File
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.GregorianCalendar
 
 object KeepassAUtil {
 
@@ -85,8 +86,14 @@ object KeepassAUtil {
    * uri 授权
    */
   fun Uri.takePermission() {
-    val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-    BaseApp.APP.contentResolver.takePersistableUriPermission(this, takeFlags)
+    try {
+      val takeFlags =
+        Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+      BaseApp.APP.contentResolver.takePersistableUriPermission(this, takeFlags)
+    } catch (e: Exception) {
+      HitUtil.toaskShort(BaseApp.APP.getString(R.string.error_uri_grant_permission))
+      e.printStackTrace()
+    }
   }
 
   /**
@@ -411,8 +418,12 @@ object KeepassAUtil {
    * 格式化时间
    */
   @SuppressLint("SimpleDateFormat")
-  fun formatTime(time: Date): String {
+  fun formatTime(time: Date?): String {
     val format = SimpleDateFormat(" yyyy/MM/dd HH:mm")
+    if (time == null) {
+      return format.format(GregorianCalendar(1970, 1, 1, 0, 0, 0))
+    }
+
     return format.format(time)
 
   }

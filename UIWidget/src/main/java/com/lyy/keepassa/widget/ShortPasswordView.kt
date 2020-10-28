@@ -54,7 +54,7 @@ class ShortPasswordView(
     passEt = findViewById(R.id.etPass)
     val ta: TypedArray =
       context.obtainStyledAttributes(attributeSet, R.styleable.ShortPasswordView)
-    passLen = ta.getInteger(R.styleable.ShortPasswordView_passLen, -1)
+    passLen = ta.getInteger(R.styleable.ShortPasswordView_passLen, 3)
     ta.recycle()
     if (passLen <= 0 || passLen > 6) {
       Log.e(TAG, "密码长度错误，不能小于0，并且不能大于6")

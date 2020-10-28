@@ -108,6 +108,7 @@ class EntryPopMenu(
                 "${context.getString(R.string.create_totp)}${context.getString(R.string.fail)}"
             )
           } else {
+            KLog.d(TAG, "totp = ${totpPass.second}")
             ClipboardUtil.get()
                 .copyDataToClip(totpPass.second!!)
             HitUtil.toaskShort(context.getString(R.string.hint_copy_totp))

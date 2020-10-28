@@ -176,21 +176,26 @@ object IconUtil {
     entry: PwEntry,
     icon: ImageView
   ) {
+    if (entry.icon == null){
+      return
+    }
     if (entry is PwEntryV3) {
       Glide.with(context)
           .load(getIconById(entry.icon.iconId))
           .into(icon)
-    } else if (entry is PwEntryV4) {
+      return
+    }
+    if (entry is PwEntryV4) {
       if (!customIconIsNull(entry.customIcon)) {
         Glide.with(context)
             .load(entry.customIcon.imageData)
             .error(R.drawable.ic_image_broken_24px)
             .into(icon)
-      } else {
-        Glide.with(context)
-            .load(getIconById(entry.icon.iconId))
-            .into(icon)
+        return
       }
+      Glide.with(context)
+          .load(getIconById(entry.icon.iconId))
+          .into(icon)
     }
   }
 

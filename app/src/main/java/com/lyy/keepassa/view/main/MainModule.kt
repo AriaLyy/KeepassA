@@ -142,7 +142,7 @@ class MainModule : BaseModule() {
   fun showVersionLog(activity: BaseActivity<*>) {
     viewModelScope.launch {
       withContext(Dispatchers.IO) {
-        delay(2000)
+        delay(600)
       }
       if (activity.isDestroyed || activity.isFinishing) {
         return@launch

@@ -23,6 +23,7 @@ import android.view.WindowManager;
 import android.view.animation.BounceInterpolator;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import com.arialyy.frame.core.AbsDialogFragment;
 import com.arialyy.frame.core.AbsFrame;
 import com.arialyy.frame.util.AndroidUtils;
@@ -67,7 +68,12 @@ public abstract class BaseDialog<VB extends ViewDataBinding> extends AbsDialogFr
       Log.e(TAG, "FragmentManager 已被销毁");
       return;
     }
-    show(fm, getClass().getSimpleName());
+    try {
+      show(fm, getClass().getSimpleName());
+    }catch (Exception e){
+      e.printStackTrace();
+      fm.beginTransaction().add(this, getClass().getSimpleName()).commitAllowingStateLoss();
+    }
   }
 
   @Override public void dismiss() {

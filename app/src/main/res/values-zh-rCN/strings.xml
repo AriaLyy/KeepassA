@@ -273,5 +273,6 @@
   <string name="ime_entry_other_info">填充其它字段</string>
   <string name="url">网址</string>
   <string name="hint_not_nore_info">没有更多信息</string>
+  <string name="error_uri_grant_permission">Uri 授权失败</string>
 </resources>
 

@@ -27,6 +27,7 @@ import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
+import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityAutoFillEntrySearchBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
@@ -80,6 +81,12 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
+    if (BaseApp.KDB.pm == null) {
+      BaseApp.isLocked = true
+      finishAfterTransition()
+      HitUtil.toaskShort(getString(R.string.notify_db_locked))
+      return
+    }
     EventBusHelper.reg(this)
     module = ViewModelProvider(this).get(SearchModule::class.java)
     apkPkgName = intent.getStringExtra(
@@ -241,7 +248,10 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
       if (isNotSaveRelevance) {
         setResult(Activity.RESULT_OK, KeepassAUtil.getFillResponse(this, intent, apkPkgName!!))
       } else {
-        setResult(Activity.RESULT_OK, KeepassAUtil.getFillResponse(this, intent, pwEntry, apkPkgName!!))
+        setResult(
+            Activity.RESULT_OK,
+            KeepassAUtil.getFillResponse(this, intent, pwEntry, apkPkgName!!)
+        )
       }
       finish()
     }

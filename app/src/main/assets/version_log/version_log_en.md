@@ -1,3 +1,13 @@
+#### 1.4 (2020/10/28)
+- Upgrade kotlin version
+- Add group sorting function
+- Add field reference function
+- Add [safe keyboard](route://keepassA.com/kpa?activity=ime)
+
+![ime](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/ime.png)
+- Fix Quickly unlock the interface, the problem that all short passwords cannot be deleted
+- Fix the crash problem caused by webdav login timeout-Fix some annoying crash problems
+
 #### 1.3 (2020/9/22)
 - Add the TOTP token setting function, edit the entry, click the add more button to display the function interface
 

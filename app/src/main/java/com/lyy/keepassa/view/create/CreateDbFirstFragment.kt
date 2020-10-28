@@ -343,6 +343,7 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
         && requestCode == PATH_REQUEST_CODE
         && data != null
         && data.data != null
+        && context != null
     ) {
       // 申请长期的uri权限
       // 防止一个不可思议的空指针，data.data 有可能还是为空

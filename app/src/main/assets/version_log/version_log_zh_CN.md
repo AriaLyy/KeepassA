@@ -1,8 +1,10 @@
-#### 1.4
+#### 1.4 (2020/10/28)
 - 升级kotlin版本
 - 增加群组排序功能
 - 增加字段引用功能
 - 增加[安全键盘](route://keepassA.com/kpa?activity=ime)
+
+![ime](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/ime.png)
 - 修复快速解锁界面，无法删除所有短密码的问题
 - 修复webdav登陆超时导致的崩溃问题
 - 修复一些讨厌的崩溃问题
