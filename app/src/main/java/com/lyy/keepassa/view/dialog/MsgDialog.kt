@@ -16,6 +16,7 @@ import android.view.View
 import android.widget.Button
 import androidx.annotation.ColorInt
 import com.arialyy.frame.base.BaseDialog
+import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.databinding.DialogMsgBinding
 import com.lyy.keepassa.event.MsgDialogEvent
@@ -209,12 +210,12 @@ class MsgDialog : BaseDialog<DialogMsgBinding>(), View.OnClickListener {
       }
       if (enable) {
         child.isEnabled = true
-        (child as Button).setTextColor(requireContext().resources.getColor(R.color.text_blue_color))
+        (child as Button).setTextColor(ResUtil.getColor(R.color.text_blue_color))
         child.background = requireContext().getDrawable(R.drawable.ripple_white_selector)
       } else {
         child.isEnabled = false
-        (child as Button).setTextColor(requireContext().resources.getColor(R.color.text_gray_color))
-        child.setBackgroundColor(requireContext().resources.getColor(R.color.transparent))
+        (child as Button).setTextColor(ResUtil.getColor(R.color.text_gray_color))
+        child.setBackgroundColor(ResUtil.getColor(R.color.transparent))
       }
     }
   }

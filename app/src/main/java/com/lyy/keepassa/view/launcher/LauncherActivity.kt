@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import com.arialyy.frame.util.ResUtil
 import com.lahm.library.EasyProtectorLib
 import com.lyy.keepassa.R
 import com.lyy.keepassa.R.layout
@@ -93,7 +94,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   private fun securityCheck() {
     if (EasyProtectorLib.checkIsRoot()) {
       val vector = VectorDrawableCompat.create(resources, R.drawable.ic_eco, theme)
-      vector?.setTint(resources.getColor(R.color.red))
+      vector?.setTint(ResUtil.getColor(R.color.red))
       val dialog = MsgDialog.generate {
         msgTitle = this@LauncherActivity.getString(R.string.warning)
         msgContent = this@LauncherActivity.getString(R.string.warning_rooted)

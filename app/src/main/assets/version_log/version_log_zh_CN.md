@@ -1,3 +1,8 @@
+#### 1.4.1 (2020/10/29)
+- 升级android studio 到4.1
+- 搜索增加高亮关键字
+- 修复快速解锁的一个崩溃问题
+
 #### 1.4 (2020/10/28)
 - 升级kotlin版本
 - 增加群组排序功能
@@ -11,6 +16,8 @@
 
 #### 1.3 (2020/9/22)
 - 增加TOTP令牌设置功能，编辑条目，点击添加更多按钮便可以显示该功能界面
+
+![otp_setting](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/otp_setting.png)
 
 #### 1.2 (2020/9/2)
 - 修复一些讨厌的崩溃问题

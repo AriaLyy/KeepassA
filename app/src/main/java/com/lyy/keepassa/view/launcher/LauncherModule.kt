@@ -64,11 +64,8 @@ class LauncherModule : BaseModule() {
   /**
    * 删除指纹解锁记录
    */
-  fun deleteFingerprint(
-      context: Context,
-      dbUri: String
-  ) {
-    if (!FingerprintUtil.hasBiometricPrompt(context)) {
+  fun deleteFingerprint(dbUri: String) {
+    if (!FingerprintUtil.hasBiometricPrompt(BaseApp.APP)) {
       return
     }
     viewModelScope.launch(Dispatchers.IO) {
@@ -76,7 +73,7 @@ class LauncherModule : BaseModule() {
       val record = dao.findRecord(dbUri)
       PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
           .edit {
-            putBoolean(context.getString(R.string.set_quick_unlock), false)
+            putBoolean(BaseApp.APP.getString(R.string.set_quick_unlock), false)
             commit()
           }
       if (record != null) {
@@ -88,11 +85,8 @@ class LauncherModule : BaseModule() {
   /**
    * 检查是否需要启动指纹解锁
    */
-  fun isNeedUseFingerprint(
-      context: Context,
-      dbUri: String
-  ) = liveData {
-    if (!FingerprintUtil.hasBiometricPrompt(context)) {
+  fun isNeedUseFingerprint(dbUri: String) = liveData {
+    if (!FingerprintUtil.hasBiometricPrompt(BaseApp.APP)) {
       emit(false)
       return@liveData
     }

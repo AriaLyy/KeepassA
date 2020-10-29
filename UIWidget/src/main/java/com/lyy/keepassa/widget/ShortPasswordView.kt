@@ -49,12 +49,13 @@ class ShortPasswordView(
   }
 
   init {
-    LayoutInflater.from(context).inflate(R.layout.layout_short_password, this, true)
+    LayoutInflater.from(context)
+        .inflate(R.layout.layout_short_password, this, true)
     llBar = findViewById(R.id.llTvBar)
     passEt = findViewById(R.id.etPass)
     val ta: TypedArray =
       context.obtainStyledAttributes(attributeSet, R.styleable.ShortPasswordView)
-    passLen = ta.getInteger(R.styleable.ShortPasswordView_passLen, 3)
+    passLen = ta.getInteger(R.styleable.ShortPasswordView_passLen, -1)
     ta.recycle()
     if (passLen <= 0 || passLen > 6) {
       Log.e(TAG, "密码长度错误，不能小于0，并且不能大于6")
@@ -162,9 +163,12 @@ class ShortPasswordView(
    */
   private fun addItem(passLen: Int) {
     var layoutW = 0
-    val itemW = context.resources.getDimension(R.dimen.short_item_w).toInt()
-    val itemH = context.resources.getDimension(R.dimen.short_item_h).toInt()
-    val spaceW = context.resources.getDimension(R.dimen.short_item_space_w).toInt()
+    val itemW = context.resources.getDimension(R.dimen.short_item_w)
+        .toInt()
+    val itemH = context.resources.getDimension(R.dimen.short_item_h)
+        .toInt()
+    val spaceW = context.resources.getDimension(R.dimen.short_item_space_w)
+        .toInt()
     for (i in 0 until passLen) {
       val item = ShortPassItem(context)
       var tempW = itemW
@@ -178,9 +182,12 @@ class ShortPasswordView(
       llBar.addView(item, LayoutParams(tempW, itemH))
       tvs.add(item)
     }
-    val lp = layoutParams
-    lp.width = layoutW
-    lp.height = 49.toPx()
+    if (layoutParams == null) {
+      layoutParams = LayoutParams(layoutW, 49.toPx())
+    } else {
+      layoutParams.width = layoutW
+      layoutParams.height = 49.toPx()
+    }
   }
 
   /**
@@ -192,7 +199,8 @@ class ShortPasswordView(
     private val space: View
 
     init {
-      LayoutInflater.from(context).inflate(R.layout.item_short_password, this, true)
+      LayoutInflater.from(context)
+          .inflate(R.layout.item_short_password, this, true)
       tv = findViewById(R.id.tvItem)
       space = findViewById(R.id.vSpace)
     }

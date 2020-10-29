@@ -51,6 +51,7 @@ import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.getArgument
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.main.MainActivity
+import com.tencent.bugly.crashreport.BuglyLog
 import java.io.IOException
 
 /**
@@ -136,7 +137,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
    * 处理指纹
    */
   @TargetApi(Build.VERSION_CODES.M) private fun handleFingerprint() {
-    modlue.isNeedUseFingerprint(requireContext(), openDbRecord.localDbUri)
+    modlue.isNeedUseFingerprint(openDbRecord.localDbUri)
         .observe(this, Observer { needUse ->
           if (needUse) {
             keyStoreUtil = KeyStoreUtil()
@@ -157,6 +158,14 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
    */
   @SuppressLint("RestrictedApi") @TargetApi(Build.VERSION_CODES.M)
   private fun showBiometricPrompt() {
+    if (!isAdded){
+      BuglyLog.w(TAG, "isAdd = false")
+      return
+    }
+    if (BaseApp.KDB != null && !BaseApp.isLocked) {
+      BuglyLog.d(TAG, "数据库已打开")
+      return
+    }
     val promptInfo =
       BiometricPrompt.PromptInfo.Builder()
           .setTitle(getString(R.string.fingerprint_unlock))
@@ -231,7 +240,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     keyStoreUtil.deleteKeyStore()
     HitUtil.snackLong(mRootView, getString(R.string.hint_fingerprint_modify))
     binding.fingerprint.visibility = View.GONE
-    modlue.deleteFingerprint(requireContext(), openDbRecord.localDbUri)
+    modlue.deleteFingerprint(openDbRecord.localDbUri)
   }
 
   /**

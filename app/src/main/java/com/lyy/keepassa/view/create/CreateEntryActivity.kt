@@ -143,6 +143,13 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       type = TYPE_NEW_ENTRY
     }
 
+    if (BaseApp.KDB.pm == null){
+      HitUtil.toaskShort(getString(R.string.error_entry_id_null))
+      finishAfterTransition()
+      BaseApp.isLocked = true
+      return
+    }
+
     when (type) {
       TYPE_NEW_ENTRY -> {
         toolbar.title = getString(R.string.create_entry)

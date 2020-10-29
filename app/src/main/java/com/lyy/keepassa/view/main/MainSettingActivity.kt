@@ -19,6 +19,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.arialyy.frame.util.AndroidUtils
+import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
@@ -78,7 +79,7 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
     anim.addListener(object : AnimatorListenerAdapter() {
       override fun onAnimationEnd(animation: Animator?) {
         super.onAnimationEnd(animation)
-        binding.kpaToolbar.setBackgroundColor(resources.getColor(R.color.background_color))
+        binding.kpaToolbar.setBackgroundColor(ResUtil.getColor(R.color.background_color))
         finishAfterTransition()
         binding.arrow.visibility = View.GONE
       }

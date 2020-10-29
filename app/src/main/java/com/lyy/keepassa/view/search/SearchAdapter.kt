@@ -10,10 +10,13 @@
 package com.lyy.keepassa.view.search
 
 import android.content.Context
+import android.text.SpannableStringBuilder
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
+import com.arialyy.frame.util.ResUtil
+import com.arialyy.frame.util.StringUtil
 import com.arialyy.frame.util.adapter.AbsHolder
 import com.arialyy.frame.util.adapter.AbsRVAdapter
 import com.keepassdroid.database.PwEntry
@@ -30,6 +33,7 @@ class SearchAdapter(
   val data: ArrayList<SimpleItemEntity>,
   val delListener: OnClickListener
 ) : AbsRVAdapter<SimpleItemEntity, BaseHolder>(context, data) {
+  internal var queryString = ""
 
   override fun getViewHolder(
     convertView: View,
@@ -59,9 +63,38 @@ class SearchAdapter(
     if (holder is RecordHolder) {
       holder.del.tag = position
       holder.del.setOnClickListener(delListener)
-    } else if (holder is SearchHolder) {
+      return
+    }
+    if (holder is SearchHolder) {
       holder.des.text = item.subTitle
       IconUtil.setEntryIcon(context, item.obj as PwEntry, holder.icon)
+    }
+
+    // 高亮搜索关键字
+    if (queryString.isNotEmpty()) {
+      if (item.title.contains(queryString, ignoreCase = true)) {
+        val temp: SpannableStringBuilder? = StringUtil.highLightStr(
+            item.title,
+            queryString,
+            ResUtil.getColor(android.R.color.holo_red_light),
+            true
+        )
+        if (temp != null) {
+          holder.text.text = temp
+        }
+      }
+
+      if (item.subTitle.contains(queryString, ignoreCase = true)) {
+        val temp: SpannableStringBuilder? = StringUtil.highLightStr(
+            item.subTitle,
+            queryString,
+            ResUtil.getColor(android.R.color.holo_red_light),
+            true
+        )
+        if (temp != null) {
+          (holder as SearchHolder).des.text = temp
+        }
+      }
     }
   }
 

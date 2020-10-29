@@ -22,6 +22,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arialyy.frame.base.BaseDialog
+import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwDataInf
 import com.lyy.keepassa.R
@@ -52,7 +53,7 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    dialog!!.window!!.setBackgroundDrawable(ColorDrawable(resources.getColor(color.mask)))
+    dialog!!.window!!.setBackgroundDrawable(ColorDrawable(ResUtil.getColor(color.mask)))
     return super.onCreateView(inflater, container, savedInstanceState)
   }
 
@@ -103,6 +104,7 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
             if (list != null) {
               date.clear()
               date.addAll(list)
+              adapter.queryString = query
               adapter.notifyDataSetChanged()
             }
           })

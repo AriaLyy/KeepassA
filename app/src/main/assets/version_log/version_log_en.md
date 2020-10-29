@@ -1,3 +1,8 @@
+#### 1.4.1 (2020/10/29)
+- Upgrade android studio to 4.1
+- Search and add highlight keywords
+- Fix a crash problem of quick unlock
+
 #### 1.4 (2020/10/28)
 - Upgrade kotlin version
 - Add group sorting function
@@ -11,6 +16,8 @@
 
 #### 1.3 (2020/9/22)
 - Add the TOTP token setting function, edit the entry, click the add more button to display the function interface
+
+![otp_setting](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/otp_setting.png)
 
 #### 1.2 (2020/9/2)
 - Fix some nasty crashes

@@ -241,24 +241,17 @@ public class StringUtil {
   }
 
   /**
-   * 高亮整段字符串
-   */
-  public static SpannableStringBuilder highLightStr(String str, int color) {
-    SpannableStringBuilder style = new SpannableStringBuilder(str);
-    style.setSpan(new ForegroundColorSpan(color), 0, str.length(),
-        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-    return style;
-  }
-
-  /**
    * 高亮代码片段
    *
    * @param str 整段字符串
    * @param highLightStr 要高亮的代码段
    * @param color 高亮颜色
+   * @param ignoreCase 是否忽略大小写 true 忽略大小写
    */
-  public static SpannableStringBuilder highLightStr(String str, String highLightStr, int color) {
-    int start = str.indexOf(highLightStr);
+  public static SpannableStringBuilder highLightStr(String str, String highLightStr, int color,
+      boolean ignoreCase) {
+    int start = ignoreCase ? str.toUpperCase().indexOf(highLightStr.toUpperCase())
+        : str.indexOf(highLightStr);
     if (start == -1) {
       return null;
     }

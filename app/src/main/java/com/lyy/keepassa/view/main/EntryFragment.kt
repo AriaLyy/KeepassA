@@ -131,12 +131,17 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
 
     )
     binding.swipe.setOnRefreshListener {
+      if (BaseApp.dbRecord == null){
+        finishRefresh(false)
+        return@setOnRefreshListener
+      }
+
       if (BaseApp.dbRecord.isAFS()) {
-//        finishRefresh(isSuccess = true, isAfs = true)
         isSyncDb = true
         getData()
         return@setOnRefreshListener
       }
+
       loadingDialog.show()
       module.syncDb()
           .observe(this@EntryFragment, Observer {

@@ -16,6 +16,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.arialyy.frame.util.AndroidUtils
+import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.Database
 import com.keepassdroid.database.PwDatabase
 import com.keepassdroid.database.PwEntry
@@ -64,12 +65,12 @@ class MainModule : BaseModule() {
     val vector = VectorDrawableCompat.create(context.resources, R.drawable.ic_eco, context.theme)
     var msg = context.getString(R.string.hint_security_green)
     if (EasyProtectorLib.checkIsRoot()) {
-      vector?.setTint(context.resources.getColor(R.color.red))
+      vector?.setTint(ResUtil.getColor(R.color.red))
       msg = context.getString(R.string.hint_security_red)
     } else if (EasyProtectorLib.checkIsRunningInEmulator(context) {
 //          BuglyLog.d(TAG, it)
         }) {
-      vector?.setTint(context.resources.getColor(R.color.yellow))
+      vector?.setTint(ResUtil.getColor(R.color.yellow))
       msg = context.getString(R.string.hint_security_yellow)
     }
     btText.setEndIcon(vector!!)
