@@ -138,12 +138,12 @@ class SearchModule : BaseModule() {
       if (record != null) {
         record.time = System.currentTimeMillis()
         dao.updateRecord(record)
-      } else {
-        record = SearchRecord()
-        record.title = title
-        record.time = System.currentTimeMillis()
-        dao.saveRecord(record)
+        return@launch
       }
+      record = SearchRecord()
+      record.title = title
+      record.time = System.currentTimeMillis()
+      dao.saveRecord(record)
     }
   }
 

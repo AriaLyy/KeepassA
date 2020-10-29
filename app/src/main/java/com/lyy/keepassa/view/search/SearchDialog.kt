@@ -98,18 +98,17 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
   private fun searchData(query: String) {
     if (query.isEmpty()) {
       getRecordData()
-    } else {
-      module.searchEntry(query)
-          .observe(this, Observer { list ->
-            if (list != null) {
-              date.clear()
-              date.addAll(list)
-              adapter.queryString = query
-              adapter.notifyDataSetChanged()
-            }
-          })
+      return
     }
-
+    module.searchEntry(query)
+        .observe(this, Observer { list ->
+          if (list != null) {
+            date.clear()
+            date.addAll(list)
+            adapter.queryString = query
+            adapter.notifyDataSetChanged()
+          }
+        })
   }
 
   private fun getRecordData() {
@@ -129,10 +128,10 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
    */
   private fun initList() {
     adapter = SearchAdapter(requireContext(), date, OnClickListener { v ->
-      val posotion = v.tag as Int
-      val item = date[posotion]
+      val position = v.tag as Int
+      val item = date[position]
       module.delHistoryRecord(item.title)
-          .observe(this, Observer { b ->
+          .observe(this, Observer {
             date.remove(item)
             adapter.notifyDataSetChanged()
           })
@@ -143,15 +142,15 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
     RvItemClickSupport.addTo(binding.list)
         .setOnItemClickListener { _, position, _ ->
           val item = date[position]
-          if (item.id == 1) {
+          if (item.type == SearchAdapter.ITEM_TYPE_RECORD) {
             // 处理历史记录，直接使用该历史搜索数据，输入框设置该历史记录
             binding.search.setQuery(item.title, true)
-          } else {
-            // 处理搜索结果
-            module.saveSearchRecord(item.title)
-            KeepassAUtil.turnEntryDetail(context as FragmentActivity, item.obj as PwDataInf)
-            dismiss()
+            return@setOnItemClickListener
           }
+          // 处理搜索结果
+          module.saveSearchRecord(item.title)
+          KeepassAUtil.turnEntryDetail(context as FragmentActivity, item.obj as PwDataInf)
+          dismiss()
         }
     getRecordData()
   }

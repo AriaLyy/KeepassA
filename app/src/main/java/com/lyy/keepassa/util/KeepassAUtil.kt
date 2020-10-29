@@ -450,7 +450,9 @@ object KeepassAUtil {
           intent, ActivityOptions.makeSceneTransitionAnimation(activity)
           .toBundle()
       )
-    } else if (entry is PwEntry) {
+      return
+    }
+    if (entry is PwEntry) {
       val intent = Intent(activity, EntryDetailActivity::class.java)
       intent.putExtra(EntryDetailActivity.KEY_GROUP_TITLE, entry.parent.name)
       intent.putExtra(EntryDetailActivity.KEY_ENTRY_ID, entry.uuid)
@@ -461,12 +463,14 @@ object KeepassAUtil {
             intent, ActivityOptions.makeSceneTransitionAnimation(activity, pair)
             .toBundle()
         )
-      } else {
-        activity.startActivity(
-            intent, ActivityOptions.makeSceneTransitionAnimation(activity)
-            .toBundle()
-        )
+        return
       }
+
+      activity.startActivity(
+          intent, ActivityOptions.makeSceneTransitionAnimation(activity)
+          .toBundle()
+      )
+
     }
   }
 
