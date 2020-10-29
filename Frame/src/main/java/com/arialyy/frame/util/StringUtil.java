@@ -76,14 +76,21 @@ public class StringUtil {
    * @param str 这个字符串
    * @param key 关键字
    */
-  public static SpannableString highlightKeyword(String str, String key, int highlightColor) {
-    if (!str.contains(key)) {
+  public static SpannableString highlightKeyword(final String str, final String key,
+      int highlightColor, boolean ignoreCase) {
+    String tempStr = str;
+    String tempKey = key;
+    if (ignoreCase) {
+      tempStr = tempStr.toUpperCase();
+      tempKey = key.toUpperCase();
+    }
+    if (!tempStr.contains(tempKey)) {
       return null;
     }
-    SpannableString sp = new SpannableString(str);
-    key = Pattern.quote(key);
-    Pattern p = Pattern.compile(key);
-    Matcher m = p.matcher(str);
+    SpannableString sp = new SpannableString(tempStr);
+    tempKey = Pattern.quote(tempKey);
+    Pattern p = Pattern.compile(tempKey);
+    Matcher m = p.matcher(tempStr);
 
     while (m.find()) {  //通过正则查找，逐个高亮
       int start = m.start();

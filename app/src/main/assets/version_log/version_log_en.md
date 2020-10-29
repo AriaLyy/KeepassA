@@ -17,7 +17,7 @@
 #### 1.3 (2020/9/22)
 - Add the TOTP token setting function, edit the entry, click the add more button to display the function interface
 
-![otp_setting](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/otp_setting.png)
+![otp_setting](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/otpsetting.png)
 
 #### 1.2 (2020/9/2)
 - Fix some nasty crashes

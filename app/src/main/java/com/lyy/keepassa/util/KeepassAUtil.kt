@@ -186,13 +186,10 @@ object KeepassAUtil {
   /**
    * 将pwGroup 转换为列表实体
    */
-  fun convertPwGroup2Item(
-    context: Context,
-    pwGroup: PwGroup
-  ): SimpleItemEntity {
+  fun convertPwGroup2Item(pwGroup: PwGroup): SimpleItemEntity {
     val item = SimpleItemEntity()
     item.title = pwGroup.name
-    item.subTitle = context.getString(
+    item.subTitle = BaseApp.APP.getString(
         R.string.hint_group_desc, KdbUtil.getGroupEntryNum(pwGroup)
         .toString()
     )

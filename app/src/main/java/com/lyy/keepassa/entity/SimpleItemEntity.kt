@@ -19,6 +19,8 @@ class SimpleItemEntity {
   lateinit var obj: Any
   var isSelected: Boolean = false
 
+  var type:Int = 0
+
   /**
    * 是否受保护
    */

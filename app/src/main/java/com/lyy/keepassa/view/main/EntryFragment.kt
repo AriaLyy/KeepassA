@@ -245,7 +245,7 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
       entry?.let {
 
         val pos = entryData.indexOf(it)
-        entryData[pos] = KeepassAUtil.convertPwGroup2Item(requireContext(), event.pwGroup)
+        entryData[pos] = KeepassAUtil.convertPwGroup2Item(event.pwGroup)
         adapter.notifyItemChanged(pos)
       }
       return

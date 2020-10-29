@@ -10,6 +10,8 @@ package com.arialyy.frame.util
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.arialyy.frame.base.FrameApp
 
 /**
@@ -28,5 +30,19 @@ object ResUtil {
     } else {
       FrameApp.app.resources.getColor(color)
     }
+  }
+
+  /**
+   * 获取svg图标
+   * @param drawableId svg 图标
+   * @param colorId 颜色Id
+   */
+  fun getSvgIcon(
+    @DrawableRes drawableId: Int,
+    @ColorRes colorId: Int
+  ): VectorDrawableCompat? {
+    val vector = VectorDrawableCompat.create(FrameApp.app.resources, drawableId, FrameApp.app.theme)
+    vector?.setTint(getColor(colorId))
+    return vector
   }
 }

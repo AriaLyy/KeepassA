@@ -35,22 +35,28 @@ class SearchAdapter(
 ) : AbsRVAdapter<SimpleItemEntity, BaseHolder>(context, data) {
   internal var queryString = ""
 
+  companion object {
+    val ITEM_TYPE_RECORD = 1
+    val ITEM_TYPE_ENTRY = 2
+    val ITEM_TYPE_GROUP = 3
+  }
+
   override fun getViewHolder(
     convertView: View,
     viewType: Int
   ): BaseHolder {
-    return if (viewType == 1) {
-      RecordHolder(convertView)
-    } else {
-      SearchHolder(convertView)
+    return when (viewType) {
+      ITEM_TYPE_RECORD, ITEM_TYPE_GROUP -> RecordHolder(convertView)
+      ITEM_TYPE_ENTRY -> SearchHolder(convertView)
+      else -> RecordHolder(convertView)
     }
   }
 
   override fun setLayoutId(type: Int): Int {
-    return if (type == 1) {
-      R.layout.item_search_record
-    } else {
-      R.layout.item_search_result
+    return when (type) {
+      ITEM_TYPE_RECORD, ITEM_TYPE_GROUP -> R.layout.item_search_record
+      ITEM_TYPE_ENTRY -> R.layout.item_search_result
+      else -> R.layout.item_search_record
     }
   }
 
@@ -59,47 +65,61 @@ class SearchAdapter(
     position: Int,
     item: SimpleItemEntity
   ) {
-    holder.text.text = item.title
-    if (holder is RecordHolder) {
-      holder.del.tag = position
-      holder.del.setOnClickListener(delListener)
-      return
-    }
-    if (holder is SearchHolder) {
-      holder.des.text = item.subTitle
-      IconUtil.setEntryIcon(context, item.obj as PwEntry, holder.icon)
-    }
 
-    // 高亮搜索关键字
-    if (queryString.isNotEmpty()) {
-      if (item.title.contains(queryString, ignoreCase = true)) {
-        val temp: SpannableStringBuilder? = StringUtil.highLightStr(
-            item.title,
-            queryString,
-            ResUtil.getColor(android.R.color.holo_red_light),
-            true
+    when (item.type) {
+      // 历史记录
+      ITEM_TYPE_RECORD -> {
+        holder.text.text = item.title
+        (holder as RecordHolder).del.tag = position
+        holder.del.setOnClickListener(delListener)
+        holder.del.visibility = View.VISIBLE
+        holder.icon.setImageResource(R.drawable.ic_history)
+      }
+      // 群组
+      ITEM_TYPE_GROUP -> {
+        highLightText(holder.text, item.title)
+        (holder as RecordHolder).del.visibility = View.GONE
+        holder.icon.setImageDrawable(
+            ResUtil.getSvgIcon(
+                R.drawable.ic_folder_24px,
+                R.color.colorPrimary
+            )
         )
-        if (temp != null) {
-          holder.text.text = temp
-        }
       }
 
-      if (item.subTitle.contains(queryString, ignoreCase = true)) {
-        val temp: SpannableStringBuilder? = StringUtil.highLightStr(
-            item.subTitle,
-            queryString,
-            ResUtil.getColor(android.R.color.holo_red_light),
-            true
-        )
-        if (temp != null) {
-          (holder as SearchHolder).des.text = temp
-        }
+      // 条目
+      ITEM_TYPE_ENTRY -> {
+        highLightText(holder.text, item.title)
+        highLightText((holder as SearchHolder).des, item.subTitle)
+        IconUtil.setEntryIcon(context, item.obj as PwEntry, holder.icon)
       }
     }
   }
 
+  private fun highLightText(
+    tv: TextView,
+    str: String
+  ) {
+    if (queryString.isNotEmpty() && str.contains(queryString, ignoreCase = true)) {
+      val temp: SpannableStringBuilder? = StringUtil.highLightStr(
+          str,
+          queryString,
+          ResUtil.getColor(android.R.color.holo_red_light),
+          true
+      )
+
+      if (temp == null) {
+        tv.text = str
+        return
+      }
+      tv.text = temp
+      return
+    }
+    tv.text = str
+  }
+
   override fun getItemViewType(position: Int): Int {
-    return data[position].id
+    return data[position].type
   }
 
   open class BaseHolder(view: View) : AbsHolder(view) {

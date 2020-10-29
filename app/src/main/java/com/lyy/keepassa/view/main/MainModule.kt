@@ -62,15 +62,15 @@ class MainModule : BaseModule() {
     context: Context,
     btText: BubbleTextView
   ) {
-    val vector = VectorDrawableCompat.create(context.resources, R.drawable.ic_eco, context.theme)
+    var vector = ResUtil.getSvgIcon(R.drawable.ic_eco, R.color.green)
     var msg = context.getString(R.string.hint_security_green)
     if (EasyProtectorLib.checkIsRoot()) {
-      vector?.setTint(ResUtil.getColor(R.color.red))
+      vector = ResUtil.getSvgIcon(R.drawable.ic_eco, R.color.red)
       msg = context.getString(R.string.hint_security_red)
     } else if (EasyProtectorLib.checkIsRunningInEmulator(context) {
 //          BuglyLog.d(TAG, it)
         }) {
-      vector?.setTint(ResUtil.getColor(R.color.yellow))
+      vector = ResUtil.getSvgIcon(R.drawable.ic_eco, R.color.yellow)
       msg = context.getString(R.string.hint_security_yellow)
     }
     btText.setEndIcon(vector!!)
@@ -233,7 +233,7 @@ class MainModule : BaseModule() {
     val rootGroup = pm.rootGroup
 
     for (group in rootGroup.childGroups) {
-      data.add(KeepassAUtil.convertPwGroup2Item(context, group))
+      data.add(KeepassAUtil.convertPwGroup2Item(group))
     }
     Log.d(
         TAG,

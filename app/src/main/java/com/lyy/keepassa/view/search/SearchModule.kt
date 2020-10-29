@@ -12,6 +12,7 @@ package com.lyy.keepassa.view.search
 import androidx.lifecycle.liveData
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
+import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.SearchParametersV4
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.base.BaseApp
@@ -55,21 +56,48 @@ class SearchModule : BaseModule() {
    */
   fun searchEntry(query: String) = liveData {
     val sp = SearchParametersV4()
-    val listStorage = ArrayList<PwEntry>()
+    val entryList = ArrayList<PwEntry>()
+    val groupList = ArrayList<PwGroup>()
     val data = ArrayList<SimpleItemEntity>()
     sp.searchString = query
-    BaseApp.KDB.pm.rootGroup.searchEntries(sp, listStorage)
-    if (listStorage.isEmpty()) {
+    BaseApp.KDB.pm.rootGroup.searchEntries(sp, entryList)
+
+    searchGroup(query, groupList)
+
+    if (entryList.isEmpty() && groupList.isEmpty()) {
       emit(null)
       return@liveData
     }
 
-    for (entry in listStorage) {
-      val item = KeepassAUtil.convertPwEntry2Item(entry)
-      item.id = 2
+    // 组合群组信息
+    for (group in groupList) {
+      val item = KeepassAUtil.convertPwGroup2Item(group)
+      item.type = SearchAdapter.ITEM_TYPE_GROUP
       data.add(item)
     }
+
+    // 组合条目信息
+    for (entry in entryList) {
+      val item = KeepassAUtil.convertPwEntry2Item(entry)
+      item.type = SearchAdapter.ITEM_TYPE_ENTRY
+      data.add(item)
+    }
+
     emit(data)
+  }
+
+  /**
+   * 搜索群组
+   */
+  private fun searchGroup(
+    query: String,
+    listStorage: ArrayList<PwGroup>
+  ) {
+    for ((_, group) in BaseApp.KDB.pm.groups) {
+      if (group.name.contains(query, true)) {
+        listStorage.add(group)
+      }
+    }
   }
 
   /**
@@ -95,7 +123,7 @@ class SearchModule : BaseModule() {
     val item = SimpleItemEntity()
     item.time = record.time
     item.title = record.title
-    item.id = 1
+    item.type = SearchAdapter.ITEM_TYPE_RECORD
     return item
   }
 
