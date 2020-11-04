@@ -96,7 +96,11 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
         })
     RvItemClickSupport.addTo(binding.list)
         .setOnItemClickListener { _, position, _ ->
-          if (KeepassAUtil.isFastClick() || activity == null) {
+          if (KeepassAUtil.isFastClick()
+              || activity == null
+              || position < 0
+              || position >= data.size
+          ) {
             return@setOnItemClickListener
           }
           when (data[position].id) {
@@ -139,7 +143,7 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
    * 选择webDav
    */
   private fun changeWebDav() {
-    if (!isAdded){
+    if (!isAdded) {
       KLog.e(TAG, "webDav fragment 还没加载到activity中")
       return
     }
@@ -151,7 +155,7 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
    * 选择dropbox数据库
    */
   private fun changeDropbox() {
-    if (!isAdded){
+    if (!isAdded) {
       KLog.e(TAG, "dropbox fragment 还没加载到activity中")
       return
     }

@@ -35,6 +35,7 @@ import com.lyy.keepassa.common.SortType.TIME_DESC
 import com.lyy.keepassa.databinding.ActivityGroupDetailBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
+import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.event.UndoEvent
 import com.lyy.keepassa.util.EventBusHelper
@@ -121,7 +122,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
         }
         else -> NONE
       }
-      if (type != NONE){
+      if (type != NONE) {
         module.sortData(type, entryData)
             .observe(this, Observer { sortData ->
               entryData.clear()
@@ -133,6 +134,9 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
     }
   }
 
+  /**
+   * fab
+   */
   private fun initFab() {
     if (isRecycleBin) {
       binding.fab.visibility = View.GONE
@@ -154,7 +158,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
 
       override fun onGroupClick() {
         val dialog = CreateGroupDialog.generate {
-          parentGroup = BaseApp.KDB.pm.rootGroup
+          parentGroup = BaseApp.KDB.pm.groups[groupId] ?: BaseApp.KDB.pm.rootGroup
           build()
         }
         dialog.show(supportFragmentManager, "CreateGroupDialog")
@@ -185,9 +189,13 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
                 intent, ActivityOptions.makeSceneTransitionAnimation(this)
                 .toBundle()
             )
-          } else if (item.obj is PwEntry) {
+            return@setOnItemClickListener
+          }
+
+          if (item.obj is PwEntry) {
             val icon = v.findViewById<AppCompatImageView>(R.id.icon)
             KeepassAUtil.turnEntryDetail(this, item.obj as PwEntry, icon)
+            return@setOnItemClickListener
           }
         }
 
@@ -232,10 +240,9 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
             binding.list.visibility = View.GONE
             binding.emptyLayout.translationY = resources.getDimension(R.dimen.bar_height)
             return@Observer
-          } else {
-            binding.emptyLayout.visibility = View.GONE
-            binding.list.visibility = View.VISIBLE
           }
+          binding.emptyLayout.visibility = View.GONE
+          binding.list.visibility = View.VISIBLE
           entryData.clear()
           entryData.addAll(list)
           adapter.notifyDataSetChanged()
@@ -255,10 +262,21 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
           entryData[pos] = KeepassAUtil.convertPwEntry2Item(event.entry)
           adapter.notifyItemChanged(pos)
         }
-      } else {
-        getData()
+        return
       }
+      getData()
     }
+  }
+
+  /**
+   * 创建群组
+   */
+  @Subscribe(threadMode = MAIN)
+  fun onGroupCreate(event: CreateOrUpdateGroupEvent) {
+    if (event.pwGroup.parent.id != groupId) {
+      return
+    }
+    getData()
   }
 
   /**

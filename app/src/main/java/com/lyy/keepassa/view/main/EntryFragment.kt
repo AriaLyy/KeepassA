@@ -12,7 +12,6 @@ package com.lyy.keepassa.view.main
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
@@ -39,7 +38,6 @@ import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.isAFS
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import com.lyy.keepassa.view.dialog.LoadingDialog
@@ -131,7 +129,7 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
 
     )
     binding.swipe.setOnRefreshListener {
-      if (BaseApp.dbRecord == null){
+      if (BaseApp.dbRecord == null) {
         finishRefresh(false)
         return@setOnRefreshListener
       }
@@ -174,9 +172,11 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
     binding.swipe.isRefreshing = false
     HitUtil.snackShort(
         mRootView,
-        "${getString(R.string.sync_db)} ${if (isSuccess) getString(R.string.success) else getString(
-            R.string.fail
-        )}"
+        "${getString(R.string.sync_db)} ${
+          if (isSuccess) getString(R.string.success) else getString(
+              R.string.fail
+          )
+        }"
     )
     if (!isAfs) {
       loadingDialog.dismiss()
@@ -240,6 +240,9 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
    */
   @Subscribe(threadMode = MAIN)
   fun onGroupCreate(event: CreateOrUpdateGroupEvent) {
+    if (event.pwGroup.parent != BaseApp.KDB.pm.rootGroup) {
+      return
+    }
     if (event.isUpdate) {
       val entry: SimpleItemEntity? = entryData.find { it.obj == event.pwGroup }
       entry?.let {

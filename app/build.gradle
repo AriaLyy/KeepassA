@@ -68,9 +68,9 @@ android {
 
     release {
       //zipAlignEnabled true //开启Zipalign优化
-      debuggable false
-      minifyEnabled true
-      shrinkResources true // 移除无用资源
+      debuggable true
+      minifyEnabled false
+//      shrinkResources true // 移除无用资源
       //      multiDexKeepFile file('multidex-config.txt')
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
       consumerProguardFiles 'proguard-rules.pro' // wcdb 需要增加这个混淆
@@ -222,6 +222,9 @@ dependencies {
   // =========================== android 组件 end =====================================
 
   // =========================== 三方库 start =====================================
+  // 开源许可对话框
+  implementation 'de.psdev.licensesdialog:licensesdialog:2.1.0'
+
   // 状态栏
   implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
   // 大图浏览

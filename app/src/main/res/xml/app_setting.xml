@@ -79,6 +79,12 @@
         app:key="@string/set_key_version_log"
         app:title="@string/version_log" />
 
+    <Preference
+        app:icon="@drawable/ic_notice"
+        app:isPreferenceVisible="true"
+        app:key="@string/set_key_license"
+        app:title="@string/license" />
+
   </PreferenceCategory>
 
 

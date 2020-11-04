@@ -78,7 +78,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     EventBusHelper.reg(this)
     module = ViewModelProvider(this).get(EntryDetailModule::class.java)
     val uuid = intent.getSerializableExtra(KEY_ENTRY_ID)
-    if (uuid == null || BaseApp.KDB.pm == null){
+    if (uuid == null || BaseApp.KDB.pm == null) {
       HitUtil.toaskShort(getString(R.string.error_entry_id_null))
       finishAfterTransition()
       BaseApp.isLocked = true
@@ -101,9 +101,9 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
         intent.putExtra(CreateEntryActivity.KEY_TYPE, CreateEntryActivity.TYPE_EDIT_ENTRY)
         intent.putExtra(CreateEntryActivity.KEY_ENTRY, pwEntry.uuid)
         startActivity(
-          intent,
-          ActivityOptions.makeSceneTransitionAnimation(this)
-              .toBundle()
+            intent,
+            ActivityOptions.makeSceneTransitionAnimation(this)
+                .toBundle()
         )
       }
 
@@ -151,7 +151,8 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     }
     dialog.setOnBtClickListener(object : MsgDialog.OnBtClickListener {
       override fun onBtClick(
-          type: Int, view: View
+        type: Int,
+        view: View
       ) {
         if (type == MsgDialog.TYPE_ENTER) {
           loadDialog = LoadingDialog(this@EntryDetailActivity)
@@ -210,7 +211,8 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   /**
    * 更新条目事件
    */
-  @Subscribe(threadMode = MAIN) fun onUpdateEntryEvent(event: CreateOrUpdateEntryEvent) {
+  @Subscribe(threadMode = MAIN)
+  fun onUpdateEntryEvent(event: CreateOrUpdateEntryEvent) {
     if (event.entry.uuid != pwEntry.uuid || !event.isUpdate) {
       return
     }
@@ -229,7 +231,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     EventBus.getDefault()
         .post(DelEvent(pwEntry))
     HitUtil.toaskShort(
-      "${getString(R.string.del_entry)}${getString(R.string.success)}"
+        "${getString(R.string.del_entry)}${getString(R.string.success)}"
     )
     VibratorUtil.vibrator(300)
     finishAfterTransition()
@@ -254,7 +256,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
           getString(R.string.expire_time, KeepassAUtil.formatTime(pwEntry.expiryTime))
       } else {
         binding.time.text = Html.fromHtml(
-          getString(R.string.expire, KeepassAUtil.formatTime(pwEntry.expiryTime, "yyyy/MM/dd"))
+            getString(R.string.expire, KeepassAUtil.formatTime(pwEntry.expiryTime, "yyyy/MM/dd"))
         )
       }
 
@@ -345,8 +347,8 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       if ((pwEntry as PwEntryV3).additional.isNotEmpty()) {
         binding.attrStr.visibility = View.VISIBLE
         binding.attrStr.addStrValue(
-          getString(R.string.hint_ex_property),
-          ProtectedString(false, (pwEntry as PwEntryV3).additional)
+            getString(R.string.hint_ex_property),
+            ProtectedString(false, (pwEntry as PwEntryV3).additional)
         )
       } else {
         binding.attrStr.visibility = View.GONE
@@ -379,7 +381,8 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   private fun setAttrStrListener() {
     binding.attrStr.setOnAttrViewClickListener(object : ExpandTextView.OnAttrViewClickListener {
       override fun onClickListener(
-          v: View, position: Int
+        v: View,
+        position: Int
       ) {
         if (KeepassAUtil.isFastClick()) {
           return
@@ -389,9 +392,10 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
         val str = v.valueInfo
         val pop = EntryDetailStrPopMenu(this@EntryDetailActivity, v, str)
         // totp 密码，seed都需要显示密码
-        if (key == "TOTP" || key.equals(
-              "otp", ignoreCase = true
-            ) || key.equals("TOTP Seed") || str.isProtected
+        if (key == "TOTP"
+            || key.equals("otp", ignoreCase = true)
+            || key.equals("TOTP Seed", ignoreCase = true)
+            || str.isProtected
         ) {
           pop.setOnShowPassCallback(object : OnShowPassCallback {
             override fun showPass(showPass: Boolean) {
@@ -421,7 +425,8 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   private fun setAttrFileListener() {
     binding.attrFile.setOnAttrViewClickListener(object : ExpandTextView.OnAttrViewClickListener {
       override fun onClickListener(
-          v: View, position: Int
+        v: View,
+        position: Int
       ) {
         if (KeepassAUtil.isFastClick()) {
           return
@@ -431,7 +436,8 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
         val menu = EntryDetailFilePopMenu(this@EntryDetailActivity, v, key, value!!)
         menu.setOnDownloadClick(object : EntryDetailFilePopMenu.OnDownloadClick {
           override fun onDownload(
-              key: String, file: ProtectedBinary
+            key: String,
+            file: ProtectedBinary
           ) {
             curDLoadFile = file
             KeepassAUtil.createFile(this@EntryDetailActivity, "*/*", key, createFileRequestCode)
@@ -444,14 +450,17 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   }
 
   override fun onActivityResult(
-      requestCode: Int, resultCode: Int, data: Intent?
+    requestCode: Int,
+    resultCode: Int,
+    data: Intent?
   ) {
     super.onActivityResult(requestCode, resultCode, data)
     if (resultCode == Activity.RESULT_OK
         && data != null
         && data.data != null
         && requestCode == createFileRequestCode
-        && curDLoadFile != null) {
+        && curDLoadFile != null
+    ) {
       data.data?.takePermission()
       val dialog = LoadingDialog(this)
       dialog.show()

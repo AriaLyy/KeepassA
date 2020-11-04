@@ -268,4 +268,6 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="url">URL</string>
   <string name="hint_not_nore_info">No more information</string>
   <string name="error_uri_grant_permission">Uri authorization failed</string>
+  <string name="license">Open source license</string>
+  <string name="move">Move</string>
 </resources>

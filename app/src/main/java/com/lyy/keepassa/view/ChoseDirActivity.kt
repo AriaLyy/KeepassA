@@ -76,6 +76,11 @@ class ChoseDirActivity : BaseActivity<ActivityGroupDirBinding>() {
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
+    if ( BaseApp.KDB.pm == null){
+      HitUtil.toaskShort(getString(R.string.error_entry_id_null))
+      finish()
+      return
+    }
     module = ViewModelProvider(this).get(ChoseDirModule::class.java)
     curGroup = BaseApp.KDB.pm.rootGroup
     recycleType = intent.getIntExtra(KEY_TYPE, 1)

@@ -277,9 +277,9 @@ class ExpandTextView(
     val child = AttrFileItemView(
         context, title, value
     )
-    child.id = itemLayout.childCount + 1
+    child.id = itemLayout.childCount
     child.setOnClickListener(this)
-    itemLayout.addView(child, childCount + 1)
+    itemLayout.addView(child, child.id)
     itemLayout.invalidate()
   }
 

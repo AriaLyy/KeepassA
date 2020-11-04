@@ -268,4 +268,6 @@
   <string name="url">網址</string>
   <string name="hint_not_nore_info">没有更多信息</string>
   <string name="error_uri_grant_permission">Uri 授權失敗</string>
+  <string name="license">開放源碼許可證</string>
+  <string name="move">移動</string>
 </resources>

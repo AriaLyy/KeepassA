@@ -34,4 +34,10 @@
       android:title="@string/del_entry"
       app:showAsAction="ifRoom" />
 
+  <item
+      android:id="@+id/move"
+      android:icon="@drawable/ic_baseline_open_with"
+      android:title="@string/move"
+      app:showAsAction="ifRoom" />
+
 </menu>

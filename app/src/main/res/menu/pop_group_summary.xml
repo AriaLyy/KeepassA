@@ -20,4 +20,11 @@
       android:icon="@drawable/ic_del"
       android:title="@string/del_group"
       app:showAsAction="ifRoom" />
+
+  <item
+      android:id="@+id/move"
+      android:icon="@drawable/ic_baseline_open_with"
+      android:title="@string/move"
+      app:showAsAction="ifRoom" />
+
 </menu>

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright 2013 Philip Schiffer
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  -->
+<notices>
+
+    <notice>
+        <name>Material design icons</name>
+        <url>https://github.com/google/material-design-icons</url>
+        <copyright/>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>OkHttp</name>
+        <url>https://github.com/square/okhttp</url>
+        <copyright>Copyright 2019 Square, Inc.</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>Retrofit</name>
+        <url>https://github.com/square/retrofit</url>
+        <copyright>Copyright 2013 Square, Inc.</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>Gson</name>
+        <url>https://github.com/google/gson</url>
+        <copyright>Copyright 2008 Google Inc.</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>Spongycastle</name>
+        <url>https://github.com/rtyley/spongycastle</url>
+        <copyright>Copyright (c) 2000-2017 The Legion of the Bouncy Castle Inc. (http://www.bouncycastle.org)</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>Apache Commons IO</name>
+        <url>http://commons.apache.org/io/</url>
+        <copyright>Copyright 2002-2012 The Apache Software Foundation</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>Kotlin</name>
+        <url>https://github.com/JetBrains/kotlin</url>
+        <copyright/>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>AndResGuard</name>
+        <url>https://github.com/shwenzhang/AndResGuard</url>
+        <copyright/>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>EasyProtector</name>
+        <url>https://github.com/lamster2018/EasyProtector</url>
+        <copyright/>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>VasDolly</name>
+        <url>https://github.com/Tencent/VasDolly</url>
+        <copyright>Copyright (C) 2018 THL A29 Limited, a Tencent company.</copyright>
+        <license>BSD 3-Clause License</license>
+    </notice>
+
+    <notice>
+        <name>Richtext</name>
+        <url>https://github.com/zzhoujay/RichText</url>
+        <copyright>Copyright (c) 2016 zzhoujay</copyright>
+        <license>MIT License</license>
+    </notice>
+
+    <notice>
+        <name>Wcdb room</name>
+        <url>https://github.com/Tencent/wcdb</url>
+        <copyright>Copyright (C) 2017 THL A29 Limited, a Tencent company.</copyright>
+        <license>BSD 3-Clause License</license>
+    </notice>
+
+    <notice>
+        <name>Wcdb android</name>
+        <url>https://github.com/Tencent/wcdb</url>
+        <copyright>Copyright (C) 2017 THL A29 Limited, a Tencent company.</copyright>
+        <license>BSD 3-Clause License</license>
+    </notice>
+
+    <notice>
+        <name>Sardine android</name>
+        <url>https://github.com/thegrizzlylabs/sardine-android</url>
+        <copyright/>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>Keepassdroid</name>
+        <url>https://github.com/bpellin/keepassdroid</url>
+        <copyright>Copyright 2009 Brian Pellin.</copyright>
+        <license>GNU General Public License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>AOSP</name>
+        <url>https://github.com/bumptech/glide</url>
+        <copyright>Copyright 2014 Google, Inc.</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+
+    <notice>
+        <name>Glide</name>
+        <url>https://github.com/bumptech/glide</url>
+        <copyright>Copyright 2014 Google, Inc.</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>Lottie</name>
+        <url>https://github.com/airbnb/lottie-android</url>
+        <copyright>Copyright 2018 Airbnb, Inc.</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+
+    <notice>
+        <name>EventBus</name>
+        <url>https://github.com/greenrobot/EventBus</url>
+        <copyright>Copyright (C) 2012-2020 Markus Junginger, greenrobot (https://greenrobot.org)</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>Immersionbar</name>
+        <url>https://github.com/gyf-dev/ImmersionBar</url>
+        <copyright/>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>Subsampling scale image view</name>
+        <url>https://github.com/davemorrissey/subsampling-scale-image-view</url>
+        <copyright>Copyright 2018 David Morrissey</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>LicensesDialog</name>
+        <url>https://github.com/PSDev/LicensesDialog</url>
+        <copyright>Copyright 2013 Philip Schiffer</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>Joda Time</name>
+        <url>http://joda-time.sourceforge.net/</url>
+        <copyright>Copyright 2001-2005 Stephen Colebourne</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+</notices>

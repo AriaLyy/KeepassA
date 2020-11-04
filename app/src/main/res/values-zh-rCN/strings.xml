@@ -274,5 +274,7 @@
   <string name="url">网址</string>
   <string name="hint_not_nore_info">没有更多信息</string>
   <string name="error_uri_grant_permission">Uri 授权失败</string>
+  <string name="license">开放源码许可证</string>
+  <string name="move">移动</string>
 </resources>
 

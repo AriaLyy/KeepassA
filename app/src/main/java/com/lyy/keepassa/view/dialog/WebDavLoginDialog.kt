@@ -14,7 +14,6 @@ import android.text.TextUtils
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.arialyy.frame.base.BaseDialog
-import com.lyy.keepassa.BuildConfig
 import com.lyy.keepassa.R
 import com.lyy.keepassa.databinding.DialogWebdavLoginBinding
 import com.lyy.keepassa.event.ChangeDbEvent
@@ -58,7 +57,9 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
       binding.uri.setText(webDavDbName)
     }
 
-//    binding.uri.setText("http://192.168.1.2:5555/WebDAV/keepass.kdbx")
+    binding.uri.setText("http://shadowx.myqnapcloud.com:5007/test/keepass.kdbx")
+    binding.userName.setText("test")
+    binding.password.setText("test123.")
 
     binding.enter.setOnClickListener {
       if (KeepassAUtil.isFastClick()) {
@@ -132,9 +133,10 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
                           uriType = WEBDAV
                       )
                   )
-            } else {
-              HitUtil.toaskShort("${getString(R.string.login)} ${getString(R.string.fail)}")
+              return@Observer
             }
+
+            HitUtil.toaskShort("${getString(R.string.login)} ${getString(R.string.fail)}")
           })
     }
     binding.cancel.setOnClickListener { dismiss() }

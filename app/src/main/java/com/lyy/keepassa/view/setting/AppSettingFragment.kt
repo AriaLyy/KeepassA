@@ -37,6 +37,7 @@ import com.lyy.keepassa.util.RoomUtil
 import com.lyy.keepassa.view.UpgradeLogDialog
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.fingerprint.FingerprintActivity
+import de.psdev.licensesdialog.LicensesDialog
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -64,12 +65,28 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     setFingerPrint()
     setVersionLog()
     setIme()
+    license()
+  }
+
+  /**
+   * 开放源码许可证
+   */
+  private fun license() {
+    findPreference<Preference>(getString(R.string.set_key_license))?.setOnPreferenceClickListener {
+
+      LicensesDialog.Builder(requireContext())
+          .setNotices(R.raw.notices)
+          .setIncludeOwnLicense(true)
+          .build()
+          .show();
+      true
+    }
   }
 
   /**
    * 处理安全键盘
    */
-  private fun setIme(){
+  private fun setIme() {
     findPreference<Preference>(getString(R.string.set_key_open_kpa_ime))?.setOnPreferenceClickListener {
       startActivity(Intent(Settings.ACTION_INPUT_METHOD_SETTINGS))
       true

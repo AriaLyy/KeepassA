@@ -41,8 +41,8 @@ class MsgDialog : BaseDialog<DialogMsgBinding>(), View.OnClickListener {
   @ColorInt private var coverBtTextColor: Int? = null
 
   // 以下是构造参数
-  lateinit var msgTitle: CharSequence
-  lateinit var msgContent: CharSequence
+  var msgTitle: CharSequence = ""
+  var msgContent: CharSequence = ""
   var showCancelBt: Boolean = true // 显示取消按钮
   var requestCode: Int = 0 // dialog请求码
   var showCoverBt: Boolean = false //显示覆盖按钮
