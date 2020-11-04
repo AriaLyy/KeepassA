@@ -51,7 +51,7 @@ import com.lyy.keepassa.util.KeepassAUtil.getFileInfo
 import com.lyy.keepassa.util.KeepassAUtil.takePermission
 import com.lyy.keepassa.util.putArgument
 import com.lyy.keepassa.view.ChooseIconActivity
-import com.lyy.keepassa.view.ChoseDirActivity
+import com.lyy.keepassa.view.ChooseGroupActivity
 import com.lyy.keepassa.view.dialog.AddMoreDialog
 import com.lyy.keepassa.view.dialog.CreateTotpDialog
 import com.lyy.keepassa.view.dialog.LoadingDialog
@@ -431,13 +431,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
 
     if (type == TYPE_NEW_ENTRY || type == TYPE_NEW_TYPE_ENTRY) {
       if (parentGroupId == null) {
-        val intent = Intent(this, ChoseDirActivity::class.java)
-        intent.putExtra(ChoseDirActivity.KEY_TYPE, 3)
-        startActivityForResult(
-            intent, groupDirRequestCode,
-            ActivityOptions.makeSceneTransitionAnimation(this)
-                .toBundle()
-        )
+        ChooseGroupActivity.chooseGroup(this, groupDirRequestCode)
       } else {
         createEntry(parentGroupId!!)
       }
@@ -770,7 +764,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
         }
         // 处理群组选择
         groupDirRequestCode -> {
-          createEntry(data.getSerializableExtra(ChoseDirActivity.DATA_PARENT) as PwGroupId)
+          createEntry(data.getSerializableExtra(ChooseGroupActivity.DATA_PARENT) as PwGroupId)
         }
         // 处理附件
         getFileRequestCode -> {

@@ -90,9 +90,9 @@
   <string name="title_too_long">群组名太长</string>
   <string name="choose_icon">选择图标</string>
   <string name="undo_entry">恢复到..</string>
-  <string name="undo_to">将数据恢复到该群组下</string>
-  <string name="undo_grouped">群组已恢复到指定位置</string>
-  <string name="undo_entryed">条目已恢复到指定位置</string>
+  <string name="undo_to">移动到该群组</string>
+  <string name="undo_grouped">群组已移动到指定位置</string>
+  <string name="undo_entryed">条目已移动到指定位置</string>
   <string name="hint_copy_user">已将用户名拷贝到剪切板</string>
   <string name="hint_copy_pass">已将密码拷贝到剪切板</string>
   <string name="hint_copy_totp">已将totp令牌拷贝到剪切板</string>

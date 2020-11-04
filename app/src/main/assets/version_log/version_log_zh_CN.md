@@ -1,6 +1,9 @@
 #### 1.5
 - 增加群组搜索功能
 - 增加开放源码协议说明
+- 增加移动条目和群组的功能
+
+![ime](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/move_data.png)
 - 修复无法增加二级群组的问题
 - 修复一些讨厌的崩溃问题
 

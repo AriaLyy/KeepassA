@@ -89,9 +89,9 @@
   <string name="title_too_long">群組名太長</string>
   <string name="choose_icon">選擇圖表</string>
   <string name="undo_entry">恢復到..</string>
-  <string name="undo_to">將數據恢復到該群組下</string>
-  <string name="undo_grouped">群組已恢復到指定位置</string>
-  <string name="undo_entryed">條目已恢復到指定位置</string>
+  <string name="undo_to">移動到該群組</string>
+  <string name="undo_grouped">群組已移動到指定位置</string>
+  <string name="undo_entryed">條目已移動到指定位置</string>
   <string name="hint_copy_user">已將用戶名拷貝到剪切板</string>
   <string name="hint_copy_pass">已將密碼拷貝到剪切板</string>
   <string name="hint_copy_totp">已將totp令牌拷貝到剪切板</string>

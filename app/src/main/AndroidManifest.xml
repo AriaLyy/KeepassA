@@ -114,7 +114,7 @@
     <activity android:name=".view.main.MainSettingActivity" />
     <activity android:name=".view.detail.GroupDetailActivity" />
     <activity android:name=".view.detail.EntryDetailActivity" />
-    <activity android:name=".view.ChoseDirActivity" />
+    <activity android:name=".view.ChooseGroupActivity" />
     <activity android:name=".view.setting.SettingActivity" />
     <activity android:name=".view.fingerprint.FingerprintActivity" />
     <activity android:name=".view.create.CreateEntryActivity" />

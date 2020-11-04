@@ -10,11 +10,8 @@
 package com.lyy.keepassa.view.menu
 
 import android.annotation.SuppressLint
-import android.app.ActivityOptions
-import android.content.Intent
 import android.text.Html
 import android.text.Spanned
-import android.util.Log
 import android.view.Gravity
 import android.view.MenuInflater
 import android.view.View
@@ -35,7 +32,7 @@ import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.OtpUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
-import com.lyy.keepassa.view.ChoseDirActivity
+import com.lyy.keepassa.view.ChooseGroupActivity
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.MsgDialog
 import kotlinx.coroutines.Dispatchers
@@ -114,15 +111,8 @@ class EntryPopMenu(
             HitUtil.toaskShort(context.getString(R.string.hint_copy_totp))
           }
         }
-        R.id.undo -> {
-          val intent = Intent(context, ChoseDirActivity::class.java)
-          intent.putExtra(ChoseDirActivity.KEY_TYPE, 2)
-          intent.putExtra(ChoseDirActivity.KEY_ENTRY_ID, entry.uuid)
-          context.startActivity(
-              intent,
-              ActivityOptions.makeSceneTransitionAnimation(context)
-                  .toBundle()
-          )
+        R.id.undo, R.id.move -> {
+          ChooseGroupActivity.moveEntry(context, entry.uuid)
         }
       }
       dismiss()

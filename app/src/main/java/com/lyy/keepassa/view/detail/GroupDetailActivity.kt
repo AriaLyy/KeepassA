@@ -37,7 +37,7 @@ import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
 import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.event.DelEvent
-import com.lyy.keepassa.event.UndoEvent
+import com.lyy.keepassa.event.MoveEvent
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
@@ -294,7 +294,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
    * 回收站中需要删除数据
    */
   @Subscribe(threadMode = MAIN)
-  fun onUndo(event: UndoEvent) {
+  fun onUndo(event: MoveEvent) {
     if (!isRecycleBin) {
       return
     }

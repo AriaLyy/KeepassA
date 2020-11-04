@@ -28,9 +28,9 @@ class ChoseDirModule : BaseModule() {
   /**
    * 恢复群组
    * @param groupId 需要恢复的群组
-   * @param 当前群组
+   * @param curGroup 当前群组
    */
-  fun undoGroup(
+  fun moveGroup(
     groupId: PwGroupId,
     curGroup: PwGroup
   ) = liveData {
@@ -46,7 +46,7 @@ class ChoseDirModule : BaseModule() {
   /**
    * 恢复条目
    */
-  fun undoEntry(
+  fun moveEntry(
     entryId: UUID,
     curGroup: PwGroup
   ) = liveData {

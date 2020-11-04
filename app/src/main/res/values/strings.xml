@@ -89,9 +89,9 @@
   <string name="title_too_long">Group name is too long</string>
   <string name="choose_icon">Choose icon</string>
   <string name="undo_entry">Resumed..</string>
-  <string name="undo_to">Restore data to this group</string>
-  <string name="undo_grouped">The group has been restored to the specified location</string>
-  <string name="undo_entryed">Item has been restored to the specified location</string>
+  <string name="undo_to">Move to this group</string>
+  <string name="undo_grouped">The group has been move to the specified location</string>
+  <string name="undo_entryed">Item has been move to the specified location</string>
   <string name="hint_copy_user">Username copied to clipboard</string>
   <string name="hint_copy_pass">Password copied to clipboard</string>
   <string name="hint_copy_totp">Copied totp token to clipboard</string>

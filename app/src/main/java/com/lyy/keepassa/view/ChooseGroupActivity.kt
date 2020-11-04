@@ -10,6 +10,9 @@
 package com.lyy.keepassa.view
 
 import android.app.Activity
+import android.app.ActivityOptions
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.Observer
@@ -30,8 +33,7 @@ import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.ActivityGroupDirBinding
 import com.lyy.keepassa.databinding.FragmentOnlyListBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
-import com.lyy.keepassa.event.UndoEvent
-import com.lyy.keepassa.util.EventBusHelper
+import com.lyy.keepassa.event.MoveEvent
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.view.dialog.LoadingDialog
@@ -41,22 +43,90 @@ import java.util.UUID
 import kotlin.collections.set
 
 /**
- * 选择目录
+ * 选择群组
  */
-class ChoseDirActivity : BaseActivity<ActivityGroupDirBinding>() {
+class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
 
   companion object {
     // 需要恢复的群组id
-    const val KEY_GROUP_ID = "KEY_GROUP_ID"
+    private const val KEY_GROUP_ID = "KEY_GROUP_ID"
 
     // 需要恢复的条目id
-    const val KEY_ENTRY_ID = "KEY_ENTRY_ID"
+    private const val KEY_ENTRY_ID = "KEY_ENTRY_ID"
 
-    // 1: 恢复群组，2: 恢复项目，3: 选择目录
-    const val KEY_TYPE = "KEY_TYPE"
+    // 1: 恢复群组，2: 恢复项目，3: 选择群组，4: 移动
+    private const val KEY_TYPE = "KEY_TYPE"
+
+    // 恢复群组
+    private const val DATA_MOVE_GROUP = 1
+
+    // 恢复条目
+    private const val DATA_MOVE_ENTRY = 2
+
+    // 选择群组
+    private const val DATA_SELECT_GROUP = 3
 
     // 路径地址
     const val DATA_PARENT = "DATA_PARENT"
+
+    /**
+     * 选择群组
+     */
+    fun chooseGroup(
+      context: Activity,
+      groupDirRequestCode: Int
+    ) {
+      val intent = Intent(context, ChooseGroupActivity::class.java)
+      intent.putExtra(KEY_TYPE, DATA_SELECT_GROUP)
+      context.startActivityForResult(
+          intent, groupDirRequestCode,
+          ActivityOptions.makeSceneTransitionAnimation(context)
+              .toBundle()
+      )
+    }
+
+    /**
+     * 移动条目
+     * @param entryId 条目id
+     */
+    fun moveEntry(
+      context: Context,
+      entryId: UUID
+    ) {
+      val intent = Intent(context, ChooseGroupActivity::class.java)
+      intent.putExtra(KEY_TYPE, DATA_MOVE_ENTRY)
+      intent.putExtra(KEY_ENTRY_ID, entryId)
+      if (context is Activity) {
+        context.startActivity(
+            intent,
+            ActivityOptions.makeSceneTransitionAnimation(context)
+                .toBundle()
+        )
+        return
+      }
+      context.startActivity(intent)
+    }
+
+    /**
+     * 移动群组
+     */
+    fun moveGroup(
+      context: Context,
+      groupId: PwGroupId
+    ) {
+      val intent = Intent(context, ChooseGroupActivity::class.java)
+      intent.putExtra(KEY_TYPE, DATA_MOVE_GROUP)
+      intent.putExtra(KEY_GROUP_ID, groupId)
+      if (context is Activity) {
+        context.startActivity(
+            intent,
+            ActivityOptions.makeSceneTransitionAnimation(context)
+                .toBundle()
+        )
+        return
+      }
+      context.startActivity(intent)
+    }
   }
 
   private lateinit var curGroup: PwGroup
@@ -65,7 +135,7 @@ class ChoseDirActivity : BaseActivity<ActivityGroupDirBinding>() {
   private lateinit var recycleGroupId: PwGroupId
   private lateinit var recycleEntryId: UUID
   private var loadDialog: LoadingDialog? = null
-  private var recycleType = 1
+  private var recycleType = DATA_MOVE_GROUP
   private var undoGroup: PwGroupV4? = null
   private var undoEntry: PwEntryV4? = null
   private lateinit var module: ChoseDirModule
@@ -76,40 +146,43 @@ class ChoseDirActivity : BaseActivity<ActivityGroupDirBinding>() {
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
-    if ( BaseApp.KDB.pm == null){
+    if (BaseApp.KDB.pm == null) {
       HitUtil.toaskShort(getString(R.string.error_entry_id_null))
       finish()
       return
     }
     module = ViewModelProvider(this).get(ChoseDirModule::class.java)
     curGroup = BaseApp.KDB.pm.rootGroup
-    recycleType = intent.getIntExtra(KEY_TYPE, 1)
+    recycleType = intent.getIntExtra(KEY_TYPE, DATA_MOVE_GROUP)
     val gTemp = intent.getSerializableExtra(KEY_GROUP_ID)
     val eTemp = intent.getSerializableExtra(KEY_ENTRY_ID)
-    if (recycleType == 1 && gTemp == null) {
+    if (recycleType == DATA_MOVE_GROUP && gTemp == null) {
       Log.e(TAG, "需要恢复的群组id为空")
       finish()
       return
     }
-    if ((recycleType == 2) && eTemp == null) {
+    if ((recycleType == DATA_MOVE_ENTRY) && eTemp == null) {
       Log.e(TAG, "需要恢复的项目id为空")
       finish()
       return
     }
-    if (recycleType != 1 && recycleType != 2 && recycleType != 3) {
+    if (recycleType != DATA_MOVE_GROUP
+        && recycleType != DATA_MOVE_ENTRY
+        && recycleType != DATA_SELECT_GROUP
+    ) {
       Log.e(TAG, "类型错误")
       finish()
       return
     }
 
     when (recycleType) {
-      1 -> {
+      DATA_MOVE_GROUP -> {
         recycleGroupId = gTemp as PwGroupId
       }
-      2 -> {
+      DATA_MOVE_ENTRY -> {
         recycleEntryId = eTemp as UUID
       }
-      3 -> {
+      DATA_SELECT_GROUP -> {
         binding.bt.text = getString(R.string.choose_dir)
       }
     }
@@ -119,32 +192,39 @@ class ChoseDirActivity : BaseActivity<ActivityGroupDirBinding>() {
     binding.bt.setOnClickListener {
       loadDialog = LoadingDialog(this)
       when (recycleType) {
-        1 -> {
+        // 移动群组
+        DATA_MOVE_GROUP -> {
           loadDialog?.show()
-          module.undoGroup(recycleGroupId, curGroup)
+          module.moveGroup(recycleGroupId, curGroup)
               .observe(this, Observer { t ->
                 undoGroup = t.second
                 if (t.first) {
                   onComplete(t.second)
-                } else {
-                  HitUtil.toaskShort(getString(R.string.save_db_fail))
+                  return@Observer
                 }
+                HitUtil.toaskShort(getString(R.string.save_db_fail))
+                loadDialog?.dismiss()
               })
         }
-        2 -> {
+
+        // 移动条目
+        DATA_MOVE_ENTRY -> {
           loadDialog!!.show()
-          module.undoEntry(recycleEntryId, curGroup)
+          module.moveEntry(recycleEntryId, curGroup)
               .observe(this, Observer { t ->
                 undoEntry = t.second
                 if (t.first) {
                   onComplete(t.second)
-                } else {
-                  HitUtil.toaskShort(getString(R.string.save_db_fail))
+                  return@Observer
                 }
+
+                HitUtil.toaskShort(getString(R.string.save_db_fail))
                 loadDialog?.dismiss()
               })
         }
-        3 -> {
+
+        // 选择群组目录
+        DATA_SELECT_GROUP -> {
           intent.putExtra(DATA_PARENT, curGroup.id)
           setResult(Activity.RESULT_OK, intent)
           finishAfterTransition()
@@ -158,22 +238,22 @@ class ChoseDirActivity : BaseActivity<ActivityGroupDirBinding>() {
   private fun onComplete(pwGroup: PwGroupV4) {
     loadDialog?.dismiss()
     EventBus.getDefault()
-        .post(UndoEvent(1, null, pwGroup))
-//    HitUtil.toaskShort(getString(R.string.undo_grouped))
-    Snackbar.make(binding.root, getString(R.string.undo_grouped), Snackbar.LENGTH_LONG)
-        .setAction("OK") {}
-        .show()
+        .post(MoveEvent(MoveEvent.MOVE_TYPE_GROUP, null, pwGroup))
+    HitUtil.toaskShort(getString(R.string.undo_grouped))
+//    Snackbar.make(binding.root, getString(R.string.undo_grouped), Snackbar.LENGTH_LONG)
+//        .setAction("OK") {}
+//        .show()
     finishAfterTransition()
   }
 
   private fun onComplete(pwEntryV4: PwEntryV4) {
     loadDialog?.dismiss()
     EventBus.getDefault()
-        .post(UndoEvent(2, pwEntryV4, null))
-//    HitUtil.toaskShort(getString(R.string.undo_entryed))
-    Snackbar.make(binding.root, getString(R.string.undo_entryed), Snackbar.LENGTH_LONG)
-        .setAction("OK") {}
-        .show()
+        .post(MoveEvent(MoveEvent.MOVE_TYPE_ENTRY, pwEntryV4, null))
+    HitUtil.toaskShort(getString(R.string.undo_entryed))
+//    Snackbar.make(binding.root, getString(R.string.undo_entryed), Snackbar.LENGTH_LONG)
+//        .setAction("OK") {}
+//        .show()
     finishAfterTransition()
   }
 
@@ -269,7 +349,7 @@ class ChoseDirActivity : BaseActivity<ActivityGroupDirBinding>() {
 
       RvItemClickSupport.addTo(binding.list)
           .setOnItemClickListener { _, position, _ ->
-            (activity as ChoseDirActivity).startNextFragment(entryData[position].obj as PwGroup)
+            (activity as ChooseGroupActivity).startNextFragment(entryData[position].obj as PwGroup)
           }
     }
 

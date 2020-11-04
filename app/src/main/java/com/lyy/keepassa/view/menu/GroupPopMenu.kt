@@ -10,8 +10,6 @@
 package com.lyy.keepassa.view.menu
 
 import android.annotation.SuppressLint
-import android.app.ActivityOptions
-import android.content.Intent
 import android.text.Html
 import android.text.Spanned
 import android.view.Gravity
@@ -32,7 +30,7 @@ import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
-import com.lyy.keepassa.view.ChoseDirActivity
+import com.lyy.keepassa.view.ChooseGroupActivity
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.ModifyGroupDialog
 import com.lyy.keepassa.view.dialog.MsgDialog
@@ -84,15 +82,8 @@ class GroupPopMenu(
         R.id.edit -> {
           editGroup()
         }
-        R.id.undo -> {
-          val intent = Intent(context, ChoseDirActivity::class.java)
-          intent.putExtra(ChoseDirActivity.KEY_TYPE, 1)
-          intent.putExtra(ChoseDirActivity.KEY_GROUP_ID, pwGroup.id)
-          context.startActivity(
-              intent,
-              ActivityOptions.makeSceneTransitionAnimation(context)
-                  .toBundle()
-          )
+        R.id.undo, R.id.move -> {
+          ChooseGroupActivity.moveGroup(context, pwGroup.id)
         }
       }
       popup.dismiss()
@@ -120,7 +111,7 @@ class GroupPopMenu(
     val deleteDirectly = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
         .getBoolean(context.getString(R.string.set_key_delete_no_recycle_bin), false)
 
-    if (deleteDirectly){
+    if (deleteDirectly) {
       loadDialog = LoadingDialog(context)
       loadDialog.show()
       handleDelGroup()
@@ -183,7 +174,8 @@ class GroupPopMenu(
         }
         return@withContext DbSynUtil.STATE_SAVE_DB_FAIL
       }
-      EventBus.getDefault().post(DelEvent(pwGroup))
+      EventBus.getDefault()
+          .post(DelEvent(pwGroup))
 
 
       if (code == DbSynUtil.STATE_SUCCEED) {

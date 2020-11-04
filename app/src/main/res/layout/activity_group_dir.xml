@@ -26,6 +26,7 @@
         android:layout_above="@+id/bt"
         android:background="@color/line_color"
         />
+
     <Button
         android:id="@+id/bt"
         android:layout_width="match_parent"

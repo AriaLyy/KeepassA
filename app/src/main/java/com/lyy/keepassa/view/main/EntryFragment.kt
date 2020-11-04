@@ -33,7 +33,7 @@ import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
 import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.event.DelEvent
-import com.lyy.keepassa.event.UndoEvent
+import com.lyy.keepassa.event.MoveEvent
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
@@ -260,14 +260,8 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
    * 回收站中恢复数据
    */
   @Subscribe(threadMode = MAIN)
-  fun undo(event: UndoEvent) {
-    if (event.type == 1 && event.pwGroupV4!!.parent == BaseApp.KDB.pm.rootGroup) {
-      getData()
-      return
-    }
-    if (event.type == 2 && event.entryV4!!.parent == BaseApp.KDB.pm.rootGroup) {
-      getData()
-    }
+  fun onMove(event: MoveEvent) {
+    getData()
   }
 
   /**
