@@ -68,9 +68,9 @@ android {
 
     release {
       //zipAlignEnabled true //开启Zipalign优化
-      debuggable true
-      minifyEnabled false
-//      shrinkResources true // 移除无用资源
+      debuggable false
+      minifyEnabled true
+      shrinkResources true // 移除无用资源
       //      multiDexKeepFile file('multidex-config.txt')
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
       consumerProguardFiles 'proguard-rules.pro' // wcdb 需要增加这个混淆
@@ -169,7 +169,7 @@ dependencies {
 
 
   // kotlin
-  def livedata_ktx_version = "2.3.0-alpha06"
+  def livedata_ktx_version = '2.3.0-beta01'
   implementation rootProject.ext.kotlinJdk
   // kotlin 反射依赖
   implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
@@ -198,18 +198,18 @@ dependencies {
   // android 设置库
   implementation "androidx.preference:preference:1.1.1"
   // workmanager
-  def work_version = "2.3.4"
+  def work_version = '2.4.0'
   implementation "androidx.work:work-runtime:$work_version"
 
   // room
-  def room_version = "2.2.4"
+  def room_version = '2.2.5'
   //  implementation "androidx.room:room-runtime:$room_version"
   kapt "androidx.room:room-compiler:$room_version"
   implementation "androidx.room:room-ktx:$room_version" // ktx 扩展插件
 
   // 加密工具，需要23版本
   //  implementation "androidx.security:security-crypto:1.0.0-rc01"
-  implementation 'com.google.crypto.tink:tink-android:1.4.0-rc1'
+  implementation 'com.google.crypto.tink:tink-android:1.5.0'
 
   // android 自动填充工具
   implementation "androidx.autofill:autofill:1.0.0"
@@ -218,7 +218,7 @@ dependencies {
   implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
   // 约束布局
-  implementation "androidx.constraintlayout:constraintlayout:2.0.1"
+  implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
   // =========================== android 组件 end =====================================
 
   // =========================== 三方库 start =====================================
@@ -233,7 +233,7 @@ dependencies {
   implementation 'org.greenrobot:eventbus:3.1.1'
 
   // json 动画库
-  implementation 'com.airbnb.android:lottie:3.4.1'
+  implementation 'com.airbnb.android:lottie:3.4.4'
 
   // glide
   implementation 'com.github.bumptech.glide:glide:4.11.0'
@@ -244,7 +244,7 @@ dependencies {
   devImplementation project(path: ':NoFreeLib')
 
   // dropbox
-  implementation 'com.dropbox.core:dropbox-core-sdk:3.1.3'
+  implementation 'com.dropbox.core:dropbox-core-sdk:3.1.5'
 
   // webdav
   implementation 'com.thegrizzlylabs.sardine-android:sardine-android:0.6'

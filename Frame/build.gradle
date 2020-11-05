@@ -56,7 +56,7 @@ dependencies {
   kapt rootProject.ext.lifecycleCompiler
   implementation rootProject.ext.material
 
-  api 'com.google.code.gson:gson:2.8.5'
+  api 'com.google.code.gson:gson:2.8.6'
   // retrofit
   implementation rootProject.ext.retrofit
   implementation rootProject.ext.converterGson

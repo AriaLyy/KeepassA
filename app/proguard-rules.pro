@@ -186,6 +186,26 @@
     void notifyChange(java.lang.String, java.lang.String, long[], long[], long[]);
 }
 ################# wcdb-end ##################
+
+################# webdav-start ##################
+-dontwarn org.simpleframework.xml.stream.**
+-keep class org.simpleframework.xml.**{ *; }
+-keepclassmembers,allowobfuscation class * {
+    @org.simpleframework.xml.* <fields>;
+    @org.simpleframework.xml.* <init>(...);
+}
+
+## Sardine Android model classes: needed for XML serialization
+-keep class com.thegrizzlylabs.sardineandroid.model.**{ *; }
+## 防止某些奇葩情况下导致的崩溃问题
+-keep class javax.xml.namespace.**{
+    public <methods>;
+}
+
+## OkHTTP
+-dontwarn okhttp3.internal.platform.ConscryptPlatform
+################# webdav-end ##################
+
 -keep class com.com.lyy.keepassa.baseapi.*{ *; }
 -dontwarn com.com.lyy.keepassa.baseapi.**
--keep class * implements com.com.lyy.keepassa.baseapi.INotFreeLibService{ *; }
+-keep class * implements com.lyy.keepassa.baseapi.INotFreeLibService{ *; }

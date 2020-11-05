@@ -57,10 +57,6 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
       binding.uri.setText(webDavDbName)
     }
 
-    binding.uri.setText("http://shadowx.myqnapcloud.com:5007/test/keepass.kdbx")
-    binding.userName.setText("test")
-    binding.password.setText("test123.")
-
     binding.enter.setOnClickListener {
       if (KeepassAUtil.isFastClick()) {
         return@setOnClickListener
