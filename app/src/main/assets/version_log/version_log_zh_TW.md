@@ -1,3 +1,13 @@
+#### 1.5 (2020/11/5)
+- 增加群組搜索功能
+- 增加開放源碼協議說明
+- 增加移動條目和群組的功能
+
+![ime](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/move_data.png)
+- 修復無法增加二級群組的問題
+- 修復一個webdav獲取文件信息導致的崩潰問題
+- 修復一些討厭的崩潰問題
+
 #### 1.4.1 (2020/10/29)
 - 升級android studio 到4.1
 - 搜索增加高亮關鍵字

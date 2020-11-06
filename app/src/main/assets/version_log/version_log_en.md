@@ -1,3 +1,13 @@
+#### 1.5 (2020/11/5)
+- Add group search function
+- Add open source protocol description
+- Increase the function of moving items and groups
+
+![ime](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/move_data.png)
+- Fix the problem that the secondary group cannot be added
+- Fix a crash caused by webdav obtaining file information
+- Fix some nasty crashes
+
 #### 1.4.1 (2020/10/29)
 - Upgrade android studio to 4.1
 - Search and add highlight keywords

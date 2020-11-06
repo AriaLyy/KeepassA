@@ -21,8 +21,8 @@ android {
     applicationId "com.lyy.keepassa"
     minSdkVersion rootProject.ext.minSdkVersion
     targetSdkVersion rootProject.ext.targetSdkVersion
-    versionCode 23
-    versionName "1.4.1"
+    versionCode 24
+    versionName "1.5"
     multiDexEnabled true
     vectorDrawables.useSupportLibrary = true
 
