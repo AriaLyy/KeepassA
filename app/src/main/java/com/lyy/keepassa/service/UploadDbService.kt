@@ -18,6 +18,7 @@ import java.util.concurrent.Executors
 /**
  * 上传数据库的服务
  */
+@Deprecated("暂时没有使用")
 class UploadDbService : Service() {
   companion object {
     const val DATA_RECORD = "DATA_RECORD"

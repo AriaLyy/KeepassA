@@ -9,6 +9,7 @@
 
 package com.lyy.keepassa.util
 
+import android.net.Uri
 import android.util.Log
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
@@ -209,12 +210,32 @@ object KdbUtil {
   }
 
   /**
-   * 只搜索自定义属性字段
+   * 通过搜索条目
+   * @param domain 域名
+   * @param listStorage 搜索结果
+   */
+  fun searchEntriesByDomain(
+    domain: String?,
+    listStorage: MutableList<PwEntry>
+  ) {
+    if (domain.isNullOrEmpty()) {
+      return
+    }
+    for (entry in BaseApp.KDB.pm.entries.values) {
+      val pe4 = entry as PwEntryV4
+      if (pe4.url.contains(domain, true)) {
+        listStorage.add(pe4)
+      }
+    }
+  }
+
+  /**
+   * 通过包名搜索条目
    *
    * @param pkgName 包名
    * @param listStorage 搜索结果
    */
-  fun searchAutoFillEntries(
+  fun searchEntriesByPackageName(
     pkgName: String,
     listStorage: MutableList<PwEntry>
   ) {
@@ -231,7 +252,6 @@ object KdbUtil {
         }
       }
     }
-
   }
 
   /**

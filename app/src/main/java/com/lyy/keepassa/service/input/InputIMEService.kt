@@ -313,7 +313,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       return emptyList()
     }
     val listStorage = ArrayList<PwEntry>()
-    KdbUtil.searchAutoFillEntries(pkgName, listStorage)
+    KdbUtil.searchEntriesByPackageName(pkgName, listStorage)
     return listStorage
   }
 

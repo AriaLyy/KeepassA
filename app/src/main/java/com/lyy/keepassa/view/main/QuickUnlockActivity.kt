@@ -232,7 +232,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
     BaseApp.isLocked = false
     NotificationUtil.startDbOpenNotify(this@QuickUnlockActivity)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && BaseApp.KDB != null && isAutoFill) {
-      val datas = KDBAutoFillRepository.getFilledAutoFillFieldCollection(apkPkgName)
+      val datas = KDBAutoFillRepository.getAutoFillDataByPackageName(apkPkgName)
       // 如果查找不到数据，跳转到搜索页面
       if (datas == null || datas.isEmpty()) {
 //      if (true) {

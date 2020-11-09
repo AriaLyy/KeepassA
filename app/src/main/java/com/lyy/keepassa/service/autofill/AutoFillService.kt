@@ -7,7 +7,7 @@
  */
 
 
-package com.lyy.keepassa.service
+package com.lyy.keepassa.service.autofill
 
 import KDBAutoFillRepository
 import android.annotation.TargetApi
@@ -23,10 +23,7 @@ import android.service.autofill.SaveRequest
 import androidx.preference.PreferenceManager
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
-import com.lyy.keepassa.service.multidatasetservice.AutoFillHelper
-import com.lyy.keepassa.service.multidatasetservice.PackageVerifier
-import com.lyy.keepassa.service.multidatasetservice.StructureParser
-import com.lyy.keepassa.service.multidatasetservice.model.AutoFillFieldMetadataCollection
+import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.view.launcher.LauncherActivity
@@ -63,14 +60,12 @@ class AutoFillService : AutofillService() {
     val data = request.clientState
     KLog.d(TAG, "onFillRequest(): data=" + KLog.b(data))
     cancellationSignal.setOnCancelListener {
-      KLog.w(
-          TAG, "Cancel autofill not implemented in this sample."
-      )
+      KLog.w(TAG, "Cancel autofill not implemented in this sample.")
     }
 
     // Parse AutoFill data in Activity
     val parser = StructureParser(structure)
-    parser.parseForFill(isManual)
+    parser.parseForFill(isManual, apkPackageName)
     val autoFillFields = parser.autoFillFields
     val needAuth = BaseApp.KDB == null || BaseApp.isLocked
 
@@ -97,7 +92,14 @@ class AutoFillService : AutofillService() {
       openLoginActivity(callback, autoFillFields, apkPackageName)
       return
     }
-    val datas = KDBAutoFillRepository.getFilledAutoFillFieldCollection(apkPackageName)
+    // 获取填充数据
+    val datas = if (parser.domainUrl.isEmpty()) {
+      KDBAutoFillRepository.getAutoFillDataByPackageName(apkPackageName)
+    } else {
+      KDBAutoFillRepository.getAutoFillDataByDomain(parser.domainUrl)
+    }
+
+    KLog.d(TAG, "AutoFill Data size = ${data?.size()}")
     // 没有匹配的数据，进入搜索界面
     if (datas == null || datas.isEmpty()) {
       openSearchActivity(callback, autoFillFields, apkPackageName)
@@ -194,7 +196,7 @@ class AutoFillService : AutofillService() {
     KLog.d(TAG, "onSaveRequest(): data=" + KLog.b(data))
 
     val parser = StructureParser(structure)
-    parser.parseForFill(true)
+    parser.parseForFill(true, apkPackageName)
     val needAuth = BaseApp.KDB == null
 
     // 如果数据库没打开，需要打开登录页面

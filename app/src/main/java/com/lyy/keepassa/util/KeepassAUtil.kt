@@ -52,8 +52,8 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.DbRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
-import com.lyy.keepassa.service.multidatasetservice.AutoFillHelper
-import com.lyy.keepassa.service.multidatasetservice.StructureParser
+import com.lyy.keepassa.service.autofill.AutoFillHelper
+import com.lyy.keepassa.service.autofill.StructureParser
 import com.lyy.keepassa.view.create.CreateDbActivity
 import com.lyy.keepassa.view.detail.EntryDetailActivity
 import com.lyy.keepassa.view.detail.GroupDetailActivity
@@ -237,10 +237,10 @@ object KeepassAUtil {
         AutofillManager.EXTRA_ASSIST_STRUCTURE
     )
     val parser = StructureParser(structure)
-    parser.parseForFill(true)
+    parser.parseForFill(true, apkPkgName)
     val autofillFields = parser.autoFillFields
 
-    val datas = KDBAutoFillRepository.getFilledAutoFillFieldCollection(apkPkgName)
+    val datas = KDBAutoFillRepository.getAutoFillDataByPackageName(apkPkgName)
     val response =
       AutoFillHelper.newResponse(context, true, autofillFields, datas, apkPkgName)
 
@@ -266,7 +266,7 @@ object KeepassAUtil {
         AutofillManager.EXTRA_ASSIST_STRUCTURE
     )
     val parser = StructureParser(structure)
-    parser.parseForFill(true)
+    parser.parseForFill(true, apkPkgName)
     val autofillFields = parser.autoFillFields
 
     val response =

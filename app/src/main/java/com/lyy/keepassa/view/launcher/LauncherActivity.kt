@@ -154,7 +154,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
        * 打开搜索界面
        */
       if (isFromFill) {
-        val datas = KDBAutoFillRepository.getFilledAutoFillFieldCollection(apkPkgName!!)
+        val datas = KDBAutoFillRepository.getAutoFillDataByPackageName(apkPkgName!!)
         // 如果查找不到数据，跳转到搜索页面
         if (datas == null || datas.isEmpty()) {
 //      if (true) {

@@ -7,7 +7,7 @@
  */
 
 
-package com.lyy.keepassa.service.multidatasetservice
+package com.lyy.keepassa.service.autofill
 
 import android.annotation.TargetApi
 import android.content.Context
@@ -27,7 +27,7 @@ import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
 import com.lyy.keepassa.R
-import com.lyy.keepassa.service.multidatasetservice.model.AutoFillFieldMetadataCollection
+import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
@@ -41,44 +41,6 @@ object AutoFillHelper {
   val TAG = javaClass.simpleName
   const val EXTRA_DATASET_NAME = "dataset_name"
   const val EXTRA_FOR_RESPONSE = "for_response"
-
-  val CompatBrowsers = setOf(
-      "org.mozilla.firefox",
-      "org.mozilla.firefox_beta",
-      "com.microsoft.emmx",
-      "com.android.chrome",
-      "com.chrome.beta",
-      "com.android.browser",
-      "com.brave.browser",
-      "com.opera.browser",
-      "com.opera.browser.beta",
-      "com.opera.mini.native",
-      "com.chrome.dev",
-      "com.chrome.canary",
-      "com.google.android.apps.chrome",
-      "com.google.android.apps.chrome_dev",
-      "com.yandex.browser",
-      "com.sec.android.app.sbrowser",
-      "com.sec.android.app.sbrowser.beta",
-      "org.codeaurora.swe.browser",
-      "com.amazon.cloud9",
-      "mark.via.gp",
-      "org.bromite.bromite",
-      "org.chromium.chrome",
-      "com.kiwibrowser.browser",
-      "com.ecosia.android",
-      "com.opera.mini.native.beta",
-      "org.mozilla.fennec_aurora",
-      "org.mozilla.fennec_fdroid",
-      "com.qwant.liberty",
-      "com.opera.touch",
-      "org.mozilla.fenix",
-      "org.mozilla.fenix.nightly",
-      "org.mozilla.reference.browser",
-      "org.mozilla.rocket",
-      "org.torproject.torbrowser",
-      "com.vivaldi.browser"
-  )
 
   /**
    * 数据库没打开时的view

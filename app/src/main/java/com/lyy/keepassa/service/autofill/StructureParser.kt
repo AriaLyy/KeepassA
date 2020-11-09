@@ -7,7 +7,7 @@
  */
 
 
-package com.lyy.keepassa.service.multidatasetservice
+package com.lyy.keepassa.service.autofill
 
 import android.annotation.TargetApi
 import android.app.assist.AssistStructure
@@ -17,8 +17,10 @@ import android.text.InputType
 import android.util.Log
 import android.view.View
 import androidx.autofill.HintConstants
-import com.lyy.keepassa.service.multidatasetservice.model.AutoFillFieldMetadata
-import com.lyy.keepassa.service.multidatasetservice.model.AutoFillFieldMetadataCollection
+import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadata
+import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
+import com.lyy.keepassa.service.autofill.model.W3cHints
+import com.lyy.keepassa.util.KLog
 
 /**
  * Parser for an AssistStructure object. This is invoked when the Autofill Service receives an
@@ -31,6 +33,8 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
   val autoFillFields = AutoFillFieldMetadataCollection()
   val useFields = ArrayList<ViewNode>()
   val passFields = ArrayList<ViewNode>()
+  var domainUrl = ""
+  var pkgName = ""
 
   // 其它应用editText 可能设置的id名，如：R.id.email
   private val usernameHints = HashSet<String>().also {
@@ -61,7 +65,11 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
   /**
    * 是否是用户手动 用户手机选择了自动填充，也就是editText获取了焦点才开始弹出
    */
-  fun parseForFill(isManual: Boolean) {
+  fun parseForFill(
+    isManual: Boolean,
+    pkgName: String
+  ) {
+    this.pkgName = pkgName
     parse(isManual)
   }
 
@@ -144,11 +152,8 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     if (f.htmlInfo == null || f.htmlInfo!!.attributes == null) {
       return false
     }
-    return f.htmlInfo!!.attributes!!.any { p ->
-      Log.d(TAG, "UserAttr = ${p.first}, ${p.second}")
-      return p.first == ("text") && p.second == "username"
-    }
-
+    domainUrl = f.webDomain ?: ""
+    return W3cHints.isW3cUserName(f)
   }
 
   /**
@@ -173,9 +178,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     if (f.htmlInfo == null || f.htmlInfo!!.attributes == null) {
       return false
     }
-    return f.htmlInfo!!.attributes!!.any { p ->
-      Log.d(TAG, "Attr = ${p.first}, ${p.second}")
-      return p.first == ("type") && p.second == "password"
-    }
+    domainUrl = f.webDomain ?: ""
+    return W3cHints.isW3cPassWord(f)
   }
 }

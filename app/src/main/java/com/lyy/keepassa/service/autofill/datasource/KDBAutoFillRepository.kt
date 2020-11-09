@@ -20,7 +20,7 @@ import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.base.BaseApp
-import com.lyy.keepassa.service.multidatasetservice.model.AutoFillFieldMetadataCollection
+import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
 import kotlinx.coroutines.GlobalScope
@@ -37,15 +37,27 @@ object KDBAutoFillRepository {
   private val TAG = "KDBAutoFillRepository"
 
   /**
-   * 从KDB数据库获取数据
+   * 通过包名获取填充数据
    */
-  fun getFilledAutoFillFieldCollection(pkgName: String): ArrayList<PwEntry>? {
+  fun getAutoFillDataByPackageName(pkgName: String): ArrayList<PwEntry>? {
     val listStorage = ArrayList<PwEntry>()
-    KdbUtil.searchAutoFillEntries(pkgName, listStorage)
+    KdbUtil.searchEntriesByPackageName(pkgName, listStorage)
     if (listStorage.isEmpty()) {
       return null
     }
 
+    return listStorage
+  }
+
+  /**
+   * 通过url获取填充数据
+   */
+  fun getAutoFillDataByDomain(domain: String): ArrayList<PwEntry>? {
+    val listStorage = ArrayList<PwEntry>()
+    KdbUtil.searchEntriesByDomain(domain, listStorage)
+    if (listStorage.isEmpty()) {
+      return null
+    }
     return listStorage
   }
 
@@ -59,7 +71,7 @@ object KDBAutoFillRepository {
   ) {
 
     val listStorage = ArrayList<PwEntry>()
-    KdbUtil.searchAutoFillEntries(apkPkgName, listStorage)
+    KdbUtil.searchEntriesByPackageName(apkPkgName, listStorage)
     val entry: PwEntry
     if (listStorage.isEmpty()) {
       if (BaseApp.isV4) {
@@ -148,7 +160,8 @@ object KDBAutoFillRepository {
               apkPkgName,
               PackageManager.GET_META_DATA
           )
-      ).toString()
+      )
+          .toString()
     } catch (e: Exception) {
       e.printStackTrace()
     }

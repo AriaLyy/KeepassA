@@ -27,14 +27,9 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.SimpleItemEntity
-import com.lyy.keepassa.entity.TotpType
-import com.lyy.keepassa.entity.TotpType.CUSTOM
-import com.lyy.keepassa.entity.TotpType.DEFAULT
-import com.lyy.keepassa.entity.TotpType.STEAM
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
-import com.lyy.keepassa.view.dialog.CreateTotpDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
@@ -68,7 +63,7 @@ class CreateEntryModule : BaseModule() {
     pass: String?
   ): PwEntry {
     val listStorage = ArrayList<PwEntry>()
-    KdbUtil.searchAutoFillEntries(apkPkgName, listStorage)
+    KdbUtil.searchEntriesByPackageName(apkPkgName, listStorage)
     val entry: PwEntry
     if (listStorage.isEmpty()) {
       if (BaseApp.isV4) {

@@ -7,7 +7,7 @@
  */
 
 
-package com.lyy.keepassa.service.multidatasetservice.model
+package com.lyy.keepassa.service.autofill.model
 
 import android.annotation.TargetApi
 import android.app.assist.AssistStructure.ViewNode;
@@ -15,7 +15,7 @@ import android.os.Build
 import android.service.autofill.SaveInfo
 import android.view.View
 import android.view.autofill.AutofillId
-import com.lyy.keepassa.service.multidatasetservice.AutoFillHelper
+import com.lyy.keepassa.service.autofill.AutoFillHelper
 
 /**
  * A stripped down version of a [ViewNode] that contains only autofill-relevant metadata. It also

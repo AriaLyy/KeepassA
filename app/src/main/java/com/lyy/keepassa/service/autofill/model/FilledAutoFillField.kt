@@ -7,14 +7,14 @@
  */
 
 
-package com.lyy.keepassa.service.multidatasetservice.model
+package com.lyy.keepassa.service.autofill.model
 
 import android.annotation.TargetApi
 import android.app.assist.AssistStructure
 import android.os.Build
 import android.view.autofill.AutofillValue
 import com.google.gson.annotations.Expose
-import com.lyy.keepassa.service.multidatasetservice.AutoFillHelper
+import com.lyy.keepassa.service.autofill.AutoFillHelper
 
 /**
  * JSON serializable data class containing the same data as an [AutofillValue].

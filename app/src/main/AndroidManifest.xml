@@ -142,7 +142,7 @@
     </activity>
 
     <service
-        android:name=".service.AutoFillService"
+        android:name=".service.autofill.AutoFillService"
         android:permission="android.permission.BIND_AUTOFILL_SERVICE">
       <meta-data
           android:name="android.autofill"
