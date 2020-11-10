@@ -39,14 +39,12 @@ import com.lyy.keepassa.view.launcher.LauncherActivity
 @TargetApi(Build.VERSION_CODES.O)
 object AutoFillHelper {
   val TAG = javaClass.simpleName
-  const val EXTRA_DATASET_NAME = "dataset_name"
-  const val EXTRA_FOR_RESPONSE = "for_response"
 
   /**
    * 数据库没打开时的view
    * @param packageName 当前应用的包名（keepassA的包名)
    */
-  fun newRemoteViews(
+  private fun newRemoteViews(
     packageName: String,
     remoteViewsText: String,
     @DrawableRes drawableId: Int
@@ -62,7 +60,7 @@ object AutoFillHelper {
    * @param dataSetAuth true 验证通过
    * @param apkPageName 第三方apk包名
    */
-  fun newDataSet(
+  private fun newDataSet(
     context: Context,
     metadataList: AutoFillFieldMetadataCollection,
     entry: PwEntry?,
@@ -139,12 +137,12 @@ object AutoFillHelper {
         R.mipmap.ic_launcher
     )
     responseBuilder.setAuthentication(metadataList.autoFillIds.toTypedArray(), sender, presentation)
-    val datasetBuild = Dataset.Builder()
+    val dataSetBuild = Dataset.Builder()
     val notUsed = RemoteViews(context.packageName, android.R.layout.simple_list_item_1)
-    val b = applyToFields(metadataList, datasetBuild, notUsed)
+    val b = applyToFields(metadataList, dataSetBuild, notUsed)
     KLog.d(TAG, "applyToFields -> $b")
     if (b){
-      responseBuilder.addDataset(datasetBuild.build())
+      responseBuilder.addDataset(dataSetBuild.build())
     }
 
     /*
@@ -178,8 +176,8 @@ object AutoFillHelper {
     val responseBuilder = FillResponse.Builder()
 
     entries?.forEach { entry ->
-      val dataset = newDataSet(context, metadata, entry, dataSetAuth, apkPageName)
-      dataset?.let(responseBuilder::addDataset)
+      val dataSet = newDataSet(context, metadata, entry, dataSetAuth, apkPageName)
+      dataSet?.let(responseBuilder::addDataset)
     }
 
     return if (metadata.saveType != 0) {
@@ -232,12 +230,9 @@ object AutoFillHelper {
     for (hint in autoFillFieldMetadataList.allAutoFillHints) {
       val fillFields = autoFillFieldMetadataList.getFieldsForHint(hint) ?: continue
       loop@ for (fillField in fillFields) {
-        val fillId = fillField.autoFillId
-        if (fillId == null) {
-          break
-        }
+        val fillId = fillField.autoFillId ?: break
         val fillType = fillField.autoFillType
-        KLog.w(TAG, "autofill type -> $fillType, autofillId -> $fillId")
+        KLog.w(TAG, "autoFill type -> $fillType, autoFillId -> $fillId")
         when (fillType) {
           View.AUTOFILL_TYPE_LIST -> {
             if (fillField.autoFillField.textValue.isNullOrEmpty()) {
@@ -279,7 +274,7 @@ object AutoFillHelper {
             )
             setValueAtLeastOnce = true
           }
-          else -> KLog.w(TAG, "Invalid autofill type -> $fillType")
+          else -> KLog.w(TAG, "Invalid autoFill type -> $fillType")
         }
       }
     }
@@ -298,12 +293,9 @@ object AutoFillHelper {
     for (hint in autoFillFieldMetadataList.allAutoFillHints) {
       val fillFields = autoFillFieldMetadataList.getFieldsForHint(hint) ?: continue
       loop@ for (fillField in fillFields) {
-        val fillId = fillField.autoFillId
-        if (fillId == null) {
-          break
-        }
+        val fillId = fillField.autoFillId ?: break
         val fillType = fillField.autoFillType
-        KLog.w(TAG, "autofill type -> $fillType, autofillId -> $fillId")
+        KLog.w(TAG, "autoFill type -> $fillType, autoFillId -> $fillId")
         when (fillType) {
           View.AUTOFILL_TYPE_LIST -> {
             if (fillField.autoFillField.textValue.isNullOrEmpty()) {

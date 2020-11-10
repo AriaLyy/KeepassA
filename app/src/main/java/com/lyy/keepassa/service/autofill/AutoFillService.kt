@@ -99,7 +99,7 @@ class AutoFillService : AutofillService() {
       KDBAutoFillRepository.getAutoFillDataByDomain(parser.domainUrl)
     }
 
-    KLog.d(TAG, "AutoFill Data size = ${data?.size()}")
+    KLog.d(TAG, "AutoFill Data size = ${data?.size()}, entrySize = ${datas?.size}")
     // 没有匹配的数据，进入搜索界面
     if (datas == null || datas.isEmpty()) {
       openSearchActivity(callback, autoFillFields, apkPackageName)

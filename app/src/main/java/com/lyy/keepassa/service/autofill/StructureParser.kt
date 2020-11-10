@@ -125,7 +125,6 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     val childrenSize = viewNode.childCount
     for (i in 0 until childrenSize) {
       parseLocked(viewNode.getChildAt(i))
-
     }
   }
 

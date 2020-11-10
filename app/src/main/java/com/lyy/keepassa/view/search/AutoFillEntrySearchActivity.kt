@@ -150,11 +150,11 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
             listData.clear()
             listData.addAll(list)
             adapter.notifyDataSetChanged()
-          } else {
-            listData.clear()
-            adapter.notifyDataSetChanged()
-            binding.noEntryLayout.visibility = View.VISIBLE
+            return@Observer
           }
+          listData.clear()
+          adapter.notifyDataSetChanged()
+          binding.noEntryLayout.visibility = View.VISIBLE
         })
 
   }
@@ -215,11 +215,11 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
     module.relevanceEntry(pwEntry, apkPkgName!!)
         .observe(this, Observer { code ->
           loadingDialog.dismiss()
-          if (code == DbSynUtil.STATE_SUCCEED) {
-            HitUtil.toaskShort("${getString(R.string.relevance_db)}${getString(R.string.success)}")
-          } else {
+          if (code != DbSynUtil.STATE_SUCCEED) {
             HitUtil.toaskShort("${getString(R.string.relevance_db)}${getString(R.string.fail)}")
           }
+          HitUtil.toaskShort("${getString(R.string.relevance_db)}${getString(R.string.success)}")
+          callbackAutoFillService(false, pwEntry)
         })
 
   }
@@ -244,17 +244,17 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
       }
       setResult(Activity.RESULT_OK, data)
       finishAfterTransition()
-    } else {
-      if (isNotSaveRelevance) {
-        setResult(Activity.RESULT_OK, KeepassAUtil.getFillResponse(this, intent, apkPkgName!!))
-      } else {
-        setResult(
-            Activity.RESULT_OK,
-            KeepassAUtil.getFillResponse(this, intent, pwEntry, apkPkgName!!)
-        )
-      }
-      finish()
+      return
     }
+    if (isNotSaveRelevance) {
+      setResult(Activity.RESULT_OK, KeepassAUtil.getFillResponse(this, intent, apkPkgName!!))
+    } else {
+      setResult(
+          Activity.RESULT_OK,
+          KeepassAUtil.getFillResponse(this, intent, pwEntry, apkPkgName!!)
+      )
+    }
+    finish()
   }
 
   override fun onBackPressed() {

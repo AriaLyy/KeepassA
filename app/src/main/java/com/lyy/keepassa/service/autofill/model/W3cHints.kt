@@ -146,13 +146,8 @@ object W3cHints {
    * 是否是密码
    */
   fun isW3cPassWord(v: ViewNode):Boolean{
-    v.htmlInfo?.attributes?.forEach{ p ->
-      Log.d(TAG, "w3c PasswordAttr = ${p.first}, ${p.second}")
-//      return p.first == "type" && (p.second == PASSWORD || p.second == NEW_PASSWORD || p.second == CURRENT_PASSWORD)
-    }
-
     return v.htmlInfo?.attributes?.any { p ->
-//      Log.d(TAG, "w3c PasswordAttr = ${p.first}, ${p.second}")
+      Log.d(TAG, "w3c PasswordAttr = ${p.first}, ${p.second}")
       return p.first == "type" && (p.second == PASSWORD || p.second == NEW_PASSWORD || p.second == CURRENT_PASSWORD)
     } ?: false
   }
