@@ -9,8 +9,8 @@
 
 package com.lyy.keepassa.util
 
-import android.net.Uri
 import android.util.Log
+import com.arialyy.frame.util.RegularRule
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
@@ -221,9 +221,11 @@ object KdbUtil {
     if (domain.isNullOrEmpty()) {
       return
     }
+    val topDomain = Regex(RegularRule.DOMAIN_TOP, RegexOption.IGNORE_CASE).find(domain)
+    KLog.d(TAG, "topDomain = ${topDomain?.value}")
     for (entry in BaseApp.KDB.pm.entries.values) {
       val pe4 = entry as PwEntryV4
-      if (pe4.url.contains(domain, true)) {
+      if (pe4.getUrl().contains(topDomain?.value.toString(), true)) {
         listStorage.add(pe4)
       }
     }

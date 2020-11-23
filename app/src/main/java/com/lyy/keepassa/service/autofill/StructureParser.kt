@@ -14,7 +14,6 @@ import android.app.assist.AssistStructure
 import android.app.assist.AssistStructure.ViewNode
 import android.os.Build
 import android.text.InputType
-import android.util.Log
 import android.view.View
 import androidx.autofill.HintConstants
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadata
@@ -77,7 +76,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
    * Traverse AssistStructure and add ViewNode metadata to a flat list.
    */
   private fun parse(isManual: Boolean) {
-    Log.d(TAG, "Parsing structure for " + autofillStructure.activityComponent)
+    KLog.d(TAG, "Parsing structure for " + autofillStructure.activityComponent)
     val nodes = autofillStructure.windowNodeCount
     for (i in 0 until nodes) {
       parseLocked(autofillStructure.getWindowNodeAt(i).rootViewNode)
@@ -94,28 +93,60 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       autoFillFields.add(AutoFillFieldMetadata(viewNode))
     } else {
       val className = viewNode.className
-      if (className == "android.widget.EditText" || viewNode.htmlInfo?.tag == "input") {
+      val isW3c = viewNode.htmlInfo?.tag == "input"
+      if (isW3c) {
+        domainUrl = viewNode.webDomain ?: ""
+
+        KLog.d(TAG, "webDomain = $domainUrl")
+        if (viewNode.htmlInfo == null || viewNode.htmlInfo!!.attributes == null) {
+          return
+        }
+        val attrs = viewNode.htmlInfo!!.attributes
+        attrs?.forEach {
+          if (W3cHints.isW3cPassWord(it)) {
+            KLog.d(
+                TAG,
+                "w3c pass ==> autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}" + " text = ${viewNode.text}, hint = ${viewNode.hint}"
+            )
+            passFields.add(viewNode)
+            autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_PASSWORD))
+            return@forEach
+          }
+          if (W3cHints.isW3cUserName(it)) {
+            KLog.d(
+                TAG,
+                "w3c user ==> idEntry = ${viewNode.idEntry}, autofillType = ${viewNode.autofillType}, fillValue = ${viewNode.autofillValue}" + "fillId = ${viewNode.autofillId}, text = ${viewNode.text}, hint = ${viewNode.hint}"
+            )
+            useFields.add(viewNode)
+            autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_USERNAME))
+          }
+        }
+
+        return
+      }
+
+      if (className == "android.widget.EditText") {
         when {
           isPassword(viewNode) -> {
-            Log.d(
+            KLog.d(
                 TAG,
-                "pass autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}," + " text = ${viewNode.text}, hint = ${viewNode.hint}"
+                "pass autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}" + " text = ${viewNode.text}, hint = ${viewNode.hint}"
             )
             passFields.add(viewNode)
             autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_PASSWORD))
           }
           isUserName(viewNode) -> {
-            Log.d(
+            KLog.d(
                 TAG,
-                "user idEntry = ${viewNode.idEntry}, autofillType = ${viewNode.autofillType}, " + "fillId = ${viewNode.autofillId}, text = ${viewNode.text}, hint = ${viewNode.hint}"
+                "user idEntry = ${viewNode.idEntry}, autofillType = ${viewNode.autofillType}, fillValue = ${viewNode.autofillValue}" + "fillId = ${viewNode.autofillId}, text = ${viewNode.text}, hint = ${viewNode.hint}"
             )
             useFields.add(viewNode)
             autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_USERNAME))
           }
           else -> {
-            Log.d(
+            KLog.d(
                 TAG,
-                "unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, " + "autofillId = ${viewNode.autofillId}, inputType =  ${viewNode.inputType}, " + "htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, " + "hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused}, " + "idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, " + "visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, " + "isOpaque = ${viewNode.isOpaque}"
+                "unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, " + "autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, " + "htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, " + "hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused}, " + "idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, " + "visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, " + "isOpaque = ${viewNode.isOpaque}"
             )
           }
         }
@@ -135,7 +166,6 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     if (!isPassword(f)
         || usernameHints.any { f.idEntry != null && f.idEntry.contains(it, ignoreCase = true) }
         || usernameHints.any { f.hint != null && f.hint.contains(it, ignoreCase = true) }
-        || isW3cUser(f)
     ) {
       if ((f.idEntry != null && f.idEntry.contains("search", ignoreCase = false))
           || (f.hint != null && f.hint.contains("search", ignoreCase = false))
@@ -145,14 +175,6 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       return true
     }
     return false
-  }
-
-  private fun isW3cUser(f: ViewNode): Boolean {
-    if (f.htmlInfo == null || f.htmlInfo!!.attributes == null) {
-      return false
-    }
-    domainUrl = f.webDomain ?: ""
-    return W3cHints.isW3cUserName(f)
   }
 
   /**
@@ -165,7 +187,6 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
         || inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD
         || inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         || inputType == InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
-        || isW3cPassword(f)
         || passHints.any { f.idEntry != null && f.idEntry.contains(it, ignoreCase = true) }
     ) {
       return true
@@ -173,11 +194,4 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     return false
   }
 
-  private fun isW3cPassword(f: ViewNode): Boolean {
-    if (f.htmlInfo == null || f.htmlInfo!!.attributes == null) {
-      return false
-    }
-    domainUrl = f.webDomain ?: ""
-    return W3cHints.isW3cPassWord(f)
-  }
 }

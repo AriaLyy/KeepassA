@@ -13,7 +13,25 @@ package com.arialyy.frame.util;
  * Created by AriaLyy on 2015/1/10.
  * 正则表达式规则
  */
-public class RegularExpression {
+public class RegularRule {
+
+  /**
+   * 一级域名
+   */
+  public static final String DOMAIN_TOP =
+      "(\\w*\\.?){1}\\.(com.cn|net.cn|gov.cn|org\\.nz|org.cn|com|net|org|gov|cc|biz|info|cn|co)$";
+
+  /**
+   * 二级域名
+   */
+  public static final String DOMAIN_SECOND =
+      "(\\w*\\.?){2}\\.(com.cn|net.cn|gov.cn|org\\.nz|org.cn|com|net|org|gov|cc|biz|info|cn|co)$";
+
+  /**
+   * 三级域名
+   */
+  public static final String DOMAIN_THIRD =
+      "(\\w*\\.?){3}\\.(com.cn|net.cn|gov.cn|org\\.nz|org.cn|com|net|org|gov|cc|biz|info|cn|co)$";
 
   /**
    * APK包

@@ -101,7 +101,7 @@ class AutoFillService : AutofillService() {
 
     KLog.d(TAG, "AutoFill Data size = ${data?.size()}, entrySize = ${datas?.size}")
     // 没有匹配的数据，进入搜索界面
-    if (datas == null || datas.isEmpty()) {
+    if (datas == null) {
       openSearchActivity(callback, autoFillFields, apkPackageName)
       return
     }

@@ -10,10 +10,8 @@
 package com.lyy.keepassa.service.autofill.model
 
 import android.annotation.TargetApi
-import android.app.assist.AssistStructure.ViewNode
 import android.os.Build
 import android.util.Log
-import android.view.ViewStructure.HtmlInfo
 import java.util.Locale
 
 @TargetApi(Build.VERSION_CODES.O)
@@ -123,6 +121,7 @@ object W3cHints {
   const val TEL_LOCAL_SUFFIX = "tel-local-suffix"
   const val TEL_EXTENSION = "tel_extension"
   const val EMAIL = "email"
+  const val TEXT = "text"
   const val IMPP = "impp"
 
   /**
@@ -135,21 +134,21 @@ object W3cHints {
   /**
    * 是否是用户名
    */
-  fun isW3cUserName(v: ViewNode): Boolean {
-    return v.htmlInfo?.attributes?.any { p ->
-      Log.d(TAG, "w3c UserAttr = ${p.first}, ${p.second}")
-      return p.first == "text" && (p.second == NAME || p.second == USERNAME || p.second == GIVEN_NAME)
-    } ?: false
+  fun isW3cUserName(p: android.util.Pair<String, String>): Boolean {
+    return p.first == "type" && (p.second == NAME
+        || p.second == USERNAME
+        || p.second == TEL
+        || p.second == TEXT
+        || p.second == GIVEN_NAME)
   }
 
   /**
    * 是否是密码
    */
-  fun isW3cPassWord(v: ViewNode):Boolean{
-    return v.htmlInfo?.attributes?.any { p ->
-      Log.d(TAG, "w3c PasswordAttr = ${p.first}, ${p.second}")
-      return p.first == "type" && (p.second == PASSWORD || p.second == NEW_PASSWORD || p.second == CURRENT_PASSWORD)
-    } ?: false
+  fun isW3cPassWord(p: android.util.Pair<String, String>): Boolean {
+    return (p.first == "type" && (p.second == PASSWORD || p.second == NEW_PASSWORD || p.second == CURRENT_PASSWORD))
+        // https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion
+        || (p.first == "autocomplete")
   }
 
   fun isW3cSectionPrefix(hint: String): Boolean {

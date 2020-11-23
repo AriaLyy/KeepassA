@@ -11,6 +11,7 @@ package com.lyy.keepassa
 
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.arialyy.frame.util.RegularRule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
@@ -18,6 +19,13 @@ import java.net.URL
 
 @RunWith(AndroidJUnit4::class)
 class UrlTest {
+
+  @Test
+  fun domainTest(){
+    val temp = "twitter.com"
+    val topDomain = Regex(RegularRule.DOMAIN_TOP, RegexOption.IGNORE_CASE).find(temp)
+    println("topDomain = ${topDomain?.value}")
+  }
 
   @Test
   fun testUrl(){

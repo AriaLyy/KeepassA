@@ -22,6 +22,7 @@ import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.IconUtil
+import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -40,6 +41,7 @@ object KDBAutoFillRepository {
    * 通过包名获取填充数据
    */
   fun getAutoFillDataByPackageName(pkgName: String): ArrayList<PwEntry>? {
+    KLog.d(TAG, "getFillDataByPkgName, pkgName = $pkgName")
     val listStorage = ArrayList<PwEntry>()
     KdbUtil.searchEntriesByPackageName(pkgName, listStorage)
     if (listStorage.isEmpty()) {
@@ -53,6 +55,7 @@ object KDBAutoFillRepository {
    * 通过url获取填充数据
    */
   fun getAutoFillDataByDomain(domain: String): ArrayList<PwEntry>? {
+    KLog.d(TAG, "getFillDataByDomain, domain = $domain")
     val listStorage = ArrayList<PwEntry>()
     KdbUtil.searchEntriesByDomain(domain, listStorage)
     if (listStorage.isEmpty()) {
