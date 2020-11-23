@@ -239,8 +239,9 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="add_attr_file">Add attachments </string>
   <string name="hint_fingerprint_modify">Check that the fingerprint has changed, for your password security, please reset the fingerprint unlock function </string>
   <string name="hint_please_open_database">Please open database</string>
+  <string name="set_delete_setting">Delete settings</string>
   <string name="set_delete_no_into_recycle_bin">Directly delete entries from the database</string>
-  <string name="set_delete_no_into_recycle_bin_des"> After opening this setting, the deleted entries and groups will no longer be saved in the recycle bin</string>
+  <string name="set_delete_no_into_recycle_bin_des">Move deleted items to trash</string>
   <string name="warning_rooted">For your data security, please do not open the database on a rooted phone</string>
   <string name="hint_security_green">"Great, the application is in a risk-free environment "</string>
   <string name="hint_security_red">Note that your phone has been rooted and the database is in a very dangerous environment</string>
@@ -270,4 +271,8 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="error_uri_grant_permission">Uri authorization failed</string>
   <string name="license">Open source license</string>
   <string name="move">Move</string>
+  <string name="set_key_sum_main_show_entries">Show all items after unlock the database</string>
+  <string name="set_key_sum_main_show_history">Show History after unlock the database</string>
+  <string name="set_key_title_main_allow_show_entries">Home page settings</string>
+
 </resources>

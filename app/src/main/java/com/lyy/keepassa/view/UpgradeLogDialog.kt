@@ -26,6 +26,7 @@ import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.view.dialog.WebDavLoginDialog
 import com.lyy.keepassa.view.fingerprint.FingerprintActivity
+import com.lyy.keepassa.view.setting.SettingActivity
 import com.lyy.keepassa.widget.toPx
 import com.zzhoujay.richtext.RichText
 import kotlinx.coroutines.Dispatchers
@@ -56,10 +57,10 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
 //        context = String(ins.readBytes())
 //        ins.close()
 
-        var ins:InputStream?=null
+        var ins: InputStream? = null
         try {
-          ins  = requireContext().assets.open(fileName)
-        }catch (e:Exception){
+          ins = requireContext().assets.open(fileName)
+        } catch (e: Exception) {
           ins = requireContext().assets.open("version_log/version_log_en.md")
           e.printStackTrace()
         }
@@ -132,6 +133,14 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
           }
           "WebDavLoginDialog" -> {
             WebDavLoginDialog().show()
+            return true
+          }
+          "SettingActivity" -> {
+            startActivity(
+                Intent(requireContext(), SettingActivity::class.java),
+                ActivityOptions.makeSceneTransitionAnimation(requireActivity())
+                    .toBundle()
+            )
             return true
           }
           "ime" -> {

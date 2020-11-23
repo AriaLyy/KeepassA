@@ -245,8 +245,9 @@
   <string name="hint_fingerprint_modify">检查到指纹有变化，为了您的密码安全，请重新设置指纹解锁功能</string>
   <string name="hint_please_open_database">请打开数据库</string>
   <string name="save_db_success">保存数据库成功</string>
+  <string name="set_delete_setting">刪除设置</string>
   <string name="set_delete_no_into_recycle_bin">直接从数据库中删除条目</string>
-  <string name="set_delete_no_into_recycle_bin_des">打开后该设置后，回收站中将不再保存被删除的条目和群组</string>
+  <string name="set_delete_no_into_recycle_bin_des">将删除的条目移动到回收站中</string>
   <string name="warning_rooted">为了您的数据安全，请不要在已经root的手机上打开数据库</string>
   <string name="hint_security_green">非常棒，应用处于无风险的环境中</string>
   <string name="hint_security_red">注意，您的手机已经被root了，数据库处于一个非常危险的环境中</string>
@@ -276,5 +277,8 @@
   <string name="error_uri_grant_permission">Uri 授权失败</string>
   <string name="license">开放源码许可证</string>
   <string name="move">移动</string>
+  <string name="set_key_sum_main_show_entries">解锁数据库后显示所有条目</string>
+  <string name="set_key_sum_main_show_history">解锁数据库后显示历史记录</string>
+  <string name="set_key_title_main_allow_show_entries">主页设置</string>
 </resources>
 

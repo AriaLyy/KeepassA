@@ -27,6 +27,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import com.arialyy.frame.core.AbsFrame
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
@@ -66,7 +67,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       clearTask: Boolean = false
     ) {
       val intent = Intent(activity, MainActivity::class.java).apply {
-        if (clearTask){
+        if (clearTask) {
           // 打开会导致搜索界面和保存数据界面启动不了，因为所在的activity堆栈不同了，后面需要优化
 //          flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         }
@@ -80,7 +81,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
   override fun onResume() {
     super.onResume()
-    
+
   }
 
   override fun setLayoutId(): Int {
@@ -123,16 +124,20 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     binding.dbVersion.text = BaseApp.dbName
     binding.tab.setupWithViewPager(binding.vp)
     module.checkHasHistoryRecord()
-        .observe(this, Observer { b ->
+        .observe(this, Observer { hasHistory ->
           binding.vp.adapter = VpAdapter(
               listOf(historyFm, entryFm), supportFragmentManager,
               FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
           )
-          if (b) {
-            binding.vp.currentItem = 0
-          } else {
+          // 是否优先显示条目
+          val showEntries = PreferenceManager.getDefaultSharedPreferences(this)
+              .getBoolean(getString(R.string.set_key_main_allow_show_entries), false)
+          if (showEntries) {
             binding.vp.currentItem = 1
+          } else {
+            binding.vp.currentItem = if (hasHistory) 0 else 1
           }
+
           binding.tab.getTabAt(0)!!.icon = getDrawable(R.drawable.selector_ic_tab_history)
           binding.tab.getTabAt(0)!!.text = getString(R.string.history)
           binding.tab.getTabAt(1)!!.icon = getDrawable(R.drawable.selector_ic_tab_db)
