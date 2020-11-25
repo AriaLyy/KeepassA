@@ -277,4 +277,5 @@
   <string name="expand">展開</string>
   <string name="shrink">收起</string>
   <string name="ui_setting">界面設置</string>
+  <string name="cur_app_not_autofill">不自動填充</string>
 </resources>

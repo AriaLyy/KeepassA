@@ -13,6 +13,7 @@ import KDBAutoFillRepository
 import android.annotation.TargetApi
 import android.content.IntentSender
 import android.os.Build
+import android.os.Build.VERSION_CODES
 import android.os.CancellationSignal
 import android.service.autofill.AutofillService
 import android.service.autofill.FillCallback
@@ -20,6 +21,7 @@ import android.service.autofill.FillRequest
 import android.service.autofill.FillResponse
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
+import androidx.annotation.RequiresApi
 import androidx.preference.PreferenceManager
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
@@ -166,16 +168,6 @@ class AutoFillService : AutofillService() {
     metadataList: AutoFillFieldMetadataCollection,
     sender: IntentSender
   ): FillResponse {
-//    val responseBuilder = FillResponse.Builder()
-//    val presentation = AutoFillHelper
-//        .newRemoteViews(
-//            this.packageName, getString(R.string.autofill_sign_in_prompt),
-//            R.mipmap.ic_launcher
-//        )
-//    responseBuilder.setAuthentication(metadataList.autoFillIds.toTypedArray(), sender, presentation)
-
-//    return responseBuilder.build()
-
     return AutoFillHelper.newSaveResponse(this, metadataList, sender)
   }
 
@@ -202,16 +194,21 @@ class AutoFillService : AutofillService() {
 
     // 如果数据库没打开，需要打开登录页面
     if (needAuth) {
-      val p = KDBAutoFillRepository.getUserInfo(parser.autoFillFields)
-      KLog.d(TAG, "用户信息：$p")
-      callback.onSuccess(
-          LauncherActivity.getAuthDbIntentSenderBySave(
-              context = this,
-              apkPackageName = apkPackageName,
-              userName = p.first ?: "",
-              pass = p.second ?: ""
-          )
-      )
+      // This api is only at P
+      if (Build.VERSION.SDK_INT >= VERSION_CODES.P) {
+        val p = KDBAutoFillRepository.getUserInfo(parser.autoFillFields)
+        KLog.d(TAG, "用户信息：$p")
+        callback.onSuccess(
+            LauncherActivity.getAuthDbIntentSenderBySave(
+                context = this,
+                apkPackageName = apkPackageName,
+                userName = p.first ?: "",
+                pass = p.second ?: ""
+            )
+        )
+        return
+      }
+      callback.onSuccess()
       return
     }
     if (BaseApp.KDB == null) {

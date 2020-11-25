@@ -320,6 +320,10 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
      * 从通知进入快速解锁页
      */
     internal fun createQuickUnlockPending(context: Context): PendingIntent {
+      if (BaseApp.dbRecord == null){
+        return LauncherActivity.createLauncherPending(context)
+      }
+
       return Intent(context, QuickUnlockActivity::class.java).let { notificationIntent ->
         PendingIntent.getActivity(context, 0, notificationIntent, 0)
       }
@@ -329,6 +333,11 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
       context: Context,
       flags: Int = -1
     ) {
+      if (BaseApp.dbRecord == null){
+        LauncherActivity.startLauncherActivity(context, flags)
+        return
+      }
+
       context.startActivity(Intent(context, QuickUnlockActivity::class.java).apply {
         if (flags != -1){
           this.flags = flags
@@ -343,6 +352,9 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
       context: Context,
       pkgName: String
     ): IntentSender {
+      if (BaseApp.dbRecord == null){
+        return LauncherActivity.getAuthDbIntentSender(context, apkPackageName = pkgName)
+      }
       val intent = Intent(context, QuickUnlockActivity::class.java).also {
         it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
         it.putExtra(KEY_PKG_NAME, pkgName)

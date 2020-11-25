@@ -56,6 +56,24 @@ object AutoFillHelper {
   }
 
   /**
+   * Not autofill dataset
+   */
+  private fun notAutoFill(
+    context: Context,
+    apkPageName: String
+  ): Dataset {
+    val rev = RemoteViews(context.packageName, R.layout.item_auto_fill)
+    rev.setTextViewText(R.id.text, context.resources.getString(R.string.cur_app_not_autofill))
+    IconUtil.getAppIcon(context, apkPageName)?.let {
+      rev.setImageViewBitmap(R.id.img, it)
+    }
+//    rev.setOnClickResponse()
+    val db = Dataset.Builder(rev)
+
+    return db.build()
+  }
+
+  /**
    * 创建填充数据，填充用户名，密码
    * @param dataSetAuth true 验证通过
    * @param apkPageName 第三方apk包名
@@ -141,7 +159,7 @@ object AutoFillHelper {
     val notUsed = RemoteViews(context.packageName, android.R.layout.simple_list_item_1)
     val b = applyToFields(metadataList, dataSetBuild, notUsed)
     KLog.d(TAG, "applyToFields -> $b")
-    if (b){
+    if (b) {
       responseBuilder.addDataset(dataSetBuild.build())
     }
 
@@ -179,6 +197,7 @@ object AutoFillHelper {
       val dataSet = newDataSet(context, metadata, entry, dataSetAuth, apkPageName)
       dataSet?.let(responseBuilder::addDataset)
     }
+    // curApp not autofill
 
     return if (metadata.saveType != 0) {
       val autoFillIds = metadata.autoFillIds

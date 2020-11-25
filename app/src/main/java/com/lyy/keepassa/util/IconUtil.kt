@@ -67,6 +67,18 @@ object IconUtil {
   }
 
   /**
+   * 获取图标 bitmap
+   * @param context
+   */
+  fun getAppIcon(
+    context: Context,
+    apkPkgName: String
+  ): Bitmap? {
+    val d = context.packageManager.getApplicationIcon(apkPkgName) ?: return null
+    return getBitmapFromDrawable(context, d)
+  }
+
+  /**
    * 将自定义图标转换为drawable，如果自定义图标为空，则需要返回默认图标
    * @param defIcon 默认图标
    */

@@ -408,13 +408,6 @@ public class AndroidUtils {
   }
 
   /**
-   * 获取设备的唯一ID
-   */
-  public static String getAndroidId(Context context) {
-    return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-  }
-
-  /**
    * 返回版本名称
    */
   public static String getVersionName(Context context) {

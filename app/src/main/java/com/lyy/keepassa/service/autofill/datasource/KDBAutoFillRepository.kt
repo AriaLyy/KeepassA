@@ -79,7 +79,7 @@ object KDBAutoFillRepository {
     if (listStorage.isEmpty()) {
       if (BaseApp.isV4) {
         entry = PwEntryV4(BaseApp.KDB.pm.rootGroup as PwGroupV4)
-        val icon = getAppIcon(context, apkPkgName)
+        val icon = IconUtil.getAppIcon(context, apkPkgName)
         if (icon != null) {
           val baos = ByteArrayOutputStream()
           icon.compress(PNG, 100, baos)
@@ -169,18 +169,6 @@ object KDBAutoFillRepository {
       e.printStackTrace()
     }
     return null
-  }
-
-  /**
-   * 获取图标 bitmap
-   * @param context
-   */
-  fun getAppIcon(
-    context: Context,
-    apkPkgName: String
-  ): Bitmap? {
-    val d = context.packageManager.getApplicationIcon(apkPkgName) ?: return null
-    return IconUtil.getBitmapFromDrawable(context, d)
   }
 
 }
