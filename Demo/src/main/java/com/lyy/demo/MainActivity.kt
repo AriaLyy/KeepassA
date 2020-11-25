@@ -26,7 +26,7 @@ import com.lyy.demo.databinding.ActivityMainBinding
 
 class MainActivity : AbsActivity<ActivityMainBinding>() {
 
-  private val strings = mutableListOf("uri权限管理", "指纹加密数据", "指纹校验", "富文本", "注册码", "捐赠", "首字母")
+  private val strings = mutableListOf("uri权限管理", "指纹加密数据", "指纹校验", "富文本", "注册码", "捐赠", "首字母", "展开文本")
 
   override fun setLayoutId(): Int {
     return R.layout.activity_main
@@ -63,6 +63,9 @@ class MainActivity : AbsActivity<ActivityMainBinding>() {
             }
             6 -> { //拼音首字母
               startActivity(Intent(this, PinyinActivity::class.java))
+            }
+            7 -> {
+              startActivity(Intent(this, ExpendTextViewActivity::class.java))
             }
           }
         }

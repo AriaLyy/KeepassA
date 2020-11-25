@@ -51,7 +51,8 @@ class EntryDetailStrPopMenu(
     popup.menu.findItem(R.id.show_pass).isVisible = str.isProtected
     // 是否显示打开url
     popup.menu.findItem(R.id.open_url).isVisible =
-      str.toString().startsWith("http", ignoreCase = true)
+      str.toString()
+          .startsWith("http", ignoreCase = true)
 
     // 以下代码为强制显示icon
     val mPopup = ReflectionUtil.getField(PopupMenu::class.java, "mPopup")
@@ -61,7 +62,8 @@ class EntryDetailStrPopMenu(
     popup.setOnMenuItemClickListener { item ->
       when (item.itemId) {
         R.id.copy_clip -> {
-          ClipboardUtil.get().copyDataToClip(str.toString())
+          ClipboardUtil.get()
+              .copyDataToClip(str.toString())
           HitUtil.toaskShort(context.getString(R.string.hint_copy_to_clip))
         }
         R.id.open_url -> {
@@ -84,19 +86,26 @@ class EntryDetailStrPopMenu(
   /**
    * 设置隐藏密码
    */
-  public fun setHidePass() {
+  fun setHidePass() {
     showPass = false
     val item = popup.menu.findItem(R.id.show_pass)
     item.icon = context.getDrawable(R.drawable.ic_view_off_black)
     item.title = context.getString(R.string.hide_pass)
   }
 
-  public fun setOnShowPassCallback(callback: OnShowPassCallback) {
+  fun setOnShowPassCallback(callback: OnShowPassCallback) {
     this.showPassCallback = callback
   }
 
-  public fun show() {
+  fun show() {
     popup.show()
+  }
+
+  fun show(
+    x: Int,
+    y: Int
+  ) {
+    help.show(x, y)
   }
 
   fun getPopMenu(): PopupMenu {

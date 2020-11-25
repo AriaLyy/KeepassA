@@ -174,8 +174,8 @@
   <string name="no_matching_entry">No matching item</string>
   <string name="hint_save_auto_fill"><![CDATA[Whether to associate the package name【<font color="#FF0000">%s</font>】with the entry【<font color="#FF0000">%s</font>】]]></string>
   <string name="relevance_db">Linked data </string>
-  <string name="modify_time">Change the time</string>
-  <string name="lose_time">Time to failure</string>
+  <string name="modify_time">Modify time</string>
+  <string name="lose_time">Expiration time</string>
   <string name="update_group_fail">Update group information failed</string>
   <string name="update_group_success">Group information updated successfully</string>
   <string name="title">Title</string>
@@ -274,5 +274,7 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="set_key_sum_main_show_entries">Show all items after unlock the database</string>
   <string name="set_key_sum_main_show_history">Show History after unlock the database</string>
   <string name="set_key_title_main_allow_show_entries">Home page settings</string>
+  <string name="expand">Expand</string>
+  <string name="shrink">Shrink</string>
 
 </resources>

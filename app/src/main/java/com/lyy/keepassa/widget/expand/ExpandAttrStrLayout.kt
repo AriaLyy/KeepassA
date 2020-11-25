@@ -42,7 +42,7 @@ import kotlinx.coroutines.withContext
 /**
  * 项目详情页，展开自定义字段
  */
-class ExpandTextView(
+class ExpandAttrStrLayout(
   context: Context,
   attr: AttributeSet
 ) : RelativeLayout(context, attr), View.OnClickListener {

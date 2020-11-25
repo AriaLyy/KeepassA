@@ -26,6 +26,7 @@
     <activity android:name=".RegCodeActivity" />
     <activity android:name=".DonateActivity" />
     <activity android:name=".PinyinActivity" />
+    <activity android:name=".ExpendTextViewActivity"/>
 
     <provider
         android:name="androidx.core.content.FileProvider"

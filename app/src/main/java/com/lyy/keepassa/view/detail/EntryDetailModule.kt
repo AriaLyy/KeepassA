@@ -11,6 +11,10 @@ package com.lyy.keepassa.view.detail
 
 import android.content.Context
 import android.net.Uri
+import android.text.InputType
+import android.view.View
+import android.widget.TextView
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.liveData
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
@@ -29,6 +33,11 @@ import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
+import com.lyy.keepassa.view.menu.EntryDetailFilePopMenu
+import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
+import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
+import com.lyy.keepassa.widget.expand.AttrFileItemView
+import com.lyy.keepassa.widget.expand.AttrStrItemView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -39,6 +48,73 @@ import org.greenrobot.eventbus.EventBus
  * 条目详情
  */
 class EntryDetailModule : BaseModule() {
+  var curDLoadFile: ProtectedBinary? = null
+  val createFileRequestCode = 0xA1
+
+  /**
+   * 展示附件的菜单
+   */
+  fun showAttrFilePopMenu(
+    context: FragmentActivity,
+    v: View
+  ) {
+    if (KeepassAUtil.isFastClick()) {
+      return
+    }
+    val key = (v as AttrFileItemView).titleStr
+    val value = v.file
+    val menu = EntryDetailFilePopMenu(context, v, key, value!!)
+    menu.setOnDownloadClick(object : EntryDetailFilePopMenu.OnDownloadClick {
+      override fun onDownload(
+        key: String,
+        file: ProtectedBinary
+      ) {
+        curDLoadFile = file
+        KeepassAUtil.createFile(context, "*/*", key, createFileRequestCode)
+      }
+    })
+    menu.show()
+  }
+
+  /**
+   * 展示属性字段的菜单
+   */
+  fun showAttrStrPopMenu(
+    context: FragmentActivity,
+    v: View
+  ) {
+    if (KeepassAUtil.isFastClick()) {
+      return
+    }
+    val value = v.findViewById<TextView>(R.id.value)
+    val key = (v as AttrStrItemView).titleStr
+    val str = v.valueInfo
+    val pop = EntryDetailStrPopMenu(context, v, str)
+    // totp 密码，seed都需要显示密码
+    if (key == "TOTP"
+        || key.equals("otp", ignoreCase = true)
+        || key.equals("TOTP Seed", ignoreCase = true)
+        || str.isProtected
+    ) {
+      pop.setOnShowPassCallback(object : OnShowPassCallback {
+        override fun showPass(showPass: Boolean) {
+          if (showPass) {
+            value.inputType =
+              (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)
+            return
+          }
+          value.inputType =
+            (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
+        }
+      })
+
+      if (value.inputType == (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)) {
+        pop.setHidePass()
+      }
+    }
+
+    pop.show()
+  }
 
   /**
    * 保存附件到sd卡
@@ -122,8 +198,6 @@ class EntryDetailModule : BaseModule() {
           .post(record)
     }
   }
-
-
 
   /**
    * 获取项目的属性字段，只有v4版本才有自定义属性字段

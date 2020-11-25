@@ -12,4 +12,8 @@
   <color name="text_gray_color">#757575</color>
   <color name="black">#000</color>
 
+  <color name="ripple">#18000000</color>
+  <color name="white">#fff</color>
+  <color name="colorPrimary">#4E85DB</color>
+
 </resources>

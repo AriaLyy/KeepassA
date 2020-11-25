@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
@@ -51,6 +52,7 @@ dependencies {
   implementation rootProject.ext.multidex
   implementation project(path: ':Frame')
   implementation project(path: ':KeepassLib')
+  implementation project(path: ':UIWidget')
 
   // 生物识别库，指纹，人脸识别
   implementation 'androidx.biometric:biometric:1.0.1'

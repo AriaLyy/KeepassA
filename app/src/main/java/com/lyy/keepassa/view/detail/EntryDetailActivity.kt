@@ -12,15 +12,18 @@ package com.lyy.keepassa.view.detail
 import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.text.Html
 import android.text.InputType
 import android.text.Spanned
+import android.view.MotionEvent
 import android.view.View
-import android.widget.TextView
+import android.view.View.OnTouchListener
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV3
 import com.keepassdroid.database.PwEntryV4
@@ -42,12 +45,9 @@ import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.MsgDialog
-import com.lyy.keepassa.view.menu.EntryDetailFilePopMenu
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
-import com.lyy.keepassa.widget.expand.AttrFileItemView
-import com.lyy.keepassa.widget.expand.AttrStrItemView
-import com.lyy.keepassa.widget.expand.ExpandTextView
+import com.lyy.keepassa.widget.expand.ExpandAttrStrLayout
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
@@ -66,8 +66,8 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   private lateinit var pwEntry: PwEntry
   private lateinit var loadDialog: LoadingDialog
   private var isInRecycleBin = false
-  private val createFileRequestCode = 0xA1
-  private var curDLoadFile: ProtectedBinary? = null
+  private var curTouchX = 0f
+  private var curTouchY = 0f
 
   override fun setLayoutId(): Int {
     return R.layout.activity_entry_detail
@@ -185,7 +185,14 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
         EntryDetailStrPopMenu(this, v, ProtectedString(false, (pwEntry as PwEntryV4).tags)).show()
       }
       R.id.notice, R.id.notice_layout -> {
-        EntryDetailStrPopMenu(this, v, ProtectedString(false, pwEntry.notes)).show()
+        val pop = EntryDetailStrPopMenu(this, v, ProtectedString(false, pwEntry.notes))
+        val rect = Rect()
+        v.getLocalVisibleRect(rect)
+        if (curTouchX != 0f && curTouchY != 0f && rect.top != 0) {
+          pop.show(curTouchX.toInt(), curTouchY.toInt())
+          return
+        }
+        pop.show()
       }
       R.id.pass -> {
         val pop = EntryDetailStrPopMenu(this, v, ProtectedString(true, pwEntry.password))
@@ -308,9 +315,19 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     if (pwEntry.notes.isEmpty()) {
       binding.noticeLayout.visibility = View.GONE
     } else {
-      binding.notice.text = pwEntry.notes
-      binding.notice.setOnClickListener(this)
+      binding.notice.maxLines = 6
+      binding.notice.originalText = pwEntry.notes
+      binding.notice.setExpandSuffix(getString(R.string.expand))
+      binding.notice.setShrinkSuffix(getString(R.string.shrink))
+      binding.notice.setExpandSuffixColor(ResUtil.getColor(R.color.colorPrimary))
+      binding.notice.setShrinkSuffixColor(ResUtil.getColor(R.color.colorPrimary))
+//      binding.notice.setOnClickListener(this)
       binding.noticeLayout.setOnClickListener(this)
+      binding.noticeLayout.setOnTouchListener { _, event ->
+        curTouchX = event.x
+        curTouchY = event.y
+        false
+      }
     }
 
     if (pwEntry is PwEntryV4) {
@@ -379,42 +396,13 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   }
 
   private fun setAttrStrListener() {
-    binding.attrStr.setOnAttrViewClickListener(object : ExpandTextView.OnAttrViewClickListener {
+    binding.attrStr.setOnAttrViewClickListener(object :
+        ExpandAttrStrLayout.OnAttrViewClickListener {
       override fun onClickListener(
         v: View,
         position: Int
       ) {
-        if (KeepassAUtil.isFastClick()) {
-          return
-        }
-        val value = v.findViewById<TextView>(R.id.value)
-        val key = (v as AttrStrItemView).titleStr
-        val str = v.valueInfo
-        val pop = EntryDetailStrPopMenu(this@EntryDetailActivity, v, str)
-        // totp 密码，seed都需要显示密码
-        if (key == "TOTP"
-            || key.equals("otp", ignoreCase = true)
-            || key.equals("TOTP Seed", ignoreCase = true)
-            || str.isProtected
-        ) {
-          pop.setOnShowPassCallback(object : OnShowPassCallback {
-            override fun showPass(showPass: Boolean) {
-              if (showPass) {
-                value.inputType =
-                  (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)
-                return
-              }
-              value.inputType =
-                (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
-            }
-          })
-
-          if (value.inputType == (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)) {
-            pop.setHidePass()
-          }
-        }
-
-        pop.show()
+        module.showAttrStrPopMenu(this@EntryDetailActivity, v)
       }
     })
   }
@@ -423,29 +411,14 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
    * 设置附件点击事件
    */
   private fun setAttrFileListener() {
-    binding.attrFile.setOnAttrViewClickListener(object : ExpandTextView.OnAttrViewClickListener {
+    binding.attrFile.setOnAttrViewClickListener(object :
+        ExpandAttrStrLayout.OnAttrViewClickListener {
       override fun onClickListener(
         v: View,
         position: Int
       ) {
-        if (KeepassAUtil.isFastClick()) {
-          return
-        }
-        val key = (v as AttrFileItemView).titleStr
-        val value = v.file
-        val menu = EntryDetailFilePopMenu(this@EntryDetailActivity, v, key, value!!)
-        menu.setOnDownloadClick(object : EntryDetailFilePopMenu.OnDownloadClick {
-          override fun onDownload(
-            key: String,
-            file: ProtectedBinary
-          ) {
-            curDLoadFile = file
-            KeepassAUtil.createFile(this@EntryDetailActivity, "*/*", key, createFileRequestCode)
-          }
-        })
-        menu.show()
+        module.showAttrFilePopMenu(this@EntryDetailActivity, v)
       }
-
     })
   }
 
@@ -458,13 +431,13 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     if (resultCode == Activity.RESULT_OK
         && data != null
         && data.data != null
-        && requestCode == createFileRequestCode
-        && curDLoadFile != null
+        && requestCode == module.createFileRequestCode
+        && module.curDLoadFile != null
     ) {
       data.data?.takePermission()
       val dialog = LoadingDialog(this)
       dialog.show()
-      module.saveAttachment(this, data.data!!, curDLoadFile!!)
+      module.saveAttachment(this, data.data!!, module.curDLoadFile!!)
           .observe(this, Observer { fileName ->
             dialog.dismiss()
             HitUtil.toaskShort(getString(R.string.save_file_success, fileName))

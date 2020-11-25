@@ -48,7 +48,7 @@
     </attr>
   </declare-styleable>
 
-  <declare-styleable name="ExpandTextView">
+  <declare-styleable name="ExpandAttrStrLayout">
     <attr name="expand_tt_icon" format="reference" />
     <attr name="expand_tt_title" format="string|reference" />
   </declare-styleable>

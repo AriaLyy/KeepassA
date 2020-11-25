@@ -274,4 +274,6 @@
   <string name="set_key_sum_main_show_entries">解鎖數據庫後顯示所有條目</string>
   <string name="set_key_sum_main_show_history">解鎖數據庫後顯示歷史紀錄</string>
   <string name="set_key_title_main_allow_show_entries">主頁設置</string>
+  <string name="expand">展開</string>
+  <string name="shrink">收起</string>
 </resources>

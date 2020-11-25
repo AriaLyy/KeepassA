@@ -280,5 +280,7 @@
   <string name="set_key_sum_main_show_entries">解锁数据库后显示所有条目</string>
   <string name="set_key_sum_main_show_history">解锁数据库后显示历史记录</string>
   <string name="set_key_title_main_allow_show_entries">主页设置</string>
+  <string name="expand">展开</string>
+  <string name="shrink">收起</string>
 </resources>
 

@@ -150,17 +150,15 @@
               app:srcCompat="@drawable/ic_notice"
               />
 
-          <com.lyy.keepassa.widget.ScrollTextView
+          <com.lyy.keepassa.widget.ExpandableTextView
               android:id="@+id/notice"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_centerVertical="true"
               android:layout_marginStart="24dp"
               android:layout_marginEnd="8dp"
-              android:layout_toLeftOf="@+id/notice_more"
-              android:layout_toRightOf="@+id/notice_icon"
-              android:maxHeight="100dp"
-              android:scrollbars="vertical"
+              android:layout_toStartOf="@+id/notice_more"
+              android:layout_toEndOf="@+id/notice_icon"
               android:text="notice"
               android:textColor="@color/text_black_color"
               android:textSize="@dimen/text_size_normal"
@@ -171,7 +169,7 @@
               android:id="@+id/notice_more"
               android:layout_width="24dp"
               android:layout_height="24dp"
-              android:layout_alignParentRight="true"
+              android:layout_alignParentEnd="true"
               app:srcCompat="@drawable/ic_more_read"
               />
 
@@ -184,7 +182,7 @@
             android:background="@color/line_color"
             />
 
-        <com.lyy.keepassa.widget.expand.ExpandTextView
+        <com.lyy.keepassa.widget.expand.ExpandAttrStrLayout
             android:id="@+id/attr_str"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -194,7 +192,7 @@
             app:expand_tt_title="@string/hint_attr"
             />
 
-        <com.lyy.keepassa.widget.expand.ExpandTextView
+        <com.lyy.keepassa.widget.expand.ExpandAttrStrLayout
             android:id="@+id/attr_file"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
