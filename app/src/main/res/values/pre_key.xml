@@ -16,6 +16,7 @@
   <string name="set_key_praise" translatable="false">set_key_praise</string>
   <string name="set_key_delete_no_recycle_bin" translatable="false">set_key_delete_no_recycle_bin</string>
   <string name="set_key_main_allow_show_entries" translatable="false">set_key_main_allow_show_entries</string>
+  <string name="set_key_need_root_check" translatable="false">set_key_need_root_check</string>
 
   <string name="set_key_version_log" translatable="false">set_key_version_log</string>
   <string name="set_key_license" translatable="false">set_key_license</string>

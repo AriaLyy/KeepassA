@@ -282,5 +282,6 @@
   <string name="set_key_title_main_allow_show_entries">主页设置</string>
   <string name="expand">展开</string>
   <string name="shrink">收起</string>
+  <string name="ui_setting">界面设置</string>
 </resources>
 

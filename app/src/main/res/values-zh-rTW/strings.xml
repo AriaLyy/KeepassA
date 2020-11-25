@@ -276,4 +276,5 @@
   <string name="set_key_title_main_allow_show_entries">主頁設置</string>
   <string name="expand">展開</string>
   <string name="shrink">收起</string>
+  <string name="ui_setting">界面設置</string>
 </resources>

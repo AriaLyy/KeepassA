@@ -209,3 +209,4 @@
 -keep class com.com.lyy.keepassa.baseapi.*{ *; }
 -dontwarn com.com.lyy.keepassa.baseapi.**
 -keep class * implements com.lyy.keepassa.baseapi.INotFreeLibService{ *; }
+-keep class com.lyy.keepassa.view.setting.UISettingFragment

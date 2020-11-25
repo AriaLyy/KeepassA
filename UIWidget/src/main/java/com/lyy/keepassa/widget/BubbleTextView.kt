@@ -29,6 +29,13 @@ class BubbleTextView(
   private var iconSize: Int
   private var iconClickListener: OnIconClickListener? = null
 
+  companion object{
+    val LOCATION_LEFT = 0
+    val LOCATION_TOP = 1
+    val LOCATION_RIGHT = 2
+    val LOCATION_BOTTOM = 3
+  }
+
   public interface OnIconClickListener {
     /**
      * 0：点击左边的icon，1：点击顶部的icon，2：点击右边的icon，3：点击底部的icon
@@ -45,7 +52,8 @@ class BubbleTextView(
     val ta = context.obtainStyledAttributes(attrs, R.styleable.BubbleTextView)
     val iconSize = ta.getDimension(
         R.styleable.BubbleTextView_icon_size,
-        24.toPx().toFloat()
+        24.toPx()
+            .toFloat()
     )
     val leftIcon = ta.getDrawable(R.styleable.BubbleTextView_left_icon)
     val topIcon = ta.getDrawable(R.styleable.BubbleTextView_top_icon)
@@ -68,6 +76,39 @@ class BubbleTextView(
     this.iconSize = iconSize.toInt()
     ta.recycle()
     isClickable = true
+  }
+
+  /**
+   * @param location [LOCATION_LEFT], [LOCATION_TOP], [LOCATION_RIGHT], [LOCATION_BOTTOM]
+   */
+  fun clearIcon(location: Int) {
+    when (location) {
+      LOCATION_LEFT -> setCompoundDrawables(
+          null,
+          compoundDrawables[1],
+          compoundDrawables[2],
+          compoundDrawables[3]
+      )
+      LOCATION_TOP -> setCompoundDrawables(
+          compoundDrawables[0],
+          null,
+          compoundDrawables[2],
+          compoundDrawables[3]
+      )
+      LOCATION_RIGHT -> setCompoundDrawables(
+          compoundDrawables[0],
+          compoundDrawables[1],
+          null,
+          compoundDrawables[3]
+      )
+      LOCATION_BOTTOM -> setCompoundDrawables(
+          compoundDrawables[0],
+          compoundDrawables[1],
+          compoundDrawables[2],
+          null
+      )
+    }
+
   }
 
   fun setLeftIcon(drawable: Drawable) {

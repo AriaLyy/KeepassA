@@ -33,6 +33,7 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityMainBinding
+import com.lyy.keepassa.event.CheckEnvEvent
 import com.lyy.keepassa.event.ModifyDbNameEvent
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
@@ -164,6 +165,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
     })
     module.checkDevBirthdayData(this)
+  }
+
+  @Subscribe(threadMode = MAIN)
+  fun onCheckEnv(event: CheckEnvEvent) {
+    module.setEcoIcon(this, binding.dbName)
   }
 
   @Subscribe(threadMode = MAIN)

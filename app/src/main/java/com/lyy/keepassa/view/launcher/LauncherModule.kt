@@ -20,10 +20,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.Database
 import com.keepassdroid.database.PwDatabase
 import com.keepassdroid.database.helper.KDBHandlerHelper
 import com.keepassdroid.utils.UriUtil
+import com.lahm.library.EasyProtectorLib
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
@@ -41,6 +44,8 @@ import com.lyy.keepassa.view.DbPathType
 import com.lyy.keepassa.view.DbPathType.AFS
 import com.lyy.keepassa.view.DbPathType.DROPBOX
 import com.lyy.keepassa.view.DbPathType.WEBDAV
+import com.lyy.keepassa.view.dialog.MsgDialog
+import com.lyy.keepassa.widget.BubbleTextView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -48,6 +53,31 @@ import java.util.Date
 
 class LauncherModule : BaseModule() {
   private val itemData: MutableLiveData<List<SimpleItemEntity>> = MutableLiveData()
+
+  /**
+   * 安全检查
+   */
+  fun securityCheck(context: Context) {
+    val needCheckEnv = PreferenceManager.getDefaultSharedPreferences(context)
+        .getBoolean(context.resources.getString(R.string.set_key_need_root_check), true)
+    if (!needCheckEnv) {
+      return
+    }
+
+    val resources = context.resources
+    if (EasyProtectorLib.checkIsRoot()) {
+      val vector = VectorDrawableCompat.create(resources, R.drawable.ic_eco, context.theme)
+      vector?.setTint(ResUtil.getColor(R.color.red))
+      val dialog = MsgDialog.generate {
+        msgTitle = resources.getString(R.string.warning)
+        msgContent = resources.getString(R.string.warning_rooted)
+        msgTitleEndIcon = vector
+        showCancelBt = false
+        build()
+      }
+      dialog.show()
+    }
+  }
 
   /**
    * 获取快速解锁记录
@@ -101,7 +131,7 @@ class LauncherModule : BaseModule() {
       Log.d(TAG, "is full unlock = ${unLockRecord.isFullUnlock}")
       val dbDao = BaseApp.appDatabase.dbRecordDao()
       val dbRecord = dbDao.findRecord(dbUri)
-      if (dbRecord == null){
+      if (dbRecord == null) {
         Log.d(TAG, "dbRecord is null")
         return@withContext false
       }
@@ -158,9 +188,9 @@ class LauncherModule : BaseModule() {
    *
    */
   fun openDb(
-      context: Context,
-      record: DbRecord,
-      dbPass: String
+    context: Context,
+    record: DbRecord,
+    dbPass: String
   ) = liveData {
     val db: Database? = withContext(Dispatchers.IO) {
       var temp: Database? = null
@@ -190,9 +220,9 @@ class LauncherModule : BaseModule() {
    * 打开坚果云数据
    */
   private suspend fun openWebDavDb(
-      context: Context,
-      record: DbRecord,
-      dbPass: String
+    context: Context,
+    record: DbRecord,
+    dbPass: String
   ): Database? {
     val dao = BaseApp.appDatabase.cloudServiceInfoDao()
     val serviceInfo = dao.queryServiceInfo(record.cloudDiskPath!!)
@@ -225,9 +255,9 @@ class LauncherModule : BaseModule() {
    * 打开dropbox的数据库
    */
   private suspend fun openDropboxDb(
-      context: Context,
-      record: DbRecord,
-      dbPass: String
+    context: Context,
+    record: DbRecord,
+    dbPass: String
   ): Database? {
     val cacheFile = record.getDbUri()
         .toFile()
@@ -250,11 +280,11 @@ class LauncherModule : BaseModule() {
    * @param dbUri 如果是AFS，dbUri表示本地文件的Uri；如果是云端文件，表示的是云端文件的路径
    */
   private suspend fun openDbFile(
-      context: Context,
-      dbUri: Uri,
-      dbPass: String,
-      keyUri: Uri?,
-      record: DbRecord
+    context: Context,
+    dbUri: Uri,
+    dbPass: String,
+    keyUri: Uri?,
+    record: DbRecord
   ): Database? {
     val db = KDBHandlerHelper.getInstance(context)
         .openDb(dbUri, dbPass, keyUri)

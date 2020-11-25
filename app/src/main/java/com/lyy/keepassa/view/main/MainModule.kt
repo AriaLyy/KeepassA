@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
+import androidx.preference.PreferenceManager
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.arialyy.frame.util.AndroidUtils
 import com.arialyy.frame.util.ResUtil
@@ -62,6 +63,13 @@ class MainModule : BaseModule() {
     context: Context,
     btText: BubbleTextView
   ) {
+    val needCheckEnv = PreferenceManager.getDefaultSharedPreferences(context)
+        .getBoolean(context.resources.getString(R.string.set_key_need_root_check), true)
+    if (!needCheckEnv){
+      btText.clearIcon(BubbleTextView.LOCATION_RIGHT)
+      return
+    }
+
     var vector = ResUtil.getSvgIcon(R.drawable.ic_eco, R.color.green)
     var msg = context.getString(R.string.hint_security_green)
     if (EasyProtectorLib.checkIsRoot()) {
@@ -189,7 +197,7 @@ class MainModule : BaseModule() {
    * 获取历史记录
    */
   fun getEntryHistoryRecord() = liveData {
-    if (BaseApp.dbRecord == null){
+    if (BaseApp.dbRecord == null) {
       emit(null)
       return@liveData
     }

@@ -59,6 +59,11 @@
 
   <PreferenceCategory app:title="@string/other_set">
 
+    <Preference
+        android:title="@string/ui_setting"
+        app:fragment="com.lyy.keepassa.view.setting.UISettingFragment"
+        app:icon="@drawable/ic_app" />
+
     <SwitchPreference
         android:defaultValue="false"
         android:summaryOff="@string/set_delete_no_into_recycle_bin_des"
@@ -73,14 +78,6 @@
         app:entries="@array/choose_language_entries"
         app:entryValues="@array/choose_language_value"
         app:key="@string/set_key_language" />
-
-    <SwitchPreference
-        android:defaultValue="false"
-        android:summaryOff="@string/set_key_sum_main_show_history"
-        android:summaryOn="@string/set_key_sum_main_show_entries"
-        android:title="@string/set_key_title_main_allow_show_entries"
-        app:icon="@drawable/ic_app"
-        app:key="@string/set_key_main_allow_show_entries" />
 
     <Preference
         app:icon="@drawable/ic_version"

@@ -276,5 +276,9 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="set_key_title_main_allow_show_entries">Home page settings</string>
   <string name="expand">Expand</string>
   <string name="shrink">Shrink</string>
+  <string name="ui_setting">Ui Setting</string>
+  <string name="set_key_title_opr_env_check">Operating environment check</string>
+  <string name="set_key_title_opr_env_check_turn_off">Turn off operating environment check</string>
+  <string name="set_key_title_opr_env_check_turn_on">Turn on environment check</string>
 
 </resources>

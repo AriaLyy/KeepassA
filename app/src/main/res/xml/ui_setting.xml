@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <SwitchPreference
+      android:defaultValue="false"
+      android:summaryOff="@string/set_key_sum_main_show_history"
+      android:summaryOn="@string/set_key_sum_main_show_entries"
+      android:title="@string/set_key_title_main_allow_show_entries"
+      app:icon="@drawable/ic_swap_horiz"
+      app:key="@string/set_key_main_allow_show_entries" />
+
+  <SwitchPreference
+      android:defaultValue="true"
+      android:summaryOff="@string/set_key_title_opr_env_check_turn_off"
+      android:summaryOn="@string/set_key_title_opr_env_check_turn_on"
+      android:title="@string/set_key_title_opr_env_check"
+      app:icon="@drawable/ic_eco"
+      app:key="@string/set_key_need_root_check" />
+
+</PreferenceScreen>

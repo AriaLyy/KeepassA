@@ -85,26 +85,9 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     module = ViewModelProvider(this)
         .get(LauncherModule::class.java)
     initUI()
-    securityCheck()
+    module.securityCheck(this)
   }
 
-  /**
-   * 安全检查
-   */
-  private fun securityCheck() {
-    if (EasyProtectorLib.checkIsRoot()) {
-      val vector = VectorDrawableCompat.create(resources, R.drawable.ic_eco, theme)
-      vector?.setTint(ResUtil.getColor(R.color.red))
-      val dialog = MsgDialog.generate {
-        msgTitle = this@LauncherActivity.getString(R.string.warning)
-        msgContent = this@LauncherActivity.getString(R.string.warning_rooted)
-        msgTitleEndIcon = vector
-        showCancelBt = false
-        build()
-      }
-      dialog.show()
-    }
-  }
 
   /**
    * 初始化界面
