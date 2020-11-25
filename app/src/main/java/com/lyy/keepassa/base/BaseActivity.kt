@@ -49,8 +49,6 @@ import com.lyy.keepassa.view.launcher.LauncherActivity
  */
 abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
 
-  protected var useAnim = true
-
   //  private val mCompositeDisposable = CompositeDisposable()
   protected lateinit var toolbar: Toolbar
 
@@ -63,6 +61,8 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     }
   }
 
+  open fun useAnim() = true
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     // 进入系统多任务，界面变空白，设置无法截图
@@ -72,7 +72,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
           WindowManager.LayoutParams.FLAG_SECURE
       )
 //    }
-    if (useAnim) {
+    if (useAnim()) {
       setWindowAnim()
     }
 

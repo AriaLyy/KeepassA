@@ -88,6 +88,10 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     module.securityCheck(this)
   }
 
+  override fun useAnim(): Boolean {
+    return false
+  }
+
   /**
    * 初始化界面
    */
@@ -125,7 +129,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     super.onResume()
     // 如果数据库已经打开，直接启用到主页，用于快捷方式添加数据后返回的情况
     if (BaseApp.KDB != null && !BaseApp.isLocked) {
-      MainActivity.startMainActivity(this, true)
+      MainActivity.startMainActivity(this)
     }
   }
 

@@ -329,7 +329,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
             activity?.finish()
           } else {
             NotificationUtil.startDbOpenNotify(requireContext())
-            MainActivity.startMainActivity(requireActivity(), true)
+            MainActivity.startMainActivity(requireActivity())
           }
         })
   }

@@ -28,6 +28,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.HitUtil
+import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import kotlinx.coroutines.Dispatchers
@@ -68,7 +69,7 @@ class CreateEntryModule : BaseModule() {
     if (listStorage.isEmpty()) {
       if (BaseApp.isV4) {
         entry = PwEntryV4(BaseApp.KDB.pm.rootGroup as PwGroupV4)
-        val icon = KDBAutoFillRepository.getAppIcon(context, apkPkgName)
+        val icon = IconUtil.getAppIcon(context, apkPkgName)
         if (icon != null) {
           val baos = ByteArrayOutputStream()
           icon.compress(PNG, 100, baos)

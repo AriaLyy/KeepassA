@@ -60,29 +60,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     // 打开搜索
     const val OPEN_SEARCH = 1
 
-    /**
-     * @param clearTask 是否清楚之前的所有activity
-     */
-    fun startMainActivity(
-      activity: Activity,
-      clearTask: Boolean = false
-    ) {
-      val intent = Intent(activity, MainActivity::class.java).apply {
-        if (clearTask) {
-          // 打开会导致搜索界面和保存数据界面启动不了，因为所在的activity堆栈不同了，后面需要优化
-//          flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-      }
+    fun startMainActivity(activity: Activity) {
+      val intent = Intent(activity, MainActivity::class.java)
       activity.startActivity(
           intent, ActivityOptions.makeSceneTransitionAnimation(activity)
           .toBundle()
       )
     }
-  }
-
-  override fun onResume() {
-    super.onResume()
-
   }
 
   override fun setLayoutId(): Int {
@@ -208,18 +192,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   override fun onPostCreate(savedInstanceState: Bundle?) {
     super.onPostCreate(savedInstanceState)
     // 需要关闭 LauncherActivity\ InputPassActivity \ CreateActivity 三个界面
-    BaseApp.handler.postDelayed({
-      for (ac in AbsFrame.getInstance().activityStack) {
-        if (ac is LauncherActivity || ac is CreateDbActivity) {
-          ac.rootView.visibility = View.GONE
-          ac.finish()
-//          AbsFrame.getInstance().activityStack.remove(ac)
-//          if (!ac.isFinishing || !ac.isDestroyed){
-//            ac.finish()
-//          }
-        }
+    for (ac in AbsFrame.getInstance().activityStack) {
+      if (ac is LauncherActivity || ac is CreateDbActivity) {
+        ac.rootView.visibility = View.GONE
+        ac.finish()
+        ac.overridePendingTransition(0, 0)
       }
-    }, 1000)
+    }
     initData()
   }
 

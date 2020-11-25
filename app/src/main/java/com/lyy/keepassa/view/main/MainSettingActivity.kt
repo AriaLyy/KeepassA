@@ -43,15 +43,18 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
 
   private lateinit var module: MainModule
 
+  companion object {
+    const val arrowAnimDuration = 100L
+  }
+
   override fun onCreate(savedInstanceState: Bundle?) {
-    useAnim = false
     super.onCreate(savedInstanceState)
     window.enterTransition.excludeTarget(android.R.id.statusBarBackground, true)
     window.enterTransition.excludeTarget(android.R.id.navigationBarBackground, true)
   }
 
-  companion object {
-    const val arrowAnimDuration = 100L
+  override fun useAnim(): Boolean {
+    return false
   }
 
   override fun setLayoutId(): Int {

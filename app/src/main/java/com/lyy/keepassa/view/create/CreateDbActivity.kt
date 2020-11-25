@@ -124,7 +124,7 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
 
   private fun handleSuccess() {
     NotificationUtil.startDbOpenNotify(this)
-    MainActivity.startMainActivity(this, true)
+    MainActivity.startMainActivity(this)
     KeepassAUtil.saveLastOpenDbHistory(BaseApp.dbRecord)
     loadingDialog.dismiss()
   }
