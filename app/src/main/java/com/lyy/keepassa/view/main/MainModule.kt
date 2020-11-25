@@ -15,7 +15,6 @@ import android.view.View
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.arialyy.frame.util.AndroidUtils
 import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.Database
@@ -33,7 +32,6 @@ import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.entity.DbRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
@@ -60,26 +58,26 @@ class MainModule : BaseModule() {
    * root 红色，提示危险
    */
   fun setEcoIcon(
-    context: Context,
+    cxt: Context,
     btText: BubbleTextView
   ) {
-    val needCheckEnv = PreferenceManager.getDefaultSharedPreferences(context)
-        .getBoolean(context.resources.getString(R.string.set_key_need_root_check), true)
+    val needCheckEnv = PreferenceManager.getDefaultSharedPreferences(cxt)
+        .getBoolean(cxt.resources.getString(R.string.set_key_need_root_check), true)
     if (!needCheckEnv){
       btText.clearIcon(BubbleTextView.LOCATION_RIGHT)
       return
     }
 
     var vector = ResUtil.getSvgIcon(R.drawable.ic_eco, R.color.green)
-    var msg = context.getString(R.string.hint_security_green)
+    var msg = cxt.getString(R.string.hint_security_green)
     if (EasyProtectorLib.checkIsRoot()) {
       vector = ResUtil.getSvgIcon(R.drawable.ic_eco, R.color.red)
-      msg = context.getString(R.string.hint_security_red)
-    } else if (EasyProtectorLib.checkIsRunningInEmulator(context) {
+      msg = cxt.getString(R.string.hint_security_red)
+    } else if (EasyProtectorLib.checkIsRunningInEmulator(cxt) {
 //          BuglyLog.d(TAG, it)
         }) {
       vector = ResUtil.getSvgIcon(R.drawable.ic_eco, R.color.yellow)
-      msg = context.getString(R.string.hint_security_yellow)
+      msg = cxt.getString(R.string.hint_security_yellow)
     }
     btText.setEndIcon(vector!!)
     btText.setOnIconClickListener(object : OnIconClickListener {
@@ -89,7 +87,7 @@ class MainModule : BaseModule() {
       ) {
         if (index == 2) {
           val msgDialog = MsgDialog.generate {
-            msgTitle = context.getString(R.string.hint)
+            msgTitle = cxt.getString(R.string.hint)
             msgContent = msg
             showCancelBt = false
             msgTitleEndIcon = vector

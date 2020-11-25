@@ -28,6 +28,7 @@ import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
+import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 
 /**
  * 自动填充服务
@@ -121,7 +122,7 @@ class AutoFillService : AutofillService() {
     callback.onSuccess(
         getAuthResponse(
             autofillFields,
-            LauncherActivity.getSearchIntentSender(this, apkPackageName)
+            AutoFillEntrySearchActivity.getSearchIntentSender(this, apkPackageName)
         )
     )
   }

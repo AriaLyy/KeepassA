@@ -88,7 +88,6 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     module.securityCheck(this)
   }
 
-
   /**
    * 初始化界面
    */
@@ -140,12 +139,9 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
         val datas = KDBAutoFillRepository.getAutoFillDataByPackageName(apkPkgName!!)
         // 如果查找不到数据，跳转到搜索页面
         if (datas == null || datas.isEmpty()) {
-//      if (true) {
-          startActivityForResult(
-              Intent(this, AutoFillEntrySearchActivity::class.java).apply {
-                putExtra(KEY_PKG_NAME, apkPkgName)
-              }, REQUEST_SEARCH_ENTRY_CODE, ActivityOptions.makeSceneTransitionAnimation(this)
-              .toBundle()
+          AutoFillEntrySearchActivity.turnSearchActivity(
+              this, REQUEST_SEARCH_ENTRY_CODE,
+              apkPkgName!!
           )
           return
         }
@@ -302,9 +298,12 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     const val KEY_SAVE_USER_NAME = "KEY_SAVE_USER_NAME"
     const val KEY_SAVE_PASS = "KEY_SAVE_PASS"
 
-    internal fun startLauncherActivity(context: Context, flags:Int = -1){
+    internal fun startLauncherActivity(
+      context: Context,
+      flags: Int = -1
+    ) {
       context.startActivity(Intent(context, LauncherActivity::class.java).apply {
-        if (flags != -1){
+        if (flags != -1) {
           this.flags = flags
         }
       })
@@ -328,21 +327,6 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
       apkPackageName: String
     ): IntentSender {
       val intent = Intent(context, LauncherActivity::class.java).also {
-        it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
-        it.putExtra(KEY_PKG_NAME, apkPackageName)
-      }
-      return PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-          .intentSender
-    }
-
-    /**
-     * 没有匹配数据时，启动搜索界面
-     */
-    internal fun getSearchIntentSender(
-      context: Context,
-      apkPackageName: String
-    ): IntentSender {
-      val intent = Intent(context, AutoFillEntrySearchActivity::class.java).also {
         it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
         it.putExtra(KEY_PKG_NAME, apkPackageName)
       }

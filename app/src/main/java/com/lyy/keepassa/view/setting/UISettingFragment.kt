@@ -9,8 +9,6 @@ package com.lyy.keepassa.view.setting
 
 import android.os.Bundle
 import android.view.animation.Animation
-import android.view.animation.TranslateAnimation
-import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.lyy.keepassa.R

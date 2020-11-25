@@ -12,7 +12,10 @@ package com.lyy.keepassa.view.search
 import android.annotation.TargetApi
 import android.app.Activity
 import android.app.ActivityOptions
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
@@ -31,6 +34,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityAutoFillEntrySearchBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
+import com.lyy.keepassa.service.autofill.model.W3cHints
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
@@ -38,7 +42,6 @@ import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.MsgDialog
-import com.lyy.keepassa.view.launcher.LauncherActivity
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 
@@ -63,6 +66,44 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
      * 条目id
      */
     const val EXTRA_ENTRY_ID = "EXTRA_ENTRY_ID"
+    private const val KEY_PKG_NAME = "KEY_PKG_NAME"
+    private const val KEY_IS_AUTH_FORM_FILL = "KEY_IS_AUTH_FORM_FILL"
+
+    /**
+     * 启动搜索界面
+     * @param domain
+     */
+    fun turnSearchActivity(
+      context: Activity,
+      requestCode: Int,
+      apkPkgName: String,
+      domain: String? = null
+    ) {
+      val intent = Intent(context, AutoFillEntrySearchActivity::class.java).apply {
+        putExtra(KEY_PKG_NAME, apkPkgName)
+      }
+      context.startActivityForResult(
+          intent,
+          requestCode,
+          ActivityOptions.makeSceneTransitionAnimation(context)
+              .toBundle()
+      )
+    }
+
+    /**
+     * 没有匹配数据时，启动搜索界面
+     */
+    internal fun getSearchIntentSender(
+      context: Context,
+      apkPackageName: String
+    ): IntentSender {
+      val intent = Intent(context, AutoFillEntrySearchActivity::class.java).also {
+        it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
+        it.putExtra(KEY_PKG_NAME, apkPackageName)
+      }
+      return PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+          .intentSender
+    }
   }
 
   /**
@@ -89,10 +130,8 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
     }
     EventBusHelper.reg(this)
     module = ViewModelProvider(this).get(SearchModule::class.java)
-    apkPkgName = intent.getStringExtra(
-        LauncherActivity.KEY_PKG_NAME
-    )
-    isFromFill = intent.getBooleanExtra(LauncherActivity.KEY_IS_AUTH_FORM_FILL, false)
+    apkPkgName = intent.getStringExtra(KEY_PKG_NAME)
+    isFromFill = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL, false)
     binding.search.requestFocusFromTouch()
     binding.search.setIconifiedByDefault(true)
     binding.search.isIconified = false
@@ -181,6 +220,12 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
         .setOnItemClickListener { _, position, _ ->
           val item = listData[position]
           val entry = item.obj as PwEntry
+          // if is from browser, that entry will be ignore
+          if (W3cHints.isBrowser(apkPkgName!!)){
+            callbackAutoFillService(false, entry)
+            return@setOnItemClickListener
+          }
+
           val msg = Html.fromHtml(getString(R.string.hint_save_auto_fill, apkPkgName, entry.title))
           val msgDialog = MsgDialog.generate {
             msgTitle = this@AutoFillEntrySearchActivity.getString(R.string.hint)
