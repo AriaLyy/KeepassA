@@ -19,6 +19,7 @@ import android.service.autofill.Dataset
 import android.service.autofill.FillResponse
 import android.service.autofill.SaveInfo
 import android.view.View
+import android.view.autofill.AutofillId
 import android.view.autofill.AutofillValue
 import android.widget.RemoteViews
 import androidx.annotation.DrawableRes
@@ -32,6 +33,8 @@ import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.view.launcher.LauncherActivity
+import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
+import com.lyy.keepassa.widget.toPx
 
 /**
  * This is a class containing helper methods for building Autofill Datasets and Responses.
@@ -64,12 +67,34 @@ object AutoFillHelper {
   ): Dataset {
     val rev = RemoteViews(context.packageName, R.layout.item_auto_fill)
     rev.setTextViewText(R.id.text, context.resources.getString(R.string.cur_app_not_autofill))
-    IconUtil.getAppIcon(context, apkPageName)?.let {
-      rev.setImageViewBitmap(R.id.img, it)
-    }
+    IconUtil.getAppIcon(context, apkPageName)
+        ?.let {
+          rev.setImageViewBitmap(R.id.img, it)
+        }
 //    rev.setOnClickResponse()
     val db = Dataset.Builder(rev)
 
+    return db.build()
+  }
+
+  /**
+   * use other entry, click the entry, jump to the search activity
+   */
+  private fun otherEntry(
+    context: Context,
+    apkPageName: String,
+    tempFillId: AutofillId
+  ): Dataset {
+    val rev = RemoteViews(context.packageName, R.layout.item_auto_fill)
+    rev.setTextViewText(R.id.text, context.resources.getString(R.string.other))
+    rev.setImageViewResource(R.id.img, R.drawable.ic_search)
+
+    rev.setOnClickPendingIntent(
+        R.id.llContent,
+        AutoFillEntrySearchActivity.createSearchPending(context, apkPageName)
+    )
+    val db = Dataset.Builder(rev)
+    db.setValue(tempFillId, AutofillValue.forText(""))
     return db.build()
   }
 
@@ -142,7 +167,7 @@ object AutoFillHelper {
   }
 
   /**
-   * 返回查找不到条目的响应，不返回SaveInfo，系统是不会触发保存的
+   * 返回查找不到条目的响应，如果不返回SaveInfo，系统是不会触发保存的
    */
   fun newSaveResponse(
     context: Context,
@@ -197,7 +222,22 @@ object AutoFillHelper {
       val dataSet = newDataSet(context, metadata, entry, dataSetAuth, apkPageName)
       dataSet?.let(responseBuilder::addDataset)
     }
-    // curApp not autofill
+    // user editText add other item
+    responseBuilder.addDataset(metadata.tempUserFillId?.let {
+      otherEntry(
+          context,
+          apkPageName,
+          it
+      )
+    })
+    // pass editText add other item
+    responseBuilder.addDataset(metadata.tempPassFillId?.let {
+      otherEntry(
+          context,
+          apkPageName,
+          it
+      )
+    })
 
     return if (metadata.saveType != 0) {
       val autoFillIds = metadata.autoFillIds

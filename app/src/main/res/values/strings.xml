@@ -122,8 +122,8 @@
   <string name="hint_input_user_name">Username</string>
   <string name="hint_input_url">Link address</string>
   <string name="notice">Note</string>
-  <string name="hint_input_tag">Tag1, tag2</string>
-  <string name="hint_input_cover_url">Cover link</string>
+  <string name="hint_input_tag">Tag1, Tag2</string>
+  <string name="hint_input_cover_url">Overwrite link</string>
   <string name="create_entry">Create entry</string>
   <string name="save">Save</string>
   <string name="len">Length</string>
@@ -281,5 +281,6 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="set_key_title_opr_env_check_turn_off">Turn off operating environment check</string>
   <string name="set_key_title_opr_env_check_turn_on">Turn on environment check</string>
   <string name="cur_app_not_autofill">Not auto-fill</string>
+  <string name="other">Other</string>
 
 </resources>

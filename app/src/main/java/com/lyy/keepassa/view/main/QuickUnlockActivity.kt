@@ -249,11 +249,6 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
       finish()
     } else {
       MainActivity.startMainActivity(this@QuickUnlockActivity)
-//      if (AbsFrame.getInstance().activityIsRunning(MainActivity::class.java)) {
-//        finish()
-//      } else {
-//        MainActivity.startMainActivity(this@QuickUnlockActivity)
-//      }
     }
   }
 

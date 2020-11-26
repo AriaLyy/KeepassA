@@ -25,6 +25,12 @@ data class AutoFillFieldMetadataCollection @JvmOverloads constructor(
   private val TAG = javaClass.simpleName
 
   /**
+   * used for "other entry"
+   */
+  var tempUserFillId: AutofillId? = null
+  var tempPassFillId: AutofillId? = null
+
+  /**
    * key -> autoHintString
    * value ->
    */
@@ -32,14 +38,14 @@ data class AutoFillFieldMetadataCollection @JvmOverloads constructor(
   var saveType = 0
     private set
 
-  fun clear(){
+  fun clear() {
     autoFillIds.clear()
     allAutoFillHints.clear()
     focusedAutoFillHints.clear()
   }
 
   fun add(autoFillFieldMetadata: AutoFillFieldMetadata) {
-    if (autoFillFieldMetadata.autoFillId == null){
+    if (autoFillFieldMetadata.autoFillId == null) {
       Log.w(TAG, "autoFillId == null")
       return
     }

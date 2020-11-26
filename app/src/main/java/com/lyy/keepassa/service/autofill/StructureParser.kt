@@ -104,6 +104,9 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
         val attrs = viewNode.htmlInfo!!.attributes
         attrs?.forEach {
           if (W3cHints.isW3cPassWord(it)) {
+            if (autoFillFields.tempPassFillId == null){
+              autoFillFields.tempPassFillId = viewNode.autofillId
+            }
             KLog.d(
                 TAG,
                 "w3c pass ==> autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}" + " text = ${viewNode.text}, hint = ${viewNode.hint}"
@@ -113,6 +116,9 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
             return@forEach
           }
           if (W3cHints.isW3cUserName(it)) {
+            if (autoFillFields.tempUserFillId == null) {
+              autoFillFields.tempUserFillId = viewNode.autofillId
+            }
             KLog.d(
                 TAG,
                 "w3c user ==> idEntry = ${viewNode.idEntry}, autofillType = ${viewNode.autofillType}, fillValue = ${viewNode.autofillValue}" + "fillId = ${viewNode.autofillId}, text = ${viewNode.text}, hint = ${viewNode.hint}"
@@ -121,13 +127,15 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
             autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_USERNAME))
           }
         }
-
         return
       }
 
       if (className == "android.widget.EditText") {
         when {
           isPassword(viewNode) -> {
+            if (autoFillFields.tempPassFillId == null){
+              autoFillFields.tempPassFillId = viewNode.autofillId
+            }
             KLog.d(
                 TAG,
                 "pass autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}" + " text = ${viewNode.text}, hint = ${viewNode.hint}"
@@ -136,6 +144,9 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
             autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_PASSWORD))
           }
           isUserName(viewNode) -> {
+            if (autoFillFields.tempUserFillId == null) {
+              autoFillFields.tempUserFillId = viewNode.autofillId
+            }
             KLog.d(
                 TAG,
                 "user idEntry = ${viewNode.idEntry}, autofillType = ${viewNode.autofillType}, fillValue = ${viewNode.autofillValue}" + "fillId = ${viewNode.autofillId}, text = ${viewNode.text}, hint = ${viewNode.hint}"

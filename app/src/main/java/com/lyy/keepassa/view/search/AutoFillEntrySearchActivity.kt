@@ -42,6 +42,7 @@ import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.MsgDialog
+import com.lyy.keepassa.view.launcher.LauncherActivity
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 
@@ -68,6 +69,17 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
     const val EXTRA_ENTRY_ID = "EXTRA_ENTRY_ID"
     private const val KEY_PKG_NAME = "KEY_PKG_NAME"
     private const val KEY_IS_AUTH_FORM_FILL = "KEY_IS_AUTH_FORM_FILL"
+
+    /**
+     * 从通知进入搜索页
+     */
+    internal fun createSearchPending(context: Context, apkPkgName: String): PendingIntent {
+      return Intent(context, AutoFillEntrySearchActivity::class.java).let { it ->
+        it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
+        it.putExtra(KEY_PKG_NAME, apkPkgName)
+        PendingIntent.getActivity(context, 0, it, 0)
+      }
+    }
 
     /**
      * 启动搜索界面
