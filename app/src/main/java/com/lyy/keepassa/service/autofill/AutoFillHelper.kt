@@ -87,7 +87,9 @@ object AutoFillHelper {
   ): Dataset {
     val rev = RemoteViews(context.packageName, R.layout.item_auto_fill)
     rev.setTextViewText(R.id.text, context.resources.getString(R.string.other))
-    rev.setImageViewResource(R.id.img, R.drawable.ic_search)
+    IconUtil.getBitmapFromDrawable(context,  R.drawable.ic_search, 20.toPx())?.let {
+      rev.setImageViewBitmap(R.id.img, it)
+    }
 
     rev.setOnClickPendingIntent(
         R.id.llContent,

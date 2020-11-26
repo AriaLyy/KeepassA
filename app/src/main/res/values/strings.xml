@@ -179,7 +179,7 @@
   <string name="update_group_fail">Update group information failed</string>
   <string name="update_group_success">Group information updated successfully</string>
   <string name="title">Title</string>
-  <string name="feedback">Come and spit ^_^</string>
+  <string name="feedback">Feedback ^_^</string>
   <string name="submit">Submit</string>
   <string name="send_email_fail">No mail application, sending mail failed</string>
   <string name="feedback_email_msg">Hello,I ’m KeepassA, do you have any questions?&lt;br /&gt; &lt;br /&gt; &lt;br /&gt; _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ &lt;br /&gt; Mobile phone brands: %s &lt;br /&gt; Phone model: %s &lt;br /&gt; System version:%s &lt;br /&gt; Resolution: %s &lt;br /&gt; Application version: %s </string>

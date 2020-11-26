@@ -14,7 +14,6 @@
       android:id="@+id/img"
       android:layout_width="32dp"
       android:layout_height="32dp"
-      android:scaleType="center"
       android:src="@drawable/ic_android" />
 
 

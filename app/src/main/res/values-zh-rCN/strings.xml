@@ -183,7 +183,7 @@
   <string name="update_group_fail">更新群组信息失败</string>
   <string name="update_group_success">更新群组信息成功</string>
   <string name="title">标题</string>
-  <string name="feedback">来吐槽下呗 ^_^</string>
+  <string name="feedback">意见反馈 ^_^</string>
   <string name="submit">提交</string>
 
   <string name="send_email_fail">没有邮件应用，发送邮件失败</string>

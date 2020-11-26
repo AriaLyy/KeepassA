@@ -35,30 +35,30 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
   var domainUrl = ""
   var pkgName = ""
 
-  // 其它应用editText 可能设置的id名，如：R.id.email
-  private val usernameHints = HashSet<String>().also {
-    it.add("email")
-    it.add("e-email")
-    it.add("account")
-    it.add("user_name")
-    it.add("mobile")
-    it.add(HintConstants.AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_DATE)
-    it.add(HintConstants.AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_DAY)
-    it.add(HintConstants.AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_MONTH)
-    it.add(HintConstants.AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_YEAR)
-    it.add(HintConstants.AUTOFILL_HINT_CREDIT_CARD_NUMBER)
-    it.add(HintConstants.AUTOFILL_HINT_CREDIT_CARD_SECURITY_CODE)
-    it.add(HintConstants.AUTOFILL_HINT_EMAIL_ADDRESS)
-    it.add(HintConstants.AUTOFILL_HINT_PHONE)
-    it.add(HintConstants.AUTOFILL_HINT_NAME)
-    it.add(HintConstants.AUTOFILL_HINT_POSTAL_ADDRESS)
-    it.add(HintConstants.AUTOFILL_HINT_POSTAL_CODE)
-    it.add(HintConstants.AUTOFILL_HINT_USERNAME)
-  }
+  companion object {
+    // 其它应用editText 可能设置的id名，如：R.id.email
+    val usernameHints = HashSet<String>().also {
+      it.add("email")
+      it.add("e-email")
+      it.add("account")
+      it.add("user_name")
+      it.add("mobile")
+      it.add(HintConstants.AUTOFILL_HINT_EMAIL_ADDRESS)
+      it.add(HintConstants.AUTOFILL_HINT_PHONE)
+      it.add(HintConstants.AUTOFILL_HINT_NAME)
+      it.add(HintConstants.AUTOFILL_HINT_USERNAME)
+      it.add(HintConstants.AUTOFILL_HINT_PERSON_NAME)
+      it.add(HintConstants.AUTOFILL_HINT_PERSON_NAME_GIVEN)
+      it.add(HintConstants.AUTOFILL_HINT_NEW_USERNAME)
+      it.add(HintConstants.AUTOFILL_HINT_POSTAL_ADDRESS)
+      it.add(HintConstants.AUTOFILL_HINT_POSTAL_CODE)
+    }
 
-  private val passHints = HashSet<String>().also {
-    it.add(View.AUTOFILL_HINT_PASSWORD)
-    it.add("passwort")
+    val passHints = HashSet<String>().also {
+      it.add(HintConstants.AUTOFILL_HINT_PASSWORD)
+      it.add(HintConstants.AUTOFILL_HINT_NEW_PASSWORD)
+      it.add("passwort")
+    }
   }
 
   /**
@@ -104,27 +104,11 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
         val attrs = viewNode.htmlInfo!!.attributes
         attrs?.forEach {
           if (W3cHints.isW3cPassWord(it)) {
-            if (autoFillFields.tempPassFillId == null){
-              autoFillFields.tempPassFillId = viewNode.autofillId
-            }
-            KLog.d(
-                TAG,
-                "w3c pass ==> autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}" + " text = ${viewNode.text}, hint = ${viewNode.hint}"
-            )
-            passFields.add(viewNode)
-            autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_PASSWORD))
+            addPassField(viewNode)
             return@forEach
           }
           if (W3cHints.isW3cUserName(it)) {
-            if (autoFillFields.tempUserFillId == null) {
-              autoFillFields.tempUserFillId = viewNode.autofillId
-            }
-            KLog.d(
-                TAG,
-                "w3c user ==> idEntry = ${viewNode.idEntry}, autofillType = ${viewNode.autofillType}, fillValue = ${viewNode.autofillValue}" + "fillId = ${viewNode.autofillId}, text = ${viewNode.text}, hint = ${viewNode.hint}"
-            )
-            useFields.add(viewNode)
-            autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_USERNAME))
+            addUserField(viewNode)
           }
         }
         return
@@ -133,26 +117,10 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       if (className == "android.widget.EditText") {
         when {
           isPassword(viewNode) -> {
-            if (autoFillFields.tempPassFillId == null){
-              autoFillFields.tempPassFillId = viewNode.autofillId
-            }
-            KLog.d(
-                TAG,
-                "pass autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}" + " text = ${viewNode.text}, hint = ${viewNode.hint}"
-            )
-            passFields.add(viewNode)
-            autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_PASSWORD))
+            addPassField(viewNode)
           }
           isUserName(viewNode) -> {
-            if (autoFillFields.tempUserFillId == null) {
-              autoFillFields.tempUserFillId = viewNode.autofillId
-            }
-            KLog.d(
-                TAG,
-                "user idEntry = ${viewNode.idEntry}, autofillType = ${viewNode.autofillType}, fillValue = ${viewNode.autofillValue}" + "fillId = ${viewNode.autofillId}, text = ${viewNode.text}, hint = ${viewNode.hint}"
-            )
-            useFields.add(viewNode)
-            autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_USERNAME))
+            addUserField(viewNode)
           }
           else -> {
             KLog.d(
@@ -168,6 +136,38 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     for (i in 0 until childrenSize) {
       parseLocked(viewNode.getChildAt(i))
     }
+  }
+
+  /**
+   * add pass field
+   */
+  private fun addPassField(viewNode: ViewNode) {
+    if (autoFillFields.tempPassFillId != null) {
+      return
+    }
+    autoFillFields.tempPassFillId = viewNode.autofillId
+    KLog.d(
+        TAG,
+        "pass autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}" + " text = ${viewNode.text}, hint = ${viewNode.hint}"
+    )
+    passFields.add(viewNode)
+    autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_PASSWORD))
+  }
+
+  /**
+   * add userName field
+   */
+  private fun addUserField(viewNode: ViewNode) {
+    if (autoFillFields.tempUserFillId != null) {
+      return
+    }
+    autoFillFields.tempUserFillId = viewNode.autofillId
+    KLog.d(
+        TAG,
+        "user idEntry = ${viewNode.idEntry}, autofillType = ${viewNode.autofillType}, fillValue = ${viewNode.autofillValue}" + "fillId = ${viewNode.autofillId}, text = ${viewNode.text}, hint = ${viewNode.hint}"
+    )
+    useFields.add(viewNode)
+    autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_USERNAME))
   }
 
   /**

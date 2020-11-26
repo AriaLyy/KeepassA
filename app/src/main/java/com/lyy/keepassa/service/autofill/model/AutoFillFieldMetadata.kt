@@ -67,7 +67,7 @@ class AutoFillFieldMetadata(view: ViewNode) {
   }
 
   /**
-   * 更新保存类型
+   * 更新保存类型，和StructureParser.parseLocked 中的需要关联
    */
   private fun updateSaveTypeFromHints() {
     saveType = 0
@@ -81,13 +81,13 @@ class AutoFillFieldMetadata(view: ViewNode) {
         View.AUTOFILL_HINT_CREDIT_CARD_SECURITY_CODE -> {
           saveType = saveType or SaveInfo.SAVE_DATA_TYPE_CREDIT_CARD
         }
-        View.AUTOFILL_HINT_EMAIL_ADDRESS, "email", "e-email" -> {
+        View.AUTOFILL_HINT_EMAIL_ADDRESS -> {
           saveType = saveType or SaveInfo.SAVE_DATA_TYPE_EMAIL_ADDRESS
         }
         View.AUTOFILL_HINT_PHONE, View.AUTOFILL_HINT_NAME -> {
           saveType = saveType or SaveInfo.SAVE_DATA_TYPE_GENERIC
         }
-        View.AUTOFILL_HINT_PASSWORD, "passwort" -> {
+        View.AUTOFILL_HINT_PASSWORD -> {
           isPassword = true
           saveType = saveType or SaveInfo.SAVE_DATA_TYPE_PASSWORD
           saveType = saveType and SaveInfo.SAVE_DATA_TYPE_EMAIL_ADDRESS.inv()
@@ -97,7 +97,7 @@ class AutoFillFieldMetadata(view: ViewNode) {
         View.AUTOFILL_HINT_POSTAL_CODE -> {
           saveType = saveType or SaveInfo.SAVE_DATA_TYPE_ADDRESS
         }
-        View.AUTOFILL_HINT_USERNAME, "account", "user_name" -> {
+        View.AUTOFILL_HINT_USERNAME -> {
           saveType = saveType or SaveInfo.SAVE_DATA_TYPE_USERNAME
         }
       }

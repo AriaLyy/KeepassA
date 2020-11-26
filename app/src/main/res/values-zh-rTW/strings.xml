@@ -178,7 +178,7 @@
   <string name="update_group_fail">更新群組信息失敗</string>
   <string name="update_group_success">更新群組信息成功</string>
   <string name="title">標題</string>
-  <string name="feedback">來吐槽下 ^_^</string>
+  <string name="feedback">意見反饋 ^_^</string>
   <string name="submit">提交</string>
   <string name="send_email_fail">沒有郵件應用，發送郵件失敗</string>
   <string name="feedback_email_msg">Hello，我是KeepassA，您有什麼問題？&lt;br /&gt; &lt;br /&gt; &lt;br /&gt; _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ &lt;br /&gt; 手機品牌：%s &lt;br /&gt; 手機型號：%s &lt;br /&gt; 系統版本：%s &lt;br /&gt; 分辨率：%s &lt;br /&gt; 應用版本：%s </string>
