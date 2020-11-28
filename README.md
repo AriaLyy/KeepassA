@@ -22,6 +22,9 @@ And added many commonly used functions on the original basis:
 * Add features by making a **[pull request](https://help.github.com/articles/about-pull-requests/)**.
 * Help to translate KeePassA to your language by sending a [pull request](https://help.github.com/articles/about-pull-requests/).
 
+## Contributor
+[@DominicDesbiens](https://github.com/DominicDesbiens)
+
 ## Donate
 for a better service and a quick development of your features.</br>
 <img src="https://raw.githubusercontent.com/AriaLyy/Aria/master/img/ali_pay.png" width=200 height=200/>
