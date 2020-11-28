@@ -1,3 +1,15 @@
+#### 1.6 (2020/11/28)
+- 自動填充模塊，修復關聯條目後，返回到應用，已關聯的數據無法顯示的問題
+- 自動填充模塊，修復多個輸入框時，輸入框數據填充錯誤的問題
+- 自動填充模塊，增加瀏覽器填充功能
+- 自動填充模塊，增加其它按鈕
+- 設置模塊，增加解鎖數據庫後，主頁優先顯示所有條目功能，[點擊設置](route://keepassA.com/kpa?activity=SettingActivity&type=db)
+- 條目詳情模塊，note 自動增加展開和收縮功能
+
+![ime](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/note_expand.png)
+- 優化主頁閃爍問題
+- 感謝[@DominicDesbiens](https://github.com/DominicDesbiens)提供了加拿大法語翻譯
+
 #### 1.5 (2020/11/5)
 - 增加群組搜索功能
 - 增加開放源碼協議說明

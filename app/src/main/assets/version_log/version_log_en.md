@@ -1,3 +1,15 @@
+#### 1.6 (2020/11/28)
+- Auto-fill module, after fixing the associated entry, return to the application, the associated data cannot be displayed
+- Auto-fill module, fix the problem that the input box data is filled incorrectly when multiple input boxes are filled
+- Auto-fill module, add browser filling function
+- Auto-fill module, add other buttons
+- Setup module, After the unlock database, the homepage will display all entries first, [Click Settings](route://keepassA.com/kpa?activity=SettingActivity&type=db)
+- Item details module，Note field automatically increase expansion and contraction functions
+
+![ime](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/note_expand.png)
+- Optimize the homepage flickering problem
+- Thank [@DominicDesbiens](https://github.com/DominicDesbiens) for providing the Canadian French translation
+
 #### 1.5 (2020/11/5)
 - Add group search function
 - Add open source protocol description
