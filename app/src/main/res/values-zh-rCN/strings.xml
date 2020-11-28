@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="db">数据库</string>
   <string name="db1"><![CDATA[数据库\t|\t<font color="#757575">%s</font>]]></string>
@@ -280,6 +281,9 @@
   <string name="set_key_sum_main_show_entries">解锁数据库后显示所有条目</string>
   <string name="set_key_sum_main_show_history">解锁数据库后显示历史记录</string>
   <string name="set_key_title_main_allow_show_entries">主页设置</string>
+  <string name="set_key_title_opr_env_check">运行环境检查设置</string>
+  <string name="set_key_title_opr_env_check_turn_off">关闭运用环境检查</string>
+  <string name="set_key_title_opr_env_check_turn_on">打开运行环境检查</string>
   <string name="expand">展开</string>
   <string name="shrink">收起</string>
   <string name="ui_setting">界面设置</string>

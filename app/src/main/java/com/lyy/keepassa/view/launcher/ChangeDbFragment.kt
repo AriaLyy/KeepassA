@@ -125,7 +125,6 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
                   ActivityOptions.makeSceneTransitionAnimation(activity)
                       .toBundle()
               )
-//              WebDavLoginDialog().show()
             }
 
           }

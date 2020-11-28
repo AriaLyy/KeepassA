@@ -26,7 +26,7 @@ object LanguageUtil {
 
   @JvmField
   val SUPPORT_LAN =
-    arrayListOf(Locale.ENGLISH, Locale.SIMPLIFIED_CHINESE, Locale.TRADITIONAL_CHINESE)
+    arrayListOf(Locale.ENGLISH, Locale.SIMPLIFIED_CHINESE, Locale.TRADITIONAL_CHINESE, Locale.CANADA_FRENCH)
 
   /**
    * 设置app语言

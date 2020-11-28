@@ -113,22 +113,10 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
 //        finishAfterTransition()
       }
       R.id.change_setting -> {
-        startActivity(
-            Intent(this, SettingActivity::class.java).also {
-              it.putExtra(SettingActivity.KEY_TYPE, SettingActivity.TYPE_DB)
-            },
-            ActivityOptions.makeSceneTransitionAnimation(this)
-                .toBundle()
-        )
+        SettingActivity.turnDbSetting(this)
       }
       R.id.app_setting -> {
-        startActivity(
-            Intent(this, SettingActivity::class.java).also {
-              it.putExtra(SettingActivity.KEY_TYPE, SettingActivity.TYPE_APP)
-            },
-            ActivityOptions.makeSceneTransitionAnimation(this)
-                .toBundle()
-        )
+        SettingActivity.turnAppSetting(this)
       }
       R.id.change_db -> {
         KeepassAUtil.turnLauncher(this)

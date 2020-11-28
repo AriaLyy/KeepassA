@@ -24,6 +24,14 @@
 
   <PreferenceCategory app:title="@string/db_handle">
 
+    <SwitchPreference
+        app:defaultValue="false"
+        app:summaryOff="@string/set_delete_no_into_recycle_bin_des"
+        app:summaryOn="@string/set_delete_no_into_recycle_bin"
+        app:title="@string/set_delete_setting"
+        app:icon="@drawable/ic_delete_sweep"
+        app:key="@string/set_key_delete_no_recycle_bin" />
+
     <Preference
         app:icon="@drawable/ic_key_gray"
         app:key="@string/set_key_modify_db_pass"

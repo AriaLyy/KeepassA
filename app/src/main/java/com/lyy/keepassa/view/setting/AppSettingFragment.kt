@@ -252,6 +252,9 @@ class AppSettingFragment : PreferenceFragmentCompat() {
         3 -> {
           lang = Locale.TRADITIONAL_CHINESE
         }
+        4 -> {
+          lang = Locale.CANADA_FRENCH
+        }
       }
       BaseApp.currentLang = lang
       LanguageUtil.saveLanguage(requireContext(), lang)

@@ -38,7 +38,7 @@ android {
       }
     }
     // 只保留以下语言包
-    resConfigs "zh-rCN", "zh-rTW", "en"
+    resConfigs "zh-rCN", "zh-rTW", "en", "fr-rCA"
   }
 
   signingConfigs {
@@ -262,6 +262,8 @@ dependencies {
   // XP/调试/多开/模拟器/root 判断
   implementation 'com.lahm.library:easy-protector-release:latest.release'
   implementation project(path: ':KeepassIcon')
+  // auto-size
+  implementation 'me.jessyan:autosize:1.2.1'
 
   // // =========================== 三方库 end =====================================
 

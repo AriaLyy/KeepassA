@@ -3,9 +3,12 @@
 - 自动填充模块，修复多个输入框时，输入框数据填充错误的问题
 - 自动填充模块，增加浏览器填充功能
 - 自动填充模块，增加其它按钮
-- 设置模块，增加解锁数据库后，主页优先显示所有条目功能，[点击设置](route://keepassA.com/kpa?activity=SettingActivity)
+- 设置模块，增加解锁数据库后，主页优先显示所有条目功能，[点击设置](route://keepassA.com/kpa?activity=SettingActivity&type=db)
 - 条目详情模块，note 自动增加展开和收缩功能
+
+![ime](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/note_expand.png)
 - 优化主页闪烁问题
+- 感谢[@DominicDesbiens](https://github.com/DominicDesbiens)提供了加拿大法语翻译
 
 #### 1.5 (2020/11/5)
 - 增加群组搜索功能

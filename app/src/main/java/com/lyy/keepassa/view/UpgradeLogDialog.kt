@@ -136,11 +136,12 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
             return true
           }
           "SettingActivity" -> {
-            startActivity(
-                Intent(requireContext(), SettingActivity::class.java),
-                ActivityOptions.makeSceneTransitionAnimation(requireActivity())
-                    .toBundle()
-            )
+            val type = uri.getQueryParameter("type")
+            if (type == "db") {
+              SettingActivity.turnDbSetting(requireActivity())
+            } else {
+              SettingActivity.turnAppSetting(requireActivity())
+            }
             return true
           }
           "ime" -> {

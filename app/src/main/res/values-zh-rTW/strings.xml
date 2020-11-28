@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="db">數據庫</string>
   <string name="db1"><![CDATA[數據庫\t|\t<font color="#757575">%s</font>]]></string>
@@ -274,6 +275,9 @@
   <string name="set_key_sum_main_show_entries">解鎖數據庫後顯示所有條目</string>
   <string name="set_key_sum_main_show_history">解鎖數據庫後顯示歷史紀錄</string>
   <string name="set_key_title_main_allow_show_entries">主頁設置</string>
+  <string name="set_key_title_opr_env_check">運行環境檢查設置</string>
+  <string name="set_key_title_opr_env_check_turn_off">關閉運用環境檢查</string>
+  <string name="set_key_title_opr_env_check_turn_on">打開運行環境檢查</string>
   <string name="expand">展開</string>
   <string name="shrink">收起</string>
   <string name="ui_setting">界面設置</string>

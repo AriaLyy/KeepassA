@@ -36,6 +36,8 @@ import com.zzhoujay.richtext.RichText;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.ServiceLoader;
+import me.jessyan.autosize.AutoSizeConfig;
+import me.jessyan.autosize.unit.Subunits;
 
 public class BaseApp extends MultiDexApplication {
 
@@ -81,7 +83,7 @@ public class BaseApp extends MultiDexApplication {
     if (BuildConfig.DEBUG) {
       System.setProperty("kotlinx.coroutines.debug", "on");
     } else {
-      if (!BuildConfig.FLAVOR.equals("fdroid")){
+      if (!BuildConfig.FLAVOR.equals("fdroid")) {
         initNotFreeLib();
       }
     }

@@ -64,14 +64,6 @@
         app:fragment="com.lyy.keepassa.view.setting.UISettingFragment"
         app:icon="@drawable/ic_app" />
 
-    <SwitchPreference
-        android:defaultValue="false"
-        android:summaryOff="@string/set_delete_no_into_recycle_bin_des"
-        android:summaryOn="@string/set_delete_no_into_recycle_bin"
-        android:title="@string/set_delete_setting"
-        app:icon="@drawable/ic_delete_sweep"
-        app:key="@string/set_key_delete_no_recycle_bin" />
-
     <ListPreference
         android:icon="@drawable/ic_language_24px"
         android:title="@string/set_key_value"

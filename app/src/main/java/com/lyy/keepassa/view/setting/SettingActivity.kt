@@ -9,7 +9,11 @@
 
 package com.lyy.keepassa.view.setting
 
+import android.app.ActivityOptions
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceFragmentCompat
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
@@ -19,13 +23,39 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
 
   companion object {
     // 设置类型
-    const val KEY_TYPE = "KEY_TYPE"
+    private const val KEY_TYPE = "KEY_TYPE"
 
     // 数据库设置
-    const val TYPE_DB = 0
+    private const val TYPE_DB = 0
 
     // 应用设置
-    const val TYPE_APP = 1
+    private const val TYPE_APP = 1
+
+    /**
+     * 跳转应用设置
+     */
+    fun turnAppSetting(context: FragmentActivity) {
+      context.startActivity(
+          Intent(context, SettingActivity::class.java).apply {
+            putExtra(KEY_TYPE, TYPE_APP)
+          },
+          ActivityOptions.makeSceneTransitionAnimation(context)
+              .toBundle()
+      )
+    }
+
+    /**
+     * 跳转数据库设置
+     */
+    fun turnDbSetting(context: FragmentActivity) {
+      context.startActivity(
+          Intent(context, SettingActivity::class.java).apply {
+            putExtra(KEY_TYPE, TYPE_DB)
+          },
+          ActivityOptions.makeSceneTransitionAnimation(context)
+              .toBundle()
+      )
+    }
   }
 
   private var type = TYPE_APP
