@@ -11,6 +11,7 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat.PNG
 import android.util.Log
 import android.view.View
+import com.arialyy.frame.config.CommonConstant
 import com.keepassdroid.database.PwDatabaseV4
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV3
@@ -18,6 +19,7 @@ import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
+import com.keepassdroid.database.SearchParametersV4
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
@@ -37,18 +39,34 @@ import java.util.UUID
 object KDBAutoFillRepository {
   private val TAG = "KDBAutoFillRepository"
 
+
   /**
    * 通过包名获取填充数据
    */
-  fun getAutoFillDataByPackageName(pkgName: String): ArrayList<PwEntry>? {
+  fun getAutoFillDataByPackageName(pkgName: String): MutableList<PwEntry>? {
     KLog.d(TAG, "getFillDataByPkgName, pkgName = $pkgName")
     val listStorage = ArrayList<PwEntry>()
     KdbUtil.searchEntriesByPackageName(pkgName, listStorage)
     if (listStorage.isEmpty()) {
-      return null
+      val sp = SearchParametersV4()
+      val strs = pkgName.split(".")
+      // 如果没有，则从url检索
+      for (s in strs) {
+        if (CommonConstant.domainSuffix.contains(s)){
+          continue
+        }
+        sp.setupNone()
+        sp.searchInUrls = true
+        sp.searchString = s
+        BaseApp.KDB.pm.rootGroup.searchEntries(sp, listStorage)
+      }
+
+      if (listStorage.isEmpty()) {
+        return null
+      }
     }
 
-    return listStorage
+    return listStorage.toSet().toMutableList()
   }
 
   /**

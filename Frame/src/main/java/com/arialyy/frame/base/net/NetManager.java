@@ -96,7 +96,7 @@ public class NetManager {
    */
   private OkHttpClient provideOkHttpClient() {
     final OkHttpClient.Builder builder = new OkHttpClient.Builder();
-    if (CommonConstant.DEBUG) {
+    if (CommonConstant.INSTANCE.getDEBUG()) {
       //HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
       //logging.setLevel(HttpLoggingInterceptor.Level.BODY);
       //builder.addInterceptor(logging);
