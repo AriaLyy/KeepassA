@@ -11,12 +11,7 @@
   <color name="black">#000</color>
   <color name="transparent">#00000000</color>
 
-  <color name="text_blue_color">#4E85DB</color>
-  <color name="text_red_color">#FF0000</color>
-  <color name="text_black_color">#333333</color>
-  <color name="text_black_grey_color">#4B4B4B</color>
-  <color name="text_gray_color">#757575</color>
-  <color name="text_orange_color">#ff6600</color>
+
   <color name="text_hint_color">#bbbbbb</color>
   <color name="bg_line">#bbbbbb</color>
 
@@ -33,7 +28,6 @@
 
   <!--<color name="background_color">#F6F6F8</color>-->
   <color name="background_color_grey_w">#E5E5E5</color>
-  <color name="background_color">#FFFFFF</color>
   <color name="navigation_bar_color">#aaFFFFFF</color>
   <color name="line_color">#eaeaea</color>®
   <color name="click_pressed_color">#22000000</color>

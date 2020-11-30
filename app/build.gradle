@@ -253,9 +253,6 @@ dependencies {
   implementation 'com.tencent.wcdb:wcdb-android:1.0.8'
   implementation 'com.tencent.wcdb:room:1.0.8' // 代替 room-runtime，同时也不需要再引用 wcdb-android
 
-  // 富文本
-  implementation 'com.zzhoujay.richtext:richtext:3.0.8'
-
   // 腾讯多渠道 VasDolly
   implementation 'com.leon.channel:helper:2.0.3'
 

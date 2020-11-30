@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color">
+
+  <RelativeLayout
+      android:id="@+id/topBar"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/bar_height"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivSave"
+        style="@style/MarkdownBarImgStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_check" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivPre"
+        style="@style/MarkdownBarImgStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/bg_markdown_pre" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivClear"
+        style="@style/MarkdownBarImgStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp"
+        android:layout_toStartOf="@+id/ivPre"
+        android:src="@drawable/ic_clear" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivRedo"
+        style="@style/MarkdownBarImgStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp"
+        android:layout_toStartOf="@+id/ivClear"
+        android:src="@drawable/ic_redo" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivUndo"
+        style="@style/MarkdownBarImgStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/ivRedo"
+        android:src="@drawable/ic_undo" />
+
+  </RelativeLayout>
+
+  <com.lyy.keepassa.widget.editor.EditorView
+      android:id="@+id/editor"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_above="@+id/bottomBar"
+      android:layout_below="@+id/topBar"
+      android:background="@color/transparent"
+      android:gravity="top|start"
+      android:paddingStart="16dp"
+      android:paddingTop="8dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="8dp"
+      android:textColor="@color/text_black_color"
+      android:textSize="@dimen/text_size_normal" />
+
+  <androidx.core.widget.ContentLoadingProgressBar
+      android:id="@+id/pb"
+      style="?android:attr/progressBarStyleLarge"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_above="@+id/bottomBar"
+      android:layout_below="@+id/topBar"
+      android:layout_centerInParent="true"
+      android:visibility="gone" />
+
+  <LinearLayout
+      android:id="@+id/bottomBar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:orientation="horizontal"
+      android:paddingTop="8dp"
+      android:paddingBottom="8dp">
+
+    <TextView
+        android:id="@+id/tvH"
+        style="@style/MarkdownBarTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:text="#"
+        android:textSize="19sp" />
+
+    <TextView
+        android:id="@+id/tvItemLess"
+        style="@style/MarkdownBarTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:text="-" />
+
+    <TextView
+        android:id="@+id/tvItem"
+        style="@style/MarkdownBarTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:paddingTop="4dp"
+        android:text="*" />
+
+    <TextView
+        android:id="@+id/tvBold"
+        style="@style/MarkdownBarTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:paddingTop="3dp"
+        android:text="B"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvBlock"
+        style="@style/MarkdownBarTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text=">" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivTable"
+        style="@style/MarkdownBarImgStyle"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingTop="2dp"
+        android:src="@drawable/ic_view_comfy" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivTodo"
+        style="@style/MarkdownBarImgStyle"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingTop="2dp"
+        android:src="@drawable/ic_check_box" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivImg"
+        style="@style/MarkdownBarImgStyle"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingTop="2dp"
+        android:src="@drawable/ic_image_24px" />
+
+  </LinearLayout>
+
+  <TextView
+      android:id="@+id/tvPre"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_below="@+id/topBar"
+      android:background="@color/background_color"
+      android:paddingStart="16dp"
+      android:paddingTop="8dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="8dp"
+      android:textColor="@color/text_black_color"
+      android:textSize="@dimen/text_size_normal"
+      android:visibility="gone" />
+
+</RelativeLayout>

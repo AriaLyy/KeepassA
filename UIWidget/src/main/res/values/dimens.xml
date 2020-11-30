@@ -13,4 +13,6 @@
   <dimen name="short_item_w">41dp</dimen>
   <dimen name="short_item_h">48dp</dimen>
   <dimen name="short_item_space_w">21dp</dimen>
+  <dimen name="bar_height">48dp</dimen>
+  <dimen name="markdown_toolbar_h">30dp</dimen>
 </resources>

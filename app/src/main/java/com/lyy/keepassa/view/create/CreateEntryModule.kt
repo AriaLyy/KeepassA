@@ -45,9 +45,9 @@ class CreateEntryModule : BaseModule() {
    * 是否已经存在totp
    * @return false 不存在
    */
-  fun hasTotp(pwEntryV4: PwEntryV4):Boolean{
+  fun hasTotp(pwEntryV4: PwEntryV4): Boolean {
     pwEntryV4.strings.forEach {
-      if (it.value.isOtpPass){
+      if (it.value.isOtpPass) {
         return true
       }
     }
@@ -129,9 +129,11 @@ class CreateEntryModule : BaseModule() {
     }
     if (b != null) {
       HitUtil.toaskShort(
-          "${BaseApp.APP.getString(R.string.create_group)}${BaseApp.APP.getString(
-              R.string.success
-          )}"
+          "${BaseApp.APP.getString(R.string.create_group)}${
+            BaseApp.APP.getString(
+                R.string.success
+            )
+          }"
       )
     }
     emit(b)
@@ -154,9 +156,11 @@ class CreateEntryModule : BaseModule() {
 
     if (code == DbSynUtil.STATE_SUCCEED) {
       HitUtil.toaskShort(
-          "${BaseApp.APP.getString(R.string.create_entry)}${BaseApp.APP.getString(
-              R.string.success
-          )}"
+          "${BaseApp.APP.getString(R.string.create_entry)}${
+            BaseApp.APP.getString(
+                R.string.success
+            )
+          }"
       )
     }
     emit(code == DbSynUtil.STATE_SUCCEED)

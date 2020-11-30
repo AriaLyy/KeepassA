@@ -8,7 +8,6 @@
 
 
   <dimen name="icon_size">28dp</dimen>
-  <dimen name="bar_height">48dp</dimen>
   <dimen name="input_pass_key_h">30dp</dimen>
   <dimen name="create_pass_key_h">90dp</dimen>
 

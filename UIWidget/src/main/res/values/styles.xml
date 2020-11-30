@@ -30,4 +30,21 @@
     <item name="android:inputType">textPassword</item>
   </style>
 
+  <style name="MarkdownBarTextStyle">
+    <item name="android:height">@dimen/markdown_toolbar_h</item>
+    <item name="android:gravity">center</item>
+    <item name="android:textColor">@color/color_icon_grey</item>
+    <item name="android:textSize">24sp</item>
+    <item name="android:clickable">true</item>
+    <item name="android:background">@drawable/ripple_primary_selector</item>
+  </style>
+
+  <style name="MarkdownBarImgStyle">
+    <item name="android:scaleType">center</item>
+    <item name="android:height">@dimen/markdown_toolbar_h</item>
+    <item name="android:gravity">center</item>
+    <item name="android:clickable">true</item>
+    <item name="android:background">@drawable/ripple_primary_selector</item>
+  </style>
+
 </resources>
