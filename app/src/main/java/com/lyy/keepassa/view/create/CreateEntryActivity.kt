@@ -226,7 +226,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     // the user name field, can show history
     module.getUserNameCache()
         .observe(this, {
-          val adapter = ArrayAdapter(this, R.layout.item_android_simple_dropdown, it)
+          val adapter = ArrayAdapter(this, R.layout.android_simple_dropdown_item_1line, it)
           binding.user.setAdapter(adapter)
           binding.user.threshold = 1 // 设置输入几个字符后开始出现提示 默认是2
           binding.user.setOnFocusChangeListener { _, hasFocus ->

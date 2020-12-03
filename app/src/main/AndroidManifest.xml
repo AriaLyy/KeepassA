@@ -21,6 +21,7 @@
       android:theme="@style/AppTheme.NoActionBar"
       tools:ignore="GoogleAppIndexingWarning">
     <activity
+        android:windowSoftInputMode="adjustResize"
         android:name=".view.launcher.LauncherActivity"
         android:launchMode="singleTask"> <!-- taskAffinity 指定activity栈，可以使用finishAffinity关闭该栈中的activity -->
       <!--        android:windowSoftInputMode="stateVisible|adjustResize"-->
@@ -167,8 +168,6 @@
           android:name="android.view.im"
           android:resource="@xml/input_method" />
     </service>
-
-    <service android:name="com.lyy.keepassa.service.UploadDbService" />
 
     <provider
         android:name="androidx.core.content.FileProvider"

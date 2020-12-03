@@ -12,6 +12,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
+import android.view.inputmethod.InputMethod
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -108,6 +110,8 @@ class MarkDownEditor(
           // 从预览回到编辑
           showTopBarTool(true)
         } else {
+          val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+          imm?.hideSoftInputFromWindow(windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
           // 预览
           pre()
         }
