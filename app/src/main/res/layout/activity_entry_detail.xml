@@ -150,8 +150,9 @@
               app:srcCompat="@drawable/ic_notice"
               />
 
-          <com.lyy.keepassa.widget.ExpandableTextView
+          <com.lyy.keepassa.widget.ExpandAbleTextView
               android:id="@+id/notice"
+              style="@style/ExpandAbleTextViewStyle"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_centerVertical="true"
@@ -160,10 +161,7 @@
               android:layout_toStartOf="@+id/notice_more"
               android:layout_toEndOf="@+id/notice_icon"
               android:text="notice"
-              android:textColor="@color/text_black_color"
-              android:textSize="@dimen/text_size_normal"
               />
-
 
           <androidx.appcompat.widget.AppCompatImageView
               android:id="@+id/notice_more"

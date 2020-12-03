@@ -22,6 +22,7 @@ import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
+import com.keepassdroid.database.security.ProtectedBinary
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
@@ -33,13 +34,68 @@ import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.joda.time.DateTime
 import java.io.ByteArrayOutputStream
+import java.util.Date
 import java.util.UUID
 
 /**
  * 创建条目、群组的module
  */
 class CreateEntryModule : BaseModule() {
+
+  var customIcon: PwIconCustom? = null
+  val attrStrMap = LinkedHashMap<String, ProtectedString>()
+  val attrFileMap = LinkedHashMap<String, ProtectedBinary>()
+  var icon = PwIconStandard(0)
+  var loseDate: Date? = null // 失效时间
+
+  /**
+   * 更新实体
+   */
+  fun updateEntry(
+    entry: PwEntryV4,
+    title: String,
+    userName: String?,
+    pass: String?,
+    notes: String,
+    url: String,
+    tags: String
+  ) {
+    if (customIcon != null) {
+      entry.customIcon = customIcon
+    }
+    entry.tags = tags
+    if (attrStrMap.isNotEmpty()) {
+      entry.strings.clear()
+      entry.strings.putAll(attrStrMap)
+    } else {
+      entry.strings.clear()
+    }
+    if (attrFileMap.isNotEmpty()) {
+      val binPool = (BaseApp.KDB.pm as PwDatabaseV4).binPool
+      entry.binaries.clear()
+      for (d in attrFileMap) {
+        entry.binaries[d.key] = d.value
+        if (binPool.poolFind(d.value) == -1) {
+          binPool.poolAdd(d.value)
+        }
+      }
+    } else {
+      entry.binaries.clear()
+    }
+
+    entry.setTitle(title, BaseApp.KDB.pm)
+    entry.setUsername(userName, BaseApp.KDB.pm)
+    entry.setPassword(pass, BaseApp.KDB.pm)
+    entry.setUrl(url, BaseApp.KDB.pm)
+    entry.setNotes(notes, BaseApp.KDB.pm)
+    entry.setExpires(loseDate != null)
+    if (loseDate != null) {
+      entry.expiryTime = loseDate
+    }
+    entry.icon = icon
+  }
 
   /**
    * 是否已经存在totp
@@ -62,32 +118,28 @@ class CreateEntryModule : BaseModule() {
     apkPkgName: String,
     userName: String?,
     pass: String?
-  ): PwEntry {
+  ): PwEntryV4 {
     val listStorage = ArrayList<PwEntry>()
     KdbUtil.searchEntriesByPackageName(apkPkgName, listStorage)
-    val entry: PwEntry
+    val entry: PwEntryV4
     if (listStorage.isEmpty()) {
-      if (BaseApp.isV4) {
-        entry = PwEntryV4(BaseApp.KDB.pm.rootGroup as PwGroupV4)
-        val icon = IconUtil.getAppIcon(context, apkPkgName)
-        if (icon != null) {
-          val baos = ByteArrayOutputStream()
-          icon.compress(PNG, 100, baos)
-          val datas: ByteArray = baos.toByteArray()
-          val customIcon = PwIconCustom(UUID.randomUUID(), datas)
-          entry.customIcon = customIcon
-          (BaseApp.KDB.pm as PwDatabaseV4).putCustomIcons(customIcon)
-          entry.strings["KP2A_URL_1"] = ProtectedString(false, "androidapp://$apkPkgName")
-        }
-      } else {
-        entry = PwEntryV3()
-        entry.setUrl("androidapp://$apkPkgName", BaseApp.KDB.pm)
+      entry = PwEntryV4(BaseApp.KDB.pm.rootGroup as PwGroupV4)
+      val icon = IconUtil.getAppIcon(context, apkPkgName)
+      if (icon != null) {
+        val baos = ByteArrayOutputStream()
+        icon.compress(PNG, 100, baos)
+        val datas: ByteArray = baos.toByteArray()
+        val customIcon = PwIconCustom(UUID.randomUUID(), datas)
+        entry.customIcon = customIcon
+        (BaseApp.KDB.pm as PwDatabaseV4).putCustomIcons(customIcon)
+        entry.strings["KP2A_URL_1"] = ProtectedString(false, "androidapp://$apkPkgName")
       }
+
       val appName = KDBAutoFillRepository.getAppName(context, apkPkgName)
       entry.setTitle(appName ?: "newEntry", BaseApp.KDB.pm)
       entry.icon = PwIconStandard(0)
     } else {
-      entry = listStorage[0]
+      entry = listStorage[0] as PwEntryV4
       Log.w(TAG, "已存在含有【$apkPkgName】的条目，将更新条目")
     }
     if (!userName.isNullOrEmpty()) {

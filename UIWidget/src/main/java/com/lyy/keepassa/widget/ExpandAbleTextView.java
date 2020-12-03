@@ -1,6 +1,7 @@
 package com.lyy.keepassa.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
 import android.text.Layout;
@@ -17,11 +18,14 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
-
+import android.widget.TextView;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
+import com.example.uiwidget.R;
+import com.zzhoujay.richtext.RichText;
+import com.zzhoujay.richtext.callback.Callback;
 
 /**
  * https://juejin.cn/post/6844903952757047309#heading-3
@@ -30,8 +34,8 @@ import androidx.appcompat.widget.AppCompatTextView;
  * Created by mrtrying on 2019/4/17 17:21.
  * e_mail : ztanzeyu@gmail.com
  */
-public class ExpandableTextView extends AppCompatTextView {
-  private static final String TAG = ExpandableTextView.class.getSimpleName();
+public class ExpandAbleTextView extends AppCompatTextView {
+  private static final String TAG = ExpandAbleTextView.class.getSimpleName();
 
   public static final String ELLIPSIS_STRING = new String(new char[] { '\u2026' });
   /**
@@ -71,24 +75,41 @@ public class ExpandableTextView extends AppCompatTextView {
   private View.OnClickListener mOnClickListener;
   private CharSequenceToSpannableHandler mCharSequenceToSpannableHandler;
 
-  public ExpandableTextView(Context context) {
+  public ExpandAbleTextView(Context context) {
     super(context);
-    initialize();
+    initialize(context, null);
   }
 
-  public ExpandableTextView(Context context, AttributeSet attrs) {
+  public ExpandAbleTextView(Context context, AttributeSet attrs) {
     super(context, attrs);
-    initialize();
+    initialize(context, attrs);
   }
 
-  public ExpandableTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+  public ExpandAbleTextView(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
-    initialize();
+    initialize(context, attrs);
   }
 
   /** 初始化 */
-  private void initialize() {
-    mOpenSuffixColor = mCloseSuffixColor = Color.parseColor("#F23030");
+  private void initialize(Context context, AttributeSet attrs) {
+    if (attrs != null) {
+      final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ExpandAbleTextView);
+      mOpenSuffixColor = mCloseSuffixColor =
+          a.getColor(R.styleable.ExpandAbleTextView_eav_suffix_color, Color.parseColor("#F23030"));
+      mOpenSuffixStr = a.getString(R.styleable.ExpandAbleTextView_eav_suffix_expand);
+      mCloseSuffixStr = a.getString(R.styleable.ExpandAbleTextView_eav_suffix_shirk);
+      a.recycle();
+    }
+
+    if (TextUtils.isEmpty(mOpenSuffixStr)) {
+      mOpenSuffixStr = DEFAULT_OPEN_SUFFIX;
+    }
+    if (TextUtils.isEmpty(mCloseSuffixStr)) {
+      mCloseSuffixStr = DEFAULT_CLOSE_SUFFIX;
+    } else {
+      mCloseSuffixStr = " ".concat(mCloseSuffixStr);
+    }
+
     setMovementMethod(OverLinkMovementMethod.getInstance());
     setIncludeFontPadding(false);
     updateOpenSuffixSpan();
@@ -185,16 +206,20 @@ public class ExpandableTextView extends AppCompatTextView {
   }
 
   public void setOriginalText(CharSequence originalText) {
+    setShrinkInNewLine(true);
     if (initWidth == 0) {
-      post(new Runnable() {
-        @Override public void run() {
-          initWidth = getWidth();
-          setCustomText(originalText);
-        }
+      post(() -> {
+        initWidth = getWidth();
+        RichText.fromMarkdown(originalText.toString())
+            .done(imageLoadDone -> setCustomText(getText()))
+            .into(this);
       });
       return;
     }
-    setCustomText(originalText);
+    RichText.fromMarkdown(originalText.toString())
+        .done(imageLoadDone -> setCustomText(getText()))
+        .into(this);
+    //setCustomText(originalText);
   }
 
   private int hasEnCharCount(CharSequence str) {
@@ -236,7 +261,7 @@ public class ExpandableTextView extends AppCompatTextView {
       mOpenHeight = layout.getHeight() + getPaddingTop() + getPaddingBottom();
       executeOpenAnim();
     } else {
-      ExpandableTextView.super.setMaxLines(Integer.MAX_VALUE);
+      ExpandAbleTextView.super.setMaxLines(Integer.MAX_VALUE);
       setText(mOpenSpannableStr);
       if (mOpenCloseCallback != null) {
         mOpenCloseCallback.onOpen();
@@ -250,7 +275,7 @@ public class ExpandableTextView extends AppCompatTextView {
     if (hasAnimation) {
       executeCloseAnim();
     } else {
-      ExpandableTextView.super.setMaxLines(mMaxLines);
+      ExpandAbleTextView.super.setMaxLines(mMaxLines);
       setText(mCloseSpannableStr);
       if (mOpenCloseCallback != null) {
         mOpenCloseCallback.onClose();
@@ -267,7 +292,7 @@ public class ExpandableTextView extends AppCompatTextView {
       mOpenAnim.setAnimationListener(new Animation.AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) {
-          ExpandableTextView.super.setMaxLines(Integer.MAX_VALUE);
+          ExpandAbleTextView.super.setMaxLines(Integer.MAX_VALUE);
           setText(mOpenSpannableStr);
         }
 
@@ -310,7 +335,7 @@ public class ExpandableTextView extends AppCompatTextView {
         @Override
         public void onAnimationEnd(Animation animation) {
           animating = false;
-          ExpandableTextView.super.setMaxLines(mMaxLines);
+          ExpandAbleTextView.super.setMaxLines(mMaxLines);
           setText(mCloseSpannableStr);
           getLayoutParams().height = mCLoseHeight;
           requestLayout();

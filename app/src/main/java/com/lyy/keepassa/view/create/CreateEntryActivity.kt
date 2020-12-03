@@ -19,14 +19,9 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.keepassdroid.database.PwDatabaseV4
-import com.keepassdroid.database.PwEntry
-import com.keepassdroid.database.PwEntryV3
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroupId
-import com.keepassdroid.database.PwGroupV3
 import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
@@ -42,6 +37,7 @@ import com.lyy.keepassa.event.CreateAttrStrEvent
 import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
 import com.lyy.keepassa.event.DelAttrFileEvent
 import com.lyy.keepassa.event.DelAttrStrEvent
+import com.lyy.keepassa.event.EditorEvent
 import com.lyy.keepassa.event.TimeEvent
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
@@ -50,8 +46,9 @@ import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KeepassAUtil.getFileInfo
 import com.lyy.keepassa.util.KeepassAUtil.takePermission
 import com.lyy.keepassa.util.putArgument
-import com.lyy.keepassa.view.ChooseIconActivity
 import com.lyy.keepassa.view.ChooseGroupActivity
+import com.lyy.keepassa.view.ChooseIconActivity
+import com.lyy.keepassa.view.MarkDownEditorActivity
 import com.lyy.keepassa.view.dialog.AddMoreDialog
 import com.lyy.keepassa.view.dialog.CreateTotpDialog
 import com.lyy.keepassa.view.dialog.LoadingDialog
@@ -69,7 +66,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
-import java.util.Date
 import java.util.UUID
 
 /**
@@ -104,23 +100,18 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   private val passRequestCode = 0xA2
   private val groupDirRequestCode = 0xA3
   private val getFileRequestCode = 0xA4
+  private val editorRequestCode = 0xA5
 
   private lateinit var entryId: UUID
-  private var icon = PwIconStandard(0)
-  private var customIcon: PwIconCustom? = null
   private var isShowPass = false
-  private var loseDate: Date? = null // 失效时间
   private lateinit var module: CreateEntryModule
   private var addMoreDialog: AddMoreDialog? = null
   private lateinit var addMoreData: ArrayList<SimpleItemEntity>
-  private val attrStrMap = LinkedHashMap<String, ProtectedString>()
-  private val attrFileMap = LinkedHashMap<String, ProtectedBinary>()
+
   private var type = 1
-  private lateinit var pwEntry: PwEntry
-  private var isInitData = false
+  private lateinit var pwEntry: PwEntryV4
   private var parentGroupId: PwGroupId? = null
   private lateinit var loadDialog: LoadingDialog
-  private var saveDbReqCode = 0xA1
   private var isFromAutoFillSave = false
 
   override fun initData(savedInstanceState: Bundle?) {
@@ -143,7 +134,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       type = TYPE_NEW_ENTRY
     }
 
-    if (BaseApp.KDB.pm == null){
+    if (BaseApp.KDB.pm == null) {
       HitUtil.toaskShort(getString(R.string.error_entry_id_null))
       finishAfterTransition()
       BaseApp.isLocked = true
@@ -176,7 +167,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
         finish()
         return
       }
-      pwEntry = entryTemp
+      pwEntry = entryTemp as PwEntryV4
     } else if (type == TYPE_NEW_ENTRY) {
       val pIdTemp = intent.getSerializableExtra(PARENT_GROUP_ID)
       if (pIdTemp != null) {
@@ -199,27 +190,50 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
 
     handleToolBar()
     handlePassLayout()
-    handleOtherWidget()
     handleAddMore()
     if (type == TYPE_NEW_TYPE_ENTRY || type == TYPE_EDIT_ENTRY || isFromAutoFillSave) {
-      isInitData = true
-      initData()
+      initData(type == TYPE_EDIT_ENTRY)
     } else {
-      pwEntry = if (BaseApp.isV4) {
-        PwEntryV4(BaseApp.KDB.pm.rootGroup as PwGroupV4)
-      } else {
-        PwEntryV3(BaseApp.KDB.pm.rootGroup as PwGroupV3)
+      pwEntry = PwEntryV4(BaseApp.KDB.pm.rootGroup as PwGroupV4)
+    }
+    setWidgetListener()
+  }
+
+  /**
+   * 设置各种
+   */
+  private fun setWidgetListener() {
+    binding.loseTime.setOnCheckedChangeListener { _, isChecked ->
+      if (isChecked) {
+        val dialog = TimerDialog()
+        dialog.setOnDismissListener {
+          if (module.loseDate == null) {
+            binding.loseTime.isChecked = false
+          }
+        }
+        dialog.show(supportFragmentManager, "timer_dialog")
       }
     }
-
+    binding.noticeLayout.setOnClickListener {
+      MarkDownEditorActivity.turnMarkDownEditor(
+          this,
+          editorRequestCode,
+          binding.notice.originalText
+      )
+    }
   }
 
   /**
    * 初始化数据，根据模版创建或编辑时需要初始化数据
    */
-  private fun initData() {
-    binding.title.setText(pwEntry.title)
-    binding.user.setText(pwEntry.username)
+  private fun initData(isEdit: Boolean) {
+    if (isEdit) {
+      binding.title.setText(pwEntry.title)
+      binding.user.setText(pwEntry.username)
+    } else {
+      binding.user.setText("newEntry")
+      binding.title.setText(getString(R.string.normal_account))
+    }
     binding.password.setText(pwEntry.password)
     binding.enterPassword.setText(pwEntry.password)
     binding.url.setText(pwEntry.url)
@@ -227,76 +241,37 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       IconUtil.getEntryIconDrawable(this, pwEntry, zoomIcon = true)
 
     if (pwEntry.notes.isNotEmpty()) {
-      binding.notice.visibility = View.VISIBLE
-      binding.notice.setText(pwEntry.notes)
+      binding.noticeLayout.visibility = View.VISIBLE
+      binding.notice.originalText = pwEntry.notes
     }
 
-
-    if (BaseApp.isV4) {
-      val v4Entry = pwEntry as PwEntryV4
-      if (v4Entry.expires()) {
-        binding.loseTime.visibility = View.VISIBLE
-        binding.loseTime.isChecked = v4Entry.expires()
-        binding.loseTime.text = KeepassAUtil.formatTime(v4Entry.expiryTime)
-      }
-      if (v4Entry.tags.isNotEmpty()) {
-        binding.tag.visibility = View.VISIBLE
-        binding.tag.setText(v4Entry.tags)
-      }
-      if (v4Entry.binaries.isNotEmpty()) {
-        showFileLayout()
-        val map = LinkedHashMap<String, ProtectedBinary>()
-        map.putAll(v4Entry.binaries)
-        binding.attrFiles.setValue(map)
-        attrFileMap.clear()
-        attrFileMap.putAll(map)
-      }
-
-      val strMap = LinkedHashMap<String, ProtectedString>()
-      strMap.putAll(KeepassAUtil.filterCustomStr(v4Entry, false))
-      if (strMap.isNotEmpty()) {
-        showStrLayout()
-        binding.attrStrs.setValue(strMap)
-        attrStrMap.clear()
-        attrStrMap.putAll(strMap)
-      }
-
-    } else {
-      val v3Entry = pwEntry as PwEntryV3
-      if (v3Entry.expiryTime != PwEntryV3.DEFAULT_DATE) {
-        binding.loseTime.visibility = View.VISIBLE
-        binding.loseTime.isChecked = v3Entry.expires()
-        binding.loseTime.text = KeepassAUtil.formatTime(v3Entry.expiryTime)
-      }
-      if (v3Entry.binaryData.isNotEmpty()) {
-        showFileLayout()
-        binding.attrFiles.addValue(v3Entry.binaryDesc, ProtectedBinary(false, v3Entry.binaryData))
-      }
+    val v4Entry = pwEntry
+    if (v4Entry.expires()) {
+      binding.loseTime.visibility = View.VISIBLE
+      binding.loseTime.isChecked = v4Entry.expires()
+      binding.loseTime.text = KeepassAUtil.formatTime(v4Entry.expiryTime)
     }
-  }
-
-  /**
-   * 处理其它控件
-   */
-  private fun handleOtherWidget() {
-    binding.loseTime.setOnCheckedChangeListener { buttonView, isChecked ->
-      if (isChecked && !isInitData) {
-        val dialog = TimerDialog()
-        dialog.setOnDismissListener {
-          if (loseDate == null) {
-            binding.loseTime.isChecked = false
-          }
-        }
-        dialog.show(supportFragmentManager, "timer_dialog")
-      }
+    if (v4Entry.tags.isNotEmpty()) {
+      binding.tag.visibility = View.VISIBLE
+      binding.tag.setText(v4Entry.tags)
     }
-    binding.user.setText("newEntry")
-    binding.title.setText(getString(R.string.normal_account))
-    if (!BaseApp.isV4) {
-      binding.tagLayout.visibility = View.GONE
-      binding.coverUrlLayout.visibility = View.GONE
+    if (v4Entry.binaries.isNotEmpty()) {
+      showFileLayout()
+      val map = LinkedHashMap<String, ProtectedBinary>()
+      map.putAll(v4Entry.binaries)
+      binding.attrFiles.setValue(map)
+      module.attrFileMap.clear()
+      module.attrFileMap.putAll(map)
     }
 
+    val strMap = LinkedHashMap<String, ProtectedString>()
+    strMap.putAll(KeepassAUtil.filterCustomStr(v4Entry, false))
+    if (strMap.isNotEmpty()) {
+      showStrLayout()
+      binding.attrStrs.setValue(strMap)
+      module.attrStrMap.clear()
+      module.attrStrMap.putAll(strMap)
+    }
   }
 
   /**
@@ -325,10 +300,13 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
               }
               R.drawable.ic_lose_time -> {
                 showOtherItem(binding.loseTime)
-                binding.loseTime.isChecked = true
               }
               R.drawable.ic_notice -> {
-                showOtherItem(binding.noticeLayout, false)
+                MarkDownEditorActivity.turnMarkDownEditor(
+                    this@CreateEntryActivity,
+                    editorRequestCode,
+                    null
+                )
               }
               R.drawable.ic_attr_str -> { // 自定义字段
                 CreateCustomStrDialog().show()
@@ -341,7 +319,8 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
                   putArgument("isEdit", false)
                   putArgument("entryTitle", pwEntry.title)
                   putArgument("entryUserName", pwEntry.username)
-                }.show()
+                }
+                    .show()
               }
             }
             addMoreDialog!!.dismiss()
@@ -349,24 +328,22 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
         })
       }
 
-      if (BaseApp.isV4) {
-        if (binding.tagLayout.isVisible) {
-          addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_tag })
-        }
-        if (binding.coverUrlLayout.isVisible) {
-          addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_net })
-        }
-        if (binding.loseTime.isVisible) {
-          addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_lose_time })
-        }
-        if (binding.noticeLayout.isVisible) {
-          addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_notice })
-        }
-        if (module.hasTotp(pwEntry as PwEntryV4)){
-          addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_totp })
-        }
-        addMoreDialog!!.notifyData()
+      if (binding.tagLayout.isVisible) {
+        addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_tag })
       }
+      if (binding.coverUrlLayout.isVisible) {
+        addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_net })
+      }
+      if (binding.loseTime.isVisible) {
+        addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_lose_time })
+      }
+      if (binding.noticeLayout.isVisible) {
+        addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_notice })
+      }
+      if (module.hasTotp(pwEntry)) {
+        addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_totp })
+      }
+      addMoreDialog!!.notifyData()
       addMoreDialog!!.show(supportFragmentManager, "add_more_dialog")
     }
   }
@@ -439,9 +416,17 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     }
     loadDialog = LoadingDialog(this)
     loadDialog.show()
-    updateEntry(pwEntry)
+    module.updateEntry(
+        entry = pwEntry,
+        title = binding.title.text.toString(),
+        userName = binding.user.text.toString(),
+        pass = binding.password.text.toString(),
+        notes = binding.notice.originalText.toString(),
+        url = binding.url.text.toString(),
+        tags = binding.tag.text.toString()
+    )
     module.saveDb()
-        .observe(this, Observer { success ->
+        .observe(this, { success ->
           EventBus.getDefault()
               .post(CreateOrUpdateEntryEvent(pwEntry, true))
           loadDialog.dismiss()
@@ -473,71 +458,24 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   }
 
   /**
-   * 更新实体
-   */
-  private fun updateEntry(entry: PwEntry) {
-    val title = binding.title.text.toString()
-    val userName = binding.user.text.toString()
-    val pass = binding.password.text.toString()
-    val notes = binding.notice.text.toString()
-    val url = binding.url.text.toString()
-
-    if (BaseApp.isV4) {
-      if (customIcon != null) {
-        (entry as PwEntryV4).customIcon = customIcon
-      }
-      (entry as PwEntryV4).tags = binding.tag.text.toString()
-      if (attrStrMap.isNotEmpty()) {
-        entry.strings.clear()
-        entry.strings.putAll(attrStrMap)
-      } else {
-        entry.strings.clear()
-      }
-      if (attrFileMap.isNotEmpty()) {
-        val binPool = (BaseApp.KDB.pm as PwDatabaseV4).binPool
-        entry.binaries.clear()
-        for (d in attrFileMap) {
-          entry.binaries[d.key] = d.value
-          if (binPool.poolFind(d.value) == -1) {
-            binPool.poolAdd(d.value)
-          }
-        }
-      } else {
-        entry.binaries.clear()
-      }
-    } else {
-      if (attrFileMap.isNotEmpty()) {
-        for (d in attrFileMap) {
-          (entry as PwEntryV3).binaryDesc = d.key
-          val byte = d.value.data.readBytes()
-          entry.setBinaryData(byte, 0, byte.size)
-          break
-        }
-      }
-    }
-    entry.setTitle(title, BaseApp.KDB.pm)
-    entry.setUsername(userName, BaseApp.KDB.pm)
-    entry.setPassword(pass, BaseApp.KDB.pm)
-    entry.setUrl(url, BaseApp.KDB.pm)
-    entry.setNotes(notes, BaseApp.KDB.pm)
-    entry.setExpires(binding.loseTime.isChecked)
-    if (binding.loseTime.isChecked) {
-      entry.expiryTime = loseDate
-    }
-    entry.icon = icon
-  }
-
-  /**
    * 创建实体
    */
   private fun createEntry(parentId: PwGroupId) {
-    pwEntry.parent = BaseApp.KDB.pm.groups[parentId]
+    pwEntry.parent = BaseApp.KDB.pm.groups[parentId] as PwGroupV4?
 
-    updateEntry(pwEntry)
+    module.updateEntry(
+        entry = pwEntry,
+        title = binding.title.text.toString(),
+        userName = binding.user.text.toString(),
+        pass = binding.password.text.toString(),
+        notes = binding.notice.originalText.toString(),
+        url = binding.url.text.toString(),
+        tags = binding.tag.text.toString()
+    )
     loadDialog = LoadingDialog(this)
     loadDialog.show()
     module.addEntry(pwEntry)
-        .observe(this, Observer { success ->
+        .observe(this, { success ->
           EventBus.getDefault()
               .post(CreateOrUpdateEntryEvent(pwEntry, false))
           loadDialog.dismiss()
@@ -583,6 +521,20 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   }
 
   /**
+   * 编辑器返回的文本
+   */
+  @Subscribe(threadMode = MAIN)
+  fun onEditorEvent(event: EditorEvent) {
+    if (event.requestCode != editorRequestCode){
+      return
+    }
+    event.content?.let {
+      showOtherItem(binding.noticeLayout, false)
+      binding.notice.originalText = it
+    }
+  }
+
+  /**
    * 获取时间事件
    */
   @Subscribe(threadMode = MAIN)
@@ -591,8 +543,9 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     val dateTime = DateTime(
         event.year, event.month, event.dayOfMonth, event.hour, event.minute, DateTimeZone.UTC
     )
-    loseDate = dateTime.toDate()
+    module.loseDate = dateTime.toDate()
     binding.loseTime.text = time
+    binding.loseTime.isChecked = true
   }
 
   /**
@@ -602,14 +555,44 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   fun onCreateAttrStr(event: CreateAttrStrEvent) {
     if (event.isEdit) {
       val oldKey = event.updateView!!.titleStr
-      attrStrMap.remove(oldKey)
-      attrStrMap[event.key] = event.str
+      module.attrStrMap.remove(oldKey)
+      module.attrStrMap[event.key] = event.str
       binding.attrStrs.updateKeyValue(event.updateView, event.key, event.str)
       return
     }
     showStrLayout()
     binding.attrStrs.addValue(event.key, event.str)
-    attrStrMap[event.key] = event.str
+    module.attrStrMap[event.key] = event.str
+  }
+
+  /**
+   * 删除自定义字段事件
+   */
+  @Subscribe(threadMode = MAIN)
+  fun onDelAttrStr(event: DelAttrStrEvent) {
+    binding.attrStrs.removeValue(event.key)
+    module.attrStrMap.remove(event.key)
+    if (module.attrStrMap.isEmpty()) {
+      if (module.attrFileMap.isEmpty()) {
+        binding.attrLine.visibility = View.GONE
+      }
+      binding.attrStrLayout.visibility = View.GONE
+    }
+  }
+
+  /**
+   * 删除附件事件
+   */
+  @Subscribe(threadMode = MAIN)
+  fun onDelAttrFile(event: DelAttrFileEvent) {
+    binding.attrFiles.removeValue(event.key)
+    module.attrFileMap.remove(event.key)
+    if (module.attrFileMap.isEmpty()) {
+      if (module.attrStrMap.isEmpty()) {
+        binding.attrLine.visibility = View.GONE
+      }
+      binding.attrFileLayout.visibility = View.GONE
+    }
   }
 
   /**
@@ -633,36 +616,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
           menu.show()
         }
       })
-    }
-  }
-
-  /**
-   * 删除自定义字段事件
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onDelAttrStr(event: DelAttrStrEvent) {
-    binding.attrStrs.removeValue(event.key)
-    attrStrMap.remove(event.key)
-    if (attrStrMap.isEmpty()) {
-      if (attrFileMap.isEmpty()) {
-        binding.attrLine.visibility = View.GONE
-      }
-      binding.attrStrLayout.visibility = View.GONE
-    }
-  }
-
-  /**
-   * 删除附件事件
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onDelAttrFile(event: DelAttrFileEvent) {
-    binding.attrFiles.removeValue(event.key)
-    attrFileMap.remove(event.key)
-    if (attrFileMap.isEmpty()) {
-      if (attrStrMap.isEmpty()) {
-        binding.attrLine.visibility = View.GONE
-      }
-      binding.attrFileLayout.visibility = View.GONE
     }
   }
 
@@ -695,7 +648,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       return
     }
     binding.attrFiles.addValue(fileName, fileUri = uri)
-    attrFileMap[fileName] = ProtectedBinary(
+    module.attrFileMap[fileName] = ProtectedBinary(
         false, UriUtil.getUriInputStream(this, uri)
         .readBytes()
     )
@@ -744,17 +697,17 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
                 ChooseIconActivity.ICON_TYPE_STANDARD
             )
           if (type == ChooseIconActivity.ICON_TYPE_STANDARD) {
-            icon = data.getSerializableExtra(ChooseIconActivity.KEY_DATA) as PwIconStandard
+            module.icon = data.getSerializableExtra(ChooseIconActivity.KEY_DATA) as PwIconStandard
             binding.titleLayout.endIconDrawable =
-              resources.getDrawable(IconUtil.getIconById(icon.iconId), theme)
-            customIcon = PwIconCustom.ZERO
+              resources.getDrawable(IconUtil.getIconById(module.icon.iconId), theme)
+            module.customIcon = PwIconCustom.ZERO
             return
           }
           if (type == ChooseIconActivity.ICON_TYPE_CUSTOM) {
-            customIcon =
+            module.customIcon =
               data.getSerializableExtra(ChooseIconActivity.KEY_DATA) as PwIconCustom
             binding.titleLayout.endIconDrawable =
-              IconUtil.convertCustomIcon2Drawable(this, customIcon!!)
+              IconUtil.convertCustomIcon2Drawable(this, module.customIcon!!)
           }
         }
         // 处理获取密码

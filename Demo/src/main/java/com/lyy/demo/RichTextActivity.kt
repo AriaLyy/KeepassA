@@ -17,6 +17,42 @@ import com.zzhoujay.richtext.RichText
 
 class RichTextActivity : AbsActivity<ActivityRichtextBinding>() {
 
+  val str1 = "# Looking for new maintainer!\n" +
+      "\n" +
+      "\n" +
+      "# Android PdfViewer\n" +
+      "\n" +
+      "__AndroidPdfViewer 1.x is available on [AndroidPdfViewerV1](https://github.com/barteksc/AndroidPdfViewerV1)\n" +
+      "repo, where can be developed independently. Version 1.x uses different engine for drawing document on canvas,\n" +
+      "so if you don't like 2.x version, try 1.x.__\n" +
+      "\n" +
+      "Library for displaying PDF documents on Android, with `animations`, `gestures`, `zoom` and `double tap` support.\n" +
+      "It is based on [PdfiumAndroid](https://github.com/barteksc/PdfiumAndroid) for decoding PDF files. Works on API 11 (Android 3.0) and higher.\n" +
+      "Licensed under Apache License 2.0.\n" +
+      "\n" +
+      "## What's new in 3.2.0-beta.1?\n" +
+      "* Merge PR #714 with optimized page load\n" +
+      "* Merge PR #776 with fix for max & min zoom level\n" +
+      "* Merge PR #722 with fix for showing right position when view size changed\n" +
+      "\n" +
+      "## Changes in 3.0 API\n" +
+      "* Replaced `Contants.PRELOAD_COUNT` with `PRELOAD_OFFSET`\n" +
+      "```\n" +
+      "Copyright 2017 Bartosz Schiller\n" +
+      "\n" +
+      "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
+      "you may not use this file except in compliance with the License.\n" +
+      "You may obtain a copy of the License at\n" +
+      "\n" +
+      "    http://www.apache.org/licenses/LICENSE-2.0\n" +
+      "\n" +
+      "Unless required by applicable law or agreed to in writing, software\n" +
+      "distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
+      "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
+      "See the License for the specific language governing permissions and\n" +
+      "limitations under the License.\n" +
+      "```"
+
   val str = "\n" +
       "# Looking for new maintainer!\n" +
       "\n" +
@@ -267,12 +303,13 @@ class RichTextActivity : AbsActivity<ActivityRichtextBinding>() {
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
-    RichText.initCacheDir(this)
-    RichText.fromMarkdown(str)
-        .urlClick { url ->
-          Log.d(TAG, "url: $url")
-          true
-        }
-        .into(binding.tvContent)
+//    RichText.initCacheDir(this)
+    binding.tvContent.originalText = str1
+//    RichText.fromMarkdown(str)
+//        .urlClick { url ->
+//          Log.d(TAG, "url: $url")
+//          true
+//        }
+//        .into(binding.tvContent)
   }
 }

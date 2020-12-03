@@ -317,10 +317,6 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     } else {
       binding.notice.maxLines = 6
       binding.notice.originalText = pwEntry.notes
-      binding.notice.setExpandSuffix(getString(R.string.expand))
-      binding.notice.setShrinkSuffix(getString(R.string.shrink))
-      binding.notice.setExpandSuffixColor(ResUtil.getColor(R.color.colorPrimary))
-      binding.notice.setShrinkSuffixColor(ResUtil.getColor(R.color.colorPrimary))
 //      binding.notice.setOnClickListener(this)
       binding.noticeLayout.setOnClickListener(this)
       binding.noticeLayout.setOnTouchListener { _, event ->

@@ -37,7 +37,8 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="16dp"
         android:layout_toStartOf="@+id/ivPre"
-        android:src="@drawable/ic_clear" />
+        android:src="@drawable/ic_clear"
+        android:visibility="gone" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivRedo"

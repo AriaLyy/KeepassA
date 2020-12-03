@@ -62,16 +62,15 @@ class TimerDialog : BaseDialog<DialogTimerBinding>(), View.OnClickListener {
         event = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
           TimeEvent(
               date.year,
-              date.month,
+              date.month + 1,
               date.dayOfMonth,
               time.currentHour,
               time.currentMinute
           )
         } else {
-          TimeEvent(date.year, date.month, date.dayOfMonth, time.hour, time.minute)
+          TimeEvent(date.year, date.month + 1, date.dayOfMonth, time.hour, time.minute)
         }
-        EventBus.getDefault()
-            .post(event)
+        EventBus.getDefault().post(event)
         dismiss()
       }
     }
@@ -109,7 +108,7 @@ class TimerDialog : BaseDialog<DialogTimerBinding>(), View.OnClickListener {
       container: ViewGroup?,
       savedInstanceState: Bundle?
     ): View? {
-      datePicker = DatePicker(context!!)
+      datePicker = DatePicker(requireContext())
       datePicker.layoutParams = FrameLayout.LayoutParams(
           FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT
       )

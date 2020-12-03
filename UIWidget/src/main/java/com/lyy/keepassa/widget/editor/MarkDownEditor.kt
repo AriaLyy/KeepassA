@@ -9,7 +9,6 @@ package com.lyy.keepassa.widget.editor
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -19,8 +18,6 @@ import android.widget.TextView
 import androidx.core.widget.ContentLoadingProgressBar
 import com.example.uiwidget.R
 import com.zzhoujay.richtext.RichText
-import kotlinx.android.synthetic.main.layout_markdown_editor.view.ivPre
-import kotlinx.android.synthetic.main.layout_markdown_editor.view.tvPre
 
 /**
  * @Author laoyuyu
@@ -39,6 +36,11 @@ class MarkDownEditor(
   private lateinit var redoBtn: View
   private lateinit var undoBtn: View
   private lateinit var clearBtn: View
+  private var saveListener: OnSaveListener? = null
+
+  interface OnSaveListener {
+    fun onSave(content: CharSequence?)
+  }
 
   init {
     LayoutInflater.from(context)
@@ -70,6 +72,16 @@ class MarkDownEditor(
     editor = findViewById(R.id.editor)
   }
 
+  fun setOnSaveListener(listener: OnSaveListener) {
+    this.saveListener = listener
+  }
+
+  fun setText(content: CharSequence?) {
+    content?.let {
+      editor.setText(content)
+    }
+  }
+
   /**
    * 是否显示顶部栏工具
    */
@@ -92,17 +104,17 @@ class MarkDownEditor(
   override fun onClick(v: View?) {
     when (v?.id) {
       R.id.ivPre -> { // 预览
-        if (ivPre.isSelected) {
+        if (preBtn.isSelected) {
           // 从预览回到编辑
           showTopBarTool(true)
         } else {
           // 预览
           pre()
         }
-        ivPre.isSelected = !ivPre.isSelected
+        preBtn.isSelected = !preBtn.isSelected
       }
       R.id.ivSave -> { // 保存
-
+        saveListener?.onSave(if (editor.text.isNullOrEmpty()) null else editor.text.toString())
       }
       R.id.ivClear -> { // 清空
         editor.clear()
@@ -154,7 +166,7 @@ class MarkDownEditor(
         .done {
           pb.hide()
         }
-        .into(tvPre)
+        .into(preText)
   }
 
   private fun input(

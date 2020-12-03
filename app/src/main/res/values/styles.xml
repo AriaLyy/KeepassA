@@ -1,7 +1,7 @@
 <resources>
 
   <!-- Base application theme. -->
-  <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.Light.Bridge">
+  <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.DayNight.Bridge">
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
     <item name="colorPrimary">@color/colorPrimary</item>
@@ -180,6 +180,15 @@
   <style name="DialogLayoutStyle">
     <item name="android:background">@drawable/bg_white_radius_4</item>
     <item name="android:elevation">4dp</item>
+  </style>
+
+  <!-- 可展开的textView样式  -->
+  <style name="ExpandAbleTextViewStyle">
+    <item name="android:textColor">@color/text_black_grey_color</item>
+    <item name="android:textSize">@dimen/text_size_normal</item>
+    <item name="eav_suffix_expand">@string/expand</item>
+    <item name="eav_suffix_shirk">@string/shrink</item>
+    <item name="eav_suffix_color">@color/colorPrimary</item>
   </style>
 
 </resources>

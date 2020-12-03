@@ -14,7 +14,7 @@
         android:layout_above="@+id/llBar"
         android:layout_alignParentTop="true">
 
-      <com.lyy.keepassa.widget.ExpandableTextView
+      <com.lyy.keepassa.widget.ExpandAbleTextView
           android:id="@+id/etv"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
