@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <RelativeLayout
-      style="@style/DialogLayoutStyle"
+      style="@style/KpaDialogLayoutStyle"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:minWidth="@dimen/dialog_min_width"
@@ -11,7 +11,7 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_Layout"
-        style="@style/TabLayoutStyle"
+        style="@style/KapTabLayoutStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabInlineLabel="true" />

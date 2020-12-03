@@ -9,6 +9,7 @@
 
 package com.lyy.keepassa.view.create
 
+import android.R.layout
 import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
@@ -18,6 +19,7 @@ import android.text.InputType
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.keepassdroid.database.PwEntryV4
@@ -221,6 +223,19 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
           binding.notice.originalText
       )
     }
+    // the user name field, can show history
+    module.getUserNameCache()
+        .observe(this, {
+          val adapter = ArrayAdapter(this, R.layout.item_android_simple_dropdown, it)
+          binding.user.setAdapter(adapter)
+          binding.user.threshold = 1 // 设置输入几个字符后开始出现提示 默认是2
+          binding.user.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+              binding.user.showDropDown()
+            }
+          }
+        })
+
   }
 
   /**
@@ -231,7 +246,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       binding.title.setText(pwEntry.title)
       binding.user.setText(pwEntry.username)
     } else {
-      binding.user.setText("newEntry")
+//      binding.user.setText("newEntry")
       binding.title.setText(getString(R.string.normal_account))
     }
     binding.password.setText(pwEntry.password)
@@ -525,7 +540,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
    */
   @Subscribe(threadMode = MAIN)
   fun onEditorEvent(event: EditorEvent) {
-    if (event.requestCode != editorRequestCode){
+    if (event.requestCode != editorRequestCode) {
       return
     }
     event.content?.let {

@@ -9,12 +9,14 @@
 
 package com.lyy.demo
 
+import android.R.layout
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import com.arialyy.frame.core.AbsActivity
 import com.lyy.demo.databinding.ActivityLoginTestBinding
 
-class LoginActivity:AbsActivity<ActivityLoginTestBinding>() {
+class LoginActivity : AbsActivity<ActivityLoginTestBinding>() {
   override fun setLayoutId(): Int {
     return R.layout.activity_login_test
   }
@@ -27,7 +29,16 @@ class LoginActivity:AbsActivity<ActivityLoginTestBinding>() {
       startActivity(Intent(this, MainActivity::class.java))
       finish()
     }
-  }
 
+    val COUNTRIES = arrayListOf("Belgium", "France", "Italy", "Germany", "Spain")
+    val adapter = ArrayAdapter(this, layout.simple_dropdown_item_1line, COUNTRIES)
+    binding.edCode.setAdapter(adapter)
+    binding.edCode.threshold = 1
+    binding.edCode.setOnFocusChangeListener { _, hasFocus ->
+      if (hasFocus){
+        binding.edCode.showDropDown()
+      }
+    }
+  }
 
 }

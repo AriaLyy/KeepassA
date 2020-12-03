@@ -25,7 +25,7 @@
           />
 
       <TextView
-          style="@style/ContentTextStyle"
+          style="@style/KpaContentTextStyle"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentStart="true"
@@ -62,7 +62,7 @@
           android:clickable="false" />
 
       <TextView
-          style="@style/ContentTextStyle"
+          style="@style/KpaContentTextStyle"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentStart="true"

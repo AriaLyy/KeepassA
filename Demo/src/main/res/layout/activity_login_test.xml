@@ -7,6 +7,7 @@
       android:orientation="vertical"
       android:padding="16dp">
 
+
     <EditText
         android:id="@+id/etUser"
         android:layout_width="match_parent"
@@ -20,12 +21,20 @@
         android:hint="密码"
         android:inputType="textPassword" />
 
-    <EditText
-        android:id="@+id/etCode"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/user_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:text="验证码" />
+        >
+
+      <com.google.android.material.textfield.MaterialAutoCompleteTextView
+          android:id="@+id/edCode"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="xxxxxxxxx"
+          />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/btLogin"

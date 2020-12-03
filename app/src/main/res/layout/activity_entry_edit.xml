@@ -36,17 +36,11 @@
 
           <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/title"
+              style="@style/KpaEditTextStyle"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@color/transparent"
               android:hint="@string/hint_input_title"
-              android:imeOptions="actionNext"
-              android:singleLine="true"
-              android:textColor="@color/text_black_grey_color"
-              android:textColorHint="@color/text_hint_color"
-              android:textSize="@dimen/text_size_normal">
-
-          </com.google.android.material.textfield.TextInputEditText>
+              android:imeOptions="actionNext"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -60,19 +54,13 @@
             app:startIconDrawable="@drawable/ic_user"
             app:startIconTint="@color/color_icon_grey">
 
-          <com.google.android.material.textfield.TextInputEditText
+          <com.google.android.material.textfield.MaterialAutoCompleteTextView
               android:id="@+id/user"
+              style="@style/KpaEditTextStyle"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@color/transparent"
               android:hint="@string/hint_input_user_name"
-              android:imeOptions="actionNext"
-              android:singleLine="true"
-              android:textColor="@color/text_black_grey_color"
-              android:textColorHint="@color/text_hint_color"
-              android:textSize="@dimen/text_size_normal">
-
-          </com.google.android.material.textfield.TextInputEditText>
+              android:imeOptions="actionNext"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -103,18 +91,12 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password"
+                style="@style/KpaEditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/transparent"
                 android:hint="@string/password"
                 android:imeOptions="actionNext"
-                android:inputType="textPassword"
-                android:singleLine="true"
-                android:textColor="@color/text_black_grey_color"
-                android:textColorHint="@color/text_hint_color"
-                android:textSize="@dimen/text_size_normal">
-
-            </com.google.android.material.textfield.TextInputEditText>
+                android:inputType="textPassword"/>
 
           </com.google.android.material.textfield.TextInputLayout>
 
@@ -143,18 +125,12 @@
 
           <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/enter_password"
+              style="@style/KpaEditTextStyle"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@color/transparent"
               android:hint="@string/hint_enter_password"
               android:imeOptions="actionDone"
-              android:inputType="textPassword"
-              android:singleLine="true"
-              android:textColor="@color/text_black_grey_color"
-              android:textColorHint="@color/text_hint_color"
-              android:textSize="@dimen/text_size_normal">
-
-          </com.google.android.material.textfield.TextInputEditText>
+              android:inputType="textPassword"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -169,17 +145,11 @@
 
           <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/url"
+              style="@style/KpaEditTextStyle"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@color/transparent"
               android:hint="@string/hint_input_url"
-              android:imeOptions="actionNext"
-              android:singleLine="true"
-              android:textColor="@color/text_black_grey_color"
-              android:textColorHint="@color/text_hint_color"
-              android:textSize="@dimen/text_size_normal">
-
-          </com.google.android.material.textfield.TextInputEditText>
+              android:imeOptions="actionNext"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -205,7 +175,7 @@
 
           <com.lyy.keepassa.widget.ExpandAbleTextView
               android:id="@+id/notice"
-              style="@style/ExpandAbleTextViewStyle"
+              style="@style/KpaExpandAbleTextViewStyle"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_centerVertical="true"
@@ -298,17 +268,11 @@
 
           <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/tag"
+              style="@style/KpaEditTextStyle"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@color/transparent"
               android:hint="@string/hint_input_tag"
-              android:imeOptions="actionNext"
-              android:singleLine="true"
-              android:textColor="@color/text_black_grey_color"
-              android:textColorHint="@color/text_hint_color"
-              android:textSize="@dimen/text_size_normal">
-
-          </com.google.android.material.textfield.TextInputEditText>
+              android:imeOptions="actionNext"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -324,17 +288,11 @@
 
           <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/cover_url"
+              style="@style/KpaEditTextStyle"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@color/transparent"
               android:hint="@string/hint_input_cover_url"
-              android:imeOptions="actionNext"
-              android:singleLine="true"
-              android:textColor="@color/text_black_grey_color"
-              android:textColorHint="@color/text_hint_color"
-              android:textSize="@dimen/text_size_normal">
-
-          </com.google.android.material.textfield.TextInputEditText>
+              android:imeOptions="actionNext"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

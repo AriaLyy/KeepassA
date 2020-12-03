@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <LinearLayout
-      style="@style/DialogLayoutStyle"
+      style="@style/KpaDialogLayoutStyle"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical">
@@ -45,7 +45,7 @@
 
     <TextView
         android:id="@+id/tvDesc"
-        style="@style/ContentTextStyle"
+        style="@style/KpaContentTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/vLine"
@@ -74,7 +74,7 @@
           android:src="@drawable/ic_alipay" />
 
       <TextView
-          style="@style/TitleTextStyle"
+          style="@style/KpaTitleTextStyle"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_centerVertical="true"
@@ -104,7 +104,7 @@
           android:src="@drawable/ic_paypal" />
 
       <TextView
-          style="@style/TitleTextStyle"
+          style="@style/KpaTitleTextStyle"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_centerVertical="true"

@@ -98,7 +98,7 @@
 
       <com.google.android.material.tabs.TabLayout
           android:id="@+id/tab"
-          style="@style/TabLayoutStyle"
+          style="@style/KapTabLayoutStyle"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           app:layout_scrollFlags="noScroll"

@@ -85,7 +85,7 @@
 
         <com.lyy.keepassa.widget.BubbleTextView
             android:id="@+id/user_name"
-            style="@style/EntryDetailTextStyle"
+            style="@style/KpaEntryDetailTextStyle"
             android:layout_width="match_parent"
             android:layout_height="@dimen/entry_detail_item_h"
             android:layout_marginTop="12dp"
@@ -96,7 +96,7 @@
 
         <com.lyy.keepassa.widget.BubbleTextView
             android:id="@+id/pass"
-            style="@style/EntryDetailTextStyle"
+            style="@style/KpaEntryDetailTextStyle"
             android:layout_width="match_parent"
             android:layout_height="@dimen/entry_detail_item_h"
             android:inputType="textPassword"
@@ -108,7 +108,7 @@
 
         <com.lyy.keepassa.widget.BubbleTextView
             android:id="@+id/url"
-            style="@style/EntryDetailTextStyle"
+            style="@style/KpaEntryDetailTextStyle"
             android:layout_width="match_parent"
             android:layout_height="@dimen/entry_detail_item_h"
             android:inputType="textUri"
@@ -120,7 +120,7 @@
 
         <com.lyy.keepassa.widget.BubbleTextView
             android:id="@+id/tag"
-            style="@style/EntryDetailTextStyle"
+            style="@style/KpaEntryDetailTextStyle"
             android:layout_width="match_parent"
             android:layout_height="@dimen/entry_detail_item_h"
             android:inputType="textUri"
@@ -152,7 +152,7 @@
 
           <com.lyy.keepassa.widget.ExpandAbleTextView
               android:id="@+id/notice"
-              style="@style/ExpandAbleTextViewStyle"
+              style="@style/KpaExpandAbleTextViewStyle"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_centerVertical="true"
@@ -182,6 +182,7 @@
 
         <com.lyy.keepassa.widget.expand.ExpandAttrStrLayout
             android:id="@+id/attr_str"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -191,6 +192,7 @@
             />
 
         <com.lyy.keepassa.widget.expand.ExpandAttrStrLayout
+            android:visibility="gone"
             android:id="@+id/attr_file"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -210,7 +212,7 @@
 
         <com.lyy.keepassa.widget.BubbleTextView
             android:id="@+id/time1"
-            style="@style/EntryDetailTextStyle"
+            style="@style/KpaEntryDetailTextStyle"
             android:layout_width="match_parent"
             android:layout_height="@dimen/entry_detail_item_h"
             android:layout_marginTop="12dp"
@@ -224,7 +226,7 @@
 
         <com.lyy.keepassa.widget.BubbleTextView
             android:id="@+id/time2"
-            style="@style/EntryDetailTextStyle"
+            style="@style/KpaEntryDetailTextStyle"
             android:layout_width="match_parent"
             android:layout_height="@dimen/entry_detail_item_h"
             android:inputType="textUri"

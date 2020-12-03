@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
   <RelativeLayout
-      style="@style/DialogLayoutStyle"
+      style="@style/KpaDialogLayoutStyle"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:animateLayoutChanges="true"
@@ -11,7 +11,7 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        style="@style/TitleTextStyle"
+        style="@style/KpaTitleTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -52,7 +52,7 @@
 
     <Button
         android:id="@+id/btEnter"
-        style="@style/TitleTextStyle"
+        style="@style/KpaTitleTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

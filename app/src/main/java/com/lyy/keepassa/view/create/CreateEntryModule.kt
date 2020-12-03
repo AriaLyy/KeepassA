@@ -49,6 +49,27 @@ class CreateEntryModule : BaseModule() {
   val attrFileMap = LinkedHashMap<String, ProtectedBinary>()
   var icon = PwIconStandard(0)
   var loseDate: Date? = null // 失效时间
+  var userNameCache = arrayListOf<String>()
+
+  /**
+   * Traverse database and get all userName
+   */
+  fun getUserNameCache() = liveData<List<String>> {
+    if (userNameCache.isNotEmpty()) {
+      emit(userNameCache)
+      return@liveData
+    }
+    val temp = hashSetOf<String>()
+    for (entry in BaseApp.KDB.pm.entries) {
+      val userName = entry.value.getUsername(true, BaseApp.KDB.pm)
+      if (userName.isNullOrEmpty()){
+        continue
+      }
+      temp.add(userName)
+    }
+    userNameCache.addAll(temp)
+    emit(userNameCache)
+  }
 
   /**
    * 更新实体
