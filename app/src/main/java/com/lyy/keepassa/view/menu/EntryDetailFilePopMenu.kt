@@ -77,8 +77,11 @@ class EntryDetailFilePopMenu(
           msgDialog.show()
         }
         R.id.open_whit_img -> {
-          val imgDialog = ImgViewerDialog(file.data.readBytes())
-          imgDialog.show(context.supportFragmentManager, "img_dialog")
+          val bytes = file.data.readBytes()
+          if (bytes.isNotEmpty()){
+            val imgDialog = ImgViewerDialog(bytes)
+            imgDialog.show(context.supportFragmentManager, "img_dialog")
+          }
         }
         R.id.open_whit_other -> {
           // 将文件保存到缓存中

@@ -73,6 +73,7 @@
   <string name="success">成功</string>
   <string name="fail">失敗</string>
   <string name="del_entry">刪除條目</string>
+  <string name="del_history">刪除歷史記錄</string>
   <string name="copy_user_name">複製用戶名</string>
   <string name="copy_password">複製密碼</string>
   <string name="copy_totp">複製TOTP令牌</string>

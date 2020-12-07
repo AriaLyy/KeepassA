@@ -142,48 +142,6 @@ class LauncherModule : BaseModule() {
   }
 
   /**
-   * 获取数据库打开列表记录
-   */
-  fun getDbOpenRecordList(context: Context) = liveData {
-    val data = withContext(Dispatchers.IO) {
-      val dao = BaseApp.appDatabase.dbRecordDao()
-      val records = dao.getAllRecord()
-      val needRemoveRecord = ArrayList<DbRecord>()
-      if (records.isNotEmpty()) {
-        val list = ArrayList<SimpleItemEntity>()
-        for (record in records) {
-          val item = SimpleItemEntity()
-          item.icon = DbPathType.valueOf(record.type).icon
-
-          // 检查权限，如果本地uri失效，者删除记录
-          val uri = Uri.parse(record.localDbUri)
-          if (!UriUtil.checkPermissions(context, uri) && record.isAFS()) {
-            needRemoveRecord.add(record)
-            continue
-          }
-          val tx = UriUtil.getFileNameFromUri(context, uri)
-          if (TextUtils.isEmpty(tx)) {
-            continue
-          }
-          item.title = tx
-          item.subTitle = KeepassAUtil.formatTime(Date(record.time))
-          item.obj = record
-          list.add(item)
-        }
-
-        for (record in needRemoveRecord) {
-          dao.deleteRecord(record)
-        }
-
-        list
-      } else {
-        null
-      }
-    }
-    emit(data)
-  }
-
-  /**
    * 打开数据库
    *
    */

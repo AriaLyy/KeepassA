@@ -72,6 +72,7 @@
   <string name="success">Success</string>
   <string name="fail">Fail</string>
   <string name="del_entry">Delete item</string>
+  <string name="del_history">Delete History record</string>
   <string name="copy_user_name">Copy username</string>
   <string name="copy_password">Copy password</string>
   <string name="copy_totp">Copy TOTP token</string>

@@ -71,6 +71,7 @@
   <string name="success">Succès</string>
   <string name="fail">Échec</string>
   <string name="del_entry">Supprimer l\'entrée</string>
+  <string name="del_history">Supprimer l\'enregistrement de l\'historique</string>
   <string name="copy_user_name">Copier l\'utilisateur</string>
   <string name="copy_password">Copier le mot de passe</string>
   <string name="copy_totp">Copier le jeton TOTP</string>

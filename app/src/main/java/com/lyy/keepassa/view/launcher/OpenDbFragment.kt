@@ -129,8 +129,12 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
       }
     }
 
-    startHeadAnim()
     handleFingerprint()
+  }
+
+  override fun onResume() {
+    super.onResume()
+    startHeadAnim()
   }
 
   /**

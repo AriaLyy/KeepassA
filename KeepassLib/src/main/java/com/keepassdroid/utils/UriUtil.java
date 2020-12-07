@@ -83,6 +83,10 @@ public class UriUtil {
    * @return 如果权限不足或获取文件名失败，返回null
    */
   public static String getFileNameFromUri(Context context, Uri uri) {
+    if (context == null){
+      Log.e(TAG, "content 为空");
+      return null;
+    }
     if ("content".equalsIgnoreCase(uri.getScheme())) {
       DocumentFile df = DocumentFile.fromSingleUri(context, uri);
       if (df != null) {

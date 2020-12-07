@@ -39,10 +39,15 @@ import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.BuildConfig
 import com.lyy.keepassa.R
 import com.lyy.keepassa.util.AutoLockDbUtil
+import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.NotificationUtil
+import com.lyy.keepassa.view.create.CreateDbActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
+import com.lyy.keepassa.view.launcher.OpenDbHistoryActivity
+import com.lyy.keepassa.view.main.QuickUnlockActivity
+import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 
 /**
  * Created by Lyy on 2016/9/27.
@@ -61,17 +66,30 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     }
   }
 
+  private fun isHomeActivity(): Boolean {
+    val clazz = javaClass
+    return (clazz == LauncherActivity::class.java
+        || clazz == CreateDbActivity::class.java
+        || clazz == OpenDbHistoryActivity::class.java
+        )
+  }
+
   open fun useAnim() = true
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    if (!isHomeActivity() && (BaseApp.KDB == null || BaseApp.KDB.pm == null)) {
+      BaseApp.isLocked = true
+      HitUtil.toaskShort(getString(R.string.notify_db_locked))
+      finishAfterTransition()
+      return
+    }
+
     super.onCreate(savedInstanceState)
     // 进入系统多任务，界面变空白，设置无法截图
-//    if (!BuildConfig.DEBUG){
-      window.setFlags(
-          WindowManager.LayoutParams.FLAG_SECURE,
-          WindowManager.LayoutParams.FLAG_SECURE
-      )
-//    }
+    window.setFlags(
+        WindowManager.LayoutParams.FLAG_SECURE,
+        WindowManager.LayoutParams.FLAG_SECURE
+    )
     if (useAnim()) {
       setWindowAnim()
     }
@@ -141,12 +159,14 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
 
     if (KeepassAUtil.isStartQuickLockActivity(this)) {
       if (BaseApp.isLocked) {
-        AutoLockDbUtil.get().startLockWorkerNow()
+        AutoLockDbUtil.get()
+            .startLockWorkerNow()
         return
       }
 
       if (KeepassAUtil.isRunningForeground(this)) {
-        AutoLockDbUtil.get().resetTimer()
+        AutoLockDbUtil.get()
+            .resetTimer()
         return
       }
     }

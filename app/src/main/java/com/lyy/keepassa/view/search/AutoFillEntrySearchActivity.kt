@@ -134,12 +134,6 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
-    if (BaseApp.KDB.pm == null) {
-      BaseApp.isLocked = true
-      finishAfterTransition()
-      HitUtil.toaskShort(getString(R.string.notify_db_locked))
-      return
-    }
     EventBusHelper.reg(this)
     module = ViewModelProvider(this).get(SearchModule::class.java)
     apkPkgName = intent.getStringExtra(KEY_PKG_NAME)

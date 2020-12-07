@@ -78,7 +78,7 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
         )
         return@setOnClickListener
       }
-      if (uri.isEmpty()) {
+      if (uri.isEmpty() || uri.equals("null", true)) {
         HitUtil.toaskShort(
             getString(R.string.hint_please_input, getString(R.string.hint_webdav_url))
         )

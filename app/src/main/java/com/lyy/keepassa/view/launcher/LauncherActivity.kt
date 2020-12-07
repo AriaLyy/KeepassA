@@ -31,6 +31,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityLauncherBinding
 import com.lyy.keepassa.entity.DbRecord
 import com.lyy.keepassa.event.ChangeDbEvent
+import com.lyy.keepassa.event.DbHistoryEvent
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.putArgument
@@ -196,6 +197,16 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
       isChangeDb = false
     } else {
       super.onBackPressed()
+    }
+  }
+
+  /**
+   * da history is empty
+   */
+  @Subscribe(threadMode = MAIN)
+  fun onHistoryEmpty(event: DbHistoryEvent){
+    if (event.isEmpty){
+      isChangeDb = false
     }
   }
 
