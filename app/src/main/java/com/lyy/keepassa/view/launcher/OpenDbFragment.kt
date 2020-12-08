@@ -27,14 +27,9 @@ import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.view.inputmethod.EditorInfo
-import androidx.arch.core.executor.ArchTaskExecutor
-import androidx.biometric.BiometricConstants
-import androidx.biometric.BiometricPrompt
-import androidx.biometric.BiometricPrompt.CryptoObject
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionInflater
-import com.arialyy.frame.util.KeyStoreUtil
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
@@ -42,11 +37,9 @@ import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentOpenDbBinding
 import com.lyy.keepassa.entity.DbRecord
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KeepassAUtil.takePermission
 import com.lyy.keepassa.util.NotificationUtil
-import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.getArgument
 import com.lyy.keepassa.view.dialog.LoadingDialog
@@ -74,7 +67,6 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   private val openIsFromFill by lazy {
     getArgument("openIsFromFill") ?: false
   }
-  private lateinit var keyStoreUtil: KeyStoreUtil
 
   override fun initData() {
     binding.fingerprint.visibility = View.GONE
@@ -84,18 +76,15 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         .inflateTransition(R.transition.slide_exit)
     returnTransition = TransitionInflater.from(context)
         .inflateTransition(R.transition.slide_return)
-
     modlue = ViewModelProvider(this).get(LauncherModule::class.java)
-
 
     setDbName(openDbRecord)
     handleKeyUri(openDbRecord.getDbKeyUri())
 
     binding.cbKey.setOnCheckedChangeListener { _, isChecked ->
       if (isChecked) {
-        if (TextUtils.isEmpty(openDbRecord.keyUri) || openDbRecord.keyUri.equals(
-                "null", ignoreCase = true
-            )
+        if (TextUtils.isEmpty(openDbRecord.keyUri)
+            || openDbRecord.keyUri.equals("null", ignoreCase = true)
         ) {
           KeepassAUtil.openSysFileManager(this@OpenDbFragment, "*/*", REQ_CODE_FILE)
         }
@@ -144,7 +133,6 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     modlue.isNeedUseFingerprint(openDbRecord.localDbUri)
         .observe(this, Observer { needUse ->
           if (needUse) {
-            keyStoreUtil = KeyStoreUtil()
             binding.fingerprint.visibility = View.VISIBLE
             binding.fingerprint.playAnimation()
             showBiometricPrompt()
@@ -157,12 +145,16 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         })
   }
 
+  fun hideFingerprint() {
+    binding.fingerprint.visibility = View.GONE
+  }
+
   /**
    * 显示验证指纹对话框
    */
   @SuppressLint("RestrictedApi") @TargetApi(Build.VERSION_CODES.M)
   private fun showBiometricPrompt() {
-    if (!isAdded){
+    if (!isAdded) {
       BuglyLog.w(TAG, "isAdd = false")
       return
     }
@@ -170,81 +162,13 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
       BuglyLog.d(TAG, "数据库已打开")
       return
     }
-    val promptInfo =
-      BiometricPrompt.PromptInfo.Builder()
-          .setTitle(getString(R.string.fingerprint_unlock))
-          .setSubtitle(getString(R.string.verify_finger))
-          .setNegativeButtonText(getString(R.string.cancel))
-          //        .setConfirmationRequired(false)
-          .build()
-    modlue.getQuickUnlockRecord(openDbRecord.localDbUri)
-        .observe(this, Observer { quickUnlockRecord ->
 
-          if (quickUnlockRecord == null) {
-            Log.e(TAG, "解锁记录为空")
-            return@Observer
-          }
-          val biometricPrompt = BiometricPrompt(this,
-              ArchTaskExecutor.getMainThreadExecutor(),
-              object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationError(
-                  errorCode: Int,
-                  errString: CharSequence
-                ) {
-                  if (!isAdded) {
-                    KLog.e(TAG, "Fragment没有被加载")
-                    return
-                  }
-                  val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
-                    "${getString(R.string.verify_finger)}${getString(R.string.cancel)}"
-                  } else {
-                    getString(R.string.verify_finger_fail)
-                  }
-                  HitUtil.snackShort(mRootView, str)
-                }
-
-                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                  super.onAuthenticationSucceeded(result)
-                  try {
-                    val auth: CryptoObject? = result.cryptoObject
-                    val cipher = auth!!.cipher!!
-                    val pass = QuickUnLockUtil.decryption(
-                        keyStoreUtil.decryptData(
-                            cipher, quickUnlockRecord.dbPass
-                        )
-                    )
-                    openDb(pass)
-                  } catch (e: Exception) {
-                    e.printStackTrace()
-                    deleteBiomKey()
-                  }
-                }
-
-                override fun onAuthenticationFailed() {
-                  super.onAuthenticationFailed()
-                  if (isAdded) {
-                    HitUtil.snackShort(mRootView, getString(R.string.verify_finger_fail))
-                  }
-                }
-              })
-          try {
-            // Displays the "log in" prompt.
-            biometricPrompt.authenticate(
-                promptInfo, CryptoObject(keyStoreUtil.getDecryptCipher(quickUnlockRecord.passIv))
-            )
-          } catch (e: Exception) {
-            e.printStackTrace()
-            deleteBiomKey()
+    modlue.getQuickUnlockRecord(openDbRecord, this)
+        .observe(this, {
+          if (it.first) {
+            openDb(it.second!!)
           }
         })
-  }
-
-  @TargetApi(Build.VERSION_CODES.M)
-  private fun deleteBiomKey() {
-    keyStoreUtil.deleteKeyStore()
-    HitUtil.snackLong(mRootView, getString(R.string.hint_fingerprint_modify))
-    binding.fingerprint.visibility = View.GONE
-    modlue.deleteFingerprint(openDbRecord.localDbUri)
   }
 
   /**
@@ -291,12 +215,8 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     }
     when (v.id) {
       R.id.open -> {
-        //        WebDavLoginDialog().show()
         VibratorUtil.vibrator(300)
-        openDb(
-            binding.password.text.toString()
-                .trim()
-        )
+        openDb(binding.password.text.toString())
       }
       R.id.change_db -> {
         binding.cbKey.isChecked = false

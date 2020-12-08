@@ -9,10 +9,18 @@
 
 package com.lyy.keepassa.view.launcher
 
+import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.text.TextUtils
-import android.util.Log
+import androidx.arch.core.executor.ArchTaskExecutor
+import androidx.biometric.BiometricConstants
+import androidx.biometric.BiometricPrompt
+import androidx.biometric.BiometricPrompt.AuthenticationCallback
+import androidx.biometric.BiometricPrompt.AuthenticationResult
+import androidx.biometric.BiometricPrompt.CryptoObject
 import androidx.core.content.edit
 import androidx.core.net.toFile
 import androidx.lifecycle.LiveData
@@ -21,6 +29,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import com.arialyy.frame.util.KeyStoreUtil
 import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.Database
 import com.keepassdroid.database.PwDatabase
@@ -35,24 +44,139 @@ import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.HitUtil
+import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.cloud.WebDavUtil
 import com.lyy.keepassa.util.isAFS
-import com.lyy.keepassa.view.DbPathType
 import com.lyy.keepassa.view.DbPathType.AFS
 import com.lyy.keepassa.view.DbPathType.DROPBOX
 import com.lyy.keepassa.view.DbPathType.WEBDAV
 import com.lyy.keepassa.view.dialog.MsgDialog
-import com.lyy.keepassa.widget.BubbleTextView
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Date
 
 class LauncherModule : BaseModule() {
   private val itemData: MutableLiveData<List<SimpleItemEntity>> = MutableLiveData()
+  private val unlockEvent = MutableLiveData<Pair<Boolean, String?>>()
+  private val scope = MainScope()
+
+  override fun onCleared() {
+    super.onCleared()
+    scope.cancel()
+  }
+
+  private val keyStoreUtil by lazy {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      KeyStoreUtil()
+    } else {
+      null
+    }
+  }
+
+  /**
+   * 显示指纹解锁
+   */
+  @SuppressLint("RestrictedApi")
+  @TargetApi(Build.VERSION_CODES.M)
+  fun showBiometricPrompt(
+    fragment: OpenDbFragment,
+    quickUnlockRecord: QuickUnLockRecord?,
+    openDbRecord: DbRecord
+  ) {
+    if (!fragment.isAdded) {
+      return
+    }
+    if (quickUnlockRecord == null) {
+      KLog.e(TAG, "解锁记录为空")
+      return
+    }
+
+    val resource = fragment.requireContext().resources
+    val promptInfo =
+      BiometricPrompt.PromptInfo.Builder()
+          .setTitle(resource.getString(R.string.fingerprint_unlock))
+          .setSubtitle(resource.getString(R.string.verify_finger))
+          .setNegativeButtonText(resource.getString(R.string.cancel))
+          //        .setConfirmationRequired(false)
+          .build()
+
+    val biometricPrompt = BiometricPrompt(fragment,
+        ArchTaskExecutor.getMainThreadExecutor(),
+        object : AuthenticationCallback() {
+          override fun onAuthenticationError(
+            errorCode: Int,
+            errString: CharSequence
+          ) {
+            if (!fragment.isAdded) {
+              KLog.e(TAG, "Fragment没有被加载")
+              return
+            }
+            val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
+              "${resource.getString(R.string.verify_finger)}${resource.getString(R.string.cancel)}"
+            } else {
+              resource.getString(R.string.verify_finger_fail)
+            }
+            HitUtil.snackShort(fragment.getRootView(), str)
+            unlockEvent.postValue(Pair(false, null))
+          }
+
+          override fun onAuthenticationSucceeded(result: AuthenticationResult) {
+            super.onAuthenticationSucceeded(result)
+            try {
+              val auth: CryptoObject? = result.cryptoObject
+              val cipher = auth!!.cipher!!
+              val pass = QuickUnLockUtil.decryption(
+                  keyStoreUtil?.decryptData(
+                      cipher, quickUnlockRecord.dbPass
+                  )
+              )
+              unlockEvent.postValue(Pair(true, pass))
+            } catch (e: Exception) {
+              e.printStackTrace()
+              deleteBiomKey(fragment, openDbRecord)
+            }
+          }
+
+          override fun onAuthenticationFailed() {
+            super.onAuthenticationFailed()
+            if (fragment.isAdded) {
+              HitUtil.snackShort(
+                  fragment.getRootView(),
+                  resource.getString(R.string.verify_finger_fail)
+              )
+            }
+            unlockEvent.postValue(Pair(false, null))
+          }
+        })
+    try {
+      // Displays the "log in" prompt.
+      keyStoreUtil?.let {
+        biometricPrompt.authenticate(
+            promptInfo, CryptoObject(it.getDecryptCipher(quickUnlockRecord.passIv))
+        )
+      }
+    } catch (e: Exception) {
+      e.printStackTrace()
+      deleteBiomKey(fragment, openDbRecord)
+    }
+  }
+
+  @TargetApi(Build.VERSION_CODES.M)
+  private fun deleteBiomKey(
+    fragment: OpenDbFragment,
+    openDbRecord: DbRecord
+  ) {
+    val resource = fragment.requireContext().resources
+    keyStoreUtil?.deleteKeyStore()
+    HitUtil.snackLong(fragment.getRootView(), resource.getString(R.string.hint_fingerprint_modify))
+    fragment.hideFingerprint()
+    deleteFingerprint(openDbRecord.localDbUri)
+  }
 
   /**
    * 安全检查
@@ -82,19 +206,24 @@ class LauncherModule : BaseModule() {
   /**
    * 获取快速解锁记录
    */
-  fun getQuickUnlockRecord(dbUri: String) = liveData {
-    var record: QuickUnLockRecord? = null
-    withContext(Dispatchers.IO) {
+  fun getQuickUnlockRecord(
+    openDbRecord: DbRecord,
+    fragment: OpenDbFragment
+  ): MutableLiveData<Pair<Boolean, String?>> {
+    scope.launch(Dispatchers.IO) {
       val dao = BaseApp.appDatabase.quickUnlockDao()
-      record = dao.findRecord(dbUri)
+      val record: QuickUnLockRecord? = dao.findRecord(openDbRecord.localDbUri)
+      withContext(Dispatchers.Main) {
+        showBiometricPrompt(fragment, record, openDbRecord)
+      }
     }
-    emit(record)
+    return unlockEvent
   }
 
   /**
    * 删除指纹解锁记录
    */
-  fun deleteFingerprint(dbUri: String) {
+  private fun deleteFingerprint(dbUri: String) {
     if (!FingerprintUtil.hasBiometricPrompt(BaseApp.APP)) {
       return
     }
@@ -125,14 +254,14 @@ class LauncherModule : BaseModule() {
       val unlockDao = BaseApp.appDatabase.quickUnlockDao()
       val unLockRecord = unlockDao.findRecord(dbUri)
       if (unLockRecord == null) {
-        Log.d(TAG, "unLockRecord is null")
+        KLog.d(TAG, "unLockRecord is null")
         return@withContext false
       }
-      Log.d(TAG, "is full unlock = ${unLockRecord.isFullUnlock}")
+      KLog.d(TAG, "is full unlock = ${unLockRecord.isFullUnlock}")
       val dbDao = BaseApp.appDatabase.dbRecordDao()
       val dbRecord = dbDao.findRecord(dbUri)
       if (dbRecord == null) {
-        Log.d(TAG, "dbRecord is null")
+        KLog.d(TAG, "dbRecord is null")
         return@withContext false
       }
 
@@ -198,14 +327,14 @@ class LauncherModule : BaseModule() {
     if (cacheFile.exists()
         && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
     ) {
-      Log.i(TAG, "文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
+      KLog.i(TAG, "文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
       return openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
     }
     val cachePath = DbSynUtil.downloadOnly(context, record, Uri.fromFile(cacheFile))
-    if (TextUtils.isEmpty(cachePath)) {
-      return null
+    return if (TextUtils.isEmpty(cachePath)) {
+      null
     } else {
-      return openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
+      openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
     }
   }
 
@@ -222,14 +351,14 @@ class LauncherModule : BaseModule() {
     if (cacheFile.exists()
         && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
     ) {
-      Log.i(TAG, "文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
+      KLog.i(TAG, "文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
       return openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
     }
     val cachePath = DbSynUtil.downloadOnly(context, record, Uri.fromFile(cacheFile))
-    if (TextUtils.isEmpty(cachePath)) {
-      return null
+    return if (TextUtils.isEmpty(cachePath)) {
+      null
     } else {
-      return openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
+      openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
     }
   }
 

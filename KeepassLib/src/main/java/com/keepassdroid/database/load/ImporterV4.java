@@ -1028,7 +1028,6 @@ public class ImporterV4 extends Importer {
   }
 
   private void ReadUnknown(XmlPullParser xpp) throws XmlPullParserException, IOException {
-    assert (false);
 
     if (xpp.isEmptyElementTag()) return;
 

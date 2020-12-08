@@ -15,6 +15,7 @@ import android.transition.ChangeBounds
 import android.transition.Slide
 import android.transition.TransitionSet
 import android.view.Gravity
+import android.view.View
 import androidx.databinding.ViewDataBinding
 import com.arialyy.frame.core.AbsFragment
 import com.lyy.keepassa.util.AutoLockDbUtil
@@ -33,6 +34,8 @@ abstract class BaseFragment<VB : ViewDataBinding> : AbsFragment<VB>() {
   ) {
 
   }
+
+  fun getRootView(): View = mRootView
 
   private fun setWindowAnim() {
     // salide 为滑入，其它动画效果参考：https://github.com/lgvalle/Material-Animations
