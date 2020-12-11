@@ -291,13 +291,10 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
   }
 
   /**
-   * 回收站中需要删除数据
+   * 有条目移动或有条目从回收站中撤回
    */
   @Subscribe(threadMode = MAIN)
-  fun onUndo(event: MoveEvent) {
-    if (!isRecycleBin) {
-      return
-    }
+  fun onMove(event: MoveEvent) {
     getData()
   }
 
