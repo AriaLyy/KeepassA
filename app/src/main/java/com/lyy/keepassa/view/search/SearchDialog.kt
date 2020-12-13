@@ -130,7 +130,7 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
     adapter = SearchAdapter(requireContext(), date, OnClickListener { v ->
       val position = v.tag as Int
       val item = date[position]
-      module.delHistoryRecord(item.title)
+      module.delHistoryRecord(item.title.toString())
           .observe(this, Observer {
             date.remove(item)
             adapter.notifyDataSetChanged()
@@ -148,7 +148,7 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
             return@setOnItemClickListener
           }
           // 处理搜索结果
-          module.saveSearchRecord(item.title)
+          module.saveSearchRecord(item.title.toString())
           KeepassAUtil.turnEntryDetail(context as FragmentActivity, item.obj as PwDataInf)
           dismiss()
         }

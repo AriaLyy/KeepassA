@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
-      <com.lyy.keepassa.widget.ExpandAbleTextView
+      <com.lyy.keepassa.widget.expand.ExpandTextView
           android:id="@+id/tvContent"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"

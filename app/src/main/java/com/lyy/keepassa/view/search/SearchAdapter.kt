@@ -77,7 +77,7 @@ class SearchAdapter(
       }
       // 群组
       ITEM_TYPE_GROUP -> {
-        highLightText(holder.text, item.title)
+        highLightText(holder.text, item.title.toString())
         (holder as RecordHolder).del.visibility = View.GONE
         holder.icon.setImageDrawable(
             ResUtil.getSvgIcon(
@@ -89,8 +89,8 @@ class SearchAdapter(
 
       // 条目
       ITEM_TYPE_ENTRY -> {
-        highLightText(holder.text, item.title)
-        highLightText((holder as SearchHolder).des, item.subTitle)
+        highLightText(holder.text, item.title.toString())
+        highLightText((holder as SearchHolder).des, item.subTitle.toString())
         IconUtil.setEntryIcon(context, item.obj as PwEntry, holder.icon)
       }
     }

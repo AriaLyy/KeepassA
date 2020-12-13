@@ -37,7 +37,7 @@ object PinyinUtil {
   /**
    * 获取首字母
    */
-  fun getFirstSpellChar(str: String): Char? {
+  fun getFirstSpellChar(str: CharSequence): Char? {
     for (element in str) {
       // 判断是否为汉字，如果左移7为为0就不是汉字，否则是汉字
       if (element.toInt() shr 7 == 0) {

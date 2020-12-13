@@ -15,6 +15,7 @@ import android.text.style.AlignmentSpan;
 import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
@@ -205,20 +206,46 @@ public class ExpandAbleTextView extends AppCompatTextView {
     }
   }
 
+  /**
+   * 对markdown支持不友好
+   */
   public void setOriginalText(CharSequence originalText) {
-    setShrinkInNewLine(true);
     if (initWidth == 0) {
       post(() -> {
         initWidth = getWidth();
-        RichText.fromMarkdown(originalText.toString())
-            .done(imageLoadDone -> setCustomText(getText()))
-            .into(this);
+        setCustomText(originalText);
+        //RichText.fromMarkdown(temp)
+        //    .done(imageLoadDone -> {
+        //      CharSequence chr = getText().toString();
+        //      Log.d(TAG, "chr = " + chr);
+        //      setCustomText(chr);
+        //    })
+        //    .into(this);
       });
       return;
     }
-    RichText.fromMarkdown(originalText.toString())
-        .done(imageLoadDone -> setCustomText(getText()))
-        .into(this);
+    setCustomText(originalText);
+
+    //setShrinkInNewLine(true);
+    //String temp = originalText.toString().replaceAll("^[" + originalText + "]+", "");
+    //String temp = originalText.toString().trim();
+    //Log.d(TAG, "originText = " + temp);
+    //if (initWidth == 0) {
+    //  post(() -> {
+    //    initWidth = getWidth();
+    //    RichText.fromMarkdown(temp)
+    //        .done(imageLoadDone -> {
+    //          CharSequence chr = getText().toString();
+    //          Log.d(TAG, "chr = " + chr);
+    //          setCustomText(chr);
+    //        })
+    //        .into(this);
+    //  });
+    //  return;
+    //}
+    //RichText.fromMarkdown(temp)
+    //    .done(imageLoadDone -> setCustomText(getText()))
+    //    .into(this);
     //setCustomText(originalText);
   }
 
@@ -450,7 +477,7 @@ public class ExpandAbleTextView extends AppCompatTextView {
   }
 
   public CharSequence getOriginalText() {
-    return originalText;
+    return originalText == null ? "" : originalText;
   }
 
   /** 更新展开后缀Spannable */

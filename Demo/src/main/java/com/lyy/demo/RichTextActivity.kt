@@ -304,7 +304,12 @@ class RichTextActivity : AbsActivity<ActivityRichtextBinding>() {
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
 //    RichText.initCacheDir(this)
-    binding.tvContent.originalText = str1
+    val str = "wwwww\n" +
+        "\$\n" +
+        "\n" +
+        "hhhhhh"
+    binding.tvContent.maxLines = 2
+    binding.tvContent.setCloseText(str)
 //    RichText.fromMarkdown(str)
 //        .urlClick { url ->
 //          Log.d(TAG, "url: $url")

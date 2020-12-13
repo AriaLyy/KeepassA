@@ -283,5 +283,6 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="set_key_title_opr_env_check_turn_on">Turn on environment check</string>
   <string name="cur_app_not_autofill">Not auto-fill</string>
   <string name="other">Other</string>
+  <string name="ref_entry">Reference entry</string>
 
 </resources>

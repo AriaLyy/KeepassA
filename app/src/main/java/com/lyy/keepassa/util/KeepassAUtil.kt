@@ -20,6 +20,7 @@ import android.app.assist.AssistStructure
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
@@ -42,6 +43,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
 import com.arialyy.frame.core.AbsFrame
+import com.arialyy.frame.util.ResUtil
+import com.arialyy.frame.util.StringUtil
 import com.keepassdroid.database.PwDataInf
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
@@ -74,6 +77,19 @@ object KeepassAUtil {
 
   const val TAG = "KeepassAUtil"
   private var LAST_CLICK_TIME = System.currentTimeMillis()
+
+  fun PwEntry.isRef(): Boolean {
+    return (!username.isNullOrEmpty() && username.startsWith("{REF:", ignoreCase = true))
+        || (!password.isNullOrEmpty() && password.startsWith("{REF:", ignoreCase = true))
+  }
+
+  /**
+   * is night mode
+   * @return true yes, false no
+   */
+  fun isNightMode(): Boolean {
+    return BaseApp.APP.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+  }
 
   /**
    * 是否是Otp字段
@@ -178,7 +194,13 @@ object KeepassAUtil {
   fun convertPwEntry2Item(entry: PwEntry): SimpleItemEntity {
     val item = SimpleItemEntity()
     item.title = entry.title
-    item.subTitle = KdbUtil.getUserName(entry)
+    item.subTitle = if (entry.isRef()){
+      val refStr = "${BaseApp.APP.resources.getString(R.string.ref_entry)}: "
+      val tempStr = "${refStr}${KdbUtil.getUserName(entry)}"
+      StringUtil.highLightStr(tempStr, refStr, ResUtil.getColor(R.color.colorPrimary), true)
+    } else{
+      entry.username
+    }
     item.obj = entry
     return item
   }

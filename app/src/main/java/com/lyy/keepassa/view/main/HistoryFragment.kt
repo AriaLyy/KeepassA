@@ -95,9 +95,7 @@ class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
       }
 
     })
-
     initRefresh()
-
     setData()
   }
 
@@ -138,19 +136,22 @@ class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
     // 查找是该记录是否存在
     val oldRecord = entryData.find { (it.obj as PwEntry).uuid == newRecordUUid }
 
-    if (oldRecord == null) {
-      val itemData = convertEntry2Item(newRecordUUid, record.time)
-      if (itemData != null) {
+    val entry = BaseApp.KDB.pm.entries[newRecordUUid]
+    entry?.let {
+      if (oldRecord == null) {
+        val itemData = KeepassAUtil.convertPwEntry2Item(it)
+        itemData.time = record.time
         entryData.add(itemData)
+      } else {
+        val itemData = KeepassAUtil.convertPwEntry2Item(it)
+        oldRecord.title = record.title
+        oldRecord.subTitle = itemData.subTitle
+        oldRecord.time = record.time
       }
-    } else {
-      oldRecord.title = record.title
-      oldRecord.subTitle = record.userName
-      oldRecord.time = record.time
-    }
 
 //    entryData.sortByDescending { it.time }
-    adapter.notifyDataSetChanged()
+      adapter.notifyDataSetChanged()
+    }
   }
 
   /**
@@ -166,27 +167,6 @@ class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
       }
       entryData.remove(item)
       adapter.notifyDataSetChanged()
-    }
-
-  }
-
-  /**
-   * 转换记录数据
-   */
-  private fun convertEntry2Item(
-    uuid: UUID,
-    time: Long
-  ): SimpleItemEntity? {
-    val entry = BaseApp.KDB.pm.entries[uuid]
-    return if (entry == null) {
-      null
-    } else {
-      val item = SimpleItemEntity()
-      item.title = entry.title
-      item.subTitle = KdbUtil.getUserName(entry)
-      item.obj = entry
-      item.time = time
-      item
     }
   }
 

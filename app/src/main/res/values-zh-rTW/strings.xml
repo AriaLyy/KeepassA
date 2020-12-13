@@ -284,4 +284,5 @@
   <string name="ui_setting">界面設置</string>
   <string name="cur_app_not_autofill">不自動填充</string>
   <string name="other">其它</string>
+  <string name="ref_entry">參考條目</string>
 </resources>

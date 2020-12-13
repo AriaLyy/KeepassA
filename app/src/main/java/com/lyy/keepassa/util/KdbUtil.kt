@@ -20,7 +20,9 @@ import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
 import com.keepassdroid.database.helper.KDBHandlerHelper
+import com.keepassdroid.utils.SprEngine
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.util.KeepassAUtil.isRef
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import java.util.UUID
 
@@ -28,14 +30,21 @@ object KdbUtil {
   private val TAG = javaClass.simpleName
 
   /**
+   * 解码字符串
+   */
+  fun PwEntry.decodeText(text: String): String {
+    val spr = SprEngine.getInstance(BaseApp.KDB.pm)
+    return spr.compile(text, this, BaseApp.KDB.pm)
+  }
+
+  /**
    * 获取用户名，如果是引用其它条目的，解析其引用
    */
   fun getUserName(entry: PwEntry): String {
-    val userName = entry.username
-    return if (userName.startsWith("{REF:", ignoreCase = true)) entry.getUsername(
-        true,
-        BaseApp.KDB.pm
-    ) else userName
+    return if (entry.isRef())
+      entry.getUsername(true, BaseApp.KDB.pm)
+    else
+      entry.username
   }
 
   /**
@@ -43,10 +52,10 @@ object KdbUtil {
    */
   fun getPassword(entry: PwEntry): String {
     val pass = entry.password
-    return if (pass.startsWith("{REF:", ignoreCase = true)) entry.getPassword(
-        true,
-        BaseApp.KDB.pm
-    ) else pass
+    return if (entry.isRef())
+      entry.getPassword(true, BaseApp.KDB.pm)
+    else
+      pass
   }
 
   /**
@@ -225,7 +234,9 @@ object KdbUtil {
     KLog.d(TAG, "topDomain = ${topDomain?.value}")
     for (entry in BaseApp.KDB.pm.entries.values) {
       val pe4 = entry as PwEntryV4
-      if (pe4.getUrl().contains(topDomain?.value.toString(), true)) {
+      if (pe4.getUrl()
+              .contains(topDomain?.value.toString(), true)
+      ) {
         listStorage.add(pe4)
       }
     }

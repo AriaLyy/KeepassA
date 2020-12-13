@@ -148,7 +148,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     autoFillFields.tempPassFillId = viewNode.autofillId
     KLog.d(
         TAG,
-        "pass autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}" + " text = ${viewNode.text}, hint = ${viewNode.hint}"
+        "pass autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}," + " text = ${viewNode.text}, hint = ${viewNode.hint}"
     )
     passFields.add(viewNode)
     autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_PASSWORD))
@@ -164,7 +164,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     autoFillFields.tempUserFillId = viewNode.autofillId
     KLog.d(
         TAG,
-        "user idEntry = ${viewNode.idEntry}, autofillType = ${viewNode.autofillType}, fillValue = ${viewNode.autofillValue}" + "fillId = ${viewNode.autofillId}, text = ${viewNode.text}, hint = ${viewNode.hint}"
+        "user autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, idEntry = ${viewNode.idEntry}, fillValue = ${viewNode.autofillValue}" + "fillId = ${viewNode.autofillId}, text = ${viewNode.text}, hint = ${viewNode.hint}"
     )
     useFields.add(viewNode)
     autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_USERNAME))

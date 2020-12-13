@@ -208,10 +208,7 @@ class MainModule : BaseModule() {
         val temp = ArrayList<SimpleItemEntity>()
         for (record in records) {
           val entry = BaseApp.KDB.pm.entries[Types.bytestoUUID(record.uuid)] ?: continue
-          val item = SimpleItemEntity()
-          item.title = record.title
-          item.obj = entry
-          item.subTitle = KdbUtil.getUserName(entry)
+          val item = KeepassAUtil.convertPwEntry2Item(entry)
           item.time = record.time
           temp.add(item)
         }

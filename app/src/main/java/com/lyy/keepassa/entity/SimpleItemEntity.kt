@@ -10,9 +10,9 @@
 package com.lyy.keepassa.entity
 
 class SimpleItemEntity {
-  var title: String = ""
-  var subTitle: String = ""
-  var content: String = ""
+  var title: CharSequence = ""
+  var subTitle: CharSequence = ""
+  var content: CharSequence = ""
   var icon: Int = 0
   var id: Int = -1
   var time: Long = 0

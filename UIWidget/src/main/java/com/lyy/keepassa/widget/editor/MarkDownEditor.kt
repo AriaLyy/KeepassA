@@ -92,7 +92,7 @@ class MarkDownEditor(
       saveBtn.visibility = VISIBLE
       redoBtn.visibility = VISIBLE
       undoBtn.visibility = VISIBLE
-      clearBtn.visibility = VISIBLE
+      clearBtn.visibility = GONE
       preText.visibility = View.GONE
     } else {
       saveBtn.visibility = GONE
@@ -131,7 +131,7 @@ class MarkDownEditor(
       }
       R.id.tvBold -> { // bold
         input("****", false)
-        editor.setSelection(editor.selectionStart - 3)
+        editor.setSelection(editor.selectionStart - 2)
       }
       R.id.tvH -> { // #
         input("# ", false)

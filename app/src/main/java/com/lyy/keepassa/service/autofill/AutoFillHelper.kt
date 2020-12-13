@@ -12,6 +12,7 @@ package com.lyy.keepassa.service.autofill
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.IntentSender
+import android.content.res.Configuration
 import android.graphics.Bitmap.Config
 import android.graphics.BitmapFactory
 import android.os.Build
@@ -23,15 +24,18 @@ import android.view.autofill.AutofillId
 import android.view.autofill.AutofillValue
 import android.widget.RemoteViews
 import androidx.annotation.DrawableRes
+import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
+import com.lahm.library.CommandUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 import com.lyy.keepassa.widget.toPx
@@ -48,14 +52,16 @@ object AutoFillHelper {
    * @param packageName 当前应用的包名（keepassA的包名)
    */
   private fun newRemoteViews(
+    context: Context,
     packageName: String,
     remoteViewsText: String,
     @DrawableRes drawableId: Int
   ): RemoteViews {
-    val presentation = RemoteViews(packageName, R.layout.item_auto_fill)
-    presentation.setTextViewText(R.id.text, remoteViewsText)
-    presentation.setImageViewResource(R.id.img, drawableId)
-    return presentation
+    val rev = RemoteViews(packageName, R.layout.item_auto_fill)
+    setTextColor(rev, context)
+    rev.setTextViewText(R.id.text, remoteViewsText)
+    rev.setImageViewResource(R.id.img, drawableId)
+    return rev
   }
 
   /**
@@ -67,6 +73,7 @@ object AutoFillHelper {
   ): Dataset {
     val rev = RemoteViews(context.packageName, R.layout.item_auto_fill)
     rev.setTextViewText(R.id.text, context.resources.getString(R.string.cur_app_not_autofill))
+    setTextColor(rev, context)
     IconUtil.getAppIcon(context, apkPageName)
         ?.let {
           rev.setImageViewBitmap(R.id.img, it)
@@ -91,6 +98,8 @@ object AutoFillHelper {
       rev.setImageViewBitmap(R.id.img, it)
     }
 
+    setTextColor(rev, context)
+
     rev.setOnClickPendingIntent(
         R.id.llContent,
         AutoFillEntrySearchActivity.createSearchPending(context, apkPageName)
@@ -98,6 +107,13 @@ object AutoFillHelper {
     val db = Dataset.Builder(rev)
     db.setValue(tempFillId, AutofillValue.forText(""))
     return db.build()
+  }
+
+  @Deprecated("临时解决方案，后面适配黑暗模式后，只要设置values-night 就会解决")
+  private fun setTextColor(rev:RemoteViews, context: Context){
+    if (KeepassAUtil.isNightMode()){
+      rev.setTextColor(R.id.text, ResUtil.getColor(R.color.white))
+    }
   }
 
   /**
@@ -120,7 +136,8 @@ object AutoFillHelper {
     if (!dataSetAuth) {
       dataSetBuilder = Dataset.Builder(
           buildRemoteView(
-              context.packageName, entry.title,
+              context,
+              entry.title,
               if (entry is PwEntryV4) entry.customIcon else null,
               entry.icon
           )
@@ -131,7 +148,8 @@ object AutoFillHelper {
     } else {
       dataSetBuilder = Dataset.Builder(
           buildRemoteView(
-              context.packageName, entry.title,
+              context,
+              entry.title,
               if (entry is PwEntryV4) entry.customIcon else null,
               entry.icon
           )
@@ -149,13 +167,14 @@ object AutoFillHelper {
    * 构建用户名view
    */
   private fun buildRemoteView(
-    pkgName: String,
+    context: Context,
     title: String,
     customIcon: PwIconCustom?,
     icon: PwIconStandard
   ): RemoteViews {
-    val rev = RemoteViews(pkgName, R.layout.item_auto_fill)
+    val rev = RemoteViews(context.packageName, R.layout.item_auto_fill)
     rev.setTextViewText(R.id.text, title)
+    setTextColor(rev, context)
     if (customIcon != null && customIcon.imageData.isNotEmpty()) {
       val byte = customIcon.imageData
       val option = BitmapFactory.Options()
@@ -178,7 +197,9 @@ object AutoFillHelper {
   ): FillResponse {
     val responseBuilder = FillResponse.Builder()
     val presentation = newRemoteViews(
-        context.packageName, context.getString(R.string.autofill_sign_in_prompt),
+        context,
+        context.packageName,
+        context.getString(R.string.autofill_sign_in_prompt),
         R.mipmap.ic_launcher
     )
     responseBuilder.setAuthentication(metadataList.autoFillIds.toTypedArray(), sender, presentation)

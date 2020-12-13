@@ -31,6 +31,7 @@ import com.lyy.keepassa.entity.EntryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.KdbUtil.decodeText
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.view.menu.EntryDetailFilePopMenu
@@ -50,6 +51,11 @@ import org.greenrobot.eventbus.EventBus
 class EntryDetailModule : BaseModule() {
   var curDLoadFile: ProtectedBinary? = null
   val createFileRequestCode = 0xA1
+  private lateinit var pwEntry: PwEntry
+
+  fun initEntry(pwEntry: PwEntry){
+    this.pwEntry = pwEntry
+  }
 
   /**
    * 展示附件的菜单
@@ -175,7 +181,7 @@ class EntryDetailModule : BaseModule() {
   /**
    * 保存打开记录
    */
-  fun saveRecord(pwEntry: PwEntry) {
+  fun saveRecord() {
     GlobalScope.launch(Dispatchers.IO) {
       val dao = BaseApp.appDatabase.entryRecordDao()
       var record = dao.getRecord(Types.UUIDtoBytes(pwEntry.uuid), BaseApp.dbRecord.localDbUri)

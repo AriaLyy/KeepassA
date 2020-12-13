@@ -213,7 +213,7 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
           this, listData, OnClickListener { v ->
         val position = v.tag as Int
         val item = listData[position]
-        module.delHistoryRecord(item.title)
+        module.delHistoryRecord(item.title.toString())
             .observe(this, Observer { b ->
               listData.remove(item)
               adapter.notifyDataSetChanged()

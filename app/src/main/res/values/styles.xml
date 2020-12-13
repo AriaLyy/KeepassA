@@ -16,6 +16,21 @@
     <!-- New MaterialComponents attributes. -->
   </style>
 
+  <style name="AppTheme.NoActionBar.Night" parent="ThemeOverlay.MaterialComponents.Dark">
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
+    <item name="android:windowIsTranslucent">true</item>
+    <!--    处理状态栏颜色 -->
+    <!--    <item name="android:windowTranslucentStatus">false</item>-->
+    <!--    <item name="android:windowTranslucentNavigation">false</item>-->
+    <item name="android:statusBarColor">@color/colorPrimary</item>
+
+    <!-- New MaterialComponents attributes. -->
+  </style>
+
   <style name="DialogActivityStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
     <!--设置dialog的背景-->
     <item name="android:windowBackground">@android:color/transparent</item>
@@ -186,6 +201,8 @@
   <style name="KpaExpandAbleTextViewStyle">
     <item name="android:textColor">@color/text_black_grey_color</item>
     <item name="android:textSize">@dimen/text_size_normal</item>
+    <item name="android:padding">6dp</item>
+    <item name="android:background">@drawable/bg_gray_radius_4</item>
     <item name="eav_suffix_expand">@string/expand</item>
     <item name="eav_suffix_shirk">@string/shrink</item>
     <item name="eav_suffix_color">@color/colorPrimary</item>

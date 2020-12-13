@@ -30,6 +30,7 @@ import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
+import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import kotlinx.coroutines.Dispatchers
@@ -50,6 +51,7 @@ class CreateEntryModule : BaseModule() {
   var icon = PwIconStandard(0)
   var loseDate: Date? = null // 失效时间
   var userNameCache = arrayListOf<String>()
+  var noteStr: CharSequence = ""
 
   /**
    * Traverse database and get all userName
@@ -60,11 +62,11 @@ class CreateEntryModule : BaseModule() {
       return@liveData
     }
     val temp = hashSetOf<String>()
-    for (entry in BaseApp.KDB.pm.entries) {
-      val userName = entry.value.getUsername(true, BaseApp.KDB.pm)
-      if (userName.isNullOrEmpty()){
+    for (map in BaseApp.KDB.pm.entries) {
+      if (map.value.username.isNullOrEmpty()) {
         continue
       }
+      val userName = KdbUtil.getUserName(map.value)
       temp.add(userName)
     }
     userNameCache.addAll(temp)
@@ -79,7 +81,6 @@ class CreateEntryModule : BaseModule() {
     title: String,
     userName: String?,
     pass: String?,
-    notes: String,
     url: String,
     tags: String
   ) {
@@ -110,7 +111,11 @@ class CreateEntryModule : BaseModule() {
     entry.setUsername(userName, BaseApp.KDB.pm)
     entry.setPassword(pass, BaseApp.KDB.pm)
     entry.setUrl(url, BaseApp.KDB.pm)
-    entry.setNotes(notes, BaseApp.KDB.pm)
+
+    if (noteStr.isNotEmpty()){
+      KLog.d(TAG, "notes = $noteStr")
+      entry.setNotes(noteStr.toString(), BaseApp.KDB.pm)
+    }
     entry.setExpires(loseDate != null)
     if (loseDate != null) {
       entry.expiryTime = loseDate

@@ -1,7 +1,13 @@
 #### 1.7
 - 自动填充模块，当包名不匹配时，将会从url匹配关键字
+- 首页，增加参考条目提示
 - 详情模块，note增加Markdown编辑功能
+
+![editor](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/editor.png)
 - 编辑模块，用户名增加历史记录功能
+
+![user_drop_down_list](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/user_drop_down_list.png)
+- 修复夜间模式下，自动填充文字无法显示的问题
 
 #### 1.6 (2020/11/28)
 - 自动填充模块，修复关联条目后，返回到应用，已关联的数据无法显示的问题
@@ -11,7 +17,7 @@
 - 设置模块，增加解锁数据库后，主页优先显示所有条目功能，[点击设置](route://keepassA.com/kpa?activity=SettingActivity&type=db)
 - 条目详情模块，note 自动增加展开和收缩功能
 
-![ime](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/note_expand.png)
+![note_expand](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/note_expand.png)
 - 优化主页闪烁问题
 - 感谢[@DominicDesbiens](https://github.com/DominicDesbiens)提供了加拿大法语翻译
 

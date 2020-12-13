@@ -44,6 +44,8 @@ import com.lyy.keepassa.event.TimeEvent
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
+import com.lyy.keepassa.util.KLog
+import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KeepassAUtil.getFileInfo
 import com.lyy.keepassa.util.KeepassAUtil.takePermission
@@ -195,7 +197,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   }
 
   /**
-   * 设置各种
+   * 设置各种事件
    */
   private fun setWidgetListener() {
     binding.loseTime.setOnCheckedChangeListener { _, isChecked ->
@@ -213,7 +215,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       MarkDownEditorActivity.turnMarkDownEditor(
           this,
           editorRequestCode,
-          binding.notice.originalText
+          module.noteStr
       )
     }
     // the user name field, can show history
@@ -249,8 +251,9 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       IconUtil.getEntryIconDrawable(this, pwEntry, zoomIcon = true)
 
     if (pwEntry.notes.isNotEmpty()) {
+      module.noteStr = pwEntry.notes.trim()
       binding.noticeLayout.visibility = View.VISIBLE
-      binding.notice.originalText = pwEntry.notes
+      binding.notice.originalText = module.noteStr
     }
 
     val v4Entry = pwEntry
@@ -429,7 +432,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
         title = binding.title.text.toString(),
         userName = binding.user.text.toString(),
         pass = binding.password.text.toString(),
-        notes = binding.notice.originalText.toString(),
         url = binding.url.text.toString(),
         tags = binding.tag.text.toString()
     )
@@ -476,7 +478,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
         title = binding.title.text.toString(),
         userName = binding.user.text.toString(),
         pass = binding.password.text.toString(),
-        notes = binding.notice.originalText.toString(),
         url = binding.url.text.toString(),
         tags = binding.tag.text.toString()
     )
@@ -537,8 +538,10 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       return
     }
     event.content?.let {
+      KLog.d(TAG, "note = $it")
+      module.noteStr = it.trim()
       showOtherItem(binding.noticeLayout, false)
-      binding.notice.originalText = it
+      binding.notice.originalText = module.noteStr
     }
   }
 

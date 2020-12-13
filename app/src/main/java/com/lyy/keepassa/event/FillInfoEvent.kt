@@ -13,4 +13,4 @@ package com.lyy.keepassa.event
  * @Description
  * @Date 2020/10/27
  **/
-data class FillInfoEvent(val infoStr: String)
+data class FillInfoEvent(val infoStr: CharSequence)

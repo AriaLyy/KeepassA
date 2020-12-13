@@ -9,6 +9,7 @@
 
 package com.lyy.keepassa.view.detail
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
@@ -38,7 +39,9 @@ import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
+import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KeepassAUtil.isRef
 import com.lyy.keepassa.util.KeepassAUtil.takePermission
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
@@ -111,6 +114,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     }
 
     pwEntry = BaseApp.KDB.pm.entries[uuid]!!
+    module.initEntry(pwEntry)
     if (BaseApp.isV4 && pwEntry.parent == BaseApp.KDB.pm.recycleBin) {
       isInRecycleBin = true
     }
@@ -176,7 +180,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   override fun onClick(v: View?) {
     when (v!!.id) {
       R.id.user_name -> {
-        EntryDetailStrPopMenu(this, v, ProtectedString(false, pwEntry.username)).show()
+        EntryDetailStrPopMenu(this, v, ProtectedString(false, KdbUtil.getUserName(pwEntry))).show()
       }
       R.id.url -> {
         EntryDetailStrPopMenu(this, v, ProtectedString(false, pwEntry.url)).show()
@@ -195,7 +199,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
         pop.show()
       }
       R.id.pass -> {
-        val pop = EntryDetailStrPopMenu(this, v, ProtectedString(true, pwEntry.password))
+        val pop = EntryDetailStrPopMenu(this, v, ProtectedString(true, KdbUtil.getPassword(pwEntry)))
         pop.setOnShowPassCallback(object : OnShowPassCallback {
           override fun showPass(showPass: Boolean) {
             if (showPass) {
@@ -248,7 +252,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     super.onDestroy()
     if (!isInRecycleBin) {
       // 保存打开历史
-      module.saveRecord(pwEntry)
+      module.saveRecord()
     }
     EventBusHelper.unReg(this)
   }
@@ -292,11 +296,12 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   /**
    * 设置基础属性
    */
+  @SuppressLint("SetTextI18n")
   private fun handleBaseAttr() {
     binding.title.text = pwEntry.title
     binding.userName.text = pwEntry.username
-    binding.userName.setOnClickListener(this)
 
+    binding.userName.setOnClickListener(this)
     if (pwEntry.url.isNotEmpty()) {
       binding.url.text = pwEntry.url
       binding.url.setOnClickListener(this)
@@ -316,7 +321,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       binding.noticeLayout.visibility = View.GONE
     } else {
       binding.notice.maxLines = 6
-      binding.notice.originalText = pwEntry.notes
+      binding.notice.originalText = pwEntry.notes.trim()
 //      binding.notice.setOnClickListener(this)
       binding.noticeLayout.setOnClickListener(this)
       binding.noticeLayout.setOnTouchListener { _, event ->

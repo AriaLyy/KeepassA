@@ -239,7 +239,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     MainScope().launch (Dispatchers.IO){
       delay(600)
       withContext(Dispatchers.Main){
-        fillData(event.infoStr)
+        fillData(event.infoStr.toString())
       }
     }
   }
