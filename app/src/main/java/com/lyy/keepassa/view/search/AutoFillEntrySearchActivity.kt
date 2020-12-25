@@ -30,11 +30,10 @@ import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
-import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityAutoFillEntrySearchBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
-import com.lyy.keepassa.service.autofill.model.W3cHints
+import com.lyy.keepassa.service.autofill.W3cHints
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
@@ -42,7 +41,6 @@ import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.MsgDialog
-import com.lyy.keepassa.view.launcher.LauncherActivity
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 

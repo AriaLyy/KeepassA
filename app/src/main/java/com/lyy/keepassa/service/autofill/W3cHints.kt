@@ -7,7 +7,7 @@
  */
 
 
-package com.lyy.keepassa.service.autofill.model
+package com.lyy.keepassa.service.autofill
 
 import android.annotation.TargetApi
 import android.os.Build

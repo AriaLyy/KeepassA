@@ -41,6 +41,7 @@ dependencies {
   implementation rootProject.ext.coroutines
   // 富文本
   api 'com.zzhoujay.richtext:richtext:3.0.8'
+  api 'cn.yc:ExpandLib:1.0.1'
 }
 
 apply from: 'bintray-release.gradle'

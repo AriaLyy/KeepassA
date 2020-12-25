@@ -5,6 +5,9 @@
     android:settingsActivity="com.lyy.keepassa.view.setting.SettingActivity">
   <!--  settingsActivity 为在系统设置跳转到应用内的页面-->
   <compatibility-package
+      android:name="com.android.browser"
+      android:maxLongVersionCode="10000000000" />
+  <compatibility-package
       android:name="com.android.chrome"
       android:maxLongVersionCode="10000000000" />
   <compatibility-package

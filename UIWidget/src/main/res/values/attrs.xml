@@ -1,10 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+  <declare-styleable name="MKExpandAbleTextView">
+    <attr name="mktMaxLines" format="integer" />
+    <attr name="mktExpandText" format="string|reference" />
+    <attr name="mktShrinkText" format="string|reference" />
+    <attr name="mktBtnColor" format="color|reference" />
+  </declare-styleable>
+
+  <declare-styleable name="DrawableTextView">
+    <attr name="leftDrawable" format="reference|color" />
+    <attr name="rightDrawable" format="reference|color" />
+    <attr name="topDrawable" format="reference|color" />
+    <attr name="bottomDrawable" format="reference|color" />
+
+    <attr name="leftDrawableWidth" format="reference|dimension" />
+    <attr name="rightDrawableWidth" format="reference|dimension" />
+    <attr name="topDrawableWidth" format="reference|dimension" />
+    <attr name="bottomDrawableWidth" format="reference|dimension" />
+
+    <attr name="leftDrawableHeight" format="reference|dimension" />
+    <attr name="rightDrawableHeight" format="reference|dimension" />
+    <attr name="topDrawableHeight" format="reference|dimension" />
+    <attr name="bottomDrawableHeight" format="reference|dimension" />
+  </declare-styleable>
+
   <declare-styleable name="ExpandAbleTextView">
     <attr name="eav_suffix_expand" format="string" />
     <attr name="eav_suffix_shirk" format="string" />
     <attr name="eav_suffix_color" format="color" />
+  </declare-styleable>
+
+  <declare-styleable name="ExpandableTextView1">
+    <attr name="maxCollapsedLines" format="integer"/>
+    <attr name="animDuration" format="integer"/>
+    <attr name="animAlphaStart" format="float"/>
+    <attr name="expandIndicator" format="reference"/>
+    <attr name="collapseIndicator" format="reference"/>
+    <attr name="expandToggleType" format="enum">
+      <enum name="ImageButton" value="0"/>
+      <enum name="TextView" value="1"/>
+    </attr>
+    <attr name="expandToggleOnTextClick" format="boolean"/>
   </declare-styleable>
 
   <declare-styleable name="HorizontalProgressBarWithNumber">

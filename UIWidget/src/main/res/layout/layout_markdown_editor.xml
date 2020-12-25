@@ -27,7 +27,8 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginStart="16dp"
-        android:src="@drawable/bg_markdown_pre" />
+        android:src="@drawable/bg_markdown_pre"
+        android:visibility="gone" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivClear"
@@ -93,7 +94,8 @@
       android:layout_alignParentBottom="true"
       android:orientation="horizontal"
       android:paddingTop="8dp"
-      android:paddingBottom="8dp">
+      android:paddingBottom="8dp"
+      android:visibility="gone">
 
     <TextView
         android:id="@+id/tvH"

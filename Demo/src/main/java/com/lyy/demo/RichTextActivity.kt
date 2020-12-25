@@ -308,13 +308,27 @@ class RichTextActivity : AbsActivity<ActivityRichtextBinding>() {
         "\$\n" +
         "\n" +
         "hhhhhh"
-    binding.tvContent.maxLines = 2
-    binding.tvContent.setCloseText(str)
-//    RichText.fromMarkdown(str)
-//        .urlClick { url ->
-//          Log.d(TAG, "url: $url")
-//          true
-//        }
-//        .into(binding.tvContent)
+//    binding.tvContent.text = str1
+//    binding.tvContent.maxLines = 2
+//    binding.tvContent.setCloseText(str)
+
+    RichText.fromMarkdown(str1)
+        .urlClick { url ->
+          Log.d(TAG, "url: $url")
+          true
+        }
+        .done {
+          binding.tvContent.post {
+            binding.el.initExpand(false, binding.tvContent.height)
+          }
+        }
+        .into(binding.tvContent)
+    binding.btn.setOnClickListener {
+      if (binding.el.isExpand){
+        binding.el.collapse()
+      }else{
+        binding.el.expand()
+      }
+    }
   }
 }

@@ -284,5 +284,6 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="cur_app_not_autofill">Not auto-fill</string>
   <string name="other">Other</string>
   <string name="ref_entry">Reference entry</string>
+  <string name="multi_choice">Multiple choice</string>
 
 </resources>

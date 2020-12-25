@@ -291,5 +291,6 @@
   <string name="cur_app_not_autofill">不自动填充</string>
   <string name="other">其它</string>
   <string name="ref_entry">参考条目</string>
+  <string name="multi_choice">多选</string>
 </resources>
 

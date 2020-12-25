@@ -18,7 +18,6 @@ import android.view.View
 import androidx.autofill.HintConstants
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadata
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
-import com.lyy.keepassa.service.autofill.model.W3cHints
 import com.lyy.keepassa.util.KLog
 
 /**

@@ -25,6 +25,7 @@ object ResUtil {
    * 颜色兼容工具
    */
   fun getColor(@ColorRes color: Int): Int {
+
     return if (VERSION.SDK_INT >= VERSION_CODES.M) {
       FrameApp.app.resources.getColor(color, FrameApp.app.theme)
     } else {

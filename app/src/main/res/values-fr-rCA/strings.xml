@@ -282,5 +282,5 @@ Si vous créez une nouvelle base de données Keepass, les opérations suivantes 
   <string name="set_key_title_opr_env_check_turn_on">Vérification de l\'environnement activé</string>
   <string name="cur_app_not_autofill">Pas de remplissage automatique</string>
   <string name="other">Autre</string>
-
+  <string name="multi_choice">Choix multiple</string>
 </resources>
