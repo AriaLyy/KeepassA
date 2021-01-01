@@ -115,9 +115,9 @@ class EntryPopMenu(
         R.id.undo, R.id.move -> {
           ChooseGroupActivity.moveEntry(context, entry.uuid)
         }
-        R.id.multi_choice -> {
-          EventBus.getDefault().post(MultiChoiceEvent())
-        }
+//        R.id.multi_choice -> {
+//          EventBus.getDefault().post(MultiChoiceEvent())
+//        }
       }
       dismiss()
       true

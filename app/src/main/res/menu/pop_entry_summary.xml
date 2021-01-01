@@ -40,10 +40,10 @@
       android:title="@string/move"
       app:showAsAction="ifRoom" />
 
-  <item
-      android:id="@+id/multi_choice"
-      android:icon="@drawable/ic_baseline_open_with"
-      android:title="@string/multi_choice"
-      app:showAsAction="ifRoom" />
+<!--  <item-->
+<!--      android:id="@+id/multi_choice"-->
+<!--      android:icon="@drawable/ic_baseline_open_with"-->
+<!--      android:title="@string/multi_choice"-->
+<!--      app:showAsAction="ifRoom" />-->
 
 </menu>
