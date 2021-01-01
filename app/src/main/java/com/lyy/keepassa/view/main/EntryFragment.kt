@@ -34,6 +34,7 @@ import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
 import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.event.MoveEvent
+import com.lyy.keepassa.event.MultiChoiceEvent
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
@@ -290,6 +291,15 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
       getData()
     }
     adapter.notifyDataSetChanged()
+  }
+
+  /**
+   * 多选
+   */
+  @Subscribe(threadMode = MAIN)
+  fun onMultiChoice(mcEvent:MultiChoiceEvent){
+    adapter.showCheckBox(true)
+
   }
 
   override fun onDestroy() {

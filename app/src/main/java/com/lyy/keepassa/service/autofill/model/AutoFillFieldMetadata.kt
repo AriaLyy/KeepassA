@@ -22,18 +22,18 @@ import com.lyy.keepassa.service.autofill.AutoFillHelper
  * contains a `saveType` flag that is calculated based on the [ViewNode]'s autofill hints.
  */
 @TargetApi(Build.VERSION_CODES.O)
-class AutoFillFieldMetadata(view: ViewNode) {
+class AutoFillFieldMetadata(viewNode: ViewNode) {
 
   var saveType = 0
     private set
 
   val autoFillHints = HashSet<String>()
-  val autoFillId: AutofillId? = view.autofillId
-  val autoFillType: Int = view.autofillType
-  val autoFillOptions: Array<CharSequence>? = view.autofillOptions
-  val isFocused: Boolean = view.isFocused
+  val autoFillId: AutofillId? = viewNode.autofillId
+  val autoFillType: Int = viewNode.autofillType
+  val autoFillOptions: Array<CharSequence>? = viewNode.autofillOptions
+  val isFocused: Boolean = viewNode.isFocused
   var isPassword: Boolean = false
-  val autoFillField = FilledAutoFillField(view)
+  val autoFillField = FilledAutoFillField(viewNode)
 
   /**
    * 处理自定义的情况，也就是控件没有设置android:autofillHints的情况
@@ -51,7 +51,7 @@ class AutoFillFieldMetadata(view: ViewNode) {
    * 处理控件中已经设置了android:autofillHints的情况
    */
   init {
-    view.autofillHints?.filter(AutoFillHelper::isValidHint)
+    viewNode.autofillHints?.filter(AutoFillHelper::isValidHint)
         ?.forEach {
           autoFillHints.add(it)
         }

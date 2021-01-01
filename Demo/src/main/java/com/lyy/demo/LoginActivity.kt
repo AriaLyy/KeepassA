@@ -12,6 +12,7 @@ package com.lyy.demo
 import android.R.layout
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
 import com.arialyy.frame.core.AbsActivity
 import com.lyy.demo.databinding.ActivityLoginTestBinding

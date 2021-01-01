@@ -10,8 +10,7 @@
     android:paddingLeft="16dp"
     android:paddingTop="8dp"
     android:paddingRight="16dp"
-    android:paddingBottom="8dp"
-    >
+    android:paddingBottom="8dp">
 
   <androidx.appcompat.widget.AppCompatImageView
       android:id="@+id/icon"
@@ -19,8 +18,7 @@
       android:layout_height="36dp"
       android:layout_centerVertical="true"
       android:transitionName="@string/transition_entry_icon"
-      app:srcCompat="@drawable/ic_android"
-      />
+      app:srcCompat="@drawable/ic_android" />
 
   <TextView
       android:id="@+id/title"
@@ -30,8 +28,7 @@
       android:layout_toRightOf="@+id/icon"
       android:text="标题"
       android:textColor="@color/black"
-      android:textSize="@dimen/text_size_normal"
-      />
+      android:textSize="@dimen/text_size_normal" />
 
   <TextView
       android:id="@+id/des"
@@ -42,8 +39,15 @@
       android:layout_marginTop="4dp"
       android:text="描述描述描述描述描述描述描述"
       android:textColor="@color/text_gray_color"
-      android:textSize="@dimen/text_size_small"
-      />
+      android:textSize="@dimen/text_size_small" />
+
+  <androidx.appcompat.widget.AppCompatCheckBox
+      android:id="@+id/cb"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="true"
+      android:layout_centerVertical="true"
+      android:visibility="gone" />
 
 
 </RelativeLayout>

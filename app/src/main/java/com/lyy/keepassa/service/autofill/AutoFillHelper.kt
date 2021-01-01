@@ -12,10 +12,10 @@ package com.lyy.keepassa.service.autofill
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.IntentSender
-import android.content.res.Configuration
 import android.graphics.Bitmap.Config
 import android.graphics.BitmapFactory
 import android.os.Build
+import android.os.Bundle
 import android.service.autofill.Dataset
 import android.service.autofill.FillResponse
 import android.service.autofill.SaveInfo
@@ -29,7 +29,6 @@ import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
-import com.lahm.library.CommandUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.IconUtil
@@ -156,7 +155,7 @@ object AutoFillHelper {
       )
     }
     // 填充数据
-    val setValueAtLeastOnce = applyToFields(entry, metadataList, dataSetBuilder)
+    val setValueAtLeastOnce = applyDataInfoToFields(entry, metadataList, dataSetBuilder)
     if (setValueAtLeastOnce) {
       return dataSetBuilder.build()
     }
@@ -188,7 +187,7 @@ object AutoFillHelper {
   }
 
   /**
-   * 返回查找不到条目的响应，如果不返回SaveInfo，系统是不会触发保存的
+   * 如果不返回SaveInfo，系统是不会触发保存的
    */
   fun newSaveResponse(
     context: Context,
@@ -205,8 +204,8 @@ object AutoFillHelper {
     responseBuilder.setAuthentication(metadataList.autoFillIds.toTypedArray(), sender, presentation)
     val dataSetBuild = Dataset.Builder()
     val notUsed = RemoteViews(context.packageName, android.R.layout.simple_list_item_1)
-    val b = applyToFields(metadataList, dataSetBuild, notUsed)
-    KLog.d(TAG, "applyToFields -> $b")
+    val b = applySaveInfoToFields(metadataList, dataSetBuild, notUsed)
+    KLog.d(TAG, "newSaveResponse applyToFields -> $b")
     if (b) {
       responseBuilder.addDataset(dataSetBuild.build())
     }
@@ -303,7 +302,7 @@ object AutoFillHelper {
   /**
    * 将数据填充到FillResponse中
    */
-  private fun applyToFields(
+  private fun applyDataInfoToFields(
     pwEntry: PwEntry,
     autoFillFieldMetadataList: AutoFillFieldMetadataCollection,
     dataSetBuilder: Dataset.Builder
@@ -314,7 +313,7 @@ object AutoFillHelper {
       loop@ for (fillField in fillFields) {
         val fillId = fillField.autoFillId ?: break
         val fillType = fillField.autoFillType
-        KLog.w(TAG, "autoFill type -> $fillType, autoFillId -> $fillId")
+        KLog.w(TAG, "applyDataInfoToFields, autoFill type -> $fillType, autoFillId -> $fillId")
         when (fillType) {
           View.AUTOFILL_TYPE_LIST -> {
             if (fillField.autoFillField.textValue.isNullOrEmpty()) {
@@ -366,7 +365,7 @@ object AutoFillHelper {
   /**
    * 将数据填充到FillResponse中
    */
-  private fun applyToFields(
+  private fun applySaveInfoToFields(
     autoFillFieldMetadataList: AutoFillFieldMetadataCollection,
     dataSetBuilder: Dataset.Builder,
     rv: RemoteViews
@@ -377,7 +376,7 @@ object AutoFillHelper {
       loop@ for (fillField in fillFields) {
         val fillId = fillField.autoFillId ?: break
         val fillType = fillField.autoFillType
-        KLog.w(TAG, "autoFill type -> $fillType, autoFillId -> $fillId")
+        KLog.w(TAG, "applySaveInfoToFields, autoFill type -> $fillType, autoFillId -> $fillId")
         when (fillType) {
           View.AUTOFILL_TYPE_LIST -> {
             if (fillField.autoFillField.textValue.isNullOrEmpty()) {
@@ -403,6 +402,7 @@ object AutoFillHelper {
 
           View.AUTOFILL_TYPE_TEXT -> {
             if (fillField.autoFillField.textValue.isNullOrEmpty()) {
+              KLog.w(TAG, "applySaveInfoToFields, textValue is null")
               continue@loop
             }
             dataSetBuilder.setValue(

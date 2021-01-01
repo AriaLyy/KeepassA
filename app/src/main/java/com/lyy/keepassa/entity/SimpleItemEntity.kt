@@ -25,4 +25,9 @@ class SimpleItemEntity {
    * 是否受保护
    */
   var isProtected = false
+
+  /**
+   * 是否选中
+   */
+  var isCheck = false
 }

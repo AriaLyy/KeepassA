@@ -25,6 +25,7 @@ import com.keepassdroid.database.PwEntryV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.event.DelEvent
+import com.lyy.keepassa.event.MultiChoiceEvent
 import com.lyy.keepassa.util.ClipboardUtil
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
@@ -113,6 +114,9 @@ class EntryPopMenu(
         }
         R.id.undo, R.id.move -> {
           ChooseGroupActivity.moveEntry(context, entry.uuid)
+        }
+        R.id.multi_choice -> {
+          EventBus.getDefault().post(MultiChoiceEvent())
         }
       }
       dismiss()

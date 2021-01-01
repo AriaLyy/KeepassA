@@ -39,6 +39,8 @@ data class AutoFillFieldMetadataCollection @JvmOverloads constructor(
     private set
 
   fun clear() {
+    tempUserFillId = null
+    tempPassFillId = null
     autoFillIds.clear()
     allAutoFillHints.clear()
     focusedAutoFillHints.clear()

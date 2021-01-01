@@ -37,7 +37,7 @@ import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
  * 官方demo https://github.com/android/input-samples
  * 官方文档：https://developer.android.com/reference/android/service/autofill/AutofillService
  */
-@TargetApi(Build.VERSION_CODES.O)
+@TargetApi(VERSION_CODES.O)
 class AutoFillService : AutofillService() {
   private val TAG = javaClass.simpleName
 
@@ -60,8 +60,7 @@ class AutoFillService : AutofillService() {
       KLog.e(TAG, "无效的包名：$apkPackageName")
       return
     }
-    val data = request.clientState
-    KLog.d(TAG, "onFillRequest(): data=" + KLog.b(data))
+    KLog.d(TAG, "onFillRequest(): flags = ${request.flags}, requestId = ${request.id}, clientState = ${KLog.b(request.clientState)}")
     cancellationSignal.setOnCancelListener {
       KLog.w(TAG, "Cancel autofill not implemented in this sample.")
     }
@@ -102,7 +101,7 @@ class AutoFillService : AutofillService() {
       KDBAutoFillRepository.getAutoFillDataByDomain(parser.domainUrl)
     }
 
-    KLog.d(TAG, "AutoFill Data size = ${data?.size()}, entrySize = ${datas?.size}")
+    KLog.d(TAG, "entrySize = ${datas?.size}")
     // 没有匹配的数据，进入搜索界面
     if (datas == null) {
       openSearchActivity(callback, autoFillFields, apkPackageName)

@@ -11,8 +11,10 @@ package com.lyy.keepassa.view
 
 import android.content.Context
 import android.view.View
+import android.widget.CheckBox
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.view.isVisible
 import com.arialyy.frame.util.adapter.AbsHolder
 import com.arialyy.frame.util.adapter.AbsRVAdapter
 import com.keepassdroid.database.PwEntry
@@ -29,6 +31,12 @@ class SimpleEntryAdapter(
   context: Context,
   data: List<SimpleItemEntity>
 ) : AbsRVAdapter<SimpleItemEntity, Holder>(context, data) {
+  private var showCheckBox = false
+
+  fun showCheckBox(showCheckBox:Boolean){
+    this.showCheckBox = showCheckBox
+    notifyDataSetChanged()
+  }
 
   override fun getViewHolder(
     convertView: View?,
@@ -44,10 +52,10 @@ class SimpleEntryAdapter(
   override fun bindData(
     holder: Holder?,
     position: Int,
-    item: SimpleItemEntity?
+    item: SimpleItemEntity
   ) {
 
-    if (item!!.obj is PwGroup) {
+    if (item.obj is PwGroup) {
       IconUtil.setGroupIcon(context, item.obj as PwGroup, holder!!.icon)
     } else if (item.obj is PwEntry) {
       IconUtil.setEntryIcon(context, item.obj as PwEntry, holder!!.icon)
@@ -55,15 +63,20 @@ class SimpleEntryAdapter(
 
     holder!!.title.text = item.title
     holder.des.text = item.subTitle
-  }
 
-  /**
-   * 处理group的图标
-   */
+    holder.cb.isVisible = showCheckBox
+    if (showCheckBox){
+      holder.cb.isChecked = item.isCheck
+      holder.cb.setOnCheckedChangeListener { _, isChecked ->
+        item.isCheck = isChecked
+      }
+    }
+  }
 
   class Holder(view: View) : AbsHolder(view) {
     val icon: AppCompatImageView = view.findViewById(R.id.icon)
     val title: TextView = view.findViewById(R.id.title)
     val des: TextView = view.findViewById(R.id.des)
+    val cb: CheckBox = view.findViewById(R.id.cb)
   }
 }

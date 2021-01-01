@@ -60,6 +60,12 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     }
   }
 
+  private fun clear(){
+    autoFillFields.clear()
+    useFields.clear()
+    passFields.clear()
+  }
+
   /**
    * 是否是用户手动 用户手机选择了自动填充，也就是editText获取了焦点才开始弹出
    */
@@ -76,8 +82,9 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
    */
   private fun parse(isManual: Boolean) {
     KLog.d(TAG, "Parsing structure for " + autofillStructure.activityComponent)
-    val nodes = autofillStructure.windowNodeCount
-    for (i in 0 until nodes) {
+    val nodeSize = autofillStructure.windowNodeCount
+    clear()
+    for (i in 0 until nodeSize) {
       parseLocked(autofillStructure.getWindowNodeAt(i).rootViewNode)
     }
     // 如果密码为空，默认不弹出选择item，这是为了防止遇到editText就弹出item的情况
@@ -141,13 +148,13 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
    * add pass field
    */
   private fun addPassField(viewNode: ViewNode) {
-    if (autoFillFields.tempPassFillId != null) {
+    if (viewNode.visibility != View.VISIBLE || !viewNode.isFocusable) {
       return
     }
     autoFillFields.tempPassFillId = viewNode.autofillId
     KLog.d(
         TAG,
-        "pass autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}," + " text = ${viewNode.text}, hint = ${viewNode.hint}"
+        "pass autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, text = ${viewNode.text}, hint = ${viewNode.hint}, visibility = ${viewNode.visibility}, isActivated = ${viewNode.isActivated}"
     )
     passFields.add(viewNode)
     autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_PASSWORD))
@@ -157,16 +164,21 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
    * add userName field
    */
   private fun addUserField(viewNode: ViewNode) {
-    if (autoFillFields.tempUserFillId != null) {
+    if (viewNode.visibility != View.VISIBLE || !viewNode.isFocusable) {
       return
     }
-    autoFillFields.tempUserFillId = viewNode.autofillId
-    KLog.d(
-        TAG,
-        "user autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, idEntry = ${viewNode.idEntry}, fillValue = ${viewNode.autofillValue}" + "fillId = ${viewNode.autofillId}, text = ${viewNode.text}, hint = ${viewNode.hint}"
-    )
-    useFields.add(viewNode)
-    autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_USERNAME))
+    if (autoFillFields.tempUserFillId == null || viewNode.isFocused){
+      autoFillFields.tempUserFillId = viewNode.autofillId
+      KLog.d(
+          TAG,
+          "user autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, idEntry = ${viewNode.idEntry}, fillValue = ${viewNode.autofillValue} text = ${viewNode.text}, hint = ${viewNode.hint}, visibility = ${viewNode.visibility}, isActivated = ${viewNode.isActivated}"
+      )
+//      if (useFields.isNotEmpty()){
+//        useFields.clear()
+//      }
+      useFields.add(viewNode)
+      autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_USERNAME))
+    }
   }
 
   /**

@@ -8,6 +8,7 @@
 
 ![user_drop_down_list](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/user_drop_down_list.png)
 - 修复夜间模式下，自动填充文字无法显示的问题
+- 自动填充模块，修复某些应用无法自动填充的问题
 
 #### 1.6 (2020/11/28)
 - 自动填充模块，修复关联条目后，返回到应用，已关联的数据无法显示的问题
