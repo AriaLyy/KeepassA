@@ -28,6 +28,7 @@ public class SearchParameters implements Cloneable {
 	public boolean searchInNotes = true;
 	public boolean ignoreCase = true;
 	public boolean ignoreExpired = false;
+	public boolean ignoreRecycleBin = false;
 	public boolean respectEntrySearchingDisabled = true;
 	public boolean excludeExpired = false;
 	

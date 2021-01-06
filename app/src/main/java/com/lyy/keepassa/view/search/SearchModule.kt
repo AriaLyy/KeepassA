@@ -94,6 +94,9 @@ class SearchModule : BaseModule() {
     listStorage: ArrayList<PwGroup>
   ) {
     for ((_, group) in BaseApp.KDB.pm.groups) {
+      if (group == BaseApp.KDB.pm.recycleBin){
+        continue
+      }
       if (group.name.contains(query, true)) {
         listStorage.add(group)
       }

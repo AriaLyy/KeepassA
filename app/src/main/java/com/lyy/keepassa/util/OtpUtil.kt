@@ -12,11 +12,14 @@ import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
 import com.keepassdroid.database.PwEntryV4
+import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.util.totp.Base32String
 import com.lyy.keepassa.util.totp.TokenCalculator
 import com.lyy.keepassa.util.totp.TokenCalculator.HashAlgorithm
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 object OtpUtil {
@@ -26,37 +29,78 @@ object OtpUtil {
    * @return first period， second 密码
    */
   @SuppressLint("DefaultLocale") fun getOtpPass(entry: PwEntryV4): Pair<Int, String?> {
-    var isSteam = false
-    if (entry.getUrl()
-            .contains("steampowered", ignoreCase = true)
-    ) {
-      isSteam = true
-    }
+
     val otp = entry.strings["otp"]
     // 适配keepassc的 密码
     if (otp != null) {
       return getOtpPass(otp.toString())
     }
 
+    val isSteam = isSteam(entry)
+    // 修复1.7之前的bug
+    if (isSteamEntry(entry) && isSteam) {
+      fix1_7bug(entry)
+    }
     val totpSetting = entry.strings["TOTP Settings"]
     var period = TokenCalculator.TOTP_DEFAULT_PERIOD
+    var digits = TokenCalculator.TOTP_DEFAULT_DIGITS
     if (totpSetting != null) {
       val s = totpSetting.toString()
           .split(";")
-      if (s.isNullOrEmpty()) {
+      if (!s.isNullOrEmpty() && s.size == 2) {
         period = s[0].toInt()
+        digits = if (isSteam) TokenCalculator.STEAM_DEFAULT_DIGITS else s[1].toInt()
       }
     }
 
-    return Pair(period, getTotpPass(entry.strings["TOTP Seed"].toString(), period, isSteam))
+    return Pair(period, getTotpPass(entry.strings["TOTP Seed"].toString(), period, digits, isSteam))
   }
 
   /**
-   * 由于 windows的 totp插件不会判断是否是Steam，因此需要通过url是否含有（steampowered）判断是否是Steam
+   * 1.7之前的版本创建totp时，会将 TOTP Settings 字段设置为 30;S，而S表示的是Steam
    */
+  private fun fix1_7bug(entry: PwEntryV4) {
+    GlobalScope.launch {
+      val totpSetting = entry.strings["TOTP Settings"]
+      if (totpSetting != null) {
+        val tempArray = totpSetting.toString()
+            .split(";")
+        if (!tempArray.isNullOrEmpty() && tempArray.size == 2) {
+          entry.strings["TOTP Settings"] = ProtectedString(false, "${tempArray[0]};6")
+          KdbUtil.saveDb(true)
+        }
+      }
+    }
+  }
+
+  private fun isSteam(entry: PwEntryV4): Boolean {
+    val otpSettings = entry.customData["TOTP Settings"]
+    if (!otpSettings.isNullOrEmpty()) {
+      val tempArray = otpSettings.split(";")
+      return tempArray[1] == "S"
+    }
+
+    return false
+  }
+
+  /**
+   * 判断是否是steam的条目，1.7之前的版本创建totp时，会将 TOTP Settings 字段设置为 30;S，而S表示的是Steam
+   */
+  private fun isSteamEntry(entry: PwEntryV4): Boolean {
+    return entry.getUrl()
+        .contains("steampowered", ignoreCase = true) ||
+        entry.customData.any {
+          it.value.equals(
+              "androidapp://com.valvesoftware.android.steam.community",
+              true
+          )
+        }
+  }
+
   private fun getTotpPass(
     seed: String?,
     period: Int,
+    digits: Int = TokenCalculator.TOTP_DEFAULT_DIGITS,
     isSteam: Boolean
   ): String? {
     // 适配keepass totp插件的密码
@@ -68,10 +112,7 @@ object OtpUtil {
             TokenCalculator.DEFAULT_ALGORITHM
         )
       } else {
-        TokenCalculator.TOTP_RFC6238(
-            b, period, TokenCalculator.TOTP_DEFAULT_DIGITS,
-            TokenCalculator.DEFAULT_ALGORITHM
-        )
+        TokenCalculator.TOTP_RFC6238(b, period, digits, TokenCalculator.DEFAULT_ALGORITHM)
       }
     } catch (e: Exception) {
       HitUtil.toaskShort(BaseApp.APP.getString(R.string.totp_key_error))

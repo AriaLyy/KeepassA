@@ -140,7 +140,7 @@ class CreateTotpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickList
             .post(
                 CreateAttrStrEvent(
                     "TOTP Settings",
-                    ProtectedString(false, "$time;S"),
+                    ProtectedString(false, "$time;${if (totpType == STEAM) "S" else "6"}"),
                     isEdit,
                     itemView
                 )
