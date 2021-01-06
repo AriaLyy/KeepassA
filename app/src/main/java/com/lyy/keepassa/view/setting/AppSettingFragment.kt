@@ -140,7 +140,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
   private fun subShortPass() {
     GlobalScope.launch {
       delay(1000)
-      KeepassAUtil.subShortPass()
+       KeepassAUtil.instance.subShortPass()
     }
   }
 

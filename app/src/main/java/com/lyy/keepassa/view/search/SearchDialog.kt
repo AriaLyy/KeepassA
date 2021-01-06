@@ -149,7 +149,7 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
           }
           // 处理搜索结果
           module.saveSearchRecord(item.title.toString())
-          KeepassAUtil.turnEntryDetail(context as FragmentActivity, item.obj as PwDataInf)
+           KeepassAUtil.instance.turnEntryDetail(context as FragmentActivity, item.obj as PwDataInf)
           dismiss()
         }
     getRecordData()

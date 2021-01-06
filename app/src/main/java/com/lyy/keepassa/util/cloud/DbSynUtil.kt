@@ -82,7 +82,7 @@ object DbSynUtil : SynStateCode {
         BaseApp.APP, KEY_SERVICE_MODIFY_TIME, serviceModifyTime.time
     )
     Log.d(
-        TAG, "更新云端文件修改时间：${KeepassAUtil.formatTime(serviceModifyTime)}"
+        TAG, "更新云端文件修改时间：${ KeepassAUtil.instance.formatTime(serviceModifyTime)}"
     )
   }
 
@@ -192,7 +192,7 @@ object DbSynUtil : SynStateCode {
     if (st == serviceModifyTime) {
       Log.i(
           TAG,
-          "云端文件修改时间:${KeepassAUtil.formatTime(st)} 和本地缓存的云端文件时间:${KeepassAUtil.formatTime(
+          "云端文件修改时间:${ KeepassAUtil.instance.formatTime(st)} 和本地缓存的云端文件时间:${ KeepassAUtil.instance.formatTime(
               serviceModifyTime
           )} 一致，开始覆盖云端文件"
       )
@@ -201,7 +201,7 @@ object DbSynUtil : SynStateCode {
 
     Log.i(
         TAG,
-        "云端文件修改时间:${KeepassAUtil.formatTime(st)} 和本地缓存的云端文件时间:${KeepassAUtil.formatTime(
+        "云端文件修改时间:${ KeepassAUtil.instance.formatTime(st)} 和本地缓存的云端文件时间:${ KeepassAUtil.instance.formatTime(
             serviceModifyTime
         )} 不一致，开始下载云端文件"
     )

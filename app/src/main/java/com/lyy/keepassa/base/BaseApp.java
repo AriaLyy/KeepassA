@@ -24,20 +24,16 @@ import com.lyy.keepassa.baseapi.INotFreeLibService;
 import com.lyy.keepassa.dao.AppDatabase;
 import com.lyy.keepassa.entity.DbRecord;
 import com.lyy.keepassa.util.AutoLockDbUtil;
-import com.lyy.keepassa.util.HitUtil;
 import com.lyy.keepassa.util.KeepassAUtil;
 import com.lyy.keepassa.util.LanguageUtil;
 import com.lyy.keepassa.util.QuickUnLockUtil;
 import com.lyy.keepassa.view.DbPathType;
-import com.tencent.bugly.crashreport.BuglyLog;
 import com.tencent.wcdb.database.SQLiteCipherSpec;
 import com.tencent.wcdb.room.db.WCDBOpenHelperFactory;
 import com.zzhoujay.richtext.RichText;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.ServiceLoader;
-import me.jessyan.autosize.AutoSizeConfig;
-import me.jessyan.autosize.unit.Subunits;
 
 public class BaseApp extends MultiDexApplication {
 
@@ -73,7 +69,7 @@ public class BaseApp extends MultiDexApplication {
     APP = this;
     handler = new Handler(Looper.getMainLooper());
     // 初始化一下时间
-    KeepassAUtil.INSTANCE.isFastClick();
+    KeepassAUtil.Companion.getInstance().isFastClick();
     // 进入应用时移除锁定数据库的定时器
     AutoLockDbUtil.Companion.get().cancelTimer();
     currentLang = setLanguage();

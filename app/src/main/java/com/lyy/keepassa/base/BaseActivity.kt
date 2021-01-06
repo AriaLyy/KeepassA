@@ -36,7 +36,6 @@ import androidx.databinding.ViewDataBinding
 import androidx.preference.PreferenceManager
 import com.arialyy.frame.core.AbsActivity
 import com.gyf.immersionbar.ImmersionBar
-import com.lyy.keepassa.BuildConfig
 import com.lyy.keepassa.R
 import com.lyy.keepassa.util.AutoLockDbUtil
 import com.lyy.keepassa.util.HitUtil
@@ -46,8 +45,6 @@ import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.view.create.CreateDbActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.launcher.OpenDbHistoryActivity
-import com.lyy.keepassa.view.main.QuickUnlockActivity
-import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 
 /**
  * Created by Lyy on 2016/9/27.
@@ -157,14 +154,14 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     super.onResume()
     // 启动定时器
 
-    if (KeepassAUtil.isStartQuickLockActivity(this)) {
+    if ( KeepassAUtil.instance.isStartQuickLockActivity(this)) {
       if (BaseApp.isLocked) {
         AutoLockDbUtil.get()
             .startLockWorkerNow()
         return
       }
 
-      if (KeepassAUtil.isRunningForeground(this)) {
+      if ( KeepassAUtil.instance.isRunningForeground(this)) {
         AutoLockDbUtil.get()
             .resetTimer()
         return

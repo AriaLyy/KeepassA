@@ -152,7 +152,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
         }
 
         // 将数据回调给service
-        val data = KeepassAUtil.getFillResponse(this, intent, apkPkgName!!)
+        val data =  KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName!!)
         setResult(Activity.RESULT_OK, data)
       }
 
@@ -272,13 +272,13 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
         )
 
         if (isSaveRelevance) {
-          setResult(Activity.RESULT_OK, KeepassAUtil.getFillResponse(this, intent, apkPkgName!!))
+          setResult(Activity.RESULT_OK,  KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName!!))
         } else {
           val id = data.getSerializableExtra(AutoFillEntrySearchActivity.EXTRA_ENTRY_ID)
           setResult(
               Activity.RESULT_OK,
               BaseApp.KDB.pm.entries[id]?.let {
-                KeepassAUtil.getFillResponse(
+                 KeepassAUtil.instance.getFillResponse(
                     this,
                     intent,
                     it,
@@ -289,7 +289,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
         }
 
       } else {
-        setResult(Activity.RESULT_OK, KeepassAUtil.getFillResponse(this, intent, apkPkgName!!))
+        setResult(Activity.RESULT_OK,  KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName!!))
       }
       super.finish()
     }

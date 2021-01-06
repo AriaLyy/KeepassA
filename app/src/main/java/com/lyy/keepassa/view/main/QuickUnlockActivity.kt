@@ -117,7 +117,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
     binding.pass.setPassLen(passLen)
 
     binding.changeDb.setOnClickListener {
-      KeepassAUtil.turnLauncher(this, LauncherActivity.OPEN_TYPE_OPEN_DB)
+      KeepassAUtil.instance.turnLauncher(this, LauncherActivity.OPEN_TYPE_OPEN_DB)
     }
 
     startBgAnim()
@@ -244,7 +244,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         )
         return
       }
-      val data = KeepassAUtil.getFillResponse(this, intent, apkPkgName)
+      val data =  KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName)
       setResult(Activity.RESULT_OK, data)
       finish()
     } else {
@@ -269,13 +269,13 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         )
 
         if (isSaveRelevance) {
-          setResult(Activity.RESULT_OK, KeepassAUtil.getFillResponse(this, intent, apkPkgName))
+          setResult(Activity.RESULT_OK,  KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName))
         } else {
           val id = data.getSerializableExtra(AutoFillEntrySearchActivity.EXTRA_ENTRY_ID)
           setResult(
               Activity.RESULT_OK,
               BaseApp.KDB.pm.entries[id]?.let {
-                KeepassAUtil.getFillResponse(
+                 KeepassAUtil.instance.getFillResponse(
                     this,
                     intent,
                     it,
@@ -286,7 +286,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         }
 
       } else {
-        setResult(Activity.RESULT_OK, KeepassAUtil.getFillResponse(this, intent, apkPkgName))
+        setResult(Activity.RESULT_OK,  KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName))
       }
       super.finish()
     }

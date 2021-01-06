@@ -162,7 +162,7 @@ class ExpandAttrStrLayout(
   }
 
   private fun toggle() {
-    if (KeepassAUtil.isFastClick()) {
+    if ( KeepassAUtil.instance.isFastClick()) {
       return
     }
     if (attrIsExpand) {

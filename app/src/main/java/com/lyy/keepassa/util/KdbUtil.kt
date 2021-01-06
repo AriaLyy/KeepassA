@@ -22,7 +22,6 @@ import com.keepassdroid.database.PwIconStandard
 import com.keepassdroid.database.helper.KDBHandlerHelper
 import com.keepassdroid.utils.SprEngine
 import com.lyy.keepassa.base.BaseApp
-import com.lyy.keepassa.util.KeepassAUtil.isRef
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import java.util.UUID
 

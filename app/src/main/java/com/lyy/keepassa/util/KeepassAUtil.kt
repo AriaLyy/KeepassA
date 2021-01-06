@@ -73,15 +73,15 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.GregorianCalendar
 
-object KeepassAUtil {
-
-  const val TAG = "KeepassAUtil"
-  private var LAST_CLICK_TIME = System.currentTimeMillis()
-
-  fun PwEntry.isRef(): Boolean {
-    return (!username.isNullOrEmpty() && username.startsWith("{REF:", ignoreCase = true))
-        || (!password.isNullOrEmpty() && password.startsWith("{REF:", ignoreCase = true))
+class KeepassAUtil private constructor() {
+  companion object {
+    val instance: KeepassAUtil by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
+      KeepassAUtil()
+    }
+    val TAG = "KeepassAUtil"
   }
+
+  private var LAST_CLICK_TIME = System.currentTimeMillis()
 
   /**
    * is night mode
@@ -89,27 +89,6 @@ object KeepassAUtil {
    */
   fun isNightMode(): Boolean {
     return BaseApp.APP.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-  }
-
-  /**
-   * 是否是Otp字段
-   */
-  fun String.isOtp(): Boolean {
-    return this.equals("totp", ignoreCase = true) || this.equals("otp", ignoreCase = true)
-  }
-
-  /**
-   * uri 授权
-   */
-  fun Uri.takePermission() {
-    try {
-      val takeFlags =
-        Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-      BaseApp.APP.contentResolver.takePersistableUriPermission(this, takeFlags)
-    } catch (e: Exception) {
-      HitUtil.toaskShort(BaseApp.APP.getString(R.string.error_uri_grant_permission))
-      e.printStackTrace()
-    }
   }
 
   /**
@@ -194,11 +173,11 @@ object KeepassAUtil {
   fun convertPwEntry2Item(entry: PwEntry): SimpleItemEntity {
     val item = SimpleItemEntity()
     item.title = entry.title
-    item.subTitle = if (entry.isRef()){
+    item.subTitle = if (entry.isRef()) {
       val refStr = "${BaseApp.APP.resources.getString(R.string.ref_entry)}: "
       val tempStr = "${refStr}${KdbUtil.getUserName(entry)}"
       StringUtil.highLightStr(tempStr, refStr, ResUtil.getColor(R.color.colorPrimary), true)
-    } else{
+    } else {
       entry.username
     }
     item.obj = entry
@@ -565,12 +544,6 @@ object KeepassAUtil {
     imm!!.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
   }
 
-  fun Uri.getFileInfo(
-    context: Context
-  ): Pair<String?, Long?> {
-    return Pair(UriUtil.getFileNameFromUri(context, this), getFileSizeFormUri(context, this))
-  }
-
   /**
    * 从uri中获取文件长度
    */
@@ -721,4 +694,39 @@ object KeepassAUtil {
     return "com.android.providers.media.documents" == uri.authority
   }
 
+}
+
+fun Uri.getFileInfo(
+  context: Context
+): Pair<String?, Long?> {
+  return Pair(
+      UriUtil.getFileNameFromUri(context, this),
+      KeepassAUtil.instance.getFileSizeFormUri(context, this)
+  )
+}
+
+fun PwEntry.isRef(): Boolean {
+  return (!username.isNullOrEmpty() && username.startsWith("{REF:", ignoreCase = true))
+      || (!password.isNullOrEmpty() && password.startsWith("{REF:", ignoreCase = true))
+}
+
+/**
+ * 是否是Otp字段
+ */
+fun String.isOtp(): Boolean {
+  return this.equals("totp", ignoreCase = true) || this.equals("otp", ignoreCase = true)
+}
+
+/**
+ * uri 授权
+ */
+fun Uri.takePermission() {
+  try {
+    val takeFlags =
+      Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+    BaseApp.APP.contentResolver.takePersistableUriPermission(this, takeFlags)
+  } catch (e: Exception) {
+    HitUtil.toaskShort(BaseApp.APP.getString(R.string.error_uri_grant_permission))
+    e.printStackTrace()
+  }
 }

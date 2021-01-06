@@ -58,14 +58,14 @@ data class DbRecord(
   }
 
   fun getDbUri(): Uri {
-    return KeepassAUtil.convertUri(localDbUri)!!
+    return KeepassAUtil.instance.convertUri(localDbUri)!!
   }
 
   /**
    * 不能使用 getkeyUri()，否则kotlin 编译会报错
    */
   fun getDbKeyUri(): Uri? {
-    return KeepassAUtil.convertUri(keyUri)
+    return KeepassAUtil.instance.convertUri(keyUri)
   }
 
   override fun writeToParcel(

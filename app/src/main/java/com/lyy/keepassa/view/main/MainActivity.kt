@@ -89,7 +89,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         showSearchDialog()
       }
       if (BaseApp.isLocked) {
-        KeepassAUtil.reOpenDb(this)
+         KeepassAUtil.instance.reOpenDb(this)
         return
       }
     }
@@ -162,7 +162,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   }
 
   override fun onClick(v: View?) {
-    if (KeepassAUtil.isFastClick()) {
+    if ( KeepassAUtil.instance.isFastClick()) {
       return
     }
     when (v!!.id) {

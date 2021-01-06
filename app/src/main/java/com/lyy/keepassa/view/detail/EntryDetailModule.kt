@@ -64,7 +64,7 @@ class EntryDetailModule : BaseModule() {
     context: FragmentActivity,
     v: View
   ) {
-    if (KeepassAUtil.isFastClick()) {
+    if ( KeepassAUtil.instance.isFastClick()) {
       return
     }
     val key = (v as AttrFileItemView).titleStr
@@ -76,7 +76,7 @@ class EntryDetailModule : BaseModule() {
         file: ProtectedBinary
       ) {
         curDLoadFile = file
-        KeepassAUtil.createFile(context, "*/*", key, createFileRequestCode)
+         KeepassAUtil.instance.createFile(context, "*/*", key, createFileRequestCode)
       }
     })
     menu.show()
@@ -89,7 +89,7 @@ class EntryDetailModule : BaseModule() {
     context: FragmentActivity,
     v: View
   ) {
-    if (KeepassAUtil.isFastClick()) {
+    if ( KeepassAUtil.instance.isFastClick()) {
       return
     }
     val value = v.findViewById<TextView>(R.id.value)
@@ -209,7 +209,7 @@ class EntryDetailModule : BaseModule() {
    * 获取项目的属性字段，只有v4版本才有自定义属性字段
    */
   fun getV4EntryStr(entryV4: PwEntryV4): Map<String, ProtectedString> {
-    return KeepassAUtil.filterCustomStr(entryV4)
+    return  KeepassAUtil.instance.filterCustomStr(entryV4)
   }
 
 }

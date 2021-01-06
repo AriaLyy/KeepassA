@@ -69,10 +69,10 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
         .setOnItemClickListener { _, position, v ->
           val item = entryData[position]
           if (item.obj is PwGroup) {
-            KeepassAUtil.turnEntryDetail(requireActivity(), item.obj as PwGroup)
+             KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwGroup)
           } else if (item.obj is PwEntry) {
             val icon = v.findViewById<AppCompatImageView>(R.id.icon)
-            KeepassAUtil.turnEntryDetail(requireActivity(), item.obj as PwEntry, icon)
+             KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwEntry, icon)
           }
         }
     val div = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
@@ -227,7 +227,7 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
         val entry: SimpleItemEntity? = entryData.find { it.obj == event.entry }
         entry?.let {
           val pos = entryData.indexOf(it)
-          entryData[pos] = KeepassAUtil.convertPwEntry2Item(event.entry)
+          entryData[pos] =  KeepassAUtil.instance.convertPwEntry2Item(event.entry)
           adapter.notifyItemChanged(pos)
         }
         return
@@ -249,7 +249,7 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
       entry?.let {
 
         val pos = entryData.indexOf(it)
-        entryData[pos] = KeepassAUtil.convertPwGroup2Item(event.pwGroup)
+        entryData[pos] =  KeepassAUtil.instance.convertPwGroup2Item(event.pwGroup)
         adapter.notifyItemChanged(pos)
       }
       return

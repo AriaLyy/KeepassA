@@ -104,7 +104,7 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
   }
 
   override fun onClick(v: View?) {
-    if (KeepassAUtil.isFastClick()) {
+    if ( KeepassAUtil.instance.isFastClick()) {
       return
     }
     when (v!!.id) {
@@ -119,7 +119,7 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
         SettingActivity.turnAppSetting(this)
       }
       R.id.change_db -> {
-        KeepassAUtil.turnLauncher(this)
+         KeepassAUtil.instance.turnLauncher(this)
       }
       R.id.app_feedback -> {
 //        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {

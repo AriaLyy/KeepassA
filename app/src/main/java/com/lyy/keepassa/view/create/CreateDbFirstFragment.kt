@@ -30,10 +30,10 @@ import com.lyy.keepassa.event.DbPathEvent
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.KeepassAUtil.takePermission
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.cloud.DropboxUtil
 import com.lyy.keepassa.util.putArgument
+import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.DbPathType
 import com.lyy.keepassa.view.DbPathType.AFS
 import com.lyy.keepassa.view.DbPathType.DROPBOX
@@ -91,7 +91,7 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
     binding.dbName.setOnEditorActionListener { _, actionId, _ ->
       // actionId 和android:imeOptions 属性要保持一致
       if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(binding.dbName.text)) {
-        KeepassAUtil.toggleKeyBord(requireContext())
+         KeepassAUtil.instance.toggleKeyBord(requireContext())
 //        showPathDialog()
         startNext()
         true
@@ -110,7 +110,7 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
     binding.dbNameLayout.error = hint
     binding.dbName.requestFocus()
     HitUtil.toaskShort(hint)
-    KeepassAUtil.toggleKeyBord(requireContext())
+     KeepassAUtil.instance.toggleKeyBord(requireContext())
   }
 
   /**
@@ -273,7 +273,7 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
     when (module.dbPathType) {
       AFS -> {
         if (module.dbUri == null) {
-          KeepassAUtil.createFile(
+           KeepassAUtil.instance.createFile(
               this, "*/*", "$temp.kdbx", PATH_REQUEST_CODE
           )
         }

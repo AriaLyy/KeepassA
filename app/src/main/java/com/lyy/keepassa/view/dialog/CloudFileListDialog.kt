@@ -178,7 +178,7 @@ class CloudFileListDialog : BaseDialog<DialogCloudFileListBinding>() {
         holder.icon.setImageResource(R.drawable.ic_folder_24px)
       } else {
         holder.des.visibility = View.VISIBLE
-        holder.des.text = KeepassAUtil.formatTime(item.serviceModifyDate)
+        holder.des.text =  KeepassAUtil.instance.formatTime(item.serviceModifyDate)
         holder.icon.setImageResource(R.drawable.ic_file_24px)
       }
     }

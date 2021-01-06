@@ -58,7 +58,7 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
     }
 
     binding.enter.setOnClickListener {
-      if (KeepassAUtil.isFastClick()) {
+      if ( KeepassAUtil.instance.isFastClick()) {
         return@setOnClickListener
       }
 
@@ -84,7 +84,7 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
         )
         return@setOnClickListener
       }
-      if (!KeepassAUtil.checkUrlIsValid(uri)) {
+      if (! KeepassAUtil.instance.checkUrlIsValid(uri)) {
         HitUtil.toaskShort("${getString(R.string.hint_webdav_url)} ${getString(R.string.invalid)}")
         return@setOnClickListener
       }

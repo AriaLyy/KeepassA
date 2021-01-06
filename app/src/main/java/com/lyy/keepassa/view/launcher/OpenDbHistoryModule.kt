@@ -67,7 +67,7 @@ class OpenDbHistoryModule : BaseModule() {
             continue
           }
           item.title = tx
-          item.subTitle = KeepassAUtil.formatTime(Date(record.time))
+          item.subTitle =  KeepassAUtil.instance.formatTime(Date(record.time))
           item.obj = record
           list.add(item)
         }

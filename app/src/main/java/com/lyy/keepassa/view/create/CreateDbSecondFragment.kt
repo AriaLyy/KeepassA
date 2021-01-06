@@ -78,7 +78,7 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
       val dialog = CreatePassKeyDialog()
       dialog.show(childFragmentManager, "passKeyDialog")
     }
-    KeepassAUtil.toggleKeyBord(requireContext())
+    KeepassAUtil.instance.toggleKeyBord(requireContext())
     binding.password.requestFocus()
     binding.passwordLayout.endIconDrawable = resources.getDrawable(R.drawable.ic_view_off)
 //    binding.password.imeOptions = EditorInfo.IME_ACTION_NEXT
@@ -162,7 +162,7 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
       if (TextUtils.isEmpty(enterPass)) {
         HitUtil.toaskShort(getString(R.string.error_enter_pass_null))
         binding.enterPassword.requestFocus()
-        KeepassAUtil.toggleKeyBord(requireContext())
+         KeepassAUtil.instance.toggleKeyBord(requireContext())
         return null
       }
       if (!pass.equals(enterPass, false)) {

@@ -18,13 +18,10 @@ import android.os.Bundle
 import android.text.Html
 import android.text.InputType
 import android.text.Spanned
-import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnTouchListener
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV3
 import com.keepassdroid.database.PwEntryV4
@@ -41,10 +38,9 @@ import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.KeepassAUtil.isRef
-import com.lyy.keepassa.util.KeepassAUtil.takePermission
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
+import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.MsgDialog
@@ -94,7 +90,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     }
     toolbar.inflateMenu(R.menu.menu_entry_detail)
     toolbar.setOnMenuItemClickListener { item ->
-      if (KeepassAUtil.isFastClick()) {
+      if ( KeepassAUtil.instance.isFastClick()) {
         return@setOnMenuItemClickListener true
       }
       if (item.itemId == R.id.history) {
@@ -264,26 +260,26 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     if (pwEntry.expires() && pwEntry.expiryTime != null) {
       if (pwEntry.expiryTime.after(Date())) {
         binding.time.text =
-          getString(R.string.expire_time, KeepassAUtil.formatTime(pwEntry.expiryTime))
+          getString(R.string.expire_time,  KeepassAUtil.instance.formatTime(pwEntry.expiryTime))
       } else {
         binding.time.text = Html.fromHtml(
-            getString(R.string.expire, KeepassAUtil.formatTime(pwEntry.expiryTime, "yyyy/MM/dd"))
+            getString(R.string.expire,  KeepassAUtil.instance.formatTime(pwEntry.expiryTime, "yyyy/MM/dd"))
         )
       }
 
-      binding.time1.text = KeepassAUtil.formatTime(pwEntry.creationTime)
+      binding.time1.text =  KeepassAUtil.instance.formatTime(pwEntry.creationTime)
       binding.time1.setLeftIcon(R.drawable.ic_create_time)
       binding.time1.setOnClickListener { HitUtil.toaskShort(getString(R.string.create_time)) }
-      binding.time2.text = KeepassAUtil.formatTime(pwEntry.lastModificationTime)
+      binding.time2.text =  KeepassAUtil.instance.formatTime(pwEntry.lastModificationTime)
       binding.time2.setLeftIcon(R.drawable.ic_modify_time)
       binding.time2.setOnClickListener { HitUtil.toaskShort(getString(R.string.modify_time)) }
     } else {
       binding.time.text =
-        getString(R.string.create_time, KeepassAUtil.formatTime(pwEntry.creationTime))
-      binding.time1.text = KeepassAUtil.formatTime(pwEntry.expiryTime)
+        getString(R.string.create_time,  KeepassAUtil.instance.formatTime(pwEntry.creationTime))
+      binding.time1.text =  KeepassAUtil.instance.formatTime(pwEntry.expiryTime)
       binding.time1.setLeftIcon(R.drawable.ic_lose_time)
       binding.time1.setOnClickListener { HitUtil.toaskShort(getString(R.string.lose_time)) }
-      binding.time2.text = KeepassAUtil.formatTime(pwEntry.lastModificationTime)
+      binding.time2.text =  KeepassAUtil.instance.formatTime(pwEntry.lastModificationTime)
       binding.time2.setLeftIcon(R.drawable.ic_modify_time)
       binding.time2.setOnClickListener { HitUtil.toaskShort(getString(R.string.modify_time)) }
     }

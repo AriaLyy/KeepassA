@@ -56,7 +56,7 @@ class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
         .setOnItemClickListener { _, position, v ->
           val item = entryData[position]
           val icon = v.findViewById<AppCompatImageView>(R.id.icon)
-          KeepassAUtil.turnEntryDetail(requireActivity(), item.obj as PwEntry, icon)
+          KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwEntry, icon)
         }
 
     // 长按处理
@@ -139,11 +139,11 @@ class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
     val entry = BaseApp.KDB.pm.entries[newRecordUUid]
     entry?.let {
       if (oldRecord == null) {
-        val itemData = KeepassAUtil.convertPwEntry2Item(it)
+        val itemData = KeepassAUtil.instance.convertPwEntry2Item(it)
         itemData.time = record.time
         entryData.add(itemData)
       } else {
-        val itemData = KeepassAUtil.convertPwEntry2Item(it)
+        val itemData = KeepassAUtil.instance.convertPwEntry2Item(it)
         oldRecord.title = record.title
         oldRecord.subTitle = itemData.subTitle
         oldRecord.time = record.time

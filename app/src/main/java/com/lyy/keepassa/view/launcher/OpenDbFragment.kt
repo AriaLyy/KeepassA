@@ -38,10 +38,10 @@ import com.lyy.keepassa.databinding.FragmentOpenDbBinding
 import com.lyy.keepassa.entity.DbRecord
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.KeepassAUtil.takePermission
 import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.getArgument
+import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.main.MainActivity
 import com.tencent.bugly.crashreport.BuglyLog
@@ -86,7 +86,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         if (TextUtils.isEmpty(openDbRecord.keyUri)
             || openDbRecord.keyUri.equals("null", ignoreCase = true)
         ) {
-          KeepassAUtil.openSysFileManager(this@OpenDbFragment, "*/*", REQ_CODE_FILE)
+           KeepassAUtil.instance.openSysFileManager(this@OpenDbFragment, "*/*", REQ_CODE_FILE)
         }
         showKeyLayout()
       } else {
@@ -107,7 +107,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     binding.password.setOnEditorActionListener { _, actionId, _ ->
       // actionId 和android:imeOptions 属性要保持一致
       if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(binding.password.text)) {
-        KeepassAUtil.toggleKeyBord(requireContext())
+         KeepassAUtil.instance.toggleKeyBord(requireContext())
         openDb(
             binding.password.text.toString()
                 .trim()
@@ -210,7 +210,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   }
 
   override fun onClick(v: View) {
-    if (KeepassAUtil.isFastClick()) {
+    if ( KeepassAUtil.instance.isFastClick()) {
       return
     }
     when (v.id) {
@@ -223,7 +223,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         (activity as LauncherActivity).changeDb()
       }
       R.id.key -> {
-        KeepassAUtil.openSysFileManager(this@OpenDbFragment, "*/*", REQ_CODE_FILE)
+         KeepassAUtil.instance.openSysFileManager(this@OpenDbFragment, "*/*", REQ_CODE_FILE)
       }
     }
   }
@@ -272,7 +272,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     openDbRecord.uid = dbRecord.uid
     Log.i(TAG, "更新数据，record = $dbRecord")
     setDbName(dbRecord)
-    handleKeyUri(KeepassAUtil.convertUri(dbRecord.keyUri))
+    handleKeyUri( KeepassAUtil.instance.convertUri(dbRecord.keyUri))
   }
 
   private fun setDbName(dbRecord: DbRecord) {

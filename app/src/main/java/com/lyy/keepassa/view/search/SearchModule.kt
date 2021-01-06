@@ -71,14 +71,14 @@ class SearchModule : BaseModule() {
 
     // 组合群组信息
     for (group in groupList) {
-      val item = KeepassAUtil.convertPwGroup2Item(group)
+      val item =  KeepassAUtil.instance.convertPwGroup2Item(group)
       item.type = SearchAdapter.ITEM_TYPE_GROUP
       data.add(item)
     }
 
     // 组合条目信息
     for (entry in entryList) {
-      val item = KeepassAUtil.convertPwEntry2Item(entry)
+      val item =  KeepassAUtil.instance.convertPwEntry2Item(entry)
       item.type = SearchAdapter.ITEM_TYPE_ENTRY
       data.add(item)
     }

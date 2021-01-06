@@ -378,7 +378,7 @@ class LauncherModule : BaseModule() {
     if (db != null) {
       val dbName = UriUtil.getFileNameFromUri(context, dbUri)
       BaseApp.dbPass = QuickUnLockUtil.encryptStr(dbPass)
-      KeepassAUtil.subShortPass()
+       KeepassAUtil.instance.subShortPass()
       if (keyUri != null) {
         BaseApp.dbKeyPath = QuickUnLockUtil.encryptStr(keyUri.toString())
       }
@@ -391,7 +391,7 @@ class LauncherModule : BaseModule() {
       BaseApp.dbVersion = "Keepass ${if (PwDatabase.isKDBExtension(dbName)) "3.x" else "4.x"}"
       BaseApp.isV4 = !PwDatabase.isKDBExtension(dbName)
       BaseApp.dbRecord = record
-      KeepassAUtil.saveLastOpenDbHistory(record)
+       KeepassAUtil.instance.saveLastOpenDbHistory(record)
 
       if (!BaseApp.isAFS()) {
         DbSynUtil.updateServiceModifyTime(record)

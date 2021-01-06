@@ -194,7 +194,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
 
           if (item.obj is PwEntry) {
             val icon = v.findViewById<AppCompatImageView>(R.id.icon)
-            KeepassAUtil.turnEntryDetail(this, item.obj as PwEntry, icon)
+             KeepassAUtil.instance.turnEntryDetail(this, item.obj as PwEntry, icon)
             return@setOnItemClickListener
           }
         }
@@ -259,7 +259,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
         val entry: SimpleItemEntity? = entryData.find { it.obj == event.entry }
         entry?.let {
           val pos = entryData.indexOf(it)
-          entryData[pos] = KeepassAUtil.convertPwEntry2Item(event.entry)
+          entryData[pos] =  KeepassAUtil.instance.convertPwEntry2Item(event.entry)
           adapter.notifyItemChanged(pos)
         }
         return

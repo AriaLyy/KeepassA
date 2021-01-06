@@ -47,9 +47,9 @@ import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.KeepassAUtil.getFileInfo
-import com.lyy.keepassa.util.KeepassAUtil.takePermission
+import com.lyy.keepassa.util.getFileInfo
 import com.lyy.keepassa.util.putArgument
+import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.ChooseGroupActivity
 import com.lyy.keepassa.view.ChooseIconActivity
 import com.lyy.keepassa.view.MarkDownEditorActivity
@@ -131,7 +131,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     if (isShortcuts) {
       if (BaseApp.isLocked) {
         Log.w(TAG, "数据库已锁定，进入解锁界面")
-        KeepassAUtil.reOpenDb(this)
+         KeepassAUtil.instance.reOpenDb(this)
         finish()
         return
       }
@@ -260,7 +260,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     if (v4Entry.expires()) {
       binding.loseTime.visibility = View.VISIBLE
       binding.loseTime.isChecked = v4Entry.expires()
-      binding.loseTime.text = KeepassAUtil.formatTime(v4Entry.expiryTime)
+      binding.loseTime.text =  KeepassAUtil.instance.formatTime(v4Entry.expiryTime)
     }
     if (v4Entry.tags.isNotEmpty()) {
       binding.tag.visibility = View.VISIBLE
@@ -276,7 +276,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     }
 
     val strMap = LinkedHashMap<String, ProtectedString>()
-    strMap.putAll(KeepassAUtil.filterCustomStr(v4Entry, false))
+    strMap.putAll( KeepassAUtil.instance.filterCustomStr(v4Entry, false))
     if (strMap.isNotEmpty()) {
       showStrLayout()
       binding.attrStrs.setValue(strMap)
@@ -290,7 +290,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
    */
   private fun handleAddMore() {
     binding.addMore.setOnClickListener {
-      if (KeepassAUtil.isFastClick()) {
+      if ( KeepassAUtil.instance.isFastClick()) {
         return@setOnClickListener
       }
       if (addMoreDialog == null) {
@@ -323,7 +323,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
                 CreateCustomStrDialog().show()
               }
               R.drawable.ic_attr_file -> { // 附件
-                KeepassAUtil.openSysFileManager(this@CreateEntryActivity, "*/*", getFileRequestCode)
+                 KeepassAUtil.instance.openSysFileManager(this@CreateEntryActivity, "*/*", getFileRequestCode)
               }
               R.drawable.ic_totp -> { // totp
                 CreateTotpDialog().apply {

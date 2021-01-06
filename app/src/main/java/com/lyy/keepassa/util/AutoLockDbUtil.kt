@@ -134,7 +134,7 @@ class AutoLockDbUtil private constructor() {
       Log.d(TAG, "锁定数据库")
       BaseApp.isLocked = true
       // 只有应用在前台才会跳转到锁屏页面
-      if (KeepassAUtil.isRunningForeground(BaseApp.APP) && BaseApp.KDB != null) {
+      if ( KeepassAUtil.instance.isRunningForeground(BaseApp.APP) && BaseApp.KDB != null) {
         // 开启快速解锁则跳转到快速解锁页面
         if (isOpenQuickLock) {
           NotificationUtil.startQuickUnlockNotify(applicationContext)

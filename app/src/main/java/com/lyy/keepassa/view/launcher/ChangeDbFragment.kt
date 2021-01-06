@@ -36,9 +36,9 @@ import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.KeepassAUtil.takePermission
 import com.lyy.keepassa.util.cloud.DropboxUtil
 import com.lyy.keepassa.util.putArgument
+import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.DbPathType
 import com.lyy.keepassa.view.DbPathType.AFS
 import com.lyy.keepassa.view.DbPathType.DROPBOX
@@ -96,7 +96,7 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
         })
     RvItemClickSupport.addTo(binding.list)
         .setOnItemClickListener { _, position, _ ->
-          if (KeepassAUtil.isFastClick()
+          if ( KeepassAUtil.instance.isFastClick()
               || activity == null
               || position < 0
               || position >= data.size
@@ -107,7 +107,7 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
             // 文件系统选择db
             AFS.type -> {
               dbOpenType = AFS
-              KeepassAUtil.openSysFileManager(
+               KeepassAUtil.instance.openSysFileManager(
                   this@ChangeDbFragment, "*/*", REQ_CODE_OPEN_DB_BY_AFS
               )
             }

@@ -110,7 +110,7 @@ object AutoFillHelper {
 
   @Deprecated("临时解决方案，后面适配黑暗模式后，只要设置values-night 就会解决")
   private fun setTextColor(rev:RemoteViews, context: Context){
-    if (KeepassAUtil.isNightMode()){
+    if (KeepassAUtil.instance.isNightMode()){
       rev.setTextColor(R.id.text, ResUtil.getColor(R.color.white))
     }
   }

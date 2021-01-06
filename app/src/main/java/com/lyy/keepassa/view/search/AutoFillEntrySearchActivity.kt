@@ -296,11 +296,11 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
       return
     }
     if (isNotSaveRelevance) {
-      setResult(Activity.RESULT_OK, KeepassAUtil.getFillResponse(this, intent, apkPkgName!!))
+      setResult(Activity.RESULT_OK,  KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName!!))
     } else {
       setResult(
           Activity.RESULT_OK,
-          KeepassAUtil.getFillResponse(this, intent, pwEntry, apkPkgName!!)
+           KeepassAUtil.instance.getFillResponse(this, intent, pwEntry, apkPkgName!!)
       )
     }
     finish()
@@ -315,7 +315,7 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
   fun onCreateEntry(event: CreateOrUpdateEntryEvent) {
     if (!event.isUpdate) {
       listData.clear()
-      listData.add(KeepassAUtil.convertPwEntry2Item(event.entry))
+      listData.add( KeepassAUtil.instance.convertPwEntry2Item(event.entry))
       adapter.notifyDataSetChanged()
       binding.noEntryLayout.visibility = View.GONE
     }

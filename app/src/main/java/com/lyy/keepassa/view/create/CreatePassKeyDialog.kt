@@ -25,8 +25,8 @@ import com.lyy.keepassa.databinding.DialogPassKeyBinding
 import com.lyy.keepassa.event.KeyPathEvent
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.KeepassAUtil.takePermission
 import com.lyy.keepassa.util.PasswordBuilUtil
+import com.lyy.keepassa.util.takePermission
 import org.greenrobot.eventbus.EventBus
 import java.io.FileOutputStream
 import java.io.IOException
@@ -56,10 +56,10 @@ class CreatePassKeyDialog : BaseBottomSheetDialogFragment<DialogPassKeyBinding>(
     when (v!!.id) {
       R.id.close -> dismiss()
       R.id.item_1 -> {
-        KeepassAUtil.openSysFileManager(this, "*/*", openFileReqCode)
+         KeepassAUtil.instance.openSysFileManager(this, "*/*", openFileReqCode)
       }
       R.id.item_2 -> {
-        KeepassAUtil.createFile(
+         KeepassAUtil.instance.createFile(
             this, "*/*", "${getString(R.string.app_name)}.passkey", createFileReqCode
         )
       }

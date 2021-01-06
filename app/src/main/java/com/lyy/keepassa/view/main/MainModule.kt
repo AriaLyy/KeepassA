@@ -124,7 +124,7 @@ class MainModule : BaseModule() {
     if (db != null) {
       val dbName = UriUtil.getFileNameFromUri(context, dbUri)
       BaseApp.dbPass = QuickUnLockUtil.encryptStr(dbPass)
-      KeepassAUtil.subShortPass()
+       KeepassAUtil.instance.subShortPass()
       if (keyUri != null) {
         BaseApp.dbKeyPath = QuickUnLockUtil.encryptStr(keyUri.toString())
       }
@@ -137,7 +137,7 @@ class MainModule : BaseModule() {
       BaseApp.dbVersion = "Keepass ${if (PwDatabase.isKDBExtension(dbName)) "3.x" else "4.x"}"
       BaseApp.isV4 = !PwDatabase.isKDBExtension(dbName)
       BaseApp.dbRecord = record
-      KeepassAUtil.saveLastOpenDbHistory(record)
+       KeepassAUtil.instance.saveLastOpenDbHistory(record)
     }
     return db
   }
@@ -208,7 +208,7 @@ class MainModule : BaseModule() {
         val temp = ArrayList<SimpleItemEntity>()
         for (record in records) {
           val entry = BaseApp.KDB.pm.entries[Types.bytestoUUID(record.uuid)] ?: continue
-          val item = KeepassAUtil.convertPwEntry2Item(entry)
+          val item =  KeepassAUtil.instance.convertPwEntry2Item(entry)
           item.time = record.time
           temp.add(item)
         }
@@ -236,14 +236,14 @@ class MainModule : BaseModule() {
     val rootGroup = pm.rootGroup
 
     for (group in rootGroup.childGroups) {
-      data.add(KeepassAUtil.convertPwGroup2Item(group))
+      data.add(KeepassAUtil.instance.convertPwGroup2Item(group))
     }
     Log.d(
         TAG,
         "getRootEntry， 保存前的数据库hash：${BaseApp.KDB.hashCode()}, num = ${BaseApp.KDB.pm.entries.size}"
     )
     for (entry in rootGroup.childEntries) {
-      data.add(KeepassAUtil.convertPwEntry2Item(entry))
+      data.add(   KeepassAUtil.instance.convertPwEntry2Item(entry))
     }
     emit(data)
   }

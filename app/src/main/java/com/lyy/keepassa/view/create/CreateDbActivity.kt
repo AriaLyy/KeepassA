@@ -80,7 +80,7 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
   }
 
   override fun onClick(v: View?) {
-    if (KeepassAUtil.isFastClick()) {
+    if ( KeepassAUtil.instance.isFastClick()) {
       return
     }
     when (v!!.id) {
@@ -125,7 +125,7 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
   private fun handleSuccess() {
     NotificationUtil.startDbOpenNotify(this)
     MainActivity.startMainActivity(this)
-    KeepassAUtil.saveLastOpenDbHistory(BaseApp.dbRecord)
+     KeepassAUtil.instance.saveLastOpenDbHistory(BaseApp.dbRecord)
     loadingDialog.dismiss()
   }
 

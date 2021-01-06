@@ -87,7 +87,7 @@ class CreateDbModule : BaseModule() {
       )
       return false
     }
-    if (!KeepassAUtil.checkUrlIsValid(uri)) {
+    if (! KeepassAUtil.instance.checkUrlIsValid(uri)) {
       HitUtil.toaskShort(
           "${context.getString(R.string.hint_webdav_url)} ${context.getString(R.string.invalid)}"
       )
@@ -126,7 +126,7 @@ class CreateDbModule : BaseModule() {
         BaseApp.dbName = db.pm.name
         BaseApp.dbFileName = dbName
         BaseApp.dbPass = QuickUnLockUtil.encryptStr(dbPass)
-        KeepassAUtil.subShortPass()
+        KeepassAUtil.instance.subShortPass()
 
         // 创建默认群组
         createDefaultGroup(context)
@@ -147,7 +147,7 @@ class CreateDbModule : BaseModule() {
         val code = KdbUtil.saveDb()
 
         if (dbPathType == AFS) {
-          KeepassAUtil.saveLastOpenDbHistory(record)
+          KeepassAUtil.instance.saveLastOpenDbHistory(record)
         }
         if (code != DbSynUtil.STATE_SUCCEED) {
           return@withContext null
