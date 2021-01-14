@@ -15,16 +15,15 @@ import android.content.Intent
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.arialyy.frame.base.BaseDialog
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogAddGroupBinding
 import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
-import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.view.ChooseIconActivity

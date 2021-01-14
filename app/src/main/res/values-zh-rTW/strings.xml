@@ -56,6 +56,13 @@
   <string name="error_uri">uri 錯誤</string>
   <string name="error_input_pass_null">請輸入數據庫密碼</string>
   <string name="error_open_db">數據庫打開失敗，請檢查密碼是否錯誤或是否需要密鑰</string>
+  <string name="error_open_db_key_empty">缺少密鑰</string>
+  <string name="error_open_db_pass_error">數據庫密碼錯誤</string>
+  <string name="error_open_db_key_invalid">無效的密鑰</string>
+  <string name="error_open_db_version_error">數據庫版本錯誤</string>
+  <string name="error_open_db_signature_error">數據庫簽名錯誤</string>
+  <string name="error_open_db_algorithm_error">無效的算法</string>
+  <string name="error_open_db_arcfour_error">無效的流加密算法</string>
   <string name="hint_group_desc">群組-%s個條目</string>
   <string name="error_group_id_null">groupId 為空</string>
   <string name="error_entry_id_null">entryId 為空</string>

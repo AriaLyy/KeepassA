@@ -138,7 +138,7 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
             val useKey = BaseApp.dbKeyPath.isNotEmpty()
 
             val quickInfo = QuickUnLockRecord(
-                dbUri = BaseApp.dbRecord.localDbUri,
+                dbUri = BaseApp.dbRecord!!.localDbUri,
                 dbPass = passPair.first,
                 keyPath = BaseApp.dbKeyPath,
                 isUseKey = useKey,

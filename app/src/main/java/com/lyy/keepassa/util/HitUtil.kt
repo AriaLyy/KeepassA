@@ -11,8 +11,17 @@ package com.lyy.keepassa.util
 
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.StringRes
+import com.arialyy.frame.util.ResUtil
 import com.google.android.material.snackbar.Snackbar
+import com.keepassdroid.database.exception.ArcFourException
+import com.keepassdroid.database.exception.InvalidAlgorithmException
 import com.keepassdroid.database.exception.InvalidDBException
+import com.keepassdroid.database.exception.InvalidDBSignatureException
+import com.keepassdroid.database.exception.InvalidDBVersionException
+import com.keepassdroid.database.exception.InvalidKeyFileException
+import com.keepassdroid.database.exception.InvalidPasswordException
+import com.keepassdroid.database.exception.KeyFileEmptyException
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.thegrizzlylabs.sardineandroid.impl.SardineException
@@ -29,22 +38,50 @@ object HitUtil {
    */
   fun toaskOpenDbException(e: Exception) {
     when (e) {
+      is ArcFourException -> {
+        toaskShort(R.string.error_open_db_arcfour_error)
+      }
+      is InvalidAlgorithmException -> {
+        toaskShort(R.string.error_open_db_algorithm_error)
+      }
+      is InvalidDBSignatureException -> {
+        toaskShort(R.string.error_open_db_signature_error)
+      }
+      is InvalidDBVersionException -> {
+        toaskShort(R.string.error_open_db_version_error)
+      }
+      is InvalidKeyFileException -> {
+        toaskShort(R.string.error_open_db_key_invalid)
+      }
+      is InvalidPasswordException -> {
+        toaskShort(R.string.error_open_db_pass_error)
+      }
+      is KeyFileEmptyException -> {
+        toaskShort(R.string.error_open_db_key_empty)
+      }
       is InvalidDBException -> {
-        toaskShort(BaseApp.APP.getString(R.string.error_open_db))
+        toaskShort(R.string.error_open_db)
       }
       is FileNotFoundException -> {
-        toaskShort(BaseApp.APP.getString(R.string.db_file_no_exist))
+        toaskShort(R.string.db_file_no_exist)
       }
       is SardineException -> {
         when (e.statusCode) {
           HttpURLConnection.HTTP_UNAUTHORIZED -> {
-            toaskShort(BaseApp.APP.getString(R.string.invalid_auth))
+            toaskShort(R.string.invalid_auth)
           }
           HttpURLConnection.HTTP_NOT_FOUND -> {
-            toaskShort(BaseApp.APP.getString(R.string.db_file_no_exist))
+            toaskShort(R.string.db_file_no_exist)
           }
         }
       }
+    }
+  }
+
+  fun toaskShort(@StringRes strId: Int) {
+    BaseApp.handler.post {
+      Toast.makeText(BaseApp.APP, ResUtil.getString(strId), Toast.LENGTH_SHORT)
+          .show()
     }
   }
 
@@ -66,14 +103,18 @@ object HitUtil {
     view: View,
     text: String
   ) {
-    Snackbar.make(view, text, Snackbar.LENGTH_SHORT).setAction("OK") {}.show()
+    Snackbar.make(view, text, Snackbar.LENGTH_SHORT)
+        .setAction("OK") {}
+        .show()
   }
 
   fun snackLong(
     view: View,
     text: String
   ) {
-    Snackbar.make(view, text, Snackbar.LENGTH_LONG).setAction("OK") {}.show()
+    Snackbar.make(view, text, Snackbar.LENGTH_LONG)
+        .setAction("OK") {}
+        .show()
   }
 
 }

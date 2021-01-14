@@ -13,14 +13,13 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.os.Bundle
 import android.text.InputType
 import android.text.TextUtils
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.RadioButton
 import androidx.lifecycle.ViewModelProvider
-import com.arialyy.frame.base.BaseFragment
+import com.arialyy.frame.base.FrameFragment
 import com.lyy.keepassa.R
 import com.lyy.keepassa.databinding.FragmentCreateDbSecondBinding
 import com.lyy.keepassa.event.KeyPathEvent
@@ -29,14 +28,13 @@ import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.widget.BubbleTextView
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 
 /**
  * 设置密码、密钥等信息
  */
-class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
+class CreateDbSecondFragment : FrameFragment<FragmentCreateDbSecondBinding>(),
     BubbleTextView.OnIconClickListener {
 
   private var keyPassLayoutH: Int = 0

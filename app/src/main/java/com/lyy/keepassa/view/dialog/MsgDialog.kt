@@ -15,9 +15,9 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.Button
 import androidx.annotation.ColorInt
-import com.arialyy.frame.base.BaseDialog
 import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogMsgBinding
 import com.lyy.keepassa.event.MsgDialogEvent
 import kotlinx.coroutines.Dispatchers

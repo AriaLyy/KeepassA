@@ -10,10 +10,10 @@ package com.lyy.keepassa.view.dialog
 import android.view.View
 import android.widget.AdapterView
 import android.widget.RadioButton
-import com.arialyy.frame.base.BaseDialog
 import com.google.android.material.slider.Slider
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogCreateTotpBinding
 import com.lyy.keepassa.entity.TotpType
 import com.lyy.keepassa.entity.TotpType.CUSTOM

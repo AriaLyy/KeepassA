@@ -13,6 +13,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import androidx.annotation.Nullable;
 import androidx.multidex.MultiDexApplication;
 import androidx.room.Room;
 import com.arialyy.frame.core.AbsFrame;
@@ -40,6 +41,8 @@ public class BaseApp extends MultiDexApplication {
   public static BaseApp APP;
   public static Handler handler;
   public static Database KDB;
+  @Nullable
+  public static DbRecord dbRecord;
   public static AppDatabase appDatabase;
   public static String dbName = "";
   public static String dbFileName = "";
@@ -51,7 +54,6 @@ public class BaseApp extends MultiDexApplication {
   public static String dbKeyPath = "";
   public static boolean isV4 = true;
   public static Locale currentLang = Locale.ENGLISH;
-  public static DbRecord dbRecord;
   public static Boolean isLocked = true;
 
   public static boolean isAFS() {

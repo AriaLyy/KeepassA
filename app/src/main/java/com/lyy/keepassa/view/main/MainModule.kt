@@ -63,7 +63,7 @@ class MainModule : BaseModule() {
   ) {
     val needCheckEnv = PreferenceManager.getDefaultSharedPreferences(cxt)
         .getBoolean(cxt.resources.getString(R.string.set_key_need_root_check), true)
-    if (!needCheckEnv){
+    if (!needCheckEnv) {
       btText.clearIcon(BubbleTextView.LOCATION_RIGHT)
       return
     }
@@ -124,7 +124,7 @@ class MainModule : BaseModule() {
     if (db != null) {
       val dbName = UriUtil.getFileNameFromUri(context, dbUri)
       BaseApp.dbPass = QuickUnLockUtil.encryptStr(dbPass)
-       KeepassAUtil.instance.subShortPass()
+      KeepassAUtil.instance.subShortPass()
       if (keyUri != null) {
         BaseApp.dbKeyPath = QuickUnLockUtil.encryptStr(keyUri.toString())
       }
@@ -137,7 +137,7 @@ class MainModule : BaseModule() {
       BaseApp.dbVersion = "Keepass ${if (PwDatabase.isKDBExtension(dbName)) "3.x" else "4.x"}"
       BaseApp.isV4 = !PwDatabase.isKDBExtension(dbName)
       BaseApp.dbRecord = record
-       KeepassAUtil.instance.saveLastOpenDbHistory(record)
+      KeepassAUtil.instance.saveLastOpenDbHistory(record)
     }
     return db
   }
@@ -168,11 +168,14 @@ class MainModule : BaseModule() {
    */
   fun delHistoryRecord(entry: PwEntry) {
     viewModelScope.launch(Dispatchers.IO) {
-      val dao = BaseApp.appDatabase.entryRecordDao()
-      val record = dao.getRecord(Types.UUIDtoBytes(entry.uuid), BaseApp.dbRecord.localDbUri)
-      if (record != null) {
-        dao.delReocrd(record)
+      BaseApp.dbRecord?.let {
+        val dao = BaseApp.appDatabase.entryRecordDao()
+        val record = dao.getRecord(Types.UUIDtoBytes(entry.uuid), it.localDbUri)
+        if (record != null) {
+          dao.delReocrd(record)
+        }
       }
+
     }
   }
 
@@ -180,15 +183,18 @@ class MainModule : BaseModule() {
    * 检查是否有记录
    */
   fun checkHasHistoryRecord() = liveData {
-    if (BaseApp.dbRecord == null || BaseApp.dbRecord.localDbUri.isNullOrEmpty()) {
-      emit(false)
-      return@liveData
+    BaseApp.dbRecord?.let {
+      if (BaseApp.dbRecord == null || it.localDbUri.isNullOrEmpty()) {
+        emit(false)
+        return@liveData
+      }
+      val b = withContext(Dispatchers.IO) {
+        val dao = BaseApp.appDatabase.entryRecordDao()
+        dao.hasRecord(it.localDbUri) > 0
+      }
+      emit(b)
     }
-    val b = withContext(Dispatchers.IO) {
-      val dao = BaseApp.appDatabase.entryRecordDao()
-      dao.hasRecord(BaseApp.dbRecord.localDbUri) > 0
-    }
-    emit(b)
+
   }
 
   /**
@@ -201,14 +207,14 @@ class MainModule : BaseModule() {
     }
     val list = withContext(Dispatchers.IO) {
       val dao = BaseApp.appDatabase.entryRecordDao()
-      val records = dao.getRecord(BaseApp.dbRecord.localDbUri)
+      val records = dao.getRecord(BaseApp.dbRecord!!.localDbUri)
       if (records.isNullOrEmpty()) {
         null
       } else {
         val temp = ArrayList<SimpleItemEntity>()
         for (record in records) {
-          val entry = BaseApp.KDB.pm.entries[Types.bytestoUUID(record.uuid)] ?: continue
-          val item =  KeepassAUtil.instance.convertPwEntry2Item(entry)
+          val entry = BaseApp.KDB!!.pm.entries[Types.bytestoUUID(record.uuid)] ?: continue
+          val item = KeepassAUtil.instance.convertPwEntry2Item(entry)
           item.time = record.time
           temp.add(item)
         }
@@ -227,7 +233,7 @@ class MainModule : BaseModule() {
       emit(data)
       return@liveData
     }
-    val pm = BaseApp.KDB.pm
+    val pm = BaseApp.KDB!!.pm
 
     if (pm == null) {
       emit(data)
@@ -240,10 +246,10 @@ class MainModule : BaseModule() {
     }
     Log.d(
         TAG,
-        "getRootEntry， 保存前的数据库hash：${BaseApp.KDB.hashCode()}, num = ${BaseApp.KDB.pm.entries.size}"
+        "getRootEntry， 保存前的数据库hash：${BaseApp.KDB.hashCode()}, num = ${BaseApp.KDB!!.pm.entries.size}"
     )
     for (entry in rootGroup.childEntries) {
-      data.add(   KeepassAUtil.instance.convertPwEntry2Item(entry))
+      data.add(KeepassAUtil.instance.convertPwEntry2Item(entry))
     }
     emit(data)
   }

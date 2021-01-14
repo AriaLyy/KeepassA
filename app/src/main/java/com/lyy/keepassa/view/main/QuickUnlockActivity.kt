@@ -71,7 +71,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
 
   private fun initUi() {
 
-    module.getQuickUnlockRecord(BaseApp.dbRecord.localDbUri)
+    module.getQuickUnlockRecord(BaseApp.dbRecord!!.localDbUri)
         .observe(this, Observer { record ->
           if (record != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             fingerRecord = record

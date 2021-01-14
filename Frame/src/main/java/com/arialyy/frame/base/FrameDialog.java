@@ -23,7 +23,7 @@ import android.view.WindowManager;
 import android.view.animation.BounceInterpolator;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import com.arialyy.frame.core.AbsActivity;
 import com.arialyy.frame.core.AbsDialogFragment;
 import com.arialyy.frame.core.AbsFrame;
 import com.arialyy.frame.util.AndroidUtils;
@@ -32,7 +32,7 @@ import com.arialyy.frame.util.AndroidUtils;
  * Created by Aria.Lao on 2017/12/4.
  */
 
-public abstract class BaseDialog<VB extends ViewDataBinding> extends AbsDialogFragment<VB> {
+public abstract class FrameDialog<VB extends ViewDataBinding> extends AbsDialogFragment<VB> {
   private WindowManager.LayoutParams mWpm;
   private Window mWindow;
   // 不要使用动画，莫名奇妙出现not associated with a fragment manager. 问题
@@ -42,7 +42,7 @@ public abstract class BaseDialog<VB extends ViewDataBinding> extends AbsDialogFr
    * 需要设置参数的构造函数，否则容易出现 could not find Fragment constructor
    * https://www.jianshu.com/p/e8c831e9ae73
    */
-  public BaseDialog() {
+  public FrameDialog() {
 
   }
 
@@ -63,7 +63,11 @@ public abstract class BaseDialog<VB extends ViewDataBinding> extends AbsDialogFr
   }
 
   public void show() {
-    FragmentManager fm = AbsFrame.getInstance().getCurrentActivity().getSupportFragmentManager();
+    AbsActivity ac = AbsFrame.getInstance().getCurrentActivity();
+    if (ac == null){
+      return;
+    }
+    FragmentManager fm = ac.getSupportFragmentManager();
     if (fm.isDestroyed()) {
       Log.e(TAG, "FragmentManager 已被销毁");
       return;
@@ -134,8 +138,8 @@ public abstract class BaseDialog<VB extends ViewDataBinding> extends AbsDialogFr
     set.play(animator).with(alpha);
     set.addListener(new AnimatorListenerAdapter() {
       @Override public void onAnimationEnd(Animator animation) {
-        if (BaseDialog.this.isAdded() && BaseDialog.this.getFragmentManager() != null) {
-          BaseDialog.super.dismissAllowingStateLoss();
+        if (FrameDialog.this.isAdded() && FrameDialog.this.getFragmentManager() != null) {
+          FrameDialog.super.dismissAllowingStateLoss();
         }
       }
     });

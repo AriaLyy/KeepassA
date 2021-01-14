@@ -19,12 +19,13 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arialyy.frame.base.BaseDialog
+import com.arialyy.frame.base.FrameDialog
 import com.arialyy.frame.util.adapter.AbsHolder
 import com.arialyy.frame.util.adapter.AbsRVAdapter
 import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogCloudFileListBinding
 import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.util.KeepassAUtil

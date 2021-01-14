@@ -88,7 +88,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
     // 检查是否是在回收站中
     if (!isRecycleBin) {
       isRecycleBin =
-        BaseApp.isV4 && BaseApp.KDB.pm.recycleBin != null && BaseApp.KDB.pm.recycleBin.id == groupId
+        BaseApp.isV4 && BaseApp.KDB!!.pm.recycleBin != null && BaseApp.KDB!!.pm.recycleBin.id == groupId
     }
 
     module = ViewModelProvider(this).get(GroupDetailModule::class.java)
@@ -158,7 +158,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
 
       override fun onGroupClick() {
         val dialog = CreateGroupDialog.generate {
-          parentGroup = BaseApp.KDB.pm.groups[groupId] ?: BaseApp.KDB.pm.rootGroup
+          parentGroup = BaseApp.KDB!!.pm.groups[groupId] ?: BaseApp.KDB!!.pm.rootGroup
           build()
         }
         dialog.show(supportFragmentManager, "CreateGroupDialog")

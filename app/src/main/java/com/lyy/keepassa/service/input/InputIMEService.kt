@@ -144,7 +144,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         if (isOpenQuickLock) {
           return
         }
-        BaseApp.KDB.clear(this)
+        BaseApp.KDB?.clear(this)
         BaseApp.KDB = null
         return
       }

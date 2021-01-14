@@ -135,7 +135,7 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
         return@setOnRefreshListener
       }
 
-      if (BaseApp.dbRecord.isAFS()) {
+      if (BaseApp.dbRecord!!.isAFS()) {
         isSyncDb = true
         getData()
         return@setOnRefreshListener

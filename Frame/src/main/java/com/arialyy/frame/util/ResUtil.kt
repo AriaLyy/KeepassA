@@ -11,6 +11,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.arialyy.frame.base.FrameApp
 
@@ -20,6 +21,10 @@ import com.arialyy.frame.base.FrameApp
  * @Date 2020/10/29
  **/
 object ResUtil {
+
+  fun getString(@StringRes strRes: Int): String {
+    return FrameApp.app.getString(strRes)
+  }
 
   /**
    * 颜色兼容工具

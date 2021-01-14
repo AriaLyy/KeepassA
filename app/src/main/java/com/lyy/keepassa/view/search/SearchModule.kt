@@ -54,19 +54,24 @@ class SearchModule : BaseModule() {
   /**
    * 搜索项目
    */
-  fun searchEntry(query: String) = liveData {
+  fun searchEntry(query: String, isFromAutoFill:Boolean = false) = liveData {
     val sp = SearchParametersV4()
     val entryList = ArrayList<PwEntry>()
     val groupList = ArrayList<PwGroup>()
     val data = ArrayList<SimpleItemEntity>()
     sp.searchString = query
-    BaseApp.KDB.pm.rootGroup.searchEntries(sp, entryList)
+    BaseApp.KDB!!.pm.rootGroup.searchEntries(sp, entryList)
 
-    searchGroup(query, groupList)
+    /*
+      自动填充不搜索群组
+     */
+    if (isFromAutoFill){
+      searchGroup(query, groupList)
 
-    if (entryList.isEmpty() && groupList.isEmpty()) {
-      emit(null)
-      return@liveData
+      if (entryList.isEmpty() && groupList.isEmpty()) {
+        emit(null)
+        return@liveData
+      }
     }
 
     // 组合群组信息
@@ -93,8 +98,8 @@ class SearchModule : BaseModule() {
     query: String,
     listStorage: ArrayList<PwGroup>
   ) {
-    for ((_, group) in BaseApp.KDB.pm.groups) {
-      if (group == BaseApp.KDB.pm.recycleBin){
+    for ((_, group) in BaseApp.KDB!!.pm.groups) {
+      if (group == BaseApp.KDB!!.pm.recycleBin){
         continue
       }
       if (group.name.contains(query, true)) {

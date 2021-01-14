@@ -44,6 +44,9 @@ object KDBAutoFillRepository {
    * 通过包名获取填充数据
    */
   fun getAutoFillDataByPackageName(pkgName: String): MutableList<PwEntry>? {
+    if (BaseApp.KDB?.pm == null){
+      return null
+    }
     KLog.d(TAG, "getFillDataByPkgName, pkgName = $pkgName")
     val listStorage = ArrayList<PwEntry>()
     KdbUtil.searchEntriesByPackageName(pkgName, listStorage)
@@ -58,7 +61,7 @@ object KDBAutoFillRepository {
         sp.setupNone()
         sp.searchInUrls = true
         sp.searchString = s
-        BaseApp.KDB.pm.rootGroup.searchEntries(sp, listStorage)
+        BaseApp.KDB!!.pm.rootGroup.searchEntries(sp, listStorage)
       }
 
       if (listStorage.isEmpty()) {
@@ -90,13 +93,16 @@ object KDBAutoFillRepository {
     apkPkgName: String,
     autofillFields: AutoFillFieldMetadataCollection
   ) {
-
+    if (BaseApp.KDB?.pm == null){
+      KLog.e(TAG, "数据库为空")
+      return
+    }
     val listStorage = ArrayList<PwEntry>()
     KdbUtil.searchEntriesByPackageName(apkPkgName, listStorage)
     val entry: PwEntry
     if (listStorage.isEmpty()) {
       if (BaseApp.isV4) {
-        entry = PwEntryV4(BaseApp.KDB.pm.rootGroup as PwGroupV4)
+        entry = PwEntryV4(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
         val icon = IconUtil.getAppIcon(context, apkPkgName)
         if (icon != null) {
           val baos = ByteArrayOutputStream()
@@ -104,15 +110,15 @@ object KDBAutoFillRepository {
           val datas: ByteArray = baos.toByteArray()
           val customIcon = PwIconCustom(UUID.randomUUID(), datas)
           entry.customIcon = customIcon
-          (BaseApp.KDB.pm as PwDatabaseV4).putCustomIcons(customIcon)
+          (BaseApp.KDB!!.pm as PwDatabaseV4).putCustomIcons(customIcon)
           entry.strings["KP2A_URL_1"] = ProtectedString(false, "androidapp://$apkPkgName")
         }
       } else {
         entry = PwEntryV3()
-        entry.setUrl("androidapp://$apkPkgName", BaseApp.KDB.pm)
+        entry.setUrl("androidapp://$apkPkgName", BaseApp.KDB!!.pm)
       }
       val appName = getAppName(context, apkPkgName)
-      entry.setTitle(appName ?: "newEntry", BaseApp.KDB.pm)
+      entry.setTitle(appName ?: "newEntry", BaseApp.KDB!!.pm)
       entry.icon = PwIconStandard(0)
       GlobalScope.launch {
         KdbUtil.addEntry(entry, save = false)
@@ -128,10 +134,10 @@ object KDBAutoFillRepository {
         fillField.autoFillField.textValue ?: continue
         if (fillField.autoFillType == View.AUTOFILL_TYPE_TEXT) {
           if (fillField.isPassword) {
-            entry.setPassword(fillField.autoFillField.textValue, BaseApp.KDB.pm)
+            entry.setPassword(fillField.autoFillField.textValue, BaseApp.KDB!!.pm)
 //            Log.d(TAG, "pass = ${fillField.textValue}")
           } else {
-            entry.setUsername(fillField.autoFillField.textValue, BaseApp.KDB.pm)
+            entry.setUsername(fillField.autoFillField.textValue, BaseApp.KDB!!.pm)
 //            Log.d(TAG, "userName = ${fillField.textValue}")
           }
         }

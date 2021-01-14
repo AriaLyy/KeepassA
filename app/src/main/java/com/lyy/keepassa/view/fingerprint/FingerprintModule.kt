@@ -47,9 +47,12 @@ class FingerprintModule : BaseModule() {
    * 移除快速解锁
    */
   fun deleteQuickInfo() {
+    if (BaseApp.dbRecord == null){
+      return
+    }
     viewModelScope.launch(Dispatchers.IO) {
       val dao = BaseApp.appDatabase.quickUnlockDao()
-      val record = dao.findRecord(BaseApp.dbRecord.localDbUri)
+      val record = dao.findRecord(BaseApp.dbRecord!!.localDbUri)
       if (record != null) {
         dao.deleteRecord(record)
       }

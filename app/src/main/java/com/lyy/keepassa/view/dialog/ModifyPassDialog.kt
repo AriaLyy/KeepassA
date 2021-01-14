@@ -11,8 +11,8 @@ package com.lyy.keepassa.view.dialog
 
 import android.text.InputType
 import android.view.View
-import com.arialyy.frame.base.BaseDialog
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogModifyPassBinding
 import com.lyy.keepassa.event.ModifyPassEvent
 import com.lyy.keepassa.util.HitUtil

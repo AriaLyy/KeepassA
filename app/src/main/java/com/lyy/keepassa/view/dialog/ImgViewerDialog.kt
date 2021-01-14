@@ -10,11 +10,10 @@
 package com.lyy.keepassa.view.dialog
 
 import android.graphics.BitmapFactory
-import android.os.Bundle
 import androidx.fragment.app.DialogFragment
-import com.arialyy.frame.base.BaseDialog
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogImgViewerBinding
 
 /**

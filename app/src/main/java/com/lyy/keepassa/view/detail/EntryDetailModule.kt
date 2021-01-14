@@ -31,7 +31,6 @@ import com.lyy.keepassa.entity.EntryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
-import com.lyy.keepassa.util.KdbUtil.decodeText
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.view.menu.EntryDetailFilePopMenu
@@ -182,16 +181,19 @@ class EntryDetailModule : BaseModule() {
    * 保存打开记录
    */
   fun saveRecord() {
+    if (BaseApp.dbRecord == null){
+      return
+    }
     GlobalScope.launch(Dispatchers.IO) {
       val dao = BaseApp.appDatabase.entryRecordDao()
-      var record = dao.getRecord(Types.UUIDtoBytes(pwEntry.uuid), BaseApp.dbRecord.localDbUri)
+      var record = dao.getRecord(Types.UUIDtoBytes(pwEntry.uuid), BaseApp.dbRecord!!.localDbUri)
       if (record == null) {
         record = EntryRecord(
             userName = pwEntry.username,
             title = pwEntry.title,
             uuid = Types.UUIDtoBytes(pwEntry.uuid),
             time = System.currentTimeMillis(),
-            dbFileUri = BaseApp.dbRecord.localDbUri
+            dbFileUri = BaseApp.dbRecord!!.localDbUri
         )
         dao.saveRecord(record)
       } else {

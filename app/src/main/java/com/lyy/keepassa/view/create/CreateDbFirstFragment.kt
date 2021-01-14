@@ -89,6 +89,9 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
 
     // 设置键盘确定按钮属性
     binding.dbName.setOnEditorActionListener { _, actionId, _ ->
+      if (!isAdded){
+        return@setOnEditorActionListener false
+      }
       // actionId 和android:imeOptions 属性要保持一致
       if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(binding.dbName.text)) {
          KeepassAUtil.instance.toggleKeyBord(requireContext())

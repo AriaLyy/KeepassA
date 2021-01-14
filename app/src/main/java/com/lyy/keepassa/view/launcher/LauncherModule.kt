@@ -54,6 +54,7 @@ import com.lyy.keepassa.view.DbPathType.AFS
 import com.lyy.keepassa.view.DbPathType.DROPBOX
 import com.lyy.keepassa.view.DbPathType.WEBDAV
 import com.lyy.keepassa.view.dialog.MsgDialog
+import com.tencent.bugly.crashreport.BuglyLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -171,6 +172,10 @@ class LauncherModule : BaseModule() {
     fragment: OpenDbFragment,
     openDbRecord: DbRecord
   ) {
+    if (!fragment.isAdded){
+      BuglyLog.d(TAG, "deleteBiomKey fragment isAdded = false")
+      return
+    }
     val resource = fragment.requireContext().resources
     keyStoreUtil?.deleteKeyStore()
     HitUtil.snackLong(fragment.getRootView(), resource.getString(R.string.hint_fingerprint_modify))

@@ -134,11 +134,12 @@ class AutoLockDbUtil private constructor() {
       Log.d(TAG, "锁定数据库")
       BaseApp.isLocked = true
       // 只有应用在前台才会跳转到锁屏页面
-      if ( KeepassAUtil.instance.isRunningForeground(BaseApp.APP) && BaseApp.KDB != null) {
+      if (KeepassAUtil.instance.isRunningForeground(BaseApp.APP) && BaseApp.KDB != null) {
         // 开启快速解锁则跳转到快速解锁页面
         if (isOpenQuickLock) {
           NotificationUtil.startQuickUnlockNotify(applicationContext)
-          if (AbsFrame.getInstance().currentActivity is QuickUnlockActivity) {
+          val cActivity = AbsFrame.getInstance().currentActivity
+          if (cActivity != null && cActivity is QuickUnlockActivity) {
             Log.w(TAG, "快速解锁已启动，不再启动快速解锁")
             return Result.success()
           }
@@ -155,13 +156,14 @@ class AutoLockDbUtil private constructor() {
         } else {
           NotificationUtil.startDbLocked(applicationContext)
           // 没有开启快速解锁，则回到启动页
-          if (AbsFrame.getInstance().currentActivity is LauncherActivity) {
+          val cActivity = AbsFrame.getInstance().currentActivity
+          if (cActivity != null && cActivity is LauncherActivity) {
             Log.w(TAG, "解锁页面已启动，不再启动快速解锁")
             return Result.success()
           }
 
           Log.d(TAG, "快速解锁没有启动，进入解锁界面")
-          BaseApp.KDB.clear(applicationContext)
+          BaseApp.KDB?.clear(applicationContext)
           BaseApp.KDB = null
           BaseApp.APP.startActivity(Intent(Intent.ACTION_MAIN).also {
             it.component =

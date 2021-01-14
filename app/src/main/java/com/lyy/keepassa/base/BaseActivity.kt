@@ -45,6 +45,7 @@ import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.view.create.CreateDbActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.launcher.OpenDbHistoryActivity
+import com.lyy.keepassa.view.main.QuickUnlockActivity
 
 /**
  * Created by Lyy on 2016/9/27.
@@ -74,7 +75,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   open fun useAnim() = true
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    if (!isHomeActivity() && (BaseApp.KDB == null || BaseApp.KDB.pm == null)) {
+    if (!isHomeActivity() && (BaseApp.KDB == null || BaseApp.KDB?.pm == null || BaseApp.dbRecord == null)) {
       BaseApp.isLocked = true
       HitUtil.toaskShort(getString(R.string.notify_db_locked))
       finishAfterTransition()
@@ -138,7 +139,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
       return
     }
     NotificationUtil.startDbLocked(this)
-    BaseApp.KDB.clear(this)
+    BaseApp.KDB?.clear(this)
     BaseApp.KDB = null
     LauncherActivity.startLauncherActivity(this)
     finish()

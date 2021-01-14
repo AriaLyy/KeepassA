@@ -201,7 +201,10 @@ class KeepassAUtil private constructor() {
   /**
    * 保存上一次打开的数据库记录
    */
-  fun saveLastOpenDbHistory(record: DbRecord) {
+  fun saveLastOpenDbHistory(record: DbRecord?) {
+    if (record == null){
+      return
+    }
     GlobalScope.launch(Dispatchers.IO) {
       val dao = BaseApp.appDatabase.dbRecordDao()
       val his = dao.findRecord(record.localDbUri)

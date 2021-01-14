@@ -21,12 +21,12 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arialyy.frame.base.BaseDialog
 import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwDataInf
 import com.lyy.keepassa.R
 import com.lyy.keepassa.R.color
+import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogSearchBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KeepassAUtil

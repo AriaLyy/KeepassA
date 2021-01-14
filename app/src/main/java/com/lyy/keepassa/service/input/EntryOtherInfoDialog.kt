@@ -50,7 +50,7 @@ class EntryOtherInfoDialog : BaseActivity<DialogOtherInfoBinding>() {
       finish()
       return
     }
-    pwEntry = BaseApp.KDB.pm.entries[entryUUID] as PwEntryV4
+    pwEntry = BaseApp.KDB!!.pm.entries[entryUUID] as PwEntryV4
     binding.rvList.adapter = moreInfoAdapter
     binding.rvList.setHasFixedSize(true)
     binding.rvList.layoutManager = LinearLayoutManager(this)

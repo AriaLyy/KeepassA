@@ -12,6 +12,7 @@ package com.arialyy.frame.core;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import androidx.annotation.Nullable;
 import com.arialyy.frame.base.FrameApp;
 import com.arialyy.frame.util.show.FL;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -119,7 +120,11 @@ public class AbsFrame {
   /**
    * 获取当前Activity（堆栈中最后一个压入的）
    */
+  @Nullable
   public AbsActivity getCurrentActivity() {
+    if (mActivityStack.isEmpty()){
+      return null;
+    }
     return mActivityStack.get(mActivityStack.size() - 1);
   }
 

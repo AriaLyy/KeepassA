@@ -14,8 +14,8 @@ import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import android.view.View
-import com.arialyy.frame.base.BaseDialog
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogDonateBinding
 import com.zzhoujay.richtext.RichText
 

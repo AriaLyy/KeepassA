@@ -20,9 +20,9 @@ import android.widget.TimePicker
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.arialyy.frame.base.BaseDialog
 import com.arialyy.frame.util.DpUtils
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogTimerBinding
 import com.lyy.keepassa.event.TimeEvent
 import org.greenrobot.eventbus.EventBus

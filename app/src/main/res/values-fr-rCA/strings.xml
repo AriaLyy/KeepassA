@@ -56,6 +56,13 @@
   <string name="error_uri">Erreur d\'Uri</string>
   <string name="error_input_pass_null">Veuillez entrer le mot de passe de la BD</string>
   <string name="error_open_db">Échec d\'ouverture de la base de données, veuillez vérifier si le mot de passe est correct ou si une clé est requise</string>
+  <string name="error_open_db_key_empty">Clé manquante</string>
+  <string name="error_open_db_pass_error">Mot de passe incorrect</string>
+  <string name="error_open_db_key_invalid">Clé non valide</string>
+  <string name="error_open_db_version_error">Version de la base de données non valide</string>
+  <string name="error_open_db_signature_error">Signature de base de données non valide</string>
+  <string name="error_open_db_algorithm_error">Algorithme non valide</string>
+  <string name="error_open_db_arcfour_error">Algorithme de chiffrement de flux non valide</string>
   <string name="hint_group_desc">Groupe - %s entrées</string>
   <string name="error_group_id_null">groupId est nul</string>
   <string name="error_entry_id_null">entryId est nul</string>

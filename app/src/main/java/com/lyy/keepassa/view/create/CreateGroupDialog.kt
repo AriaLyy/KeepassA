@@ -15,12 +15,12 @@ import android.content.Intent
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.arialyy.frame.base.BaseDialog
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogAddGroupBinding
 import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.util.HitUtil
@@ -40,7 +40,7 @@ class CreateGroupDialog : BaseDialog<DialogAddGroupBinding>(), View.OnClickListe
   private var customIcon: PwIconCustom? = null
   private var group: PwGroup? = null
   private lateinit var module: CreateEntryModule
-  var parentGroup: PwGroup = BaseApp.KDB.pm.rootGroup
+  var parentGroup: PwGroup = BaseApp.KDB!!.pm.rootGroup
 
   companion object {
     fun generate(body: CreateGroupDialog.() -> CreateGroupDialog): CreateGroupDialog {

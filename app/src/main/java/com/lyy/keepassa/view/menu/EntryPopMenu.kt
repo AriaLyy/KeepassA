@@ -177,8 +177,8 @@ class EntryPopMenu(
         try {
           if (BaseApp.isV4) {
             val v4Entry = entry as PwEntryV4
-            if (BaseApp.KDB.pm.canRecycle(v4Entry)) {
-              BaseApp.KDB.pm.recycle(v4Entry)
+            if (BaseApp.KDB!!.pm.canRecycle(v4Entry)) {
+              BaseApp.KDB!!.pm.recycle(v4Entry)
             } else {
               KdbUtil.deleteEntry(entry, false, needUpload = false)
             }

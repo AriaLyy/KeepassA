@@ -57,6 +57,13 @@
   <string name="error_uri">Uri error</string>
   <string name="error_input_pass_null">Please enter the database password</string>
   <string name="error_open_db">The database failed to open, please check if the password is wrong or if you need a key</string>
+  <string name="error_open_db_key_empty">Missing key</string>
+  <string name="error_open_db_pass_error">Invalid password</string>
+  <string name="error_open_db_key_invalid">Invalid key</string>
+  <string name="error_open_db_version_error">Invalid Database version</string>
+  <string name="error_open_db_signature_error">Invalid Database signature</string>
+  <string name="error_open_db_algorithm_error">Invalid algorithm</string>
+  <string name="error_open_db_arcfour_error">Invalid stream encryption algorithm</string>
   <string name="hint_group_desc">Group-%s items</string>
   <string name="error_group_id_null">groupId is null</string>
   <string name="error_entry_id_null">entryId is null</string>

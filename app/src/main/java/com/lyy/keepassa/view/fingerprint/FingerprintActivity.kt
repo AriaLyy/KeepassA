@@ -61,7 +61,7 @@ class FingerprintActivity : BaseActivity<ActivityFingerprintBinding>() {
       changeBg(isChecked)
     }
 
-    module.getQuickUnlockRecord(BaseApp.dbRecord.localDbUri)
+    module.getQuickUnlockRecord(BaseApp.dbRecord!!.localDbUri)
         .observe(this, Observer { record ->
           if (record == null) {
             module.oldFlag = FLAG_CLOSE

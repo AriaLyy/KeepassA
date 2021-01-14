@@ -114,7 +114,7 @@ class DBSettingFragment : PreferenceFragmentCompat() {
     }
     modifyDbName.setOnPreferenceChangeListener { _, newValue ->
       if ((newValue as String).isNotEmpty()) {
-        if (newValue == BaseApp.KDB.pm.name) {
+        if (newValue == BaseApp.KDB!!.pm.name) {
           HitUtil.toaskShort(getString(R.string.db_name_no_alter))
           return@setOnPreferenceChangeListener false
         }

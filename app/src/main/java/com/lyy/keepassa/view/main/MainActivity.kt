@@ -140,7 +140,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
       override fun onGroupClick() {
         val dialog = CreateGroupDialog.generate {
-          parentGroup = BaseApp.KDB.pm.rootGroup
+          parentGroup = BaseApp.KDB!!.pm.rootGroup
           build()
         }
         dialog.show(supportFragmentManager, "CreateGroupDialog")

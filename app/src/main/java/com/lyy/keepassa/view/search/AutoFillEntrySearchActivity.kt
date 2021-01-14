@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
+import com.keepassdroid.database.PwGroup
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.databinding.ActivityAutoFillEntrySearchBinding
@@ -186,7 +187,7 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
       binding.noEntryLayout.visibility = View.VISIBLE
       return
     }
-    module.searchEntry(query)
+    module.searchEntry(query, isFromFill)
         .observe(this, Observer { list ->
           if (list != null) {
             binding.noEntryLayout.visibility = View.GONE
@@ -207,8 +208,7 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
    */
   private fun initList() {
     adapter =
-      SearchAdapter(
-          this, listData, OnClickListener { v ->
+      SearchAdapter(this, listData) { v ->
         val position = v.tag as Int
         val item = listData[position]
         module.delHistoryRecord(item.title.toString())
@@ -217,12 +217,19 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
               adapter.notifyDataSetChanged()
             })
 
-      })
+      }
     binding.list.layoutManager = LinearLayoutManager(this)
     binding.list.adapter = adapter
     RvItemClickSupport.addTo(binding.list)
         .setOnItemClickListener { _, position, _ ->
           val item = listData[position]
+
+          /*
+            if is From autofill and that is group, No operation
+           */
+          if (isFromFill && item.obj is PwGroup){
+            return@setOnItemClickListener
+          }
           val entry = item.obj as PwEntry
           // if is from browser, that entry will be ignore
           if (W3cHints.isBrowser(apkPkgName!!)){

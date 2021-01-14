@@ -11,6 +11,7 @@ package com.lyy.keepassa.util
 
 import android.util.Log
 import com.arialyy.frame.util.RegularRule
+import com.keepassdroid.Database
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
@@ -28,12 +29,8 @@ import java.util.UUID
 object KdbUtil {
   private val TAG = javaClass.simpleName
 
-  /**
-   * 解码字符串
-   */
-  fun PwEntry.decodeText(text: String): String {
-    val spr = SprEngine.getInstance(BaseApp.KDB.pm)
-    return spr.compile(text, this, BaseApp.KDB.pm)
+  fun Database?.isNull(): Boolean {
+    return this == null || this.pm == null
   }
 
   /**
@@ -41,7 +38,7 @@ object KdbUtil {
    */
   fun getUserName(entry: PwEntry): String {
     return if (entry.isRef())
-      entry.getUsername(true, BaseApp.KDB.pm)
+      entry.getUsername(true, BaseApp.KDB!!.pm)
     else
       entry.username
   }
@@ -52,7 +49,7 @@ object KdbUtil {
   fun getPassword(entry: PwEntry): String {
     val pass = entry.password
     return if (entry.isRef())
-      entry.getPassword(true, BaseApp.KDB.pm)
+      entry.getPassword(true, BaseApp.KDB!!.pm)
     else
       pass
   }
@@ -134,7 +131,7 @@ object KdbUtil {
    * 只添加群组，不进行保存，不进行上传
    */
   fun addGroup(group: PwGroup) {
-    BaseApp.KDB.pm.addGroupTo(group, group.parent)
+    BaseApp.KDB!!.pm.addGroupTo(group, group.parent)
   }
 
   /**
@@ -149,7 +146,7 @@ object KdbUtil {
       KDBHandlerHelper.getInstance(BaseApp.APP)
           .saveEntry(BaseApp.KDB, entry)
     } else {
-      BaseApp.KDB.pm.addEntryTo(entry, entry.parent)
+      BaseApp.KDB!!.pm.addEntryTo(entry, entry.parent)
     }
     if (uploadDb) {
       return uploadDb()
@@ -165,13 +162,13 @@ object KdbUtil {
     uploadDb: Boolean = true,
     isSync: Boolean = false
   ): Int {
-    Log.d(TAG, "保存前的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB.pm.entries.size}")
+    Log.d(TAG, "保存前的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
     val b = KDBHandlerHelper.getInstance(BaseApp.APP)
         .save(BaseApp.KDB)
     if (uploadDb) {
       return uploadDb()
     }
-    Log.d(TAG, "保存后的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB.pm.entries.size}")
+    Log.d(TAG, "保存后的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
 //    // 更新rootGroup条目
 //    if (b && isSync) {
 //      updateRootGroup()
@@ -208,7 +205,7 @@ object KdbUtil {
    */
   private suspend fun uploadDb(): Int {
     if (!BaseApp.isAFS()) {
-      val code = DbSynUtil.uploadSyn(BaseApp.APP, BaseApp.dbRecord)
+      val code = DbSynUtil.uploadSyn(BaseApp.APP, BaseApp.dbRecord!!)
       if (code != DbSynUtil.STATE_SUCCEED) {
         Log.e(TAG, "同步数据库失败，code：$code")
       }

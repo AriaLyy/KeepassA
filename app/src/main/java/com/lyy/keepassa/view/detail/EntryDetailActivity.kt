@@ -109,9 +109,9 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       true
     }
 
-    pwEntry = BaseApp.KDB.pm.entries[uuid]!!
+    pwEntry = BaseApp.KDB!!.pm.entries[uuid]!!
     module.initEntry(pwEntry)
-    if (BaseApp.isV4 && pwEntry.parent == BaseApp.KDB.pm.recycleBin) {
+    if (BaseApp.isV4 && pwEntry.parent == BaseApp.KDB!!.pm.recycleBin) {
       isInRecycleBin = true
     }
 

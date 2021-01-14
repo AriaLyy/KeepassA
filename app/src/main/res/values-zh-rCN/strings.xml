@@ -57,6 +57,13 @@
   <string name="error_uri">uri 错误</string>
   <string name="error_input_pass_null">请输入数据库密码</string>
   <string name="error_open_db">数据库打开失败，请检查密码是否错误或是否需要密钥</string>
+  <string name="error_open_db_key_empty">缺少密钥</string>
+  <string name="error_open_db_pass_error">数据库密码错误</string>
+  <string name="error_open_db_key_invalid">无效的密钥</string>
+  <string name="error_open_db_version_error">数据库版本错误</string>
+  <string name="error_open_db_signature_error">数据库签名错误</string>
+  <string name="error_open_db_algorithm_error">无效的算法</string>
+  <string name="error_open_db_arcfour_error">无效的流加密算法</string>
   <string name="hint_group_desc">群组-%s个条目</string>
   <string name="error_group_id_null">groupId 为空</string>
   <string name="error_entry_id_null">entryId 为空</string>

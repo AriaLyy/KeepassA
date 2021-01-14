@@ -17,9 +17,9 @@ import android.provider.Settings
 import android.text.TextUtils
 import android.util.Log
 import androidx.core.content.edit
-import com.arialyy.frame.base.BaseDialog
 import com.arialyy.frame.util.AndroidUtils
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.databinding.DialogUpgradeBinding
 import com.lyy.keepassa.util.FingerprintUtil

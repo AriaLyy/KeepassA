@@ -13,8 +13,8 @@ import android.net.Uri
 import android.text.TextUtils
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.arialyy.frame.base.BaseDialog
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogWebdavLoginBinding
 import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.event.DbPathEvent

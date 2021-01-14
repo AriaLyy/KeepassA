@@ -9,7 +9,6 @@
 
 package com.lyy.keepassa.view.create
 
-import android.R.layout
 import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
@@ -45,7 +44,6 @@ import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KLog
-import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.getFileInfo
 import com.lyy.keepassa.util.putArgument
@@ -158,7 +156,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
         return
       }
       entryId = uuidTemp as UUID
-      val entryTemp = BaseApp.KDB.pm.entries[entryId]
+      val entryTemp = BaseApp.KDB!!.pm.entries[entryId]
       if (entryTemp == null) {
         Log.e(TAG, "【${entryId}】对应的条目不存在")
         finish()
@@ -191,7 +189,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     if (type == TYPE_NEW_TYPE_ENTRY || type == TYPE_EDIT_ENTRY || isFromAutoFillSave) {
       initData(type == TYPE_EDIT_ENTRY)
     } else {
-      pwEntry = PwEntryV4(BaseApp.KDB.pm.rootGroup as PwGroupV4)
+      pwEntry = PwEntryV4(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
     }
     setWidgetListener()
   }
@@ -471,7 +469,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
    * 创建实体
    */
   private fun createEntry(parentId: PwGroupId) {
-    pwEntry.parent = BaseApp.KDB.pm.groups[parentId] as PwGroupV4?
+    pwEntry.parent = BaseApp.KDB!!.pm.groups[parentId] as PwGroupV4?
 
     module.updateEntry(
         entry = pwEntry,

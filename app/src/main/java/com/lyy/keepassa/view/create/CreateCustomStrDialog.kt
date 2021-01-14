@@ -10,9 +10,10 @@
 package com.lyy.keepassa.view.create
 
 import android.view.View
-import com.arialyy.frame.base.BaseDialog
+import com.arialyy.frame.base.FrameDialog
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogAddAttrStrBinding
 import com.lyy.keepassa.event.CreateAttrStrEvent
 import com.lyy.keepassa.util.HitUtil

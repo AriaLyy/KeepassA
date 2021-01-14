@@ -67,7 +67,7 @@ class GroupPopMenu(
         .isVisible = isInRecycleBin
     // 回收站不允许删除
     popup.menu.findItem(R.id.del)
-        .isVisible = !(BaseApp.KDB.pm.recycleBin != null && BaseApp.KDB.pm.recycleBin == pwGroup)
+        .isVisible = !(BaseApp.KDB!!.pm.recycleBin != null && BaseApp.KDB!!.pm.recycleBin == pwGroup)
 
     // 以下代码为强制显示icon
     val mPopup = ReflectionUtil.getField(PopupMenu::class.java, "mPopup")
@@ -158,8 +158,8 @@ class GroupPopMenu(
       val code = withContext(Dispatchers.IO) {
         try {
           if (BaseApp.isV4) {
-            if (BaseApp.KDB.pm.canRecycle(pwGroup) && !isInRecycleBin) {
-              (BaseApp.KDB.pm as PwDatabaseV4).recycle(pwGroup as PwGroupV4)
+            if (BaseApp.KDB!!.pm.canRecycle(pwGroup) && !isInRecycleBin) {
+              (BaseApp.KDB!!.pm as PwDatabaseV4).recycle(pwGroup as PwGroupV4)
             } else {
               // 回收站中直接删除
               KdbUtil.deleteGroup(pwGroup, false, needUpload = false)
