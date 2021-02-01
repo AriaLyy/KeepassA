@@ -7,25 +7,25 @@
  */
 package com.lyy.keepassa.widget.editor
 
+import android.text.Editable
+
 /**
  * @Author laoyuyu
  * @Description
  * @Date 2020/11/30
  **/
-class ClearAction(val container: MutableList<CharSequence>) : IAction {
-  private val cache = mutableListOf<CharSequence>()
-  override fun execute(): Boolean {
-    cache.clear()
-    cache.addAll(container)
-    container.clear()
+class ClearAction(
+  val ed: Editable,
+  val container: StringWrapper
+) : IAction {
+
+  override fun redo(): Boolean {
+    ed.clear()
     return true
   }
 
-  override fun redo(): Boolean {
-    return execute()
-  }
-
   override fun undo(): Boolean {
-    return container.addAll(cache)
+    ed.insert(0, container.content)
+    return true
   }
 }

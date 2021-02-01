@@ -224,7 +224,7 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
       return
     }
     // 直接启动下一界面
-    var startNextFragment = true
+    val startNextFragment = true
 
     when (pathEvent.dbPathType) {
       AFS -> {
@@ -348,6 +348,9 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
         && data.data != null
         && context != null
     ) {
+      if (!isAdded){
+        return
+      }
       // 申请长期的uri权限
       // 防止一个不可思议的空指针，data.data 有可能还是为空
       data.data?.apply {

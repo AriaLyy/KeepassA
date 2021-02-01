@@ -7,24 +7,25 @@
  */
 package com.lyy.keepassa.widget.editor
 
-/**
+import android.text.Editable
+
+/**µ
  * @Author laoyuyu
  * @Description
  * @Date 2020/11/30
  **/
 class DeleteAction(
-  val container: MutableList<CharSequence>,
-  val delStr: CharSequence
+  private val ed: Editable,
+  private val delStr: StringWrapper
 ) : IAction {
-  override fun execute(): Boolean {
-    return container.remove(delStr)
-  }
 
   override fun redo(): Boolean {
-    return container.remove(delStr)
+    ed.replace(delStr.start + 1, delStr.start + delStr.content.length + 1, "")
+    return true
   }
 
   override fun undo(): Boolean {
-    return container.add(delStr)
+    ed.insert(delStr.start + 1, delStr.content)
+    return true
   }
 }

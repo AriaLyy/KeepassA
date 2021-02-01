@@ -9,10 +9,22 @@ package com.lyy.keepassa.widget.editor
 
 /**
  * @Author laoyuyu
+ * @param start the position of the string in the origin string
+ * @param index the index of in the container
  * @Description
- * @Date 2020/11/30
+ * @Date 2021/1/15
  **/
-interface IAction {
-  fun redo(): Boolean
-  fun undo(): Boolean
+data class StringWrapper(
+  val type:Int,
+  val content: String,
+  val start:Int,
+) {
+
+  override fun toString(): String {
+    return content
+  }
 }
+
+const val TYPE_ADD = 1
+const val TYPE_DELETE = 2
+const val TYPE_CLEAR = 3

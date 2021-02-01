@@ -7,25 +7,26 @@
  */
 package com.lyy.keepassa.widget.editor
 
+import android.text.Editable
+
 /**
  * @Author laoyuyu
+ * @param start the chart index
  * @Description
  * @Date 2020/11/30
  **/
-class AddAction(
-  val container: MutableList<CharSequence>,
-  val newStr: CharSequence
+data class AddAction(
+  val ed: Editable,
+  val addStr: StringWrapper
 ) : IAction {
 
-  override fun execute(): Boolean {
-    return container.add(newStr)
-  }
-
   override fun redo(): Boolean {
-    return container.add(newStr)
+    ed.insert(addStr.start, addStr.content)
+    return true
   }
 
   override fun undo(): Boolean {
-    return container.remove(newStr)
+    ed.replace((addStr.start - addStr.content.length) + 1, addStr.start + 1, "")
+    return true
   }
 }

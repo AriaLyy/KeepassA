@@ -14,13 +14,9 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.Log
 import androidx.appcompat.widget.AppCompatEditText
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import kotlin.text.StringBuilder
 
 /**
  * @Author laoyuyu
@@ -34,11 +30,16 @@ class EditorView(
   private val TAG = javaClass.simpleName
   private var scope = MainScope()
   private val INTERVAL = 1000L
-  private var isAdding = false
   private var lastOperateTime = System.currentTimeMillis()
-  private var sb = StringBuilder()
-  private val operateManager = OperateManager()
   private var isOperating = false
+
+  private val operateManager by lazy {
+    OperateManager(this.editableText)
+  }
+
+  private val cache by lazy {
+    CharBuffer(this.editableText)
+  }
 
   override fun onFinishInflate() {
     super.onFinishInflate()
@@ -46,12 +47,14 @@ class EditorView(
     inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
     isSingleLine = false
     addTextChangedListener(object : TextWatcher {
+      var beforeStr = ""
       override fun beforeTextChanged(
         s: CharSequence?,
         start: Int,
         count: Int,
         after: Int
       ) {
+        s?.let { beforeStr = it.toString() }
       }
 
       /**
@@ -66,26 +69,40 @@ class EditorView(
         before: Int,
         count: Int
       ) {
-//        Log.d(TAG, "onTextChanged: s = " + s + ", start = " + start +
-//            ", before = " + before + ", count = " + count)
-        if (s.isNullOrEmpty() || isOperating) return
-        // add new str
-        if (before == 0) {
-          val newStr = s.subSequence(start, start + count)
-          if (System.currentTimeMillis() - lastOperateTime > INTERVAL) {
-            addNewStr(newStr)
-            return
-          }
-          sb.append(newStr)
+        Log.d(TAG, "onTextChanged: s = $s, start = $start, before = $before, count = $count")
+        if (isOperating) {
+          Log.w(TAG, "isOperating")
           return
         }
         /*
-          delete new str
-         */
-        // before del str need add str form cache, and clear cache
-        addNewStr(null)
-        val delStr = s.subSequence(start - before, start)
-        operateManager.delete(delStr)
+         delete str
+        */
+        if (count == 0) {
+          // before del str need add str form cache, and clear cache
+//          addNewStr(null)
+          val delStr = if (s.isNullOrEmpty()) {
+            beforeStr
+          } else {
+            beforeStr.substring(start - before + 1, start + 1)
+          }
+          Log.d(TAG, "beforeStr = ${beforeStr}, delete Str = $delStr")
+          operateManager.delete(delStr, start - before, start)
+        }
+
+        if (s.isNullOrEmpty()) return
+        // add new str
+        if (before == 0 && count != 0) {
+          val newStr = s.subSequence(start, start + count)
+          addNewStr(newStr.toString(), start)
+
+//          if (System.currentTimeMillis() - lastOperateTime > INTERVAL) {
+//            addNewStr(newStr.toString())
+//            return
+//          }
+//          sb.append(newStr)
+          return
+        }
+
       }
 
       override fun afterTextChanged(s: Editable?) {
@@ -110,62 +127,100 @@ class EditorView(
     if (!scope.isActive) {
       scope = MainScope()
     }
-    scope.launch(Dispatchers.IO) {
-      repeat(Int.MAX_VALUE) {
-        delay(INTERVAL * 5)
-        if (!isAdding) {
-          addNewStr(null)
-        }
-      }
-    }
+//    scope.launch(Dispatchers.IO) {
+//      repeat(Int.MAX_VALUE) {
+//        delay(INTERVAL * 2)
+//        if (!isAdding) {
+////          Log.i(TAG, "repeat add new Str = $sb")
+//          addNewStr(null)
+//        }
+//      }
+//    }
   }
 
   override fun onDetachedFromWindow() {
     super.onDetachedFromWindow()
+    operateManager.destroy()
     scope.cancel()
   }
 
   /**
    * add new str to container
    */
-  private fun addNewStr(s: CharSequence?) {
-    isAdding = true
-    s?.let { sb.append(it) }
+  private fun addNewStr(
+    s: String,
+    start: Int
+  ) {
     lastOperateTime = System.currentTimeMillis()
-    if (sb.isEmpty()) {
-      isAdding = false
-      return
-    }
-    val str = sb.toString()
-    Log.d(TAG, "addNewStr = $str")
-    operateManager.add(str)
-    sb.clear()
-    isAdding = false
+    operateManager.add(s, start)
   }
 
-  fun addOperateStr(s: CharSequence) {
-    operateManager.add(s)
+  fun addOperateStr(
+    s: String,
+    start: Int
+  ) {
+    operateManager.add(s, start)
   }
 
   fun undo() {
+    checkCache()
     isOperating = true
-    val newStr = operateManager.undo()
-    setText(newStr)
-    setSelection(newStr.length)
+    operateManager.undo()
+    isOperating = false
   }
 
   fun redo() {
+    checkCache()
     isOperating = true
-    val newStr = operateManager.redo()
-    setText(newStr)
-    setSelection(newStr.length)
+    operateManager.redo()
+    isOperating = false
   }
 
   fun clear() {
+    checkCache()
     isOperating = true
     val newStr = operateManager.clear()
     setText(newStr)
     setSelection(newStr.length)
+  }
+
+  /**
+   * if the cache has some char, before operate, need addCache str
+   */
+  private fun checkCache() {
+    if (cache.isEmpty()) {
+      return
+    }
+    val p = cache.getCache()
+
+    addNewStr(p.second.toString(), p.first)
+  }
+
+  private class CharBuffer(val ed: Editable) {
+    private var sb = StringBuilder()
+    private var start: Int = ed.length
+    private fun addChart(
+      start: Int,
+      charSequence: CharSequence
+    ) {
+      this.start = start
+      sb.append(charSequence)
+    }
+
+    fun isEmpty(): Boolean {
+      return sb.isEmpty()
+    }
+
+    /**
+     * get cahce and reset start
+     */
+    fun getCache(): Pair<Int, CharSequence> {
+      val str = sb.toString()
+      val p = Pair(start, str)
+      start = ed.length
+      sb.clear()
+      return p
+    }
   }
 
 }

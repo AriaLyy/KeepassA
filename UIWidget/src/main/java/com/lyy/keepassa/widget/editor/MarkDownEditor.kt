@@ -179,7 +179,7 @@ class MarkDownEditor(
   ) {
     val temp = if (afterEnter) "\n" else ""
     editor.text?.insert(editor.selectionStart, "\n$str$temp")
-    editor.addOperateStr(str)
+    editor.addOperateStr(str.toString(), editor.selectionStart)
   }
 
 }

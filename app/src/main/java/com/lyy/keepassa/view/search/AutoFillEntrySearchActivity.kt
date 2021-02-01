@@ -222,8 +222,10 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
     binding.list.adapter = adapter
     RvItemClickSupport.addTo(binding.list)
         .setOnItemClickListener { _, position, _ ->
+          if (apkPkgName.isNullOrEmpty()){
+            return@setOnItemClickListener
+          }
           val item = listData[position]
-
           /*
             if is From autofill and that is group, No operation
            */

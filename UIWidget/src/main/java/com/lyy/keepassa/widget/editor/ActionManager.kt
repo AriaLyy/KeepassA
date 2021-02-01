@@ -19,39 +19,43 @@ class ActionManager {
   private val capacity = 100
 
   // 恢复数组
-  private val redos = ArrayDeque<IAction>()
+  private val redoQueue = ArrayDeque<IAction>()
 
   // 撤销数组
-  private val undos = ArrayDeque<IAction>()
+  private val undoQueue = ArrayDeque<IAction>()
+
+  fun getRedoQueue() = redoQueue
+
+  fun getUndoQueue() = undoQueue
 
   fun setLastAction(action: IAction) {
-    redos.clear()
-    undos.add(action)
+    redoQueue.clear()
+    undoQueue.add(action)
   }
 
   fun canUndo(): Boolean {
-    return undos.size > 0
+    return undoQueue.size > 0
   }
 
   fun canRedo(): Boolean {
-    return redos.size > 0
+    return redoQueue.size > 0
   }
 
   fun undo(): IAction? {
-    if (redos.size >= capacity) {
-      redos.pollFirst()
+    if (redoQueue.size >= capacity) {
+      redoQueue.pollFirst()
     }
-    val undoAction = undos.pollLast()
-    redos.offer(undoAction)
+    val undoAction = undoQueue.pollLast()
+    redoQueue.offer(undoAction)
     return undoAction
   }
 
   fun redo(): IAction? {
-    if (undos.size >= capacity) {
-      undos.pollFirst()
+    if (undoQueue.size >= capacity) {
+      undoQueue.pollFirst()
     }
-    val redoAction = redos.pollLast()
-    undos.offer(redoAction)
+    val redoAction = redoQueue.pollLast()
+    undoQueue.offer(redoAction)
     return redoAction
   }
 }

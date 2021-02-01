@@ -7,58 +7,69 @@
  */
 package com.lyy.keepassa.widget.editor
 
-import java.lang.StringBuilder
+import android.text.Editable
+import android.util.Log
 
 /**
  * @Author laoyuyu
  * @Description
  * @Date 2020/11/30
  **/
-class OperateManager {
+class OperateManager(val ed: Editable) {
 
-  private val container = mutableListOf<CharSequence>()
+  private val TAG = javaClass.simpleName
   private val actionManager = ActionManager()
 
-  fun add(addStr: CharSequence) {
-    val addAction = AddAction(container, addStr)
-    addAction.execute()
+  fun destroy() {
+    actionManager.getRedoQueue()
+        .clear()
+    actionManager.getUndoQueue()
+        .clear()
+  }
+
+  fun add(
+    addStr: String,
+    start: Int
+  ) {
+    Log.d(TAG, "AddAction, content = $addStr, start = $start")
+    val addAction =
+      AddAction(ed, StringWrapper(content = addStr, start = start, type = TYPE_ADD))
     actionManager.setLastAction(addAction)
   }
 
-  fun delete(delStr: CharSequence) {
-    val delAction = DeleteAction(container, delStr)
-    delAction.execute()
+  fun delete(
+    delStr: String,
+    start: Int,
+    end: Int
+  ) {
+    Log.d(TAG, "delAction, content = $delStr, start = $start")
+    val delAction =
+      DeleteAction(ed, StringWrapper(content = delStr, start = start, type = TYPE_DELETE))
     actionManager.setLastAction(delAction)
   }
 
   fun clear(): String {
-    val clearAction = ClearAction(container)
-    clearAction.execute()
+    val clearAction =
+      ClearAction(ed, StringWrapper(content = ed.toString(), start = 0, type = TYPE_CLEAR))
     actionManager.setLastAction(clearAction)
     return ""
   }
 
-  fun undo(): String {
+  fun undo() {
     if (actionManager.canUndo()) {
-      actionManager.undo()?.undo()
+      val action = actionManager.undo()
+      Log.d(TAG, "undoAction, actionType = $action")
+      action?.undo()
     }
-    return containerToString()
+    return
   }
 
-  fun redo(): String {
+  fun redo() {
     if (actionManager.canRedo()) {
-      actionManager.redo()
-          ?.redo()
+      val action = actionManager.redo()
+      Log.d(TAG, "redoAction, actionType = $action")
+      action?.redo()
     }
-    return containerToString()
+    return
   }
-
-  private fun containerToString(): String {
-    val sb = StringBuilder()
-    container.forEach {
-      sb.append(it)
-    }
-    return sb.toString()
-  }
-
 }
