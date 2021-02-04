@@ -1,3 +1,18 @@
+#### 1.7 (2021/2/4)
+- 增加當包名不匹配時，將會從url匹配關鍵字
+- 增加參考條目提示
+- 增加[屏幕鎖定，自動鎖定數據庫功能](route://keepassA.com/kpa?activity=SettingActivity&type=app)
+- note增加編輯功能
+
+![編輯](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/editor.png)
+- 增加用戶名歷史記錄功能
+
+![user_drop_down_list](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/user_drop_down_list.png)
+- 搜索忽略回收站中的條目
+- 修復夜間模式下，自動填充文字無法顯示的問題
+- 修復某些應用無法自動填充的問題
+- 修復一些崩潰問題
+
 #### 1.6 (2020/11/28)
 - 自動填充模塊，修復關聯條目後，返回到應用，已關聯的數據無法顯示的問題
 - 自動填充模塊，修復多個輸入框時，輸入框數據填充錯誤的問題

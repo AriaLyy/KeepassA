@@ -1,3 +1,18 @@
+#### 1.7 (2021/2/4)
+- Add, When the package name does not match, the keyword will be matched from the url
+- Add, Reference entry hint
+- Add, [Screen lock, automatic lock database function](route://keepassA.com/kpa?activity=SettingActivity&type=app)
+- Add, note add editer
+
+![editor](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/editor.png)
+- Add, User name history record function
+
+![user_drop_down_list](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/user_drop_down_list.png)
+- Add, Search ignores items in the recycle bin
+- Fix, In night mode, auto-fill text cannot be displayed
+- Fix, Some applications cannot be automatically filled
+- Fix, Some crash issues
+
 #### 1.6 (2020/11/28)
 - Auto-fill module, after fixing the associated entry, return to the application, the associated data cannot be displayed
 - Auto-fill module, fix the problem that the input box data is filled incorrectly when multiple input boxes are filled

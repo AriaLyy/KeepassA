@@ -293,4 +293,7 @@
   <string name="other">其它</string>
   <string name="ref_entry">參考條目</string>
   <string name="multi_choice">多選</string>
+  <string name="set_summary_screen_lock_off">屏幕鎖定不鎖定數據庫</string>
+  <string name="set_summary_screen_lock_on">屏幕鎖定自動鎖定數據庫</string>
+  <string name="set_title_screen_lock">屏幕鎖定設置</string>
 </resources>

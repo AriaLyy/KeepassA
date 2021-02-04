@@ -10,18 +10,16 @@
 package com.keepassdroid.stream;
 
 import com.keepassdroid.utils.Types;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.UUID;
-
 
 /** Little endian version of the DataInputStream
  * @author bpellin
  *
  */
 public class LEDataInputStream extends InputStream {
+	private final String TAG = "LEDataInputStream";
 
 	public static final long INT_TO_LONG_MASK = 0xffffffffL;
 	
@@ -98,11 +96,11 @@ public class LEDataInputStream extends InputStream {
 
 	public byte[] readBytes(int length) throws IOException {
 		byte[] buf = new byte[length];
-		
+
 		int count = 0;
 		while ( count < length ) {
 			int read = read(buf, count, length - count);
-			
+
 			// Reached end
 			if ( read == -1 ) {
 				// Stop early
@@ -110,10 +108,10 @@ public class LEDataInputStream extends InputStream {
 				System.arraycopy(buf, 0, early, 0, count);
 				return early;
 			}
-			
+
 			count += read;
 		}
-		
+
 		return buf;
 	}
 

@@ -64,18 +64,12 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     }
   }
 
-  private fun isHomeActivity(): Boolean {
-    val clazz = javaClass
-    return (clazz == LauncherActivity::class.java
-        || clazz == CreateDbActivity::class.java
-        || clazz == OpenDbHistoryActivity::class.java
-        )
-  }
-
   open fun useAnim() = true
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    if (!isHomeActivity() && (BaseApp.KDB == null || BaseApp.KDB?.pm == null || BaseApp.dbRecord == null)) {
+    if (!KeepassAUtil.instance.isHomeActivity(this)
+        && (BaseApp.KDB == null || BaseApp.KDB?.pm == null || BaseApp.dbRecord == null)
+    ) {
       BaseApp.isLocked = true
       HitUtil.toaskShort(getString(R.string.notify_db_locked))
       finishAfterTransition()
@@ -126,22 +120,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   }
 
   protected fun showQuickUnlockDialog() {
-    val isOpenQuickLock = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-        .getBoolean(getString(R.string.set_quick_unlock), false)
-    if (isOpenQuickLock) {
-      BaseApp.APP.startActivity(Intent(Intent.ACTION_MAIN).also {
-        it.component =
-          ComponentName(
-              BaseApp.APP.packageName, "${BaseApp.APP.packageName}.view.main.QuickUnlockActivity"
-          )
-        it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-      })
-      return
-    }
-    NotificationUtil.startDbLocked(this)
-    BaseApp.KDB?.clear(this)
-    BaseApp.KDB = null
-    LauncherActivity.startLauncherActivity(this)
+    KeepassAUtil.instance.lock()
     finish()
   }
 
@@ -155,14 +134,14 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     super.onResume()
     // 启动定时器
 
-    if ( KeepassAUtil.instance.isStartQuickLockActivity(this)) {
+    if (KeepassAUtil.instance.isStartQuickLockActivity(this)) {
       if (BaseApp.isLocked) {
         AutoLockDbUtil.get()
             .startLockWorkerNow()
         return
       }
 
-      if ( KeepassAUtil.instance.isRunningForeground(this)) {
+      if (KeepassAUtil.instance.isRunningForeground(this)) {
         AutoLockDbUtil.get()
             .resetTimer()
         return

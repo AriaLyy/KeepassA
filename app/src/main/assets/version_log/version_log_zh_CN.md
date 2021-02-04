@@ -1,16 +1,18 @@
-#### 1.7
-- 修复一些崩溃问题
-- 自动填充模块，当包名不匹配时，将会从url匹配关键字
-- 首页，增加参考条目提示
-- 详情模块，note增加Markdown编辑功能
+#### 1.7 (2021/2/4)
+- 增加当包名不匹配时，将会从url匹配关键字
+- 增加参考条目提示
+- 增加[屏幕锁定，自动锁定数据库功能](route://keepassA.com/kpa?activity=SettingActivity&type=app)
+- note增加编辑功能
 
 ![editor](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/editor.png)
-- 编辑模块，用户名增加历史记录功能
+- 增加用户名历史记录功能
 
 ![user_drop_down_list](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/user_drop_down_list.png)
-- 修复夜间模式下，自动填充文字无法显示的问题
-- 自动填充模块，修复某些应用无法自动填充的问题
 - 搜索忽略回收站中的条目
+- 修复夜间模式下，自动填充文字无法显示的问题
+- 修复某些应用无法自动填充的问题
+- 修复一些崩溃问题
+
 
 #### 1.6 (2020/11/28)
 - 自动填充模块，修复关联条目后，返回到应用，已关联的数据无法显示的问题

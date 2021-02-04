@@ -17,6 +17,7 @@ import android.app.ActivityManager
 import android.app.ActivityManager.RunningAppProcessInfo
 import android.app.ActivityOptions
 import android.app.assist.AssistStructure
+import android.content.ComponentName
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -32,7 +33,6 @@ import android.provider.MediaStore.Images.Media
 import android.provider.MediaStore.Video
 import android.provider.OpenableColumns
 import android.text.TextUtils
-import android.util.Log
 import android.util.Pair
 import android.view.View
 import android.view.autofill.AutofillManager
@@ -82,6 +82,82 @@ class KeepassAUtil private constructor() {
   }
 
   private var LAST_CLICK_TIME = System.currentTimeMillis()
+
+  /**
+   * lock the db
+   */
+  fun lock() {
+    val isOpenQuickLock = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
+        .getBoolean(ResUtil.getString(R.string.set_quick_unlock), false)
+    KLog.d(TAG, "锁定数据库")
+    BaseApp.isLocked = true
+    // 只有应用在前台才会跳转到锁屏页面
+    if (isRunningForeground(BaseApp.APP) && BaseApp.KDB != null) {
+      // 开启快速解锁则跳转到快速解锁页面
+      if (isOpenQuickLock) {
+        NotificationUtil.startQuickUnlockNotify(BaseApp.APP)
+        val cActivity = AbsFrame.getInstance().currentActivity
+        if (cActivity != null && cActivity is QuickUnlockActivity) {
+          KLog.w(TAG, "快速解锁已启动，不再启动快速解锁")
+          return
+        }
+
+        KLog.d(TAG, "启动快速解锁")
+        BaseApp.APP.startActivity(Intent(Intent.ACTION_MAIN).also {
+          it.component =
+            ComponentName(
+                BaseApp.APP.packageName,
+                "${BaseApp.APP.packageName}.view.main.QuickUnlockActivity"
+            )
+          it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        })
+        return
+      }
+
+      // 没有开启快速解锁，则回到启动页
+      NotificationUtil.startDbLocked(BaseApp.APP)
+      val cActivity = AbsFrame.getInstance().currentActivity
+      if (cActivity != null && cActivity is LauncherActivity) {
+        KLog.w(TAG, "解锁页面已启动，不再启动快速解锁")
+        return
+      }
+      KLog.d(TAG, "快速解锁没有启动，进入解锁界面")
+      BaseApp.KDB?.clear(BaseApp.APP)
+      BaseApp.KDB = null
+      BaseApp.APP.startActivity(Intent(Intent.ACTION_MAIN).also {
+        it.component =
+          ComponentName(
+              BaseApp.APP.packageName,
+              "${BaseApp.APP.packageName}.view.launcher.LauncherActivity"
+          )
+        it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+      })
+      for (ac in AbsFrame.getInstance().activityStack) {
+        if (isHomeActivity(ac)) {
+          continue
+        }
+        ac.finish()
+      }
+      return
+    }
+
+    // 处理处于后台的情况
+    if (isOpenQuickLock) {
+      NotificationUtil.startQuickUnlockNotify(BaseApp.APP)
+      return
+    }
+    BaseApp.KDB?.clear(BaseApp.APP)
+    BaseApp.KDB = null
+    NotificationUtil.startDbLocked(BaseApp.APP)
+  }
+
+  fun isHomeActivity(ac:Activity): Boolean {
+    val clazz = ac.javaClass
+    return (clazz == LauncherActivity::class.java
+        || clazz == CreateDbActivity::class.java
+        || clazz == OpenDbHistoryActivity::class.java
+        )
+  }
 
   /**
    * is night mode
@@ -202,7 +278,7 @@ class KeepassAUtil private constructor() {
    * 保存上一次打开的数据库记录
    */
   fun saveLastOpenDbHistory(record: DbRecord?) {
-    if (record == null){
+    if (record == null) {
       return
     }
     GlobalScope.launch(Dispatchers.IO) {
@@ -213,7 +289,7 @@ class KeepassAUtil private constructor() {
         record.time = System.currentTimeMillis()
         dao.saveRecord(record)
         BaseApp.dbRecord = record
-        Log.d(TAG, "保存数据库打开记录成功")
+        KLog.d(TAG, "保存数据库打开记录成功")
       } else {
         his.keyUri = record.keyUri
         his.cloudDiskPath = record.cloudDiskPath
@@ -221,7 +297,7 @@ class KeepassAUtil private constructor() {
         his.time = record.time
         dao.updateRecord(his)
         BaseApp.dbRecord = his
-        Log.d(TAG, "更新数据库打开记录成功")
+        KLog.d(TAG, "更新数据库打开记录成功")
       }
     }
   }
@@ -349,7 +425,7 @@ class KeepassAUtil private constructor() {
         .toInt()
     val masterPass = QuickUnLockUtil.decryption(BaseApp.dbPass)
     var shortPass = ""
-    Log.i(TAG, "截取短密码，长度：$passLen，截取类型：$subType")
+    KLog.i(TAG, "截取短密码，长度：$passLen，截取类型：$subType")
     when (subType) {
       // 前面位
       1 -> {
@@ -505,7 +581,7 @@ class KeepassAUtil private constructor() {
         obj.startActivityForResult(intent, requestCode)
       }
     } catch (e: Exception) {
-      Log.e(TAG, "打开文件失败");
+      KLog.e(TAG, "打开文件失败");
       e.printStackTrace()
     }
 
@@ -534,7 +610,7 @@ class KeepassAUtil private constructor() {
         obj.startActivityForResult(intent, requestCode)
       }
     } catch (e: Exception) {
-      Log.e(TAG, "创建文件失败")
+      KLog.e(TAG, "创建文件失败")
       e.printStackTrace()
     }
   }
@@ -562,7 +638,7 @@ class KeepassAUtil private constructor() {
       }
 
       if (!UriUtil.checkPermissions(context, uri)) {
-        Log.e(TAG, "uri没有授权：$uri")
+        KLog.e(TAG, "uri没有授权：$uri")
         return 0
       }
 
@@ -593,7 +669,7 @@ class KeepassAUtil private constructor() {
     val needToCheckUri = VERSION.SDK_INT >= 19
     var selection: String? = null
     var selectionArgs: Array<String>? = null
-    Log.d(TAG, "uri = $uri")
+    KLog.d(TAG, "uri = $uri")
     if (needToCheckUri && DocumentsContract.isDocumentUri(context.applicationContext, tempUri)) {
       when {
         isExternalStorageDocument(tempUri) -> {
@@ -620,7 +696,7 @@ class KeepassAUtil private constructor() {
             tempUri = ContentUris.withAppendedId(
                 Uri.parse("content://downloads/public_downloads"), id.split(":")[1].toLong()
             )
-            Log.d(TAG, "msf Uri = $tempUri")
+            KLog.d(TAG, "msf Uri = $tempUri")
           }
         }
         isMediaDocument(tempUri) -> {

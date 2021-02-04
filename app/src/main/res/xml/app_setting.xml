@@ -36,6 +36,15 @@
         app:icon="@drawable/ic_auto_fill"
         app:key="@string/set_open_auto_fill" />
 
+    <SwitchPreference
+        android:defaultValue="false"
+        android:icon="@drawable/ic_screen_lock_portrait_black_24dp"
+        app:key="@string/set_key_lock_screen_auto_lock_db"
+        app:summaryOff="@string/set_summary_screen_lock_off"
+        app:summaryOn="@string/set_summary_screen_lock_on"
+        app:title="@string/set_title_screen_lock"
+      />
+
     <Preference
         android:defaultValue="false"
         android:title="@string/set_open_kpa_ime_title"

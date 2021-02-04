@@ -10,20 +10,25 @@
 package com.lyy.keepassa.base;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.Nullable;
 import androidx.multidex.MultiDexApplication;
+import androidx.preference.PreferenceManager;
 import androidx.room.Room;
 import com.arialyy.frame.core.AbsFrame;
 import com.arialyy.frame.util.KeyStoreUtil;
 import com.keepassdroid.Database;
 import com.leon.channel.helper.ChannelReaderUtil;
 import com.lyy.keepassa.BuildConfig;
+import com.lyy.keepassa.R;
 import com.lyy.keepassa.baseapi.INotFreeLibService;
 import com.lyy.keepassa.dao.AppDatabase;
 import com.lyy.keepassa.entity.DbRecord;
+import com.lyy.keepassa.receiver.ScreenLockReceiver;
 import com.lyy.keepassa.util.AutoLockDbUtil;
 import com.lyy.keepassa.util.KeepassAUtil;
 import com.lyy.keepassa.util.LanguageUtil;
@@ -89,6 +94,22 @@ public class BaseApp extends MultiDexApplication {
       KeyStoreUtil.Companion.setKeyStorePass(QuickUnLockUtil.getDbPass().toCharArray());
     }
     RichText.initCacheDir(this);
+    initReceiver();
+  }
+
+  /**
+   * init receiver
+   */
+  private void initReceiver(){
+    boolean isNeedRegScreenLockReceiver = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
+        .getBoolean(getString(R.string.set_key_lock_screen_auto_lock_db), false);
+    if (isNeedRegScreenLockReceiver){
+      ScreenLockReceiver receiver = new ScreenLockReceiver();
+      IntentFilter inf = new IntentFilter();
+      inf.addAction(Intent.ACTION_SCREEN_OFF);
+      inf.addAction(Intent.ACTION_USER_PRESENT);
+      registerReceiver(receiver, inf);
+    }
   }
 
   public String getChannel() {
@@ -104,9 +125,8 @@ public class BaseApp extends MultiDexApplication {
    */
   private void initNotFreeLib() {
     ServiceLoader<INotFreeLibService> loader = ServiceLoader.load(INotFreeLibService.class);
-    Iterator<INotFreeLibService> iterator = loader.iterator();
-    while (iterator.hasNext()) {
-      iterator.next().initLib(this, BuildConfig.DEBUG, getChannel(), null);
+    for (INotFreeLibService iNotFreeLibService : loader) {
+      iNotFreeLibService.initLib(this, BuildConfig.DEBUG, getChannel(), null);
     }
   }
 

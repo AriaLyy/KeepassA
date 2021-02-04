@@ -8,6 +8,7 @@
   <string name="set_key_out_db" translatable="false">out_db</string>
   <string name="set_quick_unlock" translatable="false">set_qulick_unlock</string>
   <string name="set_quick_pass_len" translatable="false">set_quick_pass_len</string>
+  <string name="set_key_lock_screen_auto_lock_db" translatable="false">set_key_lock_screen_auto_lock_db</string>
 
   <string name="set_quick_pass_type" translatable="false">set_quick_pass_type</string>
   <string name="set_key_modify_db_pass" translatable="false">set_key_modify_db_pass</string>

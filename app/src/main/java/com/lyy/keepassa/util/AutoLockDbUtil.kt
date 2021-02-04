@@ -126,68 +126,8 @@ class AutoLockDbUtil private constructor() {
     appContext: Context,
     workerParams: WorkerParameters
   ) : Worker(appContext, workerParams) {
-    val TAG = StringUtil.getClassName(this)
-
     override fun doWork(): Result {
-      val isOpenQuickLock = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-          .getBoolean(applicationContext.getString(R.string.set_quick_unlock), false)
-      Log.d(TAG, "锁定数据库")
-      BaseApp.isLocked = true
-      // 只有应用在前台才会跳转到锁屏页面
-      if (KeepassAUtil.instance.isRunningForeground(BaseApp.APP) && BaseApp.KDB != null) {
-        // 开启快速解锁则跳转到快速解锁页面
-        if (isOpenQuickLock) {
-          NotificationUtil.startQuickUnlockNotify(applicationContext)
-          val cActivity = AbsFrame.getInstance().currentActivity
-          if (cActivity != null && cActivity is QuickUnlockActivity) {
-            Log.w(TAG, "快速解锁已启动，不再启动快速解锁")
-            return Result.success()
-          }
-
-          Log.d(TAG, "启动快速解锁")
-          BaseApp.APP.startActivity(Intent(Intent.ACTION_MAIN).also {
-            it.component =
-              ComponentName(
-                  BaseApp.APP.packageName,
-                  "${BaseApp.APP.packageName}.view.main.QuickUnlockActivity"
-              )
-            it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-          })
-        } else {
-          NotificationUtil.startDbLocked(applicationContext)
-          // 没有开启快速解锁，则回到启动页
-          val cActivity = AbsFrame.getInstance().currentActivity
-          if (cActivity != null && cActivity is LauncherActivity) {
-            Log.w(TAG, "解锁页面已启动，不再启动快速解锁")
-            return Result.success()
-          }
-
-          Log.d(TAG, "快速解锁没有启动，进入解锁界面")
-          BaseApp.KDB?.clear(applicationContext)
-          BaseApp.KDB = null
-          BaseApp.APP.startActivity(Intent(Intent.ACTION_MAIN).also {
-            it.component =
-              ComponentName(
-                  BaseApp.APP.packageName,
-                  "${BaseApp.APP.packageName}.view.launcher.LauncherActivity"
-              )
-            it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-          })
-          for (ac in AbsFrame.getInstance().activityStack) {
-            if (ac is LauncherActivity) {
-              continue
-            }
-            ac.finish()
-          }
-        }
-
-      } else {
-        if (isOpenQuickLock) {
-          NotificationUtil.startQuickUnlockNotify(applicationContext)
-        } else {
-          NotificationUtil.startDbLocked(applicationContext)
-        }
-      }
+      KeepassAUtil.instance.lock()
       return Result.success()
     }
 

@@ -37,11 +37,11 @@ class KeepassDbTest {
   private val TAG = "KeepassDbTest"
   private val context: Context = ApplicationProvider.getApplicationContext()
 
-  private val dbName = "test.kdbx"
-  private val pass = "123456"
+//  private val dbName = "test.kdbx"
+//  private val pass = "123456"
 //  private val keyName = "db.key"
-//  private val dbName = "yuyu_pw_db.kdbx"
-//  private val pass = "Xiaotaiyan123"
+  private val dbName = "yuyu_pw_db.kdbx"
+  private val pass = "Xiaotaiyan123"
   private val keyName = "yuyu_pw_db.key"
 
   @Test
@@ -74,9 +74,9 @@ class KeepassDbTest {
         .openDb(dbName, dir + dbName, pass, dir + keyName)
 //        .openDb(dbName, dir + dbName, pass, null)
     Log.d(TAG, "open db ${if (db != null) "success" else "fail"}")
-    if (db != null) {
-      readDb(db)
-    }
+//    if (db != null) {
+//      readDb(db)
+//    }
   }
 
   /**

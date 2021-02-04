@@ -299,5 +299,8 @@
   <string name="other">其它</string>
   <string name="ref_entry">参考条目</string>
   <string name="multi_choice">多选</string>
+  <string name="set_summary_screen_lock_off">屏幕锁定不锁定数据库</string>
+  <string name="set_summary_screen_lock_on">屏幕锁定自动锁定数据库</string>
+  <string name="set_title_screen_lock">屏幕锁定设置</string>
 </resources>
 
