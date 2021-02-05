@@ -3,8 +3,6 @@
 - 增加參考條目提示
 - 增加[屏幕鎖定，自動鎖定數據庫功能](route://keepassA.com/kpa?activity=SettingActivity&type=app)
 - note增加編輯功能
-
-![編輯](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/editor.png)
 - 增加用戶名歷史記錄功能
 
 ![user_drop_down_list](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/user_drop_down_list.png)

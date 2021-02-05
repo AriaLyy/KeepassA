@@ -3,8 +3,6 @@
 - 增加参考条目提示
 - 增加[屏幕锁定，自动锁定数据库功能](route://keepassA.com/kpa?activity=SettingActivity&type=app)
 - note增加编辑功能
-
-![editor](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/editor.png)
 - 增加用户名历史记录功能
 
 ![user_drop_down_list](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/user_drop_down_list.png)

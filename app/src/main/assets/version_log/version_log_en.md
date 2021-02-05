@@ -3,8 +3,6 @@
 - Add, Reference entry hint
 - Add, [When screen lock, automatic lock database function](route://keepassA.com/kpa?activity=SettingActivity&type=app)
 - Add, note add editer
-
-![editor](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/editor.png)
 - Add, User name history record function
 
 ![user_drop_down_list](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/user_drop_down_list.png)
