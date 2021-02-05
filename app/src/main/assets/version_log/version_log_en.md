@@ -1,7 +1,7 @@
 #### 1.7 (2021/2/4)
 - Add, When the package name does not match, the keyword will be matched from the url
 - Add, Reference entry hint
-- Add, [Screen lock, automatic lock database function](route://keepassA.com/kpa?activity=SettingActivity&type=app)
+- Add, [When screen lock, automatic lock database function](route://keepassA.com/kpa?activity=SettingActivity&type=app)
 - Add, note add editer
 
 ![editor](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/editor.png)

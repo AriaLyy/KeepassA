@@ -22,6 +22,13 @@ import com.arialyy.frame.base.FrameApp
  **/
 object ResUtil {
 
+  fun getString(
+    @StringRes strRes: Int,
+    vararg array: Any
+  ): String {
+    return FrameApp.app.getString(strRes, array)
+  }
+
   fun getString(@StringRes strRes: Int): String {
     return FrameApp.app.getString(strRes)
   }

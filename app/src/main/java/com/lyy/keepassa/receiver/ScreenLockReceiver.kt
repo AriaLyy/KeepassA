@@ -14,7 +14,6 @@ import androidx.preference.PreferenceManager
 import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.KeepassAUtil
 
@@ -29,14 +28,14 @@ class ScreenLockReceiver : BroadcastReceiver() {
     context: Context?,
     intent: Intent?
   ) {
-    if (BaseApp.isLocked || BaseApp.KDB.isNull()){
-      KLog.d(TAG, "the db is locked.")
-      return
-    }
     // if the user lock screen, lock the db
     if (intent?.action.equals(Intent.ACTION_SCREEN_OFF) && PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
             .getBoolean(ResUtil.getString(R.string.set_key_lock_screen_auto_lock_db), false)) {
+      if (BaseApp.isLocked || BaseApp.KDB.isNull()){
+        return
+      }
       KeepassAUtil.instance.lock()
+      return
     }
   }
 

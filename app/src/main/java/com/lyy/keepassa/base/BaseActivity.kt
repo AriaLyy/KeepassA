@@ -25,27 +25,20 @@ package com.lyy.keepassa.base
  * limitations under the License.
  */
 
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.transition.TransitionInflater
 import android.view.WindowManager
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.ViewDataBinding
-import androidx.preference.PreferenceManager
 import com.arialyy.frame.core.AbsActivity
 import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.R
 import com.lyy.keepassa.util.AutoLockDbUtil
 import com.lyy.keepassa.util.HitUtil
+import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.LanguageUtil
-import com.lyy.keepassa.util.NotificationUtil
-import com.lyy.keepassa.view.create.CreateDbActivity
-import com.lyy.keepassa.view.launcher.LauncherActivity
-import com.lyy.keepassa.view.launcher.OpenDbHistoryActivity
-import com.lyy.keepassa.view.main.QuickUnlockActivity
 
 /**
  * Created by Lyy on 2016/9/27.
@@ -128,6 +121,17 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     result: Int,
     data: Any
   ) {
+  }
+
+  override fun onRestart() {
+    super.onRestart()
+    if (!KeepassAUtil.instance.isHomeActivity(this) && (BaseApp.KDB.isNull() || BaseApp.isLocked)) {
+      BaseApp.handler.postDelayed({
+        KeepassAUtil.instance.lock()
+        finish()
+      }, 150)
+      return
+    }
   }
 
   override fun onResume() {

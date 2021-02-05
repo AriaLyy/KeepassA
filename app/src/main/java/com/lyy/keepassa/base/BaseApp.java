@@ -100,7 +100,7 @@ public class BaseApp extends MultiDexApplication {
   /**
    * init receiver
    */
-  private void initReceiver(){
+  public void initReceiver(){
     boolean isNeedRegScreenLockReceiver = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
         .getBoolean(getString(R.string.set_key_lock_screen_auto_lock_db), false);
     if (isNeedRegScreenLockReceiver){

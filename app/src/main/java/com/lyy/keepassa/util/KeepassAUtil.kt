@@ -151,7 +151,7 @@ class KeepassAUtil private constructor() {
     NotificationUtil.startDbLocked(BaseApp.APP)
   }
 
-  fun isHomeActivity(ac:Activity): Boolean {
+  fun isHomeActivity(ac: Activity): Boolean {
     val clazz = ac.javaClass
     return (clazz == LauncherActivity::class.java
         || clazz == CreateDbActivity::class.java
@@ -393,7 +393,7 @@ class KeepassAUtil private constructor() {
    */
   fun isRunningForeground(context: Context): Boolean {
     val activityManager: ActivityManager =
-      context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+      context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager? ?: return false
     val appProcessInfoList: List<RunningAppProcessInfo> = activityManager.runningAppProcesses
     /**枚举进程 */
     for (appProcessInfo in appProcessInfoList) {
