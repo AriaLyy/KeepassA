@@ -38,7 +38,7 @@
 - 增加開放源碼協議說明
 - 增加移動條目和群組的功能
 
-![ime](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/move_data.png)
+![ime](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/moveData.png)
 - 修復無法增加二級群組的問題
 - 修復一個webdav獲取文件信息導致的崩潰問題
 - 修復一些討厭的崩潰問題

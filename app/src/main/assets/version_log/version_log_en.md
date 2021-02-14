@@ -38,7 +38,7 @@
 - Add open source protocol description
 - Increase the function of moving items and groups
 
-![ime](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/move_data.png)
+![ime](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/moveData.png)
 - Fix the problem that the secondary group cannot be added
 - Fix a crash caused by webdav obtaining file information
 - Fix some nasty crashes
