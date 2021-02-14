@@ -1,3 +1,9 @@
+#### 1.8.1 (2021/2/14)
+- 修复数据库一直加载的问题
+- 修复一个附件问题
+- 增加 Argon2 ID 支持
+- 增加 keyfile 2.0 支持
+
 #### 1.8 (2021/2/14)
 - 修复一个缓存问题导致的webdav打不开的问题
 - 优化打开数据库的速度
@@ -9,7 +15,7 @@
 - note增加编辑功能
 - 增加用户名历史记录功能
 
-![user_drop_down_list](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/user_drop_down_list.png)
+![user_drop_down_list](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/userDropdownList.png)
 - 搜索忽略回收站中的条目
 - 修复夜间模式下，自动填充文字无法显示的问题
 - 修复某些应用无法自动填充的问题
@@ -24,7 +30,7 @@
 - 设置模块，增加解锁数据库后，主页优先显示所有条目功能，[点击设置](route://keepassA.com/kpa?activity=SettingActivity&type=db)
 - 条目详情模块，note 自动增加展开和收缩功能
 
-![note_expand](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/note_expand.png)
+![note_expand](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/noteExpand.png)
 - 优化主页闪烁问题
 - 感谢[@DominicDesbiens](https://github.com/DominicDesbiens)提供了加拿大法语翻译
 

@@ -1,3 +1,9 @@
+#### 1.8.1 (2021/2/14)
+- Fix database loading due to incomplete reading
+- Fix asserts
+- Add Argon2 ID support
+- Add keyfile 2.0 support
+
 #### 1.8 (2021/2/14)
 - Fix a problem that webdav cannot be opened due to cache
 - Optimize the speed of opening the database
@@ -9,7 +15,7 @@
 - Add, note add editer
 - Add, User name history record function
 
-![user_drop_down_list](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/user_drop_down_list.png)
+![user_drop_down_list](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/userDropdownList.png)
 - Add, Search ignores items in the recycle bin
 - Fix, In night mode, auto-fill text cannot be displayed
 - Fix, Some applications cannot be automatically filled
@@ -23,7 +29,7 @@
 - Setup module, After the unlock database, the homepage will display all entries first, [Click Settings](route://keepassA.com/kpa?activity=SettingActivity&type=db)
 - Item details module，Note field automatically increase expansion and contraction functions
 
-![ime](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/note_expand.png)
+![ime](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/noteExpand.png)
 - Optimize the homepage flickering problem
 - Thank [@DominicDesbiens](https://github.com/DominicDesbiens) for providing the Canadian French translation
 
