@@ -439,6 +439,12 @@ public class ImporterV4 extends Importer {
           ctx = EndXmlElement(ctx, xpp);
           break;
 
+        case XmlPullParser.TEXT:
+          // Only expect all whitespace text nodes
+          String text = xpp.getText();
+          assert(text.trim().length()==0);
+          break;
+
         default:
           assert (false);
           break;

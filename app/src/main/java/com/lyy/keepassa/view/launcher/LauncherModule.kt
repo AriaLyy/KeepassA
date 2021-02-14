@@ -172,7 +172,7 @@ class LauncherModule : BaseModule() {
     fragment: OpenDbFragment,
     openDbRecord: DbRecord
   ) {
-    if (!fragment.isAdded){
+    if (!fragment.isAdded) {
       BuglyLog.d(TAG, "deleteBiomKey fragment isAdded = false")
       return
     }
@@ -379,31 +379,37 @@ class LauncherModule : BaseModule() {
     keyUri: Uri?,
     record: DbRecord
   ): Database? {
-    val db = KDBHandlerHelper.getInstance(context)
-        .openDb(dbUri, dbPass, keyUri)
-    if (db != null) {
-      val dbName = UriUtil.getFileNameFromUri(context, dbUri)
-      BaseApp.dbPass = QuickUnLockUtil.encryptStr(dbPass)
-       KeepassAUtil.instance.subShortPass()
-      if (keyUri != null) {
-        BaseApp.dbKeyPath = QuickUnLockUtil.encryptStr(keyUri.toString())
-      }
-      //              BaseApp.KDB?.clear(context)
-      // 保存打开记录
-      BaseApp.KDB = db
-      BaseApp.dbName = db.pm.name
-      BaseApp.dbFileName = dbName
+    try {
+      val db = KDBHandlerHelper.getInstance(context)
+          .openDb(dbUri, dbPass, keyUri)
+      if (db != null) {
+        val dbName = UriUtil.getFileNameFromUri(context, dbUri)
+        BaseApp.dbPass = QuickUnLockUtil.encryptStr(dbPass)
+        KeepassAUtil.instance.subShortPass()
+        if (keyUri != null) {
+          BaseApp.dbKeyPath = QuickUnLockUtil.encryptStr(keyUri.toString())
+        }
+        //              BaseApp.KDB?.clear(context)
+        // 保存打开记录
+        BaseApp.KDB = db
+        BaseApp.dbName = db.pm.name
+        BaseApp.dbFileName = dbName
 
-      BaseApp.dbVersion = "Keepass ${if (PwDatabase.isKDBExtension(dbName)) "3.x" else "4.x"}"
-      BaseApp.isV4 = !PwDatabase.isKDBExtension(dbName)
-      BaseApp.dbRecord = record
-       KeepassAUtil.instance.saveLastOpenDbHistory(record)
+        BaseApp.dbVersion = "Keepass ${if (PwDatabase.isKDBExtension(dbName)) "3.x" else "4.x"}"
+        BaseApp.isV4 = !PwDatabase.isKDBExtension(dbName)
+        BaseApp.dbRecord = record
+        KeepassAUtil.instance.saveLastOpenDbHistory(record)
 
-      if (!BaseApp.isAFS()) {
-        DbSynUtil.updateServiceModifyTime(record)
+        if (!BaseApp.isAFS()) {
+          DbSynUtil.updateServiceModifyTime(record)
+        }
       }
+      return db
+    } catch (e: Exception) {
+      HitUtil.toaskOpenDbException(e)
+      e.printStackTrace()
     }
-    return db
+    return null
   }
 
   /**

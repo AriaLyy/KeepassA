@@ -63,6 +63,7 @@ object WebDavUtil : ICloudUtil {
         it.delete(uri)
       }
     } catch (e: Exception) {
+      e.printStackTrace()
       BuglyLog.e(TAG, "checkLogin", e)
       return false
     }
@@ -104,6 +105,7 @@ object WebDavUtil : ICloudUtil {
         )
       }
     } catch (e: Exception) {
+      e.printStackTrace()
       BuglyLog.e(TAG, "获取文件列表失败", e)
     }
     return list
@@ -132,6 +134,7 @@ object WebDavUtil : ICloudUtil {
           file.path, file.name, file.modified, file.contentLength, file.isDirectory
       )
     } catch (e: Exception) {
+      e.printStackTrace()
       BuglyLog.e(TAG, "获取文件信息失败", e)
       e.printStackTrace()
     }
@@ -143,6 +146,7 @@ object WebDavUtil : ICloudUtil {
     try {
       sardine!!.delete(convertUrl(cloudPath))
     } catch (e: Exception) {
+      e.printStackTrace()
       BuglyLog.e(TAG, "删除文件失败", e)
       return false
     }
@@ -171,6 +175,7 @@ object WebDavUtil : ICloudUtil {
         DbSynUtil.serviceModifyTime = info.serviceModifyDate
       }
     } catch (e: Exception) {
+      e.printStackTrace()
       BuglyLog.e(TAG, "上传文件失败", e)
     }
 

@@ -165,7 +165,7 @@ dependencies {
 
 //      debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
   // 数据库如果加密的话使用这个
-  debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
+//  debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
 
 
   // kotlin
