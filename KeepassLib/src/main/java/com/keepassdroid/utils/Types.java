@@ -24,6 +24,43 @@ public class Types {
 
   public static long ULONG_MAX_VALUE = -1;
 
+  public static long parseVersion(String ver) {
+    if (ver == null) {
+      return 0;
+    }
+
+    String[] verArray = ver.split("[.,]");
+
+    int len = verArray.length;
+    if (len <=0) {
+      return 0;
+    }
+
+    try {
+      int part = Integer.parseInt(verArray[0].trim());
+      long version = (long)part << 48;
+
+      if (len >=2) {
+        part = Integer.parseInt(verArray[1].trim());
+        version |= ((long)part << 32);
+      }
+
+      if (len >=3) {
+        part = Integer.parseInt(verArray[2].trim());
+        version |= ((long)part << 16);
+      }
+
+      if (len >=4) {
+        part = Integer.parseInt(verArray[3].trim());
+        version |= (long)part;
+      }
+
+      return version;
+    } catch (NumberFormatException e) {
+      return 0;
+    }
+  }
+
   /** Read an unsigned byte */
   public static int readUByte(byte[] buf, int offset) {
     return ((int) buf[offset] & 0xFF);
