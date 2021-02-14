@@ -61,17 +61,14 @@ JNIEXPORT jint JNICALL JNI_OnLoad( JavaVM *vm, void *reserved ) {
     if( cls == NULL )
         return JNI_ERR;
     bad_padding = (*env)->NewGlobalRef(env, cls);
-
     cls = (*env)->FindClass(env, "javax/crypto/ShortBufferException");
     if( cls == NULL )
         return JNI_ERR;
     short_buf = (*env)->NewGlobalRef(env, cls);
-
     cls = (*env)->FindClass(env, "javax/crypto/IllegalBlockSizeException");
     if( cls == NULL )
         return JNI_ERR;
     block_size = (*env)->NewGlobalRef(env, cls);
-
     aes_init();
     */
 
@@ -80,7 +77,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad( JavaVM *vm, void *reserved ) {
 
 // called on garbage collection
 JNIEXPORT void JNICALL JNI_OnUnload( JavaVM *vm, void *reserved ) {
-JNIEnv *env;
+    JNIEnv *env;
     if((*vm)->GetEnv(vm, (void **)&env, JNI_VERSION_1_6)) {
         return;
     }
@@ -130,8 +127,8 @@ void throwExceptionF(JNIEnv *env, jclass exception, const char *format, ...) {
 
 JNIEXPORT jbyteArray
 JNICALL Java_com_keepassdroid_crypto_keyDerivation_Argon2Native_nTransformMasterKey(JNIEnv *env,
-   jobject this, jbyteArray password, jbyteArray salt, jint parallelism, jlong memory,
-   jlong iterations, jbyteArray secretKey, jbyteArray associatedData, jlong version) {
+                                                                                    jclass this, jbyteArray password, jbyteArray salt, jint parallelism, jlong memory,
+                                                                                    jlong iterations, jbyteArray secretKey, jbyteArray associatedData, jlong version, jint type) {
 
     argon2_context context;
     uint8_t *out;
@@ -170,7 +167,14 @@ JNICALL Java_com_keepassdroid_crypto_keyDerivation_Argon2Native_nTransformMaster
     context.flags = ARGON2_DEFAULT_FLAGS;
     context.version = (uint32_t) version;
 
-    int argonResult = argon2_ctx(&context, Argon2_d);
+    enum Argon2_type a_type;
+    if (type == 2) {
+        a_type = Argon2_id;
+    } else {
+        a_type = Argon2_d;
+    }
+
+    int argonResult = argon2_ctx(&context, a_type);
 
     jbyteArray result;
     if (argonResult != ARGON2_OK) {
