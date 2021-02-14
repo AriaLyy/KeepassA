@@ -1,3 +1,7 @@
+#### 1.8 (2021/2/14)
+- Fix a problem that webdav cannot be opened due to cache
+- Optimize the speed of opening the database
+
 #### 1.7 (2021/2/4)
 - Add, When the package name does not match, the keyword will be matched from the url
 - Add, Reference entry hint
