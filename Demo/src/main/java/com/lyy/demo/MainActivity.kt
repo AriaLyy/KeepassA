@@ -27,7 +27,7 @@ import com.lyy.demo.databinding.ActivityMainBinding
 class MainActivity : AbsActivity<ActivityMainBinding>() {
 
   private val strings =
-    mutableListOf("uri权限管理", "指纹加密数据", "指纹校验", "富文本", "注册码", "捐赠", "首字母", "展开文本", "编辑器")
+    mutableListOf("uri权限管理", "指纹加密数据", "指纹校验", "富文本", "注册码", "捐赠", "首字母", "展开文本", "编辑器", "oneDrive")
 
   override fun setLayoutId(): Int {
     return R.layout.activity_main
@@ -70,6 +70,9 @@ class MainActivity : AbsActivity<ActivityMainBinding>() {
             }
             8 -> { // 编辑器
               startActivity(Intent(this, EditorActivity::class.java))
+            }
+            9 -> { // oneDrive
+              startActivity(Intent(this, OneDriveActivity::class.java))
             }
           }
         }

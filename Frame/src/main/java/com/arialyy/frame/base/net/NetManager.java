@@ -27,11 +27,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by “Aria.Lao” on 2016/10/25.
  * 网络管理器
  */
+@Deprecated
 public class NetManager {
   private static final Object LOCK = new Object();
   private static volatile NetManager INSTANCE = null;
   private static final long TIME_OUT = 8 * 1000;
-  private Retrofit mRetrofit;
+  private Retrofit D;
   private Retrofit.Builder mBuilder;
   private SparseArray<GsonConverterFactory> mConverterFactorys = new SparseArray<>();
   private ClearableCookieJar mCookieJar;
@@ -77,6 +78,7 @@ public class NetManager {
    *
    *                </code></pre>
    */
+  @Deprecated
   public <SERVICE> SERVICE request(Class<SERVICE> service, Gson gson) {
     GsonConverterFactory f = null;
     if (gson == null) {
@@ -90,6 +92,7 @@ public class NetManager {
     builder.addConverterFactory(f);
     return builder.build().create(service);
   }
+
 
   /**
    * 创建OKHTTP

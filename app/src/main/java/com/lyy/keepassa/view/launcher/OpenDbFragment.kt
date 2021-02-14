@@ -68,6 +68,14 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     getArgument("openIsFromFill") ?: false
   }
 
+  private val observer by lazy {
+    Observer<Pair<Boolean, String?>>{
+      if (it.first) {
+        openDb(it.second!!)
+      }
+    }
+  }
+
   override fun initData() {
     binding.fingerprint.visibility = View.GONE
     enterTransition = TransitionInflater.from(context)
@@ -163,12 +171,13 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
       return
     }
 
-    modlue.getQuickUnlockRecord(openDbRecord, this)
-        .observe(this, {
-          if (it.first) {
-            openDb(it.second!!)
-          }
-        })
+//    modlue.getQuickUnlockRecord(openDbRecord, this)
+//        .observe(this, {
+//          if (it.first) {
+//            openDb(it.second!!)
+//          }
+//        })
+    modlue.getQuickUnlockRecord(openDbRecord, this).observe(this, observer)
   }
 
   /**
