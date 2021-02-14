@@ -30,6 +30,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionInflater
+import com.keepassdroid.Database
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
@@ -68,10 +69,40 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     getArgument("openIsFromFill") ?: false
   }
 
-  private val observer by lazy {
+  private val loadingDialog by lazy {
+    LoadingDialog(context)
+  }
+
+  /**
+   * 快速解锁读取数据库回调
+   */
+  private val quickUnlockObserver by lazy {
     Observer<Pair<Boolean, String?>>{
       if (it.first) {
         openDb(it.second!!)
+      }
+    }
+  }
+
+  /**
+   * 打开数据库完成的回调
+   */
+  private val openDbFinishedObserver by lazy {
+    Observer<Database?> { db ->
+      loadingDialog.dismiss()
+      if (db == null) {
+        HitUtil.toaskLong(getString(R.string.error_open_db))
+        return@Observer
+      }
+      BaseApp.isLocked = false
+      BaseApp.KDB = db
+      Log.d(TAG, "打开数据库成功")
+      loadingDialog.dismiss()
+      if (openIsFromFill) {
+        activity?.finish()
+      } else {
+        NotificationUtil.startDbOpenNotify(requireContext())
+        MainActivity.startMainActivity(requireActivity())
       }
     }
   }
@@ -171,13 +202,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
       return
     }
 
-//    modlue.getQuickUnlockRecord(openDbRecord, this)
-//        .observe(this, {
-//          if (it.first) {
-//            openDb(it.second!!)
-//          }
-//        })
-    modlue.getQuickUnlockRecord(openDbRecord, this).observe(this, observer)
+    modlue.getQuickUnlockRecord(openDbRecord, this).observe(this, quickUnlockObserver)
   }
 
   /**
@@ -245,26 +270,9 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
       HitUtil.toaskShort(getString(R.string.error_input_pass_null))
       return
     }
-    val loadingDialog = LoadingDialog(context)
+
     loadingDialog.show()
-    modlue.openDb(requireContext(), openDbRecord, pass)
-        .observe(this, Observer { db ->
-          loadingDialog.dismiss()
-          if (db == null) {
-            HitUtil.toaskLong(getString(R.string.error_open_db))
-            return@Observer
-          }
-          BaseApp.isLocked = false
-          BaseApp.KDB = db
-          Log.d(TAG, "打开数据库成功")
-          loadingDialog.dismiss()
-          if (openIsFromFill) {
-            activity?.finish()
-          } else {
-            NotificationUtil.startDbOpenNotify(requireContext())
-            MainActivity.startMainActivity(requireActivity())
-          }
-        })
+    modlue.openDb(requireContext(), openDbRecord, pass).observe(this, openDbFinishedObserver)
   }
 
   /**

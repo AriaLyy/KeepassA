@@ -13,10 +13,13 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.core.net.toFile
+import com.arialyy.frame.util.FileUtil
 import com.arialyy.frame.util.StringUtil
 import com.lyy.keepassa.entity.DbRecord
+import com.lyy.keepassa.util.KLog
 import com.tencent.bugly.crashreport.BuglyLog
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
+import java.io.File
 import java.io.FileOutputStream
 import java.nio.channels.Channels
 import java.util.Date
@@ -180,19 +183,31 @@ object WebDavUtil : ICloudUtil {
     filePath: Uri
   ): String? {
     sardine ?: return null
+    KLog.d(TAG, "start download file, save path: $filePath")
     val cloudPath = convertUrl(dbRecord.cloudDiskPath.toString())
-    try {
-      val token = sardine!!.lock(cloudPath)
-      val ips = sardine!!.get(cloudPath)
-      val fileInfo = getFileInfo(cloudPath)
-      val fic = Channels.newChannel(ips)
-      val foc = FileOutputStream(filePath.toFile()).channel
-      foc.transferFrom(fic, 0, fileInfo!!.size)
-      sardine!!.unlock(cloudPath, token)
-    } catch (e: Exception) {
-      BuglyLog.e(TAG, "下载文件失败", e)
-      return null
+    val fp = filePath.toFile()
+    if (!fp.exists()){
+      FileUtil.createFile(fp)
     }
+    sardine?.let {
+      var token = ""
+      try {
+        token = it.lock(cloudPath)
+        val ips = it.get(cloudPath)
+        val fileInfo = getFileInfo(cloudPath)
+        val fic = Channels.newChannel(ips)
+        val foc = FileOutputStream(fp).channel
+        foc.transferFrom(fic, 0, fileInfo!!.size)
+        it.unlock(cloudPath, token)
+      } catch (e: Exception) {
+        e.printStackTrace()
+        BuglyLog.e(TAG, "下载文件失败", e)
+        return null
+      }finally {
+        it.unlock(cloudPath, token)
+      }
+    }
+
     return filePath.toString()
   }
 
