@@ -302,5 +302,6 @@
   <string name="set_summary_screen_lock_off">屏幕锁定不锁定数据库</string>
   <string name="set_summary_screen_lock_on">屏幕锁定自动锁定数据库</string>
   <string name="set_title_screen_lock">屏幕锁定设置</string>
+  <string name="close">关闭</string>
 </resources>
 

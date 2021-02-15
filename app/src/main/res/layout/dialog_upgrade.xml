@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <RelativeLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
       style="@style/KpaDialogLayoutStyle"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -18,7 +19,9 @@
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:text="@string/version_log"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <View
@@ -26,13 +29,17 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/tvTitle"
-        android:background="@color/line_color" />
+        android:background="@color/line_color"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_above="@+id/vLine1"
-        android:layout_below="@+id/vLine">
+        android:layout_below="@+id/vLine"
+        app:layout_constraintBottom_toTopOf="@+id/vLine1"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle">
 
       <TextView
           android:id="@+id/tvContent"
@@ -48,17 +55,32 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_above="@+id/btEnter"
-        android:background="@color/line_color" />
+        android:background="@color/line_color"
+        app:layout_constraintBottom_toTopOf="@+id/btDonate" />
 
     <Button
         android:id="@+id/btEnter"
         style="@style/KpaTitleTextStyle"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:background="@drawable/ripple_white_selector"
-        android:text="@string/enter"
-        android:textColor="@color/text_blue_color" />
+        android:text="@string/close"
+        android:textColor="@color/text_blue_color"
+        app:layout_constraintEnd_toStartOf="@+id/btDonate"
+        app:layout_constraintTop_toTopOf="@+id/btDonate"
+        app:layout_constraintWidth_percent="0.5" />
 
-  </RelativeLayout>
+    <Button
+        android:id="@+id/btDonate"
+        style="@style/KpaTitleTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_white_selector"
+        android:text="@string/donate"
+        android:textColor="@color/text_blue_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.5" />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -24,6 +24,7 @@ import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.databinding.DialogUpgradeBinding
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.LanguageUtil
+import com.lyy.keepassa.view.dialog.DonateDialog
 import com.lyy.keepassa.view.dialog.WebDavLoginDialog
 import com.lyy.keepassa.view.fingerprint.FingerprintActivity
 import com.lyy.keepassa.view.setting.SettingActivity
@@ -40,7 +41,7 @@ import java.io.InputStream
  * 版本升级对话框
  */
 class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
-  val scope = MainScope()
+  private val scope = MainScope()
 
   override fun setLayoutId(): Int {
     return R.layout.dialog_upgrade
@@ -80,6 +81,9 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
     }
     binding.btEnter.setOnClickListener {
       dismiss()
+    }
+    binding.btDonate.setOnClickListener {
+      DonateDialog().show()
     }
   }
 

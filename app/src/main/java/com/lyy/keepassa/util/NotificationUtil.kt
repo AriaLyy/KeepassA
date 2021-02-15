@@ -25,9 +25,6 @@ object NotificationUtil {
    * 打开数据库通知
    */
   fun startDbOpenNotify(context: Context) {
-    if (!checkNeedNotify()) {
-      return
-    }
     val intent = Intent(context, DbOpenNotificationService::class.java).apply {
       putExtra(
           DbOpenNotificationService.KEY_NOTIFY_TYPE,
@@ -41,9 +38,6 @@ object NotificationUtil {
    * 数据库已锁定，启动快速解锁
    */
   fun startQuickUnlockNotify(context: Context) {
-    if (!checkNeedNotify()) {
-      return
-    }
     val intent = Intent(context, DbOpenNotificationService::class.java).apply {
       putExtra(
           DbOpenNotificationService.KEY_NOTIFY_TYPE,
@@ -57,9 +51,6 @@ object NotificationUtil {
    * 数据库已锁定通知
    */
   fun startDbLocked(context: Context) {
-    if (!checkNeedNotify()) {
-      return
-    }
     val intent = Intent(context, DbOpenNotificationService::class.java).apply {
       putExtra(
           DbOpenNotificationService.KEY_NOTIFY_TYPE,
@@ -69,13 +60,6 @@ object NotificationUtil {
     startService(context, intent)
   }
 
-  /**
-   * 检查是否需要通知
-   * @return true 需要通知
-   */
-  private fun checkNeedNotify(): Boolean {
-    return !(TextUtils.isEmpty(BaseApp.dbName) || BaseApp.KDB == null)
-  }
 
   private fun startService(
     context: Context,

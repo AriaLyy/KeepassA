@@ -28,6 +28,7 @@ package com.lyy.keepassa.base
 import android.content.Context
 import android.os.Bundle
 import android.transition.TransitionInflater
+import android.view.Display
 import android.view.WindowManager
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.ViewDataBinding
@@ -45,7 +46,6 @@ import com.lyy.keepassa.util.LanguageUtil
  */
 abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
 
-  //  private val mCompositeDisposable = CompositeDisposable()
   protected lateinit var toolbar: Toolbar
 
   override fun initData(savedInstanceState: Bundle?) {
@@ -59,16 +59,19 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
 
   open fun useAnim() = true
 
-  override fun onCreate(savedInstanceState: Bundle?) {
+  override fun onPreInit(): Boolean {
     if (!KeepassAUtil.instance.isHomeActivity(this)
         && (BaseApp.KDB == null || BaseApp.KDB?.pm == null || BaseApp.dbRecord == null)
     ) {
       BaseApp.isLocked = true
       HitUtil.toaskShort(getString(R.string.notify_db_locked))
       finishAfterTransition()
-      return
+      return false
     }
+    return true
+  }
 
+  override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     // 进入系统多任务，界面变空白，设置无法截图
     window.setFlags(

@@ -47,8 +47,18 @@ public abstract class AbsActivity<VB extends ViewDataBinding> extends AppCompatA
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    initialization();
-    initData(savedInstanceState);
+    if (onPreInit()){
+      initialization();
+      initData(savedInstanceState);
+    }
+  }
+
+  /**
+   * 初始化之前调用
+   * @return false 不再初始化，true 初始化类
+   */
+  protected boolean onPreInit(){
+    return true;
   }
 
   private void initialization() {
@@ -147,13 +157,17 @@ public abstract class AbsActivity<VB extends ViewDataBinding> extends AppCompatA
 
   @Override public void finishAfterTransition() {
     super.finishAfterTransition();
-    mAm.removeActivity(this);
+    if (mAm != null){
+      mAm.removeActivity(this);
+    }
   }
 
   @Override
   public void finish() {
     super.finish();
-    mAm.removeActivity(this);
+    if (mAm != null){
+      mAm.removeActivity(this);
+    }
   }
 
   public View getRootView() {

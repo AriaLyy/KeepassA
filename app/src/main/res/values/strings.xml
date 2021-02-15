@@ -295,5 +295,6 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="set_summary_screen_lock_off">Screen lock does not lock the database</string>
   <string name="set_summary_screen_lock_on">Screen lock automatically locks the database</string>
   <string name="set_title_screen_lock">Screen lock settings</string>
+  <string name="close">Close</string>
 
 </resources>
