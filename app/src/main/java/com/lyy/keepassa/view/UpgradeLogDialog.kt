@@ -18,6 +18,7 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.core.content.edit
 import com.arialyy.frame.util.AndroidUtils
+import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.base.Constance
@@ -28,6 +29,7 @@ import com.lyy.keepassa.view.dialog.DonateDialog
 import com.lyy.keepassa.view.dialog.WebDavLoginDialog
 import com.lyy.keepassa.view.fingerprint.FingerprintActivity
 import com.lyy.keepassa.view.setting.SettingActivity
+import com.lyy.keepassa.widget.DrawableTextView
 import com.lyy.keepassa.widget.toPx
 import com.zzhoujay.richtext.RichText
 import kotlinx.coroutines.Dispatchers
@@ -82,6 +84,12 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
     binding.btEnter.setOnClickListener {
       dismiss()
     }
+    binding.btDonate.setDrawable(
+        DrawableTextView.LEFT,
+        ResUtil.getSvgIcon(R.drawable.ic_favorite_24px, R.color.text_blue_color),
+        16.toPx(),
+        16.toPx()
+    )
     binding.btDonate.setOnClickListener {
       DonateDialog().show()
     }

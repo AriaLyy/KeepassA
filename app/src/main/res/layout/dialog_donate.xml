@@ -2,69 +2,72 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <LinearLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
       style="@style/KpaDialogLayoutStyle"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <com.lyy.keepassa.widget.DrawableTextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_centerHorizontal="true"
+        android:drawablePadding="4dp"
+        android:gravity="center_vertical"
+        android:text="@string/donate"
+        android:textColor="@color/text_blue_color"
+        android:textSize="@dimen/text_size_biggest"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivClose"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp">
-
-      <com.lyy.keepassa.widget.BubbleTextView
-          android:id="@+id/title"
-          android:layout_width="wrap_content"
-          android:layout_height="48dp"
-          android:layout_centerHorizontal="true"
-          android:gravity="center_vertical"
-          android:text="@string/donate"
-          android:textColor="@color/text_blue_color"
-          android:textSize="@dimen/text_size_biggest"
-          app:icon_size="24dp" />
-
-      <ImageView
-          android:id="@+id/ivClose"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentRight="true"
-          android:layout_centerVertical="true"
-          android:background="@drawable/ripple_white_selector"
-          android:clickable="true"
-          android:src="@drawable/ic_close" />
-    </RelativeLayout>
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/ripple_white_selector"
+        android:clickable="true"
+        android:src="@drawable/ic_close"
+        app:layout_constraintBottom_toBottomOf="@id/title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/title" />
 
     <View
         android:id="@+id/vLine"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/title"
-        android:background="@color/line_color" />
+        android:background="@color/line_color"
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <TextView
         android:id="@+id/tvDesc"
         style="@style/KpaContentTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/vLine"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/donate_desc"
         android:textColor="@color/text_black_color"
-        android:textSize="13sp" />
+        android:textSize="13sp"
+        app:layout_constraintTop_toBottomOf="@+id/vLine" />
 
     <RelativeLayout
         android:id="@+id/rlAliPay"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/ripple_white_selector"
         android:clickable="true"
         android:paddingStart="32dp"
-        android:paddingEnd="32dp">
+        android:paddingEnd="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDesc">
 
       <ImageView
           android:id="@+id/ivAliPay"
@@ -80,20 +83,22 @@
           android:layout_centerVertical="true"
           android:layout_marginStart="32dp"
           android:layout_toEndOf="@+id/ivAliPay"
-          android:text="支付宝"
+          android:text="@string/Alipay"
           android:textSize="20sp" />
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/rlPayPal"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
         android:background="@drawable/ripple_white_selector"
         android:clickable="true"
         android:paddingStart="32dp"
-        android:paddingEnd="32dp">
+        android:paddingEnd="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rlAliPay">
 
       <ImageView
           android:id="@+id/ivPayPal"
@@ -115,5 +120,5 @@
     </RelativeLayout>
 
 
-  </LinearLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -14,9 +14,12 @@ import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import android.view.View
+import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogDonateBinding
+import com.lyy.keepassa.widget.DrawableTextView
+import com.lyy.keepassa.widget.toPx
 import com.zzhoujay.richtext.RichText
 
 /**
@@ -40,6 +43,13 @@ class DonateDialog : BaseDialog<DialogDonateBinding>(), View.OnClickListener {
           return@urlClick true
         }
         .into(binding.tvDesc)
+
+    binding.title.setDrawable(
+        DrawableTextView.LEFT,
+        ResUtil.getSvgIcon(R.drawable.ic_favorite_24px, R.color.text_blue_color),
+        24.toPx(),
+        24.toPx()
+    )
   }
 
   override fun onClick(v: View?) {

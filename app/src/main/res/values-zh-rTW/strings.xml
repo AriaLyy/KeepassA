@@ -297,4 +297,5 @@
   <string name="set_summary_screen_lock_on">屏幕鎖定自動鎖定數據庫</string>
   <string name="set_title_screen_lock">屏幕鎖定設置</string>
   <string name="close">關閉</string>
+  <string name="Alipay">支付寶</string>
 </resources>
