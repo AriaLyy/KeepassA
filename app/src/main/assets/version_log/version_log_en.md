@@ -1,3 +1,8 @@
+#### 1.8.2 (2021/2/17)
+- Fix the crash of the software after the screen is locked
+- Fix the crash of getting steam totp
+- Upgrade kotlin version
+
 #### 1.8.1 (2021/2/14)
 - Fix database loading due to incomplete reading
 - Fix asserts

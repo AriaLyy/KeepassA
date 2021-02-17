@@ -36,11 +36,11 @@ object OtpUtil {
       return getOtpPass(otp.toString())
     }
 
-    val isSteam = isSteam(entry)
     // 修复1.7之前的bug
-    if (isSteamEntry(entry) && isSteam) {
+    if (isSteamEntry(entry)) {
       fix1_7bug(entry)
     }
+    val isSteam = isSteam(entry)
     val totpSetting = entry.strings["TOTP Settings"]
     var period = TokenCalculator.TOTP_DEFAULT_PERIOD
     var digits = TokenCalculator.TOTP_DEFAULT_DIGITS
@@ -60,13 +60,13 @@ object OtpUtil {
    * 1.7之前的版本创建totp时，会将 TOTP Settings 字段设置为 30;S，而S表示的是Steam
    */
   private fun fix1_7bug(entry: PwEntryV4) {
-    GlobalScope.launch {
-      val totpSetting = entry.strings["TOTP Settings"]
-      if (totpSetting != null) {
-        val tempArray = totpSetting.toString()
-            .split(";")
-        if (!tempArray.isNullOrEmpty() && tempArray.size == 2) {
-          entry.strings["TOTP Settings"] = ProtectedString(false, "${tempArray[0]};6")
+    val totpSetting = entry.strings["TOTP Settings"]
+    if (totpSetting != null) {
+      val tempArray = totpSetting.toString()
+          .split(";")
+      if (!tempArray.isNullOrEmpty() && tempArray.size == 2 && !tempArray[1].equals("S", true)) {
+        entry.strings["TOTP Settings"] = ProtectedString(false, "${tempArray[0]};S")
+        GlobalScope.launch {
           KdbUtil.saveDb(true)
         }
       }
@@ -74,9 +74,10 @@ object OtpUtil {
   }
 
   private fun isSteam(entry: PwEntryV4): Boolean {
-    val otpSettings = entry.customData["TOTP Settings"]
-    if (!otpSettings.isNullOrEmpty()) {
-      val tempArray = otpSettings.split(";")
+    val otpSettings = entry.strings["TOTP Settings"]
+    if (otpSettings != null) {
+      val tempArray = otpSettings.toString()
+          .split(";")
       return tempArray[1] == "S"
     }
 
