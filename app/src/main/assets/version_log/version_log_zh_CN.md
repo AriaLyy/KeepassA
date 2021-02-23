@@ -1,3 +1,7 @@
+#### 1.9
+- 升级kotlin版本
+- 移除kotlin-android-extensions
+
 #### 1.8.2 (2021/2/17)
 - 修复屏幕锁定后，点击通知进入软件出现的崩溃问题
 - 修复获取steam totp 崩溃问题

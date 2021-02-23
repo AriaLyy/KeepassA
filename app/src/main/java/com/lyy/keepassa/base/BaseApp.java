@@ -25,7 +25,6 @@ import com.keepassdroid.Database;
 import com.leon.channel.helper.ChannelReaderUtil;
 import com.lyy.keepassa.BuildConfig;
 import com.lyy.keepassa.R;
-import com.lyy.keepassa.baseapi.INotFreeLibService;
 import com.lyy.keepassa.dao.AppDatabase;
 import com.lyy.keepassa.entity.DbRecord;
 import com.lyy.keepassa.receiver.ScreenLockReceiver;
@@ -85,11 +84,12 @@ public class BaseApp extends MultiDexApplication {
     // 开启kotlin 协程debug
     if (BuildConfig.DEBUG) {
       System.setProperty("kotlinx.coroutines.debug", "on");
-    } else {
-      if (!BuildConfig.FLAVOR.equals("fdroid")) {
-        initNotFreeLib();
-      }
     }
+    //else {
+    //  if (!BuildConfig.FLAVOR.equals("fdroid")) {
+    //    initNotFreeLib();
+    //  }
+    //}
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       KeyStoreUtil.Companion.setKeyStorePass(QuickUnLockUtil.getDbPass().toCharArray());
     }
@@ -124,10 +124,10 @@ public class BaseApp extends MultiDexApplication {
    * 使用spi机制初始化非自由软件
    */
   private void initNotFreeLib() {
-    ServiceLoader<INotFreeLibService> loader = ServiceLoader.load(INotFreeLibService.class);
-    for (INotFreeLibService iNotFreeLibService : loader) {
-      iNotFreeLibService.initLib(this, BuildConfig.DEBUG, getChannel(), null);
-    }
+    //ServiceLoader<INotFreeLibService> loader = ServiceLoader.load(INotFreeLibService.class);
+    //for (INotFreeLibService iNotFreeLibService : loader) {
+    //  iNotFreeLibService.initLib(this, BuildConfig.DEBUG, getChannel(), null);
+    //}
   }
 
   /**

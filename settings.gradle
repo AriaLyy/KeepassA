@@ -1,7 +1,2 @@
-include ':app', ':Frame', ':KeepassLib'
+include ':app'
 rootProject.name='KeepassA-Lite'
-include ':Demo'
-include ':KeepassIcon'
-include ':UIWidget'
-include ':NoFreeLib'
-include ':BaseApi'
