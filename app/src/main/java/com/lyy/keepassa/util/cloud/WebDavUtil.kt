@@ -42,10 +42,7 @@ object WebDavUtil : ICloudUtil {
   }
 
   /**
-   * 检查登录，检查方案：
-   * 1、创建一个临时文件
-   * 2、上传该文件到webdav，如果上传成功表示登录成功
-   * 3、删除云端和本地的临时文件
+   * 检查登录
    * @return true 登录成功，false 登录失败
    */
   fun checkLogin(
@@ -57,12 +54,10 @@ object WebDavUtil : ICloudUtil {
       sardine = OkHttpSardine()
       sardine?.let {
         it.setCredentials(userName, password)
-        // 1、创建临时文件
-        it.put(uri, "${UUID.randomUUID()}".toByteArray(Charsets.UTF_8))
-        // 2、删除云端文件
-        it.delete(uri)
+        it.list(uri)
       }
     } catch (e: Exception) {
+      sardine = null
       e.printStackTrace()
       BuglyLog.e(TAG, "checkLogin", e)
       return false

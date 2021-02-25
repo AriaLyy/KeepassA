@@ -298,4 +298,5 @@
   <string name="set_title_screen_lock">屏幕鎖定設置</string>
   <string name="close">關閉</string>
   <string name="Alipay">支付寶</string>
+  <string name="error_webdav_end_suffix">錯誤的路徑，應該使用文件夾路徑，如："https://webdav.com/"</string>
 </resources>

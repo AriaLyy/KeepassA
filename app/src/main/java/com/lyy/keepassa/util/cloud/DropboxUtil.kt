@@ -267,7 +267,7 @@ object DropboxUtil : ICloudUtil {
    * 判断是否登录成功，如果没有授权，请使用[Auth.startOAuth2Authentication]启动授权界面
    * @return false 没有登录
    */
-  fun isAuth(): Boolean {
+  fun isAuthorized(): Boolean {
     val token = SharePreUtil.getString(
         Constance.PRE_FILE_NAME, BaseApp.APP,
         DROPBOX_KEY_TOKEN

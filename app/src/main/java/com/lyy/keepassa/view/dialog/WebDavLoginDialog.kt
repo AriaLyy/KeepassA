@@ -17,7 +17,6 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogWebdavLoginBinding
 import com.lyy.keepassa.event.ChangeDbEvent
-import com.lyy.keepassa.event.DbPathEvent
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
@@ -31,6 +30,7 @@ import org.greenrobot.eventbus.EventBus
 class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
   private var loadingDialog: LoadingDialog? = null
   private lateinit var module: WebDavLoginModule
+  private var webDavUri: String? = null
 
   /**
    * true，创建数据库时的登录
@@ -39,12 +39,7 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
     getArgument<Boolean>("webDavIsCreateLogin") ?: false
   }
 
-  /**
-   *  如果是登录创建，该字段是文件的url, 非创建数据库，为数据库名
-   */
-  private val webDavDbName by lazy {
-    getArgument<String>("webDavDbName") ?: ""
-  }
+  fun getWebDavUri() = webDavUri
 
   override fun setLayoutId(): Int {
     return R.layout.dialog_webdav_login
@@ -53,12 +48,9 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
   override fun initData() {
     super.initData()
     module = ViewModelProvider(this).get(WebDavLoginModule::class.java)
-    if (webDavIsCreateLogin) {
-      binding.uri.setText(webDavDbName)
-    }
 
     binding.enter.setOnClickListener {
-      if ( KeepassAUtil.instance.isFastClick()) {
+      if (KeepassAUtil.instance.isFastClick()) {
         return@setOnClickListener
       }
 
@@ -84,12 +76,19 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
         )
         return@setOnClickListener
       }
-      if (! KeepassAUtil.instance.checkUrlIsValid(uri)) {
+      if (!KeepassAUtil.instance.checkUrlIsValid(uri)) {
         HitUtil.toaskShort("${getString(R.string.hint_webdav_url)} ${getString(R.string.invalid)}")
         return@setOnClickListener
       }
+
       val temp = Uri.parse(uri)
-      if (temp == null
+
+      if (webDavIsCreateLogin) {
+        if (temp == null || !uri.endsWith("/", ignoreCase = true)){
+          HitUtil.toaskLong(getString(R.string.error_webdav_end_suffix))
+          return@setOnClickListener
+        }
+      } else if (temp == null
           || TextUtils.isEmpty(temp.lastPathSegment)
           || !temp.lastPathSegment!!.endsWith(".kdbx", ignoreCase = true)
       ) {
@@ -97,38 +96,31 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
         return@setOnClickListener
       }
 
+      // start login
+      this.webDavUri = uri
       loadingDialog = LoadingDialog(context)
       loadingDialog?.show()
       module.checkLogin(requireContext(), uri, userName, pass, webDavIsCreateLogin)
           .observe(this, Observer { success ->
             loadingDialog?.dismiss()
             if (success) {
-              dismiss()
               var dbName = Uri.parse(uri).lastPathSegment
               if (dbName == null) {
                 dbName = "unknown.kdbx"
               }
-              if (webDavIsCreateLogin) {
+              if (!webDavIsCreateLogin) {
                 EventBus.getDefault()
                     .post(
-                        DbPathEvent(
+                        ChangeDbEvent(
                             dbName = dbName,
-                            dbPathType = WEBDAV,
-                            fileUri = DbSynUtil.getCloudDbTempPath(WEBDAV.name, dbName),
-                            cloudDiskPath = uri
+                            localFileUri = DbSynUtil.getCloudDbTempPath(WEBDAV.name, dbName),
+                            cloudPath = uri,
+                            uriType = WEBDAV
                         )
                     )
-                return@Observer
               }
-              EventBus.getDefault()
-                  .post(
-                      ChangeDbEvent(
-                          dbName = dbName,
-                          localFileUri = DbSynUtil.getCloudDbTempPath(WEBDAV.name, dbName),
-                          cloudPath = uri,
-                          uriType = WEBDAV
-                      )
-                  )
+              HitUtil.toaskShort("${getString(R.string.login)} ${getString(R.string.success)}")
+              dismiss()
               return@Observer
             }
 

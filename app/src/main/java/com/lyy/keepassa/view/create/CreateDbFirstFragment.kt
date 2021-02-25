@@ -9,44 +9,34 @@
 
 package com.lyy.keepassa.view.create
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
-import android.text.Html
 import android.text.TextUtils
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.collection.arrayMapOf
 import androidx.lifecycle.ViewModelProvider
-import com.dropbox.core.android.Auth
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentCreateDbFirstBinding
 import com.lyy.keepassa.event.DbPathEvent
-import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
-import com.lyy.keepassa.util.cloud.DropboxUtil
-import com.lyy.keepassa.util.putArgument
-import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.DbPathType
 import com.lyy.keepassa.view.DbPathType.AFS
 import com.lyy.keepassa.view.DbPathType.DROPBOX
 import com.lyy.keepassa.view.DbPathType.UNKNOWN
 import com.lyy.keepassa.view.DbPathType.WEBDAV
+import com.lyy.keepassa.view.create.auth.AuthFlowFactory
+import com.lyy.keepassa.view.create.auth.IAuthCallback
+import com.lyy.keepassa.view.create.auth.IAuthFlow
+import com.lyy.keepassa.view.create.auth.OnNextFinishCallback
 import com.lyy.keepassa.view.dialog.MsgDialog
-import com.lyy.keepassa.view.dialog.MsgDialog.OnBtClickListener
-import com.lyy.keepassa.view.dialog.WebDavLoginDialog
 import com.lyy.keepassa.widget.BubbleTextView
 import com.lyy.keepassa.widget.BubbleTextView.OnIconClickListener
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode.MAIN
 
 /**
  * 创建数据库的第一步
@@ -54,21 +44,21 @@ import org.greenrobot.eventbus.ThreadMode.MAIN
  * 2、设置数据库名
  */
 class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
-  private val PATH_REQUEST_CODE = 0xA1
+
   private lateinit var module: CreateDbModule
   private lateinit var pathTypeDialog: PathTypeDialog
-  private var dropboxNeedAuth = false
-
+  private var authFlow: IAuthFlow? = null
+  private var isAuthorized: Boolean = false
+  private val flowMap = arrayMapOf<DbPathType, IAuthFlow>()
 
   override fun initData() {
     module = ViewModelProvider(requireActivity()).get(CreateDbModule::class.java)
     initView()
-    EventBusHelper.reg(this)
   }
 
   private fun initView() {
     setPathTypeInfo()
-    showPathDialog()
+    showSaveTypeDialog()
 
     binding.pathType.setOnIconClickListener(object : OnIconClickListener {
       override fun onClick(
@@ -89,12 +79,12 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
 
     // 设置键盘确定按钮属性
     binding.dbName.setOnEditorActionListener { _, actionId, _ ->
-      if (!isAdded){
+      if (!isAdded) {
         return@setOnEditorActionListener false
       }
       // actionId 和android:imeOptions 属性要保持一致
       if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(binding.dbName.text)) {
-         KeepassAUtil.instance.toggleKeyBord(requireContext())
+        KeepassAUtil.instance.toggleKeyBord(requireContext())
 //        showPathDialog()
         startNext()
         true
@@ -113,7 +103,7 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
     binding.dbNameLayout.error = hint
     binding.dbName.requestFocus()
     HitUtil.toaskShort(hint)
-     KeepassAUtil.instance.toggleKeyBord(requireContext())
+    KeepassAUtil.instance.toggleKeyBord(requireContext())
   }
 
   /**
@@ -132,7 +122,7 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
     return module.dbName
   }
 
-  fun showPathDialog() {
+  fun showSaveTypeDialog() {
     pathTypeDialog = PathTypeDialog(
         binding.dbName.text.toString()
             .trim()
@@ -144,84 +134,32 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
         return@setOnDismissListener
       }
       setPathTypeInfo()
-      // 处理类型选择
-      when (module.dbPathType) {
-        // webdav 启动登录
-        WEBDAV -> {
-//          changeWebDav()
-        }
-        // dropbox 检查授权
-        DROPBOX -> {
-          if (!DropboxUtil.isAuth()) {
-            dropboxNeedAuth = true
-            changeDropbox()
+      authFlow = flowMap[module.dbPathType]
+      if (authFlow == null) {
+        authFlow = AuthFlowFactory.getAuthFlow(module.dbPathType)
+        flowMap[module.dbPathType] = authFlow
+      }
+      authFlow?.let {
+        it.initContent(requireContext(), object : IAuthCallback {
+          override fun callback(success: Boolean) {
+            isAuthorized = success
+            binding.dbName.requestFocus()
           }
-        }
-        // 其它的需要设置数据库名
-        else -> {
-          binding.dbName.requestFocus()
-        }
+        })
+        it.startFlow()
       }
     }
   }
 
   override fun onResume() {
     super.onResume()
-    if (dropboxNeedAuth) {
-      val token = Auth.getOAuth2Token()
-      if (!TextUtils.isEmpty(token)) {
-        DropboxUtil.saveToken(token)
-        HitUtil.toaskShort("dropbox ${getString(R.string.auth)}${getString(R.string.success)}")
-      } else {
-        HitUtil.toaskShort("dropbox ${getString(R.string.auth)}${getString(R.string.fail)}")
-      }
-    }
+    authFlow?.onResume()
   }
 
   /**
-   * 选择webdav路径，登录成功后直接进入下一个页面
+   * 流程结束
    */
-  private fun changeWebDav() {
-    val uri = binding.dbName.text.toString()
-        .trim()
-    val webDavDialog = WebDavLoginDialog().apply {
-      putArgument("webDavIsCreateLogin", true)
-      putArgument("webDavDbName", uri)
-    }
-    webDavDialog.show(requireActivity().supportFragmentManager, "web_dav_login")
-  }
-
-  /**
-   * 选择dropbox路径
-   * 只有dropbox为授权才显示该对话框
-   */
-  private fun changeDropbox() {
-    val msgDialog = MsgDialog.generate {
-      msgTitle = this@CreateDbFirstFragment.getString(R.string.hint)
-      msgContent = Html.fromHtml(this@CreateDbFirstFragment.getString(R.string.dropbox_msg))
-      showCancelBt = false
-      build()
-    }
-    msgDialog.setOnBtClickListener(object : OnBtClickListener {
-      override fun onBtClick(
-        type: Int,
-        view: View
-      ) {
-        if (!isAdded){
-          return
-        }
-        Auth.startOAuth2Authentication(requireContext(), DropboxUtil.APP_KEY)
-      }
-    })
-    msgDialog.show()
-  }
-
-  /**
-   * 获取数据库路径，将在这地方启动下一页面
-   * webdav，dropbox的路径来自于eventBus
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onGetDbPath(pathEvent: DbPathEvent) {
+  private fun finishFlow(pathEvent: DbPathEvent) {
     if (pathEvent.fileUri == null && pathEvent.dbPathType == AFS) {
       Log.e(TAG, "uri 获取失败")
       return
@@ -247,7 +185,9 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
         module.dbName = uri.lastPathSegment ?: "unknown"
         module.dbUri = DbSynUtil.getCloudDbTempPath(WEBDAV.name, module.dbName)
         module.cloudPath = pathEvent.cloudDiskPath!!
-//        startNextFragment = true
+      }
+      else -> {
+        throw IllegalArgumentException("不支持的类型: ${pathEvent.dbPathType.lable}")
       }
     }
 
@@ -262,9 +202,6 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
 
   /**
    * 检查是否可以进入下一步
-   * 1、afs 需要设置数据库名，并且文件保存[CreateDbModule.dbUri]不为空
-   * 2、dropbox需要校验通过，并且数据库名名不为空
-   * 3、webdav需要校验通过，并且uri不为空
    */
   fun startNext(): Boolean {
     val temp = binding.dbName.text.toString()
@@ -272,36 +209,14 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
     if (TextUtils.isEmpty(temp)) {
       HitUtil.toaskShort(getString(R.string.error_db_name_null))
       return false
-    } else if (module.dbPathType == WEBDAV && !module.checkWebDavUri(requireContext(), temp)) {
-      return false
     }
 
-    when (module.dbPathType) {
-      AFS -> {
-        if (module.dbUri == null) {
-           KeepassAUtil.instance.createFile(
-              this, "*/*", "$temp.kdbx", PATH_REQUEST_CODE
-          )
-        }
+    authFlow?.doNext(this, temp, object : OnNextFinishCallback {
+      override fun onFinish(event: DbPathEvent) {
+        finishFlow(event)
       }
-      DROPBOX -> {
-        if (!DropboxUtil.isAuth()) {
-          changeDropbox()
-        } else {
-          onGetDbPath(
-              DbPathEvent(
-                  dbName = "$temp.kdbx",
-                  fileUri = DbSynUtil.getCloudDbTempPath(DROPBOX.name, temp),
-                  dbPathType = DROPBOX,
-                  cloudDiskPath = "/$temp.kdbx"
-              )
-          )
-        }
-      }
-      WEBDAV -> {
-//        changeWebDav()
-      }
-    }
+    })
+
     return true
   }
 
@@ -318,16 +233,8 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
    * 设置数据名输入提示
    */
   private fun setDbNameHint(dbPathType: DbPathType) {
-    when (dbPathType) {
-      WEBDAV -> {
-        binding.dbNameLayout.helperText = getString(R.string.helper_webdav)
-        binding.dbNameLayout.hint = getString(R.string.hint_webdav_url)
-      }
-      else -> {
-        binding.dbNameLayout.helperText = getString(R.string.help_create_db)
-        binding.dbNameLayout.hint = getString(R.string.db_name)
-      }
-    }
+    binding.dbNameLayout.helperText = getString(R.string.help_create_db)
+    binding.dbNameLayout.hint = getString(R.string.db_name)
   }
 
   override fun setLayoutId(): Int {
@@ -335,8 +242,8 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
   }
 
   override fun onDestroy() {
+    authFlow?.onDestroy()
     super.onDestroy()
-    EventBusHelper.unReg(this)
   }
 
   override fun onActivityResult(
@@ -345,28 +252,7 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
     data: Intent?
   ) {
     super.onActivityResult(requestCode, resultCode, data)
-    if (resultCode == Activity.RESULT_OK
-        && requestCode == PATH_REQUEST_CODE
-        && data != null
-        && data.data != null
-        && context != null
-    ) {
-      if (!isAdded){
-        return
-      }
-      // 申请长期的uri权限
-      // 防止一个不可思议的空指针，data.data 有可能还是为空
-      data.data?.apply {
-        takePermission()
-        onGetDbPath(
-            DbPathEvent(
-                dbName = UriUtil.getFileNameFromUri(requireContext(), this),
-                fileUri = this,
-                dbPathType = AFS
-            )
-        )
-      }
-    }
+    authFlow?.onActivityResult(requestCode, resultCode, data)
   }
 
 }

@@ -30,7 +30,7 @@ class CloudDiskFileDialog(val data: ArrayList<SimpleItemEntity>) : BaseBottomShe
 
   override fun init(savedInstanceState: Bundle?) {
     super.init(savedInstanceState)
-    adapter = SimpleAdapter(context!!, data)
+    adapter = SimpleAdapter(requireContext(), data)
     binding.list.adapter = adapter
     binding.list.layoutManager = LinearLayoutManager(context)
     binding.list.setHasFixedSize(true)

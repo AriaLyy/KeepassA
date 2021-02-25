@@ -11,8 +11,6 @@ package com.lyy.keepassa.view.create
 
 import android.content.Context
 import android.net.Uri
-import android.text.TextUtils
-import android.util.Log
 import androidx.lifecycle.liveData
 import com.keepassdroid.Database
 import com.keepassdroid.database.PwDatabase
@@ -73,41 +71,11 @@ class CreateDbModule : BaseModule() {
    */
   var cloudPath: String = ""
 
-  /**
-   * 检查webdav的uri，如果uri非法提示
-   * @return false uri无效
-   */
-  fun checkWebDavUri(
-    context: Context,
-    uri: String
-  ): Boolean {
-    if (uri.isEmpty()) {
-      HitUtil.toaskShort(
-          context.getString(R.string.hint_please_input, context.getString(R.string.hint_webdav_url))
-      )
-      return false
-    }
-    if (! KeepassAUtil.instance.checkUrlIsValid(uri)) {
-      HitUtil.toaskShort(
-          "${context.getString(R.string.hint_webdav_url)} ${context.getString(R.string.invalid)}"
-      )
-      return false
-    }
-    val temp = Uri.parse(uri)
-    if (temp == null
-        || TextUtils.isEmpty(temp.lastPathSegment)
-        || !temp.lastPathSegment!!.endsWith(".kdbx", ignoreCase = true)
-    ) {
-      HitUtil.toaskLong(context.getString(R.string.hint_kdbx_name))
-      return false
-    }
-    return true
-  }
 
   /**
-   * 创建数据库
+   * 创建并打开数据库
    */
-  fun createDb(
+  fun createAndOpenDb(
     context: Context
   ) = liveData {
     val db: Database? = withContext(Dispatchers.IO) {
@@ -167,7 +135,7 @@ class CreateDbModule : BaseModule() {
   /**
    * 创建数据库时创建默认的群组
    */
-  fun createDefaultGroup(context: Context) {
+  private fun createDefaultGroup(context: Context) {
     val icons = arrayListOf(25, 47, 66, 62, 43)
     val names = context.resources.getStringArray(R.array.create_normal_group)
     val pm: PwDatabase = BaseApp.KDB.pm

@@ -297,5 +297,6 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="set_title_screen_lock">Screen lock settings</string>
   <string name="close">Close</string>
   <string name="Alipay">Alipay</string>
+  <string name="error_webdav_end_suffix">Error path，Folder path should be used, eg: "https://webdav.com/"</string>
 
 </resources>

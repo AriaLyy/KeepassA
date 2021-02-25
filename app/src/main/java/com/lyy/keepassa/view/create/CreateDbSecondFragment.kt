@@ -55,15 +55,13 @@ class CreateDbSecondFragment : FrameFragment<FragmentCreateDbSecondBinding>(),
     leftDrawable.setBounds(0, 0, iconSize.toInt(), iconSize.toInt())
     binding.dbHint.setCompoundDrawables(leftDrawable, null, null, null)
     binding.encryptGroup.setOnCheckedChangeListener { group, checkedId ->
-      kotlin.run {
-        val rb = group.findViewById<RadioButton>(checkedId)
-        if (rb.tag == "1") {
+      val rb = group.findViewById<RadioButton>(checkedId)
+      if (rb.tag == "1") {
 //          binding.passKeyLayout.visibility = View.GONE
-          hintPassLayout()
-        } else {
+        hintPassLayout()
+      } else {
 //          binding.passKeyLayout.visibility = View.VISIBLE
-          showPassLayout()
-        }
+        showPassLayout()
       }
     }
     binding.encryptType.setOnIconClickListener(this)
@@ -160,7 +158,7 @@ class CreateDbSecondFragment : FrameFragment<FragmentCreateDbSecondBinding>(),
       if (TextUtils.isEmpty(enterPass)) {
         HitUtil.toaskShort(getString(R.string.error_enter_pass_null))
         binding.enterPassword.requestFocus()
-         KeepassAUtil.instance.toggleKeyBord(requireContext())
+        KeepassAUtil.instance.toggleKeyBord(requireContext())
         return null
       }
       if (!pass.equals(enterPass, false)) {

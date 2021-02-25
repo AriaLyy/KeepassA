@@ -158,7 +158,7 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
       KLog.e(TAG, "dropbox fragment 还没加载到activity中")
       return
     }
-    if (DropboxUtil.isAuth()) {
+    if (DropboxUtil.isAuthorized()) {
       showCloudListDialog()
     } else {
       startDropboxAuth = true

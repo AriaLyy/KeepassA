@@ -80,7 +80,7 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
   }
 
   override fun onClick(v: View?) {
-    if ( KeepassAUtil.instance.isFastClick()) {
+    if (KeepassAUtil.instance.isFastClick()) {
       return
     }
     when (v!!.id) {
@@ -104,29 +104,19 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
     secondFragment?.getPass()
     loadingDialog = LoadingDialog(this)
     loadingDialog.show()
-    module.createDb(this)
+    module.createAndOpenDb(this)
         .observe(this, Observer { db ->
+          loadingDialog.dismiss()
           if (db == null) {
-            loadingDialog.dismiss()
             HitUtil.toaskShort(getString(R.string.create_db) + getString(R.string.fail))
             return@Observer
           }
           Log.d(TAG, "创建数据库成功")
-
-          if (BaseApp.isAFS()) {
-            handleSuccess()
-          }
-
           HitUtil.toaskShort(getString(R.string.hint_db_create_success, module.dbName))
-
+          NotificationUtil.startDbOpenNotify(this)
+          MainActivity.startMainActivity(this)
+          KeepassAUtil.instance.saveLastOpenDbHistory(BaseApp.dbRecord)
         })
-  }
-
-  private fun handleSuccess() {
-    NotificationUtil.startDbOpenNotify(this)
-    MainActivity.startMainActivity(this)
-     KeepassAUtil.instance.saveLastOpenDbHistory(BaseApp.dbRecord)
-    loadingDialog.dismiss()
   }
 
   /**
@@ -137,7 +127,7 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
       firstFragment.handleDbNameNull()
       return
     } else if (module.dbUri == null) {
-      firstFragment.showPathDialog()
+      firstFragment.showSaveTypeDialog()
       return
     }
     curSetup = 2

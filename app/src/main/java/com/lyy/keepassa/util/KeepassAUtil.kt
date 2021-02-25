@@ -290,15 +290,16 @@ class KeepassAUtil private constructor() {
         dao.saveRecord(record)
         BaseApp.dbRecord = record
         KLog.d(TAG, "保存数据库打开记录成功")
-      } else {
-        his.keyUri = record.keyUri
-        his.cloudDiskPath = record.cloudDiskPath
-        his.type = record.type
-        his.time = record.time
-        dao.updateRecord(his)
-        BaseApp.dbRecord = his
-        KLog.d(TAG, "更新数据库打开记录成功")
+        return@launch
       }
+
+      his.keyUri = record.keyUri
+      his.cloudDiskPath = record.cloudDiskPath
+      his.type = record.type
+      his.time = record.time
+      dao.updateRecord(his)
+      BaseApp.dbRecord = his
+      KLog.d(TAG, "更新数据库打开记录成功")
     }
   }
 

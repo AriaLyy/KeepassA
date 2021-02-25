@@ -44,21 +44,21 @@
   <string-array name="path_type">
     <item>文件管理器</item>
     <item>Dropbox</item>
-<!--    <item>OneDrive</item>-->
-<!--    <item>GoogleDrive</item>-->
-<!--    <item>WebDav</item>-->
-<!--    <item>Ftp</item>-->
-<!--    <item>SFtp</item>-->
+    <!--    <item>OneDrive</item>-->
+    <!--    <item>GoogleDrive</item>-->
+    <item>WebDav</item>
+    <!--    <item>Ftp</item>-->
+    <!--    <item>SFtp</item>-->
   </string-array>
 
   <string-array name="path_type_des">
     <item>文件管理器</item>
     <item>Dropbox</item>
-<!--    <item>OneDrive</item>-->
-<!--    <item>GoogleDrive</item>-->
-<!--    <item>WebDav</item>-->
-<!--    <item>Ftp</item>-->
-<!--    <item>SFtp</item>-->
+    <!--    <item>OneDrive</item>-->
+    <!--    <item>GoogleDrive</item>-->
+    <item>WebDav</item>
+    <!--    <item>Ftp</item>-->
+    <!--    <item>SFtp</item>-->
   </string-array>
 
   <string-array name="v3_add_mor_item">

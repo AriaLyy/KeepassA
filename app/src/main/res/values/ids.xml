@@ -3,9 +3,9 @@
   <integer-array name="path_type_img">
     <item>@drawable/ic_android</item>
     <item>@drawable/ic_dropbox</item>
+    <item>@drawable/ic_http</item>
     <item>@drawable/ic_onedrive</item>
     <item>@drawable/ic_google_drive</item>
-    <item>@drawable/ic_http</item>
     <item>@drawable/ic_ftp</item>
     <item>@drawable/ic_ssh</item>
   </integer-array>

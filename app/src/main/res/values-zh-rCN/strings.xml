@@ -304,5 +304,6 @@
   <string name="set_title_screen_lock">屏幕锁定设置</string>
   <string name="close">关闭</string>
   <string name="Alipay">支付宝</string>
+  <string name="error_webdav_end_suffix">错误的路径，应该使用文件夹路径，如："https://webdav.com/"</string>
 </resources>
 
