@@ -245,12 +245,12 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   }
 
   override fun onDestroy() {
-    super.onDestroy()
     if (!isInRecycleBin) {
       // 保存打开历史
       module.saveRecord()
     }
     EventBusHelper.unReg(this)
+    super.onDestroy()
   }
 
   /**

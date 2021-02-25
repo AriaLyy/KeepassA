@@ -23,6 +23,7 @@ import android.os.Build
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import com.arialyy.frame.util.ResUtil
 import com.bumptech.glide.Glide
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV3

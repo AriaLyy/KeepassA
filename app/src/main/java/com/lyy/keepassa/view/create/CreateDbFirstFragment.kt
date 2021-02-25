@@ -207,6 +207,9 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
         type: Int,
         view: View
       ) {
+        if (!isAdded){
+          return
+        }
         Auth.startOAuth2Authentication(requireContext(), DropboxUtil.APP_KEY)
       }
     })

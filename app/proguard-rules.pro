@@ -58,6 +58,10 @@
 -keepattributes *Annotation*
 # 保护support v4 包
 -dontwarn android.support.v4.app.**
+
+# *	匹配任意长度字符，不包含包名分隔符 (.)
+# **	匹配任意长度字符，包含包名分隔符 (.)
+# ***	匹配任意参数类型
 -keep class android.support.v4.app.**{ *; }
 # 保护andorid x
 -keep class com.google.android.material.** {*;}

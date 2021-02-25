@@ -1,4 +1,5 @@
-#### 1.9
+#### 1.8.3 (2021/2/25)
+- 修复一些崩溃问题
 - 升级kotlin版本
 - 移除kotlin-android-extensions
 

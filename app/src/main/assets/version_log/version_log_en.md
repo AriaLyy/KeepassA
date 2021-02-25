@@ -1,3 +1,8 @@
+#### 1.8.3 (2021/2/25)
+- Fix some crashes
+- Upgrade kotlin version
+- Remove kotlin-android-extensions
+
 #### 1.8.2 (2021/2/17)
 - Fix the crash of the software after the screen is locked
 - Fix the crash of getting steam totp
