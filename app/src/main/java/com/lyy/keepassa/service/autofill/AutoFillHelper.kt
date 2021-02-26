@@ -174,7 +174,7 @@ object AutoFillHelper {
     val rev = RemoteViews(context.packageName, R.layout.item_auto_fill)
     rev.setTextViewText(R.id.text, title)
     setTextColor(rev, context)
-    if (customIcon != null && customIcon.imageData.isNotEmpty()) {
+    if (customIcon?.imageData != null && customIcon.imageData.isNotEmpty()) {
       val byte = customIcon.imageData
       val option = BitmapFactory.Options()
       option.inPreferredConfig = Config.RGB_565

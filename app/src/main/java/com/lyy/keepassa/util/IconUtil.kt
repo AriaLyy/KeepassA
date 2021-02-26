@@ -217,7 +217,7 @@ object IconUtil {
    * @return true 自定义图标为空
    */
   private fun customIconIsNull(customIcon: PwIconCustom?): Boolean {
-    return (customIcon?.imageData == null) || customIcon == PwIconCustom.ZERO
+    return (customIcon?.imageData == null) || customIcon.imageData.isEmpty() || customIcon == PwIconCustom.ZERO
   }
 
   /**
