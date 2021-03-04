@@ -1,8 +1,9 @@
-#### 1.8.4
+#### 1.8.4 （2021/3/44）
 - 重构创建数据库的逻辑
 - 增加在Webdav上创建数据库的功能
 
-![webdavCreate](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/webdavCreate.png)
+![webdavCreate](https://gitee.com/laoyuyu/blog/raw/master/keepassA/webdavCreate.png)
+- 修复一些崩溃问题
 
 
 #### 1.8.3 (2021/2/25)
@@ -32,7 +33,7 @@
 - note增加编辑功能
 - 增加用户名历史记录功能
 
-![user_drop_down_list](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/userDropdownList.png)
+![user_drop_down_list](https://gitee.com/laoyuyu/blog/raw/master/keepassA/userDropdownList.png)
 - 搜索忽略回收站中的条目
 - 修复夜间模式下，自动填充文字无法显示的问题
 - 修复某些应用无法自动填充的问题
@@ -47,7 +48,7 @@
 - 设置模块，增加解锁数据库后，主页优先显示所有条目功能，[点击设置](route://keepassA.com/kpa?activity=SettingActivity&type=db)
 - 条目详情模块，note 自动增加展开和收缩功能
 
-![note_expand](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/noteExpand.png)
+![note_expand](https://gitee.com/laoyuyu/blog/raw/master/keepassA/noteExpand.png)
 - 优化主页闪烁问题
 - 感谢[@DominicDesbiens](https://github.com/DominicDesbiens)提供了加拿大法语翻译
 
@@ -56,7 +57,7 @@
 - 增加开放源码协议说明
 - 增加移动条目和群组的功能
 
-![ime](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/moveData.png)
+![ime](https://gitee.com/laoyuyu/blog/raw/master/keepassA/moveData.png)
 - 修复无法增加二级群组的问题
 - 修复一个webdav获取文件信息导致的崩溃问题
 - 修复一些讨厌的崩溃问题
@@ -72,7 +73,7 @@
 - 增加字段引用功能
 - 增加[安全键盘](route://keepassA.com/kpa?activity=ime)
 
-![ime](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/ime.png)
+![ime](https://gitee.com/laoyuyu/blog/raw/master/keepassA/ime.png)
 - 修复快速解锁界面，无法删除所有短密码的问题
 - 修复webdav登陆超时导致的崩溃问题
 - 修复一些讨厌的崩溃问题
@@ -80,7 +81,7 @@
 #### 1.3 (2020/9/22)
 - 增加TOTP令牌设置功能，编辑条目，点击添加更多按钮便可以显示该功能界面
 
-![otp_setting](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/otpsetting.png)
+![otp_setting](https://gitee.com/laoyuyu/blog/raw/master/keepassA/otpsetting.png)
 
 #### 1.2 (2020/9/2)
 - 修复一些讨厌的崩溃问题
