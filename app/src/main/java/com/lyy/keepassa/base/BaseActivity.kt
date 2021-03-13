@@ -9,21 +9,25 @@
 
 package com.lyy.keepassa.base
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.transition.TransitionInflater
-import android.view.Display
 import android.view.WindowManager
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.ViewDataBinding
 import com.arialyy.frame.core.AbsActivity
+import com.arialyy.frame.util.ReflectionUtil
 import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.R
-import com.lyy.keepassa.util.AutoLockDbUtil
 import com.lyy.keepassa.util.HitUtil
+import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.LanguageUtil
+import java.lang.reflect.Field
+import java.lang.reflect.Method
 
 /**
  * Created by Lyy on 2016/9/27.
@@ -85,29 +89,35 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
 
   private fun setWindowAnim() {
     // salide 为滑入，其它动画效果参考：https://github.com/lgvalle/Material-Animations
-    // 第一次进入activity的动画
+    // A -> B, B的进入动画
     window.enterTransition = TransitionInflater.from(this)
         .inflateTransition(R.transition.slide_enter)
 
-    // 退出当前activity的动画
+    // A -> B, A的退出动画
     window.exitTransition = TransitionInflater.from(this)
         .inflateTransition(R.transition.slide_exit)
 
-//    // 重新进入activity的动画
-//    window.returnTransition = TransitionInflater.from(this)
-//        .inflateTransition(R.transition.slide_return)
+    // A <- B, B的返回动画
+    window.returnTransition = TransitionInflater.from(this)
+        .inflateTransition(R.transition.slide_return)
 
+    // A <- , A的进入动画
+    window.reenterTransition = TransitionInflater.from(this)
+        .inflateTransition(R.transition.slide_reeter)
+
+    // A -> B, B的enter动画和A的exit动画是否同时执行，false 禁止
+    window.allowEnterTransitionOverlap = true
+    // A <- B, A的reenter和B的return动画是否同时执行，false 禁止
+    window.allowReturnTransitionOverlap = true
+
+    // reenterTransition、returnTransition 是方向动画
+//    EnterTransition <-> ReturnTransition
+//    ExitTransition <-> ReenterTransition
   }
 
   protected fun showQuickUnlockDialog() {
     KeepassAUtil.instance.lock()
     finish()
-  }
-
-  override fun dataCallback(
-    result: Int,
-    data: Any
-  ) {
   }
 
   override fun onRestart() {
@@ -121,24 +131,32 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     }
   }
 
+
+  /**
+   * Android10 Activity的onStop方法可能会导致共享元素动画失效，通过反射注入恢复共享元素动画
+   * @param activity
+   */
+  @SuppressLint("PrivateApi") fun updateResume(activity: Activity) {
+    try {
+      KLog.d(TAG, "updateResume")
+      val stateField: Field = ReflectionUtil.getField(Activity::class.java, "mActivityTransitionState")
+      stateField.isAccessible = true
+      val stateObj = stateField.get(activity)
+
+      val clazz = classLoader.loadClass("android.app.ActivityTransitionState")
+      val enterReady: Method = clazz.getMethod("enterReady", Activity::class.java)
+      enterReady.isAccessible = true
+      enterReady.invoke(stateObj, activity)
+    } catch (e: java.lang.Exception) {
+      e.printStackTrace()
+    }
+  }
+
   override fun onResume() {
     super.onResume()
     // 启动定时器
-
-    if (KeepassAUtil.instance.isStartQuickLockActivity(this)) {
-      if (BaseApp.isLocked) {
-        AutoLockDbUtil.get()
-            .startLockWorkerNow()
-        return
-      }
-
-      if (KeepassAUtil.instance.isRunningForeground(this)) {
-        AutoLockDbUtil.get()
-            .resetTimer()
-        return
-      }
-    }
-
+    KeepassAUtil.instance.startLockTimer(this)
+//    updateResume(this)
   }
 
 }

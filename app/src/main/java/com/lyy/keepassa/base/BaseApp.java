@@ -39,6 +39,7 @@ import com.zzhoujay.richtext.RichText;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.ServiceLoader;
+import me.weishu.reflection.Reflection;
 
 public class BaseApp extends MultiDexApplication {
 
@@ -67,6 +68,7 @@ public class BaseApp extends MultiDexApplication {
   @Override
   protected void attachBaseContext(Context base) {
     super.attachBaseContext(base);
+    //Reflection.unseal(base);
   }
 
   @Override public void onCreate() {
@@ -76,8 +78,6 @@ public class BaseApp extends MultiDexApplication {
     handler = new Handler(Looper.getMainLooper());
     // 初始化一下时间
     KeepassAUtil.Companion.getInstance().isFastClick();
-    // 进入应用时移除锁定数据库的定时器
-    AutoLockDbUtil.Companion.get().cancelTimer();
     currentLang = setLanguage();
     initDb();
 

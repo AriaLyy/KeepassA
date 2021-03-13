@@ -94,6 +94,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       }
     }
     module.setEcoIcon(this, binding.dbName)
+    initData()
   }
 
   private fun initData() {
@@ -199,7 +200,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         ac.overridePendingTransition(0, 0)
       }
     }
-    initData()
+
   }
 
   override fun onPause() {
@@ -225,6 +226,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         window.enterTransition = null
         window.exitTransition = null
         window.returnTransition = null
+        window.reenterTransition = null
 //        window.sharedElementReenterTransition.excludeTarget(android.R.id.statusBarBackground, true)
 //        window.sharedElementReenterTransition.excludeTarget(
 //            android.R.id.navigationBarBackground, true

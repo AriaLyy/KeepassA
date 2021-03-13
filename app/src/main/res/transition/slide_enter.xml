@@ -5,7 +5,7 @@
   <slide
       android:interpolator="@android:interpolator/decelerate_cubic"
       android:slideEdge="right" />
-  <changeBounds android:interpolator="@android:interpolator/bounce" />
+<!--  <changeBounds android:interpolator="@android:interpolator/bounce" />-->
   <!--  状态栏和导航栏不参与动画 -->
   <targets>
     <target android:excludeId="@android:id/navigationBarBackground" />

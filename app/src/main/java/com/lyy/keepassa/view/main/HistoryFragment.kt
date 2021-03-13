@@ -54,6 +54,9 @@ class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
 
     RvItemClickSupport.addTo(binding.list)
         .setOnItemClickListener { _, position, v ->
+          if (position < 0 || position >= entryData.size) {
+            return@setOnItemClickListener
+          }
           val item = entryData[position]
           val icon = v.findViewById<AppCompatImageView>(R.id.icon)
           KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwEntry, icon)

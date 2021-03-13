@@ -169,7 +169,7 @@ dependencies {
   // keepassA组件
   implementation 'com.arialyy.keepassA:KeepassIcon:0.0.3'
   implementation 'com.arialyy.keepassA:KeepassLib:0.0.4'
-  implementation 'com.arialyy.keepassA:KPAFrame:0.0.5'
+  implementation 'com.arialyy.keepassA:KPAFrame:0.0.9'
   implementation 'com.arialyy.keepassA:UIWidget:0.0.3'
 
   // kotlin
@@ -199,7 +199,9 @@ dependencies {
   // android 设置库
   implementation "androidx.preference:preference-ktx:1.1.1"
   // workmanager
-  implementation 'androidx.work:work-runtime:2.4.0'
+  def work_version = '2.4.0'
+//  implementation "androidx.work:work-runtime:$work_version"
+  implementation "androidx.work:work-runtime-ktx:$work_version"
 
   // room
   def room_version = '2.2.5'
@@ -267,6 +269,8 @@ dependencies {
   implementation 'com.tencent.bugly:nativecrashreport:latest.release'
   implementation "com.google.code.gson:gson:${rootProject.ext.gsonVersion}"
 
+//  implementation "androidx.asynclayoutinflater:asynclayoutinflater:${rootProject.ext.asynclayoutinflaterVersion}"
+  implementation 'me.weishu:free_reflection:3.0.1'
   // // =========================== 三方库 end =====================================
 
 }

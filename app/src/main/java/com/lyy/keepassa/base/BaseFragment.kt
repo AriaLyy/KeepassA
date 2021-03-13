@@ -28,13 +28,6 @@ abstract class BaseFragment<VB : ViewDataBinding> : AbsFragment<VB>() {
     super.onActivityCreated(savedInstanceState)
   }
 
-  override fun dataCallback(
-    result: Int,
-    obj: Any
-  ) {
-
-  }
-
   fun getRootView(): View = mRootView
 
   private fun setWindowAnim() {
@@ -70,16 +63,7 @@ abstract class BaseFragment<VB : ViewDataBinding> : AbsFragment<VB>() {
 
   override fun onResume() {
     super.onResume()
-    if ( KeepassAUtil.instance.isStartQuickLockActivity(this)) {
-      if (BaseApp.isLocked) {
-        AutoLockDbUtil.get().startLockWorkerNow()
-        return
-      }
-      if ( KeepassAUtil.instance.isRunningForeground(requireActivity())) {
-        AutoLockDbUtil.get().resetTimer()
-        return
-      }
-    }
+    KeepassAUtil.instance.startLockTimer(this)
   }
 
   override fun onDelayLoad() {

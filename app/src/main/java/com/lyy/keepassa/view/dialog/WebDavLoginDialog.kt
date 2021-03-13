@@ -10,9 +10,12 @@
 package com.lyy.keepassa.view.dialog
 
 import android.net.Uri
+import android.os.Build
 import android.text.TextUtils
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.arialyy.frame.util.FileUtil
+import com.lyy.keepassa.BuildConfig
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogWebdavLoginBinding
@@ -23,6 +26,7 @@ import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.getArgument
 import com.lyy.keepassa.view.DbPathType.WEBDAV
 import org.greenrobot.eventbus.EventBus
+import java.io.File
 
 /**
  * webdav 登录
@@ -48,6 +52,13 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
   override fun initData() {
     super.initData()
     module = ViewModelProvider(this).get(WebDavLoginModule::class.java)
+
+    if (BuildConfig.DEBUG) {
+      val p = FileUtil.loadConfig(File("${requireContext().filesDir.path}/webDav.properties"))
+      binding.uri.setText(p.getProperty("uri"))
+      binding.userName.setText(p.getProperty("userName"))
+      binding.password.setText(p.getProperty("password"))
+    }
 
     binding.enter.setOnClickListener {
       if (KeepassAUtil.instance.isFastClick()) {
@@ -84,7 +95,7 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
       val temp = Uri.parse(uri)
 
       if (webDavIsCreateLogin) {
-        if (temp == null || !uri.endsWith("/", ignoreCase = true)){
+        if (temp == null || !uri.endsWith("/", ignoreCase = true)) {
           HitUtil.toaskLong(getString(R.string.error_webdav_end_suffix))
           return@setOnClickListener
         }

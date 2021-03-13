@@ -84,6 +84,27 @@ class KeepassAUtil private constructor() {
   private var LAST_CLICK_TIME = System.currentTimeMillis()
 
   /**
+   * start lock timer
+   */
+  fun startLockTimer(obj: Any) {
+    GlobalScope.launch(Dispatchers.IO) {
+      if (isNeedStartLockActivity(obj)) {
+        if (BaseApp.isLocked) {
+          AutoLockDbUtil.get()
+              .startLockWorkerNow()
+          return@launch
+        }
+
+        if (isRunningForeground(BaseApp.APP)) {
+          AutoLockDbUtil.get()
+              .resetTimer()
+          return@launch
+        }
+      }
+    }
+  }
+
+  /**
    * lock the db
    */
   fun lock() {
@@ -171,7 +192,7 @@ class KeepassAUtil private constructor() {
    * 是否需要启动快速解锁
    * @return true 启动快速解锁
    */
-  fun isStartQuickLockActivity(obj: Any): Boolean {
+  private fun isNeedStartLockActivity(obj: Any): Boolean {
     val clazz = if (obj is Fragment) {
       obj.requireActivity().javaClass
     } else {

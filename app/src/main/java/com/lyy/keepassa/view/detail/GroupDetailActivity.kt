@@ -12,6 +12,7 @@ package com.lyy.keepassa.view.detail
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
+import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
@@ -91,7 +92,6 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
         BaseApp.isV4 && BaseApp.KDB!!.pm.recycleBin != null && BaseApp.KDB!!.pm.recycleBin.id == groupId
     }
 
-    module = ViewModelProvider(this).get(GroupDetailModule::class.java)
     val title = intent.getStringExtra(KEY_TITLE)
     binding.ctlCollapsingLayout.title = title
     binding.kpaToolbar.title = title
@@ -99,7 +99,15 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       finishAfterTransition()
     }
 
+    Looper.myQueue().addIdleHandler {
+      loadData()
+      return@addIdleHandler false
+    }
+  }
+
+  private fun loadData(){
     binding.kpaToolbar.inflateMenu(R.menu.menu_group_detail)
+    module = ViewModelProvider(this).get(GroupDetailModule::class.java)
     initList()
     initFab()
     initMenu()

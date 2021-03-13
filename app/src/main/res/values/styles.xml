@@ -13,7 +13,6 @@
     <!--    <item name="android:windowTranslucentNavigation">false</item>-->
     <item name="android:statusBarColor">@color/colorPrimary</item>
 
-    <!-- New MaterialComponents attributes. -->
   </style>
 
   <style name="AppTheme.NoActionBar.Night" parent="ThemeOverlay.MaterialComponents.Dark">

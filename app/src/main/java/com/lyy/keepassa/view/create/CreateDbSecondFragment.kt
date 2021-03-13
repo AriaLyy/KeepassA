@@ -19,8 +19,9 @@ import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.RadioButton
 import androidx.lifecycle.ViewModelProvider
-import com.arialyy.frame.base.FrameFragment
+import com.arialyy.frame.core.AbsFragment
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentCreateDbSecondBinding
 import com.lyy.keepassa.event.KeyPathEvent
 import com.lyy.keepassa.util.EventBusHelper
@@ -34,7 +35,7 @@ import org.greenrobot.eventbus.ThreadMode.MAIN
 /**
  * 设置密码、密钥等信息
  */
-class CreateDbSecondFragment : FrameFragment<FragmentCreateDbSecondBinding>(),
+class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
     BubbleTextView.OnIconClickListener {
 
   private var keyPassLayoutH: Int = 0
@@ -211,6 +212,9 @@ class CreateDbSecondFragment : FrameFragment<FragmentCreateDbSecondBinding>(),
   override fun onDestroy() {
     super.onDestroy()
     EventBusHelper.unReg(this)
+  }
+
+  override fun onDelayLoad() {
   }
 
 }

@@ -73,6 +73,9 @@ ext {
   // android组件
   multidex = "androidx.multidex:multidex:$multidexVersion"
 
+  // 异步布局加载
+  asynclayoutinflaterVersion = '1.0.0'
+
   // 生物识别
   biometricVersion = '1.0.1'
 
