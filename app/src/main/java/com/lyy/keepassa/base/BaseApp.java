@@ -68,7 +68,7 @@ public class BaseApp extends MultiDexApplication {
   @Override
   protected void attachBaseContext(Context base) {
     super.attachBaseContext(base);
-    //Reflection.unseal(base);
+    Reflection.unseal(base);
   }
 
   @Override public void onCreate() {

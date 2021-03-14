@@ -18,6 +18,7 @@ import android.os.Bundle
 import android.text.Html
 import android.text.InputType
 import android.text.Spanned
+import android.util.Pair
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
@@ -50,6 +51,7 @@ import com.lyy.keepassa.widget.expand.ExpandAttrStrLayout
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
+import java.util.ArrayList
 import java.util.Date
 
 /**
@@ -120,6 +122,10 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     }
 
     setData()
+  }
+
+  override fun buildSharedElements(vararg sharedElements: Pair<View, String>): ArrayList<String> {
+    return super.buildSharedElements(Pair<View, String>(binding.icon, getString(R.string.transition_entry_icon)))
   }
 
   private fun setData() {

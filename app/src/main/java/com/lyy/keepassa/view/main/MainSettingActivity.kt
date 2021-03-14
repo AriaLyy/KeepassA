@@ -17,12 +17,14 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.transition.TransitionInflater
+import android.util.Pair
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.arialyy.frame.util.AndroidUtils
 import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
+import com.lyy.keepassa.R.string
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityChangeDbBinding
@@ -35,6 +37,7 @@ import com.lyy.keepassa.view.dialog.DonateDialog
 import com.lyy.keepassa.view.setting.SettingActivity
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
+import java.util.ArrayList
 
 /**
  * 主页下拉设置
@@ -91,6 +94,19 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
       }
     })
     anim.start()
+  }
+
+
+  override fun buildSharedElements(vararg sharedElements: Pair<View, String>): ArrayList<String> {
+    val appIcon =
+      Pair<View, String>(binding.appIcon, getString(string.transition_app_icon))
+    val dbName =
+      Pair<View, String>(binding.dbName, getString(string.transition_db_name))
+    val dbVersion =
+      Pair<View, String>(binding.dbVersion, getString(string.transition_db_version))
+    val dbLittle =
+      Pair<View, String>(binding.arrow, getString(string.transition_db_little))
+    return super.buildSharedElements(appIcon, dbName, dbVersion, dbLittle)
   }
 
   @Subscribe(threadMode = MAIN)

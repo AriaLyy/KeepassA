@@ -38,10 +38,12 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
       context.startActivity(
           Intent(context, SettingActivity::class.java).apply {
             putExtra(KEY_TYPE, TYPE_APP)
-          },
+          }
+          ,
           ActivityOptions.makeSceneTransitionAnimation(context)
               .toBundle()
       )
+//      context.overridePendingTransition(R.anim.translate_right_in, R.anim.translate_left_out)
     }
 
     /**
@@ -51,10 +53,11 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
       context.startActivity(
           Intent(context, SettingActivity::class.java).apply {
             putExtra(KEY_TYPE, TYPE_DB)
-          },
-          ActivityOptions.makeSceneTransitionAnimation(context)
+          }
+          , ActivityOptions.makeSceneTransitionAnimation(context)
               .toBundle()
       )
+//      context.overridePendingTransition(R.anim.translate_right_in, R.anim.translate_left_out)
     }
   }
 

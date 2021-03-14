@@ -11,9 +11,14 @@ package com.lyy.keepassa.base
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.Looper
 import android.transition.TransitionInflater
+import android.util.Pair
+import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.ViewDataBinding
@@ -27,7 +32,7 @@ import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.LanguageUtil
 import java.lang.reflect.Field
-import java.lang.reflect.Method
+import java.util.ArrayList
 
 /**
  * Created by Lyy on 2016/9/27.
@@ -122,6 +127,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
 
   override fun onRestart() {
     super.onRestart()
+    KLog.d(TAG, "$TAG, onRestart")
     if (!KeepassAUtil.instance.isHomeActivity(this) && (BaseApp.KDB.isNull() || BaseApp.isLocked)) {
       BaseApp.handler.postDelayed({
         KeepassAUtil.instance.lock()
@@ -131,32 +137,89 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     }
   }
 
+  override fun finish() {
+    super.finish()
+    overridePendingTransition(R.anim.translate_right_in, R.anim.translate_left_out)
+  }
+
+  var isStartOtherActivity = false
+  override fun startActivity(
+    intent: Intent?,
+    options: Bundle?
+  ) {
+    super.startActivity(intent, options)
+    isStartOtherActivity = true
+    overridePendingTransition(R.anim.translate_right_in, R.anim.translate_left_out)
+  }
 
   /**
    * Android10 Activity的onStop方法可能会导致共享元素动画失效，通过反射注入恢复共享元素动画
    * @param activity
    */
-  @SuppressLint("PrivateApi") fun updateResume(activity: Activity) {
-    try {
-      KLog.d(TAG, "updateResume")
-      val stateField: Field = ReflectionUtil.getField(Activity::class.java, "mActivityTransitionState")
-      stateField.isAccessible = true
-      val stateObj = stateField.get(activity)
-
-      val clazz = classLoader.loadClass("android.app.ActivityTransitionState")
-      val enterReady: Method = clazz.getMethod("enterReady", Activity::class.java)
-      enterReady.isAccessible = true
-      enterReady.invoke(stateObj, activity)
-    } catch (e: java.lang.Exception) {
-      e.printStackTrace()
+  @SuppressLint("PrivateApi")
+  private fun updateResume(activity: Activity) {
+    if (!isStartOtherActivity){
+      return
     }
+    Looper.myQueue().addIdleHandler {
+      try {
+        KLog.d(TAG, "updateResume")
+        ActivityOptions.makeSceneTransitionAnimation(this)
+        val stateField: Field = ReflectionUtil.getField(
+            Activity::class.java,
+            "mActivityTransitionState"
+        )
+
+        val stateObj = stateField.get(activity)
+        val activityTransitionStateClazz =
+          classLoader.loadClass("android.app.ActivityTransitionState")
+
+        val mPendingExitNamesField: Field = ReflectionUtil.getField(
+            activityTransitionStateClazz,
+            "mPendingExitNames"
+        )
+        val b = buildSharedElements()
+        mPendingExitNamesField.set(stateObj, b)
+
+      } catch (e: java.lang.Exception) {
+        e.printStackTrace()
+      }
+      return@addIdleHandler false
+    }
+  }
+
+  /**
+   * @param sharedElements 共享元素属性
+   */
+  open fun buildSharedElements(vararg sharedElements: Pair<View, String>): ArrayList<String> {
+    val names = ArrayList<String>()
+    for (i in sharedElements.indices) {
+      val sharedElement: Pair<View, String> = sharedElements[i]
+      val sharedElementName = sharedElement.second
+          ?: throw IllegalArgumentException("Shared element name must not be null")
+      names.add(sharedElementName)
+      val view = sharedElement.first
+          ?: throw IllegalArgumentException("Shared element must not be null")
+//      views.add(sharedElement.first)
+    }
+    return names
+  }
+
+  override fun onStop() {
+    super.onStop()
+    KLog.d(TAG, "$TAG, onStop")
   }
 
   override fun onResume() {
     super.onResume()
+    KLog.d(TAG, "$TAG, onResume")
     // 启动定时器
     KeepassAUtil.instance.startLockTimer(this)
-//    updateResume(this)
+    updateResume(this)
   }
 
+  override fun onPause() {
+    super.onPause()
+    KLog.d(TAG, "$TAG, onPause")
+  }
 }
