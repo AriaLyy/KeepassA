@@ -213,6 +213,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     EventBusHelper.unReg(this)
   }
 
+  override fun useAnim(): Boolean {
+    return false
+  }
+
   /**
    * 跳转数据库切换
    */

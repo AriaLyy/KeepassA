@@ -9,13 +9,23 @@
 
 package com.lyy.keepassa.view.detail
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.text.InputType
 import android.view.View
+import android.view.ViewAnimationUtils
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.liveData
+import androidx.palette.graphics.Palette
+import com.arialyy.frame.module.SingleLiveEvent
+import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
@@ -25,11 +35,13 @@ import com.keepassdroid.database.security.ProtectedString
 import com.keepassdroid.utils.Types
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
+import com.lyy.keepassa.R.color
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.EntryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.HitUtil
+import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
@@ -38,8 +50,11 @@ import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
 import com.lyy.keepassa.widget.expand.AttrFileItemView
 import com.lyy.keepassa.widget.expand.AttrStrItemView
+import com.lyy.keepassa.widget.toPx
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
@@ -51,9 +66,122 @@ class EntryDetailModule : BaseModule() {
   var curDLoadFile: ProtectedBinary? = null
   val createFileRequestCode = 0xA1
   private lateinit var pwEntry: PwEntry
+  private val scope = MainScope()
+  private val finishAnimEvent = SingleLiveEvent<Boolean>()
+  private val startAnimEvent = SingleLiveEvent<Boolean>()
 
-  fun initEntry(pwEntry: PwEntry){
+  override fun onCleared() {
+    super.onCleared()
+    scope.cancel()
+  }
+
+  fun initEntry(pwEntry: PwEntry) {
     this.pwEntry = pwEntry
+  }
+
+  /**
+   * 结束动画
+   */
+  fun finishAnim(
+    context: Context,
+    rootView: View,
+    icon: ImageView
+  ): SingleLiveEvent<Boolean> {
+
+    scope.launch {
+      val rgb = getColor(context, icon.drawable)
+      val x = icon.x + 20.toPx()
+      val y = icon.y + 60.toPx()
+      val anim = ViewAnimationUtils.createCircularReveal(
+          rootView,
+          x.toInt(),
+          y.toInt(),
+          rootView.height.toFloat(),
+          0f,
+      )
+      anim.duration = 600
+      anim.addListener(object : AnimatorListenerAdapter() {
+        override fun onAnimationStart(animation: Animator?) {
+          super.onAnimationStart(animation)
+          rootView.background = ColorDrawable(rgb)
+        }
+
+        override fun onAnimationEnd(animation: Animator?) {
+          super.onAnimationEnd(animation)
+          rootView.background = ColorDrawable(ResUtil.getColor(R.color.background_color))
+          finishAnimEvent.postValue(true)
+        }
+      })
+      anim.start()
+    }
+
+    return finishAnimEvent
+  }
+
+  /**
+   * 启动动画
+   */
+  fun startAnim(
+    context: Context,
+    rootView: View,
+    icon: ImageView
+  ): SingleLiveEvent<Boolean> {
+    scope.launch {
+      val rgb = getColor(context, icon.drawable)
+      val x = icon.x + 20.toPx()
+      val y = icon.y + 60.toPx()
+      val anim = ViewAnimationUtils.createCircularReveal(
+          rootView,
+          x.toInt(),
+          y.toInt(),
+          40.toPx()
+              .toFloat(),
+          rootView.height.toFloat()
+      )
+      anim.duration = 600
+      anim.addListener(object : AnimatorListenerAdapter() {
+        override fun onAnimationStart(animation: Animator?) {
+          super.onAnimationStart(animation)
+          rootView.background = ColorDrawable(rgb)
+        }
+
+        override fun onAnimationEnd(animation: Animator?) {
+          super.onAnimationEnd(animation)
+          rootView.background = ColorDrawable(ResUtil.getColor(color.background_color))
+          startAnimEvent.postValue(true)
+        }
+      })
+      anim.start()
+    }
+    return startAnimEvent
+  }
+
+  /**
+   * get highlight color
+   */
+  private suspend fun getColor(
+    context: Context,
+    icon: Drawable
+  ): Int {
+    return with(Dispatchers.IO) {
+      val temp =
+        IconUtil.getBitmapFromDrawable(context, icon, 40.toPx())
+      if (temp == null || temp.isRecycled) {
+        return@with Color.WHITE
+      }
+      val sw = Palette.from(temp)
+          .maximumColorCount(12)
+          .generate()
+      return@with when {
+        sw.mutedSwatch != null -> sw.mutedSwatch!!.rgb
+        sw.darkMutedSwatch != null -> sw.darkMutedSwatch!!.rgb
+        sw.lightMutedSwatch != null -> sw.lightMutedSwatch!!.rgb
+        sw.darkVibrantSwatch != null -> sw.darkVibrantSwatch!!.rgb
+        sw.lightVibrantSwatch != null -> sw.lightVibrantSwatch!!.rgb
+        sw.vibrantSwatch != null -> sw.vibrantSwatch!!.rgb
+        else -> ResUtil.getColor(R.color.colorPrimary)
+      }
+    }
   }
 
   /**
@@ -63,7 +191,7 @@ class EntryDetailModule : BaseModule() {
     context: FragmentActivity,
     v: View
   ) {
-    if ( KeepassAUtil.instance.isFastClick()) {
+    if (KeepassAUtil.instance.isFastClick()) {
       return
     }
     val key = (v as AttrFileItemView).titleStr
@@ -75,7 +203,7 @@ class EntryDetailModule : BaseModule() {
         file: ProtectedBinary
       ) {
         curDLoadFile = file
-         KeepassAUtil.instance.createFile(context, "*/*", key, createFileRequestCode)
+        KeepassAUtil.instance.createFile(context, "*/*", key, createFileRequestCode)
       }
     })
     menu.show()
@@ -88,7 +216,7 @@ class EntryDetailModule : BaseModule() {
     context: FragmentActivity,
     v: View
   ) {
-    if ( KeepassAUtil.instance.isFastClick()) {
+    if (KeepassAUtil.instance.isFastClick()) {
       return
     }
     val value = v.findViewById<TextView>(R.id.value)
@@ -181,7 +309,7 @@ class EntryDetailModule : BaseModule() {
    * 保存打开记录
    */
   fun saveRecord() {
-    if (BaseApp.dbRecord == null){
+    if (BaseApp.dbRecord == null) {
       return
     }
     GlobalScope.launch(Dispatchers.IO) {
@@ -211,7 +339,7 @@ class EntryDetailModule : BaseModule() {
    * 获取项目的属性字段，只有v4版本才有自定义属性字段
    */
   fun getV4EntryStr(entryV4: PwEntryV4): Map<String, ProtectedString> {
-    return  KeepassAUtil.instance.filterCustomStr(entryV4)
+    return KeepassAUtil.instance.filterCustomStr(entryV4)
   }
 
 }

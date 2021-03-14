@@ -169,7 +169,7 @@ dependencies {
   // keepassA组件
   implementation 'com.arialyy.keepassA:KeepassIcon:0.0.3'
   implementation 'com.arialyy.keepassA:KeepassLib:0.0.4'
-  implementation 'com.arialyy.keepassA:KPAFrame:0.0.9'
+  implementation 'com.arialyy.keepassA:KPAFrame:0.1.0'
   implementation 'com.arialyy.keepassA:UIWidget:0.0.3'
 
   // kotlin
@@ -222,6 +222,11 @@ dependencies {
 
   // 生物特征识别
   implementation "androidx.biometric:biometric:${rootProject.ext.biometricVersion}"
+
+  // 取色板
+  // https://mvnrepository.com/artifact/androidx.palette/palette
+  implementation 'androidx.palette:palette:1.0.0'
+
   // =========================== android 组件 end =====================================
 
   // =========================== 三方库 start =====================================

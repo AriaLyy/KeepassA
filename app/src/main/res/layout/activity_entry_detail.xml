@@ -4,6 +4,7 @@
 
 
   <RelativeLayout
+      android:id="@+id/rlRoot"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@color/background_color"
@@ -24,7 +25,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/kpa_toolbar"
-        android:background="@color/white"
         android:orientation="horizontal"
         android:paddingStart="16dp"
         android:paddingTop="16dp"

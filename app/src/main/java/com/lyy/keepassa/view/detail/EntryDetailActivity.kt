@@ -9,20 +9,26 @@
 
 package com.lyy.keepassa.view.detail
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Html
 import android.text.InputType
 import android.text.Spanned
 import android.util.Pair
 import android.view.View
+import android.view.ViewAnimationUtils
 import androidx.appcompat.widget.Toolbar
+import androidx.core.transition.addListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV3
 import com.keepassdroid.database.PwEntryV4
@@ -48,6 +54,9 @@ import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
 import com.lyy.keepassa.widget.expand.ExpandAttrStrLayout
+import com.lyy.keepassa.widget.toPx
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
@@ -92,7 +101,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     }
     toolbar.inflateMenu(R.menu.menu_entry_detail)
     toolbar.setOnMenuItemClickListener { item ->
-      if ( KeepassAUtil.instance.isFastClick()) {
+      if (KeepassAUtil.instance.isFastClick()) {
         return@setOnMenuItemClickListener true
       }
       if (item.itemId == R.id.history) {
@@ -124,16 +133,56 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     setData()
   }
 
+  override fun useAnim(): Boolean {
+    return false
+  }
+
+  override fun finishAfterTransition() {
+    showContent(false)
+    module.finishAnim(this, binding.rlRoot, binding.icon).observe(this, {
+      super.finishAfterTransition()
+    })
+  }
+
+  private fun showContent(show: Boolean) {
+    if (show) {
+      binding.title.visibility = View.VISIBLE
+      binding.kpaToolbar.visibility = View.VISIBLE
+      binding.line.visibility = View.VISIBLE
+      binding.scrollView.visibility = View.VISIBLE
+      binding.bottomBar.visibility = View.VISIBLE
+      binding.bottomLine.visibility = View.VISIBLE
+      return
+    }
+    binding.title.visibility = View.GONE
+    binding.kpaToolbar.visibility = View.INVISIBLE
+    binding.line.visibility = View.INVISIBLE
+    binding.scrollView.visibility = View.INVISIBLE
+    binding.bottomBar.visibility = View.INVISIBLE
+    binding.bottomLine.visibility = View.INVISIBLE
+  }
+
   override fun buildSharedElements(vararg sharedElements: Pair<View, String>): ArrayList<String> {
-    return super.buildSharedElements(Pair<View, String>(binding.icon, getString(R.string.transition_entry_icon)))
+    return super.buildSharedElements(
+        Pair<View, String>(
+            binding.icon,
+            getString(R.string.transition_entry_icon)
+        )
+    )
   }
 
   private fun setData() {
     IconUtil.setEntryIcon(this, pwEntry, binding.icon)
-
+    showContent(false)
     handleBaseAttr()
     handleAttr()
     handleTime()
+    window.sharedElementEnterTransition?.addListener(onEnd = {
+      module.startAnim(this, binding.rlRoot, binding.icon)
+          .observe(this, {
+            showContent(true)
+          })
+    })
   }
 
   /**
@@ -201,7 +250,8 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
         pop.show()
       }
       R.id.pass -> {
-        val pop = EntryDetailStrPopMenu(this, v, ProtectedString(true, KdbUtil.getPassword(pwEntry)))
+        val pop =
+          EntryDetailStrPopMenu(this, v, ProtectedString(true, KdbUtil.getPassword(pwEntry)))
         pop.setOnShowPassCallback(object : OnShowPassCallback {
           override fun showPass(showPass: Boolean) {
             if (showPass) {
@@ -266,26 +316,29 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     if (pwEntry.expires() && pwEntry.expiryTime != null) {
       if (pwEntry.expiryTime.after(Date())) {
         binding.time.text =
-          getString(R.string.expire_time,  KeepassAUtil.instance.formatTime(pwEntry.expiryTime))
+          getString(R.string.expire_time, KeepassAUtil.instance.formatTime(pwEntry.expiryTime))
       } else {
         binding.time.text = Html.fromHtml(
-            getString(R.string.expire,  KeepassAUtil.instance.formatTime(pwEntry.expiryTime, "yyyy/MM/dd"))
+            getString(
+                R.string.expire,
+                KeepassAUtil.instance.formatTime(pwEntry.expiryTime, "yyyy/MM/dd")
+            )
         )
       }
 
-      binding.time1.text =  KeepassAUtil.instance.formatTime(pwEntry.creationTime)
+      binding.time1.text = KeepassAUtil.instance.formatTime(pwEntry.creationTime)
       binding.time1.setLeftIcon(R.drawable.ic_create_time)
       binding.time1.setOnClickListener { HitUtil.toaskShort(getString(R.string.create_time)) }
-      binding.time2.text =  KeepassAUtil.instance.formatTime(pwEntry.lastModificationTime)
+      binding.time2.text = KeepassAUtil.instance.formatTime(pwEntry.lastModificationTime)
       binding.time2.setLeftIcon(R.drawable.ic_modify_time)
       binding.time2.setOnClickListener { HitUtil.toaskShort(getString(R.string.modify_time)) }
     } else {
       binding.time.text =
-        getString(R.string.create_time,  KeepassAUtil.instance.formatTime(pwEntry.creationTime))
-      binding.time1.text =  KeepassAUtil.instance.formatTime(pwEntry.expiryTime)
+        getString(R.string.create_time, KeepassAUtil.instance.formatTime(pwEntry.creationTime))
+      binding.time1.text = KeepassAUtil.instance.formatTime(pwEntry.expiryTime)
       binding.time1.setLeftIcon(R.drawable.ic_lose_time)
       binding.time1.setOnClickListener { HitUtil.toaskShort(getString(R.string.lose_time)) }
-      binding.time2.text =  KeepassAUtil.instance.formatTime(pwEntry.lastModificationTime)
+      binding.time2.text = KeepassAUtil.instance.formatTime(pwEntry.lastModificationTime)
       binding.time2.setLeftIcon(R.drawable.ic_modify_time)
       binding.time2.setOnClickListener { HitUtil.toaskShort(getString(R.string.modify_time)) }
     }
