@@ -170,7 +170,7 @@ dependencies {
   implementation 'com.arialyy.keepassA:KeepassIcon:0.0.3'
   implementation 'com.arialyy.keepassA:KeepassLib:0.0.4'
   implementation 'com.arialyy.keepassA:KPAFrame:0.1.0'
-  implementation 'com.arialyy.keepassA:UIWidget:0.0.3'
+  implementation 'com.arialyy.keepassA:UIWidget:0.0.4'
 
   // kotlin
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${rootProject.ext.kotlin_version}"

@@ -9,10 +9,9 @@ package com.lyy.keepassa.view.detail
 
 import android.content.Context
 import androidx.lifecycle.liveData
+import com.arialyy.frame.module.SingleLiveEvent
 import com.arialyy.frame.util.PinyinUtil
 import com.keepassdroid.database.PwDataInf
-import com.keepassdroid.database.PwEntry
-import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupId
 import com.lyy.keepassa.R
@@ -29,20 +28,23 @@ import com.lyy.keepassa.util.KdbUtil
 
 class GroupDetailModule : BaseModule() {
 
+  private val groupLiveData = SingleLiveEvent<ArrayList<SimpleItemEntity>?>()
+
   /**
    * 获取v3版本的group数据
    */
   fun getGroupData(
     context: Context,
     groupId: PwGroupId
-  ) = liveData {
+  ): SingleLiveEvent<ArrayList<SimpleItemEntity>?> {
 
     val group = BaseApp.KDB.pm.groups[groupId]
     if (group != null) {
-      emit(convertGroup(context, group))
+      groupLiveData.postValue(convertGroup(context, group))
     } else {
-      emit(null)
+      groupLiveData.postValue(null)
     }
+    return groupLiveData
   }
 
   /**

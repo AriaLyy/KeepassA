@@ -23,7 +23,6 @@ import android.os.Build
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import com.arialyy.frame.util.ResUtil
 import com.bumptech.glide.Glide
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV3
@@ -114,17 +113,17 @@ object IconUtil {
       Glide.with(context)
           .load(getIconById(group.icon.iconId))
           .into(img)
-    } else if (group is PwGroupV4) {
-      if (customIconIsNull(group.customIcon)) {
-        Glide.with(context)
-            .load(getIconById(group.icon.iconId))
-            .into(img)
-      } else {
-        Glide.with(context)
-            .load(group.customIcon.imageData)
-            .into(img)
-      }
+      return
     }
+    if (customIconIsNull((group as PwGroupV4).customIcon)) {
+      Glide.with(context)
+          .load(getIconById(group.icon.iconId))
+          .into(img)
+      return
+    }
+    Glide.with(context)
+        .load(group.customIcon.imageData)
+        .into(img)
   }
 
   /**
@@ -189,7 +188,7 @@ object IconUtil {
     entry: PwEntry,
     icon: ImageView
   ) {
-    if (entry.icon == null){
+    if (entry.icon == null) {
       return
     }
     if (entry is PwEntryV3) {

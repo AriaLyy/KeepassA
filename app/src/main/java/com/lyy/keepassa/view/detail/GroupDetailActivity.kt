@@ -9,13 +9,16 @@
 
 package com.lyy.keepassa.view.detail
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
-import android.os.Looper
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.transition.addListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -99,13 +102,24 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       finishAfterTransition()
     }
 
-    Looper.myQueue().addIdleHandler {
-      loadData()
-      return@addIdleHandler false
-    }
   }
 
-  private fun loadData(){
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+
+    window.enterTransition?.addListener(onStart = {
+      binding.laAnim.speed = 2.5f
+      binding.laAnim.playAnimation()
+      binding.laAnim.addAnimatorListener(object : AnimatorListenerAdapter() {
+        override fun onAnimationEnd(animation: Animator?) {
+          super.onAnimationEnd(animation)
+          loadData()
+        }
+      })
+    })
+  }
+
+  private fun loadData() {
     binding.kpaToolbar.inflateMenu(R.menu.menu_group_detail)
     module = ViewModelProvider(this).get(GroupDetailModule::class.java)
     initList()
@@ -202,7 +216,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
 
           if (item.obj is PwEntry) {
             val icon = v.findViewById<AppCompatImageView>(R.id.icon)
-             KeepassAUtil.instance.turnEntryDetail(this, item.obj as PwEntry, icon)
+            KeepassAUtil.instance.turnEntryDetail(this, item.obj as PwEntry, icon)
             return@setOnItemClickListener
           }
         }
@@ -241,20 +255,28 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
   private fun getData() {
     module.getGroupData(this, groupId)
         .observe(this, Observer { list ->
+          binding.laAnim.cancelAnimation()
+          binding.laAnim.visibility = View.GONE
+          binding.fab.visibility = View.VISIBLE
           if (list == null || list.size == 0) {
             // 设置appbar为收缩状态
             binding.appBar.setExpanded(false, false)
-            binding.emptyLayout.visibility = View.VISIBLE
+            getEmptyLayout().visibility = View.VISIBLE
             binding.list.visibility = View.GONE
-            binding.emptyLayout.translationY = resources.getDimension(R.dimen.bar_height)
             return@Observer
           }
-          binding.emptyLayout.visibility = View.GONE
           binding.list.visibility = View.VISIBLE
           entryData.clear()
           entryData.addAll(list)
           adapter.notifyDataSetChanged()
         })
+  }
+
+  private fun getEmptyLayout(): View {
+    if (!binding.vsEmpty.isInflated) {
+      binding.vsEmpty.viewStub?.inflate()
+    }
+    return binding.vsEmpty.root
   }
 
   /**
@@ -267,7 +289,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
         val entry: SimpleItemEntity? = entryData.find { it.obj == event.entry }
         entry?.let {
           val pos = entryData.indexOf(it)
-          entryData[pos] =  KeepassAUtil.instance.convertPwEntry2Item(event.entry)
+          entryData[pos] = KeepassAUtil.instance.convertPwEntry2Item(event.entry)
           adapter.notifyItemChanged(pos)
         }
         return
@@ -318,8 +340,10 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       val group = data.obj as PwGroup
       val pop = GroupPopMenu(this, v, group, curx, isRecycleBin)
       pop.show()
+      return
+    }
 
-    } else if (data.obj is PwEntry) {
+    if (data.obj is PwEntry) {
       val entry = data.obj as PwEntry
       val pop = EntryPopMenu(this, v, entry, curx, isRecycleBin)
       pop.show()
