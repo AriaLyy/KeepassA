@@ -8,17 +8,17 @@ module.exports = {
    {value: ':racehorse:',     name: '性能:    提升性能'},
    {value: ':rotating_light:',     name: '测试:    添加一个测试'},
    {value: ':hammer:',     name: '回滚:    代码回退'},
-   {value: ':tada:',     name: '回滚:    代码回退'}
+//   {value: ':tada:',     name: '回滚:    代码回退'}
   ],
 
   scopes: [
     {name: 'app'},
-    {name: 'Demo'},
-    {name: 'Frame'},
-    {name: 'KeepassApi'},
-    {name: 'IBaseApi'},
-    {name: 'HWImp'},
-    {name: 'PlayImp'}
+//    {name: 'Demo'},
+//    {name: 'Frame'},
+//    {name: 'KeepassApi'},
+//    {name: 'IBaseApi'},
+//    {name: 'HWImp'},
+//    {name: 'PlayImp'}
   ],
 
   allowTicketNumber: false,

@@ -33,10 +33,10 @@ import com.lyy.keepassa.entity.DbRecord
 import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.event.DbHistoryEvent
 import com.lyy.keepassa.util.EventBusHelper
+import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.putArgument
 import com.lyy.keepassa.view.create.CreateEntryActivity
-import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.main.MainActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 import org.greenrobot.eventbus.Subscribe
@@ -214,7 +214,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
    * 接收切换数据库的回调
    */
   @Subscribe(threadMode = MAIN)
-  fun getDbPath(event: ChangeDbEvent) {
+  fun onDbChange(event: ChangeDbEvent) {
     val record = DbRecord(
         time = System.currentTimeMillis(),
         type = event.uriType.name,
@@ -231,7 +231,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     }
     supportFragmentManager.beginTransaction()
         .replace(R.id.content, openDbFragment!!, tag)
-        .commitNow()
+        .commitNowAllowingStateLoss()
     openDbFragment!!.updateData(dbRecord = record)
   }
 
