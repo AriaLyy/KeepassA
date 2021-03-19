@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="@integer/anim_duration_medium"
+    android:duration="@integer/anim_duration_600"
     android:transitionOrdering="sequential">
   <slide
       android:interpolator="@android:interpolator/linear"

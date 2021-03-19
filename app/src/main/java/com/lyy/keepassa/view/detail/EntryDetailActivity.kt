@@ -9,26 +9,21 @@
 
 package com.lyy.keepassa.view.detail
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Html
 import android.text.InputType
 import android.text.Spanned
 import android.util.Pair
 import android.view.View
-import android.view.ViewAnimationUtils
 import androidx.appcompat.widget.Toolbar
 import androidx.core.transition.addListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV3
 import com.keepassdroid.database.PwEntryV4
@@ -54,9 +49,6 @@ import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
 import com.lyy.keepassa.widget.expand.ExpandAttrStrLayout
-import com.lyy.keepassa.widget.toPx
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
@@ -139,9 +131,10 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
 
   override fun finishAfterTransition() {
     showContent(false)
-    module.finishAnim(this, binding.rlRoot, binding.icon).observe(this, {
-      super.finishAfterTransition()
-    })
+    module.finishAnim(this, binding.rlRoot, binding.icon)
+        .observe(this, {
+          super.finishAfterTransition()
+        })
   }
 
   private fun showContent(show: Boolean) {
@@ -173,16 +166,19 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
 
   private fun setData() {
     IconUtil.setEntryIcon(this, pwEntry, binding.icon)
-    showContent(false)
     handleBaseAttr()
     handleAttr()
     handleTime()
-    window.sharedElementEnterTransition?.addListener(onEnd = {
-      module.startAnim(this, binding.rlRoot, binding.icon)
-          .observe(this, {
-            showContent(true)
-          })
-    })
+    window.sharedElementEnterTransition?.addListener(
+        onStart = {
+          showContent(false)
+        },
+        onEnd = {
+          module.startAnim(this, binding.rlRoot, binding.icon)
+              .observe(this, {
+                showContent(true)
+              })
+        })
   }
 
   /**

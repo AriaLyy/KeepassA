@@ -12,6 +12,7 @@
   <dimen name="create_pass_key_h">90dp</dimen>
 
   <integer name="anim_duration_very_long">1500</integer>
+  <integer name="anim_duration_600">600</integer>
   <integer name="anim_duration_long">500</integer>
   <integer name="anim_duration_medium">300</integer>
   <dimen name="dialog_min_width">360dp</dimen>

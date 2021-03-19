@@ -16,7 +16,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
@@ -123,12 +122,12 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     type = intent.getIntExtra(KEY_TYPE, TYPE_NEW_ENTRY)
     isFromAutoFillSave = intent.getBooleanExtra(LauncherActivity.KEY_IS_AUTH_FORM_FILL_SAVE, false)
     val isShortcuts = intent.getBooleanExtra("isShortcuts", false)
-    Log.i(TAG, "isShortcuts = $isShortcuts")
+    KLog.i(TAG, "isShortcuts = $isShortcuts")
 
     // 处理快捷方式进入的情况
     if (isShortcuts) {
       if (BaseApp.isLocked) {
-        Log.w(TAG, "数据库已锁定，进入解锁界面")
+        KLog.w(TAG, "数据库已锁定，进入解锁界面")
          KeepassAUtil.instance.reOpenDb(this)
         finish()
         return
@@ -151,14 +150,14 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     if (type == TYPE_NEW_TYPE_ENTRY || type == TYPE_EDIT_ENTRY) {
       val uuidTemp = intent.getSerializableExtra(KEY_ENTRY)
       if (uuidTemp == null) {
-        Log.e(TAG, "条目id为-1")
+        KLog.e(TAG, "条目id为-1")
         finish()
         return
       }
       entryId = uuidTemp as UUID
       val entryTemp = BaseApp.KDB!!.pm.entries[entryId]
       if (entryTemp == null) {
-        Log.e(TAG, "【${entryId}】对应的条目不存在")
+        KLog.e(TAG, "【${entryId}】对应的条目不存在")
         finish()
         return
       }
@@ -633,7 +632,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
    */
   private fun addAttrFile(uri: Uri?) {
     if (uri == null) {
-      Log.e(TAG, "附件uri为空")
+      KLog.e(TAG, "附件uri为空")
       HitUtil.snackShort(
           rootView,
           "${getString(R.string.add_attr_file)}${getString(R.string.fail)}"
@@ -642,7 +641,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     }
     val fileInfo = uri.getFileInfo(this)
     if (TextUtils.isEmpty(fileInfo.first) || fileInfo.second == null) {
-      Log.e(TAG, "获取文件名失败")
+      KLog.e(TAG, "获取文件名失败")
       HitUtil.snackShort(
           rootView,
           "${getString(R.string.add_attr_file)}${getString(R.string.fail)}"

@@ -21,9 +21,6 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import com.arialyy.frame.util.ResUtil
-import com.lahm.library.EasyProtectorLib
 import com.lyy.keepassa.R
 import com.lyy.keepassa.R.layout
 import com.lyy.keepassa.base.BaseActivity
@@ -33,7 +30,6 @@ import com.lyy.keepassa.entity.DbRecord
 import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.event.DbHistoryEvent
 import com.lyy.keepassa.util.EventBusHelper
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.putArgument
 import com.lyy.keepassa.view.create.CreateEntryActivity
