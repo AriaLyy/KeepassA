@@ -94,6 +94,9 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       isRecycleBin =
         BaseApp.isV4 && BaseApp.KDB!!.pm.recycleBin != null && BaseApp.KDB!!.pm.recycleBin.id == groupId
     }
+    if (isRecycleBin){
+      binding.fab.visibility = View.GONE
+    }
 
     val title = intent.getStringExtra(KEY_TITLE)
     binding.ctlCollapsingLayout.title = title
