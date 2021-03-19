@@ -3,7 +3,7 @@
     android:duration="@integer/anim_duration_long"
     android:transitionOrdering="sequential">
   <slide
-      android:interpolator="@android:interpolator/decelerate_cubic"
+      android:interpolator="@android:interpolator/overshoot"
       android:slideEdge="left" />
 <!--  <changeBounds android:interpolator="@android:interpolator/bounce" />-->
   <!--  状态栏和导航栏不参与动画 -->

@@ -106,7 +106,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     window.returnTransition = TransitionInflater.from(this)
         .inflateTransition(R.transition.slide_return)
 
-    // A <- , A的进入动画
+    // A <- B, A的进入动画
     window.reenterTransition = TransitionInflater.from(this)
         .inflateTransition(R.transition.slide_reeter)
 

@@ -101,7 +101,6 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
     binding.kpaToolbar.setNavigationOnClickListener {
       finishAfterTransition()
     }
-
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {

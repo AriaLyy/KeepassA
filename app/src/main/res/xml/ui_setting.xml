@@ -18,4 +18,12 @@
       app:icon="@drawable/ic_eco"
       app:key="@string/set_key_need_root_check" />
 
+<!--  <SwitchPreference-->
+<!--      android:defaultValue="true"-->
+<!--      android:summaryOff="@string/set_key_title_fillet_bg_icon_turn_off"-->
+<!--      android:summaryOn="@string/set_key_title_fillet_bg_icon_turn_on"-->
+<!--      android:title="@string/set_key_title_fillet_bg_icon"-->
+<!--      app:icon="@drawable/ic_eco"-->
+<!--      app:key="@string/set_key_fillet_bg_icon" />-->
+
 </PreferenceScreen>

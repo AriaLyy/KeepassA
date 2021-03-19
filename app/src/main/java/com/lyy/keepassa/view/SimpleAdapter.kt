@@ -13,11 +13,18 @@ import android.content.Context
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.preference.PreferenceManager
 import com.arialyy.frame.util.adapter.AbsHolder
 import com.arialyy.frame.util.adapter.AbsRVAdapter
+import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.shape.CornerFamily
+import com.google.android.material.shape.ShapeAppearanceModel
+import com.keepassdroid.database.PwGroup
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.view.SimpleAdapter.Holder
+import com.lyy.keepassa.widget.toPx
 
 /**
  * list适配器
@@ -26,6 +33,19 @@ class SimpleAdapter(
   context: Context,
   data: List<SimpleItemEntity>
 ) : AbsRVAdapter<SimpleItemEntity, Holder>(context, data) {
+  private val useRoundedCorners by lazy {
+    PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
+        .getBoolean(BaseApp.APP.getString(R.string.set_key_fillet_bg_icon), true)
+  }
+  private val shapeMode by lazy {
+    ShapeAppearanceModel.Builder()
+        .setAllCorners(
+            CornerFamily.ROUNDED,
+            8.toPx()
+                .toFloat()
+        )
+        .build()
+  }
 
   override fun getViewHolder(
     convertView: View?,
@@ -39,17 +59,21 @@ class SimpleAdapter(
   }
 
   override fun bindData(
-    holder: Holder?,
+    holder: Holder,
     position: Int,
-    item: SimpleItemEntity?
+    item: SimpleItemEntity
   ) {
-    holder!!.icon.setImageResource(item!!.icon)
+//    if (useRoundedCorners) {
+//      holder.icon.shapeAppearanceModel = shapeMode
+//    }
+    holder.icon.setImageResource(item.icon)
+
     holder.title.text = item.title
     holder.des.text = item.subTitle
   }
 
   class Holder(view: View) : AbsHolder(view) {
-    val icon: AppCompatImageView = view.findViewById(R.id.icon)
+    val icon: ShapeableImageView = view.findViewById(R.id.icon)
     val title: TextView = view.findViewById(R.id.title)
     val des: TextView = view.findViewById(R.id.des)
   }

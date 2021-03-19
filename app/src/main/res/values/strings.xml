@@ -298,5 +298,8 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="close">Close</string>
   <string name="Alipay">Alipay</string>
   <string name="error_webdav_end_suffix">Error path，Folder path should be used, eg: "https://webdav.com/"</string>
+  <string name="set_key_title_fillet_bg_icon">Add rounded corners to list icons</string>
+  <string name="set_key_title_fillet_bg_icon_turn_on">Icon Add rounded corners</string>
+  <string name="set_key_title_fillet_bg_icon_turn_off">The icon does not Add rounded corners</string>
 
 </resources>

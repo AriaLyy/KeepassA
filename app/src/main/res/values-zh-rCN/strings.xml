@@ -305,5 +305,8 @@
   <string name="close">关闭</string>
   <string name="Alipay">支付宝</string>
   <string name="error_webdav_end_suffix">错误的路径，应该使用文件夹路径，如："https://webdav.com/"</string>
+  <string name="set_key_title_fillet_bg_icon">列表图标添加圆角</string>
+  <string name="set_key_title_fillet_bg_icon_turn_on">图标添加圆角</string>
+  <string name="set_key_title_fillet_bg_icon_turn_off">图标添加置圆角</string>
 </resources>
 
