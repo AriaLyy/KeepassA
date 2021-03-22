@@ -14,5 +14,7 @@ class Constance {
     const val DEBUG = true
     const val PRE_FILE_NAME = "KeepassA"
     const val VERSION_CODE = "VersionCode"
+    const val PRE_KEY_START_APP_NUM = "PRE_KEY_START_APP_NUM"
+    const val START_DONATE_JUDGMENT_VALUE = 50
   }
 }

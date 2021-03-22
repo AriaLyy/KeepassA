@@ -95,15 +95,18 @@ public class BaseApp extends MultiDexApplication {
     }
     RichText.initCacheDir(this);
     initReceiver();
+    boolean showStatusBar = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
+        .getBoolean(getString(R.string.set_key_title_show_state_bar), true);
+    BaseActivity.Companion.setShowStatusBar(showStatusBar);
   }
 
   /**
    * init receiver
    */
-  public void initReceiver(){
+  public void initReceiver() {
     boolean isNeedRegScreenLockReceiver = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
         .getBoolean(getString(R.string.set_key_lock_screen_auto_lock_db), false);
-    if (isNeedRegScreenLockReceiver){
+    if (isNeedRegScreenLockReceiver) {
       ScreenLockReceiver receiver = new ScreenLockReceiver();
       IntentFilter inf = new IntentFilter();
       inf.addAction(Intent.ACTION_SCREEN_OFF);

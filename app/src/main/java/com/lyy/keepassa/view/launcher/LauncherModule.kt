@@ -39,6 +39,7 @@ import com.lahm.library.EasyProtectorLib
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
+import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.entity.DbRecord
 import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
@@ -65,6 +66,14 @@ class LauncherModule : BaseModule() {
   private val itemData: MutableLiveData<List<SimpleItemEntity>> = MutableLiveData()
   private val unlockEvent = MutableLiveData<Pair<Boolean, String?>>()
   private val scope = MainScope()
+
+  init {
+    val pre = BaseApp.APP.getSharedPreferences(Constance.PRE_FILE_NAME, Context.MODE_PRIVATE)
+    val startNum = pre.getInt(Constance.PRE_KEY_START_APP_NUM, 0)
+    pre.edit {
+      putInt(Constance.PRE_KEY_START_APP_NUM, startNum + 1)
+    }
+  }
 
   override fun onCleared() {
     super.onCleared()

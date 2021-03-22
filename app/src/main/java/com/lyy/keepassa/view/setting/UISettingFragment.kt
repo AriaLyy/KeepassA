@@ -8,11 +8,20 @@
 package com.lyy.keepassa.view.setting
 
 import android.os.Bundle
+import android.view.View
+import android.view.WindowManager
 import android.view.animation.Animation
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
+import com.arialyy.frame.core.AbsFrame
+import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.BaseActivity
+import com.lyy.keepassa.base.BaseActivity.Companion
+import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.event.CheckEnvEvent
+import com.lyy.keepassa.util.BarUtil
+import com.lyy.keepassa.util.KeepassAUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -31,6 +40,7 @@ class UISettingFragment : PreferenceFragmentCompat() {
   ) {
     setPreferencesFromResource(R.xml.ui_setting, rootKey)
     handleEnvCheck()
+    handleShowStatusBar()
   }
 
   override fun onCreateAnimation(
@@ -40,6 +50,22 @@ class UISettingFragment : PreferenceFragmentCompat() {
   ): Animation? {
     // clear anim
     return null
+  }
+
+  /**
+   * handle status bar show or hide
+   */
+  private fun handleShowStatusBar() {
+    val sw = findPreference<SwitchPreference>(getString(R.string.set_key_show_state_bar))
+    sw?.isChecked = BarUtil.statusBarIsVisible(requireActivity().window)
+
+    sw?.setOnPreferenceChangeListener { _, newValue ->
+      BaseActivity.showStatusBar = newValue as Boolean
+      for (ac in AbsFrame.getInstance().activityStack) {
+        BarUtil.showStatusBar(ac, BaseActivity.showStatusBar)
+      }
+      return@setOnPreferenceChangeListener true
+    }
   }
 
   /**

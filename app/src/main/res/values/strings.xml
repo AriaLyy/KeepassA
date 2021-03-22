@@ -301,5 +301,8 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="set_key_title_fillet_bg_icon">Add rounded corners to list icons</string>
   <string name="set_key_title_fillet_bg_icon_turn_on">Icon Add rounded corners</string>
   <string name="set_key_title_fillet_bg_icon_turn_off">The icon does not Add rounded corners</string>
+  <string name="set_key_title_show_state_bar">Whether to show the status bar</string>
+  <string name="set_key_title_show_state_bar_turn_on">Show status bar</string>
+  <string name="set_key_title_show_state_bar_turn_off">Hide status bar</string>
 
 </resources>

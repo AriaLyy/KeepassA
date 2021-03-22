@@ -12,6 +12,7 @@ package com.lyy.keepassa.view.main
 import android.content.Context
 import android.util.Log
 import android.view.View
+import androidx.core.content.edit
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
@@ -48,6 +49,9 @@ import kotlinx.coroutines.withContext
 import org.joda.time.DateTime
 
 class MainModule : BaseModule() {
+
+  private var upgradeLogDialogIsShow = false
+  private var devBirthDayDialogIsShow = false
 
   override fun onCleared() {
     super.onCleared()
@@ -142,11 +146,37 @@ class MainModule : BaseModule() {
     return db
   }
 
+  fun showInfoDialog(activity: BaseActivity<*>){
+    showVersionLog(activity)
+    if (!upgradeLogDialogIsShow){
+      checkDevBirthdayData(activity)
+      return
+    }
+    if (!devBirthDayDialogIsShow){
+      showDonateDialog(activity)
+      return
+    }
+  }
+
+  private fun showDonateDialog(context: Context){
+    val pre = context.getSharedPreferences(Constance.PRE_FILE_NAME, Context.MODE_PRIVATE)
+    val startNum = pre.getInt(Constance.PRE_KEY_START_APP_NUM, 0)
+    if (startNum >= Constance.START_DONATE_JUDGMENT_VALUE){
+      val donateDialog = DonateDialog()
+      donateDialog.setOnDismissListener {
+        pre.edit {
+          putInt(Constance.PRE_KEY_START_APP_NUM, 0)
+        }
+      }
+    }
+  }
+
   /**
    * 显示版本日志对话框，显示逻辑：
    * 配置文件的版本号不存在，或当前版本号大于配置文件的版本号
    */
-  fun showVersionLog(activity: BaseActivity<*>) {
+   private fun showVersionLog(activity: BaseActivity<*>) {
+    upgradeLogDialogIsShow = true
     viewModelScope.launch {
       withContext(Dispatchers.IO) {
         delay(600)
@@ -279,7 +309,7 @@ class MainModule : BaseModule() {
     emit(data)
   }
 
-  fun checkDevBirthdayData(context: Context) {
+  private fun checkDevBirthdayData(context: Context) {
 //    val dt = DateTime(2020, 10, 2, 0, 0)
     val dt = DateTime(System.currentTimeMillis())
     if (dt.monthOfYear == 10 && dt.dayOfMonth == 2) {
@@ -288,6 +318,7 @@ class MainModule : BaseModule() {
   }
 
   private fun showDevBirthdayDialog(context: Context) {
+    devBirthDayDialogIsShow = true
     val dialog = MsgDialog.generate {
       msgTitle = context.getString(R.string.donate)
       msgContent = context.getString(R.string.dev_birthday)

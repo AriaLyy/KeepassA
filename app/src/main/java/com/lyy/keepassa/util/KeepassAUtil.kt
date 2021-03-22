@@ -35,9 +35,12 @@ import android.provider.OpenableColumns
 import android.text.TextUtils
 import android.util.Pair
 import android.view.View
+import android.view.WindowManager.LayoutParams
 import android.view.autofill.AutofillManager
 import android.view.inputmethod.InputMethodManager
+import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.graphics.ColorUtils
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -178,6 +181,17 @@ class KeepassAUtil private constructor() {
         || clazz == CreateDbActivity::class.java
         || clazz == OpenDbHistoryActivity::class.java
         )
+  }
+
+  /**
+   * 判断颜色是不是亮色
+   *
+   * @param color
+   * @return
+   * @from https://stackoverflow.com/questions/24260853/check-if-color-is-dark-or-light-in-android
+   */
+  fun isLightColor(@ColorInt color: Int): Boolean {
+    return ColorUtils.calculateLuminance(color) >= 0.5
   }
 
   /**

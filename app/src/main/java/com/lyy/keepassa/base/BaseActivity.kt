@@ -24,8 +24,11 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.ViewDataBinding
 import com.arialyy.frame.core.AbsActivity
 import com.arialyy.frame.util.ReflectionUtil
+import com.arialyy.frame.util.ResUtil
+import com.gyf.immersionbar.BarHide.FLAG_HIDE_STATUS_BAR
 import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.R
+import com.lyy.keepassa.util.BarUtil
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil.isNull
@@ -40,6 +43,10 @@ import java.util.ArrayList
 abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
 
   protected lateinit var toolbar: Toolbar
+
+  companion object {
+    var showStatusBar = false
+  }
 
   override fun initData(savedInstanceState: Bundle?) {
     try {
@@ -75,17 +82,27 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
       setWindowAnim()
     }
 
-    ImmersionBar.with(this)
-        .statusBarColor(R.color.background_color)
-        .autoStatusBarDarkModeEnable(true, 0.2f) //自动状态栏字体变色，必须指定状态栏颜色才可以自动变色哦
-        .flymeOSStatusBarFontColor(R.color.text_black_color)
-        .fitsSystemWindows(true)
-        .autoNavigationBarDarkModeEnable(true, 0.2f) // 自动导航栏图标变色，必须指定导航栏颜色才可以自动变色哦
-        .navigationBarColor(R.color.background_color)
-        .statusBarDarkFont(
-            true, 0.2f
-        )  //原理：如果当前设备支持状态栏字体变色，会设置状态栏字体为黑色，如果当前设备不支持状态栏字体变色，会使当前状态栏加上透明度，否则不执行透明度
-        .init()
+    handleStatusBar()
+
+  }
+
+  private fun handleStatusBar() {
+    BarUtil.showStatusBar(this, showStatusBar)
+//    if (showStatusBar) {
+//      ImmersionBar.with(this)
+//          .statusBarColor(R.color.background_color)
+//          .autoStatusBarDarkModeEnable(true, 0.2f) //自动状态栏字体变色，必须指定状态栏颜色才可以自动变色哦
+//          .flymeOSStatusBarFontColor(R.color.text_black_color)
+//          .fitsSystemWindows(true)
+////          .hideBar(FLAG_HIDE_STATUS_BAR)
+//          .autoNavigationBarDarkModeEnable(true, 0.2f) // 自动导航栏图标变色，必须指定导航栏颜色才可以自动变色哦
+//          .navigationBarColor(R.color.background_color)
+//          .statusBarDarkFont(
+//              true, 0.2f
+//          )  //原理：如果当前设备支持状态栏字体变色，会设置状态栏字体为黑色，如果当前设备不支持状态栏字体变色，会使当前状态栏加上透明度，否则不执行透明度
+//          .init()
+//      return
+//    }
   }
 
   override fun attachBaseContext(newBase: Context?) {
@@ -158,34 +175,35 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
    */
   @SuppressLint("PrivateApi")
   private fun updateResume(activity: Activity) {
-    if (!isStartOtherActivity){
+    if (!isStartOtherActivity) {
       return
     }
-    Looper.myQueue().addIdleHandler {
-      try {
-        KLog.d(TAG, "updateResume")
-        ActivityOptions.makeSceneTransitionAnimation(this)
-        val stateField: Field = ReflectionUtil.getField(
-            Activity::class.java,
-            "mActivityTransitionState"
-        )
+    Looper.myQueue()
+        .addIdleHandler {
+          try {
+            KLog.d(TAG, "updateResume")
+            ActivityOptions.makeSceneTransitionAnimation(this)
+            val stateField: Field = ReflectionUtil.getField(
+                Activity::class.java,
+                "mActivityTransitionState"
+            )
 
-        val stateObj = stateField.get(activity)
-        val activityTransitionStateClazz =
-          classLoader.loadClass("android.app.ActivityTransitionState")
+            val stateObj = stateField.get(activity)
+            val activityTransitionStateClazz =
+              classLoader.loadClass("android.app.ActivityTransitionState")
 
-        val mPendingExitNamesField: Field = ReflectionUtil.getField(
-            activityTransitionStateClazz,
-            "mPendingExitNames"
-        )
-        val b = buildSharedElements()
-        mPendingExitNamesField.set(stateObj, b)
+            val mPendingExitNamesField: Field = ReflectionUtil.getField(
+                activityTransitionStateClazz,
+                "mPendingExitNames"
+            )
+            val b = buildSharedElements()
+            mPendingExitNamesField.set(stateObj, b)
 
-      } catch (e: java.lang.Exception) {
-        e.printStackTrace()
-      }
-      return@addIdleHandler false
-    }
+          } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+          }
+          return@addIdleHandler false
+        }
   }
 
   /**

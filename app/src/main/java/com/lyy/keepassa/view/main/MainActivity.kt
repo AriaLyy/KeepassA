@@ -98,7 +98,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   }
 
   private fun initData() {
-    module.showVersionLog(this)
+    module.showInfoDialog(this)
     BaseApp.isLocked = false
     binding.headToolbar.setOnClickListener(this)
     binding.search.setOnClickListener(this)
@@ -149,7 +149,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       }
 
     })
-    module.checkDevBirthdayData(this)
   }
 
   @Subscribe(threadMode = MAIN)
