@@ -30,6 +30,7 @@ import com.arialyy.frame.util.StringUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.Constance
+import com.lyy.keepassa.common.PassType
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.LanguageUtil
@@ -122,6 +123,13 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     // 密码长度
     val passLenLayout =
       findPreference<ListPreference>(ResUtil.getString(R.string.set_quick_pass_len))
+    passTypeList = findPreference(ResUtil.getString(R.string.set_quick_pass_type))!!
+
+    if (BaseApp.passType == PassType.ONLY_KEY){
+      passLenLayout?.isVisible = false
+      passTypeList.isVisible = false
+      return
+    }
     passLenLayout!!.setOnPreferenceChangeListener { _, newValue ->
       Log.i(TAG, "短密码长度：$newValue")
       passLen = newValue.toString()
@@ -132,7 +140,6 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     passLen = passLenLayout.value.toInt()
 
     // 密码截取类型
-    passTypeList = findPreference(ResUtil.getString(R.string.set_quick_pass_type))!!
     passTypeList.setOnPreferenceChangeListener { _, newValue ->
       val subTitle = passTypeList.entries[newValue.toString()
           .toInt() - 1]
@@ -239,10 +246,14 @@ class AppSettingFragment : PreferenceFragmentCompat() {
   }
 
   /**
-   * 处理快速解锁
+   * 处理快速解锁，只有密钥的情况不允许使用快速解锁
    */
   private fun setQuickUnLock() {
     val unLock = findPreference<SwitchPreference>(ResUtil.getString(R.string.set_quick_unlock))!!
+    if (BaseApp.passType == PassType.ONLY_KEY){
+      unLock.isVisible = false
+      return
+    }
     unLock.setOnPreferenceChangeListener { _, newValue ->
       Log.d(TAG, "quick unlock newValue = $newValue")
       if (newValue as Boolean) {

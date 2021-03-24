@@ -10,16 +10,12 @@
 package com.lyy.keepassa.view.fingerprint
 
 import android.annotation.TargetApi
-import android.content.res.Resources
 import android.os.Build
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.QuickUnLockRecord
-import com.lyy.keepassa.entity.SimpleItemEntity
-import com.lyy.keepassa.view.fingerprint.FingerprintActivity.Companion
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -60,18 +56,37 @@ class FingerprintModule : BaseModule() {
   }
 
   /**
-   * 保存快速解锁数据
+   * 保存有密码的指纹解锁配置
    */
-  fun saveQuickInfo(info: QuickUnLockRecord) {
+  fun saveNormalQuickInfo(info: QuickUnLockRecord) {
     viewModelScope.launch(Dispatchers.IO) {
       val dao = BaseApp.appDatabase.quickUnlockDao()
       val record = dao.findRecord(info.dbUri)
       if (record != null) {
         record.dbPass = info.dbPass
-        record.isFullUnlock = info.isFullUnlock
+        record.isUseFingerprint = info.isUseFingerprint
         record.isUseKey = info.isUseKey
         record.keyPath = info.keyPath
         record.passIv = info.passIv
+        dao.updateRecord(record)
+      } else {
+        dao.saveRecord(info)
+      }
+    }
+  }
+
+  /**
+   * 保存仅有key的指纹解锁配置
+   */
+  fun saveOnlyKeyQuickInfo(info: QuickUnLockRecord) {
+    viewModelScope.launch(Dispatchers.IO) {
+      val dao = BaseApp.appDatabase.quickUnlockDao()
+      val record = dao.findRecord(info.dbUri)
+      if (record != null) {
+        record.dbPass = ""
+        record.isUseFingerprint = info.isUseFingerprint
+        record.isUseKey = info.isUseKey
+        record.keyPath = info.keyPath
         dao.updateRecord(record)
       } else {
         dao.saveRecord(info)

@@ -25,10 +25,10 @@ import com.keepassdroid.Database;
 import com.leon.channel.helper.ChannelReaderUtil;
 import com.lyy.keepassa.BuildConfig;
 import com.lyy.keepassa.R;
+import com.lyy.keepassa.common.PassType;
 import com.lyy.keepassa.dao.AppDatabase;
-import com.lyy.keepassa.entity.DbRecord;
+import com.lyy.keepassa.entity.DbHistoryRecord;
 import com.lyy.keepassa.receiver.ScreenLockReceiver;
-import com.lyy.keepassa.util.AutoLockDbUtil;
 import com.lyy.keepassa.util.KeepassAUtil;
 import com.lyy.keepassa.util.LanguageUtil;
 import com.lyy.keepassa.util.QuickUnLockUtil;
@@ -36,9 +36,7 @@ import com.lyy.keepassa.view.DbPathType;
 import com.tencent.wcdb.database.SQLiteCipherSpec;
 import com.tencent.wcdb.room.db.WCDBOpenHelperFactory;
 import com.zzhoujay.richtext.RichText;
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.ServiceLoader;
 import me.weishu.reflection.Reflection;
 
 public class BaseApp extends MultiDexApplication {
@@ -47,7 +45,7 @@ public class BaseApp extends MultiDexApplication {
   public static Handler handler;
   public static Database KDB;
   @Nullable
-  public static DbRecord dbRecord;
+  public static DbHistoryRecord dbRecord;
   public static AppDatabase appDatabase;
   public static String dbName = "";
   public static String dbFileName = "";
@@ -60,6 +58,8 @@ public class BaseApp extends MultiDexApplication {
   public static boolean isV4 = true;
   public static Locale currentLang = Locale.ENGLISH;
   public static Boolean isLocked = true;
+
+  public static int passType = PassType.INSTANCE.getONLY_PASS();
 
   public static boolean isAFS() {
     return dbRecord == null || DbPathType.valueOf(dbRecord.getType()) == DbPathType.AFS;
@@ -150,7 +150,7 @@ public class BaseApp extends MultiDexApplication {
 
     appDatabase = Room.databaseBuilder(this, AppDatabase.class, AppDatabase.DB_NAME)
         .openHelperFactory(factory)
-        .addMigrations(DbMigration.INSTANCE.MIGRATION_2_3())
+        .addMigrations(DbMigration.INSTANCE.MIGRATION_2_3(), DbMigration.INSTANCE.MIGRATION_3_4())
         .build();
   }
 

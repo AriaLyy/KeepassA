@@ -15,15 +15,13 @@ import android.util.Log
 import androidx.core.net.toFile
 import com.arialyy.frame.util.FileUtil
 import com.arialyy.frame.util.StringUtil
-import com.lyy.keepassa.entity.DbRecord
+import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.util.KLog
 import com.tencent.bugly.crashreport.BuglyLog
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
-import java.io.File
 import java.io.FileOutputStream
 import java.nio.channels.Channels
 import java.util.Date
-import java.util.UUID
 
 /**
  * webdav工具
@@ -157,7 +155,7 @@ object WebDavUtil : ICloudUtil {
 
   override suspend fun uploadFile(
     context: Context,
-    dbRecord: DbRecord
+    dbRecord: DbHistoryRecord
   ): Boolean {
     sardine ?: return false
     try {
@@ -179,7 +177,7 @@ object WebDavUtil : ICloudUtil {
 
   override suspend fun downloadFile(
     context: Context,
-    dbRecord: DbRecord,
+    dbRecord: DbHistoryRecord,
     filePath: Uri
   ): String? {
     sardine ?: return null

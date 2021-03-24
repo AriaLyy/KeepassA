@@ -12,7 +12,7 @@ package com.lyy.keepassa.service
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import com.lyy.keepassa.entity.DbRecord
+import com.lyy.keepassa.entity.DbHistoryRecord
 import java.util.concurrent.Executors
 
 /**
@@ -24,7 +24,7 @@ class UploadDbService : Service() {
     const val DATA_RECORD = "DATA_RECORD"
   }
 
-  lateinit var dbRecord: DbRecord
+  lateinit var dbRecord: DbHistoryRecord
   val pool = Executors.newSingleThreadExecutor()
 
   override fun onBind(intent: Intent?): IBinder? {
@@ -39,7 +39,7 @@ class UploadDbService : Service() {
   ): Int {
     dbRecord = intent!!.getParcelableExtra(
         DATA_RECORD
-    ) as DbRecord
+    ) as DbHistoryRecord
     // 注意，服务中如果使用耗时任务是会阻塞的，因为服务也是运行在main中的，需要在服务器中开启线程执行任务，不要被服务的后台概念搞混了
     pool.submit(Task(this, dbRecord))
     return super.onStartCommand(intent, flags, startId)
@@ -47,7 +47,7 @@ class UploadDbService : Service() {
 
   private class Task(
     val context: UploadDbService,
-    val dbRecord: DbRecord
+    val dbRecord: DbHistoryRecord
   ) : Runnable {
     override fun run() {
 //      when (DbPathType.valueOf(dbRecord.type)) {

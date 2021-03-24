@@ -36,7 +36,7 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentOpenDbBinding
-import com.lyy.keepassa.entity.DbRecord
+import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.NotificationUtil
@@ -60,7 +60,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   }
 
   private val openDbRecord by lazy {
-    getArgument<DbRecord>("record")!!
+    getArgument<DbHistoryRecord>("record")!!
   }
   private var showChangeDbBt: Boolean = true
 
@@ -79,7 +79,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   private val quickUnlockObserver by lazy {
     Observer<Pair<Boolean, String?>>{
       if (it.first) {
-        openDb(it.second!!)
+        openDb(it.second)
       }
     }
   }
@@ -265,21 +265,23 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   /**
    * 打开数据库
    */
-  private fun openDb(pass: String) {
-    if (pass.isEmpty()) {
+  private fun openDb(pass: String?) {
+    val cache = pass ?: ""
+    if (cache.isBlank() && openDbRecord.keyUri.isBlank()) {
       HitUtil.toaskShort(getString(R.string.error_input_pass_null))
       return
     }
+    modlue.checkPassType(cache, openDbRecord.keyUri)
 
     loadingDialog.show()
-    modlue.openDb(requireContext(), openDbRecord, pass).observe(this, openDbFinishedObserver)
+    modlue.openDb(requireContext(), openDbRecord, cache).observe(this, openDbFinishedObserver)
   }
 
   /**
    * 更新数据
    * @param uri 如果打开文件的类型是AFS，该参数表示本地数据库的保存路径；如果是云端类型，表示的是云端路径
    */
-  fun updateData(dbRecord: DbRecord) {
+  fun updateData(dbRecord: DbHistoryRecord) {
     openDbRecord.dbName = dbRecord.dbName
     openDbRecord.cloudDiskPath = dbRecord.cloudDiskPath
     openDbRecord.keyUri = dbRecord.keyUri
@@ -292,7 +294,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     handleKeyUri( KeepassAUtil.instance.convertUri(dbRecord.keyUri))
   }
 
-  private fun setDbName(dbRecord: DbRecord) {
+  private fun setDbName(dbRecord: DbHistoryRecord) {
     binding.db.text = Html.fromHtml(getString(R.string.db1, dbRecord.dbName))
     binding.db.setLeftIcon(
         resources.getDrawable(dbRecord.getDbPathType().icon, requireContext().theme)

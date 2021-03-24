@@ -12,7 +12,6 @@ package com.lyy.keepassa.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.io.Serializable
 
 /**
  * 快速解锁信息实体
@@ -22,12 +21,12 @@ data class QuickUnLockRecord(
   @PrimaryKey(autoGenerate = true)
   val uid: Int = 0,
   val dbUri: String,
-  var dbPass: String,
+  var dbPass: String = "",
   var keyPath: String?,
   var isUseKey: Boolean = true,
-  var isFullUnlock: Boolean = false,
+  var isUseFingerprint: Boolean = false, // 使用指纹解锁
   @ColumnInfo(name = "passIv", typeAffinity = ColumnInfo.BLOB)
-  var passIv: ByteArray
+  var passIv: ByteArray? = null
 ) {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -40,8 +39,11 @@ data class QuickUnLockRecord(
     if (dbPass != other.dbPass) return false
     if (keyPath != other.keyPath) return false
     if (isUseKey != other.isUseKey) return false
-    if (isFullUnlock != other.isFullUnlock) return false
-    if (!passIv.contentEquals(other.passIv)) return false
+    if (isUseFingerprint != other.isUseFingerprint) return false
+    if (passIv != null) {
+      if (other.passIv == null) return false
+      if (!passIv.contentEquals(other.passIv)) return false
+    } else if (other.passIv != null) return false
 
     return true
   }
@@ -52,8 +54,8 @@ data class QuickUnLockRecord(
     result = 31 * result + dbPass.hashCode()
     result = 31 * result + (keyPath?.hashCode() ?: 0)
     result = 31 * result + isUseKey.hashCode()
-    result = 31 * result + isFullUnlock.hashCode()
-    result = 31 * result + passIv.contentHashCode()
+    result = 31 * result + isUseFingerprint.hashCode()
+    result = 31 * result + (passIv?.contentHashCode() ?: 0)
     return result
   }
 

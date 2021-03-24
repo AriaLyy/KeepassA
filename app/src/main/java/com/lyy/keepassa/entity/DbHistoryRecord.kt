@@ -23,7 +23,7 @@ import com.lyy.keepassa.view.DbPathType
  * 历史记录实体
  */
 @Entity
-data class DbRecord(
+data class DbHistoryRecord(
 
   @PrimaryKey(autoGenerate = true) var uid: Int = 0,
 
@@ -85,12 +85,12 @@ data class DbRecord(
     return 0
   }
 
-  companion object CREATOR : Creator<DbRecord> {
-    override fun createFromParcel(parcel: Parcel): DbRecord {
-      return DbRecord(parcel)
+  companion object CREATOR : Creator<DbHistoryRecord> {
+    override fun createFromParcel(parcel: Parcel): DbHistoryRecord {
+      return DbHistoryRecord(parcel)
     }
 
-    override fun newArray(size: Int): Array<DbRecord?> {
+    override fun newArray(size: Int): Array<DbHistoryRecord?> {
       return arrayOfNulls(size)
     }
   }

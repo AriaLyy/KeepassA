@@ -12,8 +12,7 @@ package com.lyy.keepassa.util
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.fragment.app.Fragment
-import com.lyy.keepassa.base.BaseApp
-import com.lyy.keepassa.entity.DbRecord
+import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.view.DbPathType
 import com.lyy.keepassa.view.DbPathType.AFS
 import java.io.Serializable
@@ -61,7 +60,7 @@ fun <T> Fragment.getArgument(key: String): T? {
   return d as T
 }
 
-fun DbRecord.isAFS(): Boolean {
+fun DbHistoryRecord.isAFS(): Boolean {
   return DbPathType.valueOf(this.type) === AFS
 }
 

@@ -11,7 +11,7 @@ package com.lyy.keepassa.util.cloud
 
 import android.content.Context
 import android.net.Uri
-import com.lyy.keepassa.entity.DbRecord
+import com.lyy.keepassa.entity.DbHistoryRecord
 import java.util.Date
 
 /**
@@ -68,7 +68,7 @@ interface ICloudUtil {
    */
   suspend fun uploadFile(
     context: Context,
-    dbRecord: DbRecord
+    dbRecord: DbHistoryRecord
   ): Boolean
 
   /**
@@ -78,7 +78,7 @@ interface ICloudUtil {
    */
   suspend fun downloadFile(
     context: Context,
-    dbRecord: DbRecord,
+    dbRecord: DbHistoryRecord,
     filePath: Uri
   ): String?
 

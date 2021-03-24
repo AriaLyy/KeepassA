@@ -12,10 +12,8 @@ package com.lyy.keepassa.view.launcher
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
-import android.widget.PopupMenu
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,7 +23,7 @@ import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.databinding.ActivityOnlyListBinding
-import com.lyy.keepassa.entity.DbRecord
+import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.event.DbHistoryEvent
@@ -72,7 +70,7 @@ class OpenDbHistoryActivity : BaseActivity<ActivityOnlyListBinding>() {
 
     RvItemClickSupport.addTo(binding.list)
         .setOnItemClickListener { _, position, _ ->
-          val record = data[position].obj as DbRecord
+          val record = data[position].obj as DbHistoryRecord
           finishAfterTransition()
           EventBus.getDefault()
               .post(

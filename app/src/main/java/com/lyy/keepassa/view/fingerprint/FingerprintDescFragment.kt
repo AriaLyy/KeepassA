@@ -24,6 +24,7 @@ import com.arialyy.frame.util.KeyStoreUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseFragment
+import com.lyy.keepassa.common.PassType
 import com.lyy.keepassa.databinding.FragmentFingerprintDesxBinding
 import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.util.HitUtil
@@ -95,12 +96,20 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
     }
   }
 
+  fun showBiometricPrompt(){
+    if (BaseApp.passType == PassType.ONLY_KEY){
+      showOnlyKeyBiometricPrompt()
+      return
+    }
+    showNormalBiometricPrompt()
+  }
+
   /**
-   * 显示指纹
+   * 处理数据库有密码的指纹解锁配置
    * https://developer.android.com/training/sign-in/biometric-auth#kotlin
    */
   @SuppressLint("RestrictedApi")
-  fun showBiometricPrompt() {
+  fun showNormalBiometricPrompt() {
     val promptInfo = BiometricPrompt.PromptInfo.Builder()
         .setTitle(getString(R.string.fingerprint_unlock))
         .setSubtitle(getString(R.string.verify_finger))
@@ -114,7 +123,7 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
             errString: CharSequence
           ) {
             goBackCheckStat()
-            if (!isAdded){
+            if (!isAdded) {
               return
             }
             val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
@@ -134,18 +143,18 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
             }
             val cipher = auth.cipher!!
 
-            val passPair = keyStoreUtil.encryptData(cipher, BaseApp.dbPass)
             val useKey = BaseApp.dbKeyPath.isNotEmpty()
 
+            val passPair = keyStoreUtil.encryptData(cipher, BaseApp.dbPass)
             val quickInfo = QuickUnLockRecord(
                 dbUri = BaseApp.dbRecord!!.localDbUri,
                 dbPass = passPair.first,
                 keyPath = BaseApp.dbKeyPath,
                 isUseKey = useKey,
-                isFullUnlock = isFullUnlock,
+                isUseFingerprint = isFullUnlock,
                 passIv = passPair.second
             )
-            module.saveQuickInfo(quickInfo)
+            module.saveNormalQuickInfo(quickInfo)
             HitUtil.toaskShort("${getString(R.string.verify_finger)} ${getString(R.string.success)}")
             VibratorUtil.vibrator(300)
 
@@ -171,11 +180,75 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
           promptInfo,
           CryptoObject(keyStoreUtil.getEncryptCipher())
       )
-    }catch (e: Exception){
+    } catch (e: Exception) {
       keyStoreUtil.deleteKeyStore()
       e.printStackTrace()
     }
 
+  }
+
+  /**
+   * 处理数据库仅使用密钥的指纹解锁配置
+   * https://developer.android.com/training/sign-in/biometric-auth#kotlin
+   */
+  @SuppressLint("RestrictedApi")
+  fun showOnlyKeyBiometricPrompt() {
+    val promptInfo = BiometricPrompt.PromptInfo.Builder()
+        .setTitle(getString(R.string.fingerprint_unlock))
+        .setSubtitle(getString(R.string.verify_finger))
+        .setNegativeButtonText(getString(R.string.cancel))
+//        .setConfirmationRequired(false)
+        .build()
+    val biometricPrompt = BiometricPrompt(this, ArchTaskExecutor.getMainThreadExecutor(),
+        object : AuthenticationCallback() {
+          override fun onAuthenticationError(
+            errorCode: Int,
+            errString: CharSequence
+          ) {
+            goBackCheckStat()
+            if (!isAdded) {
+              return
+            }
+            val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
+              "${getString(R.string.verify_finger)}${getString(R.string.cancel)}"
+            } else {
+              getString(R.string.verify_finger_fail)
+            }
+            HitUtil.snackShort(mRootView, str)
+          }
+
+          override fun onAuthenticationSucceeded(result: AuthenticationResult) {
+            super.onAuthenticationSucceeded(result)
+
+            val useKey = BaseApp.dbKeyPath.isNotEmpty()
+            val quickInfo = QuickUnLockRecord(
+                dbUri = BaseApp.dbRecord!!.localDbUri,
+                keyPath = BaseApp.dbKeyPath,
+                isUseKey = useKey,
+                isUseFingerprint = isFullUnlock,
+            )
+            module.saveOnlyKeyQuickInfo(quickInfo)
+
+            HitUtil.toaskShort("${getString(R.string.verify_finger)} ${getString(R.string.success)}")
+            VibratorUtil.vibrator(300)
+
+            module.oldFlag = if (isFullUnlock) {
+              FingerprintActivity.FLAG_FULL_UNLOCK
+            } else {
+              FingerprintActivity.FLAG_QUICK_UNLOCK
+            }
+
+            requireActivity().finishAfterTransition()
+            lastFlag = module.curFlag
+          }
+
+          override fun onAuthenticationFailed() {
+            super.onAuthenticationFailed()
+            goBackCheckStat()
+            HitUtil.snackShort(mRootView, getString(R.string.verify_finger_fail))
+          }
+        })
+    biometricPrompt.authenticate(promptInfo)
   }
 
 }

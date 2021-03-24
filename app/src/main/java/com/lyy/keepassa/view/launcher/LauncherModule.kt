@@ -40,7 +40,8 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.base.Constance
-import com.lyy.keepassa.entity.DbRecord
+import com.lyy.keepassa.common.PassType
+import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.FingerprintUtil
@@ -89,23 +90,22 @@ class LauncherModule : BaseModule() {
   }
 
   /**
-   * 显示指纹解锁
+   * 处理数据库有密码的指纹解锁配置
    */
   @SuppressLint("RestrictedApi")
   @TargetApi(Build.VERSION_CODES.M)
-  fun showBiometricPrompt(
+  fun showNormalBiometricPrompt(
     fragment: OpenDbFragment,
-    quickUnlockRecord: QuickUnLockRecord?,
-    openDbRecord: DbRecord
+    record: QuickUnLockRecord?,
+    openDbRecord: DbHistoryRecord
   ) {
     if (!fragment.isAdded) {
       return
     }
-    if (quickUnlockRecord == null) {
+    if (record == null) {
       KLog.e(TAG, "解锁记录为空")
       return
     }
-
     val resource = fragment.requireContext().resources
     val promptInfo =
       BiometricPrompt.PromptInfo.Builder()
@@ -141,9 +141,7 @@ class LauncherModule : BaseModule() {
               val auth: CryptoObject? = result.cryptoObject
               val cipher = auth!!.cipher!!
               val pass = QuickUnLockUtil.decryption(
-                  keyStoreUtil?.decryptData(
-                      cipher, quickUnlockRecord.dbPass
-                  )
+                  keyStoreUtil?.decryptData(cipher, record.dbPass)
               )
               unlockEvent.postValue(Pair(true, pass))
             } catch (e: Exception) {
@@ -167,7 +165,7 @@ class LauncherModule : BaseModule() {
       // Displays the "log in" prompt.
       keyStoreUtil?.let {
         biometricPrompt.authenticate(
-            promptInfo, CryptoObject(it.getDecryptCipher(quickUnlockRecord.passIv))
+            promptInfo, CryptoObject(it.getDecryptCipher(record.passIv!!))
         )
       }
     } catch (e: Exception) {
@@ -176,10 +174,87 @@ class LauncherModule : BaseModule() {
     }
   }
 
+  /**
+   * 处理数据库有key的指纹解锁配置
+   */
+  @SuppressLint("RestrictedApi")
+  @TargetApi(Build.VERSION_CODES.M)
+  fun showOnlyKeyBiometricPrompt(
+    fragment: OpenDbFragment,
+    record: QuickUnLockRecord?
+  ) {
+    if (!fragment.isAdded) {
+      return
+    }
+    if (record == null) {
+      KLog.e(TAG, "解锁记录为空")
+      return
+    }
+    val resource = fragment.requireContext().resources
+    val promptInfo =
+      BiometricPrompt.PromptInfo.Builder()
+          .setTitle(resource.getString(R.string.fingerprint_unlock))
+          .setSubtitle(resource.getString(R.string.verify_finger))
+          .setNegativeButtonText(resource.getString(R.string.cancel))
+          //        .setConfirmationRequired(false)
+          .build()
+
+    val biometricPrompt = BiometricPrompt(fragment,
+        ArchTaskExecutor.getMainThreadExecutor(),
+        object : AuthenticationCallback() {
+          override fun onAuthenticationError(
+            errorCode: Int,
+            errString: CharSequence
+          ) {
+            if (!fragment.isAdded) {
+              KLog.e(TAG, "Fragment没有被加载")
+              return
+            }
+            val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
+              "${resource.getString(R.string.verify_finger)}${resource.getString(R.string.cancel)}"
+            } else {
+              resource.getString(R.string.verify_finger_fail)
+            }
+            HitUtil.snackShort(fragment.getRootView(), str)
+            unlockEvent.postValue(Pair(false, null))
+          }
+
+          override fun onAuthenticationSucceeded(result: AuthenticationResult) {
+            super.onAuthenticationSucceeded(result)
+            unlockEvent.postValue(Pair(true, null))
+          }
+
+          override fun onAuthenticationFailed() {
+            super.onAuthenticationFailed()
+            if (fragment.isAdded) {
+              HitUtil.snackShort(
+                  fragment.getRootView(),
+                  resource.getString(R.string.verify_finger_fail)
+              )
+            }
+            unlockEvent.postValue(Pair(false, null))
+          }
+        })
+    biometricPrompt.authenticate(promptInfo)
+  }
+
+  fun checkPassType(
+    dbPass: String,
+    keyPath: String?
+  ) {
+    if (!dbPass.isBlank() && !keyPath.isNullOrBlank()) {
+      BaseApp.passType = PassType.PASS_AND_KEY
+    } else if (!dbPass.isBlank() && keyPath.isNullOrBlank()) {
+      BaseApp.passType = PassType.ONLY_PASS
+    } else if (dbPass.isBlank() && !keyPath.isNullOrBlank()) {
+      BaseApp.passType = PassType.ONLY_KEY
+    }
+  }
+
   @TargetApi(Build.VERSION_CODES.M)
   private fun deleteBiomKey(
     fragment: OpenDbFragment,
-    openDbRecord: DbRecord
+    openDbRecord: DbHistoryRecord
   ) {
     if (!fragment.isAdded) {
       BuglyLog.d(TAG, "deleteBiomKey fragment isAdded = false")
@@ -221,17 +296,33 @@ class LauncherModule : BaseModule() {
    * 获取快速解锁记录
    */
   fun getQuickUnlockRecord(
-    openDbRecord: DbRecord,
+    openDbRecord: DbHistoryRecord,
     fragment: OpenDbFragment
   ): MutableLiveData<Pair<Boolean, String?>> {
     scope.launch(Dispatchers.IO) {
       val dao = BaseApp.appDatabase.quickUnlockDao()
       val record: QuickUnLockRecord? = dao.findRecord(openDbRecord.localDbUri)
+
       withContext(Dispatchers.Main) {
         showBiometricPrompt(fragment, record, openDbRecord)
       }
     }
     return unlockEvent
+  }
+
+  private fun showBiometricPrompt(
+    fragment: OpenDbFragment,
+    quickUnlockRecord: QuickUnLockRecord?,
+    openDbRecord: DbHistoryRecord
+  ) {
+    if (quickUnlockRecord != null){
+      checkPassType(quickUnlockRecord.dbPass, quickUnlockRecord.keyPath)
+    }
+    if (BaseApp.passType == PassType.ONLY_KEY) {
+      showOnlyKeyBiometricPrompt(fragment, quickUnlockRecord)
+      return
+    }
+    showNormalBiometricPrompt(fragment, quickUnlockRecord, openDbRecord)
   }
 
   /**
@@ -271,7 +362,7 @@ class LauncherModule : BaseModule() {
         KLog.d(TAG, "unLockRecord is null")
         return@withContext false
       }
-      KLog.d(TAG, "is full unlock = ${unLockRecord.isFullUnlock}")
+      KLog.d(TAG, "is full unlock = ${unLockRecord.isUseFingerprint}")
       val dbDao = BaseApp.appDatabase.dbRecordDao()
       val dbRecord = dbDao.findRecord(dbUri)
       if (dbRecord == null) {
@@ -279,7 +370,7 @@ class LauncherModule : BaseModule() {
         return@withContext false
       }
 
-      return@withContext unLockRecord.isFullUnlock
+      return@withContext unLockRecord.isUseFingerprint
     }
     emit(needOpen)
   }
@@ -290,7 +381,7 @@ class LauncherModule : BaseModule() {
    */
   fun openDb(
     context: Context,
-    record: DbRecord,
+    record: DbHistoryRecord,
     dbPass: String
   ) = liveData {
     KLog.d(TAG, "打开数据库")
@@ -323,7 +414,7 @@ class LauncherModule : BaseModule() {
    */
   private suspend fun openWebDavDb(
     context: Context,
-    record: DbRecord,
+    record: DbHistoryRecord,
     dbPass: String
   ): Database? {
     val dao = BaseApp.appDatabase.cloudServiceInfoDao()
@@ -358,7 +449,7 @@ class LauncherModule : BaseModule() {
    */
   private suspend fun openDropboxDb(
     context: Context,
-    record: DbRecord,
+    record: DbHistoryRecord,
     dbPass: String
   ): Database? {
     val cacheFile = record.getDbUri()
@@ -386,7 +477,7 @@ class LauncherModule : BaseModule() {
     dbUri: Uri,
     dbPass: String,
     keyUri: Uri?,
-    record: DbRecord
+    record: DbHistoryRecord
   ): Database? {
     try {
       val db = KDBHandlerHelper.getInstance(context)
@@ -451,8 +542,8 @@ class LauncherModule : BaseModule() {
     val data = withContext(Dispatchers.IO) {
       val dao = BaseApp.appDatabase.dbRecordDao()
       val records = dao.getAllRecord()
-      var newRecord: DbRecord? = null
-      val needRemoveRecords = ArrayList<DbRecord>()
+      var newRecord: DbHistoryRecord? = null
+      val needRemoveRecords = ArrayList<DbHistoryRecord>()
       for (record in records) {
         val localUri = Uri.parse(record.localDbUri)
         if (!UriUtil.checkPermissions(context, localUri) && record.isAFS()) {

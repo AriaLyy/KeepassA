@@ -25,7 +25,7 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.R.string
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.Constance
-import com.lyy.keepassa.entity.DbRecord
+import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
@@ -64,7 +64,7 @@ object DbSynUtil : SynStateCode {
   /**
    * 或去该记录在云端的修改时间
    */
-  suspend fun getFileServiceModifyTime(record: DbRecord): Date {
+  suspend fun getFileServiceModifyTime(record: DbHistoryRecord): Date {
     return CloudUtilFactory.getCloudUtil(record.getDbPathType())
         .getFileServiceModifyTime(record.cloudDiskPath!!)
   }
@@ -73,7 +73,7 @@ object DbSynUtil : SynStateCode {
    * 更新服务器端文件的修改时间
    */
   suspend fun updateServiceModifyTime(
-    record: DbRecord
+    record: DbHistoryRecord
   ) {
     serviceModifyTime = CloudUtilFactory.getCloudUtil(record.getDbPathType())
         .getFileServiceModifyTime(record.cloudDiskPath!!)
@@ -106,7 +106,7 @@ object DbSynUtil : SynStateCode {
    */
   suspend fun uploadSyn(
     context: Context,
-    record: DbRecord
+    record: DbHistoryRecord
   ): Int {
     if (BaseApp.isAFS()) {
       KLog.i(TAG, "AFS 不需要上传")
@@ -136,7 +136,7 @@ object DbSynUtil : SynStateCode {
    */
   suspend fun downloadOnly(
     context: Context,
-    dbRecord: DbRecord,
+    dbRecord: DbHistoryRecord,
     filePath: Uri
   ): String? {
     KLog.i(TAG, "开始下载文件，云端路径：${dbRecord.cloudDiskPath}，文件保存路径：${filePath}")
@@ -153,7 +153,7 @@ object DbSynUtil : SynStateCode {
    */
   suspend fun downloadSyn(
     context: Context,
-    record: DbRecord,
+    record: DbHistoryRecord,
     filePath: Uri
   ): Int {
     if (BaseApp.isAFS()) {
@@ -190,7 +190,7 @@ object DbSynUtil : SynStateCode {
   private suspend fun synUploadFile(
     util: ICloudUtil,
     context: Context,
-    record: DbRecord
+    record: DbHistoryRecord
   ): Int {
     val st = util.getFileServiceModifyTime(record.cloudDiskPath!!)
     if (st == serviceModifyTime) {
@@ -245,7 +245,7 @@ object DbSynUtil : SynStateCode {
   private suspend fun compareDb(
     util: ICloudUtil,
     context: Context,
-    record: DbRecord,
+    record: DbHistoryRecord,
     cloudDb: PwDatabase,
     localDb: PwDatabase,
     isUpload: Boolean
@@ -466,7 +466,7 @@ object DbSynUtil : SynStateCode {
   @ExperimentalCoroutinesApi
   private fun showUploadCoverDialog(
     context: Context,
-    dbRecord: DbRecord,
+    dbRecord: DbHistoryRecord,
     util: ICloudUtil,
     modifyList: ArrayList<Pair<PwDataInf, PwDataInf>>,
     channel: Channel<Int>
@@ -563,7 +563,7 @@ object DbSynUtil : SynStateCode {
   private suspend fun coverFile(
     util: ICloudUtil,
     context: Context,
-    record: DbRecord
+    record: DbHistoryRecord
   ): Int {
     val needDelFile = when (record.getDbPathType()) {
       DROPBOX -> true
@@ -590,7 +590,7 @@ object DbSynUtil : SynStateCode {
   private suspend fun uploadFile(
     util: ICloudUtil,
     context: Context,
-    record: DbRecord
+    record: DbHistoryRecord
   ): Int {
     val b = util.uploadFile(context, record)
     KLog.d(TAG, "上传文件${if (b) "成功" else "失败"}：${record.cloudDiskPath}")

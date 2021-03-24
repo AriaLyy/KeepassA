@@ -26,7 +26,7 @@ import com.lyy.keepassa.R.layout
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityLauncherBinding
-import com.lyy.keepassa.entity.DbRecord
+import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.event.DbHistoryEvent
 import com.lyy.keepassa.util.EventBusHelper
@@ -211,7 +211,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
    */
   @Subscribe(threadMode = MAIN)
   fun onDbChange(event: ChangeDbEvent) {
-    val record = DbRecord(
+    val record = DbHistoryRecord(
         time = System.currentTimeMillis(),
         type = event.uriType.name,
         localDbUri = event.localFileUri.toString(),
@@ -239,7 +239,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     return Pair(ChangeDbFragment.FM_TAG, fragment)
   }
 
-  private fun buildOpenDbFragment(record: DbRecord): Pair<String, OpenDbFragment> {
+  private fun buildOpenDbFragment(record: DbHistoryRecord): Pair<String, OpenDbFragment> {
     var fragment = supportFragmentManager.findFragmentByTag(OpenDbFragment.FM_TAG)
     if (fragment == null || fragment !is OpenDbFragment) {
       fragment = OpenDbFragment()

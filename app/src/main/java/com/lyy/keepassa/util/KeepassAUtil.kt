@@ -35,7 +35,6 @@ import android.provider.OpenableColumns
 import android.text.TextUtils
 import android.util.Pair
 import android.view.View
-import android.view.WindowManager.LayoutParams
 import android.view.autofill.AutofillManager
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.ColorInt
@@ -56,7 +55,7 @@ import com.keepassdroid.database.security.ProtectedString
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
-import com.lyy.keepassa.entity.DbRecord
+import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.service.autofill.AutoFillHelper
 import com.lyy.keepassa.service.autofill.StructureParser
@@ -312,7 +311,7 @@ class KeepassAUtil private constructor() {
   /**
    * 保存上一次打开的数据库记录
    */
-  fun saveLastOpenDbHistory(record: DbRecord?) {
+  fun saveLastOpenDbHistory(record: DbHistoryRecord?) {
     if (record == null) {
       return
     }

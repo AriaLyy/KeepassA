@@ -20,7 +20,6 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.view.View
-import android.view.View.OnClickListener
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider

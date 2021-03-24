@@ -72,7 +72,7 @@ class FingerprintActivity : BaseActivity<ActivityFingerprintBinding>() {
                 .commitAllowingStateLoss()
             return@Observer
           }
-          if (!record.isFullUnlock) {
+          if (!record.isUseFingerprint) {
             module.oldFlag = FLAG_QUICK_UNLOCK
             module.curFlag = FLAG_QUICK_UNLOCK
             binding.swBt.isChecked = true

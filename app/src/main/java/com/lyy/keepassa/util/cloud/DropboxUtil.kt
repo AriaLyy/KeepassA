@@ -25,7 +25,7 @@ import com.dropbox.core.v2.files.FileMetadata
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.Constance
-import com.lyy.keepassa.entity.DbRecord
+import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.util.QuickUnLockUtil
 import java.util.Date
 
@@ -201,7 +201,7 @@ object DropboxUtil : ICloudUtil {
    */
   override suspend fun uploadFile(
     context: Context,
-    dbRecord: DbRecord
+    dbRecord: DbHistoryRecord
   ): Boolean {
 
     val dbUri = Uri.parse(dbRecord.localDbUri)
@@ -221,7 +221,7 @@ object DropboxUtil : ICloudUtil {
 
   override suspend fun downloadFile(
     context: Context,
-    dbRecord: DbRecord,
+    dbRecord: DbHistoryRecord,
     filePath: Uri
   ): String? {
     val client = getClient() ?: return null

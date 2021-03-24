@@ -167,7 +167,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
     try {
       biometricPrompt.authenticate(
           promptInfo,
-          CryptoObject(keyStoreUtil.getDecryptCipher(fingerRecord!!.passIv))
+          CryptoObject(keyStoreUtil.getDecryptCipher(fingerRecord!!.passIv!!))
       )
     } catch (e: Exception) {
       e.printStackTrace()

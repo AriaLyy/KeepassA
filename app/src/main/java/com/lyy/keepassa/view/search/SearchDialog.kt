@@ -9,18 +9,21 @@
 
 package com.lyy.keepassa.view.search
 
+import android.app.Activity
+import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.arialyy.frame.util.KeyBoardUtils
 import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwDataInf
@@ -101,7 +104,7 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
       return
     }
     module.searchEntry(query)
-        .observe(this, Observer { list ->
+        .observe(this, { list ->
           if (list != null) {
             date.clear()
             date.addAll(list)
@@ -113,7 +116,7 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
 
   private fun getRecordData() {
     module.getSearchRecord()
-        .observe(this, Observer { list ->
+        .observe(this, { list ->
           date.clear()
           if (list != null) {
             date.addAll(list)
@@ -127,7 +130,7 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
    * 初始化列表
    */
   private fun initList() {
-    adapter = SearchAdapter(requireContext(), date, OnClickListener { v ->
+    adapter = SearchAdapter(requireContext(), date) { v ->
       val position = v.tag as Int
       val item = date[position]
       module.delHistoryRecord(item.title.toString())
@@ -136,7 +139,7 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
             adapter.notifyDataSetChanged()
           })
 
-    })
+    }
     binding.list.layoutManager = LinearLayoutManager(context)
     binding.list.adapter = adapter
     RvItemClickSupport.addTo(binding.list)

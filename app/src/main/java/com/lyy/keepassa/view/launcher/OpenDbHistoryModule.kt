@@ -14,7 +14,7 @@ import androidx.lifecycle.liveData
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
-import com.lyy.keepassa.entity.DbRecord
+import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.isAFS
@@ -38,7 +38,7 @@ class OpenDbHistoryModule : BaseModule() {
   fun deleteHistoryRecord(item: SimpleItemEntity) {
     val dao = BaseApp.appDatabase.dbRecordDao()
     GlobalScope.launch {
-      dao.deleteRecord(item.obj as DbRecord)
+      dao.deleteRecord(item.obj as DbHistoryRecord)
     }
   }
 
@@ -49,7 +49,7 @@ class OpenDbHistoryModule : BaseModule() {
     val data = withContext(Dispatchers.IO) {
       val dao = BaseApp.appDatabase.dbRecordDao()
       val records = dao.getAllRecord()
-      val needRemoveRecord = ArrayList<DbRecord>()
+      val needRemoveRecord = ArrayList<DbHistoryRecord>()
       if (records.isNotEmpty()) {
         val list = ArrayList<SimpleItemEntity>()
         for (record in records) {

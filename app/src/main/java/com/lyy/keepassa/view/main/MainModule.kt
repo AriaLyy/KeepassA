@@ -31,7 +31,7 @@ import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.base.Constance
-import com.lyy.keepassa.entity.DbRecord
+import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
@@ -118,7 +118,7 @@ class MainModule : BaseModule() {
 
   private fun openDbFile(
     context: Context,
-    record: DbRecord,
+    record: DbHistoryRecord,
     dbPass: String
   ): Database? {
     val dbUri = record.getDbUri()

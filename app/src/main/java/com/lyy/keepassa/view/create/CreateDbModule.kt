@@ -21,7 +21,7 @@ import com.keepassdroid.database.helper.CreateDBHelper
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
-import com.lyy.keepassa.entity.DbRecord
+import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
@@ -101,7 +101,7 @@ class CreateDbModule : BaseModule() {
 
         BaseApp.dbVersion = "Keepass ${if (PwDatabase.isKDBExtension(dbName)) "3.x" else "4.x"}"
         BaseApp.isV4 = !PwDatabase.isKDBExtension(dbName)
-        val record = DbRecord(
+        val record = DbHistoryRecord(
             time = System.currentTimeMillis(),
             type = dbPathType.name,
             localDbUri = dbUri.toString(),
