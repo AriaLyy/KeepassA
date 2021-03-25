@@ -268,6 +268,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
             return@Observer
           }
           binding.list.visibility = View.VISIBLE
+          getEmptyLayout().visibility = View.GONE
           entryData.clear()
           entryData.addAll(list)
           adapter.notifyDataSetChanged()

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <androidx.coordinatorlayout.widget.CoordinatorLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/llContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_color"
+        android:orientation="vertical"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+      <FrameLayout
+          android:id="@+id/fl"
+          android:layout_width="match_parent"
+          android:layout_height="48dp">
+
+        <TextView
+            style="@style/KpaTitleTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="24dp"
+            android:text="ICON"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:layout_marginEnd="16dp"
+            android:id="@+id/rg"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+          <com.google.android.material.radiobutton.MaterialRadioButton
+              android:id="@+id/mrbDefault"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:checked="true"
+              android:text="@string/s_default"
+              android:textSize="@dimen/text_size_normal"
+              app:buttonTint="@color/colorPrimary" />
+
+          <com.google.android.material.radiobutton.MaterialRadioButton
+              android:id="@+id/mrbCustom"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="8dp"
+              android:text="@string/customize"
+              android:textSize="@dimen/text_size_normal"
+              app:buttonTint="@color/colorPrimary" />
+        </RadioGroup>
+      </FrameLayout>
+
+
+      <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/rvList"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_below="@+id/fl" />
+
+      <ViewStub
+          android:id="@+id/vsLoading"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_below="@+id/fl"
+          android:layout="@layout/layout_loading" />
+    </RelativeLayout>
+
+  </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

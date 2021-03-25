@@ -223,6 +223,7 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="no_file">No file</string>
   <string name="login">Login</string>
   <string name="helper_webdav">eg: https://dav.xxxx.com/dav/[you folder]/xxx.kdbx</string>
+  <string name="helper_webdav_dir">eg: https://dav.xxxx.com/dav/[you folder]/</string>
   <string name="hint_webdav_url">File url</string>
   <string name="hint_please_input">Please input %s</string>
   <string name="db_file_no_exist">The database file does not exist</string>
@@ -304,5 +305,7 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="set_key_title_show_state_bar">Whether to show the status bar</string>
   <string name="set_key_title_show_state_bar_turn_on">Show status bar</string>
   <string name="set_key_title_show_state_bar_turn_off">Hide status bar</string>
+  <string name="s_default">Default</string>
+  <string name="customize">Customize</string>
 
 </resources>

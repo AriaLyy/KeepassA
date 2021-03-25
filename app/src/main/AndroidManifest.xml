@@ -108,7 +108,7 @@
         android:launchMode="singleTask" />
 
     <activity
-        android:name=".view.ChooseIconActivity"
+        android:name=".view.icon.ChooseIconActivity"
         android:launchMode="singleTask" />
 
     <activity

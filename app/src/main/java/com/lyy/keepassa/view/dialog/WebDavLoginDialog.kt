@@ -72,29 +72,30 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
       val userName = binding.userName.text.toString()
           .trim()
       if (pass.isEmpty()) {
-        HitUtil.toaskShort(getString(R.string.hint_please_input, getString(R.string.password)))
+        HitUtil.toaskLong(getString(R.string.hint_please_input, getString(R.string.password)))
         return@setOnClickListener
       }
       if (userName.isEmpty()) {
-        HitUtil.toaskShort(
+        HitUtil.toaskLong(
             getString(R.string.hint_please_input, getString(R.string.hint_input_user_name))
         )
         return@setOnClickListener
       }
       if (uri.isEmpty() || uri.equals("null", true)) {
-        HitUtil.toaskShort(
+        HitUtil.toaskLong(
             getString(R.string.hint_please_input, getString(R.string.hint_webdav_url))
         )
         return@setOnClickListener
       }
       if (!KeepassAUtil.instance.checkUrlIsValid(uri)) {
-        HitUtil.toaskShort("${getString(R.string.hint_webdav_url)} ${getString(R.string.invalid)}")
+        HitUtil.toaskLong("${getString(R.string.hint_webdav_url)} ${getString(R.string.invalid)}")
         return@setOnClickListener
       }
 
       val temp = Uri.parse(uri)
 
       if (webDavIsCreateLogin) {
+        binding.uri.setHint(R.string.helper_webdav_dir)
         if (temp == null || !uri.endsWith("/", ignoreCase = true)) {
           HitUtil.toaskLong(getString(R.string.error_webdav_end_suffix))
           return@setOnClickListener
@@ -130,12 +131,12 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
                         )
                     )
               }
-              HitUtil.toaskShort("${getString(R.string.login)} ${getString(R.string.success)}")
+              HitUtil.toaskLong("${getString(R.string.login)} ${getString(R.string.success)}")
               dismiss()
               return@Observer
             }
 
-            HitUtil.toaskShort("${getString(R.string.login)} ${getString(R.string.fail)}")
+            HitUtil.toaskLong("${getString(R.string.login)} ${getString(R.string.fail)}")
           })
     }
     binding.cancel.setOnClickListener { dismiss() }

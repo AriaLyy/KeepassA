@@ -48,13 +48,14 @@ import com.lyy.keepassa.util.getFileInfo
 import com.lyy.keepassa.util.putArgument
 import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.ChooseGroupActivity
-import com.lyy.keepassa.view.ChooseIconActivity
 import com.lyy.keepassa.view.MarkDownEditorActivity
 import com.lyy.keepassa.view.dialog.AddMoreDialog
 import com.lyy.keepassa.view.dialog.CreateTotpDialog
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.dialog.TimerDialog
+import com.lyy.keepassa.view.icon.IconBottomSheetDialog
+import com.lyy.keepassa.view.icon.IconItemCallback
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.menu.EntryCreateFilePopMenu
 import com.lyy.keepassa.view.menu.EntryCreateStrPopMenu
@@ -97,7 +98,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     const val TYPE_EDIT_ENTRY = 3
   }
 
-  private val iconRequestCode = 0xA1
   private val passRequestCode = 0xA2
   private val groupDirRequestCode = 0xA3
   private val getFileRequestCode = 0xA4
@@ -388,11 +388,23 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     }
 
     binding.titleLayout.setEndIconOnClickListener {
-      startActivityForResult(
-          Intent(this, ChooseIconActivity::class.java), iconRequestCode,
-          ActivityOptions.makeSceneTransitionAnimation(this)
-              .toBundle()
-      )
+      val iconDialog = IconBottomSheetDialog()
+      iconDialog.setCallback(object :IconItemCallback{
+        override fun onDefaultIcon(defIcon: PwIconStandard) {
+          module.icon = defIcon
+          binding.titleLayout.endIconDrawable =
+            resources.getDrawable(IconUtil.getIconById(module.icon.iconId), theme)
+          module.customIcon = PwIconCustom.ZERO
+        }
+
+        override fun onCustomIcon(customIcon: PwIconCustom) {
+          module.customIcon = customIcon
+          binding.titleLayout.endIconDrawable =
+            IconUtil.convertCustomIcon2Drawable(this@CreateEntryActivity, module.customIcon!!)
+        }
+
+      })
+      iconDialog.show(supportFragmentManager, IconBottomSheetDialog::class.java.simpleName)
     }
   }
 
@@ -697,27 +709,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     super.onActivityResult(requestCode, resultCode, data)
     if (resultCode == Activity.RESULT_OK && data != null) {
       when (requestCode) {
-        // 处理图标
-        iconRequestCode -> {
-          val type =
-            data.getIntExtra(
-                ChooseIconActivity.KEY_ICON_TYPE,
-                ChooseIconActivity.ICON_TYPE_STANDARD
-            )
-          if (type == ChooseIconActivity.ICON_TYPE_STANDARD) {
-            module.icon = data.getSerializableExtra(ChooseIconActivity.KEY_DATA) as PwIconStandard
-            binding.titleLayout.endIconDrawable =
-              resources.getDrawable(IconUtil.getIconById(module.icon.iconId), theme)
-            module.customIcon = PwIconCustom.ZERO
-            return
-          }
-          if (type == ChooseIconActivity.ICON_TYPE_CUSTOM) {
-            module.customIcon =
-              data.getSerializableExtra(ChooseIconActivity.KEY_DATA) as PwIconCustom
-            binding.titleLayout.endIconDrawable =
-              IconUtil.convertCustomIcon2Drawable(this, module.customIcon!!)
-          }
-        }
         // 处理获取密码
         passRequestCode -> {
           binding.password.setText(data.getStringExtra(GeneratePassActivity.DATA_PASS_WORD))

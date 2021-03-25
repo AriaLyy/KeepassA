@@ -223,6 +223,7 @@
   <string name="no_file">沒有文件</string>
   <string name="login">登錄</string>
   <string name="helper_webdav">如：https://dav.xxxx.com/dav/你的文件夾/xxx.kdbx</string>
+  <string name="helper_webdav_dir">如：https://dav.xxxx.com/dav/你的文件夾/</string>
   <string name="hint_webdav_url">文件地址</string>
   <string name="hint_please_input">請輸入%s</string>
   <string name="db_file_no_exist">數據庫文件不存在</string>
@@ -305,4 +306,6 @@
   <string name="set_key_title_show_state_bar">是否顯示狀態欄</string>
   <string name="set_key_title_show_state_bar_turn_on">顯示狀態欄</string>
   <string name="set_key_title_show_state_bar_turn_off">隱藏狀態欄</string>
+  <string name="s_default">默認</string>
+  <string name="customize">自定義</string>
 </resources>

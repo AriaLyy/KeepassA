@@ -222,6 +222,7 @@ Si vous créez une nouvelle base de données Keepass, les opérations suivantes 
   <string name="no_file">Aucun fichier</string>
   <string name="login">Connexion</string>
   <string name="helper_webdav">ex: https://dav.xxxx.com/dav/[votre dossier]/xxx.kdbx</string>
+  <string name="helper_webdav_dir">ex: https://dav.xxxx.com/dav/[votre dossier]/</string>
   <string name="hint_webdav_url">URL du fichier</string>
   <string name="hint_please_input">Veuillez entrer %s</string>
   <string name="db_file_no_exist">Le fichier de base de données n\'existe pas</string>
