@@ -168,6 +168,7 @@ class MainModule : BaseModule() {
           putInt(Constance.PRE_KEY_START_APP_NUM, 0)
         }
       }
+      donateDialog.show()
     }
   }
 

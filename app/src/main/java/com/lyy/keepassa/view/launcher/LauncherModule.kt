@@ -242,9 +242,9 @@ class LauncherModule : BaseModule() {
     dbPass: String,
     keyPath: String?
   ) {
-    if (!dbPass.isBlank() && !keyPath.isNullOrBlank()) {
+    if (dbPass.isNotBlank() && !keyPath.isNullOrBlank()) {
       BaseApp.passType = PassType.PASS_AND_KEY
-    } else if (!dbPass.isBlank() && keyPath.isNullOrBlank()) {
+    } else if (dbPass.isNotBlank() && keyPath.isNullOrBlank()) {
       BaseApp.passType = PassType.ONLY_PASS
     } else if (dbPass.isBlank() && !keyPath.isNullOrBlank()) {
       BaseApp.passType = PassType.ONLY_KEY

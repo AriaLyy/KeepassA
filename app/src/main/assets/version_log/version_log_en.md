@@ -1,4 +1,15 @@
-#### 1.8.4 （2021/3/44）
+#### 2.0（2021/3/23）
+- [New]The recycle bin does not display the add group\entry button
+- [New]Whether to hide the status bar，[Setting](route://keepassA.com/kpa?activity=SettingActivity) -> Ui Setting
+- [New]Key login only
+- [Optimize]Lots of animations
+- [Optimize]The default icons are all MD style icons
+- [Optimize]Icon selection will use the method that pops up at the bottom
+- [Fix]The problem of invalid timing lock database
+- [Fix]The problem of missing jump animation
+- [Fix]Unable to switch historical data
+
+#### 1.8.4 （2021/3/4）
 - Refactor the logic of creating a database
 - Increase the function of creating a database on Webdav
 
