@@ -12,9 +12,12 @@ package com.lyy.keepassa.base;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.multidex.MultiDexApplication;
 import androidx.preference.PreferenceManager;
@@ -60,6 +63,7 @@ public class BaseApp extends MultiDexApplication {
   public static Boolean isLocked = true;
 
   public static int passType = PassType.INSTANCE.getONLY_PASS();
+  private Context resContext;
 
   public static boolean isAFS() {
     return dbRecord == null || DbPathType.valueOf(dbRecord.getType()) == DbPathType.AFS;
@@ -71,6 +75,13 @@ public class BaseApp extends MultiDexApplication {
     Reflection.unseal(base);
   }
 
+  @Override public Resources getResources() {
+    if (resContext == null){
+      return super.getResources();
+    }
+    return resContext.getResources();
+  }
+
   @Override public void onCreate() {
     super.onCreate();
     AbsFrame.init(this);
@@ -78,8 +89,10 @@ public class BaseApp extends MultiDexApplication {
     handler = new Handler(Looper.getMainLooper());
     // 初始化一下时间
     KeepassAUtil.Companion.getInstance().isFastClick();
-    currentLang = setLanguage();
     initDb();
+    // 处理多语言
+    currentLang = setLanguage();
+    resContext = LanguageUtil.INSTANCE.setLanguage(APP, currentLang);
 
     // 开启kotlin 协程debug
     if (BuildConfig.DEBUG) {

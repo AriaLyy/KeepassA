@@ -30,7 +30,7 @@ class ScreenLockReceiver : BroadcastReceiver() {
   ) {
     // if the user lock screen, lock the db
     if (intent?.action.equals(Intent.ACTION_SCREEN_OFF) && PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-            .getBoolean(ResUtil.getString(R.string.set_key_lock_screen_auto_lock_db), false)) {
+            .getBoolean(context?.getString(R.string.set_key_lock_screen_auto_lock_db), false)) {
       if (BaseApp.isLocked || BaseApp.KDB.isNull()){
         return
       }

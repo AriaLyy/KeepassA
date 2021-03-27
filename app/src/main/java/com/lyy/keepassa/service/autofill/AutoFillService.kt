@@ -108,7 +108,7 @@ class AutoFillService : AutofillService() {
       return
     }
     val response =
-      AutoFillHelper.newResponse(this, !needAuth, autoFillFields, datas, apkPackageName)
+      AutoFillHelper.newResponse(this, !needAuth, autoFillFields, datas, apkPackageName, structure)
     callback.onSuccess(response)
   }
 

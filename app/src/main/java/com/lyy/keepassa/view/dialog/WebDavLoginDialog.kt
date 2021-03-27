@@ -14,6 +14,7 @@ import android.text.TextUtils
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.arialyy.frame.util.FileUtil
+import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.BuildConfig
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
@@ -55,78 +56,86 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
     module = ViewModelProvider(this).get(WebDavLoginModule::class.java)
 
     if (BuildConfig.DEBUG) {
-      val p = FileUtil.loadConfig(File("${requireContext().filesDir.path}/config/webDav.properties"))
+      val p =
+        FileUtil.loadConfig(File("${requireContext().filesDir.path}/config/webDav.properties"))
       binding.uri.setText(p.getProperty("uri"))
       binding.userName.setText(p.getProperty("userName"))
       binding.password.setText(p.getProperty("password"))
     }
 
+    if (webDavIsCreateLogin) {
+      binding.uriLayout.helperText = requireActivity().resources.getString(R.string.helper_webdav_dir)
+    }
+
     binding.enter.setOnClickListener {
-      if (KeepassAUtil.instance.isFastClick()) {
-        return@setOnClickListener
-      }
-
-      val pass = binding.password.text.toString()
-          .trim()
-      val uri = binding.uri.text.toString()
-          .trim()
-      val userName = binding.userName.text.toString()
-          .trim()
-      if (pass.isEmpty()) {
-        HitUtil.toaskLong(getString(R.string.hint_please_input, getString(R.string.password)))
-        return@setOnClickListener
-      }
-      if (userName.isEmpty()) {
-        HitUtil.toaskLong(
-            getString(R.string.hint_please_input, getString(R.string.hint_input_user_name))
-        )
-        return@setOnClickListener
-      }
-      if (uri.isEmpty() || uri.equals("null", true)) {
-        HitUtil.toaskLong(
-            getString(R.string.hint_please_input, getString(R.string.hint_webdav_url))
-        )
-        return@setOnClickListener
-      }
-      if (!KeepassAUtil.instance.checkUrlIsValid(uri)) {
-        HitUtil.toaskLong("${getString(R.string.hint_webdav_url)} ${getString(R.string.invalid)}")
-        return@setOnClickListener
-      }
-
-      val temp = Uri.parse(uri)
-
-      if (webDavIsCreateLogin) {
-        binding.uri.setHint(R.string.helper_webdav_dir)
-        if (temp == null || !uri.endsWith("/", ignoreCase = true)) {
-          HitUtil.toaskLong(getString(R.string.error_webdav_end_suffix))
-          return@setOnClickListener
-        }
-        if (uri.endsWith("/dav/", ignoreCase = true)) {
-          HitUtil.toaskLong(getString(R.string.error_webdav_end_dav_suffix))
-          return@setOnClickListener
-        }
-      } else if (temp == null
-          || TextUtils.isEmpty(temp.lastPathSegment)
-          || !temp.lastPathSegment!!.endsWith(".kdbx", ignoreCase = true)
-      ) {
-        HitUtil.toaskLong(getString(R.string.hint_kdbx_name))
-        return@setOnClickListener
-      }
-
-      // start login
-      this.webDavUri = uri
-      loadingDialog = LoadingDialog(context)
-      loadingDialog?.show()
-
-      if (!webDavIsCreateLogin) {
-        handleLoginFlow(uri, userName, pass)
-        return@setOnClickListener
-      }
-
-      handleCreateFlow(uri, userName, pass)
+      handleEnterClick()
 
     }
     binding.cancel.setOnClickListener { dismiss() }
+  }
+
+  private fun handleEnterClick() {
+    if (KeepassAUtil.instance.isFastClick()) {
+      return
+    }
+
+    val pass = binding.password.text.toString()
+        .trim()
+    val uri = binding.uri.text.toString()
+        .trim()
+    val userName = binding.userName.text.toString()
+        .trim()
+    if (pass.isEmpty()) {
+      HitUtil.toaskLong(getString(R.string.hint_please_input, getString(R.string.password)))
+      return
+    }
+    if (userName.isEmpty()) {
+      HitUtil.toaskLong(
+          getString(R.string.hint_please_input, getString(R.string.hint_input_user_name))
+      )
+      return
+    }
+    if (uri.isEmpty() || uri.equals("null", true)) {
+      HitUtil.toaskLong(
+          getString(R.string.hint_please_input, getString(R.string.hint_webdav_url))
+      )
+      return
+    }
+    if (!KeepassAUtil.instance.checkUrlIsValid(uri)) {
+      HitUtil.toaskLong("${getString(R.string.hint_webdav_url)} ${getString(R.string.invalid)}")
+      return
+    }
+
+    val temp = Uri.parse(uri)
+
+    if (webDavIsCreateLogin) {
+      if (temp == null || !uri.endsWith("/", ignoreCase = true)) {
+        HitUtil.toaskLong(getString(R.string.error_webdav_end_suffix))
+        return
+      }
+      if (uri.endsWith("/dav/", ignoreCase = true)) {
+        HitUtil.toaskLong(getString(R.string.error_webdav_end_dav_suffix))
+        return
+      }
+    } else if (temp == null
+        || TextUtils.isEmpty(temp.lastPathSegment)
+        || !temp.lastPathSegment!!.endsWith(".kdbx", ignoreCase = true)
+    ) {
+      HitUtil.toaskLong(getString(R.string.hint_kdbx_name))
+      return
+    }
+
+    // start login
+    this.webDavUri = uri
+    loadingDialog = LoadingDialog(context)
+    loadingDialog?.show()
+
+    if (!webDavIsCreateLogin) {
+      handleLoginFlow(uri, userName, pass)
+      return
+    }
+
+    handleCreateFlow(uri, userName, pass)
   }
 
   /**

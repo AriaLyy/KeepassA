@@ -30,7 +30,7 @@ import com.lyy.keepassa.view.dialog.MsgDialog.OnBtClickListener
  * @Date 2021/2/25
  **/
 class DropboxAuthFlow : IAuthFlow {
-  private var context: Context? = null
+  private lateinit var context: Context
   private var isNeedAuth = false
   private lateinit var callback: IAuthCallback
 
@@ -49,11 +49,11 @@ class DropboxAuthFlow : IAuthFlow {
     val token = Auth.getOAuth2Token()
     if (!TextUtils.isEmpty(token)) {
       DropboxUtil.saveToken(token)
-      HitUtil.toaskShort("dropbox ${ResUtil.getString(R.string.auth)}${ResUtil.getString(R.string.success)}")
+      HitUtil.toaskShort("dropbox ${context.getString(R.string.auth)}${context.getString(R.string.success)}")
       callback.callback(true)
       return
     }
-    HitUtil.toaskShort("dropbox ${ResUtil.getString(R.string.auth)}${ResUtil.getString(R.string.fail)}")
+    HitUtil.toaskShort("dropbox ${context.getString(R.string.auth)}${context.getString(R.string.fail)}")
     callback.callback(false)
   }
 
@@ -91,8 +91,8 @@ class DropboxAuthFlow : IAuthFlow {
    */
   private fun authDropbox() {
     val msgDialog = MsgDialog.generate {
-      msgTitle = ResUtil.getString(R.string.hint)
-      msgContent = Html.fromHtml(ResUtil.getString(R.string.dropbox_msg))
+      msgTitle = this@DropboxAuthFlow.context.getString(R.string.hint)
+      msgContent = Html.fromHtml(this@DropboxAuthFlow.context.getString(R.string.dropbox_msg))
       showCancelBt = false
       build()
     }
@@ -108,7 +108,6 @@ class DropboxAuthFlow : IAuthFlow {
   }
 
   override fun onDestroy() {
-    context = null
   }
 
   override fun onActivityResult(

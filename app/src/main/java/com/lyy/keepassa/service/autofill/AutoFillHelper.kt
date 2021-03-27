@@ -10,6 +10,7 @@
 package com.lyy.keepassa.service.autofill
 
 import android.annotation.TargetApi
+import android.app.assist.AssistStructure
 import android.content.Context
 import android.content.IntentSender
 import android.graphics.Bitmap.Config
@@ -89,20 +90,27 @@ object AutoFillHelper {
   private fun otherEntry(
     context: Context,
     apkPageName: String,
-    tempFillId: AutofillId
+    tempFillId: AutofillId,
+    structure: AssistStructure
   ): Dataset {
     val rev = RemoteViews(context.packageName, R.layout.item_auto_fill)
     rev.setTextViewText(R.id.text, context.resources.getString(R.string.other))
+
     IconUtil.getBitmapFromDrawable(context,  R.drawable.ic_search, 20.toPx())?.let {
       rev.setImageViewBitmap(R.id.img, it)
     }
 
     setTextColor(rev, context)
 
+    val sender = AutoFillEntrySearchActivity.createSearchPending(context, apkPageName, structure)
     rev.setOnClickPendingIntent(
         R.id.llContent,
-        AutoFillEntrySearchActivity.createSearchPending(context, apkPageName)
+        sender
     )
+
+
+//    newSaveResponse(context, metadata, sender)
+
     val db = Dataset.Builder(rev)
     db.setValue(tempFillId, AutofillValue.forText(""))
     return db.build()
@@ -236,7 +244,8 @@ object AutoFillHelper {
     dataSetAuth: Boolean,
     metadata: AutoFillFieldMetadataCollection,
     entries: MutableList<PwEntry>?,
-    apkPageName: String
+    apkPageName: String,
+    structure: AssistStructure
   ): FillResponse? {
     val responseBuilder = FillResponse.Builder()
 
@@ -244,22 +253,24 @@ object AutoFillHelper {
       val dataSet = newDataSet(context, metadata, entry, dataSetAuth, apkPageName)
       dataSet?.let(responseBuilder::addDataset)
     }
-    // user editText add other item
-    responseBuilder.addDataset(metadata.tempUserFillId?.let {
-      otherEntry(
-          context,
-          apkPageName,
-          it
-      )
-    })
-    // pass editText add other item
-    responseBuilder.addDataset(metadata.tempPassFillId?.let {
-      otherEntry(
-          context,
-          apkPageName,
-          it
-      )
-    })
+//    // user editText add other item
+//    responseBuilder.addDataset(metadata.tempUserFillId?.let {
+//      otherEntry(
+//          context,
+//          apkPageName,
+//          it,
+//          structure
+//      )
+//    })
+//    // pass editText add other item
+//    responseBuilder.addDataset(metadata.tempPassFillId?.let {
+//      otherEntry(
+//          context,
+//          apkPageName,
+//          it,
+//          structure
+//      )
+//    })
 
     return if (metadata.saveType != 0) {
       val autoFillIds = metadata.autoFillIds

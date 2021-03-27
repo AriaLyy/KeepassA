@@ -75,7 +75,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
    * when the screen lock ,the db will auto lock
    */
   private fun screenLock() {
-    findPreference<SwitchPreference>(ResUtil.getString(R.string.set_key_lock_screen_auto_lock_db))?.setOnPreferenceChangeListener { _, _ ->
+    findPreference<SwitchPreference>(getString(R.string.set_key_lock_screen_auto_lock_db))?.setOnPreferenceChangeListener { _, _ ->
       BaseApp.APP.initReceiver()
       return@setOnPreferenceChangeListener true
     }
@@ -85,7 +85,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
    * 开放源码许可证
    */
   private fun license() {
-    findPreference<Preference>(ResUtil.getString(R.string.set_key_license))?.setOnPreferenceClickListener {
+    findPreference<Preference>(getString(R.string.set_key_license))?.setOnPreferenceClickListener {
 
       LicensesDialog.Builder(requireContext())
           .setNotices(R.raw.notices)
@@ -100,7 +100,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
    * 处理安全键盘
    */
   private fun setIme() {
-    findPreference<Preference>(ResUtil.getString(R.string.set_key_open_kpa_ime))?.setOnPreferenceClickListener {
+    findPreference<Preference>(getString(R.string.set_key_open_kpa_ime))?.setOnPreferenceClickListener {
       startActivity(Intent(Settings.ACTION_INPUT_METHOD_SETTINGS))
       true
     }
@@ -110,7 +110,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
    * 处理升级日志
    */
   private fun setVersionLog() {
-    findPreference<Preference>(ResUtil.getString(R.string.set_key_version_log))?.setOnPreferenceClickListener {
+    findPreference<Preference>(getString(R.string.set_key_version_log))?.setOnPreferenceClickListener {
       UpgradeLogDialog().show()
       true
     }
@@ -122,8 +122,8 @@ class AppSettingFragment : PreferenceFragmentCompat() {
   private fun setSubPassType() {
     // 密码长度
     val passLenLayout =
-      findPreference<ListPreference>(ResUtil.getString(R.string.set_quick_pass_len))
-    passTypeList = findPreference(ResUtil.getString(R.string.set_quick_pass_type))!!
+      findPreference<ListPreference>(getString(R.string.set_quick_pass_len))
+    passTypeList = findPreference(getString(R.string.set_quick_pass_type))!!
 
     if (BaseApp.passType == PassType.ONLY_KEY){
       passLenLayout?.isVisible = false
@@ -169,7 +169,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
    */
   private fun setFingerPrint() {
     val fingerprint =
-      findPreference<Preference>(ResUtil.getString(R.string.set_key_fingerprint_unlock))
+      findPreference<Preference>(getString(R.string.set_key_fingerprint_unlock))
     if (!FingerprintUtil.hasBiometricPrompt(requireContext())) {
       fingerprint?.isVisible = false
       return
@@ -188,7 +188,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
    * 处理自动填充服务
    */
   private fun setAtoFill() {
-    autoFill = findPreference(ResUtil.getString(R.string.set_open_auto_fill))!!
+    autoFill = findPreference(getString(R.string.set_open_auto_fill))!!
     // 大于8.0 才能使用自带的填充框架，否则只能使用辅助功能来实现
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       val am = requireContext().getSystemService(AutofillManager::class.java)
@@ -201,7 +201,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
           && RoomUtil.isMiui()
           && !PermissionsUtil.miuiBackgroundStartAllowed(context)
       ) {
-        showAutoFillMsgDialog(ResUtil.getString(R.string.setting_miui_background_start))
+        showAutoFillMsgDialog(getString(R.string.setting_miui_background_start))
       }
 
       // vivo 检查后台弹出权限
@@ -209,7 +209,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
           && RoomUtil.isVivo()
           && !PermissionsUtil.vivoBackgroundStartAllowed(context)
       ) {
-        showAutoFillMsgDialog(ResUtil.getString(R.string.setting_vivo_background_start))
+        showAutoFillMsgDialog(getString(R.string.setting_vivo_background_start))
       }
 
 
@@ -249,7 +249,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
    * 处理快速解锁，只有密钥的情况不允许使用快速解锁
    */
   private fun setQuickUnLock() {
-    val unLock = findPreference<SwitchPreference>(ResUtil.getString(R.string.set_quick_unlock))!!
+    val unLock = findPreference<SwitchPreference>(getString(R.string.set_quick_unlock))!!
     if (BaseApp.passType == PassType.ONLY_KEY){
       unLock.isVisible = false
       return
@@ -267,7 +267,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
    * 设置语言
    */
   private fun setLanguage() {
-    val langPre = findPreference<ListPreference>(ResUtil.getString(R.string.set_key_language))
+    val langPre = findPreference<ListPreference>(getString(R.string.set_key_language))
     langPre!!.setOnPreferenceChangeListener { _, newValue ->
       var lang = Locale.ENGLISH
       when (newValue.toString()
@@ -328,9 +328,9 @@ class AppSettingFragment : PreferenceFragmentCompat() {
 
     if (!isShowed) {
       val msgDialog = MsgDialog.generate {
-        msgTitle = ResUtil.getString(R.string.hint)
+        msgTitle = getString(R.string.hint)
         msgContent =
-          Html.fromHtml(ResUtil.getString(R.string.hint_background_start, msg))
+          Html.fromHtml(getString(R.string.hint_background_start, msg))
         showCancelBt = false
         showCountDownTimer = Pair(true, 5)
         build()

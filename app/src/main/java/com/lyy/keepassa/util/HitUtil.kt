@@ -81,7 +81,7 @@ object HitUtil {
 
   fun toaskShort(@StringRes strId: Int) {
     BaseApp.handler.post {
-      Toast.makeText(BaseApp.APP, ResUtil.getString(strId), Toast.LENGTH_SHORT)
+      Toast.makeText(BaseApp.APP, BaseApp.APP.resources.getString(strId), Toast.LENGTH_SHORT)
           .show()
     }
   }

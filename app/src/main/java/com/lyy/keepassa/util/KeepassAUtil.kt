@@ -111,7 +111,7 @@ class KeepassAUtil private constructor() {
    */
   fun lock() {
     val isOpenQuickLock = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-        .getBoolean(ResUtil.getString(R.string.set_quick_unlock), false)
+        .getBoolean(BaseApp.APP.getString(R.string.set_quick_unlock), false)
     KLog.d(TAG, "锁定数据库")
     BaseApp.isLocked = true
     // 只有应用在前台才会跳转到锁屏页面
@@ -300,7 +300,7 @@ class KeepassAUtil private constructor() {
   fun convertPwGroup2Item(pwGroup: PwGroup): SimpleItemEntity {
     val item = SimpleItemEntity()
     item.title = pwGroup.name
-    item.subTitle = BaseApp.APP.getString(
+    item.subTitle = BaseApp.APP.resources.getString(
         R.string.hint_group_desc, KdbUtil.getGroupEntryNum(pwGroup)
         .toString()
     )
@@ -348,16 +348,16 @@ class KeepassAUtil private constructor() {
     intent: Intent,
     apkPkgName: String
   ): Intent {
-    val structure = intent.getParcelableExtra<AssistStructure>(
+    val autoFillStructure = intent.getParcelableExtra<AssistStructure>(
         AutofillManager.EXTRA_ASSIST_STRUCTURE
     )
-    val parser = StructureParser(structure)
+    val parser = StructureParser(autoFillStructure)
     parser.parseForFill(true, apkPkgName)
     val autofillFields = parser.autoFillFields
 
     val datas = KDBAutoFillRepository.getAutoFillDataByPackageName(apkPkgName)
     val response =
-      AutoFillHelper.newResponse(context, true, autofillFields, datas, apkPkgName)
+      AutoFillHelper.newResponse(context, true, autofillFields, datas, apkPkgName, autoFillStructure)
 
     val data = Intent()
     data.putExtra(LauncherActivity.KEY_PKG_NAME, apkPkgName)
@@ -377,15 +377,19 @@ class KeepassAUtil private constructor() {
     pwEntry: PwEntry,
     apkPkgName: String
   ): Intent {
-    val structure = intent.getParcelableExtra<AssistStructure>(
+    val autoFillStructure = intent.getParcelableExtra<AssistStructure>(
         AutofillManager.EXTRA_ASSIST_STRUCTURE
     )
-    val parser = StructureParser(structure)
+    if (autoFillStructure == null){
+      KLog.e(TAG, "autoFillStructure is null")
+      return Intent()
+    }
+    val parser = StructureParser(autoFillStructure)
     parser.parseForFill(true, apkPkgName)
     val autofillFields = parser.autoFillFields
 
     val response =
-      AutoFillHelper.newResponse(context, true, autofillFields, arrayListOf(pwEntry), apkPkgName)
+      AutoFillHelper.newResponse(context, true, autofillFields, arrayListOf(pwEntry), apkPkgName, autoFillStructure)
 
     val data = Intent()
     data.putExtra(AutofillManager.EXTRA_AUTHENTICATION_RESULT, response)

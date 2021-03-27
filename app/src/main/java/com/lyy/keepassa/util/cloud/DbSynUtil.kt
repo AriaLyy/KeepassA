@@ -112,7 +112,7 @@ object DbSynUtil : SynStateCode {
       KLog.i(TAG, "AFS 不需要上传")
       return STATE_SUCCEED
     }
-    HitUtil.toaskShort(BaseApp.APP.getString(R.string.start_upload_db))
+    HitUtil.toaskShort(context.getString(R.string.start_upload_db))
     KLog.d(TAG, "上传文件：${record.getDbUri()}，云盘路径：${record.cloudDiskPath}")
     val util = CloudUtilFactory.getCloudUtil(record.getDbPathType())
     val cloudFileInfo = util.getFileInfo(record.cloudDiskPath!!)

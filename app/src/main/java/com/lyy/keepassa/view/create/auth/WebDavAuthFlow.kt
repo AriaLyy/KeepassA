@@ -101,7 +101,6 @@ class WebDavAuthFlow : IAuthFlow {
       changeWebDav(true)
       return
     }
-    saveWebDavServiceInfo("${webDavUri!!}${dbName}.kdbx", webDavUserName!!, webDavPass!!)
     sendFinishEvent()
   }
 
@@ -109,6 +108,7 @@ class WebDavAuthFlow : IAuthFlow {
     if (dbName == null) {
       return
     }
+    saveWebDavServiceInfo("${webDavUri!!}${dbName}.kdbx", webDavUserName!!, webDavPass!!)
     nextCallback?.onFinish(
         DbPathEvent(
             dbName = dbName!!,

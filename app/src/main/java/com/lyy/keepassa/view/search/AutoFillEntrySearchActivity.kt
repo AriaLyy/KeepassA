@@ -13,6 +13,7 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.app.ActivityOptions
 import android.app.PendingIntent
+import android.app.assist.AssistStructure
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
@@ -20,6 +21,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.view.View
+import android.view.autofill.AutofillManager
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -67,16 +69,25 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
     const val EXTRA_ENTRY_ID = "EXTRA_ENTRY_ID"
     private const val KEY_PKG_NAME = "KEY_PKG_NAME"
     private const val KEY_IS_AUTH_FORM_FILL = "KEY_IS_AUTH_FORM_FILL"
+    private const val KEY_AUTO_FILL_FIELD = "KEY_IS_AUTH_FORM_FILL"
 
     /**
      * 从通知进入搜索页
      */
-    internal fun createSearchPending(context: Context, apkPkgName: String): PendingIntent {
-      return Intent(context, AutoFillEntrySearchActivity::class.java).let { it ->
+    internal fun createSearchPending(
+      context: Context,
+      apkPkgName: String,
+      structure: AssistStructure
+    ): PendingIntent {
+      val intent =  Intent(context, AutoFillEntrySearchActivity::class.java).also { it ->
         it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
         it.putExtra(KEY_PKG_NAME, apkPkgName)
-        PendingIntent.getActivity(context, 0, it, 0)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+          it.putExtra(AutofillManager.EXTRA_ASSIST_STRUCTURE, structure)
+        }
       }
+      return  PendingIntent.getActivity(context, 0, intent, 0)
     }
 
     /**
@@ -304,11 +315,17 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
       return
     }
     if (isNotSaveRelevance) {
-      setResult(Activity.RESULT_OK,  KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName!!))
+      setResult(
+          Activity.RESULT_OK, KeepassAUtil.instance.getFillResponse(
+          this,
+          intent,
+          apkPkgName!!
+      )
+      )
     } else {
       setResult(
           Activity.RESULT_OK,
-           KeepassAUtil.instance.getFillResponse(this, intent, pwEntry, apkPkgName!!)
+          KeepassAUtil.instance.getFillResponse(this, intent, pwEntry, apkPkgName!!)
       )
     }
     finish()
@@ -323,7 +340,7 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
   fun onCreateEntry(event: CreateOrUpdateEntryEvent) {
     if (!event.isUpdate) {
       listData.clear()
-      listData.add( KeepassAUtil.instance.convertPwEntry2Item(event.entry))
+      listData.add(KeepassAUtil.instance.convertPwEntry2Item(event.entry))
       adapter.notifyDataSetChanged()
       binding.noEntryLayout.visibility = View.GONE
     }

@@ -1,3 +1,7 @@
+#### 2.0.1（2021/3/27）
+- [Fix]Webdav login problem
+- [Fix]Multilingual issues
+
 #### 2.0（2021/3/23）
 - [New]The recycle bin does not display the add group\entry button
 - [New]Whether to hide the status bar，[Setting](route://keepassA.com/kpa?activity=SettingActivity) -> Ui Setting
