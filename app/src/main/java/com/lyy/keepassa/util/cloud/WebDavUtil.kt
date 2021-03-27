@@ -39,21 +39,21 @@ object WebDavUtil : ICloudUtil {
     return sardine != null
   }
 
+  fun createDir(path:String){
+    sardine?.createDirectory(path)
+  }
+
   /**
    * 检查登录
    * @return true 登录成功，false 登录失败
    */
   fun checkLogin(
-    uri: String,
     userName: String,
     password: String
   ): Boolean {
     try {
       sardine = OkHttpSardine()
-      sardine?.let {
-        it.setCredentials(userName, password)
-        it.list(uri)
-      }
+      sardine?.setCredentials(userName, password)
     } catch (e: Exception) {
       sardine = null
       e.printStackTrace()

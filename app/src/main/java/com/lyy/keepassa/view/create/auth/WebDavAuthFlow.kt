@@ -11,16 +11,22 @@ import android.content.Context
 import android.content.Intent
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
+import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.entity.CloudServiceInfo
 import com.lyy.keepassa.event.DbPathEvent
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.cloud.WebDavUtil
 import com.lyy.keepassa.util.putArgument
 import com.lyy.keepassa.view.DbPathType.WEBDAV
 import com.lyy.keepassa.view.create.CreateDbFirstFragment
 import com.lyy.keepassa.view.dialog.WebDavLoginDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * @Author laoyuyu
@@ -32,6 +38,8 @@ class WebDavAuthFlow : IAuthFlow {
   private var context: Context? = null
   private lateinit var callback: IAuthCallback
   private var webDavUri: String? = null
+  private var webDavUserName: String? = null
+  private var webDavPass: String? = null
   private var nextCallback: OnNextFinishCallback? = null
   private var dbName: String? = null
 
@@ -71,6 +79,8 @@ class WebDavAuthFlow : IAuthFlow {
         return@setOnDismissListener
       }
       KLog.d(TAG, "webDavUri: $webDavUri")
+      webDavUserName = webDavDialog.userName
+      webDavPass = webDavDialog.pass
       if (isDoNext){
         sendFinishEvent()
         return@setOnDismissListener
@@ -91,6 +101,7 @@ class WebDavAuthFlow : IAuthFlow {
       changeWebDav(true)
       return
     }
+    saveWebDavServiceInfo("${webDavUri!!}${dbName}.kdbx", webDavUserName!!, webDavPass!!)
     sendFinishEvent()
   }
 
@@ -106,6 +117,30 @@ class WebDavAuthFlow : IAuthFlow {
             cloudDiskPath = "${webDavUri}${dbName}.kdbx"
         )
     )
+  }
+
+  private fun saveWebDavServiceInfo(
+    uri: String,
+    userName: String,
+    pass: String
+  ) {
+    GlobalScope.launch(Dispatchers.IO) {
+      KLog.d(TAG, "开始保存webDav登陆记录，uri = $uri")
+      val dao = BaseApp.appDatabase.cloudServiceInfoDao()
+      var data = dao.queryServiceInfo(uri)
+      if (data == null) {
+        data = CloudServiceInfo(
+            userName = QuickUnLockUtil.encryptStr(userName),
+            password = QuickUnLockUtil.encryptStr(pass),
+            cloudPath = uri
+        )
+        dao.saveServiceInfo(data)
+      } else {
+        data.userName = QuickUnLockUtil.encryptStr(userName)
+        data.password = QuickUnLockUtil.encryptStr(pass)
+        dao.updateServiceInfo(data)
+      }
+    }
   }
 
   /**

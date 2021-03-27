@@ -10,7 +10,6 @@
 package com.lyy.keepassa.view.dialog
 
 import android.net.Uri
-import android.os.Build
 import android.text.TextUtils
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -35,6 +34,8 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
   private var loadingDialog: LoadingDialog? = null
   private lateinit var module: WebDavLoginModule
   private var webDavUri: String? = null
+  var userName: String? = null
+  var pass: String? = null
 
   /**
    * true，创建数据库时的登录
@@ -54,7 +55,7 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
     module = ViewModelProvider(this).get(WebDavLoginModule::class.java)
 
     if (BuildConfig.DEBUG) {
-      val p = FileUtil.loadConfig(File("${requireContext().filesDir.path}/webDav.properties"))
+      val p = FileUtil.loadConfig(File("${requireContext().filesDir.path}/config/webDav.properties"))
       binding.uri.setText(p.getProperty("uri"))
       binding.userName.setText(p.getProperty("userName"))
       binding.password.setText(p.getProperty("password"))
@@ -100,6 +101,10 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
           HitUtil.toaskLong(getString(R.string.error_webdav_end_suffix))
           return@setOnClickListener
         }
+        if (uri.endsWith("/dav/", ignoreCase = true)) {
+          HitUtil.toaskLong(getString(R.string.error_webdav_end_dav_suffix))
+          return@setOnClickListener
+        }
       } else if (temp == null
           || TextUtils.isEmpty(temp.lastPathSegment)
           || !temp.lastPathSegment!!.endsWith(".kdbx", ignoreCase = true)
@@ -112,34 +117,73 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
       this.webDavUri = uri
       loadingDialog = LoadingDialog(context)
       loadingDialog?.show()
-      module.checkLogin(requireContext(), uri, userName, pass, webDavIsCreateLogin)
-          .observe(this, Observer { success ->
-            loadingDialog?.dismiss()
-            if (success) {
-              var dbName = Uri.parse(uri).lastPathSegment
-              if (dbName == null) {
-                dbName = "unknown.kdbx"
-              }
-              if (!webDavIsCreateLogin) {
-                EventBus.getDefault()
-                    .post(
-                        ChangeDbEvent(
-                            dbName = dbName,
-                            localFileUri = DbSynUtil.getCloudDbTempPath(WEBDAV.name, dbName),
-                            cloudPath = uri,
-                            uriType = WEBDAV
-                        )
-                    )
-              }
-              HitUtil.toaskLong("${getString(R.string.login)} ${getString(R.string.success)}")
-              dismiss()
-              return@Observer
-            }
 
-            HitUtil.toaskLong("${getString(R.string.login)} ${getString(R.string.fail)}")
-          })
+      if (!webDavIsCreateLogin) {
+        handleLoginFlow(uri, userName, pass)
+        return@setOnClickListener
+      }
+
+      handleCreateFlow(uri, userName, pass)
+
     }
     binding.cancel.setOnClickListener { dismiss() }
+  }
+
+  /**
+   * 检查
+   */
+  private fun handleCreateFlow(
+    uri: String,
+    userName: String,
+    pass: String
+  ) {
+    module.handleCreateLoginFlow(requireContext(), uri, userName, pass)
+        .observe(this, {
+          loadingDialog?.dismiss()
+          if (!it) {
+            HitUtil.toaskLong("${getString(R.string.login)} ${getString(R.string.fail)}")
+            return@observe
+          }
+          HitUtil.toaskLong("${getString(R.string.login)} ${getString(R.string.success)}")
+          webDavUri = uri
+          this.userName = userName
+          this.pass = pass
+          dismiss()
+        })
+  }
+
+  /**
+   * 登陆流程
+   */
+  private fun handleLoginFlow(
+    uri: String,
+    userName: String,
+    pass: String
+  ) {
+    module.checkLogin(requireContext(), uri, userName, pass)
+        .observe(this, Observer { success ->
+          loadingDialog?.dismiss()
+          if (success) {
+            var dbName = Uri.parse(uri).lastPathSegment
+            if (dbName == null) {
+              dbName = "unknown.kdbx"
+            }
+            EventBus.getDefault()
+                .post(
+                    ChangeDbEvent(
+                        dbName = dbName,
+                        localFileUri = DbSynUtil.getCloudDbTempPath(WEBDAV.name, dbName),
+                        cloudPath = uri,
+                        uriType = WEBDAV
+                    )
+                )
+            HitUtil.toaskLong("${getString(R.string.login)} ${getString(R.string.success)}")
+            dismiss()
+            return@Observer
+          }
+
+          HitUtil.toaskLong("${getString(R.string.login)} ${getString(R.string.fail)}")
+        })
   }
 
 }

@@ -21,6 +21,7 @@ import com.keepassdroid.database.helper.CreateDBHelper
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
+import com.lyy.keepassa.entity.CloudServiceInfo
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.HitUtil
@@ -31,6 +32,7 @@ import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.view.DbPathType
 import com.lyy.keepassa.view.DbPathType.AFS
 import com.lyy.keepassa.view.DbPathType.UNKNOWN
+import com.lyy.keepassa.view.DbPathType.WEBDAV
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -70,7 +72,6 @@ class CreateDbModule : BaseModule() {
    * 云盘路径
    */
   var cloudPath: String = ""
-
 
   /**
    * 创建并打开数据库
@@ -117,6 +118,7 @@ class CreateDbModule : BaseModule() {
         if (dbPathType == AFS) {
           KeepassAUtil.instance.saveLastOpenDbHistory(record)
         }
+
         if (code != DbSynUtil.STATE_SUCCEED) {
           return@withContext null
         }
@@ -131,6 +133,7 @@ class CreateDbModule : BaseModule() {
 
     emit(db)
   }
+
 
   /**
    * 创建数据库时创建默认的群组

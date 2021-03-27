@@ -385,6 +385,7 @@ class LauncherModule : BaseModule() {
     dbPass: String
   ) = liveData {
     KLog.d(TAG, "打开数据库")
+
     val db: Database? = withContext(Dispatchers.IO) {
       var temp: Database? = null
       try {

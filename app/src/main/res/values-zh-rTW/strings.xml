@@ -299,7 +299,8 @@
   <string name="set_title_screen_lock">屏幕鎖定設置</string>
   <string name="close">關閉</string>
   <string name="Alipay">支付寶</string>
-  <string name="error_webdav_end_suffix">錯誤的路徑，應該使用文件夾路徑，如："https://webdav.com/"</string>
+  <string name="error_webdav_end_suffix">錯誤的路徑，應該使用文件夾路徑。有效路徑，如："https://webdav.com/dav.kpa/"</string>
+  <string name="error_webdav_end_dav_suffix">錯誤的路徑，不允許使用/dav/路徑。有效路徑，如："https://webdav.com/dav/kpa/"</string>
   <string name="set_key_title_fillet_bg_icon">列表圖標添加圓角</string>
   <string name="set_key_title_fillet_bg_icon_turn_on">圖標添加圓角</string>
   <string name="set_key_title_fillet_bg_icon_turn_off">圖標不添加圓角</string>

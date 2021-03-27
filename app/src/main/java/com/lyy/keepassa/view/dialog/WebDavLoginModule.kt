@@ -10,6 +10,7 @@
 package com.lyy.keepassa.view.dialog
 
 import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.liveData
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
@@ -32,23 +33,17 @@ class WebDavLoginModule : BaseModule() {
     context: Context,
     uri: String,
     userName: String,
-    pass: String,
-    isCreateLogin: Boolean
+    pass: String
   ) = liveData {
     val success = withContext(Dispatchers.IO) {
       var isSuccess = false
       try {
-        if (isCreateLogin) {
-          WebDavUtil.checkLogin(uri, userName, pass)
-        } else {
-          WebDavUtil.login(uri, userName, pass)
-          val b = WebDavUtil.getFileInfo(uri) != null
-          if (!b){
-            HitUtil.toaskShort(context.getString(R.string.db_file_no_exist))
-            return@withContext false
-          }
+        WebDavUtil.login(uri, userName, pass)
+        val b = WebDavUtil.getFileInfo(uri) != null
+        if (!b) {
+          HitUtil.toaskShort(context.getString(R.string.db_file_no_exist))
+          return@withContext false
         }
-
         // 保存记录
         val dao = BaseApp.appDatabase.cloudServiceInfoDao()
         var data = dao.queryServiceInfo(uri)
@@ -70,6 +65,33 @@ class WebDavLoginModule : BaseModule() {
       }
       return@withContext isSuccess
     }
+    emit(success)
+  }
+
+  /**
+   * 1、如果是坚果云，不允许使用 dav/
+   * 2、检查文件夹是否存在，没有文件夹，创建文件夹，创建失败，则认为授权失败
+   */
+  fun handleCreateLoginFlow(
+    context: Context,
+    uri: String,
+    userName: String,
+    pass: String
+  ) = liveData<Boolean> {
+    val success = withContext(Dispatchers.IO){
+      var b = WebDavUtil.checkLogin(userName, pass)
+      if (!b){
+        return@withContext false
+      }
+      // 检查文件夹是否存在，不存在，创建文件夹
+      val uriBean = Uri.parse(uri)
+      val path = uriBean.path
+      WebDavUtil.createDir(uri)
+
+
+      return@withContext b
+    }
+
     emit(success)
   }
 
