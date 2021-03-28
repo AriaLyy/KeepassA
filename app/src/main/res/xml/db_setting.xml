@@ -12,13 +12,22 @@
         app:title="@string/clean_clip_time" />
 
     <ListPreference
+        app:dependency="@string/set_key_auto_lock_database"
         app:defaultValue="300"
         app:entries="@array/quick_lock_entries"
         app:entryValues="@array/quick_lock_value"
-        app:icon="@drawable/ic_setting_lock"
+        app:icon="@drawable/ic_auto"
         app:key="@string/set_key_auto_lock_db_time"
         app:summary="@string/auto_lock_db_time_summary"
         app:title="@string/auto_lock_db_time" />
+
+    <SwitchPreference
+        app:defaultValue="true"
+        app:summaryOff="@string/set_key_title_auto_lock_database_turn_off"
+        app:summaryOn="@string/set_key_title_auto_lock_database_turn_on"
+        app:title="@string/set_key_title_auto_lock_database"
+        app:icon="@drawable/ic_setting_lock"
+        app:key="@string/set_key_auto_lock_database" />
 
   </PreferenceCategory>
 

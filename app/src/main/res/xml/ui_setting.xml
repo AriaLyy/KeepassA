@@ -32,7 +32,7 @@
       android:summaryOff="@string/set_key_title_close_load_anim_turn_off"
       android:summaryOn="@string/set_key_title_close_load_anim_turn_on"
       android:title="@string/set_key_title_close_load_anim"
-      app:icon="@drawable/ic_state_bar"
+      app:icon="@drawable/ic_anim"
       app:key="@string/set_key_loading_anim" />
 
 <!--  <SwitchPreference-->

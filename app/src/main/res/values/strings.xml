@@ -311,5 +311,9 @@ If you are creating a new keeppass database, the above operations will not be ne
   <string name="set_key_title_close_load_anim_turn_off">Close Loading animation</string>
   <string name="s_default">Default</string>
   <string name="customize">Customize</string>
+  <string name="set_key_title_auto_lock_database">Automatically lock the database</string>
+  <string name="set_key_title_auto_lock_database_turn_on">Automatically lock the database</string>
+  <string name="set_key_title_auto_lock_database_turn_off">No</string>
+
 
 </resources>

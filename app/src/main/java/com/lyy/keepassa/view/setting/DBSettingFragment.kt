@@ -17,6 +17,7 @@ import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreference
 import com.arialyy.frame.util.StringUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
@@ -25,6 +26,7 @@ import com.lyy.keepassa.event.ModifyPassEvent
 import com.lyy.keepassa.util.AutoLockDbUtil
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
+import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.ModifyPassDialog
@@ -63,14 +65,31 @@ class DBSettingFragment : PreferenceFragmentCompat() {
     setModifyDbName()
     setOutDb()
     setLockDbTime()
+    setAutoLockDb()
+  }
+
+  /**
+   * 是否自动锁定数据库
+   */
+  private fun setAutoLockDb(){
+    val enableAutoLockDb = findPreference<SwitchPreference>(getString(R.string.set_key_auto_lock_database))
+    enableAutoLockDb?.setOnPreferenceChangeListener { _, newValue ->
+      if (newValue as Boolean){
+        KeepassAUtil.instance.startLockTimer(this)
+        return@setOnPreferenceChangeListener true
+      }
+      AutoLockDbUtil.get().cancelTimer()
+      return@setOnPreferenceChangeListener true
+    }
   }
 
   /**
    * 处理锁屏时间
    */
   private fun setLockDbTime() {
-    val lockDb = findPreference<ListPreference>(getString(R.string.set_key_auto_lock_db_time))!!
-    lockDb.setOnPreferenceChangeListener { _, _ ->
+    // handle lock db time
+    val lockDbTime = findPreference<ListPreference>(getString(R.string.set_key_auto_lock_db_time))!!
+    lockDbTime.setOnPreferenceChangeListener { _, _ ->
       AutoLockDbUtil.get()
           .resetTimer()
       return@setOnPreferenceChangeListener true

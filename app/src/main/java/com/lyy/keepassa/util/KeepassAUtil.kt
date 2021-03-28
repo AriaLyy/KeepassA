@@ -68,6 +68,7 @@ import com.lyy.keepassa.view.main.QuickUnlockActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 import java.math.BigDecimal
@@ -86,7 +87,17 @@ class KeepassAUtil private constructor() {
   private var LAST_CLICK_TIME = System.currentTimeMillis()
 
   /**
+   * is auto lock the database
+   * @return true auto lock the database
+   */
+  fun isAutoLockDb():Boolean{
+    return PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
+        .getBoolean(BaseApp.APP.getString(R.string.set_key_auto_lock_database), true)
+  }
+
+  /**
    * is display loading anim
+   * @return true display loading anim
    */
   fun isDisplayLoadingAnim(): Boolean {
     return PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
@@ -95,9 +106,15 @@ class KeepassAUtil private constructor() {
 
   /**
    * start lock timer
+   * @param obj fragment or activity
    */
   fun startLockTimer(obj: Any) {
     GlobalScope.launch(Dispatchers.IO) {
+      // delay 1s, in order to wait for the configuration file to take effect
+      delay(1000)
+      if (!isAutoLockDb()){
+        return@launch
+      }
       if (isNeedStartLockActivity(obj)) {
         if (BaseApp.isLocked) {
           AutoLockDbUtil.get()
