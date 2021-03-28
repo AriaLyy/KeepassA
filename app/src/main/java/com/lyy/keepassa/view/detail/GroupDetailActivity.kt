@@ -109,6 +109,10 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
+    if (!KeepassAUtil.instance.isDisplayLoadingAnim()){
+      loadData()
+      return
+    }
     window.enterTransition?.addListener(onStart = {
       binding.laAnim.speed = 2.5f
       binding.laAnim.playAnimation()

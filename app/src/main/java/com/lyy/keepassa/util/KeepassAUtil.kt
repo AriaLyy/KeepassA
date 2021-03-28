@@ -86,6 +86,14 @@ class KeepassAUtil private constructor() {
   private var LAST_CLICK_TIME = System.currentTimeMillis()
 
   /**
+   * is display loading anim
+   */
+  fun isDisplayLoadingAnim(): Boolean {
+    return PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
+        .getBoolean(BaseApp.APP.getString(R.string.set_key_loading_anim), false)
+  }
+
+  /**
    * start lock timer
    */
   fun startLockTimer(obj: Any) {
@@ -357,7 +365,14 @@ class KeepassAUtil private constructor() {
 
     val datas = KDBAutoFillRepository.getAutoFillDataByPackageName(apkPkgName)
     val response =
-      AutoFillHelper.newResponse(context, true, autofillFields, datas, apkPkgName, autoFillStructure)
+      AutoFillHelper.newResponse(
+          context,
+          true,
+          autofillFields,
+          datas,
+          apkPkgName,
+          autoFillStructure
+      )
 
     val data = Intent()
     data.putExtra(LauncherActivity.KEY_PKG_NAME, apkPkgName)
@@ -380,7 +395,7 @@ class KeepassAUtil private constructor() {
     val autoFillStructure = intent.getParcelableExtra<AssistStructure>(
         AutofillManager.EXTRA_ASSIST_STRUCTURE
     )
-    if (autoFillStructure == null){
+    if (autoFillStructure == null) {
       KLog.e(TAG, "autoFillStructure is null")
       return Intent()
     }
@@ -389,7 +404,14 @@ class KeepassAUtil private constructor() {
     val autofillFields = parser.autoFillFields
 
     val response =
-      AutoFillHelper.newResponse(context, true, autofillFields, arrayListOf(pwEntry), apkPkgName, autoFillStructure)
+      AutoFillHelper.newResponse(
+          context,
+          true,
+          autofillFields,
+          arrayListOf(pwEntry),
+          apkPkgName,
+          autoFillStructure
+      )
 
     val data = Intent()
     data.putExtra(AutofillManager.EXTRA_AUTHENTICATION_RESULT, response)
