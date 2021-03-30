@@ -24,6 +24,7 @@ And added many commonly used functions on the original basis:
 
 ## Contributions
 * Add features by making a **[pull request](https://help.github.com/articles/about-pull-requests/)**.
+* * Help to **[translate](https://hosted.weblate.org/projects/keepassa/keepassa-str/)** KeepassA to your language (on [Weblate](https://hosted.weblate.org/projects/keepassa/) or by sending a [pull request](https://help.github.com/articles/about-pull-requests/)).
 * Help to translate KeePassA to your language by sending a [pull request](https://help.github.com/articles/about-pull-requests/).
 
 ## Contributor
