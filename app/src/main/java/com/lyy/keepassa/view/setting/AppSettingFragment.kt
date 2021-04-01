@@ -327,9 +327,9 @@ class AppSettingFragment : PreferenceFragmentCompat() {
 
     if (!isShowed) {
       val msgDialog = MsgDialog.generate {
-        msgTitle = getString(R.string.hint)
+        msgTitle = BaseApp.APP.getString(R.string.hint)
         msgContent =
-          Html.fromHtml(getString(R.string.hint_background_start, msg))
+          Html.fromHtml(BaseApp.APP.getString(R.string.hint_background_start, msg))
         showCancelBt = false
         showCountDownTimer = Pair(true, 5)
         build()

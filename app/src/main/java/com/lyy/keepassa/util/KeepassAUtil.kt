@@ -90,7 +90,7 @@ class KeepassAUtil private constructor() {
    * is auto lock the database
    * @return true auto lock the database
    */
-  fun isAutoLockDb():Boolean{
+  fun isAutoLockDb(): Boolean {
     return PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
         .getBoolean(BaseApp.APP.getString(R.string.set_key_auto_lock_database), true)
   }
@@ -108,11 +108,11 @@ class KeepassAUtil private constructor() {
    * start lock timer
    * @param obj fragment or activity
    */
-  fun startLockTimer(obj: Any) {
+  fun startLockTimer(obj: Any?) {
     GlobalScope.launch(Dispatchers.IO) {
       // delay 1s, in order to wait for the configuration file to take effect
       delay(1000)
-      if (!isAutoLockDb()){
+      if (!isAutoLockDb()) {
         return@launch
       }
       if (isNeedStartLockActivity(obj)) {
@@ -230,7 +230,14 @@ class KeepassAUtil private constructor() {
    * 是否需要启动快速解锁
    * @return true 启动快速解锁
    */
-  private fun isNeedStartLockActivity(obj: Any): Boolean {
+  private fun isNeedStartLockActivity(obj: Any?): Boolean {
+    if (obj == null) {
+      return false
+    }
+    if (obj is Fragment && obj.activity == null) {
+      return false
+    }
+
     val clazz = if (obj is Fragment) {
       obj.requireActivity().javaClass
     } else {
@@ -295,7 +302,10 @@ class KeepassAUtil private constructor() {
    * 检查http地址是否有效
    * @return false 无效，true 有效
    */
-  fun checkUrlIsValid(url: String): Boolean {
+  fun checkUrlIsValid(url: String?): Boolean {
+    if (url.isNullOrBlank()){
+      return false
+    }
     val rs = "^(http|https)://[^\\s]*"
 //      "^(((file|gopher|news|nntp|telnet|http|ftp|https|ftps|sftp)://)|(www\\.))+(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(/[a-zA-Z0-9\\&%_\\./-~-]*)?\$"
     val r1 = Regex(rs, RegexOption.IGNORE_CASE)
@@ -376,6 +386,11 @@ class KeepassAUtil private constructor() {
     val autoFillStructure = intent.getParcelableExtra<AssistStructure>(
         AutofillManager.EXTRA_ASSIST_STRUCTURE
     )
+    if (autoFillStructure == null) {
+      KLog.e(TAG, "autoFillStructure is null")
+      return Intent()
+    }
+
     val parser = StructureParser(autoFillStructure)
     parser.parseForFill(true, apkPkgName)
     val autofillFields = parser.autoFillFields
