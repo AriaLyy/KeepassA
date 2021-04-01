@@ -302,7 +302,7 @@ If you are creating a new KeePass database, the above operations are not be need
   <string name="error_webdav_end_dav_suffix">/dav/ path is not allowed. Use a valid path, such as: "https://webdav.com/dav/kpa/"</string>
   <string name="set_key_title_fillet_bg_icon">Rounded corners for list icons</string>
   <string name="set_key_title_fillet_bg_icon_turn_on">Icons get rounded corners</string>
-  <string name="set_key_title_fillet_bg_icon_turn_off">Icon don'\t get rounded corners</string>
+  <string name="set_key_title_fillet_bg_icon_turn_off">Icon don\'\t get rounded corners</string>
   <string name="set_key_title_show_state_bar">Whether to show the status bar</string>
   <string name="set_key_title_show_state_bar_turn_on">Show status bar</string>
   <string name="set_key_title_show_state_bar_turn_off">Hide status bar</string>
