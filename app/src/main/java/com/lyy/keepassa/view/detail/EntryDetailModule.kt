@@ -87,7 +87,6 @@ class EntryDetailModule : BaseModule() {
     rootView: View,
     icon: ImageView
   ): SingleLiveEvent<Boolean> {
-
     scope.launch {
       val rgb = getColor(context, icon.drawable)
       val x = icon.x + 20.toPx()
@@ -99,7 +98,7 @@ class EntryDetailModule : BaseModule() {
           rootView.height.toFloat(),
           0f,
       )
-      anim.duration = 600
+      anim.duration = 400
       anim.addListener(object : AnimatorListenerAdapter() {
         override fun onAnimationStart(animation: Animator?) {
           super.onAnimationStart(animation)
@@ -138,7 +137,7 @@ class EntryDetailModule : BaseModule() {
               .toFloat(),
           rootView.height.toFloat()
       )
-      anim.duration = 600
+      anim.duration = 400
       anim.addListener(object : AnimatorListenerAdapter() {
         override fun onAnimationStart(animation: Animator?) {
           super.onAnimationStart(animation)

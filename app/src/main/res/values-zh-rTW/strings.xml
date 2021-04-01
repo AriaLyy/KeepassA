@@ -307,6 +307,12 @@
   <string name="set_key_title_show_state_bar">是否顯示狀態欄</string>
   <string name="set_key_title_show_state_bar_turn_on">顯示狀態欄</string>
   <string name="set_key_title_show_state_bar_turn_off">隱藏狀態欄</string>
+  <string name="set_key_title_close_load_anim">加載動畫</string>
+  <string name="set_key_title_close_load_anim_turn_on">打開加載動畫</string>
+  <string name="set_key_title_close_load_anim_turn_off">關閉加載動畫</string>
   <string name="s_default">默認</string>
   <string name="customize">自定義</string>
+  <string name="set_key_title_auto_lock_database">自動鎖定數據庫</string>
+  <string name="set_key_title_auto_lock_database_turn_on">自動鎖定數據庫</string>
+  <string name="set_key_title_auto_lock_database_turn_off">關閉</string>
 </resources>

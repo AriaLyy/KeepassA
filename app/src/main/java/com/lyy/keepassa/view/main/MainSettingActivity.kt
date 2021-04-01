@@ -33,11 +33,14 @@ import com.lyy.keepassa.event.ModifyDbNameEvent
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.view.dialog.DonateDialog
 import com.lyy.keepassa.view.setting.SettingActivity
+import com.zzhoujay.richtext.RichText
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import java.util.ArrayList
+import java.util.Locale
 
 /**
  * 主页下拉设置
@@ -80,6 +83,10 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
     binding.appFavorite.setOnClickListener(this)
     binding.tvDonate.setOnClickListener(this)
     module.setEcoIcon(this, binding.dbName)
+    if (LanguageUtil.getSysCurrentLan() != Locale.CHINA){
+      binding.tvTranslate.visibility = View.VISIBLE
+      binding.tvTranslate.setOnClickListener(this)
+    }
   }
 
   private fun startArrowAnim() {
@@ -176,6 +183,11 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
       R.id.tvDonate -> {
         val donateDialog = DonateDialog()
         donateDialog.show()
+      }
+      R.id.tvTranslate -> {
+        startActivity(Intent(Intent.ACTION_VIEW).apply {
+          data = Uri.parse("https://hosted.weblate.org/projects/keepassa/string/")
+        })
       }
     }
   }

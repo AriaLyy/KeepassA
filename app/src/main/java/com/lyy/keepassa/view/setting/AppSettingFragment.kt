@@ -17,14 +17,12 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.Html
-import android.util.Log
 import android.view.autofill.AutofillManager
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.arialyy.frame.core.AbsFrame
-import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.SharePreUtil
 import com.arialyy.frame.util.StringUtil
 import com.lyy.keepassa.R
@@ -32,6 +30,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.common.PassType
 import com.lyy.keepassa.util.FingerprintUtil
+import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.PermissionsUtil
@@ -131,7 +130,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
       return
     }
     passLenLayout!!.setOnPreferenceChangeListener { _, newValue ->
-      Log.i(TAG, "短密码长度：$newValue")
+      KLog.i(TAG, "短密码长度：$newValue")
       passLen = newValue.toString()
           .toInt()
       setPassTypeEntries()
@@ -143,7 +142,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     passTypeList.setOnPreferenceChangeListener { _, newValue ->
       val subTitle = passTypeList.entries[newValue.toString()
           .toInt() - 1]
-      Log.i(TAG, "短密码类型：$subTitle")
+      KLog.i(TAG, "短密码类型：$subTitle")
       passTypeList.summary = subTitle.toString()
       subShortPass()
       true
@@ -255,7 +254,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
       return
     }
     unLock.setOnPreferenceChangeListener { _, newValue ->
-      Log.d(TAG, "quick unlock newValue = $newValue")
+      KLog.d(TAG, "quick unlock newValue = $newValue")
       if (newValue as Boolean) {
         subShortPass()
       }
@@ -328,9 +327,9 @@ class AppSettingFragment : PreferenceFragmentCompat() {
 
     if (!isShowed) {
       val msgDialog = MsgDialog.generate {
-        msgTitle = getString(R.string.hint)
+        msgTitle = BaseApp.APP.getString(R.string.hint)
         msgContent =
-          Html.fromHtml(getString(R.string.hint_background_start, msg))
+          Html.fromHtml(BaseApp.APP.getString(R.string.hint_background_start, msg))
         showCancelBt = false
         showCountDownTimer = Pair(true, 5)
         build()
@@ -343,7 +342,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
           true
       )
     } else {
-      Log.i(TAG, "已显示过自动填充对话框，不再重复显示")
+      KLog.i(TAG, "已显示过自动填充对话框，不再重复显示")
     }
 
   }

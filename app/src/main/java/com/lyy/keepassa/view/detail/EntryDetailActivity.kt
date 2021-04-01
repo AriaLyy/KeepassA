@@ -131,6 +131,10 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
 
   override fun finishAfterTransition() {
     showContent(false)
+    if (!KeepassAUtil.instance.isDisplayLoadingAnim()) {
+      super.finishAfterTransition()
+      return
+    }
     module.finishAnim(this, binding.rlRoot, binding.icon)
         .observe(this, {
           super.finishAfterTransition()
@@ -169,6 +173,12 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     handleBaseAttr()
     handleAttr()
     handleTime()
+
+    if (window.sharedElementEnterTransition == null || !KeepassAUtil.instance.isDisplayLoadingAnim()) {
+      showContent(true)
+      return
+    }
+
     window.sharedElementEnterTransition?.addListener(
         onStart = {
           showContent(false)

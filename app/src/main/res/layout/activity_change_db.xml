@@ -16,6 +16,7 @@
         android:background="@drawable/ripple_white_selector"
         android:clickable="true"
         android:descendantFocusability="blocksDescendants"
+        android:focusable="true"
         android:padding="16dp">
 
       <androidx.appcompat.widget.AppCompatImageView
@@ -68,6 +69,7 @@
           android:layout_alignParentEnd="true"
           android:background="@drawable/ripple_white_selector"
           android:clickable="true"
+          android:focusable="true"
           app:srcCompat="@drawable/ic_primary_close" />
 
     </RelativeLayout>
@@ -86,6 +88,7 @@
         android:clickable="true"
         android:drawableStart="@drawable/ic_change"
         android:drawablePadding="16dp"
+        android:focusable="true"
         android:gravity="center_vertical"
         android:paddingStart="32dp"
         android:paddingTop="16dp"
@@ -102,6 +105,7 @@
         android:clickable="true"
         android:drawableStart="@drawable/ic_app"
         android:drawablePadding="16dp"
+        android:focusable="true"
         android:gravity="center_vertical"
         android:paddingStart="32dp"
         android:paddingTop="16dp"
@@ -118,6 +122,7 @@
         android:clickable="true"
         android:drawableStart="@drawable/ic_setting"
         android:drawablePadding="16dp"
+        android:focusable="true"
         android:gravity="center_vertical"
         android:paddingStart="32dp"
         android:paddingTop="16dp"
@@ -134,6 +139,7 @@
         android:clickable="true"
         android:drawableStart="@drawable/ic_favorite_24px"
         android:drawablePadding="16dp"
+        android:focusable="true"
         android:gravity="center_vertical"
         android:paddingStart="32dp"
         android:paddingTop="16dp"
@@ -142,6 +148,23 @@
         android:textColor="@color/text_black_color"
         android:textSize="@dimen/text_size_normal" />
 
+    <TextView
+        android:id="@+id/tvTranslate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_white_selector"
+        android:clickable="true"
+        android:drawableStart="@drawable/ic_baseline_g_translate_24"
+        android:drawablePadding="16dp"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:paddingStart="32dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:text="@string/translate_language"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/text_size_normal"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/app_favorite"
@@ -151,6 +174,7 @@
         android:clickable="true"
         android:drawableStart="@drawable/ic_star_rate"
         android:drawablePadding="16dp"
+        android:focusable="true"
         android:gravity="center_vertical"
         android:paddingStart="32dp"
         android:paddingTop="16dp"
@@ -167,6 +191,7 @@
         android:clickable="true"
         android:drawableStart="@drawable/ic_feedback_24px"
         android:drawablePadding="16dp"
+        android:focusable="true"
         android:gravity="center_vertical"
         android:paddingStart="32dp"
         android:paddingTop="16dp"

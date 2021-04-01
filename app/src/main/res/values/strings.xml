@@ -306,7 +306,15 @@ If you are creating a new KeePass database, the above operations are not be need
   <string name="set_key_title_show_state_bar">Whether to show the status bar</string>
   <string name="set_key_title_show_state_bar_turn_on">Show status bar</string>
   <string name="set_key_title_show_state_bar_turn_off">Hide status bar</string>
+  <string name="set_key_title_close_load_anim">Loading animation</string>
+  <string name="set_key_title_close_load_anim_turn_on">Open loading animation</string>
+  <string name="set_key_title_close_load_anim_turn_off">Close Loading animation</string>
   <string name="s_default">Default</string>
   <string name="customize">Customize</string>
+  <string name="set_key_title_auto_lock_database">Automatically lock the database</string>
+  <string name="set_key_title_auto_lock_database_turn_on">Automatically lock the database</string>
+  <string name="set_key_title_auto_lock_database_turn_off">No</string>
+  <string name="translate_language" translatable="false">Translate to your language</string>
+
 
 </resources>

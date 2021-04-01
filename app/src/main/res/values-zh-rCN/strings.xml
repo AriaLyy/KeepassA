@@ -313,7 +313,13 @@
   <string name="set_key_title_show_state_bar">是否显示状态栏</string>
   <string name="set_key_title_show_state_bar_turn_on">显示状态栏</string>
   <string name="set_key_title_show_state_bar_turn_off">隐藏状态栏</string>
+  <string name="set_key_title_close_load_anim">加载动画</string>
+  <string name="set_key_title_close_load_anim_turn_on">打开加载动画</string>
+  <string name="set_key_title_close_load_anim_turn_off">关闭加载动画</string>
   <string name="s_default">默认</string>
   <string name="customize">自定义</string>
+  <string name="set_key_title_auto_lock_database">自动锁定数据库</string>
+  <string name="set_key_title_auto_lock_database_turn_on">自动锁定数据库</string>
+  <string name="set_key_title_auto_lock_database_turn_off">关闭</string>
 </resources>
 

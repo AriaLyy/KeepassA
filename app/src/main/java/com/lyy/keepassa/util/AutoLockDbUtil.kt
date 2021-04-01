@@ -33,6 +33,7 @@ class AutoLockDbUtil private constructor() {
   private val KEY_LAST_START_TIME = "LastStartTime"
   private val TAG = StringUtil.getClassName(this)
   private val sp = BaseApp.APP.getSharedPreferences(Constance.PRE_FILE_NAME, Context.MODE_PRIVATE)
+  private val TIMER_TAG = "AutoLockDbTimer"
   private val manager by lazy {
     WorkManager.getInstance(BaseApp.APP)
   }
@@ -53,6 +54,13 @@ class AutoLockDbUtil private constructor() {
   fun resetTimer() {
     KLog.d(TAG, "resetTimer")
     startLockWorker()
+  }
+
+  /**
+   * cancel timer
+   */
+  fun cancelTimer(){
+    manager.cancelAllWorkByTag(TIMER_TAG)
   }
 
   /**
@@ -96,6 +104,7 @@ class AutoLockDbUtil private constructor() {
         .toInt()
 //    val time = 10
     val wordRequest = OneTimeWorkRequest.Builder(LockWorker::class.java)
+        .addTag(TIMER_TAG)
         .setInitialDelay(time.toLong(), TimeUnit.SECONDS)
         .build()
 
