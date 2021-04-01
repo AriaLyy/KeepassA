@@ -1,24 +1,26 @@
 #### 2.0.2 (2021/4/1)
-- [New]Close loading animation selection[Setting](route://keepassA.com/kpa?activity=SettingActivity) -> UI settings
-- [New]Does not automatically lock function[Setting](route://keepassA.com/kpa?activity=SettingActivity&type=app) -> Database settings
-- [Optimize]Optimize English translation, Thank[@comradekingu](https://github.com/comradekingu)
-- [Fix]An animation problem
-- [Fix]An application setting crash problem
+- 【New】Close loading animation selection[Setting](route://keepassA.com/kpa?activity=SettingActivity) -> UI settings
+- 【New】Does not automatically lock function[Setting](route://keepassA.com/kpa?activity=SettingActivity&type=app) -> Database settings
+- 【New】Russian(40%)，Thank[@KovalevArtem](https://github.com/KovalevArtem)
+- 【New】Norwegian(50%)，Thank[@Allan Nordhøy](https://github.com/comradekingu)
+- 【Optimize】Optimize English translation, Thank[@comradekingu](https://github.com/comradekingu)
+- 【Fix】An animation problem
+- 【Fix】An application setting crash problem
 
 #### 2.0.1（2021/3/27）
-- [Fix]Webdav login problem
-- [Fix]Multilingual issues
+- 【Fix】Webdav login problem
+- 【Fix】Multilingual issues
 
 #### 2.0（2021/3/23）
-- [New]The recycle bin does not display the add group\entry button
-- [New]Whether to hide the status bar，[Setting](route://keepassA.com/kpa?activity=SettingActivity) -> Ui Setting
-- [New]Key login only
-- [Optimize]Lots of animations
-- [Optimize]The default icons are all MD style icons
-- [Optimize]Icon selection will use the method that pops up at the bottom
-- [Fix]The problem of invalid timing lock database
-- [Fix]The problem of missing jump animation
-- [Fix]Unable to switch historical data
+- 【New】The recycle bin does not display the add group\entry button
+- 【New】Whether to hide the status bar，[Setting](route://keepassA.com/kpa?activity=SettingActivity) -> Ui Setting
+- 【New】Key login only
+- 【Optimize】Lots of animations
+- 【Optimize】The default icons are all MD style icons
+- 【Optimize】Icon selection will use the method that pops up at the bottom
+- 【Fix】The problem of invalid timing lock database
+- 【Fix】The problem of missing jump animation
+- 【Fix】Unable to switch historical data
 
 #### 1.8.4 （2021/3/4）
 - Refactor the logic of creating a database

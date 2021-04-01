@@ -43,6 +43,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
+import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 
 /**
  * 应用设置
@@ -282,6 +283,12 @@ class AppSettingFragment : PreferenceFragmentCompat() {
         }
         4 -> {
           lang = Locale.CANADA_FRENCH
+        }
+        5 -> {
+          lang = Locale("nb", "rNO")
+        }
+        6 -> {
+          lang = Locale("ru", "rRU")
         }
       }
       BaseApp.currentLang = lang

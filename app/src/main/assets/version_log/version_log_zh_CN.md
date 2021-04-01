@@ -1,25 +1,26 @@
 #### 2.0.2 (2021/4/1)
-- [新增]关闭加载动画选择项[设置](route://keepassA.com/kpa?activity=SettingActivity) -> 界面设置
-- [新增]不自动锁定功能[设置](route://keepassA.com/kpa?activity=SettingActivity&type=app) -> 数据库设置
-- [优化]优化英文翻译，感谢[@comradekingu](https://github.com/comradekingu)
-- [修复]一个动画关闭掉的问题
-- [修复]点击应设置崩溃的问题
-
+- 【新增】关闭加载动画选择项[设置](route://keepassA.com/kpa?activity=SettingActivity) -> 界面设置
+- 【新增】不自动锁定功能[设置](route://keepassA.com/kpa?activity=SettingActivity&type=app) -> 数据库设置
+- 【新增】俄语（40%），感谢[@KovalevArtem](https://github.com/KovalevArtem)
+- 【新增】挪威语（50%），感谢[@Allan Nordhøy](https://github.com/comradekingu)
+- 【优化】优化英文翻译，感谢[@Allan Nordhøy](https://github.com/comradekingu)
+- 【修复】一个动画关闭掉的问题
+- 【修复】点击应设置崩溃的问题
 
 #### 2.0.1（2021/3/27）
-- [修复]webdav登陆问题
-- [修复]多语言问题
+- 【修复】webdav登陆问题
+- 【修复】多语言问题
 
 #### 2.0（2021/3/23）
-- [新增]回收站不显示添加群组\条目按钮
-- [新增]是否隐藏状态栏，[点击设置](route://keepassA.com/kpa?activity=SettingActivity) -> 界面设置
-- [新增]仅密钥登陆
-- [优化]大量动画
-- [优化]默认图标全采用MD风格图标
-- [优化]图标选择将使用底部弹出的的方式
-- [修复]定时锁定数据库无效的问题
-- [修复]跳转动画丢失的问题
-- [修复]无法切换历史数据
+- 【新增】回收站不显示添加群组\条目按钮
+- 【新增】是否隐藏状态栏，[点击设置](route://keepassA.com/kpa?activity=SettingActivity) -> 界面设置
+- 【新增】仅密钥登陆
+- 【优化】大量动画
+- 【优化】默认图标全采用MD风格图标
+- 【优化】图标选择将使用底部弹出的的方式
+- 【修复】定时锁定数据库无效的问题
+- 【修复】跳转动画丢失的问题
+- 【修复】无法切换历史数据
 
 #### 1.8.4（2021/3/4）
 - 重构创建数据库的逻辑

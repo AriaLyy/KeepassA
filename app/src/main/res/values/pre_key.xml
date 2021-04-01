@@ -25,6 +25,7 @@
 
   <string name="set_key_version_log" translatable="false">set_key_version_log</string>
   <string name="set_key_license" translatable="false">set_key_license</string>
+  <string name="set_key_language" translatable="false">set_key_language</string>
 
   <!-- 分享动画元素的信息 -->
   <string name="transition_db_name" translatable="false">transitionDbName</string>
@@ -32,7 +33,6 @@
   <string name="transition_entry_icon" translatable="false">transition_entry_icon</string>
   <string name="transition_db_version" translatable="false">transitionDbVersion</string>
   <string name="transition_db_little" translatable="false">transitionDbLittle</string>
-  <string name="set_key_language" translatable="false">set_key_language</string>
 
 <!--  activity 堆栈-->
   <string name="affinity_main" translatable="false">affinity.main</string>
