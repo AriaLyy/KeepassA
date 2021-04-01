@@ -76,4 +76,14 @@
     <string name="hint_set_password">Установить пароль</string>
     <string name="open">Разблокировать</string>
     <string name="password">Пароль</string>
+    <string name="set_title_screen_lock">Настройки блокировки экрана</string>
+    <string name="multi_choice">Множественный выбор</string>
+    <string name="ref_entry">Справочная запись</string>
+    <string name="other">Другое</string>
+    <string name="cur_app_not_autofill">Не заполнять автоматически</string>
+    <string name="ui_setting">Настройка пользовательского интерфейса</string>
+    <string name="set_key_sum_main_show_history">Показывать историю после разблокировки базы данных</string>
+    <string name="set_key_sum_main_show_entries">Показывать все элементы после разблокировки базы данных</string>
+    <string name="move">Переместить</string>
+    <string name="url">URL-адрес</string>
 </resources>
