@@ -1,2 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="error_uri">URI-feil</string>
+    <string name="help_input_db_pass">Skriv inn databasepassord</string>
+    <string name="app_setting">Programinnstillinger</string>
+    <string name="db_setting">Databaseinnstillinger</string>
+    <string name="setting">Innstilling</string>
+    <string name="all">Alle elementer</string>
+    <string name="change_db">Bytt database</string>
+    <string name="history">Historikk</string>
+    <string name="create_file">Opprett ny fil</string>
+    <string name="choose_file">Velg en fil</string>
+    <string name="cancel">Avbryt</string>
+    <string name="done">Ferdig</string>
+    <string name="up">Forrige</string>
+    <string name="next">Neste steg</string>
+    <string name="create_db">Opprett database</string>
+    <string name="db_name">Skriv inn databasenavn</string>
+    <string name="open_db">Åpne database</string>
+    <string name="hint_set_pass_key">Velg en nøkkel</string>
+    <string name="choose_pass_key">Velg nøkkel</string>
+    <string name="encrypt_type_2">Passord + nøkkel</string>
+    <string name="encrypt_type_1">Kun passord</string>
+    <string name="encrypt_type">Kryptering</string>
+    <string name="help_create_group">Gruppenavn kan ikke være på mer enn 16 tegn</string>
+    <string name="hint_enter_password">Bekreft passord</string>
+    <string name="hint_input_password">Skriv inn et passord på 6-16 tegn</string>
+    <string name="hint_set_password">Sett passord</string>
+    <string name="open">Lås opp</string>
+    <string name="key1">Hemmelig nøkkel: %s</string>
+    <string name="key">Hemmelig nøkkel</string>
+    <string name="password">Passord</string>
+    <string name="db1">database\t|\t&lt;font color=#757575&gt;%s&lt;/font&gt;</string>
+    <string name="db">Database</string>
+</resources>
