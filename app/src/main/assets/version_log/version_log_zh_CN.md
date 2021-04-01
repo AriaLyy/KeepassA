@@ -1,7 +1,10 @@
-#### 2.0.2
+#### 2.0.2 (2021/4/1)
 - [新增]关闭加载动画选择项[设置](route://keepassA.com/kpa?activity=SettingActivity) -> 界面设置
 - [新增]不自动锁定功能[设置](route://keepassA.com/kpa?activity=SettingActivity&type=app) -> 数据库设置
+- [优化]优化英文翻译，感谢[@comradekingu](https://github.com/comradekingu)
 - [修复]一个动画关闭掉的问题
+- [修复]点击应设置崩溃的问题
+
 
 #### 2.0.1（2021/3/27）
 - [修复]webdav登陆问题

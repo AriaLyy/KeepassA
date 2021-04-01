@@ -1,3 +1,10 @@
+#### 2.0.2 (2021/4/1)
+- [New]Close loading animation selection[Setting](route://keepassA.com/kpa?activity=SettingActivity) -> UI settings
+- [New]Does not automatically lock function[Setting](route://keepassA.com/kpa?activity=SettingActivity&type=app) -> Database settings
+- [Optimize]Optimize English translation, Thank[@comradekingu](https://github.com/comradekingu)
+- [Fix]An animation problem
+- [Fix]An application setting crash problem
+
 #### 2.0.1（2021/3/27）
 - [Fix]Webdav login problem
 - [Fix]Multilingual issues
