@@ -19,8 +19,9 @@ And added many commonly used functions on the original basis:
 3. Quick unlock, would you still worry about entering a long database password every time?
 4. Dropbox\WebDav synchronization, PC\Android\IOS Keepass database can be synchronized
 5. Obtain the TOTP and OTP secondary verification codes. You can get the second verification code like Google Authenticator
-6. Open history record, quickly find the last opened record
-7. Shortcut, you can quickly open the function of searching and creating items on the mobile phone desktop
+6. Support Stem secondary verification codes
+7. Open history record, quickly find the last opened record
+8. Shortcut, you can quickly open the function of searching and creating items on the mobile phone desktop
 
 ## Contributions
 * Add features by making a **[pull request](https://help.github.com/articles/about-pull-requests/)**.
