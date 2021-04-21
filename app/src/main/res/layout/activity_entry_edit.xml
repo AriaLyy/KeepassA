@@ -173,7 +173,7 @@
               android:layout_height="24dp"
               app:srcCompat="@drawable/ic_notice" />
 
-          <com.lyy.keepassa.widget.ExpandAbleTextView
+          <com.lyy.keepassa.widget.ExpandableTextView1
               android:id="@+id/notice"
               style="@style/KpaExpandAbleTextViewStyle"
               android:layout_width="match_parent"

@@ -1,3 +1,7 @@
+#### 2.0.3
+- 【修复】保存备注出现的崩溃问题
+
+
 #### 2.0.2 (2021/4/1)
 - 【新增】关闭加载动画选择项[设置](route://keepassA.com/kpa?activity=SettingActivity) -> 界面设置
 - 【新增】不自动锁定功能[设置](route://keepassA.com/kpa?activity=SettingActivity&type=app) -> 数据库设置

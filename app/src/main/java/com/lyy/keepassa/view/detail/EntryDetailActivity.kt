@@ -381,8 +381,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     if (pwEntry.notes.isEmpty()) {
       binding.noticeLayout.visibility = View.GONE
     } else {
-      binding.notice.maxLines = 6
-      binding.notice.originalText = pwEntry.notes.trim()
+      binding.notice.text = pwEntry.notes.trim()
 //      binding.notice.setOnClickListener(this)
       binding.noticeLayout.setOnClickListener(this)
       binding.noticeLayout.setOnTouchListener { _, event ->

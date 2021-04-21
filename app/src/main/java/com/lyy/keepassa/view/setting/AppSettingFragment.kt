@@ -91,7 +91,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
           .setNotices(R.raw.notices)
           .setIncludeOwnLicense(true)
           .build()
-          .show();
+          .show()
       true
     }
   }
