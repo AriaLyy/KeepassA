@@ -290,6 +290,9 @@ class AppSettingFragment : PreferenceFragmentCompat() {
         6 -> {
           lang = Locale("ru", "rRU")
         }
+        7 -> {
+          lang = Locale.FRENCH
+        }
       }
       BaseApp.currentLang = lang
       LanguageUtil.saveLanguage(requireContext(), lang)

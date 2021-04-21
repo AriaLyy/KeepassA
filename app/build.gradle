@@ -37,7 +37,7 @@ android {
       }
     }
     // 只保留以下语言包
-    resConfigs "zh-rCN", "zh-rTW", "en", "fr-rCA", "nb-rNO", "ru-rRU"
+    resConfigs "zh-rCN", "zh-rTW", "en", "fr-rCA", "nb-rNO", "ru-rRU", "fr"
   }
 
   signingConfigs {

@@ -141,7 +141,7 @@
     <item>繁体中文</item>
     <item>Français canadien</item>
     <item>Norsk bokmål</item>
-    <item>Русский язык</item>
+    <item>Français</item>
   </string-array>
 
   <string-array name="choose_language_value">
@@ -151,6 +151,7 @@
     <item>4</item>
     <item>5</item>
     <item>6</item>
+    <item>7</item>
   </string-array>
 
   <string-array name="create_normal_group">
