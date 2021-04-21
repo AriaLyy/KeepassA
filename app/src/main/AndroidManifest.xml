@@ -108,10 +108,6 @@
         android:launchMode="singleTask" />
 
     <activity
-        android:name=".view.icon.ChooseIconActivity"
-        android:launchMode="singleTask" />
-
-    <activity
         android:name=".view.MarkDownEditorActivity"
         android:windowSoftInputMode="stateVisible|adjustResize" />
     <activity android:name=".view.main.MainSettingActivity" />

@@ -15,13 +15,25 @@ import android.transition.ChangeBounds
 import android.transition.Slide
 import android.transition.TransitionSet
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import com.arialyy.frame.core.AbsFragment
 import com.lyy.keepassa.util.AutoLockDbUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import me.jessyan.autosize.AutoSize
 
 abstract class BaseFragment<VB : ViewDataBinding> : AbsFragment<VB>() {
+
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
+    AutoSize.autoConvertDensity(activity, 411f, true);
+    return super.onCreateView(inflater, container, savedInstanceState)
+  }
 
   override fun onActivityCreated(savedInstanceState: Bundle?) {
 //    setWindowAnim()
