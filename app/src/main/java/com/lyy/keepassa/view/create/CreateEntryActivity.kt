@@ -250,7 +250,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     if (pwEntry.notes.isNotEmpty()) {
       module.noteStr = pwEntry.notes.trim()
       binding.noticeLayout.visibility = View.VISIBLE
-      binding.notice.originalText = module.noteStr
+      binding.notice.text = module.noteStr
     }
 
     val v4Entry = pwEntry
@@ -550,7 +550,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       KLog.d(TAG, "note = $it")
       module.noteStr = it.trim()
       showOtherItem(binding.noticeLayout, false)
-      binding.notice.originalText = module.noteStr
+      binding.notice.text = module.noteStr
     }
   }
 

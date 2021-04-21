@@ -77,8 +77,10 @@ android {
     }
   }
 
-  dataBinding {
-    enabled = true
+  buildFeatures{
+    dataBinding = true
+    // for view binding :
+    // viewBinding = true
   }
 
   testOptions {
@@ -167,10 +169,10 @@ dependencies {
 //  debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
 
   // keepassA组件
-  implementation 'com.arialyy.keepassA:KeepassIcon:0.0.4'
-  implementation 'com.arialyy.keepassA:KeepassLib:0.0.5'
-  implementation 'com.arialyy.keepassA:KPAFrame:0.1.4'
-  implementation 'com.arialyy.keepassA:UIWidget:0.0.5'
+  implementation 'me.laoyuyu.keepassa:KeepassIcon:0.2.5'
+  implementation 'me.laoyuyu.keepassa:KeepassLib:0.2.5'
+  implementation 'me.laoyuyu.keepassa:KPAFrame:0.2.5'
+  implementation 'me.laoyuyu.keepassa:UIWidget:0.2.6'
 
   // kotlin
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${rootProject.ext.kotlin_version}"
@@ -248,7 +250,7 @@ dependencies {
 
   // glide
   implementation 'com.github.bumptech.glide:glide:4.11.0'
-  annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+  kapt 'com.github.bumptech.glide:compiler:4.11.0'
   //  debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.1' // 2.1 之后不需要再代码中初始化
 
   // dropbox

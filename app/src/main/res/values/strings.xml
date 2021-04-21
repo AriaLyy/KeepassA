@@ -11,7 +11,7 @@
   <string name="hint_input_password">Enter a password of 6–16 digits</string>
   <string name="hint_enter_password">Confirm password</string>
   <string name="help_create_db">Create v4 KeepPass database by default</string>
-  <string name="help_create_group">Pick a group name cannot of less than 17 characters</string>
+  <string name="help_create_group">Pick a group name of 16 or fewer characters</string>
   <string name="encrypt_type">Encryption</string>
   <string name="encrypt_type_1">Password only</string>
   <string name="encrypt_type_2">Password + key</string>
@@ -25,19 +25,19 @@
   <string name="next">Next step</string>
   <string name="up">Previous</string>
   <string name="hint_select_db_path">Click to set the data saving method</string>
-  <string name="hint_select_path_type">Select database save path</string>
+  <string name="hint_select_path_type">Pick where to save your database</string>
   <string name="error_db_name_null">Please input a database name</string>
   <string name="done">Done</string>
   <string name="enter">Enter</string>
   <string name="cancel">Cancel</string>
   <string name="hint">Prompt</string>
-  <string name="help_create_db_path">It is recommended that you use cloud paths such as Dropbox and WebDAV,This will automatically sync your database to the cloud, making it easy to use the database on other devices. \n The database is encrypted using AES-256. Without your password, no one can open your database.</string>
+  <string name="help_create_db_path">It is recommended that you use cloud paths such as Dropbox and WebDAV. This will auto-sync your database to the cloud, making it easy to use the database on other devices. \n The database is encrypted using AES-256. Without your password, no one can open your database.</string>
   <string name="help_pass_type">Use password only: \n Only your password is needed to open the database；\n Password + key: \n You need to enter a password and select a key file to open the database.</string>
-  <string name="help_pass_key">A key file is equivalent to a key to open data, and is usually much more complex and reliable than a password. But it is also more difficult to hide it. If you keep the database in the cloud, do not put the key with the database, otherwise the key will become meaningless. \n You can choose any file as a key to open the database, a photo, or a txt file. \n⚠️ Note: If this photo or tx document is modified, you will not be able to open the database! !! \n It is highly recommended to use read-only files as keys.</string>
+  <string name="help_pass_key">A key file is equivalent to a key to open data, and is usually much more complex and reliable than a password. But it is also more difficult to hide. If you keep the database in the cloud, do not put the key with the database there. \n You can choose any file as a key to open the database, a photo, or a TXT file. \n⚠️ Note: If this photo or TXT document is modified, you will not be able to open the database! !! \n It is highly recommended to use read-only files as keys.</string>
   <string name="choose_file">Choose a file</string>
-  <string name="choose_pass_key_file_des">Choose any file as your key</string>
+  <string name="choose_pass_key_file_des">Choose any file to use as your key</string>
   <string name="create_file">Create new file</string>
-  <string name="create_pass_key_file_des">Create a new file as your key</string>
+  <string name="create_pass_key_file_des">Create a new file to use as your key</string>
   <string name="create_pass_key_success">Key creation [%s] succeeded</string>
   <string name="error_pass_null">Please set a database password</string>
   <string name="error_enter_pass_null">Please enter the confirmation password</string>
@@ -50,10 +50,10 @@
   <string name="all">All items</string>
   <string name="setting">Setting</string>
   <string name="db_setting">Database settings</string>
-  <string name="app_setting">Application settings</string>
-  <string name="welcome">Welcome \n KeepassA</string>
+  <string name="app_setting">App settings</string>
+  <string name="welcome">Welcome</string>
   <string name="help_input_db_pass">Enter database password</string>
-  <string name="need_key">Need a key ?</string>
+  <string name="need_key">Need a key?</string>
   <string name="error_uri">URI error</string>
   <string name="error_input_pass_null">Please enter the database password</string>
   <string name="error_open_db">Could not open the database. Is the password incorrect, or is a key needed?</string>
@@ -72,7 +72,7 @@
   <string name="hint_attr">Advanced properties</string>
   <string name="attachment">Attachment</string>
   <string name="hint_ex_property">Extra attributes</string>
-  <string name="expire"><![CDATA[Expired at<font color="#FF0000">%s</font>]]></string>
+  <string name="expire"><![CDATA[Expired at <font color="#FF0000">%s</font>]]></string>
 
   <string name="del_group">Delete group</string>
   <string name="edit_group">Edit group</string>
@@ -83,10 +83,10 @@
   <string name="copy_user_name">Copy username</string>
   <string name="copy_password">Copy password</string>
   <string name="copy_totp">Copy TOTP token</string>
-  <string name="hint_del_group"><![CDATA[Confirm delete group【<font color="#FF0000">%s</font>】? <br> This will move the group【<font color="#FF0000">%s</font>】to the trash,If you want to undo the deletion, restore the group from the trash.]]></string>
-  <string name="hint_del_group_no_recycle"><![CDATA[Confirm delete group【<font color="#FF0000">%s</font>】? This will delete the group.]]></string>
-  <string name="hint_del_entry"><![CDATA[Confirm deletion item【<font color="#FF0000">%s</font>】? <br> This will move the item【<font color="#FF0000">%s</font>】to the trash,If you want to undo the deletion, restore the item from the trash.]]></string>
-  <string name="hint_del_entry_no_recycle"><![CDATA[enter delete entry【<font color="#FF0000">%s</font>】? This will delete the item.]]></string>
+  <string name="hint_del_group"><![CDATA[Really delete the group【<font color="#FF0000">%s</font>】?<br>This moves it to trash, where you can restore it later.]]></string>
+  <string name="hint_del_group_no_recycle"><![CDATA[Really delete the 【<font color="#FF0000">%s</font>】 group?]]></string>
+  <string name="hint_del_entry"><![CDATA[Really delete the 【<font color="#FF0000">%s</font>】 item? <br>This moves it to trash, where you can restore it later.]]></string>
+  <string name="hint_del_entry_no_recycle"><![CDATA[Really delete the 【<font color="#FF0000">%s</font>】entry permanently?]]></string>
   <string name="group_name">Group name</string>
   <string name="create_group">Build group</string>
   <string name="error_group_name_null">The group name is empty</string>
@@ -171,10 +171,10 @@
   <string name="save_db_success">Database saved</string>
   <string name="error_pass">Password error</string>
   <string name="db_pass_no_alter">The new password is the same as the old one</string>
-  <string name="hint_db_pass_modify_success">Use the new database passowrd to open the database the next time</string>
+  <string name="hint_db_pass_modify_success">Use the new database password to open the database the next time</string>
   <string name="hint_db_pass_modify">Database password changed</string>
   <string name="app_feedback">Feedback</string>
-  <string name="error_db_pass_too_short">Make the database password more than 5 digits to protect your data</string>
+  <string name="error_db_pass_too_short">Make the database password more than 6 characters or more to protect your data</string>
   <string name="autofill_sign_in_prompt">Auto-fill password with KeePassA</string>
   <string name="hint_background_start"><![CDATA[Go to<font color="#FF0000">【%s】</font>and grant the background pop-up permissions to make better use of the auto-fill service.<br> <font color="#FF0000">KeePassA shows the corresponding interface for opening the database when you use the autofill function</font>]]></string>
   <string name="setting_miui_background_start">Settings > Application Settings > Application Management > KeePassA > Permission Management</string>
@@ -189,8 +189,8 @@
   <string name="title">Title</string>
   <string name="feedback">Feedback ^_^</string>
   <string name="submit">Submit</string>
-  <string name="send_email_fail">Install an e-mail app to send e-mail first</string>
-  <string name="feedback_email_msg">Hello, I\'m KeePassA, do you have any questions?&lt;br /&gt; &lt;br /&gt; &lt;br /&gt; _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ &lt;br /&gt; Mobile phone brands: %s &lt;br /&gt; Phone model: %s &lt;br /&gt; System version:%s &lt;br /&gt; Resolution: %s &lt;br /&gt; Application version: %s </string>
+  <string name="send_email_fail">Install an app to send e-mails with first</string>
+  <string name="feedback_email_msg">Hello, I\'m KeePassA, do you have any questions?&lt;br /&gt; &lt;br /&gt; &lt;br /&gt; _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ &lt;br /&gt; Brand: %s &lt;br /&gt; Model: %s &lt;br /&gt; System version:%s &lt;br /&gt; Resolution: %s &lt;br /&gt; App version: %s </string>
   <string name="mark_not_exit">Application market does not exist</string>
   <string name="set_open_auto_fill_title">Auto-fill service</string>
   <string name="set_key_praise_value">Rate KeePassA</string>
@@ -203,13 +203,13 @@
   <string name="auto_lock_db_time_summary">Auto-lock the database after %s if no operations are made</string>
   <string name="quick_pass_type">Short password interception location</string>
   <string name="des_quick_unlock">Unlock your database with a short password</string>
-  <string name="error_short_pass_lenght">Short password length cannot be greater than 6</string>
-  <string name="error_short_pass_short">Short password length cannot be less than 3</string>
+  <string name="error_short_pass_lenght">Make your short password of 6 or fewer characters</string>
+  <string name="error_short_pass_short">Make your short password of 3 or more characters</string>
   <string name="quick_pass_len_title">Short password length</string>
   <string name="quick_pass_len_summary">Short password length: %s</string>
   <string name="set_key_value">Choose language</string>
-  <string name="dropbox_msg"><![CDATA[Upholding the principle of respecting user privacy, KeepPassA will not ask for permission to all files in your Dropbox, KeePassA <font color = "# FF0000"> Only access to the 【Apps/KeePassA】 folder </ font >.<br /> Therefore: <br />
-<b>If you already have a KeePass database, grant KeePassA access to the 【Apps/KeePassA】 folder in KeePassA and save the KeePass database to the 【Application/KeePassA】 folder after authorization is complete. </b><br /><br />
+  <string name="dropbox_msg"><![CDATA[Upholding the principle of respecting user privacy, KeepPassA will not ask for permission to all files in your Dropbox, KeePassA <font color = "# FF0000"> Only access to the 【Apps/KeePassA】 folder</ font >.<br />Therefore: <br />
+<b>If you already have a KeePass database, grant KeePassA access to the 【Apps/KeePassA】 folder in KeePassA and save the KeePass database to the 【Application/KeePassA】 folder after authorization is complete.</b><br /><br />
 If you are creating a new KeePass database, the above operations are not be needed. After you create the database, KeePassA auto-creates the corresponding folder and uploads the database to the 【Apps/KeePassA】 directory of Dropbox. ]]></string>
   <string name="cover">Cover</string>
   <string name="file_conflict_msg">Conflict between cloud data and local data, Please select the coverage method. The conflicting entries are:\n %s</string>
@@ -222,12 +222,12 @@ If you are creating a new KeePass database, the above operations are not be need
   <string name="invalid">Invalid</string>
   <string name="no_file">No file</string>
   <string name="login">Login</string>
-  <string name="helper_webdav">eg: https://dav.xxxx.com/dav/[you folder]/xxx.kdbx</string>
-  <string name="helper_webdav_dir">e.g: https://dav.xxxx.com/dav/[you folder]/</string>
+  <string name="helper_webdav">e.g: https://dav.example.org/dav/[your folder]/xxx.kdbx</string>
+  <string name="helper_webdav_dir">e.g: https://dav.example.org/dav/[your folder]/</string>
   <string name="hint_webdav_url">File URL</string>
   <string name="hint_please_input">Please input %s</string>
   <string name="db_file_no_exist">The database file does not exist</string>
-  <string name="invalid_auth">Authorization failed, please re-authorize</string>
+  <string name="invalid_auth">Could not authorize. Please try again.</string>
   <string name="afs">Android file system</string>
   <string name="hint_kdbx_name">Wrong suffix name, the suffix name should be ".kdbx"</string>
   <string name="start_upload_db">Start uploading the database to your network disk</string>
@@ -241,23 +241,23 @@ If you are creating a new KeePass database, the above operations are not be need
   <string name="db_unlock">Unlock database</string>
   <string name="hint_quick_use_fingerprint">Only use fingerprint to unlock on the quick-unlock page</string>
   <string name="version_log">Upgrade log</string>
-  <string name="hint_finger_print_verfiy">You need to re-verify your fingerprints for the settings to take effect</string>
+  <string name="hint_finger_print_verfiy">Re-verify your fingerprints to use the new settings</string>
   <string name="closed">Closed</string>
   <string name="upload">Upload</string>
   <string name="open1">open</string>
   <string name="add_attr_file">Add attachments </string>
-  <string name="hint_fingerprint_modify">Check that the fingerprint has changed, for your password security, please reset the fingerprint unlock function </string>
-  <string name="hint_please_open_database">Please open database</string>
+  <string name="hint_fingerprint_modify">Check that the fingerprint has changed, for your password security, please reset the fingerprint unlock function</string>
+  <string name="hint_please_open_database">Please open the database</string>
   <string name="set_delete_setting">Delete settings</string>
-  <string name="set_delete_no_into_recycle_bin">Directly delete entries from the database</string>
+  <string name="set_delete_no_into_recycle_bin">Delete entries from the database permanently</string>
   <string name="set_delete_no_into_recycle_bin_des">Move deleted items to trash</string>
-  <string name="warning_rooted">For your data security, please do not open the database on a rooted phone</string>
-  <string name="hint_security_green">"Great, the app is in a risk-free environment "</string>
-  <string name="hint_security_red">Note that your device has been rooted and the database is in a very dangerous environment</string>
+  <string name="warning_rooted">Don\'t open your database on a rooted phone to keep it safe</string>
+  <string name="hint_security_green">"The app is in a safe environment "</string>
+  <string name="hint_security_red">Your device is rooted and the database is in a very dangerous environment</string>
   <string name="hint_security_yellow">Warning, running in the simulator, this environment will bring some unpredictable risks to the database</string>
   <string name="donate">Donate</string>
   <string name="donate_desc">[KeePassA](https://github.com/AriaLyy/KeepassA) is libre software. Donate to support our work, Thank you very much.</string>
-  <string name="dev_birthday">Today is the developer’s birthday🎂, would you like to make a toast to the gods?</string>
+  <string name="dev_birthday">Today is the developer’s birthday🎂. Would you like to make a toast to the gods?</string>
   <string name="totp_defaule">Default RFC 6238 token settings</string>
   <string name="totp_steam">Steam token settings</string>
   <string name="totp_custom">Use custom settings</string>
@@ -269,8 +269,8 @@ If you are creating a new KeePass database, the above operations are not be need
   <string name="sort">Sort</string>
   <string name="sort_chart_desc">First letter descending(Z-A)</string>
   <string name="sort_chart_asc">First letter ascending(A-Z)</string>
-  <string name="sort_time_asc">Time ascending</string>
-  <string name="sort_time_desc">Time descending</string>
+  <string name="sort_time_asc">Time earlist-latest</string>
+  <string name="sort_time_desc">Time latest-earliest</string>
   <string name="ime_label">KeePassA security keyboard</string>
   <string name="set_open_kpa_ime_title">Security keyboard</string>
   <string name="no_totp_token">The app doesn\'t have a TOTP token</string>
@@ -282,39 +282,38 @@ If you are creating a new KeePass database, the above operations are not be need
   <string name="move">Move</string>
   <string name="set_key_sum_main_show_entries">Show all items after unlocking the database</string>
   <string name="set_key_sum_main_show_history">Show history after unlocking the database</string>
-  <string name="set_key_title_main_allow_show_entries">Home page settings</string>
+  <string name="set_key_title_main_allow_show_entries">Home page</string>
   <string name="expand">Expand</string>
   <string name="shrink">Shrink</string>
   <string name="ui_setting">UI Setting</string>
   <string name="set_key_title_opr_env_check">Operating environment check</string>
-  <string name="set_key_title_opr_env_check_turn_off">Turn off operating environment check</string>
-  <string name="set_key_title_opr_env_check_turn_on">Turn on environment check</string>
-  <string name="cur_app_not_autofill">Not auto-fill</string>
+  <string name="set_key_title_opr_env_check_turn_off">Off</string>
+  <string name="set_key_title_opr_env_check_turn_on">On</string>
+  <string name="cur_app_not_autofill">No auto-filling</string>
   <string name="other">Other</string>
   <string name="ref_entry">Reference entry</string>
   <string name="multi_choice">Multiple choice</string>
-  <string name="set_summary_screen_lock_off">Screen lock does not lock the database</string>
-  <string name="set_summary_screen_lock_on">Screen lock automatically locks the database</string>
-  <string name="set_title_screen_lock">Screen lock settings</string>
+  <string name="set_summary_screen_lock_off">Doesn\'t lock the database</string>
+  <string name="set_summary_screen_lock_on">Auto-locks the database</string>
+  <string name="set_title_screen_lock">Screen lock</string>
   <string name="close">Close</string>
   <string name="Alipay">Alipay</string>
-  <string name="error_webdav_end_suffix">Use the folder path. E.g:"https://webdav.com/dav/kpa/"</string>
-  <string name="error_webdav_end_dav_suffix">/dav/ path is not allowed. Use a valid path, such as: "https://webdav.com/dav/kpa/"</string>
-  <string name="set_key_title_fillet_bg_icon">Rounded corners for list icons</string>
-  <string name="set_key_title_fillet_bg_icon_turn_on">Icons get rounded corners</string>
-  <string name="set_key_title_fillet_bg_icon_turn_off">Icon don\'\t get rounded corners</string>
-  <string name="set_key_title_show_state_bar">Whether to show the status bar</string>
-  <string name="set_key_title_show_state_bar_turn_on">Show status bar</string>
-  <string name="set_key_title_show_state_bar_turn_off">Hide status bar</string>
+  <string name="error_webdav_end_suffix">Use the folder path. E.g: \"https://example.org/dav/kpa/\"</string>
+  <string name="error_webdav_end_dav_suffix">/dav/ path is not allowed. Use a valid path, such as: \"https://example.org/dav/kpa/\"</string>
+  <string name="set_key_title_fillet_bg_icon">Rounded list icon corners</string>
+  <string name="set_key_title_fillet_bg_icon_turn_on">On</string>
+  <string name="set_key_title_fillet_bg_icon_turn_off">Off</string>
+  <string name="set_key_title_show_state_bar">Status bar</string>
+  <string name="set_key_title_show_state_bar_turn_on">Show</string>
+  <string name="set_key_title_show_state_bar_turn_off">Hide</string>
   <string name="set_key_title_close_load_anim">Loading animation</string>
-  <string name="set_key_title_close_load_anim_turn_on">Open loading animation</string>
-  <string name="set_key_title_close_load_anim_turn_off">Close Loading animation</string>
+  <string name="set_key_title_close_load_anim_turn_on">On</string>
+  <string name="set_key_title_close_load_anim_turn_off">Off</string>
   <string name="s_default">Default</string>
   <string name="customize">Customize</string>
-  <string name="set_key_title_auto_lock_database">Automatically lock the database</string>
-  <string name="set_key_title_auto_lock_database_turn_on">Automatically lock the database</string>
+  <string name="set_key_title_auto_lock_database">Auto-lock the database</string>
+  <string name="set_key_title_auto_lock_database_turn_on">Yes</string>
   <string name="set_key_title_auto_lock_database_turn_off">No</string>
-  <string name="translate_language" translatable="false">Translate to your language</string>
-
+  <string name="translate_language">Translate the app to your language</string>
 
 </resources>
