@@ -169,9 +169,9 @@ dependencies {
 //  debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
 
   // keepassA组件
-  implementation 'me.laoyuyu.keepassa:KeepassIcon:0.2.5'
-  implementation 'me.laoyuyu.keepassa:KeepassLib:0.2.5'
-  implementation 'me.laoyuyu.keepassa:KPAFrame:0.2.5'
+  implementation 'me.laoyuyu.keepassa:KeepassIcon:0.2.6'
+  implementation 'me.laoyuyu.keepassa:KeepassLib:0.2.6'
+  implementation 'me.laoyuyu.keepassa:KPAFrame:0.2.6'
   implementation 'me.laoyuyu.keepassa:UIWidget:0.2.6'
 
   // kotlin

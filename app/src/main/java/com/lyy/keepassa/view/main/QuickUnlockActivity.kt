@@ -65,7 +65,12 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
     initUi()
     isAutoFill = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL, false)
     if (isAutoFill) {
-      apkPkgName = intent.getStringExtra(KEY_PKG_NAME)
+      apkPkgName = intent.getStringExtra(KEY_PKG_NAME) ?: ""
+    }
+    if (apkPkgName.isBlank()){
+      BaseApp.KDB = null
+      finish()
+      return
     }
   }
 
@@ -244,7 +249,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         )
         return
       }
-      val data =  KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName)
+      val data = KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName)
       setResult(Activity.RESULT_OK, data)
       finish()
     } else {
@@ -269,13 +274,16 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         )
 
         if (isSaveRelevance) {
-          setResult(Activity.RESULT_OK,  KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName))
+          setResult(
+              Activity.RESULT_OK,
+              KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName)
+          )
         } else {
           val id = data.getSerializableExtra(AutoFillEntrySearchActivity.EXTRA_ENTRY_ID)
           setResult(
               Activity.RESULT_OK,
               BaseApp.KDB.pm.entries[id]?.let {
-                 KeepassAUtil.instance.getFillResponse(
+                KeepassAUtil.instance.getFillResponse(
                     this,
                     intent,
                     it,
@@ -286,7 +294,10 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         }
 
       } else {
-        setResult(Activity.RESULT_OK,  KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName))
+        setResult(
+            Activity.RESULT_OK,
+            KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName)
+        )
       }
       super.finish()
     }
@@ -315,7 +326,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
      * 从通知进入快速解锁页
      */
     internal fun createQuickUnlockPending(context: Context): PendingIntent {
-      if (BaseApp.dbRecord == null){
+      if (BaseApp.dbRecord == null) {
         return LauncherActivity.createLauncherPending(context)
       }
 
@@ -328,13 +339,13 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
       context: Context,
       flags: Int = -1
     ) {
-      if (BaseApp.dbRecord == null){
+      if (BaseApp.dbRecord == null) {
         LauncherActivity.startLauncherActivity(context, flags)
         return
       }
 
       context.startActivity(Intent(context, QuickUnlockActivity::class.java).apply {
-        if (flags != -1){
+        if (flags != -1) {
           this.flags = flags
         }
       })
@@ -347,7 +358,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
       context: Context,
       pkgName: String
     ): IntentSender {
-      if (BaseApp.dbRecord == null){
+      if (BaseApp.dbRecord == null) {
         return LauncherActivity.getAuthDbIntentSender(context, apkPackageName = pkgName)
       }
       val intent = Intent(context, QuickUnlockActivity::class.java).also {
