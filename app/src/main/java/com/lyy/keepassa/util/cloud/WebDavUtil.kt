@@ -196,7 +196,6 @@ object WebDavUtil : ICloudUtil {
         val fic = Channels.newChannel(ips)
         val foc = FileOutputStream(fp).channel
         foc.transferFrom(fic, 0, fileInfo!!.size)
-        it.unlock(cloudPath, token)
       } catch (e: Exception) {
         e.printStackTrace()
         BuglyLog.e(TAG, "下载文件失败", e)
