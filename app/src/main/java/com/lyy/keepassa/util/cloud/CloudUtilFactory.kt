@@ -11,6 +11,7 @@ package com.lyy.keepassa.util.cloud
 
 import com.lyy.keepassa.view.DbPathType
 import com.lyy.keepassa.view.DbPathType.DROPBOX
+import com.lyy.keepassa.view.DbPathType.ONE_DRIVE
 import com.lyy.keepassa.view.DbPathType.WEBDAV
 
 /**
@@ -22,6 +23,7 @@ object CloudUtilFactory {
     when (dbPathType) {
       DROPBOX -> return DropboxUtil
       WEBDAV -> return WebDavUtil
+      ONE_DRIVE -> return OneDriveUtil
     }
     throw IllegalArgumentException("不识别的工具类型：${dbPathType}")
   }

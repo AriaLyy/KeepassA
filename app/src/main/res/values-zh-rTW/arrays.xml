@@ -29,38 +29,6 @@
     <item>不加密的CSV文件</item>
   </string-array>
 
-
-  <string-array name="main_items">
-    <item>文件管理器</item>
-    <item>Dropbox</item>
-    <!--    <item>OneDrive</item>-->
-    <!--    <item>GoogleDrive</item>-->
-    <item>WebDav</item>
-    <!--    <item>Ftp</item>-->
-    <item>歷史紀錄</item>
-    <!--    <item>Other</item>-->
-  </string-array>
-
-  <string-array name="path_type">
-    <item>文件管理器</item>
-    <item>Dropbox</item>
-    <!--    <item>OneDrive</item>-->
-    <!--    <item>GoogleDrive</item>-->
-    <item>WebDav</item>
-    <!--    <item>Ftp</item>-->
-    <!--    <item>SFtp</item>-->
-  </string-array>
-
-  <string-array name="path_type_des">
-    <item>文件管理器</item>
-    <item>Dropbox</item>
-    <!--    <item>OneDrive</item>-->
-    <!--    <item>GoogleDrive</item>-->
-    <item>WebDav</item>
-    <!--    <item>Ftp</item>-->
-    <!--    <item>SFtp</item>-->
-  </string-array>
-
   <string-array name="v3_add_mor_item">
     <item>備註</item>
     <item>文件附件</item>

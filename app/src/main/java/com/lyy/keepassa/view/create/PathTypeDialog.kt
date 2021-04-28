@@ -22,6 +22,7 @@ import com.lyy.keepassa.databinding.DialogPathTypeBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.view.DbPathType.AFS
 import com.lyy.keepassa.view.DbPathType.DROPBOX
+import com.lyy.keepassa.view.DbPathType.ONE_DRIVE
 import com.lyy.keepassa.view.DbPathType.WEBDAV
 import com.lyy.keepassa.view.SimpleAdapter
 
@@ -69,6 +70,9 @@ class PathTypeDialog(
             }
             R.drawable.ic_http -> { // webDav
               module.dbPathType = WEBDAV
+            }
+            R.drawable.ic_onedrive -> { // onedrive
+              module.dbPathType = ONE_DRIVE
             }
           }
           dismiss()

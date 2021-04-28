@@ -3,6 +3,7 @@
 - 【新增】兼容API30
 - 【修复】保存备注出现的崩溃
 - 【修复】横屏时，界面尺寸被放大
+- 【修复】WebDav多次Unlock导致的问题
 
 #### 2.0.2 (2021/4/1)
 - 【新增】关闭加载动画选择项[设置](route://keepassA.com/kpa?activity=SettingActivity) -> 界面设置

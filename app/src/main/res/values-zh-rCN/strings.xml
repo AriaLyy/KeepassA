@@ -313,4 +313,6 @@
     <string name="set_key_title_auto_lock_database">自动锁定数据库</string>
     <string name="set_key_title_auto_lock_database_turn_on">自动锁定数据库</string>
     <string name="set_key_title_auto_lock_database_turn_off">关闭</string>
+    <string name="get_token_fail">获取Token失败</string>
+    <string name="one_drive_init_failure">OneDrive初始化失败</string>
 </resources>

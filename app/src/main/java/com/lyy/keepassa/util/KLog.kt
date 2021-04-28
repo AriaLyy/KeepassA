@@ -106,8 +106,7 @@ object KLog {
     jsonStr: String
   ) {
     if (LOG_LEVEL <= Log.DEBUG) {
-      val message: String
-      message = try {
+      val message: String = try {
         when {
           jsonStr.startsWith("{") -> {
             val jsonObject = JSONObject(jsonStr)
@@ -124,7 +123,7 @@ object KLog {
       } catch (e: JSONException) {
         jsonStr
       }
-      println(Log.DEBUG, tag, message)
+      println(Log.DEBUG, tag, "\n\r$message")
     }
   }
 

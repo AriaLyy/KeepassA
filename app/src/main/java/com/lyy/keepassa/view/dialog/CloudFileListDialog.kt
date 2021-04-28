@@ -19,7 +19,6 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arialyy.frame.base.FrameDialog
 import com.arialyy.frame.util.adapter.AbsHolder
 import com.arialyy.frame.util.adapter.AbsRVAdapter
 import com.arialyy.frame.util.adapter.RvItemClickSupport
@@ -68,21 +67,24 @@ class CloudFileListDialog : BaseDialog<DialogCloudFileListBinding>() {
           val item = curDirList[position]
           if (item.isDir) {
             pathStack.push(lastPath)
-            lastPath = item.cloudPath
-            getFileList(item.cloudPath)
-          } else {
-            // 选择文件
-            EventBus.getDefault()
-                .post(
-                    ChangeDbEvent(
-                        dbName = item.fileName,
-                        localFileUri = DbSynUtil.getCloudDbTempPath(cloudFileDbPathType.name, item.fileName),
-                        cloudPath = item.cloudPath,
-                        uriType = cloudFileDbPathType
-                    )
-                )
-            dismiss()
+            lastPath = item.fileKey
+            getFileList(item.fileKey)
+            return@setOnItemClickListener
           }
+          // 选择文件
+          EventBus.getDefault()
+              .post(
+                  ChangeDbEvent(
+                      dbName = item.fileName,
+                      localFileUri = DbSynUtil.getCloudDbTempPath(
+                          cloudFileDbPathType.name,
+                          item.fileName
+                      ),
+                      cloudPath = item.fileKey,
+                      uriType = cloudFileDbPathType
+                  )
+              )
+          dismiss()
         }
     dialog!!.setOnKeyListener { _, keyCode, _ ->
       if (keyCode == KeyEvent.KEYCODE_BACK && pathStack.size > 0) {
@@ -179,7 +181,7 @@ class CloudFileListDialog : BaseDialog<DialogCloudFileListBinding>() {
         holder.icon.setImageResource(R.drawable.ic_folder_24px)
       } else {
         holder.des.visibility = View.VISIBLE
-        holder.des.text =  KeepassAUtil.instance.formatTime(item.serviceModifyDate)
+        holder.des.text = KeepassAUtil.instance.formatTime(item.serviceModifyDate)
         holder.icon.setImageResource(R.drawable.ic_file_24px)
       }
     }

@@ -13,6 +13,7 @@ import com.lyy.keepassa.event.DbPathEvent
 import com.lyy.keepassa.view.DbPathType
 import com.lyy.keepassa.view.DbPathType.AFS
 import com.lyy.keepassa.view.DbPathType.DROPBOX
+import com.lyy.keepassa.view.DbPathType.ONE_DRIVE
 import com.lyy.keepassa.view.DbPathType.WEBDAV
 import com.lyy.keepassa.view.create.CreateDbFirstFragment
 
@@ -32,6 +33,9 @@ interface IAuthFlow {
 
   fun onResume()
 
+  /**
+   * 点下一步的处理事件
+   */
   fun doNext(
     fragment: CreateDbFirstFragment,
     dbName: String,
@@ -47,10 +51,16 @@ interface IAuthFlow {
   )
 }
 
+/**
+ * 验证回调
+ */
 interface IAuthCallback {
   fun callback(success: Boolean)
 }
 
+/**
+ * 完成选择云服务的回调
+ */
 interface OnNextFinishCallback {
   fun onFinish(event: DbPathEvent)
 }
@@ -61,6 +71,7 @@ object AuthFlowFactory {
     DROPBOX -> DropboxAuthFlow()
     AFS -> AFSAuthFlow()
     WEBDAV -> WebDavAuthFlow()
+    ONE_DRIVE -> OneDriveAuthFlow()
     else -> null
   }
 }

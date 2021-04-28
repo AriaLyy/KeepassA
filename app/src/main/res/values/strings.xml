@@ -315,5 +315,7 @@ If you are creating a new KeePass database, the above operations are not be need
   <string name="set_key_title_auto_lock_database_turn_on">Yes</string>
   <string name="set_key_title_auto_lock_database_turn_off">No</string>
   <string name="translate_language">Translate the app to your language</string>
+  <string name="get_token_fail">Failed to obtain token</string>
+  <string name="one_drive_init_failure">OneDrive init failure</string>
 
 </resources>

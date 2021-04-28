@@ -10,14 +10,12 @@
 package com.lyy.keepassa.view.create
 
 import android.content.Intent
-import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.collection.arrayMapOf
 import androidx.lifecycle.ViewModelProvider
-import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentCreateDbFirstBinding
@@ -28,6 +26,7 @@ import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.view.DbPathType
 import com.lyy.keepassa.view.DbPathType.AFS
 import com.lyy.keepassa.view.DbPathType.DROPBOX
+import com.lyy.keepassa.view.DbPathType.ONE_DRIVE
 import com.lyy.keepassa.view.DbPathType.UNKNOWN
 import com.lyy.keepassa.view.DbPathType.WEBDAV
 import com.lyy.keepassa.view.create.auth.AuthFlowFactory
@@ -159,35 +158,40 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
   /**
    * 流程结束
    */
-  private fun finishFlow(pathEvent: DbPathEvent) {
-    if (pathEvent.fileUri == null && pathEvent.dbPathType == AFS) {
+  private fun finishFlow(event: DbPathEvent) {
+    if (event.fileUri == null && event.dbPathType == AFS) {
       Log.e(TAG, "uri 获取失败")
       return
     }
     // 直接启动下一界面
     val startNextFragment = true
 
-    when (pathEvent.dbPathType) {
+    when (event.dbPathType) {
       AFS -> {
         binding.dbNameLayout.visibility = View.VISIBLE
-        module.dbUri = pathEvent.fileUri!!
-        module.dbName = UriUtil.getFileNameFromUri(requireContext(), module.dbUri!!)
+        module.localDbUri = event.fileUri!!
+        module.dbName = event.dbName
       }
       DROPBOX -> {
         binding.dbNameLayout.visibility = View.VISIBLE
-        module.dbUri = DbSynUtil.getCloudDbTempPath(DROPBOX.name, getDbName())
-        module.cloudPath = pathEvent.cloudDiskPath!!
-        module.dbName = UriUtil.getFileNameFromUri(requireContext(), module.dbUri!!)
+        module.localDbUri = DbSynUtil.getCloudDbTempPath(DROPBOX.name, event.dbName)
+        module.cloudPath = event.cloudDiskPath!!
+        module.dbName = event.dbName
       }
       WEBDAV -> {
         binding.dbNameLayout.visibility = View.GONE
-        val uri = Uri.parse(pathEvent.cloudDiskPath)
-        module.dbName = uri.lastPathSegment ?: "unknown"
-        module.dbUri = DbSynUtil.getCloudDbTempPath(WEBDAV.name, module.dbName)
-        module.cloudPath = pathEvent.cloudDiskPath!!
+        module.dbName = event.dbName
+        module.localDbUri = DbSynUtil.getCloudDbTempPath(WEBDAV.name, event.dbName)
+        module.cloudPath = event.cloudDiskPath!!
+      }
+      ONE_DRIVE -> {
+        binding.dbNameLayout.visibility = View.VISIBLE
+        module.localDbUri = DbSynUtil.getCloudDbTempPath(ONE_DRIVE.name, event.dbName)
+        module.cloudPath = event.cloudDiskPath!!
+        module.dbName = event.dbName
       }
       else -> {
-        throw IllegalArgumentException("不支持的类型: ${pathEvent.dbPathType.lable}")
+        throw IllegalArgumentException("不支持的类型: ${event.dbPathType.lable}")
       }
     }
 

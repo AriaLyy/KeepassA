@@ -68,6 +68,10 @@ class LauncherModule : BaseModule() {
   private val unlockEvent = MutableLiveData<Pair<Boolean, String?>>()
   private val scope = MainScope()
 
+  companion object{
+    val HISTORY_ID = 0xA1
+  }
+
   init {
     val pre = BaseApp.APP.getSharedPreferences(Constance.PRE_FILE_NAME, Context.MODE_PRIVATE)
     val startNum = pre.getInt(Constance.PRE_KEY_START_APP_NUM, 0)
@@ -518,9 +522,9 @@ class LauncherModule : BaseModule() {
    */
   fun getDbOpenTypeData(context: Context): LiveData<List<SimpleItemEntity>>? {
 
-    val titles = context.resources.getStringArray(R.array.main_items)
-    val icons = context.resources.obtainTypedArray(R.array.main_item_icons)
-    val types = context.resources.getIntArray(R.array.main_item_types)
+    val titles = context.resources.getStringArray(R.array.cloud_names)
+    val icons = context.resources.obtainTypedArray(R.array.cloud_icons)
+    val types = context.resources.getIntArray(R.array.cloud_type_ids)
 
     val items = ArrayList<SimpleItemEntity>()
     for ((index, title) in titles.withIndex()) {
@@ -531,6 +535,15 @@ class LauncherModule : BaseModule() {
       items.add(item)
     }
     icons.recycle()
+
+    // add history item
+    val historyItem = SimpleItemEntity().apply {
+      title = context.resources.getString(R.string.history_record)
+      id = HISTORY_ID
+      icon = R.drawable.ic_history
+    }
+    items.add(historyItem)
+
     itemData.postValue(items)
     return itemData
   }

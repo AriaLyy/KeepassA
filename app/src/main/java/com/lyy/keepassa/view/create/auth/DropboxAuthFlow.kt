@@ -66,12 +66,13 @@ class DropboxAuthFlow : IAuthFlow {
       authDropbox()
       return
     }
+    val name = "$dbName.kdbx"
     callback.onFinish(
         DbPathEvent(
-            dbName = "$dbName.kdbx",
-            fileUri = DbSynUtil.getCloudDbTempPath(DROPBOX.name, dbName),
+            dbName = name,
+            fileUri = DbSynUtil.getCloudDbTempPath(DROPBOX.name, name),
             dbPathType = DROPBOX,
-            cloudDiskPath = "/$dbName.kdbx"
+            cloudDiskPath = "/$name"
         )
     )
   }

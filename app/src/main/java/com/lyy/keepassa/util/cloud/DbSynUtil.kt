@@ -593,7 +593,7 @@ object DbSynUtil : SynStateCode {
     record: DbHistoryRecord
   ): Int {
     val b = util.uploadFile(context, record)
-    KLog.d(TAG, "上传文件${if (b) "成功" else "失败"}：${record.cloudDiskPath}")
+    KLog.d(TAG, "上传文件${if (b) "成功" else "失败"}, fileKey = ${record.cloudDiskPath}")
     return if (b) STATE_SUCCEED else STATE_FAIL
   }
 

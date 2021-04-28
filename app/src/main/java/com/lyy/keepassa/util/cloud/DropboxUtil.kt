@@ -159,14 +159,14 @@ object DropboxUtil : ICloudUtil {
     return cloudFileHash.equals(localHash, ignoreCase = true)
   }
 
-  override suspend fun getFileInfo(cloudPath: String): CloudFileInfo? {
+  override suspend fun getFileInfo(fileKey: String): CloudFileInfo? {
     val client = getClient() ?: return null
     try {
       val entries = client.files()
-          .listRevisions(cloudPath).entries
+          .listRevisions(fileKey).entries
       val entry = entries[0]
       return CloudFileInfo(
-          cloudPath, entry.name, entry.serverModified, entry.size, true, entry.contentHash
+          fileKey, entry.name, entry.serverModified, entry.size, true, entry.contentHash
       )
     } catch (e: Exception) {
       e.printStackTrace()
@@ -175,11 +175,11 @@ object DropboxUtil : ICloudUtil {
     return null
   }
 
-  override suspend fun delFile(cloudPath: String): Boolean {
-    Log.d(TAG, "删除云端文件: $cloudPath")
+  override suspend fun delFile(fileKey: String): Boolean {
+    Log.d(TAG, "删除云端文件: $fileKey")
     val d = getClient()
         ?.files()
-        ?.deleteV2(cloudPath)
+        ?.deleteV2(fileKey)
     if (d == null || d.metadata == null || d.metadata is DeletedMetadata) {
       return false
     }
@@ -189,10 +189,10 @@ object DropboxUtil : ICloudUtil {
   /**
    * 获取服务器端文件的修改时间
    */
-  override suspend fun getFileServiceModifyTime(cloudPath: String): Date {
+  override suspend fun getFileServiceModifyTime(fileKey: String): Date {
     val client = getClient() ?: return Date(System.currentTimeMillis())
     val entries = client.files()
-        .listRevisions(cloudPath).entries
+        .listRevisions(fileKey).entries
     return entries[0].serverModified
   }
 

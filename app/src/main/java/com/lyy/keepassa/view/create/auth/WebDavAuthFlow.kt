@@ -95,7 +95,7 @@ class WebDavAuthFlow : IAuthFlow {
     dbName: String,
     callback: OnNextFinishCallback
   ) {
-    this.dbName = dbName
+    this.dbName = "${dbName}.kdbx"
     nextCallback = callback
     if (!checkWebDavUri(context!!, webDavUri) || !WebDavUtil.isLogin()) {
       changeWebDav(true)
@@ -108,13 +108,13 @@ class WebDavAuthFlow : IAuthFlow {
     if (dbName == null) {
       return
     }
-    saveWebDavServiceInfo("${webDavUri!!}${dbName}.kdbx", webDavUserName!!, webDavPass!!)
+    saveWebDavServiceInfo("${webDavUri!!}${dbName}", webDavUserName!!, webDavPass!!)
     nextCallback?.onFinish(
         DbPathEvent(
             dbName = dbName!!,
             dbPathType = WEBDAV,
             fileUri = DbSynUtil.getCloudDbTempPath(WEBDAV.name, dbName!!),
-            cloudDiskPath = "${webDavUri}${dbName}.kdbx"
+            cloudDiskPath = "${webDavUri}${dbName}"
         )
     )
   }

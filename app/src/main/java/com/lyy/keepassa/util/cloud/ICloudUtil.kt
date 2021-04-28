@@ -43,23 +43,23 @@ interface ICloudUtil {
 
   /**
    * 获取云端文件信息
-   * @param cloudPath 云端文件路径
+   * @param fileKey webDav/dropbox中为云端路径，onedrive为id
    * @return null 云端文件不存在
    */
-  suspend fun getFileInfo(cloudPath: String): CloudFileInfo?
+  suspend fun getFileInfo(fileKey: String): CloudFileInfo?
 
   /**
    * 删除文件
-   * @param cloudPath 云端文件路径
+   * @param fileKey webDav/dropbox中为云端路径，onedrive为id
    * @return true 删除成功
    */
-  suspend fun delFile(cloudPath: String): Boolean
+  suspend fun delFile(fileKey: String): Boolean
 
   /**
    * 云端文件的修改时间
-   * @param cloudPath 云端文件路径
+   * @param fileKey 云端文件路径
    */
-  suspend fun getFileServiceModifyTime(cloudPath: String): Date
+  suspend fun getFileServiceModifyTime(fileKey: String): Date
 
   /**
    * 上传文件，上传完成需要更新[DbSynUtil.serviceModifyTime]

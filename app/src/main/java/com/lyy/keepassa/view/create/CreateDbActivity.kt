@@ -126,7 +126,7 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
     if (TextUtils.isEmpty(firstFragment.getDbName())) {
       firstFragment.handleDbNameNull()
       return
-    } else if (module.dbUri == null) {
+    } else if (module.localDbUri == null) {
       firstFragment.showSaveTypeDialog()
       return
     }
@@ -154,7 +154,7 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
         .replace(R.id.content, secondFragment!!)
         .addSharedElement(firstFragment.getShareElement(), getString(R.string.transition_db_name))
         .commit()
-    changeBg(true)
+//    changeBg(true)
   }
 
   /**
@@ -184,7 +184,7 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
             secondFragment!!.getShareElement(), getString(R.string.transition_db_name)
         )
         .commitNow()
-    changeBg(false)
+//    changeBg(false)
   }
 
   /**

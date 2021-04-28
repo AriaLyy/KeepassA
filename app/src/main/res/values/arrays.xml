@@ -65,57 +65,36 @@
     <item>2</item>
   </string-array>
 
-  <string-array name="main_items">
-    <item>File manager</item>
-    <item>Dropbox</item>
-    <!--    <item>OneDrive</item>-->
-    <!--    <item>GoogleDrive</item>-->
-    <item>WebDav</item>
-    <!--    <item>Ftp</item>-->
-    <item>history record</item>
-    <!--    <item>Other</item>-->
-  </string-array>
-
-  <integer-array name="main_item_icons">
+  <integer-array name="cloud_icons">
     <item>@drawable/ic_android</item>
     <item>@drawable/ic_dropbox</item>
-    <!--    <item>@drawable/ic_onedrive</item>-->
+    <item>@drawable/ic_onedrive</item>
     <!--    <item>@drawable/ic_google_drive</item>-->
     <item>@drawable/ic_http</item>
     <!--    <item>@drawable/ic_ftp</item>-->
-    <item>@drawable/ic_history</item>
+<!--    <item>@drawable/ic_history</item>-->
     <!--    <item>@drawable/ic_other</item>-->
   </integer-array>
 
   <!--  see DbOpenType -->
-  <integer-array name="main_item_types">
+  <integer-array name="cloud_type_ids">
     <item>0</item>
     <item>1</item>
-    <!--    <item>2</item>-->
+    <item>2</item>
     <!--    <item>3</item>-->
     <item>4</item>
     <!--    <item>5</item>-->
-    <item>6</item>
+<!--    <item>6</item>-->
   </integer-array>
 
-  <string-array name="path_type">
-    <item>File manager</item>
+  <string-array name="cloud_names">
+    <item>AFS</item>
     <item>Dropbox</item>
-<!--    <item>OneDrive</item>-->
-<!--    <item>GoogleDrive</item>-->
+    <item>OneDrive</item>
+    <!--    <item>GoogleDrive</item>-->
     <item>WebDav</item>
-<!--    <item>Ftp</item>-->
-<!--    <item>SFtp</item>-->
-  </string-array>
-
-  <string-array name="path_type_des">
-    <item>File manager</item>
-    <item>Dropbox</item>
-<!--    <item>OneDrive</item>-->
-<!--    <item>GoogleDrive</item>-->
-    <item>WebDav</item>
-<!--    <item>Ftp</item>-->
-<!--    <item>SFtp</item>-->
+    <!--    <item>Ftp</item>-->
+    <!--    <item>SFtp</item>-->
   </string-array>
 
 
@@ -162,7 +141,7 @@
     <item>Recycle bin</item>
   </string-array>
 
-  <string-array name="totp_arithmetic" >
+  <string-array name="totp_arithmetic">
     <item>SHA-1</item>
     <item>SHA-256</item>
     <item>SHA-512</item>

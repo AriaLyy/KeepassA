@@ -17,6 +17,7 @@ import android.text.InputType
 import android.text.TextUtils
 import android.view.View
 import android.view.animation.LinearInterpolator
+import android.view.inputmethod.EditorInfo
 import android.widget.RadioButton
 import androidx.lifecycle.ViewModelProvider
 import com.arialyy.frame.core.AbsFragment
@@ -86,14 +87,14 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
         binding.passwordLayout.endIconDrawable = resources.getDrawable(R.drawable.ic_view)
         binding.enterPasswordLayout.visibility = View.GONE
         binding.password.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-        // 重修修改确认按钮
+        // 重新修改确认按钮
 //        binding.password.imeOptions = EditorInfo.IME_ACTION_NEXT
       } else {
         binding.passwordLayout.endIconDrawable = resources.getDrawable(R.drawable.ic_view_off)
         binding.enterPasswordLayout.visibility = View.VISIBLE
-        binding.password.inputType =
-          InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT
-        // 重修修改确认按钮
+        binding.password.setRawInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT)
+
+        // 重新修改确认按钮
 //        binding.password.imeOptions = EditorInfo.IME_ACTION_DONE
       }
       // 将光标移动到最后
@@ -212,9 +213,6 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
   override fun onDestroy() {
     super.onDestroy()
     EventBusHelper.unReg(this)
-  }
-
-  override fun onDelayLoad() {
   }
 
 }
