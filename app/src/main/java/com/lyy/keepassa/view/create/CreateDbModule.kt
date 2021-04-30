@@ -28,9 +28,9 @@ import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
-import com.lyy.keepassa.view.DbPathType
-import com.lyy.keepassa.view.DbPathType.AFS
-import com.lyy.keepassa.view.DbPathType.UNKNOWN
+import com.lyy.keepassa.view.StorageType
+import com.lyy.keepassa.view.StorageType.AFS
+import com.lyy.keepassa.view.StorageType.UNKNOWN
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -64,7 +64,7 @@ class CreateDbModule : BaseModule() {
   /**
    * 数据库类型
    */
-  var dbPathType: DbPathType = UNKNOWN
+  var storageType: StorageType = UNKNOWN
 
   /**
    * 云盘路径
@@ -102,7 +102,7 @@ class CreateDbModule : BaseModule() {
         BaseApp.isV4 = !PwDatabase.isKDBExtension(dbName)
         val record = DbHistoryRecord(
             time = System.currentTimeMillis(),
-            type = dbPathType.name,
+            type = storageType.name,
             localDbUri = localDbUri.toString(),
             cloudDiskPath = cloudPath,
             keyUri = if (keyUri == null) "" else keyUri.toString(),
@@ -113,7 +113,7 @@ class CreateDbModule : BaseModule() {
         // 保存并上传数据库到云端
         val code = KdbUtil.saveDb()
 
-        if (dbPathType == AFS) {
+        if (storageType == AFS) {
           KeepassAUtil.instance.saveLastOpenDbHistory(record)
         }
 

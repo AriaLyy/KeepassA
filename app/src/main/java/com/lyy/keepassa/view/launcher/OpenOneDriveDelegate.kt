@@ -13,7 +13,7 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.cloud.OneDriveUtil
 import com.lyy.keepassa.util.putArgument
-import com.lyy.keepassa.view.DbPathType.ONE_DRIVE
+import com.lyy.keepassa.view.StorageType.ONE_DRIVE
 import com.lyy.keepassa.view.dialog.CloudFileListDialog
 
 /**

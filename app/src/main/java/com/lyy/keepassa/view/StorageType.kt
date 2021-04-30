@@ -13,7 +13,7 @@ import androidx.annotation.DrawableRes
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 
-enum class DbPathType(
+enum class StorageType(
   var type: Int,
   @DrawableRes var icon: Int,
   var lable: String

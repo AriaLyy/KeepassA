@@ -31,9 +31,9 @@ import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
-import com.lyy.keepassa.view.DbPathType
-import com.lyy.keepassa.view.DbPathType.DROPBOX
-import com.lyy.keepassa.view.DbPathType.WEBDAV
+import com.lyy.keepassa.view.StorageType
+import com.lyy.keepassa.view.StorageType.DROPBOX
+import com.lyy.keepassa.view.StorageType.WEBDAV
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.dialog.MsgDialog.OnBtClickListener
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -140,7 +140,7 @@ object DbSynUtil : SynStateCode {
     filePath: Uri
   ): String? {
     KLog.i(TAG, "开始下载文件，云端路径：${dbRecord.cloudDiskPath}，文件保存路径：${filePath}")
-    val util = CloudUtilFactory.getCloudUtil(DbPathType.valueOf(dbRecord.type))
+    val util = CloudUtilFactory.getCloudUtil(StorageType.valueOf(dbRecord.type))
     val path = util.downloadFile(context, dbRecord, filePath)
     if (!TextUtils.isEmpty(path)) {
       updateServiceModifyTime(dbRecord)

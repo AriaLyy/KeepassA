@@ -21,7 +21,7 @@ import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.cloud.WebDavUtil
 import com.lyy.keepassa.util.putArgument
-import com.lyy.keepassa.view.DbPathType.WEBDAV
+import com.lyy.keepassa.view.StorageType.WEBDAV
 import com.lyy.keepassa.view.create.CreateDbFirstFragment
 import com.lyy.keepassa.view.dialog.WebDavLoginDialog
 import kotlinx.coroutines.Dispatchers
@@ -112,7 +112,7 @@ class WebDavAuthFlow : IAuthFlow {
     nextCallback?.onFinish(
         DbPathEvent(
             dbName = dbName!!,
-            dbPathType = WEBDAV,
+            storageType = WEBDAV,
             fileUri = DbSynUtil.getCloudDbTempPath(WEBDAV.name, dbName!!),
             cloudDiskPath = "${webDavUri}${dbName}"
         )

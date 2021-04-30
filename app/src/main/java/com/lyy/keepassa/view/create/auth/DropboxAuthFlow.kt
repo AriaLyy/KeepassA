@@ -12,14 +12,16 @@ import android.content.Intent
 import android.text.Html
 import android.text.TextUtils
 import android.view.View
-import com.arialyy.frame.util.ResUtil
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.dropbox.core.android.Auth
 import com.lyy.keepassa.R
 import com.lyy.keepassa.event.DbPathEvent
 import com.lyy.keepassa.util.HitUtil
+import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.cloud.DropboxUtil
-import com.lyy.keepassa.view.DbPathType.DROPBOX
+import com.lyy.keepassa.view.StorageType.DROPBOX
 import com.lyy.keepassa.view.create.CreateDbFirstFragment
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.dialog.MsgDialog.OnBtClickListener
@@ -30,6 +32,7 @@ import com.lyy.keepassa.view.dialog.MsgDialog.OnBtClickListener
  * @Date 2021/2/25
  **/
 class DropboxAuthFlow : IAuthFlow {
+  private val TAG = javaClass.simpleName
   private lateinit var context: Context
   private var isNeedAuth = false
   private lateinit var callback: IAuthCallback
@@ -43,6 +46,7 @@ class DropboxAuthFlow : IAuthFlow {
   }
 
   override fun onResume() {
+    KLog.d(TAG, "onResume")
     if (!isNeedAuth || DropboxUtil.isAuthorized()) {
       return
     }
@@ -71,7 +75,7 @@ class DropboxAuthFlow : IAuthFlow {
         DbPathEvent(
             dbName = name,
             fileUri = DbSynUtil.getCloudDbTempPath(DROPBOX.name, name),
-            dbPathType = DROPBOX,
+            storageType = DROPBOX,
             cloudDiskPath = "/$name"
         )
     )
@@ -108,7 +112,9 @@ class DropboxAuthFlow : IAuthFlow {
     msgDialog.show()
   }
 
+  @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
   override fun onDestroy() {
+    KLog.d(TAG, "onDestroy")
   }
 
   override fun onActivityResult(

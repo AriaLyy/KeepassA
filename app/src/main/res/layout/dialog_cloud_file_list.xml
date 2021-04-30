@@ -68,6 +68,12 @@
         app:lottie_autoPlay="true"
         app:lottie_loop="true" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/path" />
+
     <com.lyy.keepassa.widget.EmptyDataFillView
         android:id="@+id/tempView"
         android:layout_width="match_parent"
@@ -75,12 +81,6 @@
         android:layout_below="@id/path"
         android:visibility="gone"
         app:edf_text="@string/no_file" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/path" />
 
   </RelativeLayout>
 </layout>

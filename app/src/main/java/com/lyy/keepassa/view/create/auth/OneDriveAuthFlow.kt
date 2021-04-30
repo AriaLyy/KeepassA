@@ -13,7 +13,7 @@ import com.lyy.keepassa.event.DbPathEvent
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.cloud.OneDriveUtil
-import com.lyy.keepassa.view.DbPathType.ONE_DRIVE
+import com.lyy.keepassa.view.StorageType.ONE_DRIVE
 import com.lyy.keepassa.view.create.CreateDbFirstFragment
 import com.lyy.keepassa.view.dialog.LoadingDialog
 
@@ -59,7 +59,7 @@ class OneDriveAuthFlow : IAuthFlow {
         DbPathEvent(
             dbName = name,
             fileUri = DbSynUtil.getCloudDbTempPath(ONE_DRIVE.name, name),
-            dbPathType = ONE_DRIVE,
+            storageType = ONE_DRIVE,
             cloudDiskPath = "/$name"
         )
     )

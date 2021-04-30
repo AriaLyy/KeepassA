@@ -8,17 +8,20 @@
 package com.lyy.keepassa.view.launcher
 
 import android.content.Intent
-import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 
 /**
  * @Author laoyuyu
  * @Description
  * @Date 2021/4/25
  **/
-interface IOpenDbDelegate {
+interface IOpenDbDelegate : LifecycleObserver {
 
   fun startFlow(fragment: ChangeDbFragment)
 
+  @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
   fun onResume()
 
   fun onActivityResult(
@@ -27,6 +30,7 @@ interface IOpenDbDelegate {
     data: Intent?
   )
 
+  @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
   fun destroy()
 
 }

@@ -17,10 +17,8 @@ import android.text.InputType
 import android.text.TextUtils
 import android.view.View
 import android.view.animation.LinearInterpolator
-import android.view.inputmethod.EditorInfo
 import android.widget.RadioButton
 import androidx.lifecycle.ViewModelProvider
-import com.arialyy.frame.core.AbsFragment
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentCreateDbSecondBinding
@@ -52,7 +50,7 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
     EventBusHelper.reg(this)
     module = ViewModelProvider(requireActivity()).get(CreateDbModule::class.java)
     binding.dbName.setText(module.dbName)
-    val leftDrawable = resources.getDrawable(module.dbPathType.icon, requireContext().theme)
+    val leftDrawable = resources.getDrawable(module.storageType.icon, requireContext().theme)
     val iconSize = resources.getDimension(R.dimen.icon_size)
     leftDrawable.setBounds(0, 0, iconSize.toInt(), iconSize.toInt())
     binding.dbHint.setCompoundDrawables(leftDrawable, null, null, null)

@@ -23,12 +23,12 @@ import com.lyy.keepassa.event.DbPathEvent
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
-import com.lyy.keepassa.view.DbPathType
-import com.lyy.keepassa.view.DbPathType.AFS
-import com.lyy.keepassa.view.DbPathType.DROPBOX
-import com.lyy.keepassa.view.DbPathType.ONE_DRIVE
-import com.lyy.keepassa.view.DbPathType.UNKNOWN
-import com.lyy.keepassa.view.DbPathType.WEBDAV
+import com.lyy.keepassa.view.StorageType
+import com.lyy.keepassa.view.StorageType.AFS
+import com.lyy.keepassa.view.StorageType.DROPBOX
+import com.lyy.keepassa.view.StorageType.ONE_DRIVE
+import com.lyy.keepassa.view.StorageType.UNKNOWN
+import com.lyy.keepassa.view.StorageType.WEBDAV
 import com.lyy.keepassa.view.create.auth.AuthFlowFactory
 import com.lyy.keepassa.view.create.auth.IAuthCallback
 import com.lyy.keepassa.view.create.auth.IAuthFlow
@@ -48,7 +48,7 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
   private lateinit var pathTypeDialog: PathTypeDialog
   private var authFlow: IAuthFlow? = null
   private var isAuthorized: Boolean = false
-  private val flowMap = arrayMapOf<DbPathType, IAuthFlow>()
+  private val flowMap = arrayMapOf<StorageType, IAuthFlow>()
 
   override fun initData() {
     module = ViewModelProvider(requireActivity()).get(CreateDbModule::class.java)
@@ -128,15 +128,16 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
     )
     pathTypeDialog.showNow(childFragmentManager, "PathDialog")
     pathTypeDialog.setOnDismissListener {
-      if (module.dbPathType == UNKNOWN) {
+      if (module.storageType == UNKNOWN) {
         requireActivity().finishAfterTransition()
         return@setOnDismissListener
       }
       setPathTypeInfo()
-      authFlow = flowMap[module.dbPathType]
+      authFlow = flowMap[module.storageType]
       if (authFlow == null) {
-        authFlow = AuthFlowFactory.getAuthFlow(module.dbPathType)
-        flowMap[module.dbPathType] = authFlow
+        authFlow = AuthFlowFactory.getAuthFlow(module.storageType)
+        flowMap[module.storageType] = authFlow
+        lifecycle.addObserver(authFlow!!)
       }
       authFlow?.let {
         it.initContent(requireContext(), object : IAuthCallback {
@@ -150,23 +151,18 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
     }
   }
 
-  override fun onResume() {
-    super.onResume()
-    authFlow?.onResume()
-  }
-
   /**
    * 流程结束
    */
   private fun finishFlow(event: DbPathEvent) {
-    if (event.fileUri == null && event.dbPathType == AFS) {
+    if (event.fileUri == null && event.storageType == AFS) {
       Log.e(TAG, "uri 获取失败")
       return
     }
     // 直接启动下一界面
     val startNextFragment = true
 
-    when (event.dbPathType) {
+    when (event.storageType) {
       AFS -> {
         binding.dbNameLayout.visibility = View.VISIBLE
         module.localDbUri = event.fileUri!!
@@ -191,7 +187,7 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
         module.dbName = event.dbName
       }
       else -> {
-        throw IllegalArgumentException("不支持的类型: ${event.dbPathType.lable}")
+        throw IllegalArgumentException("不支持的类型: ${event.storageType.lable}")
       }
     }
 
@@ -228,26 +224,21 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
    * 设置文件路径类型提示
    */
   private fun setPathTypeInfo() {
-    binding.pathType.text = module.dbPathType.lable
-    binding.pathType.setLeftIcon(module.dbPathType.icon)
-    setDbNameHint(module.dbPathType)
+    binding.pathType.text = module.storageType.lable
+    binding.pathType.setLeftIcon(module.storageType.icon)
+    setDbNameHint(module.storageType)
   }
 
   /**
    * 设置数据名输入提示
    */
-  private fun setDbNameHint(dbPathType: DbPathType) {
+  private fun setDbNameHint(storageType: StorageType) {
     binding.dbNameLayout.helperText = getString(R.string.help_create_db)
     binding.dbNameLayout.hint = getString(R.string.db_name)
   }
 
   override fun setLayoutId(): Int {
     return R.layout.fragment_create_db_first
-  }
-
-  override fun onDestroy() {
-    authFlow?.onDestroy()
-    super.onDestroy()
   }
 
   override fun onActivityResult(

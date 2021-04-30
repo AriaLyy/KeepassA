@@ -9,12 +9,15 @@ package com.lyy.keepassa.view.create.auth
 
 import android.content.Context
 import android.content.Intent
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import com.lyy.keepassa.event.DbPathEvent
-import com.lyy.keepassa.view.DbPathType
-import com.lyy.keepassa.view.DbPathType.AFS
-import com.lyy.keepassa.view.DbPathType.DROPBOX
-import com.lyy.keepassa.view.DbPathType.ONE_DRIVE
-import com.lyy.keepassa.view.DbPathType.WEBDAV
+import com.lyy.keepassa.view.StorageType
+import com.lyy.keepassa.view.StorageType.AFS
+import com.lyy.keepassa.view.StorageType.DROPBOX
+import com.lyy.keepassa.view.StorageType.ONE_DRIVE
+import com.lyy.keepassa.view.StorageType.WEBDAV
 import com.lyy.keepassa.view.create.CreateDbFirstFragment
 
 /**
@@ -22,7 +25,7 @@ import com.lyy.keepassa.view.create.CreateDbFirstFragment
  * @Description cloud file create
  * @Date 2021/2/25
  **/
-interface IAuthFlow {
+interface IAuthFlow : LifecycleObserver {
 
   fun initContent(
     context: Context,
@@ -31,6 +34,7 @@ interface IAuthFlow {
 
   fun startFlow()
 
+  @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
   fun onResume()
 
   /**
@@ -67,7 +71,7 @@ interface OnNextFinishCallback {
 
 object AuthFlowFactory {
 
-  fun getAuthFlow(type: DbPathType): IAuthFlow? = when (type) {
+  fun getAuthFlow(type: StorageType): IAuthFlow? = when (type) {
     DROPBOX -> DropboxAuthFlow()
     AFS -> AFSAuthFlow()
     WEBDAV -> WebDavAuthFlow()

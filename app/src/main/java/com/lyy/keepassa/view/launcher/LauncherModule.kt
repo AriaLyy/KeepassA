@@ -52,9 +52,10 @@ import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.cloud.WebDavUtil
 import com.lyy.keepassa.util.isAFS
-import com.lyy.keepassa.view.DbPathType.AFS
-import com.lyy.keepassa.view.DbPathType.DROPBOX
-import com.lyy.keepassa.view.DbPathType.WEBDAV
+import com.lyy.keepassa.view.StorageType.AFS
+import com.lyy.keepassa.view.StorageType.DROPBOX
+import com.lyy.keepassa.view.StorageType.ONE_DRIVE
+import com.lyy.keepassa.view.StorageType.WEBDAV
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.tencent.bugly.crashreport.BuglyLog
 import kotlinx.coroutines.Dispatchers
@@ -398,10 +399,13 @@ class LauncherModule : BaseModule() {
             openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
           }
           DROPBOX -> {
-            openDropboxDb(context, record, dbPass)
+            openCloudDb(context, record, dbPass)
           }
           WEBDAV -> {
             openWebDavDb(context, record, dbPass)
+          }
+          ONE_DRIVE -> {
+            openCloudDb(context, record, dbPass)
           }
           else -> null
         }
@@ -450,9 +454,9 @@ class LauncherModule : BaseModule() {
   }
 
   /**
-   * 打开dropbox的数据库
+   * 打开dropbox/oneDrive的数据库
    */
-  private suspend fun openDropboxDb(
+  private suspend fun openCloudDb(
     context: Context,
     record: DbHistoryRecord,
     dbPass: String

@@ -71,7 +71,7 @@ object OneDriveUtil : ICloudUtil {
   private val netManager by lazy {
     NetManager1().builderManager(BASE_URL, arrayListOf())
   }
-  private val dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
+  private val dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
   var loginCallback: OnLoginCallback? = null
   private var getTokenFailNum = 0
   private val MAX_FAIL_NUM = 1
@@ -262,8 +262,14 @@ object OneDriveUtil : ICloudUtil {
     if (!checkLogin()) {
       return null
     }
-    val response = netManager.request(MsalApi::class.java)
-        .getAppFolder(getAuthInfo().accessToken, getUserId())
+    KLog.d(TAG, "获取文件列表，path = $path")
+    val response = if (path == "/") {
+      netManager.request(MsalApi::class.java)
+          .getAppFolderList(getAuthInfo().accessToken, getUserId())
+    } else {
+      netManager.request(MsalApi::class.java)
+          .getFolderListById(getAuthInfo().accessToken, getUserId(), path)
+    }
     if (response.value == null) {
       return null
     }

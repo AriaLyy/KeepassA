@@ -27,11 +27,11 @@ import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentChangeDbBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.view.DbPathType
-import com.lyy.keepassa.view.DbPathType.AFS
-import com.lyy.keepassa.view.DbPathType.DROPBOX
-import com.lyy.keepassa.view.DbPathType.ONE_DRIVE
-import com.lyy.keepassa.view.DbPathType.WEBDAV
+import com.lyy.keepassa.view.StorageType
+import com.lyy.keepassa.view.StorageType.AFS
+import com.lyy.keepassa.view.StorageType.DROPBOX
+import com.lyy.keepassa.view.StorageType.ONE_DRIVE
+import com.lyy.keepassa.view.StorageType.WEBDAV
 import com.lyy.keepassa.view.create.CreateDbActivity
 import com.lyy.keepassa.view.launcher.ChangeDbFragment.Adataer.Holder
 import java.util.ArrayList
@@ -41,7 +41,7 @@ import java.util.ArrayList
  */
 class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
   private lateinit var modlue: LauncherModule
-  private var dbOpenType: DbPathType = AFS
+  private var storageType: StorageType = AFS
   private lateinit var dbDelegate: IOpenDbDelegate
 
   companion object {
@@ -89,19 +89,19 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
           when (typeId) {
             // 文件系统选择db
             AFS.type -> {
-              dbOpenType = AFS
+              storageType = AFS
               dbDelegate = OpenAFSDelegate()
             }
             DROPBOX.type -> {
-              dbOpenType = DROPBOX
+              storageType = DROPBOX
               dbDelegate = OpenDropBoxDelegate()
             }
             WEBDAV.type -> {
-              dbOpenType = WEBDAV
+              storageType = WEBDAV
               dbDelegate = OpenWebDavDelegate()
             }
             ONE_DRIVE.type -> {
-              dbOpenType = ONE_DRIVE
+              storageType = ONE_DRIVE
               dbDelegate = OpenOneDriveDelegate()
             }
             LauncherModule.HISTORY_ID -> { // 历史记录
@@ -112,8 +112,12 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
               )
             }
           }
+          if(this::dbDelegate.isInitialized){
+            lifecycle.removeObserver(dbDelegate)
+          }
           if (typeId != LauncherModule.HISTORY_ID) {
             dbDelegate.startFlow(this)
+            lifecycle.addObserver(dbDelegate)
           }
         }
     binding.fab.setOnClickListener {
@@ -125,12 +129,6 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
     }
   }
 
-  override fun onDestroy() {
-    super.onDestroy()
-    if (this::dbDelegate.isInitialized) {
-      dbDelegate.destroy()
-    }
-  }
 
   override fun onActivityResult(
     requestCode: Int,

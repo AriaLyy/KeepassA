@@ -28,7 +28,7 @@ data class MsalSourceItem(
   val file: MsalFileInfo?,
   val folder: MsalFolderInfo?
 ) {
-  fun isFolder() = folder == null
+  fun isFolder() = folder != null
 }
 
 @Keep

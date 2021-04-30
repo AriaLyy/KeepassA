@@ -43,19 +43,29 @@ interface MsalApi {
   ): MsalResponse<List<DriveItem>>
 
   /**
+   * 获取应用的app子文件夹列表
+   */
+  @GET("users/{user-id}/drive/items/{item-id}/children")
+  suspend fun getFolderListById(
+    @Header(TOKEN_KEY) authorization: String,
+    @Path("user-id") userId: String,
+    @Path("item-id") itemId: String
+  ): MsalResponse<List<MsalSourceItem>>
+
+  /**
    * 获取应用的app文件夹列表
    */
   @GET("users/{userId}/drive/special/$APP_ROOT_DIR/children")
-  suspend fun getAppFolder(
+  suspend fun getAppFolderList(
     @Header(TOKEN_KEY) authorization: String,
-    @Path("userId") userId: String,
+    @Path("userId") userId: String
   ): MsalResponse<List<MsalSourceItem>>
 
   /**
    * 获取单个文件信息
    * @param itemId 文件id
    */
-  @GET("users/{user-id}/drive/special/$APP_ROOT_DIR/items/{item-id}")
+  @GET("users/{user-id}/drive/items/{item-id}")
   suspend fun getFileInfoById(
     @Header(TOKEN_KEY) authorization: String,
     @Path("user-id") userId: String,
@@ -76,7 +86,7 @@ interface MsalApi {
   /**
    * 删除文件，如果成功，此调用将返回 204 No Content 响应，以指明资源已被删除，没有可返回的内容。
    */
-  @DELETE("users/{userId}/drive/special/$APP_ROOT_DIR/items/{itemId}")
+  @DELETE("users/{userId}/drive/items/{itemId}")
   suspend fun deleteFile(
     @Header(TOKEN_KEY) authorization: String,
     @Path("userId") userId: String,

@@ -14,7 +14,7 @@ import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.takePermission
-import com.lyy.keepassa.view.DbPathType.AFS
+import com.lyy.keepassa.view.StorageType.AFS
 import org.greenrobot.eventbus.EventBus
 
 /**

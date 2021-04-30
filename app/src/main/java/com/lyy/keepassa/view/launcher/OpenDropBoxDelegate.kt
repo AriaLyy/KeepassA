@@ -17,7 +17,7 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.cloud.DropboxUtil
 import com.lyy.keepassa.util.putArgument
-import com.lyy.keepassa.view.DbPathType.DROPBOX
+import com.lyy.keepassa.view.StorageType.DROPBOX
 import com.lyy.keepassa.view.dialog.CloudFileListDialog
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.dialog.MsgDialog.OnBtClickListener
