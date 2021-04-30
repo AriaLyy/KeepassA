@@ -60,7 +60,7 @@ android {
     debug {
       debuggable = true
       // 下面两个是debug-db的参数
-      //      resValue("string", "PORT_NUMBER", "8080") // 端口
+      resValue("string", "PORT_NUMBER", "10086") // 端口
       resValue("string", "DB_PASSWORD_keepassA.db", "stVz7QxFgzA7yMnH") // sqlcipher 加密密码
       consumerProguardFiles 'proguard-rules.pro'
     }
@@ -197,7 +197,7 @@ dependencies {
 
 //      debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
   // 数据库如果加密的话使用这个
-//  debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
+  debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
 
   // keepassA组件
   implementation 'me.laoyuyu.keepassa:KeepassIcon:0.2.6'

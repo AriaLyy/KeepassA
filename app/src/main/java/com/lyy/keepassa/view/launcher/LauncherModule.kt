@@ -50,6 +50,7 @@ import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
+import com.lyy.keepassa.util.cloud.OneDriveUtil
 import com.lyy.keepassa.util.cloud.WebDavUtil
 import com.lyy.keepassa.util.isAFS
 import com.lyy.keepassa.view.StorageType.AFS
@@ -61,6 +62,7 @@ import com.tencent.bugly.crashreport.BuglyLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -69,7 +71,7 @@ class LauncherModule : BaseModule() {
   private val unlockEvent = MutableLiveData<Pair<Boolean, String?>>()
   private val scope = MainScope()
 
-  companion object{
+  companion object {
     val HISTORY_ID = 0xA1
   }
 
@@ -320,7 +322,7 @@ class LauncherModule : BaseModule() {
     quickUnlockRecord: QuickUnLockRecord?,
     openDbRecord: DbHistoryRecord
   ) {
-    if (quickUnlockRecord != null){
+    if (quickUnlockRecord != null) {
       checkPassType(quickUnlockRecord.dbPass, quickUnlockRecord.keyPath)
     }
     if (BaseApp.passType == PassType.ONLY_KEY) {
@@ -399,13 +401,13 @@ class LauncherModule : BaseModule() {
             openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
           }
           DROPBOX -> {
-            openCloudDb(context, record, dbPass)
+            openDropboxDb(context, record, dbPass)
           }
           WEBDAV -> {
             openWebDavDb(context, record, dbPass)
           }
           ONE_DRIVE -> {
-            openCloudDb(context, record, dbPass)
+            openOneDriveDb(context, record, dbPass)
           }
           else -> null
         }
@@ -416,6 +418,58 @@ class LauncherModule : BaseModule() {
       temp
     }
     emit(db)
+  }
+
+  /**
+   * 打开OneDrive数据库
+   */
+  private suspend fun openOneDriveDb(
+    context: Context,
+    record: DbHistoryRecord,
+    dbPass: String
+  ): Database? {
+    val channel = Channel<Database?>()
+    var db: Database? = null
+
+    OneDriveUtil.initOneDrive {
+      if (!it) {
+        scope.launch {
+          channel.send(null)
+        }
+        return@initOneDrive
+      }
+      OneDriveUtil.loginCallback = object : OneDriveUtil.OnLoginCallback {
+        override fun callback(success: Boolean) {
+          scope.launch {
+            if (!success){
+              channel.send(null)
+              return@launch
+            }
+            val cacheFile = record.getDbUri()
+                .toFile()
+            if (cacheFile.exists()
+                && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
+            ) {
+              KLog.i(TAG, "文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
+              db = openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
+            }
+            val cachePath = DbSynUtil.downloadOnly(context, record, Uri.fromFile(cacheFile))
+            db = if (TextUtils.isEmpty(cachePath)) {
+              null
+            } else {
+              openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
+            }
+            channel.send(db)
+          }
+        }
+      }
+      OneDriveUtil.loadAccount()
+    }
+    repeat(1) {
+      db = channel.receive()
+    }
+
+    return db
   }
 
   /**
@@ -454,9 +508,9 @@ class LauncherModule : BaseModule() {
   }
 
   /**
-   * 打开dropbox/oneDrive的数据库
+   * 打开dropbox的数据库
    */
-  private suspend fun openCloudDb(
+  private suspend fun openDropboxDb(
     context: Context,
     record: DbHistoryRecord,
     dbPass: String

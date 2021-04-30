@@ -113,10 +113,6 @@ class CreateDbModule : BaseModule() {
         // 保存并上传数据库到云端
         val code = KdbUtil.saveDb()
 
-        if (storageType == AFS) {
-          KeepassAUtil.instance.saveLastOpenDbHistory(record)
-        }
-
         if (code != DbSynUtil.STATE_SUCCEED) {
           return@withContext null
         }

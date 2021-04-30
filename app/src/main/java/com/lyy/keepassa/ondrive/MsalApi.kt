@@ -70,18 +70,18 @@ interface MsalApi {
     @Header(TOKEN_KEY) authorization: String,
     @Path("user-id") userId: String,
     @Path("item-id") itemId: String
-  ): MsalResponse<MsalSourceItem>
+  ): MsalSourceItem?
 
   /**
    * 获取单个文件信息
    * @param itemPath 文件在云盘的相对路径，如：/xxx.zip
    */
-  @GET("/users/{user-id}/drive/special/$APP_ROOT_DIR:/{item-path}")
+  @GET("users/{user-id}/drive/special/$APP_ROOT_DIR:/{item-path}")
   suspend fun getFileInfoByPath(
     @Header(TOKEN_KEY) authorization: String,
     @Path("user-id") userId: String,
     @Path("item-path") itemPath: String
-  ): MsalResponse<MsalSourceItem>
+  ): MsalSourceItem?
 
   /**
    * 删除文件，如果成功，此调用将返回 204 No Content 响应，以指明资源已被删除，没有可返回的内容。

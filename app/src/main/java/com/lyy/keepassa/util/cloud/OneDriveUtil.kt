@@ -35,6 +35,8 @@ import com.microsoft.identity.client.ISingleAccountPublicClientApplication.SignO
 import com.microsoft.identity.client.PublicClientApplication
 import com.microsoft.identity.client.SilentAuthenticationCallback
 import com.microsoft.identity.client.exception.MsalException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.Headers
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -294,7 +296,7 @@ object OneDriveUtil : ICloudUtil {
     KLog.d(TAG, "getFileInfo, userId = ${userId}, fileKey = $fileKey")
 
     try {
-      val response: MsalResponse<MsalSourceItem> = if (fileKey.startsWith("/")) {
+      val response: MsalSourceItem? = if (fileKey.startsWith("/")) {
         netManager.request(MsalApi::class.java)
             .getFileInfoByPath(
                 getAuthInfo().accessToken,
@@ -305,10 +307,11 @@ object OneDriveUtil : ICloudUtil {
         netManager.request(MsalApi::class.java)
             .getFileInfoById(getAuthInfo().accessToken, userId, fileKey)
       }
-      if (response.value == null) {
+      if (response == null) {
+        KLog.e(TAG, "获取文件信息失败")
         return null
       }
-      return msalItem2CloudItem(response.value)
+      return msalItem2CloudItem(response)
     } catch (e: Exception) {
       e.printStackTrace()
       return null
@@ -319,6 +322,7 @@ object OneDriveUtil : ICloudUtil {
    * 如果成功，此调用将返回 204 No Content 响应，以指明资源已被删除，没有可返回的内容。
    */
   override suspend fun delFile(fileKey: String): Boolean {
+    KLog.d(TAG, "删除文件，fileKey = $fileKey")
     val response = netManager.request(MsalApi::class.java)
         .deleteFile(getAuthInfo().accessToken, getUserId(), fileKey)
     return response.code() == HttpURLConnection.HTTP_NO_CONTENT
@@ -333,7 +337,6 @@ object OneDriveUtil : ICloudUtil {
     context: Context,
     dbRecord: DbHistoryRecord
   ): Boolean {
-
     val file = File(Uri.parse(dbRecord.localDbUri).path!!)
     try {
       // 创建上传session
@@ -405,43 +408,44 @@ object OneDriveUtil : ICloudUtil {
     dbRecord: DbHistoryRecord,
     filePath: Uri
   ): String? {
+    return withContext(Dispatchers.IO) {
+      val hb = Headers.Builder()
+          .add(TOKEN_KEY, getAuthInfo().accessToken)
+          .build()
+      val request: Request = Request.Builder()
+          .url("$BASE_URL/users/${getUserId()}/drive/items/${dbRecord.cloudDiskPath}/content")
+          .headers(hb)
+          .build()
+      val call = netManager.getClient()
+          .newCall(request)
 
-    val hb = Headers.Builder()
-        .add(TOKEN_KEY, getAuthInfo().accessToken)
-        .build()
-    val request: Request = Request.Builder()
-        .url("$BASE_URL/users/${getUserId()}/drive/items/${dbRecord.cloudDiskPath}/content")
-        .headers(hb)
-        .build()
-    val call = netManager.getClient()
-        .newCall(request)
-
-    try {
-      val response = call.execute()
-      if (!response.isSuccessful) {
-        return null
-      }
-      val byteSystem = response.body?.byteStream() ?: return null
-      val outF = File(filePath.path)
-      val fr = FileUtil.createFile(outF)
-      if (!fr) {
-        KLog.e(TAG, "创建文件失败，path = $filePath")
-        return null
-      }
-      var len = 0
-      val buf = ByteArray(1024)
-      val fos = FileOutputStream(outF)
-      do {
-        len = byteSystem.read(buf)
-        if (len != -1) {
-          fos.write(buf, 0, len)
+      try {
+        val response = call.execute()
+        if (!response.isSuccessful) {
+          return@withContext null
         }
-      } while (len != -1)
-    } catch (e: Exception) {
-      e.printStackTrace()
-      return null
+        val byteSystem = response.body?.byteStream() ?: return@withContext null
+        val outF = File(filePath.path)
+        val fr = FileUtil.createFile(outF)
+        if (!fr) {
+          KLog.e(TAG, "创建文件失败，path = $filePath")
+          return@withContext null
+        }
+        var len = 0
+        val buf = ByteArray(1024)
+        val fos = FileOutputStream(outF)
+        do {
+          len = byteSystem.read(buf)
+          if (len != -1) {
+            fos.write(buf, 0, len)
+          }
+        } while (len != -1)
+        return@withContext filePath.toString()
+      } catch (e: Exception) {
+        e.printStackTrace()
+      }
+      return@withContext null
     }
 
-    return filePath.toString()
   }
 }

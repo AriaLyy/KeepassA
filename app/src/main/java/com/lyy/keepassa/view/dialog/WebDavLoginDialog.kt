@@ -56,7 +56,7 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
 
     if (BuildConfig.DEBUG) {
       val p =
-        FileUtil.loadConfig(File("${requireContext().filesDir.path}/config/webDav.properties"))
+        FileUtil.loadConfig(File("${requireContext().filesDir.path}/webDav.properties"))
       binding.uri.setText(p.getProperty("uri"))
       binding.userName.setText(p.getProperty("userName"))
       binding.password.setText(p.getProperty("password"))
@@ -185,6 +185,9 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
                         uriType = WEBDAV
                     )
                 )
+            if (!isAdded){
+              return@Observer
+            }
             HitUtil.toaskLong("${getString(R.string.login)} ${getString(R.string.success)}")
             dismiss()
             return@Observer
