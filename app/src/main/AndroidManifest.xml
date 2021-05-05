@@ -21,9 +21,10 @@
       android:theme="@style/AppTheme.NoActionBar"
       tools:ignore="GoogleAppIndexingWarning">
     <activity
-        android:windowSoftInputMode="adjustResize"
         android:name=".view.launcher.LauncherActivity"
-        android:launchMode="singleTask"> <!-- taskAffinity 指定activity栈，可以使用finishAffinity关闭该栈中的activity -->
+        android:launchMode="singleTask"
+        android:screenOrientation="portrait"
+        android:windowSoftInputMode="adjustResize"> <!-- taskAffinity 指定activity栈，可以使用finishAffinity关闭该栈中的activity -->
       <!--        android:windowSoftInputMode="stateVisible|adjustResize"-->
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
@@ -95,39 +96,65 @@
 
     <activity
         android:name=".service.input.EntryOtherInfoDialog"
+        android:screenOrientation="portrait"
         android:theme="@style/DialogActivityStyle" />
 
-    <activity android:name=".view.search.AutoFillEntrySearchActivity" />
+    <activity
+        android:name=".view.search.AutoFillEntrySearchActivity"
+        android:screenOrientation="portrait" />
 
     <activity
         android:name=".view.create.CreateDbActivity"
-        android:launchMode="singleTask" />
+        android:launchMode="singleTask"
+        android:screenOrientation="portrait" />
 
     <activity
         android:name=".view.main.MainActivity"
-        android:launchMode="singleTask" />
+        android:launchMode="singleTask"
+        android:screenOrientation="portrait" />
 
     <activity
         android:name=".view.MarkDownEditorActivity"
+        android:screenOrientation="portrait"
         android:windowSoftInputMode="stateVisible|adjustResize" />
-    <activity android:name=".view.main.MainSettingActivity" />
-    <activity android:name=".view.detail.GroupDetailActivity" />
-    <activity android:name=".view.detail.EntryDetailActivity" />
-    <activity android:name=".view.ChooseGroupActivity" />
-    <activity android:name=".view.setting.SettingActivity" />
-    <activity android:name=".view.fingerprint.FingerprintActivity" />
-    <activity android:name=".view.create.CreateEntryActivity" />
-    <activity android:name=".view.create.GeneratePassActivity" />
+    <activity
+        android:name=".view.main.MainSettingActivity"
+        android:screenOrientation="portrait" />
+    <activity
+        android:name=".view.detail.GroupDetailActivity"
+        android:screenOrientation="portrait" />
+    <activity
+        android:name=".view.detail.EntryDetailActivity"
+        android:screenOrientation="portrait" />
+    <activity
+        android:name=".view.ChooseGroupActivity"
+        android:screenOrientation="portrait" />
+    <activity
+        android:name=".view.setting.SettingActivity"
+        android:screenOrientation="portrait" />
+    <activity
+        android:name=".view.fingerprint.FingerprintActivity"
+        android:screenOrientation="portrait" />
+    <activity
+        android:name=".view.create.CreateEntryActivity"
+        android:screenOrientation="portrait" />
+    <activity
+        android:name=".view.create.GeneratePassActivity"
+        android:screenOrientation="portrait" />
     <activity
         android:name=".view.main.QuickUnlockActivity"
-        android:launchMode="singleTask" />
-    <activity android:name=".view.launcher.OpenDbHistoryActivity" />
+        android:launchMode="singleTask"
+        android:screenOrientation="portrait" />
+    <activity
+        android:name=".view.launcher.OpenDbHistoryActivity"
+        android:screenOrientation="portrait" />
 
     <!-- dropbox -->
     <activity
         android:name="com.dropbox.core.android.AuthActivity"
         android:configChanges="orientation|keyboard"
-        android:launchMode="singleTask">
+        android:launchMode="singleTask"
+        android:screenOrientation="portrait">
       <intent-filter>
 
         <!-- Change this to be db- followed by your app key -->
@@ -140,16 +167,20 @@
       </intent-filter>
     </activity>
 
-<!--   onedrive -->
+    <!--   onedrive -->
     <activity
-        android:name="com.microsoft.identity.client.BrowserTabActivity">
+        android:name="com.microsoft.identity.client.BrowserTabActivity"
+        android:screenOrientation="portrait">
       <intent-filter>
         <action android:name="android.intent.action.VIEW" />
+
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
-        <data android:scheme="msauth"
+
+        <data
             android:host="msal_package_name"
-            android:path="/msal_signature_hash" />
+            android:path="/msal_signature_hash"
+            android:scheme="msauth" />
       </intent-filter>
     </activity>
 

@@ -31,7 +31,7 @@ abstract class BaseFragment<VB : ViewDataBinding> : AbsFragment<VB>() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    AutoSize.autoConvertDensity(activity, 411f, true);
+//    AutoSize.autoConvertDensity(activity, 411f, true);
     return super.onCreateView(inflater, container, savedInstanceState)
   }
 
