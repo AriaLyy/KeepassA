@@ -20,8 +20,8 @@ android {
     applicationId "com.lyy.keepassa"
     minSdkVersion rootProject.ext.minSdkVersion
     targetSdkVersion rootProject.ext.targetSdkVersion
-    versionCode 34
-    versionName "2.0.2"
+    versionCode 36
+    versionName "2.1"
     multiDexEnabled true
     vectorDrawables.useSupportLibrary = true
 
@@ -156,7 +156,8 @@ afterEvaluate {
 
 boolean isReleaseBuildType(){
   for(String s : gradle.startParameter.taskNames) {
-    if (s.contains("Release") | s.contains("release")) {
+    println("builtType: " + s)
+    if (s.contains("Release") | s.contains("release") | s.contains("reBuildChannel")) {
       return true
     }
   }
@@ -170,7 +171,7 @@ android.applicationVariants.all { variant ->
     output.processManifest.doLast {
       // Stores the path to the maifest.
       String manifestPath = "${multiApkManifestOutputDirectory.asFile.get()}/AndroidManifest.xml"
-
+      println("版本类型：" + isReleaseBuildType())
       def keyHash = "5qMkIKbIM5Lx7VbajX8mT3rKXpE="
       if (isReleaseBuildType()){
         keyHash = "xv3czaACtp98KvuSqP3GRLCxjrc="

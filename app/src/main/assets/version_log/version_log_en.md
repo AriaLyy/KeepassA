@@ -1,3 +1,11 @@
+#### 2.1（20201/5/5）
+- 【New】OneDrive support
+- 【New】Added French translation
+- 【New】Compatible with API30
+- 【Fix】Crash when saving notes
+- 【Fix】When the screen is horizontal, the size of the interface is enlarged
+- 【Fix】Problems caused by multiple Unlock of WebDav
+
 #### 2.0.2 (2021/4/1)
 - 【New】Close loading animation selection[Setting](route://keepassA.com/kpa?activity=SettingActivity) -> UI settings
 - 【New】Does not automatically lock function[Setting](route://keepassA.com/kpa?activity=SettingActivity&type=app) -> Database settings
