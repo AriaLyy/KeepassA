@@ -12,12 +12,10 @@ package com.lyy.keepassa.base;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.multidex.MultiDexApplication;
 import androidx.preference.PreferenceManager;
@@ -35,7 +33,7 @@ import com.lyy.keepassa.receiver.ScreenLockReceiver;
 import com.lyy.keepassa.util.KeepassAUtil;
 import com.lyy.keepassa.util.LanguageUtil;
 import com.lyy.keepassa.util.QuickUnLockUtil;
-import com.lyy.keepassa.view.DbPathType;
+import com.lyy.keepassa.view.StorageType;
 import com.tencent.wcdb.database.SQLiteCipherSpec;
 import com.tencent.wcdb.room.db.WCDBOpenHelperFactory;
 import com.zzhoujay.richtext.RichText;
@@ -66,7 +64,7 @@ public class BaseApp extends MultiDexApplication {
   private Context resContext;
 
   public static boolean isAFS() {
-    return dbRecord == null || DbPathType.valueOf(dbRecord.getType()) == DbPathType.AFS;
+    return dbRecord == null || StorageType.valueOf(dbRecord.getType()) == StorageType.AFS;
   }
 
   @Override

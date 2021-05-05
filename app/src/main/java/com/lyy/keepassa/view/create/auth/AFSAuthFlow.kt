@@ -15,7 +15,7 @@ import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.event.DbPathEvent
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.takePermission
-import com.lyy.keepassa.view.DbPathType.AFS
+import com.lyy.keepassa.view.StorageType.AFS
 import com.lyy.keepassa.view.create.CreateDbFirstFragment
 
 /**
@@ -61,7 +61,7 @@ class AFSAuthFlow : IAuthFlow {
         DbPathEvent(
             dbName = UriUtil.getFileNameFromUri(context, dbUri),
             fileUri = dbUri,
-            dbPathType = AFS
+            storageType = AFS
         )
     )
   }
@@ -90,7 +90,7 @@ class AFSAuthFlow : IAuthFlow {
             DbPathEvent(
                 dbName = UriUtil.getFileNameFromUri(context, this),
                 fileUri = this,
-                dbPathType = AFS
+                storageType = AFS
             )
         )
       }

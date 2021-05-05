@@ -50,16 +50,19 @@ import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
+import com.lyy.keepassa.util.cloud.OneDriveUtil
 import com.lyy.keepassa.util.cloud.WebDavUtil
 import com.lyy.keepassa.util.isAFS
-import com.lyy.keepassa.view.DbPathType.AFS
-import com.lyy.keepassa.view.DbPathType.DROPBOX
-import com.lyy.keepassa.view.DbPathType.WEBDAV
+import com.lyy.keepassa.view.StorageType.AFS
+import com.lyy.keepassa.view.StorageType.DROPBOX
+import com.lyy.keepassa.view.StorageType.ONE_DRIVE
+import com.lyy.keepassa.view.StorageType.WEBDAV
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.tencent.bugly.crashreport.BuglyLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -67,6 +70,10 @@ class LauncherModule : BaseModule() {
   private val itemData: MutableLiveData<List<SimpleItemEntity>> = MutableLiveData()
   private val unlockEvent = MutableLiveData<Pair<Boolean, String?>>()
   private val scope = MainScope()
+
+  companion object {
+    val HISTORY_ID = 0xA1
+  }
 
   init {
     val pre = BaseApp.APP.getSharedPreferences(Constance.PRE_FILE_NAME, Context.MODE_PRIVATE)
@@ -315,7 +322,7 @@ class LauncherModule : BaseModule() {
     quickUnlockRecord: QuickUnLockRecord?,
     openDbRecord: DbHistoryRecord
   ) {
-    if (quickUnlockRecord != null){
+    if (quickUnlockRecord != null) {
       checkPassType(quickUnlockRecord.dbPass, quickUnlockRecord.keyPath)
     }
     if (BaseApp.passType == PassType.ONLY_KEY) {
@@ -399,6 +406,9 @@ class LauncherModule : BaseModule() {
           WEBDAV -> {
             openWebDavDb(context, record, dbPass)
           }
+          ONE_DRIVE -> {
+            openOneDriveDb(context, record, dbPass)
+          }
           else -> null
         }
       } catch (e: Exception) {
@@ -408,6 +418,58 @@ class LauncherModule : BaseModule() {
       temp
     }
     emit(db)
+  }
+
+  /**
+   * 打开OneDrive数据库
+   */
+  private suspend fun openOneDriveDb(
+    context: Context,
+    record: DbHistoryRecord,
+    dbPass: String
+  ): Database? {
+    val channel = Channel<Database?>()
+    var db: Database? = null
+
+    OneDriveUtil.initOneDrive {
+      if (!it) {
+        scope.launch {
+          channel.send(null)
+        }
+        return@initOneDrive
+      }
+      OneDriveUtil.loginCallback = object : OneDriveUtil.OnLoginCallback {
+        override fun callback(success: Boolean) {
+          scope.launch {
+            if (!success){
+              channel.send(null)
+              return@launch
+            }
+            val cacheFile = record.getDbUri()
+                .toFile()
+            if (cacheFile.exists()
+                && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
+            ) {
+              KLog.i(TAG, "文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
+              db = openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
+            }
+            val cachePath = DbSynUtil.downloadOnly(context, record, Uri.fromFile(cacheFile))
+            db = if (TextUtils.isEmpty(cachePath)) {
+              null
+            } else {
+              openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
+            }
+            channel.send(db)
+          }
+        }
+      }
+      OneDriveUtil.loadAccount()
+    }
+    repeat(1) {
+      db = channel.receive()
+    }
+
+    return db
   }
 
   /**
@@ -518,9 +580,9 @@ class LauncherModule : BaseModule() {
    */
   fun getDbOpenTypeData(context: Context): LiveData<List<SimpleItemEntity>>? {
 
-    val titles = context.resources.getStringArray(R.array.main_items)
-    val icons = context.resources.obtainTypedArray(R.array.main_item_icons)
-    val types = context.resources.getIntArray(R.array.main_item_types)
+    val titles = context.resources.getStringArray(R.array.cloud_names)
+    val icons = context.resources.obtainTypedArray(R.array.cloud_icons)
+    val types = context.resources.getIntArray(R.array.cloud_type_ids)
 
     val items = ArrayList<SimpleItemEntity>()
     for ((index, title) in titles.withIndex()) {
@@ -531,6 +593,15 @@ class LauncherModule : BaseModule() {
       items.add(item)
     }
     icons.recycle()
+
+    // add history item
+    val historyItem = SimpleItemEntity().apply {
+      title = context.resources.getString(R.string.history_record)
+      id = HISTORY_ID
+      icon = R.drawable.ic_history
+    }
+    items.add(historyItem)
+
     itemData.postValue(items)
     return itemData
   }

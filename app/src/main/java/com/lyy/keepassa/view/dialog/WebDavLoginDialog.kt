@@ -14,7 +14,6 @@ import android.text.TextUtils
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.arialyy.frame.util.FileUtil
-import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.BuildConfig
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
@@ -24,7 +23,7 @@ import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.getArgument
-import com.lyy.keepassa.view.DbPathType.WEBDAV
+import com.lyy.keepassa.view.StorageType.WEBDAV
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -57,7 +56,7 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
 
     if (BuildConfig.DEBUG) {
       val p =
-        FileUtil.loadConfig(File("${requireContext().filesDir.path}/config/webDav.properties"))
+        FileUtil.loadConfig(File("${requireContext().filesDir.path}/webDav.properties"))
       binding.uri.setText(p.getProperty("uri"))
       binding.userName.setText(p.getProperty("userName"))
       binding.password.setText(p.getProperty("password"))
@@ -186,6 +185,9 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
                         uriType = WEBDAV
                     )
                 )
+            if (!isAdded){
+              return@Observer
+            }
             HitUtil.toaskLong("${getString(R.string.login)} ${getString(R.string.success)}")
             dismiss()
             return@Observer

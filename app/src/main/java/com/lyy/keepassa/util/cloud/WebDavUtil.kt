@@ -17,7 +17,6 @@ import com.arialyy.frame.util.FileUtil
 import com.arialyy.frame.util.StringUtil
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.util.KLog
-import com.tencent.bugly.crashreport.BuglyLog
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import java.io.FileOutputStream
 import java.nio.channels.Channels
@@ -57,7 +56,7 @@ object WebDavUtil : ICloudUtil {
     } catch (e: Exception) {
       sardine = null
       e.printStackTrace()
-      BuglyLog.e(TAG, "checkLogin", e)
+      KLog.e(TAG, "checkLogin", e)
       return false
     }
     return true
@@ -71,7 +70,7 @@ object WebDavUtil : ICloudUtil {
     uri: String,
     userName: String,
     password: String
-  ): OkHttpSardine? {
+  ): OkHttpSardine {
     sardine = OkHttpSardine()
     sardine?.let {
       it.setCredentials(userName, password)
@@ -99,7 +98,7 @@ object WebDavUtil : ICloudUtil {
       }
     } catch (e: Exception) {
       e.printStackTrace()
-      BuglyLog.e(TAG, "获取文件列表失败", e)
+      KLog.e(TAG, "获取文件列表失败", e)
     }
     return list
   }
@@ -114,11 +113,11 @@ object WebDavUtil : ICloudUtil {
     return false
   }
 
-  override suspend fun getFileInfo(cloudPath: String): CloudFileInfo? {
-    Log.i(TAG, "获取文件信息，cloudPath：$cloudPath")
+  override suspend fun getFileInfo(fileKey: String): CloudFileInfo? {
+    Log.i(TAG, "获取文件信息，cloudPath：$fileKey")
     try {
       sardine ?: return null
-      val resources = sardine!!.list(convertUrl(cloudPath))
+      val resources = sardine!!.list(convertUrl(fileKey))
       if (resources == null || resources.isEmpty()) {
         return null
       }
@@ -128,27 +127,27 @@ object WebDavUtil : ICloudUtil {
       )
     } catch (e: Exception) {
       e.printStackTrace()
-      BuglyLog.e(TAG, "获取文件信息失败", e)
+      KLog.e(TAG, "获取文件信息失败", e)
       e.printStackTrace()
     }
     return null
   }
 
-  override suspend fun delFile(cloudPath: String): Boolean {
+  override suspend fun delFile(fileKey: String): Boolean {
     sardine ?: return false
     try {
-      sardine!!.delete(convertUrl(cloudPath))
+      sardine!!.delete(convertUrl(fileKey))
     } catch (e: Exception) {
       e.printStackTrace()
-      BuglyLog.e(TAG, "删除文件失败", e)
+      KLog.e(TAG, "删除文件失败", e)
       return false
     }
     return true
   }
 
-  override suspend fun getFileServiceModifyTime(cloudPath: String): Date {
+  override suspend fun getFileServiceModifyTime(fileKey: String): Date {
     sardine ?: return Date()
-    val cloudInfo = getFileInfo(convertUrl(cloudPath))
+    val cloudInfo = getFileInfo(convertUrl(fileKey))
     cloudInfo ?: return Date()
     return cloudInfo.serviceModifyDate
   }
@@ -169,7 +168,7 @@ object WebDavUtil : ICloudUtil {
       }
     } catch (e: Exception) {
       e.printStackTrace()
-      BuglyLog.e(TAG, "上传文件失败", e)
+      KLog.e(TAG, "上传文件失败", e)
     }
 
     return true
@@ -198,7 +197,7 @@ object WebDavUtil : ICloudUtil {
         foc.transferFrom(fic, 0, fileInfo!!.size)
       } catch (e: Exception) {
         e.printStackTrace()
-        BuglyLog.e(TAG, "下载文件失败", e)
+        KLog.e(TAG, "下载文件失败", e)
         return null
       }finally {
         it.unlock(cloudPath, token)

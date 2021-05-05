@@ -60,7 +60,7 @@ android {
     debug {
       debuggable = true
       // 下面两个是debug-db的参数
-      //      resValue("string", "PORT_NUMBER", "8080") // 端口
+      resValue("string", "PORT_NUMBER", "10086") // 端口
       resValue("string", "DB_PASSWORD_keepassA.db", "stVz7QxFgzA7yMnH") // sqlcipher 加密密码
       consumerProguardFiles 'proguard-rules.pro'
     }
@@ -154,6 +154,37 @@ afterEvaluate {
   }
 }
 
+boolean isReleaseBuildType(){
+  for(String s : gradle.startParameter.taskNames) {
+    if (s.contains("Release") | s.contains("release")) {
+      return true
+    }
+  }
+  return false
+}
+
+// 替换AndroidManifest 参数
+// https://developer.android.com/studio/known-issues#variant_api
+android.applicationVariants.all { variant ->
+  variant.outputs.all { output ->
+    output.processManifest.doLast {
+      // Stores the path to the maifest.
+      String manifestPath = "${multiApkManifestOutputDirectory.asFile.get()}/AndroidManifest.xml"
+
+      def keyHash = "5qMkIKbIM5Lx7VbajX8mT3rKXpE="
+      if (isReleaseBuildType()){
+        keyHash = "xv3czaACtp98KvuSqP3GRLCxjrc="
+      }
+
+      // 替换one drive 配置
+      def updatedContent = file(manifestPath).getText('UTF-8')
+          .replaceAll("msal_package_name", "com.lyy.keepassa") // 包名
+          .replaceAll("msal_signature_hash", keyHash) // 当前签名hash
+      file(manifestPath).write(updatedContent, 'UTF-8')
+    }
+  }
+}
+
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -166,12 +197,12 @@ dependencies {
 
 //      debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
   // 数据库如果加密的话使用这个
-//  debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
+  debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
 
   // keepassA组件
-  implementation 'me.laoyuyu.keepassa:KeepassIcon:0.2.5'
-  implementation 'me.laoyuyu.keepassa:KeepassLib:0.2.5'
-  implementation 'me.laoyuyu.keepassa:KPAFrame:0.2.5'
+  implementation 'me.laoyuyu.keepassa:KeepassIcon:0.2.6'
+  implementation 'me.laoyuyu.keepassa:KeepassLib:0.2.6'
+  implementation 'me.laoyuyu.keepassa:KPAFrame:0.2.6'
   implementation 'me.laoyuyu.keepassa:UIWidget:0.2.6'
 
   // kotlin
@@ -278,6 +309,13 @@ dependencies {
 
 //  implementation "androidx.asynclayoutinflater:asynclayoutinflater:${rootProject.ext.asynclayoutinflaterVersion}"
   implementation 'me.weishu:free_reflection:3.0.1'
+
+  // onedrive
+  implementation 'com.microsoft.identity.client:msal:2.+'
+//  implementation 'com.microsoft.graph:microsoft-graph:1.5.+'
+
+  implementation "com.squareup.retrofit2:retrofit:${rootProject.ext.retrofitVersion}"
+
   // // =========================== 三方库 end =====================================
 
 }

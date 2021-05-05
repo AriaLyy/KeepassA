@@ -23,7 +23,6 @@ import android.net.Uri
 import android.os.Build
 import android.text.Html
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.view.inputmethod.EditorInfo
@@ -38,6 +37,7 @@ import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentOpenDbBinding
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.util.HitUtil
+import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.util.VibratorUtil
@@ -77,7 +77,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
    * 快速解锁读取数据库回调
    */
   private val quickUnlockObserver by lazy {
-    Observer<Pair<Boolean, String?>>{
+    Observer<Pair<Boolean, String?>> {
       if (it.first) {
         openDb(it.second)
       }
@@ -96,7 +96,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
       }
       BaseApp.isLocked = false
       BaseApp.KDB = db
-      Log.d(TAG, "打开数据库成功")
+      KLog.d(TAG, "打开数据库成功")
       loadingDialog.dismiss()
       if (openIsFromFill) {
         activity?.finish()
@@ -125,7 +125,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         if (TextUtils.isEmpty(openDbRecord.keyUri)
             || openDbRecord.keyUri.equals("null", ignoreCase = true)
         ) {
-           KeepassAUtil.instance.openSysFileManager(this@OpenDbFragment, "*/*", REQ_CODE_FILE)
+          KeepassAUtil.instance.openSysFileManager(this@OpenDbFragment, "*/*", REQ_CODE_FILE)
         }
         showKeyLayout()
       } else {
@@ -146,7 +146,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     binding.password.setOnEditorActionListener { _, actionId, _ ->
       // actionId 和android:imeOptions 属性要保持一致
       if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(binding.password.text)) {
-         KeepassAUtil.instance.toggleKeyBord(requireContext())
+        KeepassAUtil.instance.toggleKeyBord(requireContext())
         openDb(
             binding.password.text.toString()
                 .trim()
@@ -202,7 +202,8 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
       return
     }
 
-    modlue.getQuickUnlockRecord(openDbRecord, this).observe(this, quickUnlockObserver)
+    modlue.getQuickUnlockRecord(openDbRecord, this)
+        .observe(this, quickUnlockObserver)
   }
 
   /**
@@ -244,7 +245,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   }
 
   override fun onClick(v: View) {
-    if ( KeepassAUtil.instance.isFastClick()) {
+    if (KeepassAUtil.instance.isFastClick()) {
       return
     }
     when (v.id) {
@@ -257,7 +258,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         (activity as LauncherActivity).changeDb()
       }
       R.id.key -> {
-         KeepassAUtil.instance.openSysFileManager(this@OpenDbFragment, "*/*", REQ_CODE_FILE)
+        KeepassAUtil.instance.openSysFileManager(this@OpenDbFragment, "*/*", REQ_CODE_FILE)
       }
     }
   }
@@ -274,12 +275,12 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     modlue.checkPassType(cache, openDbRecord.keyUri)
 
     loadingDialog.show()
-    modlue.openDb(requireContext(), openDbRecord, cache).observe(this, openDbFinishedObserver)
+    modlue.openDb(requireContext(), openDbRecord, cache)
+        .observe(this, openDbFinishedObserver)
   }
 
   /**
    * 更新数据
-   * @param uri 如果打开文件的类型是AFS，该参数表示本地数据库的保存路径；如果是云端类型，表示的是云端路径
    */
   fun updateData(dbRecord: DbHistoryRecord) {
     openDbRecord.dbName = dbRecord.dbName
@@ -289,9 +290,9 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     openDbRecord.time = dbRecord.time
     openDbRecord.type = dbRecord.type
     openDbRecord.uid = dbRecord.uid
-    Log.i(TAG, "更新数据，record = $dbRecord")
+    KLog.i(TAG, "更新数据，record = $dbRecord")
     setDbName(dbRecord)
-    handleKeyUri( KeepassAUtil.instance.convertUri(dbRecord.keyUri))
+    handleKeyUri(KeepassAUtil.instance.convertUri(dbRecord.keyUri))
   }
 
   private fun setDbName(dbRecord: DbHistoryRecord) {

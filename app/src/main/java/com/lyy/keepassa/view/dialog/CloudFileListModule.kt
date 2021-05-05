@@ -13,7 +13,7 @@ import androidx.lifecycle.liveData
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.util.cloud.CloudFileInfo
 import com.lyy.keepassa.util.cloud.CloudUtilFactory
-import com.lyy.keepassa.view.DbPathType
+import com.lyy.keepassa.view.StorageType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -26,8 +26,8 @@ class CloudFileListModule : BaseModule() {
   /**
    * 获取云盘根路径
    */
-  fun getCloudRootPath(dbPathType: DbPathType): String {
-    return CloudUtilFactory.getCloudUtil(dbPathType)
+  fun getCloudRootPath(storageType: StorageType): String {
+    return CloudUtilFactory.getCloudUtil(storageType)
         .getRootPath()
   }
 
@@ -35,7 +35,7 @@ class CloudFileListModule : BaseModule() {
    * 获取云文件指定路径的文件列表
    */
   fun getFileList(
-    dbPathType: DbPathType,
+    storageType: StorageType,
     path: String
   ) = liveData {
     val temp = cache[path]
@@ -44,7 +44,7 @@ class CloudFileListModule : BaseModule() {
     } else {
       val data = withContext(Dispatchers.IO) {
         try {
-          val utile = CloudUtilFactory.getCloudUtil(dbPathType)
+          val utile = CloudUtilFactory.getCloudUtil(storageType)
           val list = utile.getFileList(path)
           cache[path] = list
           return@withContext list

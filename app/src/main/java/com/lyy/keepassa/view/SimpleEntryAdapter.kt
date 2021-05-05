@@ -12,6 +12,7 @@ package com.lyy.keepassa.view
 import android.content.Context
 import android.view.View
 import android.widget.CheckBox
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.isVisible
@@ -63,6 +64,14 @@ class SimpleEntryAdapter(
 
     holder!!.title.text = item.title
     holder.des.text = item.subTitle
+
+    if (item.subTitle.isBlank()){
+      holder.des.visibility = View.GONE
+      (holder.title.layoutParams as RelativeLayout.LayoutParams).addRule(RelativeLayout.CENTER_VERTICAL)
+    }else{
+      holder.des.visibility = View.VISIBLE
+      (holder.title.layoutParams as RelativeLayout.LayoutParams).removeRule(RelativeLayout.CENTER_VERTICAL)
+    }
 
     holder.cb.isVisible = showCheckBox
     if (showCheckBox){

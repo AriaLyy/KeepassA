@@ -13,8 +13,8 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import com.lyy.keepassa.entity.DbHistoryRecord
-import com.lyy.keepassa.view.DbPathType
-import com.lyy.keepassa.view.DbPathType.AFS
+import com.lyy.keepassa.view.StorageType
+import com.lyy.keepassa.view.StorageType.AFS
 import java.io.Serializable
 
 fun <T> Fragment.putArgument(
@@ -61,7 +61,7 @@ fun <T> Fragment.getArgument(key: String): T? {
 }
 
 fun DbHistoryRecord.isAFS(): Boolean {
-  return DbPathType.valueOf(this.type) === AFS
+  return StorageType.valueOf(this.type) === AFS
 }
 
 //fun <U, T> Fragment.getArgument(key: String) = BindLoader<U, T>(key)

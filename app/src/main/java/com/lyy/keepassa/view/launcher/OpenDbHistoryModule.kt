@@ -18,7 +18,7 @@ import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.isAFS
-import com.lyy.keepassa.view.DbPathType
+import com.lyy.keepassa.view.StorageType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -54,7 +54,7 @@ class OpenDbHistoryModule : BaseModule() {
         val list = ArrayList<SimpleItemEntity>()
         for (record in records) {
           val item = SimpleItemEntity()
-          item.icon = DbPathType.valueOf(record.type).icon
+          item.icon = StorageType.valueOf(record.type).icon
 
           // 检查权限，如果本地uri失效，者删除记录
           val uri = Uri.parse(record.localDbUri)

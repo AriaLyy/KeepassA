@@ -186,11 +186,11 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
    */
   private fun isUserName(f: ViewNode): Boolean {
     if (!isPassword(f)
-        || usernameHints.any { f.idEntry != null && f.idEntry.contains(it, ignoreCase = true) }
-        || usernameHints.any { f.hint != null && f.hint.contains(it, ignoreCase = true) }
+        || usernameHints.any { f.idEntry != null && f.idEntry!!.contains(it, ignoreCase = true) }
+        || usernameHints.any { f.hint != null && f.hint!!.contains(it, ignoreCase = true) }
     ) {
-      if ((f.idEntry != null && f.idEntry.contains("search", ignoreCase = false))
-          || (f.hint != null && f.hint.contains("search", ignoreCase = false))
+      if ((f.idEntry != null && f.idEntry!!.contains("search", ignoreCase = false))
+          || (f.hint != null && f.hint!!.contains("search", ignoreCase = false))
       ) {
         return false
       }
@@ -209,7 +209,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
         || inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD
         || inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         || inputType == InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
-        || passHints.any { f.idEntry != null && f.idEntry.contains(it, ignoreCase = true) }
+        || passHints.any { f.idEntry != null && f.idEntry!!.contains(it, ignoreCase = true) }
     ) {
       return true
     }

@@ -19,7 +19,6 @@ import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.RadioButton
 import androidx.lifecycle.ViewModelProvider
-import com.arialyy.frame.core.AbsFragment
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentCreateDbSecondBinding
@@ -51,7 +50,7 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
     EventBusHelper.reg(this)
     module = ViewModelProvider(requireActivity()).get(CreateDbModule::class.java)
     binding.dbName.setText(module.dbName)
-    val leftDrawable = resources.getDrawable(module.dbPathType.icon, requireContext().theme)
+    val leftDrawable = resources.getDrawable(module.storageType.icon, requireContext().theme)
     val iconSize = resources.getDimension(R.dimen.icon_size)
     leftDrawable.setBounds(0, 0, iconSize.toInt(), iconSize.toInt())
     binding.dbHint.setCompoundDrawables(leftDrawable, null, null, null)
@@ -86,14 +85,14 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
         binding.passwordLayout.endIconDrawable = resources.getDrawable(R.drawable.ic_view)
         binding.enterPasswordLayout.visibility = View.GONE
         binding.password.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-        // 重修修改确认按钮
+        // 重新修改确认按钮
 //        binding.password.imeOptions = EditorInfo.IME_ACTION_NEXT
       } else {
         binding.passwordLayout.endIconDrawable = resources.getDrawable(R.drawable.ic_view_off)
         binding.enterPasswordLayout.visibility = View.VISIBLE
-        binding.password.inputType =
-          InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT
-        // 重修修改确认按钮
+        binding.password.setRawInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT)
+
+        // 重新修改确认按钮
 //        binding.password.imeOptions = EditorInfo.IME_ACTION_DONE
       }
       // 将光标移动到最后
@@ -212,9 +211,6 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
   override fun onDestroy() {
     super.onDestroy()
     EventBusHelper.unReg(this)
-  }
-
-  override fun onDelayLoad() {
   }
 
 }

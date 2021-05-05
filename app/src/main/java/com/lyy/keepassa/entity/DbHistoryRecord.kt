@@ -17,7 +17,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.view.DbPathType
+import com.lyy.keepassa.view.StorageType
 
 /**
  * 历史记录实体
@@ -53,8 +53,8 @@ data class DbHistoryRecord(
   ) {
   }
 
-  fun getDbPathType(): DbPathType {
-    return DbPathType.valueOf(type)
+  fun getDbPathType(): StorageType {
+    return StorageType.valueOf(type)
   }
 
   fun getDbUri(): Uri {

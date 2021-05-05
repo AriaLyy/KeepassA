@@ -9,21 +9,23 @@
 
 package com.lyy.keepassa.util.cloud
 
-import com.lyy.keepassa.view.DbPathType
-import com.lyy.keepassa.view.DbPathType.DROPBOX
-import com.lyy.keepassa.view.DbPathType.WEBDAV
+import com.lyy.keepassa.view.StorageType
+import com.lyy.keepassa.view.StorageType.DROPBOX
+import com.lyy.keepassa.view.StorageType.ONE_DRIVE
+import com.lyy.keepassa.view.StorageType.WEBDAV
 
 /**
  * 云端文件工具工厂
  */
 object CloudUtilFactory {
 
-  fun getCloudUtil(dbPathType: DbPathType): ICloudUtil {
-    when (dbPathType) {
+  fun getCloudUtil(storageType: StorageType): ICloudUtil {
+    when (storageType) {
       DROPBOX -> return DropboxUtil
       WEBDAV -> return WebDavUtil
+      ONE_DRIVE -> return OneDriveUtil
     }
-    throw IllegalArgumentException("不识别的工具类型：${dbPathType}")
+    throw IllegalArgumentException("不识别的工具类型：${storageType}")
   }
 
 }

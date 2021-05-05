@@ -10,7 +10,7 @@
 package com.lyy.keepassa.event
 
 import android.net.Uri
-import com.lyy.keepassa.view.DbPathType
+import com.lyy.keepassa.view.StorageType
 
 /**
  * 选择数据库事件
@@ -24,7 +24,7 @@ data class DbPathEvent(
    * 本地数据库uri
    */
   var fileUri: Uri? = null,
-  var dbPathType: DbPathType = DbPathType.AFS, // uri类型，afs，google drive
+  var storageType: StorageType = StorageType.AFS, // uri类型，afs，google drive
   /**
    * 云端路径
    */

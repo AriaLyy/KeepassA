@@ -119,6 +119,38 @@
           android:textSize="20sp" />
     </RelativeLayout>
 
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/rlBtc"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="60dp"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:background="@drawable/ripple_white_selector"-->
+<!--        android:clickable="true"-->
+<!--        android:paddingStart="32dp"-->
+<!--        android:paddingEnd="32dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/rlPayPal">-->
+
+<!--      <ImageView-->
+<!--          android:id="@+id/ivBtc"-->
+<!--          android:layout_width="36dp"-->
+<!--          android:layout_height="36dp"-->
+<!--          android:layout_centerVertical="true"-->
+<!--          android:layout_marginStart="6dp"-->
+<!--          android:src="@drawable/ic_paypal" />-->
+
+<!--      <TextView-->
+<!--          style="@style/KpaTitleTextStyle"-->
+<!--          android:layout_width="wrap_content"-->
+<!--          android:layout_height="wrap_content"-->
+<!--          android:layout_centerVertical="true"-->
+<!--          android:layout_marginStart="36dp"-->
+<!--          android:layout_toEndOf="@+id/ivBtc"-->
+<!--          android:text="PayPal"-->
+<!--          android:textSize="20sp" />-->
+<!--    </RelativeLayout>-->
+
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

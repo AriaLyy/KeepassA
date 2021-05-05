@@ -27,7 +27,7 @@ import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.event.DbHistoryEvent
-import com.lyy.keepassa.view.DbPathType
+import com.lyy.keepassa.view.StorageType
 import com.lyy.keepassa.view.SimpleAdapter
 import org.greenrobot.eventbus.EventBus
 
@@ -78,7 +78,7 @@ class OpenDbHistoryActivity : BaseActivity<ActivityOnlyListBinding>() {
                       dbName = record.dbName,
                       localFileUri = Uri.parse(record.localDbUri),
                       cloudPath = record.cloudDiskPath,
-                      uriType = DbPathType.valueOf(record.type),
+                      uriType = StorageType.valueOf(record.type),
                       keyUri = if (TextUtils.isEmpty(record.keyUri)) null else Uri.parse(
                           record.keyUri
                       )

@@ -21,7 +21,6 @@ import com.keepassdroid.database.helper.CreateDBHelper
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
-import com.lyy.keepassa.entity.CloudServiceInfo
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.HitUtil
@@ -29,10 +28,9 @@ import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
-import com.lyy.keepassa.view.DbPathType
-import com.lyy.keepassa.view.DbPathType.AFS
-import com.lyy.keepassa.view.DbPathType.UNKNOWN
-import com.lyy.keepassa.view.DbPathType.WEBDAV
+import com.lyy.keepassa.view.StorageType
+import com.lyy.keepassa.view.StorageType.AFS
+import com.lyy.keepassa.view.StorageType.UNKNOWN
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -44,14 +42,14 @@ class CreateDbModule : BaseModule() {
   var dbPass: String = ""
 
   /**
-   * 数据库名
+   * 数据库名，包含.kdbx
    */
   var dbName: String = ""
 
   /**
    * 数据库uri
    */
-  var dbUri: Uri? = null
+  var localDbUri: Uri? = null
 
   /**
    * key uri
@@ -66,7 +64,7 @@ class CreateDbModule : BaseModule() {
   /**
    * 数据库类型
    */
-  var dbPathType: DbPathType = UNKNOWN
+  var storageType: StorageType = UNKNOWN
 
   /**
    * 云盘路径
@@ -82,7 +80,7 @@ class CreateDbModule : BaseModule() {
     val db: Database? = withContext(Dispatchers.IO) {
       try {
         // 创建db
-        val cdb = CreateDBHelper(context, dbName, dbUri)
+        val cdb = CreateDBHelper(context, dbName, localDbUri)
         if (keyUri != null) {
           cdb.setKeyFile(keyUri)
           BaseApp.dbKeyPath = QuickUnLockUtil.encryptStr(keyUri.toString())
@@ -104,8 +102,8 @@ class CreateDbModule : BaseModule() {
         BaseApp.isV4 = !PwDatabase.isKDBExtension(dbName)
         val record = DbHistoryRecord(
             time = System.currentTimeMillis(),
-            type = dbPathType.name,
-            localDbUri = dbUri.toString(),
+            type = storageType.name,
+            localDbUri = localDbUri.toString(),
             cloudDiskPath = cloudPath,
             keyUri = if (keyUri == null) "" else keyUri.toString(),
             dbName = dbName
@@ -114,10 +112,6 @@ class CreateDbModule : BaseModule() {
 
         // 保存并上传数据库到云端
         val code = KdbUtil.saveDb()
-
-        if (dbPathType == AFS) {
-          KeepassAUtil.instance.saveLastOpenDbHistory(record)
-        }
 
         if (code != DbSynUtil.STATE_SUCCEED) {
           return@withContext null
@@ -163,14 +157,13 @@ class CreateDbModule : BaseModule() {
    */
   fun getDbOpenTypeData(context: Context) = liveData {
 
-    val titles = context.resources.getStringArray(R.array.path_type)
+    val titles = context.resources.getStringArray(R.array.cloud_names)
     val icons = context.resources.obtainTypedArray(R.array.path_type_img)
-    val des = context.resources.getStringArray(R.array.path_type_des)
     val items = ArrayList<SimpleItemEntity>()
     for ((index, title) in titles.withIndex()) {
       val item = SimpleItemEntity()
       item.title = title
-      item.subTitle = des[index]
+      item.subTitle = titles[index]
       item.id = index
       item.icon = icons.getResourceId(index, 0)
       items.add(item)

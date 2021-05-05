@@ -10,7 +10,7 @@
 package com.lyy.keepassa.event
 
 import android.net.Uri
-import com.lyy.keepassa.view.DbPathType
+import com.lyy.keepassa.view.StorageType
 
 /**
  * 切换数据库的事件
@@ -28,6 +28,6 @@ data class ChangeDbEvent(
    * 云端文件路径
    */
   var cloudPath: String? = null,
-  var uriType: DbPathType = DbPathType.AFS, // uri类型，afs，google drive,
+  var uriType: StorageType = StorageType.AFS, // uri类型，afs，google drive,
   var keyUri: Uri? = null
 )

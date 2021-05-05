@@ -20,9 +20,10 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseBottomSheetDialogFragment
 import com.lyy.keepassa.databinding.DialogPathTypeBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
-import com.lyy.keepassa.view.DbPathType.AFS
-import com.lyy.keepassa.view.DbPathType.DROPBOX
-import com.lyy.keepassa.view.DbPathType.WEBDAV
+import com.lyy.keepassa.view.StorageType.AFS
+import com.lyy.keepassa.view.StorageType.DROPBOX
+import com.lyy.keepassa.view.StorageType.ONE_DRIVE
+import com.lyy.keepassa.view.StorageType.WEBDAV
 import com.lyy.keepassa.view.SimpleAdapter
 
 /**
@@ -62,13 +63,16 @@ class PathTypeDialog(
           val item = data[position]
           when (item.icon) {
             R.drawable.ic_android -> {//使用系统文件管理器
-              module.dbPathType = AFS
+              module.storageType = AFS
             }
             R.drawable.ic_dropbox -> { // dropbox
-              module.dbPathType = DROPBOX
+              module.storageType = DROPBOX
             }
             R.drawable.ic_http -> { // webDav
-              module.dbPathType = WEBDAV
+              module.storageType = WEBDAV
+            }
+            R.drawable.ic_onedrive -> { // onedrive
+              module.storageType = ONE_DRIVE
             }
           }
           dismiss()
