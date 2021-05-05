@@ -86,6 +86,9 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
             return@setOnItemClickListener
           }
           val typeId = data[position].id
+          if(this::dbDelegate.isInitialized){
+            lifecycle.removeObserver(dbDelegate)
+          }
           when (typeId) {
             // 文件系统选择db
             AFS.type -> {
@@ -112,9 +115,7 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
               )
             }
           }
-          if(this::dbDelegate.isInitialized){
-            lifecycle.removeObserver(dbDelegate)
-          }
+
           if (typeId != LauncherModule.HISTORY_ID) {
             dbDelegate.startFlow(this)
             lifecycle.addObserver(dbDelegate)

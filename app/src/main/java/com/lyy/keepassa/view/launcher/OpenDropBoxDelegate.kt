@@ -39,14 +39,6 @@ class OpenDropBoxDelegate : IOpenDbDelegate {
         DropboxUtil.saveToken(token)
         // 如果授权成功，进入下一步
         showCloudListDialog()
-      } else {
-        HitUtil.toaskShort(
-            "dropbox ${delegateRequireActivity().getString(R.string.auth)}${
-              delegateRequireActivity().getString(
-                  R.string.fail
-              )
-            }"
-        )
       }
     }
   }
