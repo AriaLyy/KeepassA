@@ -20,8 +20,8 @@ android {
     applicationId "com.lyy.keepassa"
     minSdkVersion rootProject.ext.minSdkVersion
     targetSdkVersion rootProject.ext.targetSdkVersion
-    versionCode 36
-    versionName "2.1"
+    versionCode 37
+    versionName "2.1.1"
     multiDexEnabled true
     vectorDrawables.useSupportLibrary = true
 
@@ -99,7 +99,7 @@ android {
     checkReleaseBuilds false
     // Or, if you prefer, you can continue to check for errors in release builds,
     // but continue the build even when errors are found:
-    abortOnError false
+//    abortOnError false
   }
 
     flavorDimensions "app"
@@ -113,11 +113,6 @@ android {
 //      }
     }
   //
-  //  // 批量渠道包值替换
-  //  productFlavors.all { flavor ->
-  //    // 友盟、极光推送渠道包， UMENG_CHANNEL 是根据你AndroidManifest.xml来配置的，请看下面。
-  //    flavor.manifestPlaceholders = [CHANNEL: name]
-  //  }
 }
 
 configurations {
@@ -198,7 +193,7 @@ dependencies {
 
 //      debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
   // 数据库如果加密的话使用这个
-  debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
+//  debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
 
   // keepassA组件
   implementation 'me.laoyuyu.keepassa:KeepassIcon:0.2.6'
@@ -312,6 +307,7 @@ dependencies {
   implementation 'me.weishu:free_reflection:3.0.1'
 
   // onedrive
+//  implementation 'com.microsoft.identity.client:msal:1.6+'
   implementation 'com.microsoft.identity.client:msal:2.+'
 //  implementation 'com.microsoft.graph:microsoft-graph:1.5.+'
 

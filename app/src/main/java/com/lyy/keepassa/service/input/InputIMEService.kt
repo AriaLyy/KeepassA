@@ -7,6 +7,7 @@
  */
 package com.lyy.keepassa.service.input
 
+import android.content.Context
 import android.content.Intent
 import android.inputmethodservice.InputMethodService
 import android.view.LayoutInflater
@@ -31,6 +32,7 @@ import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.util.OtpUtil
 import com.lyy.keepassa.view.launcher.LauncherActivity
@@ -315,6 +317,10 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     val listStorage = ArrayList<PwEntry>()
     KdbUtil.searchEntriesByPackageName(pkgName, listStorage)
     return listStorage
+  }
+
+  override fun attachBaseContext(newBase: Context?) {
+    super.attachBaseContext(LanguageUtil.setLanguage(newBase!!, BaseApp.currentLang))
   }
 
 }

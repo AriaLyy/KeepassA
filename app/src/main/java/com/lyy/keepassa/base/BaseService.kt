@@ -7,19 +7,18 @@
  */
 package com.lyy.keepassa.base
 
+import android.app.Service
 import android.content.Context
-import androidx.databinding.ViewDataBinding
-import com.arialyy.frame.base.FrameDialog
 import com.lyy.keepassa.util.LanguageUtil
 
 /**
  * @Author laoyuyu
  * @Description
- * @Date 2021/1/13
+ * @Date 2021/5/6
  **/
-abstract class BaseDialog<VB : ViewDataBinding>:FrameDialog<VB>() {
+abstract class BaseService:Service() {
 
-  override fun onAttach(context: Context) {
-    super.onAttach(LanguageUtil.setLanguage(context, BaseApp.currentLang))
+  override fun attachBaseContext(newBase: Context?) {
+    super.attachBaseContext(LanguageUtil.setLanguage(newBase!!, BaseApp.currentLang))
   }
 }

@@ -22,6 +22,7 @@ import android.os.IBinder
 import com.arialyy.frame.base.FrameApp.context
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.base.BaseService
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.MainActivity
@@ -30,7 +31,7 @@ import com.lyy.keepassa.view.main.QuickUnlockActivity
 /**
  * 数据库打开通知
  */
-class DbOpenNotificationService : Service() {
+class DbOpenNotificationService : BaseService() {
 
   companion object {
     const val KEY_NOTIFY_TYPE = "KEY_NOTIFY_TYPE"

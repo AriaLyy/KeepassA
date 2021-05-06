@@ -9,6 +9,7 @@
 
 package com.lyy.keepassa.base
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.transition.ChangeBounds
@@ -22,9 +23,14 @@ import androidx.databinding.ViewDataBinding
 import com.arialyy.frame.core.AbsFragment
 import com.lyy.keepassa.util.AutoLockDbUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.LanguageUtil
 import me.jessyan.autosize.AutoSize
 
 abstract class BaseFragment<VB : ViewDataBinding> : AbsFragment<VB>() {
+
+  override fun onAttach(context: Context) {
+    super.onAttach(LanguageUtil.setLanguage(context, BaseApp.currentLang))
+  }
 
   override fun onCreateView(
     inflater: LayoutInflater,

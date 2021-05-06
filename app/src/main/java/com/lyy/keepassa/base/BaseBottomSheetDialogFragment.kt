@@ -9,11 +9,18 @@
 
 package com.lyy.keepassa.base
 
+import android.content.Context
 import android.os.Bundle
 import androidx.databinding.ViewDataBinding
 import com.arialyy.frame.core.AbsBottomSheetDialogFragment
+import com.lyy.keepassa.util.LanguageUtil
 
 abstract class BaseBottomSheetDialogFragment<VB : ViewDataBinding> : AbsBottomSheetDialogFragment<VB>() {
+
+  override fun onAttach(context: Context) {
+    super.onAttach(LanguageUtil.setLanguage(context, BaseApp.currentLang))
+  }
+
   override fun init(savedInstanceState: Bundle?) {
   }
 }

@@ -11,6 +11,7 @@ package com.lyy.keepassa.service.autofill
 
 import KDBAutoFillRepository
 import android.annotation.TargetApi
+import android.content.Context
 import android.content.IntentSender
 import android.os.Build
 import android.os.Build.VERSION_CODES
@@ -28,6 +29,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
+import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
@@ -226,6 +228,10 @@ class AutoFillService : AutofillService() {
 
   override fun onDisconnected() {
     KLog.d(TAG, "onDisconnected")
+  }
+
+  override fun attachBaseContext(newBase: Context?) {
+    super.attachBaseContext(LanguageUtil.setLanguage(newBase!!, BaseApp.currentLang))
   }
 
 }

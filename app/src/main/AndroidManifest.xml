@@ -21,6 +21,7 @@
       android:theme="@style/AppTheme.NoActionBar"
       tools:ignore="GoogleAppIndexingWarning">
     <activity
+        android:configChanges="layoutDirection|locale"
         android:name=".view.launcher.LauncherActivity"
         android:launchMode="singleTask"
         android:screenOrientation="portrait"

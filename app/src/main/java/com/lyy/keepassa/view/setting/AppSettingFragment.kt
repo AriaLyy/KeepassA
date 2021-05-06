@@ -38,12 +38,12 @@ import com.lyy.keepassa.util.RoomUtil
 import com.lyy.keepassa.view.UpgradeLogDialog
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.fingerprint.FingerprintActivity
+import com.lyy.keepassa.view.main.MainActivity
 import de.psdev.licensesdialog.LicensesDialog
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
-import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 
 /**
  * 应用设置

@@ -12,10 +12,13 @@ package com.lyy.keepassa.base;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Handler;
+import android.os.LocaleList;
 import android.os.Looper;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.multidex.MultiDexApplication;
 import androidx.preference.PreferenceManager;
@@ -30,10 +33,12 @@ import com.lyy.keepassa.common.PassType;
 import com.lyy.keepassa.dao.AppDatabase;
 import com.lyy.keepassa.entity.DbHistoryRecord;
 import com.lyy.keepassa.receiver.ScreenLockReceiver;
+import com.lyy.keepassa.util.KLog;
 import com.lyy.keepassa.util.KeepassAUtil;
 import com.lyy.keepassa.util.LanguageUtil;
 import com.lyy.keepassa.util.QuickUnLockUtil;
 import com.lyy.keepassa.view.StorageType;
+import com.tencent.bugly.Bugly;
 import com.tencent.wcdb.database.SQLiteCipherSpec;
 import com.tencent.wcdb.room.db.WCDBOpenHelperFactory;
 import com.zzhoujay.richtext.RichText;
@@ -61,7 +66,6 @@ public class BaseApp extends MultiDexApplication {
   public static Boolean isLocked = true;
 
   public static int passType = PassType.INSTANCE.getONLY_PASS();
-  private Context resContext;
 
   public static boolean isAFS() {
     return dbRecord == null || StorageType.valueOf(dbRecord.getType()) == StorageType.AFS;
@@ -69,16 +73,18 @@ public class BaseApp extends MultiDexApplication {
 
   @Override
   protected void attachBaseContext(Context base) {
+    currentLang = setLanguage(base);
+    //super.attachBaseContext(LanguageUtil.INSTANCE.setLanguage(base, currentLang));
     super.attachBaseContext(base);
     Reflection.unseal(base);
   }
 
-  @Override public Resources getResources() {
-    if (resContext == null){
-      return super.getResources();
-    }
-    return resContext.getResources();
-  }
+  //@Override public Resources getResources() {
+  //  if (resContext == null){
+  //    return super.getResources();
+  //  }
+  //  return resContext.getResources();
+  //}
 
   @Override public void onCreate() {
     super.onCreate();
@@ -88,9 +94,6 @@ public class BaseApp extends MultiDexApplication {
     // 初始化一下时间
     KeepassAUtil.Companion.getInstance().isFastClick();
     initDb();
-    // 处理多语言
-    currentLang = setLanguage();
-    resContext = LanguageUtil.INSTANCE.setLanguage(APP, currentLang);
 
     // 开启kotlin 协程debug
     if (BuildConfig.DEBUG) {
@@ -109,6 +112,7 @@ public class BaseApp extends MultiDexApplication {
     boolean showStatusBar = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
         .getBoolean(getString(R.string.set_key_title_show_state_bar), true);
     BaseActivity.Companion.setShowStatusBar(showStatusBar);
+    Bugly.init(this, getChannel(), BuildConfig.DEBUG);
   }
 
   /**
@@ -172,17 +176,17 @@ public class BaseApp extends MultiDexApplication {
    * 如果系统语言不在支持列表的[LanguageUtil.SUPPORT_LAN]中，将app语言设置为英文
    * 如果系统语言在支持列表中，设置该语言为app的语言
    */
-  private Locale setLanguage() {
-    Locale lang = LanguageUtil.INSTANCE.getDefLanguage(this);
+  private Locale setLanguage(Context context) {
+    Locale lang = LanguageUtil.INSTANCE.getDefLanguage(context);
     if (lang != null) {
       currentLang = lang;
     } else {
       Locale def = LanguageUtil.INSTANCE.getSysCurrentLan();
       lang = new Locale(def.getLanguage(), def.getCountry());
       if (LanguageUtil.SUPPORT_LAN.contains(lang)) {
-        LanguageUtil.INSTANCE.setLanguage(this, lang);
+        LanguageUtil.INSTANCE.setLanguage(context, lang);
       } else {
-        LanguageUtil.INSTANCE.setLanguage(this, Locale.ENGLISH);
+        LanguageUtil.INSTANCE.setLanguage(context, Locale.ENGLISH);
       }
     }
     return lang;
