@@ -28,6 +28,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.arialyy.frame.core.AbsFrame
 import com.google.android.material.tabs.TabLayoutMediator
 import com.lyy.keepassa.R
@@ -55,6 +56,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   private lateinit var entryFm: EntryFragment
 
   companion object {
+    private const val MIN_SCALE = 0.85f
+    private const val MIN_ALPHA = 0.5f
     // 快捷方式类型
     const val SHORTCUTS_TYPE = "shortcutsType"
 
@@ -156,7 +159,27 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   }
 
   private fun initVpAnim() {
-
+    binding.vp.setPageTransformer { view, position ->
+      view.apply {
+        when {
+          position < -1 -> { // [-Infinity,-1)
+            // This page is way off-screen to the left.
+            alpha = 0f
+          }
+          position <= 1 -> { // [-1,1]
+            // Modify the default slide transition to shrink the page as well
+            val scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position))
+            // Fade the page relative to its size.
+            alpha = (MIN_ALPHA +
+                (((scaleFactor - MIN_SCALE) / (1 - MIN_SCALE)) * (1 - MIN_ALPHA)))
+          }
+          else -> { // (1,+Infinity]
+            // This page is way off-screen to the right.
+            alpha = 0f
+          }
+        }
+      }
+    }
   }
 
   @Subscribe(threadMode = MAIN)
