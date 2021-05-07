@@ -101,7 +101,7 @@ class KeepassAUtil private constructor() {
    */
   fun isDisplayLoadingAnim(): Boolean {
     return PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-        .getBoolean(BaseApp.APP.getString(R.string.set_key_loading_anim), false)
+        .getBoolean(BaseApp.APP.getString(R.string.set_key_loading_anim), true)
   }
 
   /**
