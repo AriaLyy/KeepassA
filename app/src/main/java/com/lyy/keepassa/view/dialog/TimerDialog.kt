@@ -18,9 +18,9 @@ import android.widget.DatePicker
 import android.widget.FrameLayout
 import android.widget.TimePicker
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.arialyy.frame.util.DpUtils
+import com.google.android.material.tabs.TabLayoutMediator
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogTimerBinding
@@ -32,6 +32,7 @@ import org.greenrobot.eventbus.EventBus
  */
 class TimerDialog : BaseDialog<DialogTimerBinding>(), View.OnClickListener {
   private lateinit var vpAdapter: VpAdapter
+  private val fragments = arrayListOf<Fragment>()
 
   override fun setLayoutId(): Int {
     return R.layout.dialog_timer
@@ -39,14 +40,14 @@ class TimerDialog : BaseDialog<DialogTimerBinding>(), View.OnClickListener {
 
   override fun initData() {
     super.initData()
-    binding.tabLayout.setupWithViewPager(binding.vp)
-    vpAdapter = VpAdapter(
-        listOf(getString(R.string.date), getString(R.string.time)),
-        listOf(DatePickerFragment(), TimerPickerFragment()),
-        childFragmentManager,
-        FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
-    )
+    val titles = listOf(getString(R.string.date), getString(R.string.time))
+    fragments.add(DatePickerFragment())
+    fragments.add(TimerPickerFragment())
+    vpAdapter = VpAdapter(fragments, this)
     binding.vp.adapter = vpAdapter
+    TabLayoutMediator(binding.tabLayout, binding.vp) { tab, position ->
+      tab.text = titles[position]
+    }.attach()
     binding.cancel.setOnClickListener(this)
     binding.save.setOnClickListener(this)
 
@@ -56,16 +57,15 @@ class TimerDialog : BaseDialog<DialogTimerBinding>(), View.OnClickListener {
     when (v!!.id) {
       R.id.cancel -> dismiss()
       R.id.save -> {
-        val date = (vpAdapter.getItem(0) as DatePickerFragment).datePicker
-        val time = (vpAdapter.getItem(1) as TimerPickerFragment).timerPicker
-        val event: TimeEvent
-        event = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        val date = (fragments[0] as DatePickerFragment).datePicker
+        val time = (fragments[1] as TimerPickerFragment).timerPicker
+        val event: TimeEvent = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
           TimeEvent(
-              date.year,
-              date.month + 1,
-              date.dayOfMonth,
-              time.currentHour,
-              time.currentMinute
+            date.year,
+            date.month + 1,
+            date.dayOfMonth,
+            time.currentHour,
+            time.currentMinute
           )
         } else {
           TimeEvent(date.year, date.month + 1, date.dayOfMonth, time.hour, time.minute)
@@ -82,22 +82,16 @@ class TimerDialog : BaseDialog<DialogTimerBinding>(), View.OnClickListener {
   }
 
   private class VpAdapter(
-    private val titles: List<String>,
     private val fragments: List<Fragment>,
-    fm: FragmentManager,
-    state: Int
-  ) : FragmentPagerAdapter(fm, state) {
+    fm: Fragment
+  ) : FragmentStateAdapter(fm) {
 
-    override fun getPageTitle(position: Int): CharSequence? {
-      return titles[position]
-    }
-
-    override fun getItem(position: Int): Fragment {
-      return fragments[position]
-    }
-
-    override fun getCount(): Int {
+    override fun getItemCount(): Int {
       return fragments.size
+    }
+
+    override fun createFragment(position: Int): Fragment {
+      return fragments[position]
     }
   }
 
@@ -107,10 +101,10 @@ class TimerDialog : BaseDialog<DialogTimerBinding>(), View.OnClickListener {
       inflater: LayoutInflater,
       container: ViewGroup?,
       savedInstanceState: Bundle?
-    ): View? {
+    ): View {
       datePicker = DatePicker(requireContext())
       datePicker.layoutParams = FrameLayout.LayoutParams(
-          FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT
+        FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT
       )
       return datePicker
     }
@@ -122,10 +116,10 @@ class TimerDialog : BaseDialog<DialogTimerBinding>(), View.OnClickListener {
       inflater: LayoutInflater,
       container: ViewGroup?,
       savedInstanceState: Bundle?
-    ): View? {
+    ): View {
       timerPicker = TimePicker(context)
       timerPicker.layoutParams = FrameLayout.LayoutParams(
-          FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT
+        FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT
       )
 
       return timerPicker

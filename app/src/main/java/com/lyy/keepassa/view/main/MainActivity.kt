@@ -23,12 +23,13 @@ import android.util.Pair
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.arialyy.frame.core.AbsFrame
+import com.google.android.material.tabs.TabLayoutMediator
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
@@ -63,7 +64,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     fun startMainActivity(activity: Activity) {
       val intent = Intent(activity, MainActivity::class.java)
       activity.startActivity(
-          intent, ActivityOptions.makeSceneTransitionAnimation(activity)
+        intent, ActivityOptions.makeSceneTransitionAnimation(activity)
           .toBundle()
       )
     }
@@ -89,12 +90,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         showSearchDialog()
       }
       if (BaseApp.isLocked) {
-         KeepassAUtil.instance.reOpenDb(this)
+        KeepassAUtil.instance.reOpenDb(this)
         return
       }
     }
     module.setEcoIcon(this, binding.dbName)
     initData()
+    initVpAnim()
   }
 
   private fun initData() {
@@ -108,33 +110,35 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     entryFm = EntryFragment()
     binding.dbName.text = BaseApp.dbFileName
     binding.dbVersion.text = BaseApp.dbName
-    binding.tab.setupWithViewPager(binding.vp)
-    module.checkHasHistoryRecord()
-        .observe(this, Observer { hasHistory ->
-          binding.vp.adapter = VpAdapter(
-              listOf(historyFm, entryFm), supportFragmentManager,
-              FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
-          )
-          // 是否优先显示条目
-          val showEntries = PreferenceManager.getDefaultSharedPreferences(this)
-              .getBoolean(getString(R.string.set_key_main_allow_show_entries), false)
-          if (showEntries) {
-            binding.vp.currentItem = 1
-          } else {
-            binding.vp.currentItem = if (hasHistory) 0 else 1
-          }
 
-          binding.tab.getTabAt(0)!!.icon = getDrawable(R.drawable.selector_ic_tab_history)
-          binding.tab.getTabAt(0)!!.text = getString(R.string.history)
-          binding.tab.getTabAt(1)!!.icon = getDrawable(R.drawable.selector_ic_tab_db)
-          binding.tab.getTabAt(1)!!.text = getString(R.string.all)
-        })
+    module.checkHasHistoryRecord()
+      .observe(this, { hasHistory ->
+        binding.vp.adapter = VpAdapter(listOf(historyFm, entryFm), this)
+        TabLayoutMediator(binding.tab, binding.vp) { tab, position ->
+//      tab.text = "OBJECT ${(position + 1)}"
+        }.attach()
+
+        // 是否优先显示条目
+        val showEntries = PreferenceManager.getDefaultSharedPreferences(this)
+          .getBoolean(getString(R.string.set_key_main_allow_show_entries), false)
+        if (showEntries) {
+          binding.vp.currentItem = 1
+        } else {
+          binding.vp.currentItem = if (hasHistory) 0 else 1
+        }
+
+        binding.tab.getTabAt(0)!!.icon = getDrawable(R.drawable.selector_ic_tab_history)
+        binding.tab.getTabAt(0)!!.text = getString(R.string.history)
+        binding.tab.getTabAt(1)!!.icon = getDrawable(R.drawable.selector_ic_tab_db)
+        binding.tab.getTabAt(1)!!.text = getString(R.string.all)
+      })
+
     binding.fab.setOnItemClickListener(object : MainExpandFloatActionButton.OnItemClickListener {
       override fun onKeyClick() {
         startActivity(
-            Intent(this@MainActivity, CreateEntryActivity::class.java),
-            ActivityOptions.makeSceneTransitionAnimation(this@MainActivity)
-                .toBundle()
+          Intent(this@MainActivity, CreateEntryActivity::class.java),
+          ActivityOptions.makeSceneTransitionAnimation(this@MainActivity)
+            .toBundle()
         )
         binding.fab.hintMoreOperate()
       }
@@ -151,6 +155,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     })
   }
 
+  private fun initVpAnim() {
+
+  }
+
   @Subscribe(threadMode = MAIN)
   fun onCheckEnv(event: CheckEnvEvent) {
     module.setEcoIcon(this, binding.dbName)
@@ -162,7 +170,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   }
 
   override fun onClick(v: View?) {
-    if ( KeepassAUtil.instance.isFastClick()) {
+    if (KeepassAUtil.instance.isFastClick()) {
       return
     }
     when (v!!.id) {
@@ -246,7 +254,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
           Pair<View, String>(binding.arrow, getString(R.string.transition_db_little))
         val option =
           ActivityOptions.makeSceneTransitionAnimation(
-              this@MainActivity, appIcon, dbName, dbLittle, dbVersion
+            this@MainActivity, appIcon, dbName, dbLittle, dbVersion
           )
 
         startActivity(intent, option.toBundle())
@@ -292,22 +300,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
   private class VpAdapter(
     private val fragments: List<Fragment>,
-    fm: FragmentManager,
-    state: Int
-  ) : FragmentPagerAdapter(fm, state) {
+    fm: FragmentActivity
+  ) : FragmentStateAdapter(fm) {
 
-    override fun getPageTitle(position: Int): CharSequence? {
-      return super.getPageTitle(position)
-    }
-
-    override fun getItem(position: Int): Fragment {
-//      Log.d("TAG", "fragmentPos = $position")
-      return fragments[position]
-    }
-
-    override fun getCount(): Int {
-//      Log.d("TAG", "fragmentSize = ${fragments.size}")
+    override fun getItemCount(): Int {
       return fragments.size
+    }
+
+    override fun createFragment(position: Int): Fragment {
+      return fragments[position]
     }
   }
 }
