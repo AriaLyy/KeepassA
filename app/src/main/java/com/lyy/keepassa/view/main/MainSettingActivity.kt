@@ -103,6 +103,11 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
     anim.start()
   }
 
+  override fun onBackPressed() {
+//    super.onBackPressed()
+    startArrowAnim()
+  }
+
 
   override fun buildSharedElements(vararg sharedElements: Pair<View, String>): ArrayList<String> {
     val appIcon =

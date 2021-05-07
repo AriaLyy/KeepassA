@@ -47,7 +47,7 @@
   <string name="history_record">History record</string>
   <string name="edit">Edit</string>
   <string name="change_db">Switch database</string>
-  <string name="all">All items</string>
+  <string name="all">Items</string>
   <string name="setting">Setting</string>
   <string name="db_setting">Database settings</string>
   <string name="app_setting">App settings</string>

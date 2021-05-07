@@ -178,6 +178,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
             alpha = 0f
           }
         }
+//        binding.tab.getTabAt(0)?.view?.alpha = alpha
+//        binding.tab.getTabAt(1)?.view?.alpha = alpha
       }
     }
   }
