@@ -315,4 +315,5 @@
     <string name="set_key_title_auto_lock_database_turn_off">关闭</string>
     <string name="get_token_fail">获取Token失败</string>
     <string name="one_drive_init_failure">OneDrive初始化失败</string>
+    <string name="one_drive_hint"><![CDATA[为了保护您的隐私，KeepassA仅会访问<font color="#FF0000">【应用/KeepassA】</font>目录，如果您希望读取OneDrive的keepass数据库，<font color="#FF0000">请将数据库存放到该目录下。</font>]]></string>
 </resources>
