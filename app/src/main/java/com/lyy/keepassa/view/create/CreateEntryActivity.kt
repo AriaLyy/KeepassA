@@ -415,11 +415,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     val pass = binding.password.text.toString()
     val enterPass = binding.enterPassword.text.toString()
 
-    if (pass.isEmpty()) {
-      HitUtil.toaskShort(getString(R.string.error_pass_null))
-      return
-    }
-
     // 显示密码状态，不需要两次确认
     if (pass.isNotEmpty() && pass != enterPass && !isShowPass) {
       HitUtil.toaskShort(getString(R.string.error_pass_unfit))
