@@ -235,6 +235,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
    */
   private fun initData(isEdit: Boolean) {
     if (isEdit) {
+      module.icon = pwEntry.icon
       binding.title.setText(pwEntry.title)
       binding.user.setText(pwEntry.username)
     } else {
