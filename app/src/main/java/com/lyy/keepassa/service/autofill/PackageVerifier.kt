@@ -25,13 +25,17 @@ package com.lyy.keepassa.service.autofill
  * limitations under the License.
  */
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
+import android.os.Build.VERSION_CODES
 import android.util.Log
 import java.io.ByteArrayInputStream
 import java.security.MessageDigest
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
+import java.util.Locale
 
 object PackageVerifier {
   val TAG = javaClass.simpleName
@@ -49,6 +53,7 @@ object PackageVerifier {
       hash = getCertificateHash(context, packageName)
       Log.d(TAG, "Hash for $packageName: $hash")
     } catch (e: Exception) {
+      e.printStackTrace()
       Log.w(TAG, "Error getting hash for $packageName: $e")
       return false
     }
@@ -56,13 +61,21 @@ object PackageVerifier {
     return verifyHash(context, packageName, hash)
   }
 
+  @SuppressLint("PackageManagerGetSignatures")
   private fun getCertificateHash(
     context: Context,
     packageName: String
   ): String {
     val pm = context.packageManager
-    val packageInfo = pm.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
-    val signatures = packageInfo.signatures
+    val signatures = if (Build.VERSION.SDK_INT >= VERSION_CODES.P) {
+      pm.getPackageInfo(
+        packageName,
+        PackageManager.GET_SIGNING_CERTIFICATES
+      ).signingInfo.apkContentsSigners
+    } else {
+      pm.getPackageInfo(packageName, PackageManager.GET_SIGNATURES).signatures
+    }
+
     val cert = signatures[0].toByteArray()
     ByteArrayInputStream(cert).use { input ->
       val factory = CertificateFactory.getInstance("X509")
@@ -79,12 +92,12 @@ object PackageVerifier {
       var hex = Integer.toHexString(bytes[i].toInt())
       val length = hex.length
       if (length == 1) {
-        hex = "0" + hex
+        hex = "0$hex"
       }
       if (length > 2) {
         hex = hex.substring(length - 2, length)
       }
-      builder.append(hex.toUpperCase())
+      builder.append(hex.toUpperCase(Locale.ROOT))
       if (i < bytes.size - 1) {
         builder.append(':')
       }
@@ -98,21 +111,21 @@ object PackageVerifier {
     hash: String
   ): Boolean {
     val prefs = context.applicationContext.getSharedPreferences(
-        "package-hashes", Context.MODE_PRIVATE
+      "package-hashes", Context.MODE_PRIVATE
     )
     if (!prefs.contains(packageName)) {
-      Log.d(TAG, "Creating intial hash for " + packageName)
+      Log.d(TAG, "Creating intial hash for $packageName")
       prefs.edit()
-          .putString(packageName, hash)
-          .apply()
+        .putString(packageName, hash)
+        .apply()
       return true
     }
 
     val existingHash = prefs.getString(packageName, null)
     if (hash != existingHash) {
       Log.w(
-          TAG, "hash mismatch for " + packageName + ": expected " + existingHash
-          + ", got " + hash
+        TAG, "hash mismatch for " + packageName + ": expected " + existingHash
+            + ", got " + hash
       )
       return false
     }
