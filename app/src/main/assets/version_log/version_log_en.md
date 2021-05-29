@@ -1,3 +1,13 @@
+#### 2.1.2 (2021/5/29)
+- 【New】Allow password to be empty
+- 【New】OneDrive added prompt description
+- 【Fix】The first time to install, there is no waiting animation to load
+- 【Fix】Android 11 does not pop up auto-fill options
+- 【Fix】When creating an entry on the homepage to a group, the number of entries on the homepage does not increase
+- 【Fix】After changing the password, the icon becomes the default icon
+- 【Optimize】Homepage slide to increase fade animation
+- 【Optimize】Animation details
+
 #### 2.1.1（2021/5/6）
 - 【Fix】webview Crash Problem
 
