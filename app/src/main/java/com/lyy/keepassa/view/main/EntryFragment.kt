@@ -66,15 +66,15 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
     binding.list.layoutManager = LinearLayoutManager(context)
     binding.list.adapter = adapter
     RvItemClickSupport.addTo(binding.list)
-        .setOnItemClickListener { _, position, v ->
-          val item = entryData[position]
-          if (item.obj is PwGroup) {
-             KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwGroup)
-          } else if (item.obj is PwEntry) {
-            val icon = v.findViewById<AppCompatImageView>(R.id.icon)
-             KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwEntry, icon)
-          }
+      .setOnItemClickListener { _, position, v ->
+        val item = entryData[position]
+        if (item.obj is PwGroup) {
+          KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwGroup)
+        } else if (item.obj is PwEntry) {
+          val icon = v.findViewById<AppCompatImageView>(R.id.icon)
+          KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwEntry, icon)
         }
+      }
     val div = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
     val drawable = ColorDrawable(Color.TRANSPARENT)
     drawable.bounds = Rect(0, 0, 200, DpUtils.dp2px(20))
@@ -83,10 +83,10 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
 
     // 长按处理
     RvItemClickSupport.addTo(binding.list)
-        .setOnItemLongClickListener { _, position, v ->
-          showPopMenu(v, position)
-          true
-        }
+      .setOnItemLongClickListener { _, position, v ->
+        showPopMenu(v, position)
+        true
+      }
 
     // 获取点击位置
     binding.list.addOnItemTouchListener(object : OnItemTouchListener {
@@ -124,9 +124,9 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
 
   private fun initRefresh() {
     binding.swipe.setColorSchemeColors(
-        Color.parseColor("#4E85DB"),
-        Color.parseColor("#B48CFF"),
-        Color.parseColor("#95DAED")
+      Color.parseColor("#4E85DB"),
+      Color.parseColor("#B48CFF"),
+      Color.parseColor("#95DAED")
 
     )
     binding.swipe.setOnRefreshListener {
@@ -143,27 +143,27 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
 
       loadingDialog.show()
       module.syncDb()
-          .observe(this@EntryFragment, Observer {
-            if (!it) {
-              finishRefresh(false)
-              return@Observer
-            }
-            isSyncDb = true
-            getData()
-          })
+        .observe(this@EntryFragment, Observer {
+          if (!it) {
+            finishRefresh(false)
+            return@Observer
+          }
+          isSyncDb = true
+          getData()
+        })
     }
   }
 
   private fun getData() {
     module.getRootEntry(requireContext())
-        .observe(this, Observer { list ->
-          entryData.clear()
-          entryData.addAll(list)
-          adapter.notifyDataSetChanged()
-          if (isSyncDb) {
-            finishRefresh(true)
-          }
-        })
+      .observe(this, Observer { list ->
+        entryData.clear()
+        entryData.addAll(list)
+        adapter.notifyDataSetChanged()
+        if (isSyncDb) {
+          finishRefresh(true)
+        }
+      })
   }
 
   private fun finishRefresh(
@@ -172,12 +172,12 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
   ) {
     binding.swipe.isRefreshing = false
     HitUtil.snackShort(
-        mRootView,
-        "${getString(R.string.sync_db)} ${
-          if (isSuccess) getString(R.string.success) else getString(
-              R.string.fail
-          )
-        }"
+      mRootView,
+      "${getString(R.string.sync_db)} ${
+        if (isSuccess) getString(R.string.success) else getString(
+          R.string.fail
+        )
+      }"
     )
     if (!isAfs) {
       loadingDialog.dismiss()
@@ -198,20 +198,20 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
     val data = entryData[position]
     if (data.obj is PwGroup) {
       val pop = GroupPopMenu(
-          requireActivity(),
-          v,
-          data.obj as PwGroup,
-          curx
+        requireActivity(),
+        v,
+        data.obj as PwGroup,
+        curx
       )
       pop.show()
       return
     }
     if (data.obj is PwEntry) {
       val pop = EntryPopMenu(
-          requireActivity(),
-          v,
-          data.obj as PwEntry,
-          curx
+        requireActivity(),
+        v,
+        data.obj as PwEntry,
+        curx
       )
       pop.show()
     }
@@ -222,18 +222,16 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
    */
   @Subscribe(threadMode = MAIN)
   fun onEntryCreate(event: CreateOrUpdateEntryEvent) {
-    if (event.entry.parent == BaseApp.KDB.pm.rootGroup) {
-      if (event.isUpdate) {
-        val entry: SimpleItemEntity? = entryData.find { it.obj == event.entry }
-        entry?.let {
-          val pos = entryData.indexOf(it)
-          entryData[pos] =  KeepassAUtil.instance.convertPwEntry2Item(event.entry)
-          adapter.notifyItemChanged(pos)
-        }
-        return
+    if (event.isUpdate) {
+      val entry: SimpleItemEntity? = entryData.find { it.obj == event.entry }
+      entry?.let {
+        val pos = entryData.indexOf(it)
+        entryData[pos] = KeepassAUtil.instance.convertPwEntry2Item(event.entry)
+        adapter.notifyItemChanged(pos)
       }
-      getData()
+      return
     }
+    getData()
   }
 
   /**
@@ -249,7 +247,7 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
       entry?.let {
 
         val pos = entryData.indexOf(it)
-        entryData[pos] =  KeepassAUtil.instance.convertPwGroup2Item(event.pwGroup)
+        entryData[pos] = KeepassAUtil.instance.convertPwGroup2Item(event.pwGroup)
         adapter.notifyItemChanged(pos)
       }
       return
@@ -281,9 +279,9 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
       val recycleBin = entryData.find { it.obj == BaseApp.KDB.pm.recycleBin }
       if (recycleBin != null) {
         recycleBin.subTitle = getString(
-            R.string.hint_group_desc,
-            KdbUtil.getGroupEntryNum(recycleBin.obj as PwGroup)
-                .toString()
+          R.string.hint_group_desc,
+          KdbUtil.getGroupEntryNum(recycleBin.obj as PwGroup)
+            .toString()
         )
       }
     } else {
@@ -297,7 +295,7 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
    * 多选
    */
   @Subscribe(threadMode = MAIN)
-  fun onMultiChoice(mcEvent:MultiChoiceEvent){
+  fun onMultiChoice(mcEvent: MultiChoiceEvent) {
     adapter.showCheckBox(true)
 
   }
