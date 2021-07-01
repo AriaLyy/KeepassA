@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-
+    <string name="cancel">Abbrechen</string>
+    <string name="error_db_name_null">Bitte geben Sie einen Datenbanknamen ein</string>
+    <string name="db_name">Geben Sie den Datenbanknamen ein</string>
+    <string name="hint_input_password">Geben Sie ein 6 bis 16 Zeichen langes Passwort ein</string>
+    <string name="encrypt_type_1">nur Passwort</string>
+    <string name="done">Fertig</string>
+    <string name="choose_file">Datei auswählen</string>
+    <string name="up">Zurück</string>
+    <string name="encrypt_type">Verschlüsselung</string>
+    <string name="password">Passwort</string>
+    <string name="hint_set_password">Passwort setzen</string>
+    <string name="create_db">Datenbank erstellen</string>
+    <string name="hint_enter_password">Passwort bestätigen</string>
+    <string name="open_db">Datenbank öffnen</string>
+    <string name="open">Entsperren</string>
+    <string name="db">Datenbank</string>
 </resources>
