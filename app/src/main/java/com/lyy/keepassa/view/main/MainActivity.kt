@@ -18,17 +18,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.transition.Transition
 import android.transition.Transition.TransitionListener
-import android.util.Log
 import android.util.Pair
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
 import com.arialyy.frame.core.AbsFrame
 import com.google.android.material.tabs.TabLayoutMediator
 import com.lyy.keepassa.R
@@ -47,6 +44,7 @@ import com.lyy.keepassa.view.search.SearchDialog
 import com.lyy.keepassa.widget.MainExpandFloatActionButton
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
+import timber.log.Timber
 
 class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
@@ -58,6 +56,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   companion object {
     private const val MIN_SCALE = 0.85f
     private const val MIN_ALPHA = 0.5f
+
     // 快捷方式类型
     const val SHORTCUTS_TYPE = "shortcutsType"
 
@@ -83,7 +82,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     module = ViewModelProvider(this)[MainModule::class.java]
 
     val isShortcuts = intent.getBooleanExtra("isShortcuts", false)
-    Log.i(TAG, "isShortcuts = $isShortcuts")
+    Timber.i("isShortcuts = $isShortcuts")
 
     // 处理快捷方式进入的情况
     if (isShortcuts) {
@@ -295,10 +294,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
   private class ReenterListener(private val arrow: AppCompatImageView) : TransitionListener {
 
-    private val TAG = "MainActivity"
     var isToChangeDb: Boolean = false
     override fun onTransitionEnd(transition: Transition?) {
-      Log.d(TAG, "onTransitionEnd")
+      Timber.d("onTransitionEnd")
       if (!isToChangeDb) {
         arrow.rotation = 0f
       }
@@ -306,19 +304,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     }
 
     override fun onTransitionResume(transition: Transition?) {
-      Log.d(TAG, "onTransitionResume")
+      Timber.d("onTransitionResume")
     }
 
     override fun onTransitionPause(transition: Transition?) {
-      Log.d(TAG, "onTransitionPause")
+      Timber.d("onTransitionPause")
     }
 
     override fun onTransitionCancel(transition: Transition?) {
-      Log.d(TAG, "onTransitionCancel")
+      Timber.d("onTransitionCancel")
     }
 
     override fun onTransitionStart(transition: Transition?) {
-      Log.d(TAG, "onTransitionStart")
+      Timber.d("onTransitionStart")
     }
 
   }
