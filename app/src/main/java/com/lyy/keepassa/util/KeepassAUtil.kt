@@ -21,6 +21,7 @@ import android.content.ComponentName
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager.NameNotFoundException
 import android.content.res.Configuration
 import android.database.Cursor
 import android.net.Uri
@@ -70,7 +71,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.BufferedReader
 import java.io.File
+import java.io.FileReader
+import java.io.IOException
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -86,13 +90,64 @@ class KeepassAUtil private constructor() {
 
   private var LAST_CLICK_TIME = System.currentTimeMillis()
 
+  fun getAppVersionCode(context: Context): Int {
+    val manager = context.packageManager
+    var code = 0
+    try {
+      val info = manager.getPackageInfo(context.packageName, 0)
+      code = info.versionCode
+    } catch (e: NameNotFoundException) {
+      e.printStackTrace()
+    }
+    return code
+  }
+
+  fun getAppVersionName(context: Context): String {
+    val manager = context.packageManager
+    var name: String? = null
+    try {
+      val info = manager.getPackageInfo(context.packageName, 0)
+      name = info.versionName
+    } catch (e: NameNotFoundException) {
+      e.printStackTrace()
+    }
+    return name!!
+  }
+
+  /**
+   * 获取进程号对应的进程名
+   *
+   * @param pid 进程号
+   * @return 进程名
+   */
+  fun getProcessName(pid: Int): String? {
+    var reader: BufferedReader? = null
+    try {
+      reader = BufferedReader(FileReader("/proc/$pid/cmdline"))
+      var processName: String = reader.readLine()
+      if (!TextUtils.isEmpty(processName)) {
+        processName = processName.trim { it <= ' ' }
+      }
+      return processName
+    } catch (throwable: Throwable) {
+      throwable.printStackTrace()
+    } finally {
+      try {
+        reader?.close()
+      } catch (exception: IOException) {
+        exception.printStackTrace()
+      }
+    }
+    return null
+  }
+
   /**
    * is auto lock the database
    * @return true auto lock the database
    */
   fun isAutoLockDb(): Boolean {
     return PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-        .getBoolean(BaseApp.APP.getString(R.string.set_key_auto_lock_database), true)
+      .getBoolean(BaseApp.APP.getString(R.string.set_key_auto_lock_database), true)
   }
 
   /**
@@ -101,7 +156,7 @@ class KeepassAUtil private constructor() {
    */
   fun isDisplayLoadingAnim(): Boolean {
     return PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-        .getBoolean(BaseApp.APP.getString(R.string.set_key_loading_anim), true)
+      .getBoolean(BaseApp.APP.getString(R.string.set_key_loading_anim), true)
   }
 
   /**
@@ -118,13 +173,13 @@ class KeepassAUtil private constructor() {
       if (isNeedStartLockActivity(obj)) {
         if (BaseApp.isLocked) {
           AutoLockDbUtil.get()
-              .startLockWorkerNow()
+            .startLockWorkerNow()
           return@launch
         }
 
         if (isRunningForeground(BaseApp.APP)) {
           AutoLockDbUtil.get()
-              .resetTimer()
+            .resetTimer()
           return@launch
         }
       }
@@ -136,7 +191,7 @@ class KeepassAUtil private constructor() {
    */
   fun lock() {
     val isOpenQuickLock = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-        .getBoolean(BaseApp.APP.getString(R.string.set_quick_unlock), false)
+      .getBoolean(BaseApp.APP.getString(R.string.set_quick_unlock), false)
     KLog.d(TAG, "锁定数据库")
     BaseApp.isLocked = true
     // 只有应用在前台才会跳转到锁屏页面
@@ -154,8 +209,8 @@ class KeepassAUtil private constructor() {
         BaseApp.APP.startActivity(Intent(Intent.ACTION_MAIN).also {
           it.component =
             ComponentName(
-                BaseApp.APP.packageName,
-                "${BaseApp.APP.packageName}.view.main.QuickUnlockActivity"
+              BaseApp.APP.packageName,
+              "${BaseApp.APP.packageName}.view.main.QuickUnlockActivity"
             )
           it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         })
@@ -175,8 +230,8 @@ class KeepassAUtil private constructor() {
       BaseApp.APP.startActivity(Intent(Intent.ACTION_MAIN).also {
         it.component =
           ComponentName(
-              BaseApp.APP.packageName,
-              "${BaseApp.APP.packageName}.view.launcher.LauncherActivity"
+            BaseApp.APP.packageName,
+            "${BaseApp.APP.packageName}.view.launcher.LauncherActivity"
           )
         it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
       })
@@ -260,7 +315,7 @@ class KeepassAUtil private constructor() {
    */
   fun reOpenDb(context: Context) {
     val isOpenQuickLock = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-        .getBoolean(context.getString(R.string.set_quick_unlock), false)
+      .getBoolean(context.getString(R.string.set_quick_unlock), false)
     if (BaseApp.KDB == null || !isOpenQuickLock) {
       context.startActivity(Intent(context, LauncherActivity::class.java).apply {
         putExtra(LauncherActivity.KEY_OPEN_TYPE, LauncherActivity.OPEN_TYPE_OPEN_DB)
@@ -303,7 +358,7 @@ class KeepassAUtil private constructor() {
    * @return false 无效，true 有效
    */
   fun checkUrlIsValid(url: String?): Boolean {
-    if (url.isNullOrBlank()){
+    if (url.isNullOrBlank()) {
       return false
     }
     val rs = "^(http|https)://[^\\s]*"
@@ -336,7 +391,7 @@ class KeepassAUtil private constructor() {
     val item = SimpleItemEntity()
     item.title = pwGroup.name
     item.subTitle = BaseApp.APP.resources.getString(
-        R.string.hint_group_desc, KdbUtil.getGroupEntryNum(pwGroup)
+      R.string.hint_group_desc, KdbUtil.getGroupEntryNum(pwGroup)
         .toString()
     )
     item.obj = pwGroup
@@ -384,7 +439,7 @@ class KeepassAUtil private constructor() {
     apkPkgName: String
   ): Intent {
     val autoFillStructure = intent.getParcelableExtra<AssistStructure>(
-        AutofillManager.EXTRA_ASSIST_STRUCTURE
+      AutofillManager.EXTRA_ASSIST_STRUCTURE
     )
     if (autoFillStructure == null) {
       KLog.e(TAG, "autoFillStructure is null")
@@ -398,12 +453,12 @@ class KeepassAUtil private constructor() {
     val datas = KDBAutoFillRepository.getAutoFillDataByPackageName(apkPkgName)
     val response =
       AutoFillHelper.newResponse(
-          context,
-          true,
-          autofillFields,
-          datas,
-          apkPkgName,
-          autoFillStructure
+        context,
+        true,
+        autofillFields,
+        datas,
+        apkPkgName,
+        autoFillStructure
       )
 
     val data = Intent()
@@ -425,7 +480,7 @@ class KeepassAUtil private constructor() {
     apkPkgName: String
   ): Intent {
     val autoFillStructure = intent.getParcelableExtra<AssistStructure>(
-        AutofillManager.EXTRA_ASSIST_STRUCTURE
+      AutofillManager.EXTRA_ASSIST_STRUCTURE
     )
     if (autoFillStructure == null) {
       KLog.e(TAG, "autoFillStructure is null")
@@ -437,12 +492,12 @@ class KeepassAUtil private constructor() {
 
     val response =
       AutoFillHelper.newResponse(
-          context,
-          true,
-          autofillFields,
-          arrayListOf(pwEntry),
-          apkPkgName,
-          autoFillStructure
+        context,
+        true,
+        autofillFields,
+        arrayListOf(pwEntry),
+        apkPkgName,
+        autoFillStructure
       )
 
     val data = Intent()
@@ -511,11 +566,11 @@ class KeepassAUtil private constructor() {
   fun subShortPass() {
     val sh = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
     val subType = sh.getString(BaseApp.APP.getString(R.string.set_quick_pass_type), "1")!!
-        .toString()
-        .toInt()
+      .toString()
+      .toInt()
     val passLen = sh.getString(BaseApp.APP.getString(R.string.set_quick_pass_len), "3")!!
-        .toString()
-        .toInt()
+      .toString()
+      .toInt()
     val masterPass = QuickUnLockUtil.decryption(BaseApp.dbPass)
     var shortPass = ""
     KLog.i(TAG, "截取短密码，长度：$passLen，截取类型：$subType")
@@ -529,7 +584,7 @@ class KeepassAUtil private constructor() {
       2 -> {
         shortPass =
           if (masterPass.length <= passLen) masterPass else masterPass.substring(
-              masterPass.length - passLen, masterPass.length
+            masterPass.length - passLen, masterPass.length
           )
       }
     }
@@ -547,10 +602,10 @@ class KeepassAUtil private constructor() {
     var addOTPPass = false
     for (str in entryV4.strings) {
       if (str.key.equals(PwEntryV4.STR_NOTES, true)
-          || str.key.equals(PwEntryV4.STR_PASSWORD, true)
-          || str.key.equals(PwEntryV4.STR_TITLE, true)
-          || str.key.equals(PwEntryV4.STR_URL, true)
-          || str.key.equals(PwEntryV4.STR_USERNAME, true)
+        || str.key.equals(PwEntryV4.STR_PASSWORD, true)
+        || str.key.equals(PwEntryV4.STR_TITLE, true)
+        || str.key.equals(PwEntryV4.STR_URL, true)
+        || str.key.equals(PwEntryV4.STR_USERNAME, true)
       ) {
         continue
       }
@@ -559,7 +614,7 @@ class KeepassAUtil private constructor() {
 
       // 增加TOP密码字段
       if (!addOTPPass && (str.key.startsWith("TOTP", ignoreCase = true)
-              || str.key.startsWith("OTP", ignoreCase = true))
+            || str.key.startsWith("OTP", ignoreCase = true))
       ) {
         addOTPPass = true
         val totpPass = OtpUtil.getOtpPass(entryV4)
@@ -580,8 +635,8 @@ class KeepassAUtil private constructor() {
     }
 
     return map.toList()
-        .sortedBy { it.first }
-        .toMap()
+      .sortedBy { it.first }
+      .toMap()
   }
 
   /**
@@ -620,7 +675,7 @@ class KeepassAUtil private constructor() {
       intent.putExtra(GroupDetailActivity.KEY_GROUP_ID, entry.id)
       intent.putExtra(GroupDetailActivity.KEY_TITLE, entry.name)
       activity.startActivity(
-          intent, ActivityOptions.makeSceneTransitionAnimation(activity)
+        intent, ActivityOptions.makeSceneTransitionAnimation(activity)
           .toBundle()
       )
       return
@@ -633,14 +688,14 @@ class KeepassAUtil private constructor() {
         val pair =
           Pair<View, String>(showElement, activity.getString(R.string.transition_entry_icon))
         activity.startActivity(
-            intent, ActivityOptions.makeSceneTransitionAnimation(activity, pair)
+          intent, ActivityOptions.makeSceneTransitionAnimation(activity, pair)
             .toBundle()
         )
         return
       }
 
       activity.startActivity(
-          intent, ActivityOptions.makeSceneTransitionAnimation(activity)
+        intent, ActivityOptions.makeSceneTransitionAnimation(activity)
           .toBundle()
       )
 
@@ -768,9 +823,9 @@ class KeepassAUtil private constructor() {
         isExternalStorageDocument(tempUri) -> {
           val docId = DocumentsContract.getDocumentId(tempUri)
           val split = docId.split(":")
-              .toTypedArray()
+            .toTypedArray()
           return Environment.getExternalStorageDirectory()
-              .toString() + "/" + split[1]
+            .toString() + "/" + split[1]
         }
         isDownloadsDocument(tempUri) -> {
           val id = DocumentsContract.getDocumentId(tempUri)
@@ -781,13 +836,13 @@ class KeepassAUtil private constructor() {
             return temp.path
           } else if (isNumeric(id)) {
             tempUri = ContentUris.withAppendedId(
-                Uri.parse("content://downloads/public_downloads"),
-                id.toLong()
+              Uri.parse("content://downloads/public_downloads"),
+              id.toLong()
             )
           } else if (id.startsWith("msf", ignoreCase = true)) {
             // android 10 的问题，一样有问题！！
             tempUri = ContentUris.withAppendedId(
-                Uri.parse("content://downloads/public_downloads"), id.split(":")[1].toLong()
+              Uri.parse("content://downloads/public_downloads"), id.split(":")[1].toLong()
             )
             KLog.d(TAG, "msf Uri = $tempUri")
           }
@@ -795,7 +850,7 @@ class KeepassAUtil private constructor() {
         isMediaDocument(tempUri) -> {
           val docId = DocumentsContract.getDocumentId(tempUri)
           val split = docId.split(":")
-              .toTypedArray()
+            .toTypedArray()
           val type = split[0]
           if ("image" == type) {
             tempUri = Media.EXTERNAL_CONTENT_URI
@@ -813,7 +868,7 @@ class KeepassAUtil private constructor() {
       val cursor: Cursor?
       try {
         cursor = context.contentResolver
-            .query(uri, projection, selection, selectionArgs, null)
+          .query(uri, projection, selection, selectionArgs, null)
         if (cursor == null) {
           return null
         }
@@ -872,8 +927,8 @@ fun Uri.getFileInfo(
   context: Context
 ): Pair<String?, Long?> {
   return Pair(
-      UriUtil.getFileNameFromUri(context, this),
-      KeepassAUtil.instance.getFileSizeFormUri(context, this)
+    UriUtil.getFileNameFromUri(context, this),
+    KeepassAUtil.instance.getFileSizeFormUri(context, this)
   )
 }
 

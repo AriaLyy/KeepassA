@@ -106,6 +106,7 @@ class GroupPopMenu(
   /**
    * 删除群组
    */
+  @SuppressLint("StringFormatMatches")
   private fun delGroup() {
     // 是否直接删除条目
     val deleteDirectly = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)

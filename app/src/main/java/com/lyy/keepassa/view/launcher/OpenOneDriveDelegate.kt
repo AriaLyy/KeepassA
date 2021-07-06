@@ -64,7 +64,10 @@ class OpenOneDriveDelegate : IOpenDbDelegate {
     }
     msgDialog.setOnBtClickListener(object : MsgDialog.OnBtClickListener {
       override fun onBtClick(type: Int, view: View) {
-        onClick.invoke()
+        if (type == MsgDialog.TYPE_ENTER){
+          onClick.invoke()
+          return
+        }
       }
     })
     msgDialog.show()

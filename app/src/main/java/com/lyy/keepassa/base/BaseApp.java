@@ -12,13 +12,9 @@ package com.lyy.keepassa.base;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Build;
 import android.os.Handler;
-import android.os.LocaleList;
 import android.os.Looper;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.multidex.MultiDexApplication;
 import androidx.preference.PreferenceManager;
@@ -33,12 +29,12 @@ import com.lyy.keepassa.common.PassType;
 import com.lyy.keepassa.dao.AppDatabase;
 import com.lyy.keepassa.entity.DbHistoryRecord;
 import com.lyy.keepassa.receiver.ScreenLockReceiver;
-import com.lyy.keepassa.util.KLog;
 import com.lyy.keepassa.util.KeepassAUtil;
 import com.lyy.keepassa.util.LanguageUtil;
 import com.lyy.keepassa.util.QuickUnLockUtil;
 import com.lyy.keepassa.view.StorageType;
 import com.tencent.bugly.Bugly;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.wcdb.database.SQLiteCipherSpec;
 import com.tencent.wcdb.room.db.WCDBOpenHelperFactory;
 import com.zzhoujay.richtext.RichText;
@@ -112,7 +108,21 @@ public class BaseApp extends MultiDexApplication {
     boolean showStatusBar = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
         .getBoolean(getString(R.string.set_key_title_show_state_bar), true);
     BaseActivity.Companion.setShowStatusBar(showStatusBar);
-    Bugly.init(this, getChannel(), BuildConfig.DEBUG);
+    initBugly();
+  }
+
+  private void initBugly() {
+    KeepassAUtil kUtil = KeepassAUtil.Companion.getInstance();
+    // 获取当前包名
+    String packageName = getPackageName();
+    // 获取当前进程名
+    String processName = kUtil.getProcessName(android.os.Process.myPid());
+    CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(this);
+    strategy.setUploadProcess(processName == null || processName.equals(packageName));
+    strategy.setAppChannel(getChannel());
+    strategy.setAppVersion(kUtil.getAppVersionName(this));
+    Bugly.init(this, getChannel(), BuildConfig.DEBUG, strategy);
+    //CrashReport.testJavaCrash();
   }
 
   /**
