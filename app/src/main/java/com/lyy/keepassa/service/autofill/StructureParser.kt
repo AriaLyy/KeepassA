@@ -18,7 +18,7 @@ import android.view.View
 import androidx.autofill.HintConstants
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadata
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
-import com.lyy.keepassa.util.KLog
+import timber.log.Timber
 
 /**
  * Parser for an AssistStructure object. This is invoked when the Autofill Service receives an
@@ -81,7 +81,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
    * Traverse AssistStructure and add ViewNode metadata to a flat list.
    */
   private fun parse(isManual: Boolean) {
-    KLog.d(TAG, "Parsing structure for " + autofillStructure.activityComponent)
+    Timber.d("Parsing structure for ${autofillStructure.activityComponent}")
     val nodeSize = autofillStructure.windowNodeCount
     clear()
     for (i in 0 until nodeSize) {
@@ -103,7 +103,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       if (isW3c) {
         domainUrl = viewNode.webDomain ?: ""
 
-        KLog.d(TAG, "webDomain = $domainUrl")
+        Timber.d("webDomain = $domainUrl")
         if (viewNode.htmlInfo == null || viewNode.htmlInfo!!.attributes == null) {
           return
         }
@@ -129,9 +129,8 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
             addUserField(viewNode)
           }
           else -> {
-            KLog.d(
-                TAG,
-                "unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, " + "autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, " + "htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, " + "hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused}, " + "idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, " + "visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, " + "isOpaque = ${viewNode.isOpaque}"
+            Timber.d(
+                "unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused},  idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, isOpaque = ${viewNode.isOpaque}"
             )
           }
         }
@@ -152,7 +151,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       return
     }
     autoFillFields.tempPassFillId = viewNode.autofillId
-    KLog.d(
+    Timber.d(
         TAG,
         "pass autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, text = ${viewNode.text}, hint = ${viewNode.hint}, visibility = ${viewNode.visibility}, isActivated = ${viewNode.isActivated}"
     )
@@ -169,7 +168,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     }
     if (autoFillFields.tempUserFillId == null || viewNode.isFocused){
       autoFillFields.tempUserFillId = viewNode.autofillId
-      KLog.d(
+      Timber.d(
           TAG,
           "user autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, idEntry = ${viewNode.idEntry}, fillValue = ${viewNode.autofillValue} text = ${viewNode.text}, hint = ${viewNode.hint}, visibility = ${viewNode.visibility}, isActivated = ${viewNode.isActivated}"
       )

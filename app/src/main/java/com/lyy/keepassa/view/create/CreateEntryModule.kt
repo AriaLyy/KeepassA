@@ -30,12 +30,11 @@ import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.joda.time.DateTime
+import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.util.Date
 import java.util.UUID
@@ -113,7 +112,7 @@ class CreateEntryModule : BaseModule() {
     entry.setUrl(url, BaseApp.KDB.pm)
 
     if (noteStr.isNotEmpty()){
-      KLog.d(TAG, "notes = $noteStr")
+      Timber.d( "notes = $noteStr")
       entry.setNotes(noteStr.toString(), BaseApp.KDB.pm)
     }
     entry.setExpires(loseDate != null)

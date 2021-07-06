@@ -30,7 +30,6 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.common.PassType
 import com.lyy.keepassa.util.FingerprintUtil
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.PermissionsUtil
@@ -38,11 +37,11 @@ import com.lyy.keepassa.util.RoomUtil
 import com.lyy.keepassa.view.UpgradeLogDialog
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.fingerprint.FingerprintActivity
-import com.lyy.keepassa.view.main.MainActivity
 import de.psdev.licensesdialog.LicensesDialog
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.Locale
 
 /**
@@ -131,7 +130,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
       return
     }
     passLenLayout!!.setOnPreferenceChangeListener { _, newValue ->
-      KLog.i(TAG, "短密码长度：$newValue")
+      Timber.i( "短密码长度：$newValue")
       passLen = newValue.toString()
           .toInt()
       setPassTypeEntries()
@@ -143,7 +142,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     passTypeList.setOnPreferenceChangeListener { _, newValue ->
       val subTitle = passTypeList.entries[newValue.toString()
           .toInt() - 1]
-      KLog.i(TAG, "短密码类型：$subTitle")
+      Timber.i( "短密码类型：$subTitle")
       passTypeList.summary = subTitle.toString()
       subShortPass()
       true
@@ -255,7 +254,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
       return
     }
     unLock.setOnPreferenceChangeListener { _, newValue ->
-      KLog.d(TAG, "quick unlock newValue = $newValue")
+      Timber.d( "quick unlock newValue = $newValue")
       if (newValue as Boolean) {
         subShortPass()
       }
@@ -352,7 +351,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
           true
       )
     } else {
-      KLog.i(TAG, "已显示过自动填充对话框，不再重复显示")
+      Timber.i( "已显示过自动填充对话框，不再重复显示")
     }
 
   }

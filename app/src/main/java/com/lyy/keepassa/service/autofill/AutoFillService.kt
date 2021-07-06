@@ -33,6 +33,7 @@ import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
+import timber.log.Timber
 
 /**
  * 自动填充服务
@@ -59,12 +60,12 @@ class AutoFillService : AutofillService() {
       return
     }
     if (!PackageVerifier.isValidPackage(applicationContext, apkPackageName)) {
-      KLog.e(TAG, "无效的包名：$apkPackageName")
+      Timber.e("无效的包名：$apkPackageName")
       return
     }
-    KLog.d(TAG, "onFillRequest(): flags = ${request.flags}, requestId = ${request.id}, clientState = ${KLog.b(request.clientState)}")
+    Timber.d("onFillRequest(): flags = ${request.flags}, requestId = ${request.id}, clientState = ${KLog.b(request.clientState)}")
     cancellationSignal.setOnCancelListener {
-      KLog.w(TAG, "Cancel autofill not implemented in this sample.")
+      Timber.w("Cancel autofill not implemented in this sample.")
     }
 
     // Parse AutoFill data in Activity
@@ -103,7 +104,7 @@ class AutoFillService : AutofillService() {
       KDBAutoFillRepository.getAutoFillDataByDomain(parser.domainUrl)
     }
 
-    KLog.d(TAG, "entrySize = ${datas?.size}")
+    Timber.d("entrySize = ${datas?.size}")
     // 没有匹配的数据，进入搜索界面
     if (datas == null) {
       openSearchActivity(callback, autoFillFields, apkPackageName)
@@ -183,11 +184,11 @@ class AutoFillService : AutofillService() {
     val structure = context[context.size - 1].structure
     val apkPackageName = structure.activityComponent.packageName
     if (!PackageVerifier.isValidPackage(applicationContext, apkPackageName)) {
-      KLog.e(TAG, "无效的包名：$apkPackageName")
+      Timber.e("无效的包名：$apkPackageName")
       return
     }
     val data = request.clientState
-    KLog.d(TAG, "onSaveRequest(): data=" + KLog.b(data))
+    Timber.d("onSaveRequest(): data=${KLog.b(data)}" )
 
     val parser = StructureParser(structure)
     parser.parseForFill(true, apkPackageName)
@@ -198,7 +199,7 @@ class AutoFillService : AutofillService() {
       // This api is only at P
       if (Build.VERSION.SDK_INT >= VERSION_CODES.P) {
         val p = KDBAutoFillRepository.getUserInfo(parser.autoFillFields)
-        KLog.d(TAG, "用户信息：$p")
+        Timber.d("用户信息：$p")
         callback.onSuccess(
             LauncherActivity.getAuthDbIntentSenderBySave(
                 context = this,
@@ -223,11 +224,11 @@ class AutoFillService : AutofillService() {
   }
 
   override fun onConnected() {
-    KLog.d(TAG, "onConnected")
+    Timber.d("onConnected")
   }
 
   override fun onDisconnected() {
-    KLog.d(TAG, "onDisconnected")
+    Timber.d("onDisconnected")
   }
 
   override fun attachBaseContext(newBase: Context?) {

@@ -18,13 +18,13 @@ import com.dropbox.core.android.Auth
 import com.lyy.keepassa.R
 import com.lyy.keepassa.event.DbPathEvent
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.cloud.DropboxUtil
 import com.lyy.keepassa.view.StorageType.DROPBOX
 import com.lyy.keepassa.view.create.CreateDbFirstFragment
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.dialog.MsgDialog.OnBtClickListener
+import timber.log.Timber
 
 /**
  * @Author laoyuyu
@@ -46,7 +46,7 @@ class DropboxAuthFlow : IAuthFlow {
   }
 
   override fun onResume() {
-    KLog.d(TAG, "onResume")
+    Timber.d( "onResume")
     if (!isNeedAuth || DropboxUtil.isAuthorized()) {
       return
     }
@@ -114,7 +114,7 @@ class DropboxAuthFlow : IAuthFlow {
 
   @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
   override fun onDestroy() {
-    KLog.d(TAG, "onDestroy")
+    Timber.d( "onDestroy")
   }
 
   override fun onActivityResult(

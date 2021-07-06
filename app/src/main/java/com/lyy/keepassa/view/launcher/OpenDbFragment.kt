@@ -37,7 +37,6 @@ import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentOpenDbBinding
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.util.VibratorUtil
@@ -46,6 +45,7 @@ import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.main.MainActivity
 import com.tencent.bugly.crashreport.BuglyLog
+import timber.log.Timber
 import java.io.IOException
 
 /**
@@ -96,7 +96,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
       }
       BaseApp.isLocked = false
       BaseApp.KDB = db
-      KLog.d(TAG, "打开数据库成功")
+      Timber.d("打开数据库成功")
       loadingDialog.dismiss()
       if (openIsFromFill) {
         activity?.finish()
@@ -110,11 +110,11 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   override fun initData() {
     binding.fingerprint.visibility = View.GONE
     enterTransition = TransitionInflater.from(context)
-        .inflateTransition(R.transition.slide_enter)
+      .inflateTransition(R.transition.slide_enter)
     exitTransition = TransitionInflater.from(context)
-        .inflateTransition(R.transition.slide_exit)
+      .inflateTransition(R.transition.slide_exit)
     returnTransition = TransitionInflater.from(context)
-        .inflateTransition(R.transition.slide_return)
+      .inflateTransition(R.transition.slide_return)
     modlue = ViewModelProvider(this).get(LauncherModule::class.java)
 
     setDbName(openDbRecord)
@@ -123,7 +123,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     binding.cbKey.setOnCheckedChangeListener { _, isChecked ->
       if (isChecked) {
         if (TextUtils.isEmpty(openDbRecord.keyUri)
-            || openDbRecord.keyUri.equals("null", ignoreCase = true)
+          || openDbRecord.keyUri.equals("null", ignoreCase = true)
         ) {
           KeepassAUtil.instance.openSysFileManager(this@OpenDbFragment, "*/*", REQ_CODE_FILE)
         }
@@ -148,8 +148,8 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
       if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(binding.password.text)) {
         KeepassAUtil.instance.toggleKeyBord(requireContext())
         openDb(
-            binding.password.text.toString()
-                .trim()
+          binding.password.text.toString()
+            .trim()
         )
         true
       } else {
@@ -170,18 +170,18 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
    */
   @TargetApi(Build.VERSION_CODES.M) private fun handleFingerprint() {
     modlue.isNeedUseFingerprint(openDbRecord.localDbUri)
-        .observe(this, Observer { needUse ->
-          if (needUse) {
-            binding.fingerprint.visibility = View.VISIBLE
-            binding.fingerprint.playAnimation()
+      .observe(this, Observer { needUse ->
+        if (needUse) {
+          binding.fingerprint.visibility = View.VISIBLE
+          binding.fingerprint.playAnimation()
+          showBiometricPrompt()
+          binding.fingerprint.setOnClickListener {
             showBiometricPrompt()
-            binding.fingerprint.setOnClickListener {
-              showBiometricPrompt()
-            }
-            return@Observer
           }
-          binding.fingerprint.visibility = View.GONE
-        })
+          return@Observer
+        }
+        binding.fingerprint.visibility = View.GONE
+      })
   }
 
   fun hideFingerprint() {
@@ -203,7 +203,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     }
 
     modlue.getQuickUnlockRecord(openDbRecord, this)
-        .observe(this, quickUnlockObserver)
+      .observe(this, quickUnlockObserver)
   }
 
   /**
@@ -212,8 +212,8 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   private fun startHeadAnim() {
     try {
       binding.anim.setAnimation(
-          requireContext().assets.open("headAnim.json", AssetManager.ACCESS_STREAMING),
-          "LottieCacheWebDav"
+        requireContext().assets.open("headAnim.json", AssetManager.ACCESS_STREAMING),
+        "LottieCacheWebDav"
       )
       binding.anim.addAnimatorUpdateListener {
         if (binding.anim.frame == 40) {
@@ -231,8 +231,8 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         override fun onAnimationCancel(animation: Animator?) {
           binding.head.visibility = View.VISIBLE
           ObjectAnimator.ofFloat(binding.head, "alpha", 0f, 1f)
-              .setDuration(1000)
-              .start()
+            .setDuration(1000)
+            .start()
         }
 
         override fun onAnimationStart(animation: Animator?) {
@@ -276,7 +276,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
 
     loadingDialog.show()
     modlue.openDb(requireContext(), openDbRecord, cache)
-        .observe(this, openDbFinishedObserver)
+      .observe(this, openDbFinishedObserver)
   }
 
   /**
@@ -290,7 +290,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     openDbRecord.time = dbRecord.time
     openDbRecord.type = dbRecord.type
     openDbRecord.uid = dbRecord.uid
-    KLog.i(TAG, "更新数据，record = $dbRecord")
+    Timber.i("更新数据，record = $dbRecord")
     setDbName(dbRecord)
     handleKeyUri(KeepassAUtil.instance.convertUri(dbRecord.keyUri))
   }
@@ -298,7 +298,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   private fun setDbName(dbRecord: DbHistoryRecord) {
     binding.db.text = Html.fromHtml(getString(R.string.db1, dbRecord.dbName))
     binding.db.setLeftIcon(
-        resources.getDrawable(dbRecord.getDbPathType().icon, requireContext().theme)
+      resources.getDrawable(dbRecord.getDbPathType().icon, requireContext().theme)
     )
   }
 
@@ -323,7 +323,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     binding.key.layoutParams.height = 0
     binding.key.visibility = View.VISIBLE
     val h = resources.getDimension(R.dimen.input_pass_key_h)
-        .toInt()
+      .toInt()
     val anim = ValueAnimator.ofInt(0, h)
     anim.addUpdateListener { animation ->
       binding.key.layoutParams.height = animation.animatedValue as Int
@@ -337,7 +337,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   private fun hintKeyLayout() {
     binding.keyLayoutWrap.visibility = View.VISIBLE
     val h = resources.getDimension(R.dimen.input_pass_key_h)
-        .toInt()
+      .toInt()
     binding.key.layoutParams.height = h
     val anim = ValueAnimator.ofInt(h, 0)
     anim.addUpdateListener { animation ->
@@ -372,7 +372,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         data.data?.takePermission()
         openDbRecord.keyUri = data.data.toString()
         binding.key.text = getString(
-            R.string.key1, UriUtil.getFileNameFromUri(requireContext(), data.data)
+          R.string.key1, UriUtil.getFileNameFromUri(requireContext(), data.data)
         )
         return
       }

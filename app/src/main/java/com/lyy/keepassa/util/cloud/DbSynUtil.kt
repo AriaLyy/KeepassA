@@ -27,7 +27,6 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
@@ -40,6 +39,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.File
 import java.util.Date
 
@@ -81,7 +81,7 @@ object DbSynUtil : SynStateCode {
         Constance.PRE_FILE_NAME,
         BaseApp.APP, KEY_SERVICE_MODIFY_TIME, serviceModifyTime.time
     )
-    KLog.d(
+    Timber.d(
         TAG, "更新云端文件修改时间：${ KeepassAUtil.instance.formatTime(serviceModifyTime)}"
     )
   }
@@ -109,25 +109,25 @@ object DbSynUtil : SynStateCode {
     record: DbHistoryRecord
   ): Int {
     if (BaseApp.isAFS()) {
-      KLog.i(TAG, "AFS 不需要上传")
+      Timber.i( "AFS 不需要上传")
       return STATE_SUCCEED
     }
     HitUtil.toaskShort(context.getString(R.string.start_upload_db))
-    KLog.d(TAG, "上传文件：${record.getDbUri()}，云盘路径：${record.cloudDiskPath}")
+    Timber.d( "上传文件：${record.getDbUri()}，云盘路径：${record.cloudDiskPath}")
     val util = CloudUtilFactory.getCloudUtil(record.getDbPathType())
     val cloudFileInfo = util.getFileInfo(record.cloudDiskPath!!)
-    KLog.i(TAG, "获取文件信息成功：${cloudFileInfo.toString()}")
+    Timber.i( "获取文件信息成功：${cloudFileInfo.toString()}")
     if (cloudFileInfo == null) {
-      KLog.i(TAG, "云端文件不存在，开始上传文件")
+      Timber.i( "云端文件不存在，开始上传文件")
       return uploadFile(util, context, record)
     }
     if (cloudFileInfo.contentHash != null
         && util.checkContentHash(cloudFileInfo.contentHash, record.getDbUri())
     ) {
-      KLog.i(TAG, "云端文件和本地文件的hash一致，忽略该上传")
+      Timber.i( "云端文件和本地文件的hash一致，忽略该上传")
       return STATE_SUCCEED
     }
-    KLog.i(TAG, "云端文件存在，开始同步数据")
+    Timber.i( "云端文件存在，开始同步数据")
     return synUploadFile(util, context, record)
   }
 
@@ -139,7 +139,7 @@ object DbSynUtil : SynStateCode {
     dbRecord: DbHistoryRecord,
     filePath: Uri
   ): String? {
-    KLog.i(TAG, "开始下载文件，云端路径：${dbRecord.cloudDiskPath}，文件保存路径：${filePath}")
+    Timber.i( "开始下载文件，云端路径：${dbRecord.cloudDiskPath}，文件保存路径：${filePath}")
     val util = CloudUtilFactory.getCloudUtil(StorageType.valueOf(dbRecord.type))
     val path = util.downloadFile(context, dbRecord, filePath)
     if (!TextUtils.isEmpty(path)) {
@@ -157,28 +157,28 @@ object DbSynUtil : SynStateCode {
     filePath: Uri
   ): Int {
     if (BaseApp.isAFS()) {
-      KLog.i(TAG, "AFS 不需要下载")
+      Timber.i( "AFS 不需要下载")
       return STATE_SUCCEED
     }
     val util = CloudUtilFactory.getCloudUtil(record.getDbPathType())
     if (serviceModifyTime == util.getFileServiceModifyTime(record.cloudDiskPath!!)) {
-      KLog.i(TAG, "云端文件没有修改")
+      Timber.i( "云端文件没有修改")
       return STATE_SUCCEED
     }
 
     val path = util.downloadFile(context, record, filePath)
     if (path == null) {
-      KLog.e(TAG, "下载文件失败，${record.cloudDiskPath}")
+      Timber.e( "下载文件失败，${record.cloudDiskPath}")
       toask(context.getString(R.string.sync_db), false, context.getString(R.string.net_error))
       return STATE_DOWNLOAD_FILE_FAIL
     }
     val kdb = openDb(context, dbPath = path)
     if (kdb == null) {
-      KLog.e(TAG, "打开云端数据库失败，将覆盖云端数据库")
+      Timber.e( "打开云端数据库失败，将覆盖云端数据库")
       return coverFile(util, context, record)
     }
     if (BaseApp.KDB?.pm == null){
-      KLog.e(TAG, "downloadSyn, local db is null")
+      Timber.e( "downloadSyn, local db is null")
       return STATE_FAIL
     }
     return compareDb(util, context, record, kdb, BaseApp.KDB!!.pm, false)
@@ -194,8 +194,7 @@ object DbSynUtil : SynStateCode {
   ): Int {
     val st = util.getFileServiceModifyTime(record.cloudDiskPath!!)
     if (st == serviceModifyTime) {
-      KLog.i(
-          TAG,
+      Timber.i(
           "云端文件修改时间:${ KeepassAUtil.instance.formatTime(st)} 和本地缓存的云端文件时间:${ KeepassAUtil.instance.formatTime(
               serviceModifyTime
           )} 一致，开始覆盖云端文件"
@@ -203,8 +202,7 @@ object DbSynUtil : SynStateCode {
       return coverFile(util, context, record)
     }
 
-    KLog.i(
-        TAG,
+    Timber.i(
         "云端文件修改时间:${ KeepassAUtil.instance.formatTime(st)} 和本地缓存的云端文件时间:${ KeepassAUtil.instance.formatTime(
             serviceModifyTime
         )} 不一致，开始下载云端文件"
@@ -216,24 +214,24 @@ object DbSynUtil : SynStateCode {
     )
     val path = util.downloadFile(context, record, filePath)
     if (TextUtils.isEmpty(path)) {
-      KLog.e(TAG, "下载文件失败，${record.cloudDiskPath}")
+      Timber.e( "下载文件失败，${record.cloudDiskPath}")
       toask(context.getString(R.string.sync_db), false, context.getString(R.string.net_error))
       return STATE_DOWNLOAD_FILE_FAIL
     }
 
     val db = File(path)
-    KLog.i(TAG, "云端文件下载成功，开始打开数据库，filePath = ${db.path}，fileSize = ${db.length()}")
+    Timber.i( "云端文件下载成功，开始打开数据库，filePath = ${db.path}，fileSize = ${db.length()}")
     val kdb = openDb(context, dbPath = path!!)
     if (kdb == null) {
-      KLog.e(TAG, "打开云端数据库失败，将覆盖云端数据库")
+      Timber.e( "打开云端数据库失败，将覆盖云端数据库")
       return coverFile(util, context, record)
     }
 
     if (BaseApp.KDB?.pm == null){
-      KLog.e(TAG, "synUploadFile, local db is null")
+      Timber.e( "synUploadFile, local db is null")
       return STATE_FAIL
     }
-    KLog.i(TAG, "打开云端数据库成功，开始比对数据")
+    Timber.i( "打开云端数据库成功，开始比对数据")
     return compareDb(util, context, record, kdb, BaseApp.KDB!!.pm, true)
   }
 
@@ -268,7 +266,7 @@ object DbSynUtil : SynStateCode {
           delList.add(cloudEntry)
         }
         cloudEntry != localEntry -> {
-          KLog.d(TAG, "修改的条目：${cloudEntry.title}")
+          Timber.d( "修改的条目：${cloudEntry.title}")
           modifyList.add(Pair(cloudEntry, localEntry))
         }
       }
@@ -282,7 +280,7 @@ object DbSynUtil : SynStateCode {
           newList.add(cloudGroup)
         }
         cloudGroup.parent == null -> {
-          KLog.w(TAG, "云端数据库的群组的parent为空，群组名：${cloudGroup.name}")
+          Timber.w( "云端数据库的群组的parent为空，群组名：${cloudGroup.name}")
         }
         cloudGroup.parent.id != localGroup.parent.id -> {
           moveList.add(PwDataMap(cloudGroup, localGroup))
@@ -291,43 +289,42 @@ object DbSynUtil : SynStateCode {
           delList.add(cloudGroup)
         }
         cloudGroup != localGroup -> {
-          KLog.d(TAG, "修改的群组：${cloudGroup.name}")
+          Timber.d( "修改的群组：${cloudGroup.name}")
           modifyList.add(Pair(cloudGroup, localGroup))
         }
       }
     }
 
-    KLog.i(
-        TAG,
+    Timber.i(
         "比对数据完成，newListSize = ${newList.size}，moveListSize = ${moveList.size}，delListSize = ${delList.size}，modifyListSize = ${modifyList.size}"
     )
 
     if (newList.size == 0 && moveList.size == 0 && delList.size == 0 && modifyList.size == 0) {
-      KLog.i(TAG, "对比结果：无新增，无删除，无移动，无修改，忽略该次上传，并更新缓存的云端文件修改时间")
+      Timber.i( "对比结果：无新增，无删除，无移动，无修改，忽略该次上传，并更新缓存的云端文件修改时间")
       updateServiceModifyTime(record)
       return STATE_SUCCEED
     }
 
     if (newList.size > 0) {
       // 本地需要新增的条目
-      KLog.i(TAG, "本地需要新增条目")
+      Timber.i( "本地需要新增条目")
       localAddNewEntry(newList, localDb)
     }
 
     if (moveList.size > 0) {
       // 本地需要移动的条目
-      KLog.i(TAG, "本地需要移动条目")
+      Timber.i( "本地需要移动条目")
       moveLocalEntry(moveList, localDb)
     }
 
     if (modifyList.size <= 0) {
       val code = KdbUtil.saveDb(uploadDb = false, isSync = true)
-      KLog.i(TAG, "没有冲突的条目，保存数据库${if (code == STATE_SUCCEED) "成功" else "失败"}")
+      Timber.i( "没有冲突的条目，保存数据库${if (code == STATE_SUCCEED) "成功" else "失败"}")
       return code
     }
 
     // 有改动提示用户合并数据
-    KLog.i(TAG, "有改动提示用户合并数据")
+    Timber.i( "有改动提示用户合并数据")
     var code = STATE_FAIL
     val channel = Channel<Int>()
     if (isUpload) {
@@ -338,13 +335,13 @@ object DbSynUtil : SynStateCode {
 
     val job = GlobalScope.launch {
       code = channel.receive()
-      KLog.d(TAG, "xxxxx = $code")
+      Timber.d( "xxxxx = $code")
     }
     //  等待直到子协程执行结束，完美替换wait single
     job.join()
     job.cancel()
     channel.cancel()
-    KLog.d(TAG, "compareDb end point, code = $code")
+    Timber.d( "compareDb end point, code = $code")
     return code
   }
 
@@ -514,7 +511,7 @@ object DbSynUtil : SynStateCode {
       }
     })
     dialog.show()
-    KLog.d(TAG, "showUploadCoverDialog endPoint")
+    Timber.d( "showUploadCoverDialog endPoint")
   }
 
   /**
@@ -531,7 +528,7 @@ object DbSynUtil : SynStateCode {
     }
 
     val code = KdbUtil.saveDb(uploadDb = false, isSync = true)
-    KLog.i(TAG, "保存数据库${if (code == STATE_SUCCEED) "成功" else "失败"}")
+    Timber.i( "保存数据库${if (code == STATE_SUCCEED) "成功" else "失败"}")
     return code
   }
 
@@ -543,7 +540,7 @@ object DbSynUtil : SynStateCode {
     dbPath: String
   ): PwDatabase? {
     val uri = Uri.parse(dbPath)
-    KLog.i(TAG, "dbUri = $uri")
+    Timber.i( "dbUri = $uri")
     val temp = KDBHandlerHelper.getInstance(context)
         .openDb(
             uri, QuickUnLockUtil.decryption(BaseApp.dbPass),
@@ -573,11 +570,11 @@ object DbSynUtil : SynStateCode {
     // 处理需要删除文件的情况
     if (needDelFile) {
       if (util.delFile(record.cloudDiskPath!!)) {
-        KLog.i(TAG, "删除云端文件成功：${record.cloudDiskPath}")
+        Timber.i( "删除云端文件成功：${record.cloudDiskPath}")
         return uploadFile(util, context, record)
       }
 
-      KLog.e(TAG, "删除云端文件失败：${record.cloudDiskPath}")
+      Timber.e( "删除云端文件失败：${record.cloudDiskPath}")
       return STATE_DEL_FILE_FAIL
     }
 
@@ -593,7 +590,7 @@ object DbSynUtil : SynStateCode {
     record: DbHistoryRecord
   ): Int {
     val b = util.uploadFile(context, record)
-    KLog.d(TAG, "上传文件${if (b) "成功" else "失败"}, fileKey = ${record.cloudDiskPath}")
+    Timber.d( "上传文件${if (b) "成功" else "失败"}, fileKey = ${record.cloudDiskPath}")
     return if (b) STATE_SUCCEED else STATE_FAIL
   }
 

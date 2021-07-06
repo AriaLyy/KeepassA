@@ -16,9 +16,9 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.databinding.ActivityMarkdownEditorBinding
 import com.lyy.keepassa.event.EditorEvent
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.widget.editor.MarkDownEditor
 import org.greenrobot.eventbus.EventBus
+import timber.log.Timber
 
 /**
  * @Author laoyuyu
@@ -63,7 +63,7 @@ class MarkDownEditorActivity : BaseActivity<ActivityMarkdownEditorBinding>() {
     reqCode = intent.getIntExtra(KEY_REQUESTOIN_CODE, -1)
     content = intent.getCharSequenceExtra(KEY_CONTENT)
     if (reqCode == -1) {
-      KLog.e(TAG, "没有设置请求码")
+      Timber.e( "没有设置请求码")
       finishAfterTransition()
       return
     }

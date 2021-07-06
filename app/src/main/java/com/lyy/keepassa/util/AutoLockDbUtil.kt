@@ -10,7 +10,6 @@
 package com.lyy.keepassa.util
 
 import android.content.Context
-import android.util.Log
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import androidx.work.CoroutineWorker
@@ -22,6 +21,7 @@ import com.arialyy.frame.util.StringUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.Constance
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 /**
@@ -52,7 +52,7 @@ class AutoLockDbUtil private constructor() {
    * 重置定时器
    */
   fun resetTimer() {
-    KLog.d(TAG, "resetTimer")
+    Timber.d( "resetTimer")
     startLockWorker()
   }
 
@@ -71,7 +71,7 @@ class AutoLockDbUtil private constructor() {
     if (lastStartTime > 0 && System.currentTimeMillis() - lastStartTime <= 3000) {
       return
     }
-    Log.d(TAG, "开始自动锁定")
+    Timber.d( "开始自动锁定")
     sp.edit(true) {
       putLong(KEY_LAST_START_TIME, System.currentTimeMillis())
     }

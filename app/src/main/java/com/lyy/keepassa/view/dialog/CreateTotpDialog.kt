@@ -20,10 +20,10 @@ import com.lyy.keepassa.entity.TotpType.CUSTOM
 import com.lyy.keepassa.entity.TotpType.DEFAULT
 import com.lyy.keepassa.entity.TotpType.STEAM
 import com.lyy.keepassa.event.CreateAttrStrEvent
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.getArgument
 import com.lyy.keepassa.widget.expand.AttrStrItemView
 import org.greenrobot.eventbus.EventBus
+import timber.log.Timber
 
 class CreateTotpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListener {
   private var arithmetic = "SHA1"
@@ -113,7 +113,7 @@ class CreateTotpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickList
           binding.strKey.error = "key is null"
           return
         }
-        KLog.d(TAG, "key = $keyStr arit = $arithmetic, time = $time, len = $len")
+        Timber.d("key = $keyStr arit = $arithmetic, time = $time, len = $len")
         createTotpStr()
         dismiss()
         return
@@ -128,36 +128,36 @@ class CreateTotpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickList
         val seed = ProtectedString(true, binding.strKey.text.toString())
         seed.isOtpPass = true
         EventBus.getDefault()
-            .post(
-                CreateAttrStrEvent(
-                    "TOTP Seed",
-                    seed,
-                    isEdit,
-                    itemView
-                )
+          .post(
+            CreateAttrStrEvent(
+              "TOTP Seed",
+              seed,
+              isEdit,
+              itemView
             )
+          )
         EventBus.getDefault()
-            .post(
-                CreateAttrStrEvent(
-                    "TOTP Settings",
-                    ProtectedString(false, "$time;${if (totpType == STEAM) "S" else "6"}"),
-                    isEdit,
-                    itemView
-                )
+          .post(
+            CreateAttrStrEvent(
+              "TOTP Settings",
+              ProtectedString(false, "$time;${if (totpType == STEAM) "S" else "6"}"),
+              isEdit,
+              itemView
             )
+          )
       }
       CUSTOM -> {
         val seedStr =
           "otpauth://totp/$entryTitle:$entryUserName?secret=${binding.strKey.text.toString()}&period=$time&digits=$len&issuer=$entryTitle&algorithm=$arithmetic"
         EventBus.getDefault()
-            .post(
-                CreateAttrStrEvent(
-                    "otp",
-                    ProtectedString(true, seedStr),
-                    isEdit,
-                    itemView
-                )
+          .post(
+            CreateAttrStrEvent(
+              "otp",
+              ProtectedString(true, seedStr),
+              isEdit,
+              itemView
             )
+          )
       }
     }
   }

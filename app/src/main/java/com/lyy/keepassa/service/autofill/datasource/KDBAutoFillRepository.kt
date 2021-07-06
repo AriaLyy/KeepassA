@@ -24,10 +24,10 @@ import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.IconUtil
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.util.UUID
 
@@ -47,7 +47,7 @@ object KDBAutoFillRepository {
     if (BaseApp.KDB?.pm == null){
       return null
     }
-    KLog.d(TAG, "getFillDataByPkgName, pkgName = $pkgName")
+    Timber.d("getFillDataByPkgName, pkgName = $pkgName")
     val listStorage = ArrayList<PwEntry>()
     KdbUtil.searchEntriesByPackageName(pkgName, listStorage)
     if (listStorage.isEmpty()) {
@@ -76,7 +76,7 @@ object KDBAutoFillRepository {
    * 通过url获取填充数据
    */
   fun getAutoFillDataByDomain(domain: String): ArrayList<PwEntry>? {
-    KLog.d(TAG, "getFillDataByDomain, domain = $domain")
+    Timber.d("getFillDataByDomain, domain = $domain")
     val listStorage = ArrayList<PwEntry>()
     KdbUtil.searchEntriesByDomain(domain, listStorage)
     if (listStorage.isEmpty()) {
@@ -94,7 +94,7 @@ object KDBAutoFillRepository {
     autofillFields: AutoFillFieldMetadataCollection
   ) {
     if (BaseApp.KDB?.pm == null){
-      KLog.e(TAG, "数据库为空")
+      Timber.e("数据库为空")
       return
     }
     val listStorage = ArrayList<PwEntry>()

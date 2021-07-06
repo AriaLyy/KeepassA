@@ -9,7 +9,6 @@
 
 package com.lyy.keepassa.util
 
-import android.util.Log
 import com.arialyy.frame.util.RegularRule
 import com.keepassdroid.Database
 import com.keepassdroid.database.PwEntry
@@ -21,9 +20,9 @@ import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
 import com.keepassdroid.database.helper.KDBHandlerHelper
-import com.keepassdroid.utils.SprEngine
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.util.cloud.DbSynUtil
+import timber.log.Timber
 import java.util.UUID
 
 object KdbUtil {
@@ -162,13 +161,13 @@ object KdbUtil {
     uploadDb: Boolean = true,
     isSync: Boolean = false
   ): Int {
-    Log.d(TAG, "保存前的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
+    Timber.d( "保存前的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
     val b = KDBHandlerHelper.getInstance(BaseApp.APP)
         .save(BaseApp.KDB)
     if (uploadDb) {
       return uploadDb()
     }
-    Log.d(TAG, "保存后的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
+    Timber.d( "保存后的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
 //    // 更新rootGroup条目
 //    if (b && isSync) {
 //      updateRootGroup()
@@ -207,7 +206,7 @@ object KdbUtil {
     if (!BaseApp.isAFS()) {
       val code = DbSynUtil.uploadSyn(BaseApp.APP, BaseApp.dbRecord!!)
       if (code != DbSynUtil.STATE_SUCCEED) {
-        Log.e(TAG, "同步数据库失败，code：$code")
+        Timber.e( "同步数据库失败，code：$code")
       }
       return code
     }
@@ -227,7 +226,7 @@ object KdbUtil {
       return
     }
     val topDomain = Regex(RegularRule.DOMAIN_TOP, RegexOption.IGNORE_CASE).find(domain)
-    KLog.d(TAG, "topDomain = ${topDomain?.value}")
+    Timber.d( "topDomain = ${topDomain?.value}")
     for (entry in BaseApp.KDB.pm.entries.values) {
       val pe4 = entry as PwEntryV4
       if (pe4.getUrl()

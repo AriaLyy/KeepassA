@@ -15,7 +15,6 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.CloudServiceInfo
 import com.lyy.keepassa.event.DbPathEvent
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
@@ -27,6 +26,7 @@ import com.lyy.keepassa.view.dialog.WebDavLoginDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /**
  * @Author laoyuyu
@@ -78,7 +78,7 @@ class WebDavAuthFlow : IAuthFlow {
         callback.callback(false)
         return@setOnDismissListener
       }
-      KLog.d(TAG, "webDavUri: $webDavUri")
+      Timber.d( "webDavUri: $webDavUri")
       webDavUserName = webDavDialog.userName
       webDavPass = webDavDialog.pass
       if (isDoNext){
@@ -125,7 +125,7 @@ class WebDavAuthFlow : IAuthFlow {
     pass: String
   ) {
     GlobalScope.launch(Dispatchers.IO) {
-      KLog.d(TAG, "开始保存webDav登陆记录，uri = $uri")
+      Timber.d( "开始保存webDav登陆记录，uri = $uri")
       val dao = BaseApp.appDatabase.cloudServiceInfoDao()
       var data = dao.queryServiceInfo(uri)
       if (data == null) {

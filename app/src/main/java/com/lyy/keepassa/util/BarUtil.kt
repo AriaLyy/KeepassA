@@ -23,6 +23,7 @@ import android.view.WindowManager
 import android.view.WindowManager.LayoutParams
 import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
+import timber.log.Timber
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 
@@ -125,7 +126,7 @@ object BarUtil {
       helperWnd.getLocationInWindow(windowParams)
       helperWnd.getLocationOnScreen(screenParams)
       // 如果状态栏隐藏，返回0，如果状态栏显示则返回高度
-      KLog.d(TAG, "getStatusBarHeight = " + (screenParams[1] - windowParams[1]))
+      Timber.d( "getStatusBarHeight = " + (screenParams[1] - windowParams[1]))
       val b = screenParams[1] - windowParams[1] == 0
       callback.invoke(b)
     }

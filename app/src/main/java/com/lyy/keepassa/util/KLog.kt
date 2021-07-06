@@ -22,6 +22,7 @@ import kotlin.collections.Map.Entry
  * Created by Aria.Lao on 2017/10/25.
  * Aria日志工具
  */
+@Deprecated("please use timber")
 object KLog {
   const val DEBUG = true
   const val LOG_LEVEL_VERBOSE = 2

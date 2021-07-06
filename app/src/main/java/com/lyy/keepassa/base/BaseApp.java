@@ -40,6 +40,7 @@ import com.tencent.wcdb.room.db.WCDBOpenHelperFactory;
 import com.zzhoujay.richtext.RichText;
 import java.util.Locale;
 import me.weishu.reflection.Reflection;
+import timber.log.Timber;
 
 public class BaseApp extends MultiDexApplication {
 
@@ -94,6 +95,7 @@ public class BaseApp extends MultiDexApplication {
     // 开启kotlin 协程debug
     if (BuildConfig.DEBUG) {
       System.setProperty("kotlinx.coroutines.debug", "on");
+      Timber.plant(new Timber.DebugTree());
     }
     //else {
     //  if (!BuildConfig.FLAVOR.equals("fdroid")) {

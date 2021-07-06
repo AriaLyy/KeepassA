@@ -71,6 +71,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
@@ -192,7 +193,7 @@ class KeepassAUtil private constructor() {
   fun lock() {
     val isOpenQuickLock = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
       .getBoolean(BaseApp.APP.getString(R.string.set_quick_unlock), false)
-    KLog.d(TAG, "锁定数据库")
+    Timber.d("锁定数据库")
     BaseApp.isLocked = true
     // 只有应用在前台才会跳转到锁屏页面
     if (isRunningForeground(BaseApp.APP) && BaseApp.KDB != null) {
@@ -201,11 +202,11 @@ class KeepassAUtil private constructor() {
         NotificationUtil.startQuickUnlockNotify(BaseApp.APP)
         val cActivity = AbsFrame.getInstance().currentActivity
         if (cActivity != null && cActivity is QuickUnlockActivity) {
-          KLog.w(TAG, "快速解锁已启动，不再启动快速解锁")
+          Timber.w("快速解锁已启动，不再启动快速解锁")
           return
         }
 
-        KLog.d(TAG, "启动快速解锁")
+        Timber.d("启动快速解锁")
         BaseApp.APP.startActivity(Intent(Intent.ACTION_MAIN).also {
           it.component =
             ComponentName(
@@ -221,10 +222,10 @@ class KeepassAUtil private constructor() {
       NotificationUtil.startDbLocked(BaseApp.APP)
       val cActivity = AbsFrame.getInstance().currentActivity
       if (cActivity != null && cActivity is LauncherActivity) {
-        KLog.w(TAG, "解锁页面已启动，不再启动快速解锁")
+        Timber.w("解锁页面已启动，不再启动快速解锁")
         return
       }
-      KLog.d(TAG, "快速解锁没有启动，进入解锁界面")
+      Timber.d("快速解锁没有启动，进入解锁界面")
       BaseApp.KDB?.clear(BaseApp.APP)
       BaseApp.KDB = null
       BaseApp.APP.startActivity(Intent(Intent.ACTION_MAIN).also {
@@ -413,7 +414,7 @@ class KeepassAUtil private constructor() {
         record.time = System.currentTimeMillis()
         dao.saveRecord(record)
         BaseApp.dbRecord = record
-        KLog.d(TAG, "保存数据库打开记录成功")
+        Timber.d("保存数据库打开记录成功")
         return@launch
       }
 
@@ -423,7 +424,7 @@ class KeepassAUtil private constructor() {
       his.time = record.time
       dao.updateRecord(his)
       BaseApp.dbRecord = his
-      KLog.d(TAG, "更新数据库打开记录成功")
+      Timber.d("更新数据库打开记录成功")
     }
   }
 
@@ -442,7 +443,7 @@ class KeepassAUtil private constructor() {
       AutofillManager.EXTRA_ASSIST_STRUCTURE
     )
     if (autoFillStructure == null) {
-      KLog.e(TAG, "autoFillStructure is null")
+      Timber.e("autoFillStructure is null")
       return Intent()
     }
 
@@ -483,7 +484,7 @@ class KeepassAUtil private constructor() {
       AutofillManager.EXTRA_ASSIST_STRUCTURE
     )
     if (autoFillStructure == null) {
-      KLog.e(TAG, "autoFillStructure is null")
+      Timber.e("autoFillStructure is null")
       return Intent()
     }
     val parser = StructureParser(autoFillStructure)
@@ -573,7 +574,7 @@ class KeepassAUtil private constructor() {
       .toInt()
     val masterPass = QuickUnLockUtil.decryption(BaseApp.dbPass)
     var shortPass = ""
-    KLog.i(TAG, "截取短密码，长度：$passLen，截取类型：$subType")
+    Timber.i("截取短密码，长度：$passLen，截取类型：$subType")
     when (subType) {
       // 前面位
       1 -> {
@@ -729,7 +730,7 @@ class KeepassAUtil private constructor() {
         obj.startActivityForResult(intent, requestCode)
       }
     } catch (e: Exception) {
-      KLog.e(TAG, "打开文件失败");
+      Timber.e("打开文件失败");
       e.printStackTrace()
     }
 
@@ -758,7 +759,7 @@ class KeepassAUtil private constructor() {
         obj.startActivityForResult(intent, requestCode)
       }
     } catch (e: Exception) {
-      KLog.e(TAG, "创建文件失败")
+      Timber.e("创建文件失败")
       e.printStackTrace()
     }
   }
@@ -786,7 +787,7 @@ class KeepassAUtil private constructor() {
       }
 
       if (!UriUtil.checkPermissions(context, uri)) {
-        KLog.e(TAG, "uri没有授权：$uri")
+        Timber.e("uri没有授权：$uri")
         return 0
       }
 
@@ -817,7 +818,7 @@ class KeepassAUtil private constructor() {
     val needToCheckUri = VERSION.SDK_INT >= 19
     var selection: String? = null
     var selectionArgs: Array<String>? = null
-    KLog.d(TAG, "uri = $uri")
+    Timber.d("uri = $uri")
     if (needToCheckUri && DocumentsContract.isDocumentUri(context.applicationContext, tempUri)) {
       when {
         isExternalStorageDocument(tempUri) -> {
@@ -844,7 +845,7 @@ class KeepassAUtil private constructor() {
             tempUri = ContentUris.withAppendedId(
               Uri.parse("content://downloads/public_downloads"), id.split(":")[1].toLong()
             )
-            KLog.d(TAG, "msf Uri = $tempUri")
+            Timber.d("msf Uri = $tempUri")
           }
         }
         isMediaDocument(tempUri) -> {

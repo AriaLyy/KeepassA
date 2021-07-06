@@ -30,7 +30,6 @@ import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.FillInfoEvent
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.NotificationUtil
@@ -44,6 +43,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
+import timber.log.Timber
 
 /**
  * 输入法
@@ -121,7 +121,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     candidatesList.visibility = View.GONE
     curEntry = null
     ic = currentInputConnection
-    KLog.d(TAG, "pkgName = ${info?.packageName}")
+    Timber.d( "pkgName = ${info?.packageName}")
     appPkgName = info?.packageName
     showEntryList(searchEntry(appPkgName))
   }

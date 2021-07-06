@@ -24,16 +24,13 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.ViewDataBinding
 import com.arialyy.frame.core.AbsActivity
 import com.arialyy.frame.util.ReflectionUtil
-import com.arialyy.frame.util.ResUtil
-import com.gyf.immersionbar.BarHide.FLAG_HIDE_STATUS_BAR
-import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.R
 import com.lyy.keepassa.util.BarUtil
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.LanguageUtil
+import timber.log.Timber
 import java.lang.reflect.Field
 import java.util.ArrayList
 
@@ -144,7 +141,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
 
   override fun onRestart() {
     super.onRestart()
-    KLog.d(TAG, "$TAG, onRestart")
+    Timber.d("onRestart")
     if (!KeepassAUtil.instance.isHomeActivity(this) && (BaseApp.KDB.isNull() || BaseApp.isLocked)) {
       BaseApp.handler.postDelayed({
         KeepassAUtil.instance.lock()
@@ -181,7 +178,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     Looper.myQueue()
         .addIdleHandler {
           try {
-            KLog.d(TAG, "updateResume")
+            Timber.d("updateResume")
             ActivityOptions.makeSceneTransitionAnimation(this)
             val stateField: Field = ReflectionUtil.getField(
                 Activity::class.java,
@@ -225,12 +222,10 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
 
   override fun onStop() {
     super.onStop()
-    KLog.d(TAG, "$TAG, onStop")
   }
 
   override fun onResume() {
     super.onResume()
-    KLog.d(TAG, "$TAG, onResume")
     // 启动定时器
     KeepassAUtil.instance.startLockTimer(this)
     updateResume(this)
@@ -238,6 +233,5 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
 
   override fun onPause() {
     super.onPause()
-    KLog.d(TAG, "$TAG, onPause")
   }
 }

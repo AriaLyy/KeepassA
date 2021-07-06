@@ -14,7 +14,6 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
@@ -26,8 +25,6 @@ import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedBinary
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
-import com.lyy.keepassa.util.KLog
-import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.OtpUtil
 import com.lyy.keepassa.widget.toPx
@@ -38,6 +35,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 /**
  * 项目详情页，展开自定义字段
@@ -311,12 +309,12 @@ class ExpandAttrStrLayout(
    */
   private fun startAutoGetOtp() {
     if (otpPassItem == null || otpPassItem?.pb == null || entryV4 == null) {
-      KLog.e(TAG, "无法自动获取otp密码")
+      Timber.e( "无法自动获取otp密码")
       return
     }
     val p = OtpUtil.getOtpPass(entryV4!!)
     if (p.second.isNullOrEmpty()){
-      KLog.e(TAG, "无法自动获取otp密码")
+      Timber.e( "无法自动获取otp密码")
       return
     }
 
@@ -325,7 +323,7 @@ class ExpandAttrStrLayout(
 
     scope.launch(Dispatchers.Main) {
 
-      Log.d(TAG, p.toString())
+      Timber.d(p.toString())
       val time = p.first
       otpPassItem!!.pb.max = time
       otpPassItem!!.valueTx.text = p.second
@@ -359,7 +357,7 @@ class ExpandAttrStrLayout(
    */
   fun removeStrValue(id: Int) {
     if (id < 0 || id > childCount) {
-      Log.e(TAG, "id【$id】错误")
+      Timber.e("id【$id】错误")
       return
     }
     val child = getChildAt(id) as AttrStrItemView

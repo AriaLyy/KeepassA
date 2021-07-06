@@ -16,8 +16,8 @@ import androidx.core.net.toFile
 import com.arialyy.frame.util.FileUtil
 import com.arialyy.frame.util.StringUtil
 import com.lyy.keepassa.entity.DbHistoryRecord
-import com.lyy.keepassa.util.KLog
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
+import timber.log.Timber
 import java.io.FileOutputStream
 import java.nio.channels.Channels
 import java.util.Date
@@ -38,7 +38,7 @@ object WebDavUtil : ICloudUtil {
     return sardine != null
   }
 
-  fun createDir(path:String){
+  fun createDir(path: String) {
     sardine?.createDirectory(path)
   }
 
@@ -56,7 +56,7 @@ object WebDavUtil : ICloudUtil {
     } catch (e: Exception) {
       sardine = null
       e.printStackTrace()
-      KLog.e(TAG, "checkLogin", e)
+      Timber.e(e, "checkLogin")
       return false
     }
     return true
@@ -93,12 +93,12 @@ object WebDavUtil : ICloudUtil {
 
       for (file in resources) {
         list.add(
-            CloudFileInfo(file.path, file.name, file.modified, file.contentLength, file.isDirectory)
+          CloudFileInfo(file.path, file.name, file.modified, file.contentLength, file.isDirectory)
         )
       }
     } catch (e: Exception) {
       e.printStackTrace()
-      KLog.e(TAG, "获取文件列表失败", e)
+      Timber.e("获取文件列表失败", e)
     }
     return list
   }
@@ -123,11 +123,11 @@ object WebDavUtil : ICloudUtil {
       }
       val file = resources[0]
       return CloudFileInfo(
-          file.path, file.name, file.modified, file.contentLength, file.isDirectory
+        file.path, file.name, file.modified, file.contentLength, file.isDirectory
       )
     } catch (e: Exception) {
       e.printStackTrace()
-      KLog.e(TAG, "获取文件信息失败", e)
+      Timber.e("获取文件信息失败", e)
       e.printStackTrace()
     }
     return null
@@ -139,7 +139,7 @@ object WebDavUtil : ICloudUtil {
       sardine!!.delete(convertUrl(fileKey))
     } catch (e: Exception) {
       e.printStackTrace()
-      KLog.e(TAG, "删除文件失败", e)
+      Timber.e("删除文件失败", e)
       return false
     }
     return true
@@ -159,7 +159,7 @@ object WebDavUtil : ICloudUtil {
     sardine ?: return false
     try {
       sardine!!.put(
-          dbRecord.cloudDiskPath, Uri.parse(dbRecord.localDbUri)
+        dbRecord.cloudDiskPath, Uri.parse(dbRecord.localDbUri)
           .toFile(), "*/*"
       )
       val info = getFileInfo(dbRecord.cloudDiskPath!!)
@@ -168,7 +168,7 @@ object WebDavUtil : ICloudUtil {
       }
     } catch (e: Exception) {
       e.printStackTrace()
-      KLog.e(TAG, "上传文件失败", e)
+      Timber.e("上传文件失败", e)
     }
 
     return true
@@ -180,10 +180,10 @@ object WebDavUtil : ICloudUtil {
     filePath: Uri
   ): String? {
     sardine ?: return null
-    KLog.d(TAG, "start download file, save path: $filePath")
+    Timber.d("start download file, save path: $filePath")
     val cloudPath = convertUrl(dbRecord.cloudDiskPath.toString())
     val fp = filePath.toFile()
-    if (!fp.exists()){
+    if (!fp.exists()) {
       FileUtil.createFile(fp)
     }
     sardine?.let {
@@ -197,9 +197,9 @@ object WebDavUtil : ICloudUtil {
         foc.transferFrom(fic, 0, fileInfo!!.size)
       } catch (e: Exception) {
         e.printStackTrace()
-        KLog.e(TAG, "下载文件失败", e)
+        Timber.e("下载文件失败", e)
         return null
-      }finally {
+      } finally {
         it.unlock(cloudPath, token)
       }
     }

@@ -10,12 +10,12 @@ package com.lyy.keepassa.view.create.auth
 import android.content.Context
 import android.content.Intent
 import com.lyy.keepassa.event.DbPathEvent
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.cloud.OneDriveUtil
 import com.lyy.keepassa.view.StorageType.ONE_DRIVE
 import com.lyy.keepassa.view.create.CreateDbFirstFragment
 import com.lyy.keepassa.view.dialog.LoadingDialog
+import timber.log.Timber
 
 /**
  * @Author laoyuyu
@@ -67,7 +67,7 @@ class OneDriveAuthFlow : IAuthFlow {
 
   private fun auth() {
     if (isAuthid){
-      KLog.d(TAG, "已经完成授权")
+      Timber.d( "已经完成授权")
       return
     }
     loadingDialog = LoadingDialog(context)

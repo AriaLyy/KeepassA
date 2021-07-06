@@ -313,6 +313,8 @@ dependencies {
 
   implementation "com.squareup.retrofit2:retrofit:${rootProject.ext.retrofitVersion}"
 
+  implementation 'com.jakewharton.timber:timber:4.7.1'
+
   // // =========================== 三方库 end =====================================
 
 }

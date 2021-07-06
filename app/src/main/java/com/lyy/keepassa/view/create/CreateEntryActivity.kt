@@ -42,7 +42,6 @@ import com.lyy.keepassa.event.TimeEvent
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.getFileInfo
 import com.lyy.keepassa.util.putArgument
@@ -68,6 +67,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
+import timber.log.Timber
 import java.util.UUID
 
 /**
@@ -122,13 +122,13 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     type = intent.getIntExtra(KEY_TYPE, TYPE_NEW_ENTRY)
     isFromAutoFillSave = intent.getBooleanExtra(LauncherActivity.KEY_IS_AUTH_FORM_FILL_SAVE, false)
     val isShortcuts = intent.getBooleanExtra("isShortcuts", false)
-    KLog.i(TAG, "isShortcuts = $isShortcuts")
+    Timber.i("isShortcuts = $isShortcuts")
 
     // 处理快捷方式进入的情况
     if (isShortcuts) {
       if (BaseApp.isLocked) {
-        KLog.w(TAG, "数据库已锁定，进入解锁界面")
-         KeepassAUtil.instance.reOpenDb(this)
+        Timber.w("数据库已锁定，进入解锁界面")
+        KeepassAUtil.instance.reOpenDb(this)
         finish()
         return
       }
@@ -150,14 +150,14 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     if (type == TYPE_NEW_TYPE_ENTRY || type == TYPE_EDIT_ENTRY) {
       val uuidTemp = intent.getSerializableExtra(KEY_ENTRY)
       if (uuidTemp == null) {
-        KLog.e(TAG, "条目id为-1")
+        Timber.e("条目id为-1")
         finish()
         return
       }
       entryId = uuidTemp as UUID
       val entryTemp = BaseApp.KDB!!.pm.entries[entryId]
       if (entryTemp == null) {
-        KLog.e(TAG, "【${entryId}】对应的条目不存在")
+        Timber.e("【${entryId}】对应的条目不存在")
         finish()
         return
       }
@@ -174,10 +174,10 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       val apkPackageName = intent.getStringExtra(LauncherActivity.KEY_PKG_NAME)
       if (!apkPackageName.isNullOrEmpty()) {
         pwEntry = module.getEntryFromAutoFillSave(
-            this,
-            apkPackageName,
-            intent.getStringExtra(LauncherActivity.KEY_SAVE_USER_NAME),
-            intent.getStringExtra(LauncherActivity.KEY_SAVE_PASS)
+          this,
+          apkPackageName,
+          intent.getStringExtra(LauncherActivity.KEY_SAVE_USER_NAME),
+          intent.getStringExtra(LauncherActivity.KEY_SAVE_PASS)
         )
       }
     }
@@ -210,23 +210,23 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     }
     binding.noticeLayout.setOnClickListener {
       MarkDownEditorActivity.turnMarkDownEditor(
-          this,
-          editorRequestCode,
-          module.noteStr
+        this,
+        editorRequestCode,
+        module.noteStr
       )
     }
     // the user name field, can show history
     module.getUserNameCache()
-        .observe(this, {
-          val adapter = ArrayAdapter(this, R.layout.android_simple_dropdown_item_1line, it)
-          binding.user.setAdapter(adapter)
-          binding.user.threshold = 1 // 设置输入几个字符后开始出现提示 默认是2
-          binding.user.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-              binding.user.showDropDown()
-            }
+      .observe(this, {
+        val adapter = ArrayAdapter(this, R.layout.android_simple_dropdown_item_1line, it)
+        binding.user.setAdapter(adapter)
+        binding.user.threshold = 1 // 设置输入几个字符后开始出现提示 默认是2
+        binding.user.setOnFocusChangeListener { _, hasFocus ->
+          if (hasFocus) {
+            binding.user.showDropDown()
           }
-        })
+        }
+      })
 
   }
 
@@ -258,7 +258,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     if (v4Entry.expires()) {
       binding.loseTime.visibility = View.VISIBLE
       binding.loseTime.isChecked = v4Entry.expires()
-      binding.loseTime.text =  KeepassAUtil.instance.formatTime(v4Entry.expiryTime)
+      binding.loseTime.text = KeepassAUtil.instance.formatTime(v4Entry.expiryTime)
     }
     if (v4Entry.tags.isNotEmpty()) {
       binding.tag.visibility = View.VISIBLE
@@ -274,7 +274,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     }
 
     val strMap = LinkedHashMap<String, ProtectedString>()
-    strMap.putAll( KeepassAUtil.instance.filterCustomStr(v4Entry, false))
+    strMap.putAll(KeepassAUtil.instance.filterCustomStr(v4Entry, false))
     if (strMap.isNotEmpty()) {
       showStrLayout()
       binding.attrStrs.setValue(strMap)
@@ -288,7 +288,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
    */
   private fun handleAddMore() {
     binding.addMore.setOnClickListener {
-      if ( KeepassAUtil.instance.isFastClick()) {
+      if (KeepassAUtil.instance.isFastClick()) {
         return@setOnClickListener
       }
       if (addMoreDialog == null) {
@@ -312,16 +312,20 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
               }
               R.drawable.ic_notice -> {
                 MarkDownEditorActivity.turnMarkDownEditor(
-                    this@CreateEntryActivity,
-                    editorRequestCode,
-                    null
+                  this@CreateEntryActivity,
+                  editorRequestCode,
+                  null
                 )
               }
               R.drawable.ic_attr_str -> { // 自定义字段
                 CreateCustomStrDialog().show()
               }
               R.drawable.ic_attr_file -> { // 附件
-                 KeepassAUtil.instance.openSysFileManager(this@CreateEntryActivity, "*/*", getFileRequestCode)
+                KeepassAUtil.instance.openSysFileManager(
+                  this@CreateEntryActivity,
+                  "*/*",
+                  getFileRequestCode
+                )
               }
               R.drawable.ic_totp -> { // totp
                 CreateTotpDialog().apply {
@@ -329,7 +333,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
                   putArgument("entryTitle", pwEntry.title)
                   putArgument("entryUserName", pwEntry.username)
                 }
-                    .show()
+                  .show()
               }
             }
             addMoreDialog!!.dismiss()
@@ -390,7 +394,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
 
     binding.titleLayout.setEndIconOnClickListener {
       val iconDialog = IconBottomSheetDialog()
-      iconDialog.setCallback(object :IconItemCallback{
+      iconDialog.setCallback(object : IconItemCallback {
         override fun onDefaultIcon(defIcon: PwIconStandard) {
           module.icon = defIcon
           binding.titleLayout.endIconDrawable =
@@ -433,24 +437,24 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     loadDialog = LoadingDialog(this)
     loadDialog.show()
     module.updateEntry(
-        entry = pwEntry,
-        title = binding.title.text.toString(),
-        userName = binding.user.text.toString(),
-        pass = binding.password.text.toString(),
-        url = binding.url.text.toString(),
-        tags = binding.tag.text.toString()
+      entry = pwEntry,
+      title = binding.title.text.toString(),
+      userName = binding.user.text.toString(),
+      pass = binding.password.text.toString(),
+      url = binding.url.text.toString(),
+      tags = binding.tag.text.toString()
     )
     module.saveDb()
-        .observe(this, { success ->
-          EventBus.getDefault()
-              .post(CreateOrUpdateEntryEvent(pwEntry, true))
-          loadDialog.dismiss()
-          if (!success) {
-            HitUtil.toaskLong(getString(R.string.save_db_fail))
-          } else {
-            finishAfterTransition()
-          }
-        })
+      .observe(this, { success ->
+        EventBus.getDefault()
+          .post(CreateOrUpdateEntryEvent(pwEntry, true))
+        loadDialog.dismiss()
+        if (!success) {
+          HitUtil.toaskLong(getString(R.string.save_db_fail))
+        } else {
+          finishAfterTransition()
+        }
+      })
   }
 
   override fun onBackPressed() {
@@ -479,26 +483,26 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     pwEntry.parent = BaseApp.KDB!!.pm.groups[parentId] as PwGroupV4?
 
     module.updateEntry(
-        entry = pwEntry,
-        title = binding.title.text.toString(),
-        userName = binding.user.text.toString(),
-        pass = binding.password.text.toString(),
-        url = binding.url.text.toString(),
-        tags = binding.tag.text.toString()
+      entry = pwEntry,
+      title = binding.title.text.toString(),
+      userName = binding.user.text.toString(),
+      pass = binding.password.text.toString(),
+      url = binding.url.text.toString(),
+      tags = binding.tag.text.toString()
     )
     loadDialog = LoadingDialog(this)
     loadDialog.show()
     module.addEntry(pwEntry)
-        .observe(this, { success ->
-          EventBus.getDefault()
-              .post(CreateOrUpdateEntryEvent(pwEntry, false))
-          loadDialog.dismiss()
-          if (!success) {
-            HitUtil.toaskLong(getString(R.string.save_db_fail))
-          } else {
-            finishAfterTransition()
-          }
-        })
+      .observe(this, { success ->
+        EventBus.getDefault()
+          .post(CreateOrUpdateEntryEvent(pwEntry, false))
+        loadDialog.dismiss()
+        if (!success) {
+          HitUtil.toaskLong(getString(R.string.save_db_fail))
+        } else {
+          finishAfterTransition()
+        }
+      })
   }
 
   /**
@@ -526,10 +530,10 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     }
     binding.passGenerate.setOnClickListener {
       startActivityForResult(
-          Intent(this, GeneratePassActivity::class.java),
-          passRequestCode,
-          ActivityOptions.makeSceneTransitionAnimation(this)
-              .toBundle()
+        Intent(this, GeneratePassActivity::class.java),
+        passRequestCode,
+        ActivityOptions.makeSceneTransitionAnimation(this)
+          .toBundle()
       )
     }
   }
@@ -543,7 +547,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       return
     }
     event.content?.let {
-      KLog.d(TAG, "note = $it")
+      Timber.d("note = $it")
       module.noteStr = it.trim()
       showOtherItem(binding.noticeLayout, false)
       binding.notice.text = module.noteStr
@@ -557,7 +561,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   fun onTimeEvent(event: TimeEvent) {
     val time = "${event.year}/${event.month}/${event.dayOfMonth} ${event.hour}:${event.minute}"
     val dateTime = DateTime(
-        event.year, event.month, event.dayOfMonth, event.hour, event.minute, DateTimeZone.UTC
+      event.year, event.month, event.dayOfMonth, event.hour, event.minute, DateTimeZone.UTC
     )
     module.loseDate = dateTime.toDate()
     binding.loseTime.text = time
@@ -621,7 +625,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     if (binding.attrStrLayout.visibility == View.GONE) {
       binding.attrStrLayout.visibility = View.VISIBLE
       binding.attrStrs.setOnStrViewClickListener(object :
-          ExpandStrAttrView.OnAttrStrViewClickListener {
+        ExpandStrAttrView.OnAttrStrViewClickListener {
         override fun onClickListener(
           v: AttrStrItemView,
           key: String,
@@ -640,19 +644,19 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
    */
   private fun addAttrFile(uri: Uri?) {
     if (uri == null) {
-      KLog.e(TAG, "附件uri为空")
+      Timber.e("附件uri为空")
       HitUtil.snackShort(
-          rootView,
-          "${getString(R.string.add_attr_file)}${getString(R.string.fail)}"
+        rootView,
+        "${getString(R.string.add_attr_file)}${getString(R.string.fail)}"
       )
       return
     }
     val fileInfo = uri.getFileInfo(this)
     if (TextUtils.isEmpty(fileInfo.first) || fileInfo.second == null) {
-      KLog.e(TAG, "获取文件名失败")
+      Timber.e("获取文件名失败")
       HitUtil.snackShort(
-          rootView,
-          "${getString(R.string.add_attr_file)}${getString(R.string.fail)}"
+        rootView,
+        "${getString(R.string.add_attr_file)}${getString(R.string.fail)}"
       )
       return
     }
@@ -665,7 +669,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     }
     binding.attrFiles.addValue(fileName, fileUri = uri)
     module.attrFileMap[fileName] = ProtectedBinary(
-        false, UriUtil.getUriInputStream(this, uri)
+      false, UriUtil.getUriInputStream(this, uri)
         .readBytes()
     )
   }
@@ -680,7 +684,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     if (binding.attrFileLayout.visibility == View.GONE) {
       binding.attrFileLayout.visibility = View.VISIBLE
       binding.attrFiles.setOnAttrFileViewClickListener(object :
-          ExpandFileAttrView.OnAttrFileViewClickListener {
+        ExpandFileAttrView.OnAttrFileViewClickListener {
         override fun onClickListener(
           v: AttrFileItemView,
           key: String,

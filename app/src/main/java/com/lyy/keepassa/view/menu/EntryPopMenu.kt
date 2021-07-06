@@ -42,6 +42,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
+import timber.log.Timber
 
 /**
  * 群组长按菜单
@@ -106,7 +107,7 @@ class EntryPopMenu(
                 "${context.getString(R.string.create_totp)}${context.getString(R.string.fail)}"
             )
           } else {
-            KLog.d(TAG, "totp = ${totpPass.second}")
+            Timber.d( "totp = ${totpPass.second}")
             ClipboardUtil.get()
                 .copyDataToClip(totpPass.second!!)
             HitUtil.toaskShort(context.getString(R.string.hint_copy_totp))
@@ -124,6 +125,7 @@ class EntryPopMenu(
     }
   }
 
+  @SuppressLint("StringFormatMatches")
   private fun delEntry() {
     // 是否直接删除条目
     val deleteDirectly = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)

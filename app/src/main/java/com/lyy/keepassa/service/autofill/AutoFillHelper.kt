@@ -33,12 +33,12 @@ import com.keepassdroid.database.PwIconStandard
 import com.lyy.keepassa.R
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.IconUtil
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 import com.lyy.keepassa.widget.toPx
+import timber.log.Timber
 
 /**
  * This is a class containing helper methods for building Autofill Datasets and Responses.
@@ -213,7 +213,7 @@ object AutoFillHelper {
     val dataSetBuild = Dataset.Builder()
     val notUsed = RemoteViews(context.packageName, android.R.layout.simple_list_item_1)
     val b = applySaveInfoToFields(metadataList, dataSetBuild, notUsed)
-    KLog.d(TAG, "newSaveResponse applyToFields -> $b")
+    Timber.d("newSaveResponse applyToFields -> $b")
     if (b) {
       responseBuilder.addDataset(dataSetBuild.build())
     }
@@ -284,7 +284,7 @@ object AutoFillHelper {
       )
       responseBuilder.build()
     } else {
-      KLog.d(TAG, "These fields are not meant to be saved by autofill.")
+      Timber.d("These fields are not meant to be saved by autofill.")
       null
     }
   }
@@ -324,7 +324,7 @@ object AutoFillHelper {
       loop@ for (fillField in fillFields) {
         val fillId = fillField.autoFillId ?: break
         val fillType = fillField.autoFillType
-        KLog.w(TAG, "applyDataInfoToFields, autoFill type -> $fillType, autoFillId -> $fillId")
+        Timber.w("applyDataInfoToFields, autoFill type -> $fillType, autoFillId -> $fillId")
         when (fillType) {
           View.AUTOFILL_TYPE_LIST -> {
             if (fillField.autoFillField.textValue.isNullOrEmpty()) {
@@ -366,7 +366,7 @@ object AutoFillHelper {
             )
             setValueAtLeastOnce = true
           }
-          else -> KLog.w(TAG, "Invalid autoFill type -> $fillType")
+          else -> Timber.w("Invalid autoFill type -> $fillType")
         }
       }
     }
@@ -387,7 +387,7 @@ object AutoFillHelper {
       loop@ for (fillField in fillFields) {
         val fillId = fillField.autoFillId ?: break
         val fillType = fillField.autoFillType
-        KLog.w(TAG, "applySaveInfoToFields, autoFill type -> $fillType, autoFillId -> $fillId")
+        Timber.w("applySaveInfoToFields, autoFill type -> $fillType, autoFillId -> $fillId")
         when (fillType) {
           View.AUTOFILL_TYPE_LIST -> {
             if (fillField.autoFillField.textValue.isNullOrEmpty()) {
@@ -413,7 +413,7 @@ object AutoFillHelper {
 
           View.AUTOFILL_TYPE_TEXT -> {
             if (fillField.autoFillField.textValue.isNullOrEmpty()) {
-              KLog.w(TAG, "applySaveInfoToFields, textValue is null")
+              Timber.w("applySaveInfoToFields, textValue is null")
               continue@loop
             }
             dataSetBuilder.setValue(
@@ -433,7 +433,7 @@ object AutoFillHelper {
             )
             setValueAtLeastOnce = true
           }
-          else -> KLog.w(TAG, "Invalid autofill type -> $fillType")
+          else -> Timber.w("Invalid autofill type -> $fillType")
         }
       }
     }

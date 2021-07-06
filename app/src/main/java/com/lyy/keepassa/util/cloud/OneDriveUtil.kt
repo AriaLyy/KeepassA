@@ -44,6 +44,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.asRequestBody
 import org.joda.time.format.DateTimeFormat
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
@@ -105,7 +106,7 @@ object OneDriveUtil : ICloudUtil {
    */
   private fun checkLogin(): Boolean {
     if (authInfo == null || !this::oneDriveApp.isInitialized) {
-      KLog.e(TAG, "登陆失败，sdk没有初始化，或登陆失败")
+      Timber.e("登陆失败，sdk没有初始化，或登陆失败")
       HitUtil.toaskShort("${getContext().getString(R.string.login)}${getContext().getString(R.string.fail)}")
       return false
     }
@@ -126,7 +127,7 @@ object OneDriveUtil : ICloudUtil {
              * This requires "account_mode" : "SINGLE" in the config json file.
              */
             oneDriveApp = application
-            KLog.d(TAG, "初始化成功")
+            Timber.d("初始化成功")
             callback.invoke(true)
           }
 
@@ -142,18 +143,18 @@ object OneDriveUtil : ICloudUtil {
    */
   fun loadAccount() {
     if (!this::oneDriveApp.isInitialized) {
-      KLog.e(TAG, "还没有初始化sdk")
+      Timber.e("还没有初始化sdk")
       return
     }
 
     oneDriveApp.getCurrentAccountAsync(object : CurrentAccountCallback {
       override fun onAccountLoaded(activeAccount: IAccount?) {
         if (activeAccount == null) {
-          KLog.w(TAG, "用户还没有登陆")
+          Timber.w("用户还没有登陆")
           login()
           return
         }
-        KLog.w(TAG, "已经登陆过，自动登陆，开始获取token")
+        Timber.w("已经登陆过，自动登陆，开始获取token")
         getTokenByAccountInfo(activeAccount)
       }
 
@@ -161,9 +162,9 @@ object OneDriveUtil : ICloudUtil {
         priorAccount: IAccount?,
         currentAccount: IAccount?
       ) {
-        KLog.w(TAG, "账号已却换，重新获取token")
+        Timber.w("账号已却换，重新获取token")
         if (currentAccount == null) {
-          KLog.e(TAG, "当前账户为空")
+          Timber.e("当前账户为空")
           return
         }
         getTokenByAccountInfo(currentAccount)
@@ -183,13 +184,13 @@ object OneDriveUtil : ICloudUtil {
     oneDriveApp.acquireTokenSilentAsync(getScopes(), account.authority, object :
         SilentAuthenticationCallback {
       override fun onSuccess(authenticationResult: IAuthenticationResult?) {
-        KLog.d(TAG, "获取token成功")
+        Timber.d("获取token成功")
         authInfo = authenticationResult
         loginCallback?.callback(true)
       }
 
       override fun onError(exception: MsalException) {
-        KLog.d(TAG, "获取token失败，重新启动登陆流程")
+        Timber.d("获取token失败，重新启动登陆流程")
         exception.printStackTrace()
         if (getTokenFailNum >= MAX_FAIL_NUM) {
           HitUtil.toaskShort(R.string.get_token_fail)
@@ -198,13 +199,13 @@ object OneDriveUtil : ICloudUtil {
         }
         oneDriveApp.signOut(object : SignOutCallback {
           override fun onSignOut() {
-            KLog.d(TAG, "登出成功，重新开始登陆流程")
+            Timber.d("登出成功，重新开始登陆流程")
             login()
             getTokenFailNum += 1
           }
 
           override fun onError(exception: MsalException) {
-            KLog.e(TAG, "登出失败")
+            Timber.e("登出失败")
             exception.printStackTrace()
             loginCallback?.callback(false)
           }
@@ -220,19 +221,19 @@ object OneDriveUtil : ICloudUtil {
       override fun onSuccess(authenticationResult: IAuthenticationResult?) {
         authInfo = authenticationResult
         HitUtil.toaskShort("${getContext().getString(R.string.login)}${getContext().getString(R.string.success)}")
-        KLog.d(TAG, "登陆成功")
+        Timber.d("登陆成功")
         loginCallback?.callback(true)
       }
 
       override fun onError(exception: MsalException?) {
         HitUtil.toaskShort("${getContext().getString(R.string.login)}${getContext().getString(R.string.fail)}")
-        KLog.d(TAG, "登陆失败")
+        Timber.d("登陆失败")
         exception?.printStackTrace()
         loginCallback?.callback(false)
       }
 
       override fun onCancel() {
-        KLog.d(TAG, "取消登陆")
+        Timber.d("取消登陆")
         HitUtil.toaskShort("${getContext().getString(R.string.login)}${getContext().getString(R.string.cancel)}")
         loginCallback?.callback(false)
       }
@@ -264,7 +265,7 @@ object OneDriveUtil : ICloudUtil {
     if (!checkLogin()) {
       return null
     }
-    KLog.d(TAG, "获取文件列表，path = $path")
+    Timber.d("获取文件列表，path = $path")
     val response = if (path == "/") {
       netManager.request(MsalApi::class.java)
           .getAppFolderList(getAuthInfo().accessToken, getUserId())
@@ -293,7 +294,7 @@ object OneDriveUtil : ICloudUtil {
 
   override suspend fun getFileInfo(fileKey: String): CloudFileInfo? {
     val userId = getUserId()
-    KLog.d(TAG, "getFileInfo, userId = ${userId}, fileKey = $fileKey")
+    Timber.d("getFileInfo, userId = ${userId}, fileKey = $fileKey")
 
     try {
       val response: MsalSourceItem? = if (fileKey.startsWith("/")) {
@@ -308,7 +309,7 @@ object OneDriveUtil : ICloudUtil {
             .getFileInfoById(getAuthInfo().accessToken, userId, fileKey)
       }
       if (response == null) {
-        KLog.e(TAG, "获取文件信息失败")
+        Timber.e("获取文件信息失败")
         return null
       }
       return msalItem2CloudItem(response)
@@ -322,7 +323,7 @@ object OneDriveUtil : ICloudUtil {
    * 如果成功，此调用将返回 204 No Content 响应，以指明资源已被删除，没有可返回的内容。
    */
   override suspend fun delFile(fileKey: String): Boolean {
-    KLog.d(TAG, "删除文件，fileKey = $fileKey")
+    Timber.d("删除文件，fileKey = $fileKey")
     val response = netManager.request(MsalApi::class.java)
         .deleteFile(getAuthInfo().accessToken, getUserId(), fileKey)
     return response.code() == HttpURLConnection.HTTP_NO_CONTENT
@@ -347,7 +348,7 @@ object OneDriveUtil : ICloudUtil {
               itemPath = file.name
           )
 
-      KLog.d(TAG, "获取session成功，上传地址：${uploadSession.uploadUrl}")
+      Timber.d("获取session成功，上传地址：${uploadSession.uploadUrl}")
       // 取消上传的临时文件会话
       cancelUploadSession(uploadSession.uploadUrl)
 
@@ -364,16 +365,16 @@ object OneDriveUtil : ICloudUtil {
       val response = okClient.newCall(request)
           .execute()
       if (response.code != HttpURLConnection.HTTP_OK && response.code != HttpURLConnection.HTTP_CREATED) {
-        KLog.e(TAG, "上传失败，code = ${response.code}, msg = ${response.message}")
+        Timber.e("上传失败，code = ${response.code}, msg = ${response.message}")
         return false
       }
       val responseBytes = response.body?.bytes()
       if (responseBytes == null) {
-        KLog.e(TAG, "body为null")
+        Timber.e("body为null")
         return false
       }
       val responseContent = String(responseBytes, Charset.forName("UTF-8"))
-      KLog.d(TAG, "上传成功，响应内容")
+      Timber.d("上传成功，响应内容")
       KLog.j(TAG, responseContent)
       val obj = Gson().fromJson(responseContent, MsalSourceItem::class.java)
       dbRecord.cloudDiskPath = obj.id
@@ -391,7 +392,7 @@ object OneDriveUtil : ICloudUtil {
    */
   private fun cancelUploadSession(uploadUrl: String) {
     try {
-      KLog.d(TAG, "如果有的话，取消临时文件的上传对话")
+      Timber.d("如果有的话，取消临时文件的上传对话")
       val request = Request.Builder()
           .url(uploadUrl)
           .delete()
@@ -428,7 +429,7 @@ object OneDriveUtil : ICloudUtil {
         val outF = File(filePath.path)
         val fr = FileUtil.createFile(outF)
         if (!fr) {
-          KLog.e(TAG, "创建文件失败，path = $filePath")
+          Timber.e("创建文件失败，path = $filePath")
           return@withContext null
         }
         var len = 0

@@ -46,7 +46,6 @@ import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
@@ -65,6 +64,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class LauncherModule : BaseModule() {
   private val itemData: MutableLiveData<List<SimpleItemEntity>> = MutableLiveData()
@@ -110,7 +110,7 @@ class LauncherModule : BaseModule() {
       return
     }
     if (record == null) {
-      KLog.e(TAG, "解锁记录为空")
+      Timber.e( "解锁记录为空")
       return
     }
     val resource = fragment.requireContext().resources
@@ -130,7 +130,7 @@ class LauncherModule : BaseModule() {
             errString: CharSequence
           ) {
             if (!fragment.isAdded) {
-              KLog.e(TAG, "Fragment没有被加载")
+              Timber.e( "Fragment没有被加载")
               return
             }
             val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
@@ -194,7 +194,7 @@ class LauncherModule : BaseModule() {
       return
     }
     if (record == null) {
-      KLog.e(TAG, "解锁记录为空")
+      Timber.e( "解锁记录为空")
       return
     }
     val resource = fragment.requireContext().resources
@@ -214,7 +214,7 @@ class LauncherModule : BaseModule() {
             errString: CharSequence
           ) {
             if (!fragment.isAdded) {
-              KLog.e(TAG, "Fragment没有被加载")
+              Timber.e( "Fragment没有被加载")
               return
             }
             val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
@@ -366,14 +366,14 @@ class LauncherModule : BaseModule() {
       val unlockDao = BaseApp.appDatabase.quickUnlockDao()
       val unLockRecord = unlockDao.findRecord(dbUri)
       if (unLockRecord == null) {
-        KLog.d(TAG, "unLockRecord is null")
+        Timber.d( "unLockRecord is null")
         return@withContext false
       }
-      KLog.d(TAG, "is full unlock = ${unLockRecord.isUseFingerprint}")
+      Timber.d( "is full unlock = ${unLockRecord.isUseFingerprint}")
       val dbDao = BaseApp.appDatabase.dbRecordDao()
       val dbRecord = dbDao.findRecord(dbUri)
       if (dbRecord == null) {
-        KLog.d(TAG, "dbRecord is null")
+        Timber.d( "dbRecord is null")
         return@withContext false
       }
 
@@ -391,7 +391,7 @@ class LauncherModule : BaseModule() {
     record: DbHistoryRecord,
     dbPass: String
   ) = liveData {
-    KLog.d(TAG, "打开数据库")
+    Timber.d( "打开数据库")
 
     val db: Database? = withContext(Dispatchers.IO) {
       var temp: Database? = null
@@ -450,7 +450,7 @@ class LauncherModule : BaseModule() {
             if (cacheFile.exists()
                 && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
             ) {
-              KLog.i(TAG, "文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
+              Timber.i( "文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
               db = openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
             }
             val cachePath = DbSynUtil.downloadOnly(context, record, Uri.fromFile(cacheFile))
@@ -496,7 +496,7 @@ class LauncherModule : BaseModule() {
     if (cacheFile.exists()
         && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
     ) {
-      KLog.i(TAG, "文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
+      Timber.i( "文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
       return openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
     }
     val cachePath = DbSynUtil.downloadOnly(context, record, Uri.fromFile(cacheFile))
@@ -520,7 +520,7 @@ class LauncherModule : BaseModule() {
     if (cacheFile.exists()
         && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
     ) {
-      KLog.i(TAG, "文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
+      Timber.i( "文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
       return openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
     }
     val cachePath = DbSynUtil.downloadOnly(context, record, Uri.fromFile(cacheFile))
