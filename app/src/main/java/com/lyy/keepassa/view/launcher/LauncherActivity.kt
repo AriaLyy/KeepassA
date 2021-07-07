@@ -21,6 +21,9 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.facade.annotation.Autowired
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.lyy.keepassa.R
 import com.lyy.keepassa.R.layout
 import com.lyy.keepassa.base.BaseActivity
@@ -31,13 +34,13 @@ import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.event.DbHistoryEvent
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.putArgument
 import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.main.MainActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 
+@Route(path = "/launcher/activity")
 class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   private val REQUEST_PERMISSION_CODE = 0xa1
   private val REQUEST_SEARCH_ENTRY_CODE = 0xa2
@@ -65,7 +68,9 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   /**
    * 启动类型，只有含有历史打开记录时，该记录才有效
    */
-  private var type = OPEN_TYPE_OPEN_DB
+  @Autowired(name = KEY_OPEN_TYPE)
+  @JvmField
+  var type = OPEN_TYPE_OPEN_DB
 
   override fun setLayoutId(): Int {
     return layout.activity_launcher
@@ -73,14 +78,15 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
+    ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
-//    checkPermissions()
-    type = intent.getIntExtra(KEY_OPEN_TYPE, OPEN_TYPE_OPEN_DB)
+
+    // type = intent.getIntExtra(KEY_OPEN_TYPE, OPEN_TYPE_OPEN_DB)
     isFromFill = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL, false)
     isFromFillSave = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL_SAVE, false)
     apkPkgName = intent.getStringExtra(KEY_PKG_NAME)
     module = ViewModelProvider(this)
-        .get(LauncherModule::class.java)
+      .get(LauncherModule::class.java)
     initUI()
     module.securityCheck(this)
   }
@@ -94,32 +100,32 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
    */
   private fun initUI() {
     module.getLastOpenDbHistory(this)
-        .observe(this, Observer { t ->
-          val fragment: Fragment
-          val tag: String
-          if (t == null) {
+      .observe(this, Observer { t ->
+        val fragment: Fragment
+        val tag: String
+        if (t == null) {
+          val p = buildChangDbFragment()
+          tag = p.first
+          changeDbFragment = p.second
+          fragment = changeDbFragment!!
+        } else {
+          if (type == OPEN_TYPE_CHANGE_DB) {
             val p = buildChangDbFragment()
             tag = p.first
             changeDbFragment = p.second
             fragment = changeDbFragment!!
           } else {
-            if (type == OPEN_TYPE_CHANGE_DB) {
-              val p = buildChangDbFragment()
-              tag = p.first
-              changeDbFragment = p.second
-              fragment = changeDbFragment!!
-            } else {
-              val p = buildOpenDbFragment(record = t)
-              tag = p.first
-              openDbFragment = p.second
-              fragment = openDbFragment!!
-            }
+            val p = buildOpenDbFragment(record = t)
+            tag = p.first
+            openDbFragment = p.second
+            fragment = openDbFragment!!
           }
+        }
 
-          supportFragmentManager.beginTransaction()
-              .replace(R.id.content, fragment, tag)
-              .commitNow()
-        })
+        supportFragmentManager.beginTransaction()
+          .replace(R.id.content, fragment, tag)
+          .commitNow()
+      })
   }
 
   override fun onResume() {
@@ -141,14 +147,14 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
         // 如果查找不到数据，跳转到搜索页面
         if (datas == null || datas.isEmpty()) {
           AutoFillEntrySearchActivity.turnSearchActivity(
-              this, REQUEST_SEARCH_ENTRY_CODE,
-              apkPkgName!!
+            this, REQUEST_SEARCH_ENTRY_CODE,
+            apkPkgName!!
           )
           return
         }
 
         // 将数据回调给service
-        val data =  KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName!!)
+        val data = KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName!!)
         setResult(Activity.RESULT_OK, data)
       }
 
@@ -157,16 +163,15 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
        */
       if (isFromFillSave) {
         startActivityForResult(
-            Intent(this, CreateEntryActivity::class.java).apply {
-              putExtra(KEY_IS_AUTH_FORM_FILL_SAVE, true)
-              putExtra(KEY_PKG_NAME, intent.getStringExtra(KEY_PKG_NAME))
-              putExtra(KEY_SAVE_USER_NAME, intent.getStringExtra(KEY_SAVE_USER_NAME))
-              putExtra(KEY_SAVE_PASS, intent.getStringExtra(KEY_SAVE_PASS))
-            }, REQUEST_SAVE_ENTRY_CODE, ActivityOptions.makeSceneTransitionAnimation(this)
-            .toBundle()
+          Intent(this, CreateEntryActivity::class.java).apply {
+            putExtra(KEY_IS_AUTH_FORM_FILL_SAVE, true)
+            putExtra(KEY_PKG_NAME, intent.getStringExtra(KEY_PKG_NAME))
+            putExtra(KEY_SAVE_USER_NAME, intent.getStringExtra(KEY_SAVE_USER_NAME))
+            putExtra(KEY_SAVE_PASS, intent.getStringExtra(KEY_SAVE_PASS))
+          }, REQUEST_SAVE_ENTRY_CODE, ActivityOptions.makeSceneTransitionAnimation(this)
+          .toBundle()
         )
       }
-
     }
     super.finish()
   }
@@ -179,8 +184,8 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
       changeDbFragment = ChangeDbFragment()
     }
     supportFragmentManager.beginTransaction()
-        .replace(R.id.content, changeDbFragment!!)
-        .commitNow()
+      .replace(R.id.content, changeDbFragment!!)
+      .commitNow()
     isChangeDb = true
   }
 
@@ -188,8 +193,8 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
 //    super.onBackPressed()
     if (isChangeDb) {
       supportFragmentManager.beginTransaction()
-          .replace(R.id.content, openDbFragment!!)
-          .commitNow()
+        .replace(R.id.content, openDbFragment!!)
+        .commitNow()
       isChangeDb = false
     } else {
       super.onBackPressed()
@@ -200,8 +205,8 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
    * da history is empty
    */
   @Subscribe(threadMode = MAIN)
-  fun onHistoryEmpty(event: DbHistoryEvent){
-    if (event.isEmpty){
+  fun onHistoryEmpty(event: DbHistoryEvent) {
+    if (event.isEmpty) {
       isChangeDb = false
     }
   }
@@ -212,12 +217,12 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   @Subscribe(threadMode = MAIN)
   fun onDbChange(event: ChangeDbEvent) {
     val record = DbHistoryRecord(
-        time = System.currentTimeMillis(),
-        type = event.uriType.name,
-        localDbUri = event.localFileUri.toString(),
-        cloudDiskPath = event.cloudPath,
-        keyUri = event.keyUri.toString(),
-        dbName = event.dbName
+      time = System.currentTimeMillis(),
+      type = event.uriType.name,
+      localDbUri = event.localFileUri.toString(),
+      cloudDiskPath = event.cloudPath,
+      keyUri = event.keyUri.toString(),
+      dbName = event.dbName
     )
     var tag: String = OpenDbFragment.FM_TAG
     if (openDbFragment == null) {
@@ -226,15 +231,17 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
       openDbFragment = p.second
     }
     supportFragmentManager.beginTransaction()
-        .replace(R.id.content, openDbFragment!!, tag)
-        .commitNowAllowingStateLoss()
+      .replace(R.id.content, openDbFragment!!, tag)
+      .commitNowAllowingStateLoss()
     openDbFragment!!.updateData(dbRecord = record)
   }
 
   private fun buildChangDbFragment(): Pair<String, ChangeDbFragment> {
     var fragment = supportFragmentManager.findFragmentByTag(ChangeDbFragment.FM_TAG)
     if (fragment == null || fragment !is ChangeDbFragment) {
-      fragment = ChangeDbFragment()
+      fragment = ARouter.getInstance()
+        .build("/launcher/changeDb")
+        .navigation() as ChangeDbFragment
     }
     return Pair(ChangeDbFragment.FM_TAG, fragment)
   }
@@ -242,11 +249,11 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   private fun buildOpenDbFragment(record: DbHistoryRecord): Pair<String, OpenDbFragment> {
     var fragment = supportFragmentManager.findFragmentByTag(OpenDbFragment.FM_TAG)
     if (fragment == null || fragment !is OpenDbFragment) {
-      fragment = OpenDbFragment()
-      fragment.apply {
-        putArgument("openIsFromFill", isFromFill)
-        putArgument("record", record)
-      }
+      fragment = ARouter.getInstance()
+        .build("/launcher/opendb")
+        .withBoolean("openIsFromFill", isFromFill)
+        .withParcelable("openDbRecord", record)
+        .navigation() as OpenDbFragment
     }
     return Pair(OpenDbFragment.FM_TAG, fragment)
   }
@@ -258,34 +265,37 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   ) {
     super.onActivityResult(requestCode, resultCode, data)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-        && resultCode == Activity.RESULT_OK
-        && requestCode == REQUEST_SEARCH_ENTRY_CODE
+      && resultCode == Activity.RESULT_OK
+      && requestCode == REQUEST_SEARCH_ENTRY_CODE
     ) {
       // 搜索页返回的数据
       if (data != null) {
         val isSaveRelevance = data.getBooleanExtra(
-            AutoFillEntrySearchActivity.EXTRA_IS_SAVE_RELEVANCE, false
+          AutoFillEntrySearchActivity.EXTRA_IS_SAVE_RELEVANCE, false
         )
 
         if (isSaveRelevance) {
-          setResult(Activity.RESULT_OK,  KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName!!))
+          setResult(
+            Activity.RESULT_OK, KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName!!)
+          )
         } else {
           val id = data.getSerializableExtra(AutoFillEntrySearchActivity.EXTRA_ENTRY_ID)
           setResult(
-              Activity.RESULT_OK,
-              BaseApp.KDB.pm.entries[id]?.let {
-                 KeepassAUtil.instance.getFillResponse(
-                    this,
-                    intent,
-                    it,
-                    apkPkgName!!
-                )
-              }
+            Activity.RESULT_OK,
+            BaseApp.KDB.pm.entries[id]?.let {
+              KeepassAUtil.instance.getFillResponse(
+                this,
+                intent,
+                it,
+                apkPkgName!!
+              )
+            }
           )
         }
-
       } else {
-        setResult(Activity.RESULT_OK,  KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName!!))
+        setResult(
+          Activity.RESULT_OK, KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName!!)
+        )
       }
       super.finish()
     }
@@ -342,7 +352,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
         it.putExtra(KEY_PKG_NAME, apkPackageName)
       }
       return PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-          .intentSender
+        .intentSender
     }
 
     /**
@@ -361,9 +371,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
         it.putExtra(KEY_SAVE_PASS, pass)
       }
       return PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-          .intentSender
+        .intentSender
     }
-
   }
-
 }

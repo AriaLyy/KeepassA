@@ -5,35 +5,53 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package com.lyy.keepassa.view.router
+package com.lyy.keepassa.router
 
 import android.content.Context
 import com.alibaba.android.arouter.facade.Postcard
 import com.alibaba.android.arouter.facade.annotation.Interceptor
 import com.alibaba.android.arouter.facade.callback.InterceptorCallback
 import com.alibaba.android.arouter.facade.template.IInterceptor
+import com.alibaba.android.arouter.launcher.ARouter
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.util.KdbUtil.isNull
+import timber.log.Timber
 
 /**
- * 拦截器会在跳转之间执行，多个拦截器会按优先级顺序依次执行
  * @Author laoyuyu
- * @Description  Arouter interceptor, if the database is empty, jump to the startup page
- * @Date 2021/7/6
+ * @Description
+ * @Date 4:14 下午 2021/7/7
  **/
-@Interceptor(priority = 8, name = "loginInterceptor")
-class LoginInterceptor : IInterceptor {
+@Interceptor(priority = 8, name = "ContentInterceptor")
+class ContentInterceptor : IInterceptor {
   override fun init(context: Context) {
     // 拦截器的初始化，会在sdk初始化的时候调用该方法，仅会调用一次
   }
 
-  override fun process(postcard: Postcard, callback: InterceptorCallback) {
-    if (BaseApp.KDB.isNull() || BaseApp.isLocked){
-      callback.onInterrupt(null)
-
+  override fun process(
+    postcard: Postcard,
+    callback: InterceptorCallback
+  ) {
+    if (postcard.uri.toString() == "/launcher/activity"){
+      Timber.d("uri = ${postcard.uri}")
+      callback.onContinue(postcard)
       return
     }
-    callback.onContinue(postcard) // 处理完成，交还控制权
+    if (BaseApp.KDB.isNull()) {
+      callback.onInterrupt(null)
+      ARouter.getInstance()
+        .build("/launcher/activity")
+        .navigation()
+      return
+    }
+    if (BaseApp.isLocked && BaseApp.dbRecord != null) {
+
+      callback.onInterrupt(Exception("database is locked"))
+      return
+    }
+
+
+    callback.onContinue(postcard)  // 处理完成，交还控制权
     // callback.onInterrupt(new RuntimeException("我觉得有点异常"));      // 觉得有问题，中断路由流程
 
     // 以上两种至少需要调用其中一种，否则不会继续路由

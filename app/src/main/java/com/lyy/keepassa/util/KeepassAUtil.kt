@@ -34,17 +34,18 @@ import android.provider.MediaStore.Images.Media
 import android.provider.MediaStore.Video
 import android.provider.OpenableColumns
 import android.text.TextUtils
-import android.util.Pair
 import android.view.View
 import android.view.autofill.AutofillManager
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.ColorInt
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.graphics.ColorUtils
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
+import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.core.AbsFrame
 import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.StringUtil
@@ -338,14 +339,12 @@ class KeepassAUtil private constructor() {
    * @param turnFragment [LauncherActivity.OPEN_TYPE_CHANGE_DB]选择数据库页面，
    * [LauncherActivity.OPEN_TYPE_OPEN_DB] 打开数据库
    */
-  fun turnLauncher(
-    context: Context,
-    turnFragment: Int = LauncherActivity.OPEN_TYPE_CHANGE_DB
-  ) {
+  fun turnLauncher(turnFragment: Int = LauncherActivity.OPEN_TYPE_CHANGE_DB) {
     BaseApp.isLocked = true
-    context.startActivity(Intent(context, LauncherActivity::class.java).apply {
-      putExtra(LauncherActivity.KEY_OPEN_TYPE, turnFragment)
-    })
+    ARouter.getInstance()
+      .build("/launcher/activity")
+      .withInt(LauncherActivity.KEY_OPEN_TYPE, turnFragment)
+      .navigation()
     for (ac in AbsFrame.getInstance().activityStack) {
       if (ac is LauncherActivity) {
         continue
@@ -681,25 +680,22 @@ class KeepassAUtil private constructor() {
       )
       return
     }
+
     if (entry is PwEntry) {
-      val intent = Intent(activity, EntryDetailActivity::class.java)
-      intent.putExtra(EntryDetailActivity.KEY_GROUP_TITLE, entry.parent.name)
-      intent.putExtra(EntryDetailActivity.KEY_ENTRY_ID, entry.uuid)
-      if (showElement != null) {
-        val pair =
-          Pair<View, String>(showElement, activity.getString(R.string.transition_entry_icon))
-        activity.startActivity(
-          intent, ActivityOptions.makeSceneTransitionAnimation(activity, pair)
-            .toBundle()
+      ARouter.getInstance()
+        .build("/entry/detail")
+        .withSerializable(EntryDetailActivity.KEY_ENTRY_ID, entry.uuid)
+        .withString(EntryDetailActivity.KEY_GROUP_TITLE, entry.parent.name)
+        .withOptionsCompat(
+          if (showElement != null){
+            val pair = androidx.core.util.Pair(showElement, activity.getString(R.string.transition_entry_icon))
+            ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pair)
+          }else{
+            ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
+          }
+
         )
-        return
-      }
-
-      activity.startActivity(
-        intent, ActivityOptions.makeSceneTransitionAnimation(activity)
-          .toBundle()
-      )
-
+        .navigation()
     }
   }
 

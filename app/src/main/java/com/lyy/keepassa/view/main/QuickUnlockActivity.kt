@@ -122,7 +122,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
     binding.pass.setPassLen(passLen)
 
     binding.changeDb.setOnClickListener {
-      KeepassAUtil.instance.turnLauncher(this, LauncherActivity.OPEN_TYPE_OPEN_DB)
+      KeepassAUtil.instance.turnLauncher(LauncherActivity.OPEN_TYPE_OPEN_DB)
     }
 
     startBgAnim()

@@ -147,7 +147,7 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
         SettingActivity.turnAppSetting(this)
       }
       R.id.change_db -> {
-         KeepassAUtil.instance.turnLauncher(this)
+         KeepassAUtil.instance.turnLauncher()
       }
       R.id.app_feedback -> {
 //        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {

@@ -19,6 +19,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.TransitionInflater
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.arialyy.frame.util.adapter.AbsHolder
 import com.arialyy.frame.util.adapter.AbsRVAdapter
 import com.arialyy.frame.util.adapter.RvItemClickSupport
@@ -39,6 +40,7 @@ import java.util.ArrayList
 /**
  * 选择数据库
  */
+@Route(path = "/launcher/changeDb")
 class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
   private lateinit var modlue: LauncherModule
   private var storageType: StorageType = AFS

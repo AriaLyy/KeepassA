@@ -29,6 +29,9 @@ import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionInflater
+import com.alibaba.android.arouter.facade.annotation.Autowired
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.keepassdroid.Database
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
@@ -51,6 +54,7 @@ import java.io.IOException
 /**
  * 打开数据库页面
  */
+@Route(path = "/launcher/opendb")
 class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListener {
   private lateinit var modlue: LauncherModule
 
@@ -59,15 +63,14 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     val REQ_CODE_FILE = 0xa1
   }
 
-  private val openDbRecord by lazy {
-    getArgument<DbHistoryRecord>("record")!!
-  }
-  private var showChangeDbBt: Boolean = true
+  @Autowired(name = "openDbRecord")
+  lateinit var openDbRecord: DbHistoryRecord
 
-  // 是否从填充页面进入
-  private val openIsFromFill by lazy {
-    getArgument("openIsFromFill") ?: false
-  }
+  @JvmField
+  @Autowired(name = "openIsFromFill")
+  var openIsFromFill: Boolean = false
+
+  private var showChangeDbBt: Boolean = true
 
   private val loadingDialog by lazy {
     LoadingDialog(context)
@@ -108,6 +111,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   }
 
   override fun initData() {
+    ARouter.getInstance().inject(this)
     binding.fingerprint.visibility = View.GONE
     enterTransition = TransitionInflater.from(context)
       .inflateTransition(R.transition.slide_enter)
@@ -156,7 +160,6 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         false
       }
     }
-
   }
 
   override fun onResume() {
@@ -237,7 +240,6 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
 
         override fun onAnimationStart(animation: Animator?) {
         }
-
       })
     } catch (e: IOException) {
       e.printStackTrace()
@@ -382,5 +384,4 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
       }
     }
   }
-
 }

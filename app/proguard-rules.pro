@@ -210,6 +210,18 @@
 -dontwarn okhttp3.internal.platform.ConscryptPlatform
 ################# webdav-end ##################
 
+################# arouter-start ##################
+-keep public class com.alibaba.android.arouter.routes.**{*;}
+-keep public class com.alibaba.android.arouter.facade.**{*;}
+-keep class * implements com.alibaba.android.arouter.facade.template.ISyringe{*;}
+
+# 如果使用了 byType 的方式获取 Service，需添加下面规则，保护接口
+-keep interface * implements com.alibaba.android.arouter.facade.template.IProvider
+
+# 如果使用了 单类注入，即不定义接口实现 IProvider，需添加下面规则，保护实现
+# -keep class * implements com.alibaba.android.arouter.facade.template.IProvider
+################# arouter-start ##################
+
 -keep class com.com.lyy.keepassa.baseapi.*{ *; }
 -dontwarn com.com.lyy.keepassa.baseapi.**
 -keep class * implements com.lyy.keepassa.baseapi.INotFreeLibService{ *; }

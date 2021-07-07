@@ -18,6 +18,20 @@
 <notices>
 
     <notice>
+        <name>timber</name>
+        <url>https://github.com/JakeWharton/timber</url>
+        <copyright/>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>ARouter</name>
+        <url>https://github.com/alibaba/ARouter</url>
+        <copyright/>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
         <name>Material design icons</name>
         <url>https://github.com/google/material-design-icons</url>
         <copyright/>

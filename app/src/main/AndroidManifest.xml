@@ -243,6 +243,10 @@
         android:name="design_height_in_dp"
         android:value="731" />
 
+    <meta-data
+        android:name="host_app"
+        android:value="app" />
+
   </application>
 
 </manifest>

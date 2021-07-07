@@ -24,6 +24,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.transition.addListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.facade.annotation.Autowired
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV3
 import com.keepassdroid.database.PwEntryV4
@@ -54,10 +57,12 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import java.util.ArrayList
 import java.util.Date
+import java.util.UUID
 
 /**
  * 项目详情
  */
+@Route(path = "/entry/detail")
 class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnClickListener {
   companion object {
     const val KEY_GROUP_TITLE = "KEY_GROUP_TITLE"
@@ -71,23 +76,32 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   private var curTouchX = 0f
   private var curTouchY = 0f
 
+  @Autowired(name = KEY_ENTRY_ID)
+  lateinit var uuid:UUID
+
+  @Autowired(name = KEY_GROUP_TITLE)
+  lateinit var groupTitle:String
+
   override fun setLayoutId(): Int {
     return R.layout.activity_entry_detail
   }
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
+    ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
     module = ViewModelProvider(this).get(EntryDetailModule::class.java)
-    val uuid = intent.getSerializableExtra(KEY_ENTRY_ID)
-    if (uuid == null) {
-      HitUtil.toaskShort(getString(R.string.error_entry_id_null))
-      finishAfterTransition()
-      BaseApp.isLocked = true
-      return
-    }
+    // val uuid = intent.getSerializableExtra(KEY_ENTRY_ID)
+    // if (uuid == null) {
+    //   HitUtil.toaskShort(getString(R.string.error_entry_id_null))
+    //   finishAfterTransition()
+    //   BaseApp.isLocked = true
+    //   return
+    // }
+
     val toolbar = findViewById<Toolbar>(R.id.kpa_toolbar)
-    toolbar.title = intent.getStringExtra(KEY_GROUP_TITLE)
+    // toolbar.title = intent.getStringExtra(KEY_GROUP_TITLE)
+    toolbar.title = groupTitle
     toolbar.setNavigationOnClickListener {
       finishAfterTransition()
     }

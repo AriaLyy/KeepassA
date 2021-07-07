@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.multidex.MultiDexApplication;
 import androidx.preference.PreferenceManager;
 import androidx.room.Room;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.arialyy.frame.core.AbsFrame;
 import com.arialyy.frame.util.KeyStoreUtil;
 import com.keepassdroid.Database;
@@ -96,12 +97,11 @@ public class BaseApp extends MultiDexApplication {
     if (BuildConfig.DEBUG) {
       System.setProperty("kotlinx.coroutines.debug", "on");
       Timber.plant(new Timber.DebugTree());
+      ARouter.openLog();     // 打印日志
+      ARouter.openDebug();   // 开启调试模式(如果在InstantRun模式下运行，必须开启调试模式！线上版本需要关闭,否则有安全风险)
     }
-    //else {
-    //  if (!BuildConfig.FLAVOR.equals("fdroid")) {
-    //    initNotFreeLib();
-    //  }
-    //}
+    ARouter.init(this); // 尽可能早，推荐在Application中初始化
+
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       KeyStoreUtil.Companion.setKeyStorePass(QuickUnLockUtil.getDbPass().toCharArray());
     }
