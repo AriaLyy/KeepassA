@@ -21,6 +21,7 @@ import android.text.Spanned
 import android.util.Pair
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.transition.addListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -113,14 +114,12 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       if (item.itemId == R.id.history) {
         // todo 查看历史
       } else if (item.itemId == R.id.edit) {
-        val intent = Intent(this, CreateEntryActivity::class.java)
-        intent.putExtra(CreateEntryActivity.KEY_TYPE, CreateEntryActivity.TYPE_EDIT_ENTRY)
-        intent.putExtra(CreateEntryActivity.KEY_ENTRY, pwEntry.uuid)
-        startActivity(
-            intent,
-            ActivityOptions.makeSceneTransitionAnimation(this)
-                .toBundle()
-        )
+        ARouter.getInstance()
+          .build("/entry/create")
+          .withInt(CreateEntryActivity.KEY_TYPE, CreateEntryActivity.TYPE_EDIT_ENTRY)
+          .withSerializable(CreateEntryActivity.KEY_ENTRY, pwEntry.uuid)
+          .withOptionsCompat(ActivityOptionsCompat.makeSceneTransitionAnimation(this))
+          .navigation(this)
       }
 
       true
@@ -208,6 +207,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   /**
    * 删除项目
    */
+  @SuppressLint("StringFormatMatches")
   private fun delEntry() {
     val msg: Spanned = if (BaseApp.isV4) {
       if (isInRecycleBin) {

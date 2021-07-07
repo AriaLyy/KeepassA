@@ -14,11 +14,11 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import com.arialyy.frame.util.StringUtil
 import com.keepassdroid.database.security.ProtectedString
+import timber.log.Timber
 
 /**
  * 可展开的自定义属性view
@@ -95,7 +95,7 @@ class ExpandStrAttrView(
 
   fun removeValue(key: String) {
     if (key.isEmpty() || !data.keys.contains(key)) {
-      Log.e(TAG, "key【$key】错误")
+      Timber.e("key【$key】错误")
       return
     }
     removeView(childMap[key])

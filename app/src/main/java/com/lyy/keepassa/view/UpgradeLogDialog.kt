@@ -15,7 +15,6 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import android.text.TextUtils
-import android.util.Log
 import androidx.core.content.edit
 import com.arialyy.frame.util.AndroidUtils
 import com.arialyy.frame.util.ResUtil
@@ -37,6 +36,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.io.InputStream
 
 /**
@@ -163,7 +163,7 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
         }
       }
     } else {
-      Log.d(TAG, "url = $url")
+      Timber.d("url = $url")
       startActivity(Intent(Intent.ACTION_VIEW).apply {
         data = Uri.parse(url)
       })

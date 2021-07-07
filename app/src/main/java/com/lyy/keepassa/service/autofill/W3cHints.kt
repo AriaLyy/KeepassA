@@ -11,8 +11,9 @@ package com.lyy.keepassa.service.autofill
 
 import android.annotation.TargetApi
 import android.os.Build
-import android.util.Log
+import timber.log.Timber
 import java.util.Locale
+import java.util.Timer
 
 @TargetApi(Build.VERSION_CODES.O)
 object W3cHints {
@@ -178,7 +179,7 @@ object W3cHints {
       TEL_LOCAL_PREFIX, TEL_LOCAL_SUFFIX, TEL_EXTENSION, EMAIL, IMPP ->
         return true;
     }
-    Log.w(TAG, "Inid W3C type hint: $hint");
+    Timber.w("Inid W3C type hint: $hint")
     return false;
   }
 }

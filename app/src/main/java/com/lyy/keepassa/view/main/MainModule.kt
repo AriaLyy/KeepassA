@@ -10,7 +10,6 @@
 package com.lyy.keepassa.view.main
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import androidx.core.content.edit
 import androidx.lifecycle.liveData
@@ -47,6 +46,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.joda.time.DateTime
+import timber.log.Timber
 
 class MainModule : BaseModule() {
 
@@ -108,7 +108,7 @@ class MainModule : BaseModule() {
    */
   fun syncDb() = liveData(Dispatchers.IO) {
     val code = KdbUtil.saveDb(true)
-    Log.d(TAG, "同步数据库结束，code = $code")
+    Timber.d("同步数据库结束，code = $code")
     if (code != DbSynUtil.STATE_SUCCEED) {
       emit(false)
       return@liveData
@@ -275,8 +275,7 @@ class MainModule : BaseModule() {
     for (group in rootGroup.childGroups) {
       data.add(KeepassAUtil.instance.convertPwGroup2Item(group))
     }
-    Log.d(
-        TAG,
+    Timber.d(
         "getRootEntry， 保存前的数据库hash：${BaseApp.KDB.hashCode()}, num = ${BaseApp.KDB!!.pm.entries.size}"
     )
     for (entry in rootGroup.childEntries) {

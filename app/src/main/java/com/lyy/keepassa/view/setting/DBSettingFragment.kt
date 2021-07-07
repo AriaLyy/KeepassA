@@ -10,7 +10,6 @@
 package com.lyy.keepassa.view.setting
 
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.EditTextPreference
@@ -33,6 +32,7 @@ import com.lyy.keepassa.view.dialog.ModifyPassDialog
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
+import timber.log.Timber
 
 /**
  * 数据库设置
@@ -114,7 +114,7 @@ class DBSettingFragment : PreferenceFragmentCompat() {
           // 导出csv格式的文件
         }
       }
-      Log.d(TAG, "outDb value = $newValue")
+      Timber.d("outDb value = $newValue")
       false
     }
   }

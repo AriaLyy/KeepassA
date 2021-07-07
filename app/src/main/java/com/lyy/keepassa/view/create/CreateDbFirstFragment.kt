@@ -11,7 +11,6 @@ package com.lyy.keepassa.view.create
 
 import android.content.Intent
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.collection.arrayMapOf
@@ -36,6 +35,7 @@ import com.lyy.keepassa.view.create.auth.OnNextFinishCallback
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.widget.BubbleTextView
 import com.lyy.keepassa.widget.BubbleTextView.OnIconClickListener
+import timber.log.Timber
 
 /**
  * 创建数据库的第一步
@@ -156,7 +156,7 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
    */
   private fun finishFlow(event: DbPathEvent) {
     if (event.fileUri == null && event.storageType == AFS) {
-      Log.e(TAG, "uri 获取失败")
+      Timber.e("uri 获取失败")
       return
     }
     // 直接启动下一界面

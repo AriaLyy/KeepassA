@@ -12,11 +12,9 @@ package com.lyy.keepassa.view.create
 import KDBAutoFillRepository
 import android.content.Context
 import android.graphics.Bitmap.CompressFormat.PNG
-import android.util.Log
 import androidx.lifecycle.liveData
 import com.keepassdroid.database.PwDatabaseV4
 import com.keepassdroid.database.PwEntry
-import com.keepassdroid.database.PwEntryV3
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupV4
@@ -165,7 +163,7 @@ class CreateEntryModule : BaseModule() {
       entry.icon = PwIconStandard(0)
     } else {
       entry = listStorage[0] as PwEntryV4
-      Log.w(TAG, "已存在含有【$apkPkgName】的条目，将更新条目")
+      Timber.w("已存在含有【$apkPkgName】的条目，将更新条目")
     }
     if (!userName.isNullOrEmpty()) {
       entry.setUsername(userName, BaseApp.KDB.pm)

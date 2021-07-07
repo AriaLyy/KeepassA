@@ -32,13 +32,13 @@ class ContentInterceptor : IInterceptor {
     postcard: Postcard,
     callback: InterceptorCallback
   ) {
-    if (postcard.uri.toString() == "/launcher/activity"){
-      Timber.d("uri = ${postcard.uri}")
+    Timber.d("route path => ${postcard.path}")
+    if (postcard.path == "/launcher/activity"){
       callback.onContinue(postcard)
       return
     }
     if (BaseApp.KDB.isNull()) {
-      callback.onInterrupt(null)
+      callback.onInterrupt(Exception("kdb is null"))
       ARouter.getInstance()
         .build("/launcher/activity")
         .navigation()

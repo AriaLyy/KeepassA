@@ -13,7 +13,6 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.arialyy.frame.util.StringUtil
@@ -28,6 +27,7 @@ import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.PasswordBuilUtil
 import com.lyy.keepassa.util.takePermission
 import org.greenrobot.eventbus.EventBus
+import timber.log.Timber
 import java.io.FileOutputStream
 import java.io.IOException
 
@@ -127,13 +127,13 @@ class CreatePassKeyDialog : BaseBottomSheetDialogFragment<DialogPassKeyBinding>(
               )
         }
         else -> {
-          Log.e(TAG, "为止请求码：$requestCode")
+          Timber.e("为止请求码：$requestCode")
         }
       }
       dismiss()
     } else {
       HitUtil.toaskShort("${getString(R.string.invalid)} ${getString(R.string.key)}")
-      Log.e(TAG, "选择密钥文件失败，data为空")
+      Timber.e("选择密钥文件失败，data为空")
     }
   }
 }

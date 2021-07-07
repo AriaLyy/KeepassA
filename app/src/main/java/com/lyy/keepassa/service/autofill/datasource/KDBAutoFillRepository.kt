@@ -7,9 +7,7 @@
  */
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat.PNG
-import android.util.Log
 import android.view.View
 import com.arialyy.frame.config.CommonConstant
 import com.keepassdroid.database.PwDatabaseV4
@@ -125,7 +123,7 @@ object KDBAutoFillRepository {
       }
     } else {
       entry = listStorage[0]
-      Log.w(TAG, "已存在含有【$apkPkgName】的条目，将更新条目")
+      Timber.w("已存在含有【$apkPkgName】的条目，将更新条目")
     }
 
     for (hint in autofillFields.allAutoFillHints) {
@@ -146,7 +144,7 @@ object KDBAutoFillRepository {
     GlobalScope.launch {
       KdbUtil.saveDb(uploadDb = false)
     }
-    Log.d(TAG, "密码信息保存成功")
+    Timber.d("密码信息保存成功")
   }
 
   /**

@@ -15,10 +15,10 @@ import android.app.Service;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.util.Log;
 import com.lyy.keepassa.base.BaseApp;
 import java.lang.reflect.Method;
 import java.util.List;
+import timber.log.Timber;
 
 public class PermissionsUtil {
   private static final String TAG = "PerUtil";
@@ -38,7 +38,7 @@ public class PermissionsUtil {
           BaseApp.APP.getPackageName());
       return result == AppOpsManager.MODE_ALLOWED;
     } catch (Exception e) {
-      Log.e(TAG, "not support");
+      Timber.e("not support");
     }
     return false;
   }
@@ -84,7 +84,7 @@ public class PermissionsUtil {
     List<ActivityManager.RunningAppProcessInfo> runningAppProcessInfoList =
         activityManager.getRunningAppProcesses();
     if (runningAppProcessInfoList == null) {
-      Log.d(TAG, "runningAppProcessInfoList is null!");
+      Timber.d("runningAppProcessInfoList is null!");
       return false;
     }
 

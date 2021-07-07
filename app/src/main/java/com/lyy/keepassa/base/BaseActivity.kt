@@ -58,7 +58,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
 
   override fun onPreInit(): Boolean {
     if (!KeepassAUtil.instance.isHomeActivity(this)
-        && (BaseApp.KDB == null || BaseApp.KDB?.pm == null || BaseApp.dbRecord == null)
+        && (BaseApp.KDB.isNull() || BaseApp.dbRecord == null)
     ) {
       BaseApp.isLocked = true
       HitUtil.toaskShort(getString(R.string.notify_db_locked))

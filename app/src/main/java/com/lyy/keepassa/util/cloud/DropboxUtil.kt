@@ -12,7 +12,6 @@ package com.lyy.keepassa.util.cloud
 import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
-import android.util.Log
 import com.arialyy.frame.util.SharePreUtil
 import com.arialyy.frame.util.StringUtil
 import com.dropbox.core.DbxRequestConfig
@@ -27,6 +26,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.util.QuickUnLockUtil
+import timber.log.Timber
 import java.util.Date
 
 /**
@@ -115,7 +115,7 @@ object DropboxUtil : ICloudUtil {
   }
 
   override suspend fun getFileList(path: String): List<CloudFileInfo>? {
-    Log.d(TAG, "开始获取文件列表，path = $path")
+    Timber.d( "开始获取文件列表，path = $path")
     val client = getClient() ?: return null
     val entries = client.files()
         .listFolder(path).entries
@@ -155,7 +155,7 @@ object DropboxUtil : ICloudUtil {
     }
     val localHash = DropboxContentHasher.hex(hasher.digest())
     ips.close()
-    Log.i(TAG, "本地文件hash: $localHash")
+    Timber.i( "本地文件hash: $localHash")
     return cloudFileHash.equals(localHash, ignoreCase = true)
   }
 
@@ -176,7 +176,7 @@ object DropboxUtil : ICloudUtil {
   }
 
   override suspend fun delFile(fileKey: String): Boolean {
-    Log.d(TAG, "删除云端文件: $fileKey")
+    Timber.d( "删除云端文件: $fileKey")
     val d = getClient()
         ?.files()
         ?.deleteV2(fileKey)

@@ -20,6 +20,9 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.facade.annotation.Autowired
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroupId
 import com.keepassdroid.database.PwGroupV4
@@ -46,7 +49,7 @@ import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.getFileInfo
 import com.lyy.keepassa.util.putArgument
 import com.lyy.keepassa.util.takePermission
-import com.lyy.keepassa.view.ChooseGroupActivity
+import com.lyy.keepassa.view.dir.ChooseGroupActivity
 import com.lyy.keepassa.view.MarkDownEditorActivity
 import com.lyy.keepassa.view.dialog.AddMoreDialog
 import com.lyy.keepassa.view.dialog.CreateTotpDialog
@@ -56,6 +59,7 @@ import com.lyy.keepassa.view.dialog.TimerDialog
 import com.lyy.keepassa.view.icon.IconBottomSheetDialog
 import com.lyy.keepassa.view.icon.IconItemCallback
 import com.lyy.keepassa.view.launcher.LauncherActivity
+import com.lyy.keepassa.view.launcher.LauncherActivity.Companion.KEY_IS_AUTH_FORM_FILL_SAVE
 import com.lyy.keepassa.view.menu.EntryCreateFilePopMenu
 import com.lyy.keepassa.view.menu.EntryCreateStrPopMenu
 import com.lyy.keepassa.widget.expand.AttrFileItemView
@@ -73,6 +77,7 @@ import java.util.UUID
 /**
  * 创建或编辑条目
  */
+@Route(path = "/entry/create")
 class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
 
   companion object {
@@ -88,11 +93,10 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
      */
     const val PARENT_GROUP_ID = "PARENT_GROUP_ID"
 
+    const val IS_SHORTCUTS = "isShortcuts"
+
     // 新建条目
     const val TYPE_NEW_ENTRY = 1
-
-    // 通过模版创建条目
-    const val TYPE_NEW_TYPE_ENTRY = 2
 
     // 编辑条目
     const val TYPE_EDIT_ENTRY = 3
@@ -103,25 +107,37 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   private val getFileRequestCode = 0xA4
   private val editorRequestCode = 0xA5
 
-  private lateinit var entryId: UUID
   private var isShowPass = false
   private lateinit var module: CreateEntryModule
   private var addMoreDialog: AddMoreDialog? = null
   private lateinit var addMoreData: ArrayList<SimpleItemEntity>
-
-  private var type = 1
   private lateinit var pwEntry: PwEntryV4
-  private var parentGroupId: PwGroupId? = null
   private lateinit var loadDialog: LoadingDialog
-  private var isFromAutoFillSave = false
+
+  @Autowired(name = KEY_IS_AUTH_FORM_FILL_SAVE)
+  @JvmField
+  var isFromAutoFillSave = false
+
+  @Autowired(name = KEY_ENTRY)
+  lateinit var entryId: UUID
+
+  @Autowired(name = KEY_TYPE)
+  @JvmField
+  var type = 1
+
+  @Autowired(name = PARENT_GROUP_ID)
+  @JvmField
+  var parentGroupId: PwGroupId? = null
+
+  @Autowired(name = IS_SHORTCUTS)
+  @JvmField
+  var isShortcuts:Boolean = false
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
+    ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
     module = ViewModelProvider(this).get(CreateEntryModule::class.java)
-    type = intent.getIntExtra(KEY_TYPE, TYPE_NEW_ENTRY)
-    isFromAutoFillSave = intent.getBooleanExtra(LauncherActivity.KEY_IS_AUTH_FORM_FILL_SAVE, false)
-    val isShortcuts = intent.getBooleanExtra("isShortcuts", false)
     Timber.i("isShortcuts = $isShortcuts")
 
     // 处理快捷方式进入的情况
@@ -139,22 +155,12 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       TYPE_NEW_ENTRY -> {
         toolbar.title = getString(R.string.create_entry)
       }
-      TYPE_NEW_TYPE_ENTRY -> {
-        toolbar.title = getString(R.string.create_entry)
-      }
       TYPE_EDIT_ENTRY -> {
         toolbar.title = getString(R.string.edit)
       }
     }
 
-    if (type == TYPE_NEW_TYPE_ENTRY || type == TYPE_EDIT_ENTRY) {
-      val uuidTemp = intent.getSerializableExtra(KEY_ENTRY)
-      if (uuidTemp == null) {
-        Timber.e("条目id为-1")
-        finish()
-        return
-      }
-      entryId = uuidTemp as UUID
+    if (type == TYPE_EDIT_ENTRY) {
       val entryTemp = BaseApp.KDB!!.pm.entries[entryId]
       if (entryTemp == null) {
         Timber.e("【${entryId}】对应的条目不存在")
@@ -162,11 +168,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
         return
       }
       pwEntry = entryTemp as PwEntryV4
-    } else if (type == TYPE_NEW_ENTRY) {
-      val pIdTemp = intent.getSerializableExtra(PARENT_GROUP_ID)
-      if (pIdTemp != null) {
-        parentGroupId = pIdTemp as PwGroupId
-      }
     }
 
     // 处理从自动填充服务保存的情况
@@ -185,7 +186,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     handleToolBar()
     handlePassLayout()
     handleAddMore()
-    if (type == TYPE_NEW_TYPE_ENTRY || type == TYPE_EDIT_ENTRY || isFromAutoFillSave) {
+    if (type == TYPE_EDIT_ENTRY || isFromAutoFillSave) {
       initData(type == TYPE_EDIT_ENTRY)
     } else {
       pwEntry = PwEntryV4(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
@@ -426,7 +427,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       return
     }
 
-    if (type == TYPE_NEW_ENTRY || type == TYPE_NEW_TYPE_ENTRY) {
+    if (type == TYPE_NEW_ENTRY) {
       if (parentGroupId == null) {
         ChooseGroupActivity.chooseGroup(this, groupDirRequestCode)
       } else {

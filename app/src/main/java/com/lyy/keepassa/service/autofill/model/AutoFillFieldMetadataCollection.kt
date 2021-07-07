@@ -9,8 +9,8 @@
 
 package com.lyy.keepassa.service.autofill.model
 
-import android.util.Log
 import android.view.autofill.AutofillId
+import timber.log.Timber
 
 /**
  * Data structure that stores a collection of `AutofillFieldMetadata`s. Contains all of the client's `View`
@@ -48,7 +48,7 @@ data class AutoFillFieldMetadataCollection @JvmOverloads constructor(
 
   fun add(autoFillFieldMetadata: AutoFillFieldMetadata) {
     if (autoFillFieldMetadata.autoFillId == null) {
-      Log.w(TAG, "autoFillId == null")
+      Timber.w("autoFillId == null")
       return
     }
 

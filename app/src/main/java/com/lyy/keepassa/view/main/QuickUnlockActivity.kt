@@ -21,7 +21,6 @@ import android.content.IntentSender
 import android.content.res.AssetManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.biometric.BiometricConstants
@@ -46,6 +45,7 @@ import com.lyy.keepassa.view.fingerprint.FingerprintModule
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 import com.lyy.keepassa.widget.ShortPasswordView
+import timber.log.Timber
 import java.io.IOException
 
 /**
@@ -142,7 +142,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         .build()
 
     if (fingerRecord == null) {
-      Log.e(TAG, "解锁记录为空")
+      Timber.e("解锁记录为空")
       return
     }
     val biometricPrompt = BiometricPrompt(this, ArchTaskExecutor.getMainThreadExecutor(),

@@ -9,16 +9,18 @@
 
 package com.lyy.keepassa.view.setting
 
-import android.app.ActivityOptions
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
+import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceFragmentCompat
+import com.alibaba.android.arouter.facade.annotation.Autowired
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.databinding.ActivitySettingBinding
 
+@Route(path = "/setting/app")
 class SettingActivity : BaseActivity<ActivitySettingBinding>() {
 
   companion object {
@@ -35,14 +37,11 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
      * 跳转应用设置
      */
     fun turnAppSetting(context: FragmentActivity) {
-      context.startActivity(
-          Intent(context, SettingActivity::class.java).apply {
-            putExtra(KEY_TYPE, TYPE_APP)
-          }
-          ,
-          ActivityOptions.makeSceneTransitionAnimation(context)
-              .toBundle()
-      )
+      ARouter.getInstance()
+        .build("/setting/app")
+        .withInt(KEY_TYPE, TYPE_APP)
+        .withOptionsCompat( ActivityOptionsCompat.makeSceneTransitionAnimation(context))
+        .navigation(context)
 //      context.overridePendingTransition(R.anim.translate_right_in, R.anim.translate_left_out)
     }
 
@@ -50,18 +49,18 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
      * 跳转数据库设置
      */
     fun turnDbSetting(context: FragmentActivity) {
-      context.startActivity(
-          Intent(context, SettingActivity::class.java).apply {
-            putExtra(KEY_TYPE, TYPE_DB)
-          }
-          , ActivityOptions.makeSceneTransitionAnimation(context)
-              .toBundle()
-      )
+      ARouter.getInstance()
+        .build("/setting/app")
+        .withInt(KEY_TYPE, TYPE_DB)
+        .withOptionsCompat( ActivityOptionsCompat.makeSceneTransitionAnimation(context))
+        .navigation(context)
 //      context.overridePendingTransition(R.anim.translate_right_in, R.anim.translate_left_out)
     }
   }
 
-  private var type = TYPE_APP
+  @Autowired(name = KEY_TYPE)
+  @JvmField
+  var type = TYPE_APP
 
   override fun setLayoutId(): Int {
     return R.layout.activity_setting
@@ -69,8 +68,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
-
-    type = intent.getIntExtra(KEY_TYPE, TYPE_APP)
+    ARouter.getInstance().inject(this)
     val title: String
     val fragment: PreferenceFragmentCompat
     if (type == TYPE_DB) {

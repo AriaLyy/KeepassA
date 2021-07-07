@@ -11,10 +11,10 @@ package com.lyy.keepassa.util;
 
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import timber.log.Timber;
 
 /**
  * Created by HaiyuKing
@@ -125,7 +125,7 @@ public class RoomUtil {
       line = input.readLine();
       input.close();
     } catch (IOException ex) {
-      Log.e(TAG, "Unable to read prop " + name, ex);
+      Timber.e(ex, "Unable to read prop %s", name);
       return null;
     } finally {
       if (input != null) {

@@ -30,7 +30,7 @@ import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
-import com.lyy.keepassa.view.ChooseGroupActivity
+import com.lyy.keepassa.view.dir.ChooseGroupActivity
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.ModifyGroupDialog
 import com.lyy.keepassa.view.dialog.MsgDialog

@@ -19,7 +19,6 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
@@ -28,6 +27,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import timber.log.Timber;
 
 public class RealPathUtil {
 
@@ -53,8 +53,6 @@ public class RealPathUtil {
       @NonNull final Uri uri) {
 
     final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-
-    final String Tag = "PadletRealPathUtil";
 
     // DocumentProvider
     if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
@@ -103,11 +101,9 @@ public class RealPathUtil {
           e.printStackTrace();
         }
         String destinationPath = file.getAbsolutePath();
-        Log.d(Tag, "Destination path: " + destinationPath);
-        if (file != null) {
-          destinationPath = file.getAbsolutePath();
-          saveFileFromUri(context, uri, destinationPath);
-        }
+        Timber.d("Destination path: %s", destinationPath);
+        destinationPath = file.getAbsolutePath();
+        saveFileFromUri(context, uri, destinationPath);
 
         return destinationPath;
       }

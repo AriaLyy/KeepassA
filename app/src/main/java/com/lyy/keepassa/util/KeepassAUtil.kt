@@ -319,9 +319,10 @@ class KeepassAUtil private constructor() {
     val isOpenQuickLock = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
       .getBoolean(context.getString(R.string.set_quick_unlock), false)
     if (BaseApp.KDB == null || !isOpenQuickLock) {
-      context.startActivity(Intent(context, LauncherActivity::class.java).apply {
-        putExtra(LauncherActivity.KEY_OPEN_TYPE, LauncherActivity.OPEN_TYPE_OPEN_DB)
-      })
+      ARouter.getInstance()
+        .build("/launcher/activity")
+        .withInt(LauncherActivity.KEY_OPEN_TYPE, LauncherActivity.OPEN_TYPE_OPEN_DB)
+        .navigation()
       for (ac in AbsFrame.getInstance().activityStack) {
         if (ac is LauncherActivity) {
           continue
@@ -671,13 +672,13 @@ class KeepassAUtil private constructor() {
     showElement: View? = null
   ) {
     if (entry is PwGroup) {
-      val intent = Intent(activity, GroupDetailActivity::class.java)
-      intent.putExtra(GroupDetailActivity.KEY_GROUP_ID, entry.id)
-      intent.putExtra(GroupDetailActivity.KEY_TITLE, entry.name)
-      activity.startActivity(
-        intent, ActivityOptions.makeSceneTransitionAnimation(activity)
-          .toBundle()
-      )
+      ARouter.getInstance()
+        .build("/group/detail")
+        .withString(GroupDetailActivity.KEY_TITLE, entry.name)
+        .withSerializable(GroupDetailActivity.KEY_GROUP_ID, entry.id)
+        .withOptionsCompat(ActivityOptionsCompat.makeSceneTransitionAnimation(activity))
+        .navigation(activity)
+
       return
     }
 
@@ -695,7 +696,7 @@ class KeepassAUtil private constructor() {
           }
 
         )
-        .navigation()
+        .navigation(activity)
     }
   }
 

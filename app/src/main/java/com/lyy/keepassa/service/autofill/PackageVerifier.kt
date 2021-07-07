@@ -30,7 +30,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Build.VERSION_CODES
-import android.util.Log
+import timber.log.Timber
 import java.io.ByteArrayInputStream
 import java.security.MessageDigest
 import java.security.cert.CertificateFactory
@@ -51,10 +51,10 @@ object PackageVerifier {
     val hash: String
     try {
       hash = getCertificateHash(context, packageName)
-      Log.d(TAG, "Hash for $packageName: $hash")
+      Timber.d( "Hash for $packageName: $hash")
     } catch (e: Exception) {
       e.printStackTrace()
-      Log.w(TAG, "Error getting hash for $packageName: $e")
+      Timber.w("Error getting hash for $packageName: $e")
       return false
     }
 
@@ -114,7 +114,7 @@ object PackageVerifier {
       "package-hashes", Context.MODE_PRIVATE
     )
     if (!prefs.contains(packageName)) {
-      Log.d(TAG, "Creating intial hash for $packageName")
+      Timber.d( "Creating intial hash for $packageName")
       prefs.edit()
         .putString(packageName, hash)
         .apply()
@@ -123,10 +123,7 @@ object PackageVerifier {
 
     val existingHash = prefs.getString(packageName, null)
     if (hash != existingHash) {
-      Log.w(
-        TAG, "hash mismatch for " + packageName + ": expected " + existingHash
-            + ", got " + hash
-      )
+      Timber.w("hash mismatch for ${packageName}: expected ${existingHash}, got  $hash")
       return false
     }
     return true

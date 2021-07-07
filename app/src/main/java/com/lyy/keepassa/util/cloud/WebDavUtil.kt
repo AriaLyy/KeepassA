@@ -11,7 +11,6 @@ package com.lyy.keepassa.util.cloud
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.core.net.toFile
 import com.arialyy.frame.util.FileUtil
 import com.arialyy.frame.util.StringUtil
@@ -98,7 +97,7 @@ object WebDavUtil : ICloudUtil {
       }
     } catch (e: Exception) {
       e.printStackTrace()
-      Timber.e("获取文件列表失败", e)
+      Timber.e(e,"获取文件列表失败")
     }
     return list
   }
@@ -114,7 +113,7 @@ object WebDavUtil : ICloudUtil {
   }
 
   override suspend fun getFileInfo(fileKey: String): CloudFileInfo? {
-    Log.i(TAG, "获取文件信息，cloudPath：$fileKey")
+    Timber.i("获取文件信息，cloudPath：$fileKey")
     try {
       sardine ?: return null
       val resources = sardine!!.list(convertUrl(fileKey))
@@ -127,8 +126,7 @@ object WebDavUtil : ICloudUtil {
       )
     } catch (e: Exception) {
       e.printStackTrace()
-      Timber.e("获取文件信息失败", e)
-      e.printStackTrace()
+      Timber.e(e,"获取文件信息失败")
     }
     return null
   }
@@ -139,7 +137,7 @@ object WebDavUtil : ICloudUtil {
       sardine!!.delete(convertUrl(fileKey))
     } catch (e: Exception) {
       e.printStackTrace()
-      Timber.e("删除文件失败", e)
+      Timber.e(e,"删除文件失败")
       return false
     }
     return true
@@ -168,7 +166,7 @@ object WebDavUtil : ICloudUtil {
       }
     } catch (e: Exception) {
       e.printStackTrace()
-      Timber.e("上传文件失败", e)
+      Timber.e(e,"上传文件失败")
     }
 
     return true
@@ -197,7 +195,7 @@ object WebDavUtil : ICloudUtil {
         foc.transferFrom(fic, 0, fileInfo!!.size)
       } catch (e: Exception) {
         e.printStackTrace()
-        Timber.e("下载文件失败", e)
+        Timber.e(e,"下载文件失败")
         return null
       } finally {
         it.unlock(cloudPath, token)

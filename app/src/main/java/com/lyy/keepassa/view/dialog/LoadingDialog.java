@@ -13,8 +13,6 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Handler;
-import android.util.Log;
 import com.airbnb.lottie.LottieAnimationView;
 import com.arialyy.frame.core.AbsDialog;
 import com.lyy.keepassa.R;

@@ -11,19 +11,20 @@ package com.lyy.keepassa.view.detail
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.app.ActivityOptions
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.transition.addListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
+import com.alibaba.android.arouter.facade.annotation.Autowired
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwGroup
@@ -43,7 +44,6 @@ import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.event.MoveEvent
 import com.lyy.keepassa.util.EventBusHelper
-import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import com.lyy.keepassa.view.create.CreateEntryActivity
@@ -57,6 +57,7 @@ import org.greenrobot.eventbus.ThreadMode.MAIN
 /**
  * 群组详情、回收站详情
  */
+@Route(path = "/group/detail")
 class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
 
   companion object {
@@ -69,8 +70,16 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
   private lateinit var adapter: SimpleEntryAdapter
   private val entryData = ArrayList<SimpleItemEntity>()
   private var curx = 0
-  private var isRecycleBin = false
-  private lateinit var groupId: PwGroupId
+
+  @JvmField
+  @Autowired(name = KEY_IS_IN_RECYCLE_BIN)
+  var isRecycleBin = false
+
+  @Autowired(name = KEY_GROUP_ID)
+  lateinit var groupId: PwGroupId
+
+  @Autowired(name = KEY_TITLE)
+  lateinit var groupTitle:String
 
   override fun setLayoutId(): Int {
     return R.layout.activity_group_detail
@@ -79,16 +88,10 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
 
-    val pwId = intent.getSerializableExtra(KEY_GROUP_ID)
-    if (pwId == null) {
-      HitUtil.toaskShort(getString(R.string.error_group_id_null))
-      finish()
-      return
-    }
-    EventBusHelper.reg(this)
-    groupId = pwId as PwGroupId
 
-    isRecycleBin = intent.getBooleanExtra(KEY_IS_IN_RECYCLE_BIN, false)
+    ARouter.getInstance().inject(this)
+    EventBusHelper.reg(this)
+
     // 检查是否是在回收站中
     if (!isRecycleBin) {
       isRecycleBin =
@@ -98,9 +101,8 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       binding.fab.visibility = View.GONE
     }
 
-    val title = intent.getStringExtra(KEY_TITLE)
-    binding.ctlCollapsingLayout.title = title
-    binding.kpaToolbar.title = title
+    binding.ctlCollapsingLayout.title = groupTitle
+    binding.kpaToolbar.title = groupTitle
     binding.kpaToolbar.setNavigationOnClickListener {
       finishAfterTransition()
     }
@@ -152,7 +154,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       }
       if (type != NONE) {
         module.sortData(type, entryData)
-            .observe(this, Observer { sortData ->
+            .observe(this, { sortData ->
               entryData.clear()
               entryData.addAll(sortData)
               adapter.notifyDataSetChanged()
@@ -172,14 +174,12 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
     }
     binding.fab.setOnItemClickListener(object : MainExpandFloatActionButton.OnItemClickListener {
       override fun onKeyClick() {
-        startActivity(
-            Intent(this@GroupDetailActivity, CreateEntryActivity::class.java).apply {
-              putExtra(CreateEntryActivity.KEY_TYPE, CreateEntryActivity.TYPE_NEW_ENTRY)
-              putExtra(CreateEntryActivity.PARENT_GROUP_ID, groupId)
-            },
-            ActivityOptions.makeSceneTransitionAnimation(this@GroupDetailActivity)
-                .toBundle()
-        )
+        ARouter.getInstance()
+          .build("/entry/create")
+          .withInt(CreateEntryActivity.KEY_TYPE, CreateEntryActivity.TYPE_NEW_ENTRY)
+          .withSerializable(CreateEntryActivity.PARENT_GROUP_ID, groupId)
+          .withOptionsCompat(ActivityOptionsCompat.makeSceneTransitionAnimation(this@GroupDetailActivity))
+          .navigation(this@GroupDetailActivity)
 
         binding.fab.hintMoreOperate()
       }
@@ -209,14 +209,15 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
           val item = entryData[position]
           if (item.obj is PwGroup) {
             val group = item.obj as PwGroup
-            val intent = Intent(this, GroupDetailActivity::class.java)
-            intent.putExtra(KEY_GROUP_ID, group.id)
-            intent.putExtra(KEY_TITLE, group.name)
-            intent.putExtra(KEY_IS_IN_RECYCLE_BIN, isRecycleBin)
-            startActivity(
-                intent, ActivityOptions.makeSceneTransitionAnimation(this)
-                .toBundle()
-            )
+
+            ARouter.getInstance()
+              .build("/group/detail")
+              .withString(KEY_TITLE, group.name)
+              .withSerializable(KEY_GROUP_ID, group.id)
+              .withBoolean(KEY_IS_IN_RECYCLE_BIN, isRecycleBin)
+              .withOptionsCompat(ActivityOptionsCompat.makeSceneTransitionAnimation(this))
+              .navigation(this)
+
             return@setOnItemClickListener
           }
 

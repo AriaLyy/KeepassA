@@ -15,9 +15,9 @@ import android.os.Build
 import android.os.Build.VERSION
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import android.util.Log
 import androidx.annotation.Nullable
 import androidx.biometric.BiometricManager
+import timber.log.Timber
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.KeyStore
@@ -44,19 +44,16 @@ object FingerprintUtil {
     var can = false
     when (biometricManager.canAuthenticate()) {
       BiometricManager.BIOMETRIC_SUCCESS -> {
-        Log.d(KeepassAUtil.TAG, "App can authenticate using biometrics.")
+        Timber.d("App can authenticate using biometrics.")
         can = true
       }
 
       BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ->
-        Log.e(KeepassAUtil.TAG, "No biometric features available on this device.")
+        Timber.e("No biometric features available on this device.")
       BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
-        Log.e(KeepassAUtil.TAG, "Biometric features are currently unavailable.")
+        Timber.e("Biometric features are currently unavailable.")
       BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED ->
-        Log.e(
-            KeepassAUtil.TAG, "The user hasn't associated any biometric credentials " +
-            "with their account."
-        )
+        Timber.e("The user hasn't associated any biometric credentials with their account.")
     }
     return can
   }

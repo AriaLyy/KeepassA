@@ -11,7 +11,6 @@ package com.lyy.keepassa.view.create
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.ViewAnimationUtils
 import androidx.appcompat.widget.Toolbar
@@ -28,6 +27,7 @@ import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.main.MainActivity
+import timber.log.Timber
 
 /**
  * 创建见数据库页面
@@ -111,7 +111,7 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
             HitUtil.toaskShort(getString(R.string.create_db) + getString(R.string.fail))
             return@Observer
           }
-          Log.d(TAG, "创建数据库成功")
+          Timber.d("创建数据库成功")
           HitUtil.toaskShort(getString(R.string.hint_db_create_success, module.dbName))
           NotificationUtil.startDbOpenNotify(this)
           MainActivity.startMainActivity(this)

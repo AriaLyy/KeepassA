@@ -10,7 +10,6 @@ package com.lyy.keepassa.util
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.text.TextUtils
-import android.util.Log
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
@@ -20,6 +19,7 @@ import com.lyy.keepassa.util.totp.TokenCalculator
 import com.lyy.keepassa.util.totp.TokenCalculator.HashAlgorithm
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.Locale
 
 object OtpUtil {
@@ -187,7 +187,7 @@ object OtpUtil {
 
         }
         else -> {
-          Log.e("getTOTPPass", "不识别的类型：${uri.host}")
+          Timber.e("不识别的类型：${uri.host}")
           null
         }
       }
