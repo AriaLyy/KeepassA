@@ -45,7 +45,6 @@ class ContentInterceptor : IInterceptor {
       return
     }
     if (BaseApp.isLocked && BaseApp.dbRecord != null) {
-
       callback.onInterrupt(Exception("database is locked"))
       return
     }

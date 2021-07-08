@@ -15,7 +15,9 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import android.text.TextUtils
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.edit
+import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.util.AndroidUtils
 import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
@@ -73,22 +75,22 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
         }
       }
       RichText.fromMarkdown(context)
-          .urlClick { url ->
-            if (handlerUrlClick(url)) {
-              dismiss()
-            }
-            return@urlClick true
+        .urlClick { url ->
+          if (handlerUrlClick(url)) {
+            dismiss()
           }
-          .into(binding.tvContent)
+          return@urlClick true
+        }
+        .into(binding.tvContent)
     }
     binding.btEnter.setOnClickListener {
       dismiss()
     }
     binding.btDonate.setDrawable(
-        DrawableTextView.LEFT,
-        ResUtil.getSvgIcon(R.drawable.ic_favorite_24px, R.color.text_blue_color),
-        16.toPx(),
-        16.toPx()
+      DrawableTextView.LEFT,
+      ResUtil.getSvgIcon(R.drawable.ic_favorite_24px, R.color.text_blue_color),
+      16.toPx(),
+      16.toPx()
     )
     binding.btDonate.setOnClickListener {
       DonateDialog().show()
@@ -103,9 +105,9 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
   override fun dismiss() {
     super.dismiss()
     requireContext().getSharedPreferences(Constance.PRE_FILE_NAME, Context.MODE_PRIVATE)
-        .edit {
-          putInt(Constance.VERSION_CODE, AndroidUtils.getVersionCode(requireContext()))
-        }
+      .edit {
+        putInt(Constance.VERSION_CODE, AndroidUtils.getVersionCode(requireContext()))
+      }
   }
 
   /**
@@ -135,11 +137,7 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
         when (activity) {
           "FingerprintActivity" -> {
             if (FingerprintUtil.hasBiometricPrompt(requireContext())) {
-              startActivity(
-                  Intent(requireContext(), FingerprintActivity::class.java),
-                  ActivityOptions.makeSceneTransitionAnimation(requireActivity())
-                      .toBundle()
-              )
+              FingerprintActivity.toFingerprintActivity(requireActivity())
               return true
             }
           }
@@ -175,5 +173,4 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
     super.onDestroy()
     scope.cancel()
   }
-
 }

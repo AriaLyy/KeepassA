@@ -18,11 +18,15 @@ import android.text.InputType
 import android.text.TextUtils
 import android.view.View
 import android.widget.ArrayAdapter
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.isVisible
+import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroupId
 import com.keepassdroid.database.PwGroupV4
@@ -100,6 +104,38 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
 
     // 编辑条目
     const val TYPE_EDIT_ENTRY = 3
+
+    /**
+     * 编辑
+     */
+    fun editEntry(
+      activity: FragmentActivity,
+      pwEntry: PwEntry
+    ) {
+      ARouter.getInstance()
+        .build("/entry/create")
+        .withInt(KEY_TYPE, TYPE_EDIT_ENTRY)
+        .withSerializable(KEY_ENTRY, pwEntry.uuid)
+        .withOptionsCompat(ActivityOptionsCompat.makeSceneTransitionAnimation(activity))
+        .navigation(activity)
+    }
+
+    /**
+     * 创建条目
+     */
+    fun createEntry(
+      activity: FragmentActivity,
+      parenGroupId: PwGroupId
+    ) {
+      ARouter.getInstance()
+        .build("/entry/create")
+        .withInt(KEY_TYPE, TYPE_NEW_ENTRY)
+        .withSerializable(PARENT_GROUP_ID, parenGroupId)
+        .withOptionsCompat(
+          ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
+        )
+        .navigation(activity)
+    }
   }
 
   private val passRequestCode = 0xA2
@@ -131,7 +167,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
 
   @Autowired(name = IS_SHORTCUTS)
   @JvmField
-  var isShortcuts:Boolean = false
+  var isShortcuts: Boolean = false
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
@@ -228,7 +264,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
           }
         }
       })
-
   }
 
   /**
@@ -408,7 +443,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
           binding.titleLayout.endIconDrawable =
             IconUtil.convertCustomIcon2Drawable(this@CreateEntryActivity, module.customIcon!!)
         }
-
       })
       iconDialog.show(supportFragmentManager, IconBottomSheetDialog::class.java.simpleName)
     }
@@ -671,7 +705,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     binding.attrFiles.addValue(fileName, fileUri = uri)
     module.attrFileMap[fileName] = ProtectedBinary(
       false, UriUtil.getUriInputStream(this, uri)
-        .readBytes()
+      .readBytes()
     )
   }
 
@@ -726,7 +760,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
         }
       }
     }
-
   }
 
   override fun onDestroy() {

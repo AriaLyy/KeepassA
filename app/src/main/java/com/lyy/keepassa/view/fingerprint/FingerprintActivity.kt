@@ -15,8 +15,12 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.animation.AccelerateInterpolator
+import androidx.core.app.ActivityOptionsCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
@@ -28,6 +32,7 @@ import com.lyy.keepassa.view.dialog.MsgDialog
  * 指纹签名验证，切换功能后，如果不重新验证指纹，弹出对话框提示验证
  */
 @TargetApi(Build.VERSION_CODES.M)
+@Route(path = "/setting/fingerprint")
 class FingerprintActivity : BaseActivity<ActivityFingerprintBinding>() {
   private lateinit var module: FingerprintModule
   private val closedFragment: FingerprintCloseFragment by lazy {
@@ -41,6 +46,15 @@ class FingerprintActivity : BaseActivity<ActivityFingerprintBinding>() {
     const val FLAG_CLOSE = 1
     const val FLAG_FULL_UNLOCK = 2
     const val FLAG_QUICK_UNLOCK = 3
+
+    fun toFingerprintActivity(ac: FragmentActivity) {
+      ARouter.getInstance()
+        .build("/setting/fingerprint")
+        .withOptionsCompat(
+          ActivityOptionsCompat.makeSceneTransitionAnimation(ac)
+        )
+        .navigation(ac)
+    }
   }
 
   override fun setLayoutId(): Int {
@@ -62,27 +76,26 @@ class FingerprintActivity : BaseActivity<ActivityFingerprintBinding>() {
     }
 
     module.getQuickUnlockRecord(BaseApp.dbRecord!!.localDbUri)
-        .observe(this, Observer { record ->
-          if (record == null) {
-            module.oldFlag = FLAG_CLOSE
-            module.curFlag = FLAG_CLOSE
-            binding.swBt.isChecked = false
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.flContent, closedFragment)
-                .commitAllowingStateLoss()
-            return@Observer
-          }
-          if (!record.isUseFingerprint) {
-            module.oldFlag = FLAG_QUICK_UNLOCK
-            module.curFlag = FLAG_QUICK_UNLOCK
-            binding.swBt.isChecked = true
-            return@Observer
-          }
+      .observe(this, Observer { record ->
+        if (record == null) {
+          module.oldFlag = FLAG_CLOSE
+          module.curFlag = FLAG_CLOSE
+          binding.swBt.isChecked = false
+          supportFragmentManager.beginTransaction()
+            .replace(R.id.flContent, closedFragment)
+            .commitAllowingStateLoss()
+          return@Observer
+        }
+        if (!record.isUseFingerprint) {
+          module.oldFlag = FLAG_QUICK_UNLOCK
+          module.curFlag = FLAG_QUICK_UNLOCK
           binding.swBt.isChecked = true
-          module.oldFlag = FLAG_FULL_UNLOCK
-          module.curFlag = FLAG_FULL_UNLOCK
-        })
-
+          return@Observer
+        }
+        binding.swBt.isChecked = true
+        module.oldFlag = FLAG_FULL_UNLOCK
+        module.curFlag = FLAG_FULL_UNLOCK
+      })
   }
 
   override fun finishAfterTransition() {
@@ -129,8 +142,8 @@ class FingerprintActivity : BaseActivity<ActivityFingerprintBinding>() {
       binding.closeHint.text = getString(R.string.open1)
       binding.flSwitch.setBackgroundColor(getColor(R.color.grey600))
       supportFragmentManager.beginTransaction()
-          .replace(R.id.flContent, fingerprintDescFragment)
-          .commitAllowingStateLoss()
+        .replace(R.id.flContent, fingerprintDescFragment)
+        .commitAllowingStateLoss()
     } else {
       // 关闭
       module.curFlag = FLAG_CLOSE
@@ -139,21 +152,20 @@ class FingerprintActivity : BaseActivity<ActivityFingerprintBinding>() {
 //      HitUtil.toaskShort("${getString(R.string.fingerprint_unlock)}${getString(R.string.closed)}")
       module.deleteQuickInfo()
       supportFragmentManager.beginTransaction()
-          .replace(R.id.flContent, closedFragment)
-          .commitAllowingStateLoss()
+        .replace(R.id.flContent, closedFragment)
+        .commitAllowingStateLoss()
     }
 
     val finalRadius = view.width.coerceAtLeast(view.height)
     val anim = ViewAnimationUtils.createCircularReveal(
-        view, if (isChecked) view.right else 0, 0, 0f, finalRadius.toFloat()
+      view, if (isChecked) view.right else 0, 0, 0f, finalRadius.toFloat()
     )
     view.setBackgroundResource(
-        if (isChecked) R.color.colorPrimary else R.color.grey600
+      if (isChecked) R.color.colorPrimary else R.color.grey600
     )
     anim.duration = resources.getInteger(R.integer.anim_duration_long)
-        .toLong()
+      .toLong()
     anim.interpolator = AccelerateInterpolator()
     anim.start()
   }
-
 }

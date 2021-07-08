@@ -11,7 +11,6 @@ package com.lyy.keepassa.view.detail
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
@@ -23,6 +22,7 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.transition.addListener
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Autowired
@@ -68,6 +68,31 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   companion object {
     const val KEY_GROUP_TITLE = "KEY_GROUP_TITLE"
     const val KEY_ENTRY_ID = "KEY_ENTRY_ID"
+
+    /**
+     * 跳转群组详情或项目详情
+     */
+    fun toEntryDetail(
+      activity: FragmentActivity,
+      entry: PwEntry,
+      showElement: View? = null
+    ) {
+      ARouter.getInstance()
+        .build("/entry/detail")
+        .withSerializable(KEY_ENTRY_ID, entry.uuid)
+        .withString(KEY_GROUP_TITLE, entry.parent.name)
+        .withOptionsCompat(
+          if (showElement != null) {
+            val pair = androidx.core.util.Pair(
+              showElement, activity.getString(R.string.transition_entry_icon)
+            )
+            ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pair)
+          } else {
+            ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
+          }
+        )
+        .navigation(activity)
+    }
   }
 
   private lateinit var module: EntryDetailModule
@@ -78,10 +103,10 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   private var curTouchY = 0f
 
   @Autowired(name = KEY_ENTRY_ID)
-  lateinit var uuid:UUID
+  lateinit var uuid: UUID
 
   @Autowired(name = KEY_GROUP_TITLE)
-  lateinit var groupTitle:String
+  lateinit var groupTitle: String
 
   override fun setLayoutId(): Int {
     return R.layout.activity_entry_detail
@@ -92,16 +117,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
     module = ViewModelProvider(this).get(EntryDetailModule::class.java)
-    // val uuid = intent.getSerializableExtra(KEY_ENTRY_ID)
-    // if (uuid == null) {
-    //   HitUtil.toaskShort(getString(R.string.error_entry_id_null))
-    //   finishAfterTransition()
-    //   BaseApp.isLocked = true
-    //   return
-    // }
-
     val toolbar = findViewById<Toolbar>(R.id.kpa_toolbar)
-    // toolbar.title = intent.getStringExtra(KEY_GROUP_TITLE)
     toolbar.title = groupTitle
     toolbar.setNavigationOnClickListener {
       finishAfterTransition()
@@ -114,12 +130,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       if (item.itemId == R.id.history) {
         // todo 查看历史
       } else if (item.itemId == R.id.edit) {
-        ARouter.getInstance()
-          .build("/entry/create")
-          .withInt(CreateEntryActivity.KEY_TYPE, CreateEntryActivity.TYPE_EDIT_ENTRY)
-          .withSerializable(CreateEntryActivity.KEY_ENTRY, pwEntry.uuid)
-          .withOptionsCompat(ActivityOptionsCompat.makeSceneTransitionAnimation(this))
-          .navigation(this)
+        CreateEntryActivity.editEntry(this)
       }
 
       true
@@ -149,9 +160,9 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       return
     }
     module.finishAnim(this, binding.rlRoot, binding.icon)
-        .observe(this, {
-          super.finishAfterTransition()
-        })
+      .observe(this, {
+        super.finishAfterTransition()
+      })
   }
 
   private fun showContent(show: Boolean) {
@@ -174,10 +185,10 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
 
   override fun buildSharedElements(vararg sharedElements: Pair<View, String>): ArrayList<String> {
     return super.buildSharedElements(
-        Pair<View, String>(
-            binding.icon,
-            getString(R.string.transition_entry_icon)
-        )
+      Pair<View, String>(
+        binding.icon,
+        getString(R.string.transition_entry_icon)
+      )
     )
   }
 
@@ -193,15 +204,15 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     }
 
     window.sharedElementEnterTransition?.addListener(
-        onStart = {
-          showContent(false)
-        },
-        onEnd = {
-          module.startAnim(this, binding.rlRoot, binding.icon)
-              .observe(this, {
-                showContent(true)
-              })
-        })
+      onStart = {
+        showContent(false)
+      },
+      onEnd = {
+        module.startAnim(this, binding.rlRoot, binding.icon)
+          .observe(this, {
+            showContent(true)
+          })
+      })
   }
 
   /**
@@ -233,14 +244,14 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
           loadDialog = LoadingDialog(this@EntryDetailActivity)
           loadDialog.show()
           module.recycleEntry(pwEntry)
-              .observe(this@EntryDetailActivity, Observer { code ->
-                if (code == DbSynUtil.STATE_SUCCEED) {
-                  onComplete(pwEntry)
-                  return@Observer
-                }
-                HitUtil.toaskShort(getString(R.string.save_db_fail))
+            .observe(this@EntryDetailActivity, Observer { code ->
+              if (code == DbSynUtil.STATE_SUCCEED) {
+                onComplete(pwEntry)
                 return@Observer
-              })
+              }
+              HitUtil.toaskShort(getString(R.string.save_db_fail))
+              return@Observer
+            })
         }
         dialog.dismiss()
       }
@@ -312,9 +323,9 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   private fun onComplete(pwEntry: PwEntry) {
     loadDialog.dismiss()
     EventBus.getDefault()
-        .post(DelEvent(pwEntry))
+      .post(DelEvent(pwEntry))
     HitUtil.toaskShort(
-        "${getString(R.string.del_entry)}${getString(R.string.success)}"
+      "${getString(R.string.del_entry)}${getString(R.string.success)}"
     )
     VibratorUtil.vibrator(300)
     finishAfterTransition()
@@ -339,10 +350,10 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
           getString(R.string.expire_time, KeepassAUtil.instance.formatTime(pwEntry.expiryTime))
       } else {
         binding.time.text = Html.fromHtml(
-            getString(
-                R.string.expire,
-                KeepassAUtil.instance.formatTime(pwEntry.expiryTime, "yyyy/MM/dd")
-            )
+          getString(
+            R.string.expire,
+            KeepassAUtil.instance.formatTime(pwEntry.expiryTime, "yyyy/MM/dd")
+          )
         )
       }
 
@@ -413,7 +424,6 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       } else {
         binding.tag.visibility = View.GONE
       }
-
     } else {
       binding.tag.visibility = View.GONE
     }
@@ -434,13 +444,12 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
         binding.attrStr.setAttrValue(data)
         setAttrStrListener()
       }
-
     } else {
       if ((pwEntry as PwEntryV3).additional.isNotEmpty()) {
         binding.attrStr.visibility = View.VISIBLE
         binding.attrStr.addStrValue(
-            getString(R.string.hint_ex_property),
-            ProtectedString(false, (pwEntry as PwEntryV3).additional)
+          getString(R.string.hint_ex_property),
+          ProtectedString(false, (pwEntry as PwEntryV3).additional)
         )
       } else {
         binding.attrStr.visibility = View.GONE
@@ -472,7 +481,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
 
   private fun setAttrStrListener() {
     binding.attrStr.setOnAttrViewClickListener(object :
-        ExpandAttrStrLayout.OnAttrViewClickListener {
+      ExpandAttrStrLayout.OnAttrViewClickListener {
       override fun onClickListener(
         v: View,
         position: Int
@@ -487,7 +496,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
    */
   private fun setAttrFileListener() {
     binding.attrFile.setOnAttrViewClickListener(object :
-        ExpandAttrStrLayout.OnAttrViewClickListener {
+      ExpandAttrStrLayout.OnAttrViewClickListener {
       override fun onClickListener(
         v: View,
         position: Int
@@ -504,20 +513,19 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   ) {
     super.onActivityResult(requestCode, resultCode, data)
     if (resultCode == Activity.RESULT_OK
-        && data != null
-        && data.data != null
-        && requestCode == module.createFileRequestCode
-        && module.curDLoadFile != null
+      && data != null
+      && data.data != null
+      && requestCode == module.createFileRequestCode
+      && module.curDLoadFile != null
     ) {
       data.data?.takePermission()
       val dialog = LoadingDialog(this)
       dialog.show()
       module.saveAttachment(this, data.data!!, module.curDLoadFile!!)
-          .observe(this, Observer { fileName ->
-            dialog.dismiss()
-            HitUtil.toaskShort(getString(R.string.save_file_success, fileName))
-          })
+        .observe(this, Observer { fileName ->
+          dialog.dismiss()
+          HitUtil.toaskShort(getString(R.string.save_file_success, fileName))
+        })
     }
   }
-
 }

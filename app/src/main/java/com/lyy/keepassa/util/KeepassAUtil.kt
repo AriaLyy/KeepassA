@@ -15,7 +15,6 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.app.ActivityManager
 import android.app.ActivityManager.RunningAppProcessInfo
-import android.app.ActivityOptions
 import android.app.assist.AssistStructure
 import android.content.ComponentName
 import android.content.ContentUris
@@ -38,7 +37,6 @@ import android.view.View
 import android.view.autofill.AutofillManager
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.ColorInt
-import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.graphics.ColorUtils
 import androidx.documentfile.provider.DocumentFile
@@ -259,9 +257,9 @@ class KeepassAUtil private constructor() {
   fun isHomeActivity(ac: Activity): Boolean {
     val clazz = ac.javaClass
     return (clazz == LauncherActivity::class.java
-        || clazz == CreateDbActivity::class.java
-        || clazz == OpenDbHistoryActivity::class.java
-        )
+      || clazz == CreateDbActivity::class.java
+      || clazz == OpenDbHistoryActivity::class.java
+      )
   }
 
   /**
@@ -302,12 +300,12 @@ class KeepassAUtil private constructor() {
     }
 
     return (
-        clazz != LauncherActivity::class.java
-            && clazz != QuickUnlockActivity::class.java
-            && clazz != CreateDbActivity::class.java
-            && clazz != AutoFillEntrySearchActivity::class.java
-            && clazz != OpenDbHistoryActivity::class.java
-        )
+      clazz != LauncherActivity::class.java
+        && clazz != QuickUnlockActivity::class.java
+        && clazz != CreateDbActivity::class.java
+        && clazz != AutoFillEntrySearchActivity::class.java
+        && clazz != OpenDbHistoryActivity::class.java
+      )
   }
 
   /**
@@ -332,7 +330,6 @@ class KeepassAUtil private constructor() {
     } else {
       QuickUnlockActivity.startQuickUnlockActivity(context)
     }
-
   }
 
   /**
@@ -393,7 +390,7 @@ class KeepassAUtil private constructor() {
     item.title = pwGroup.name
     item.subTitle = BaseApp.APP.resources.getString(
       R.string.hint_group_desc, KdbUtil.getGroupEntryNum(pwGroup)
-        .toString()
+      .toString()
     )
     item.obj = pwGroup
     return item
@@ -615,7 +612,7 @@ class KeepassAUtil private constructor() {
 
       // 增加TOP密码字段
       if (!addOTPPass && (str.key.startsWith("TOTP", ignoreCase = true)
-            || str.key.startsWith("OTP", ignoreCase = true))
+          || str.key.startsWith("OTP", ignoreCase = true))
       ) {
         addOTPPass = true
         val totpPass = OtpUtil.getOtpPass(entryV4)
@@ -651,7 +648,6 @@ class KeepassAUtil private constructor() {
     }
 
     return format.format(time)
-
   }
 
   @SuppressLint("SimpleDateFormat")
@@ -660,7 +656,6 @@ class KeepassAUtil private constructor() {
     format: String
   ): String {
     return SimpleDateFormat(format).format(time)
-
   }
 
   /**
@@ -672,31 +667,12 @@ class KeepassAUtil private constructor() {
     showElement: View? = null
   ) {
     if (entry is PwGroup) {
-      ARouter.getInstance()
-        .build("/group/detail")
-        .withString(GroupDetailActivity.KEY_TITLE, entry.name)
-        .withSerializable(GroupDetailActivity.KEY_GROUP_ID, entry.id)
-        .withOptionsCompat(ActivityOptionsCompat.makeSceneTransitionAnimation(activity))
-        .navigation(activity)
-
+      GroupDetailActivity.toGroupDetail(activity, entry)
       return
     }
 
     if (entry is PwEntry) {
-      ARouter.getInstance()
-        .build("/entry/detail")
-        .withSerializable(EntryDetailActivity.KEY_ENTRY_ID, entry.uuid)
-        .withString(EntryDetailActivity.KEY_GROUP_TITLE, entry.parent.name)
-        .withOptionsCompat(
-          if (showElement != null){
-            val pair = androidx.core.util.Pair(showElement, activity.getString(R.string.transition_entry_icon))
-            ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pair)
-          }else{
-            ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
-          }
-
-        )
-        .navigation(activity)
+      EntryDetailActivity.toEntryDetail(activity, entry, showElement)
     }
   }
 
@@ -730,7 +706,6 @@ class KeepassAUtil private constructor() {
       Timber.e("打开文件失败");
       e.printStackTrace()
     }
-
   }
 
   /**
@@ -900,7 +875,6 @@ class KeepassAUtil private constructor() {
    */
   private fun isExternalStorageDocument(uri: Uri): Boolean {
     return "com.android.externalstorage.documents" == uri.authority
-
   }
 
   /**
@@ -918,7 +892,6 @@ class KeepassAUtil private constructor() {
   private fun isMediaDocument(uri: Uri): Boolean {
     return "com.android.providers.media.documents" == uri.authority
   }
-
 }
 
 fun Uri.getFileInfo(
@@ -932,7 +905,7 @@ fun Uri.getFileInfo(
 
 fun PwEntry.isRef(): Boolean {
   return (!username.isNullOrEmpty() && username.startsWith("{REF:", ignoreCase = true))
-      || (!password.isNullOrEmpty() && password.startsWith("{REF:", ignoreCase = true))
+    || (!password.isNullOrEmpty() && password.startsWith("{REF:", ignoreCase = true))
 }
 
 /**

@@ -17,6 +17,7 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.transition.addListener
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -64,6 +65,23 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
     const val KEY_TITLE = "KEY_TITLE"
     const val KEY_GROUP_ID = "KEY_V3_GROUP_ID"
     const val KEY_IS_IN_RECYCLE_BIN = "KEY_IS_IN_RECYCLE_BIN"
+
+    /**
+     * 跳转群组详情或项目详情
+     */
+    fun toGroupDetail(
+      activity: FragmentActivity,
+      group: PwGroup,
+      isRecycleBin: Boolean = false
+    ) {
+      ARouter.getInstance()
+        .build("/group/detail")
+        .withString(KEY_TITLE, group.name)
+        .withSerializable(KEY_GROUP_ID, group.id)
+        .withBoolean(KEY_IS_IN_RECYCLE_BIN, isRecycleBin)
+        .withOptionsCompat(ActivityOptionsCompat.makeSceneTransitionAnimation(activity))
+        .navigation(activity)
+    }
   }
 
   private lateinit var module: GroupDetailModule
@@ -79,7 +97,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
   lateinit var groupId: PwGroupId
 
   @Autowired(name = KEY_TITLE)
-  lateinit var groupTitle:String
+  lateinit var groupTitle: String
 
   override fun setLayoutId(): Int {
     return R.layout.activity_group_detail
@@ -97,7 +115,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       isRecycleBin =
         BaseApp.isV4 && BaseApp.KDB!!.pm.recycleBin != null && BaseApp.KDB!!.pm.recycleBin.id == groupId
     }
-    if (isRecycleBin){
+    if (isRecycleBin) {
       binding.fab.visibility = View.GONE
     }
 
@@ -111,7 +129,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    if (window.enterTransition == null || !KeepassAUtil.instance.isDisplayLoadingAnim()){
+    if (window.enterTransition == null || !KeepassAUtil.instance.isDisplayLoadingAnim()) {
       loadData()
       return
     }
@@ -154,11 +172,11 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       }
       if (type != NONE) {
         module.sortData(type, entryData)
-            .observe(this, { sortData ->
-              entryData.clear()
-              entryData.addAll(sortData)
-              adapter.notifyDataSetChanged()
-            })
+          .observe(this, { sortData ->
+            entryData.clear()
+            entryData.addAll(sortData)
+            adapter.notifyDataSetChanged()
+          })
       }
       return@setOnMenuItemClickListener true
     }
@@ -174,13 +192,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
     }
     binding.fab.setOnItemClickListener(object : MainExpandFloatActionButton.OnItemClickListener {
       override fun onKeyClick() {
-        ARouter.getInstance()
-          .build("/entry/create")
-          .withInt(CreateEntryActivity.KEY_TYPE, CreateEntryActivity.TYPE_NEW_ENTRY)
-          .withSerializable(CreateEntryActivity.PARENT_GROUP_ID, groupId)
-          .withOptionsCompat(ActivityOptionsCompat.makeSceneTransitionAnimation(this@GroupDetailActivity))
-          .navigation(this@GroupDetailActivity)
-
+        CreateEntryActivity.createEntry(this@GroupDetailActivity, groupId)
         binding.fab.hintMoreOperate()
       }
 
@@ -192,7 +204,6 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
         dialog.show(supportFragmentManager, "CreateGroupDialog")
         binding.fab.hintMoreOperate()
       }
-
     })
   }
 
@@ -205,34 +216,26 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
     getData()
 
     RvItemClickSupport.addTo(binding.list)
-        .setOnItemClickListener { _, position, v ->
-          val item = entryData[position]
-          if (item.obj is PwGroup) {
-            val group = item.obj as PwGroup
-
-            ARouter.getInstance()
-              .build("/group/detail")
-              .withString(KEY_TITLE, group.name)
-              .withSerializable(KEY_GROUP_ID, group.id)
-              .withBoolean(KEY_IS_IN_RECYCLE_BIN, isRecycleBin)
-              .withOptionsCompat(ActivityOptionsCompat.makeSceneTransitionAnimation(this))
-              .navigation(this)
-
-            return@setOnItemClickListener
-          }
-
-          if (item.obj is PwEntry) {
-            val icon = v.findViewById<AppCompatImageView>(R.id.icon)
-            KeepassAUtil.instance.turnEntryDetail(this, item.obj as PwEntry, icon)
-            return@setOnItemClickListener
-          }
+      .setOnItemClickListener { _, position, v ->
+        val item = entryData[position]
+        if (item.obj is PwGroup) {
+          val group = item.obj as PwGroup
+          toGroupDetail(this, group, isRecycleBin)
+          return@setOnItemClickListener
         }
+
+        if (item.obj is PwEntry) {
+          val icon = v.findViewById<AppCompatImageView>(R.id.icon)
+          KeepassAUtil.instance.turnEntryDetail(this, item.obj as PwEntry, icon)
+          return@setOnItemClickListener
+        }
+      }
 
     RvItemClickSupport.addTo(binding.list)
-        .setOnItemLongClickListener { _, position, v ->
-          showPopMenu(v, position)
-          true
-        }
+      .setOnItemLongClickListener { _, position, v ->
+        showPopMenu(v, position)
+        true
+      }
 
     // 获取点击位置
     binding.list.addOnItemTouchListener(object : OnItemTouchListener {
@@ -240,7 +243,6 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
         rv: RecyclerView,
         e: MotionEvent
       ) {
-
       }
 
       override fun onInterceptTouchEvent(
@@ -255,29 +257,28 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
 
       override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
       }
-
     })
   }
 
   private fun getData() {
     module.getGroupData(this, groupId)
-        .observe(this, Observer { list ->
-          binding.laAnim.cancelAnimation()
-          binding.laAnim.visibility = View.GONE
-          binding.fab.visibility = View.VISIBLE
-          if (list == null || list.size == 0) {
-            // 设置appbar为收缩状态
-            binding.appBar.setExpanded(false, false)
-            getEmptyLayout().visibility = View.VISIBLE
-            binding.list.visibility = View.GONE
-            return@Observer
-          }
-          binding.list.visibility = View.VISIBLE
-          getEmptyLayout().visibility = View.GONE
-          entryData.clear()
-          entryData.addAll(list)
-          adapter.notifyDataSetChanged()
-        })
+      .observe(this, Observer { list ->
+        binding.laAnim.cancelAnimation()
+        binding.laAnim.visibility = View.GONE
+        binding.fab.visibility = View.VISIBLE
+        if (list == null || list.size == 0) {
+          // 设置appbar为收缩状态
+          binding.appBar.setExpanded(false, false)
+          getEmptyLayout().visibility = View.VISIBLE
+          binding.list.visibility = View.GONE
+          return@Observer
+        }
+        binding.list.visibility = View.VISIBLE
+        getEmptyLayout().visibility = View.GONE
+        entryData.clear()
+        entryData.addAll(list)
+        adapter.notifyDataSetChanged()
+      })
   }
 
   private fun getEmptyLayout(): View {
@@ -362,5 +363,4 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
     super.onDestroy()
     EventBusHelper.unReg(this)
   }
-
 }

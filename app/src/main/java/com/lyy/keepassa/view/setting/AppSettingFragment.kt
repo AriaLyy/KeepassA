@@ -10,7 +10,6 @@
 package com.lyy.keepassa.view.setting
 
 import android.app.Activity
-import android.app.ActivityOptions
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -24,7 +23,6 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.arialyy.frame.core.AbsFrame
 import com.arialyy.frame.util.SharePreUtil
-import com.arialyy.frame.util.StringUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.Constance
@@ -48,7 +46,6 @@ import java.util.Locale
  * 应用设置
  */
 class AppSettingFragment : PreferenceFragmentCompat() {
-  private val TAG = StringUtil.getClassName(this)
   private lateinit var passTypeList: ListPreference
   private var passLen = 3
   private val requestCodeAutoFill = 0xa1
@@ -174,11 +171,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
       return
     }
     fingerprint!!.setOnPreferenceClickListener {
-      startActivity(
-          Intent(context, FingerprintActivity::class.java),
-          ActivityOptions.makeSceneTransitionAnimation(activity)
-              .toBundle()
-      )
+      FingerprintActivity.toFingerprintActivity(requireActivity())
       return@setOnPreferenceClickListener true
     }
   }

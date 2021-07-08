@@ -95,8 +95,8 @@ object DbSynUtil : SynStateCode {
     dbName: String
   ): Uri {
     val file = File("${BaseApp.APP.cacheDir.path}/$cloudTypeName/${dbName}")
-    if (!file.parentFile.exists()) {
-      file.parentFile.mkdirs()
+    if (file.parentFile != null && !file.parentFile!!.exists()){
+      file.parentFile!!.mkdirs()
     }
     return Uri.fromFile(file)
   }
@@ -167,7 +167,7 @@ object DbSynUtil : SynStateCode {
     }
 
     val path = util.downloadFile(context, record, filePath)
-    if (path == null) {
+    if (path.isNullOrEmpty()) {
       Timber.e( "下载文件失败，${record.cloudDiskPath}")
       toask(context.getString(R.string.sync_db), false, context.getString(R.string.net_error))
       return STATE_DOWNLOAD_FILE_FAIL
@@ -213,7 +213,7 @@ object DbSynUtil : SynStateCode {
         record.type, "kpa_${StringUtil.keyToHashKey(record.cloudDiskPath)}.kdbx"
     )
     val path = util.downloadFile(context, record, filePath)
-    if (TextUtils.isEmpty(path)) {
+    if (path.isNullOrEmpty()) {
       Timber.e( "下载文件失败，${record.cloudDiskPath}")
       toask(context.getString(R.string.sync_db), false, context.getString(R.string.net_error))
       return STATE_DOWNLOAD_FILE_FAIL
@@ -221,7 +221,7 @@ object DbSynUtil : SynStateCode {
 
     val db = File(path)
     Timber.i( "云端文件下载成功，开始打开数据库，filePath = ${db.path}，fileSize = ${db.length()}")
-    val kdb = openDb(context, dbPath = path!!)
+    val kdb = openDb(context, dbPath = path)
     if (kdb == null) {
       Timber.e( "打开云端数据库失败，将覆盖云端数据库")
       return coverFile(util, context, record)
@@ -335,7 +335,6 @@ object DbSynUtil : SynStateCode {
 
     val job = GlobalScope.launch {
       code = channel.receive()
-      Timber.d( "xxxxx = $code")
     }
     //  等待直到子协程执行结束，完美替换wait single
     job.join()
