@@ -31,6 +31,7 @@ import com.lyy.keepassa.common.PassType;
 import com.lyy.keepassa.dao.AppDatabase;
 import com.lyy.keepassa.entity.DbHistoryRecord;
 import com.lyy.keepassa.receiver.ScreenLockReceiver;
+import com.lyy.keepassa.service.autofill.AutoFillClickReceiver;
 import com.lyy.keepassa.util.KeepassAUtil;
 import com.lyy.keepassa.util.LanguageUtil;
 import com.lyy.keepassa.util.QuickUnLockUtil;
@@ -115,6 +116,10 @@ public class BaseApp extends MultiDexApplication {
     initBugly();
 
     EventBus.builder().addIndex(new KpaEventBusIndex()).installDefaultEventBus();
+
+    //IntentFilter ift = new IntentFilter();
+    //ift.addAction(AutoFillClickReceiver.ACTION_CLICK_OTHER);
+    //registerReceiver(new AutoFillClickReceiver(), ift);
   }
 
   private void initBugly() {

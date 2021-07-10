@@ -99,6 +99,7 @@
     </activity>
 
     <activity
+        android:launchMode="singleInstance"
         android:name=".service.input.EntryOtherInfoDialog"
         android:screenOrientation="portrait"
         android:theme="@style/DialogActivityStyle" />
@@ -212,6 +213,7 @@
           android:name="android.view.im"
           android:resource="@xml/input_method" />
     </service>
+
 
     <provider
         android:name="androidx.core.content.FileProvider"

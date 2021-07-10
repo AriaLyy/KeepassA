@@ -32,6 +32,7 @@ import com.lyy.keepassa.databinding.ActivityLauncherBinding
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.event.DbHistoryEvent
+import com.lyy.keepassa.service.autofill.AutoFillClickReceiver
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.create.CreateEntryActivity

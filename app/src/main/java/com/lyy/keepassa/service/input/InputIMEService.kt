@@ -10,10 +10,16 @@ package com.lyy.keepassa.service.input
 import android.content.Context
 import android.content.Intent
 import android.inputmethodservice.InputMethodService
+import android.os.Build
+import android.os.Bundle
+import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.autofill.AutofillManager
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InlineSuggestionsRequest
+import android.view.inputmethod.InlineSuggestionsResponse
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
@@ -66,13 +72,13 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
   override fun onCreateInputView(): View {
 
     val layout = LayoutInflater.from(this)
-        .inflate(R.layout.layout_kpa_ime, null) as ViewGroup
+      .inflate(R.layout.layout_kpa_ime, null) as ViewGroup
     candidatesList = layout.findViewById(R.id.rvContent)
     for (i in 0..layout.childCount) {
       val child = layout.getChildAt(i)
       if (child != null
-          && (child is ImageView || child is TextView)
-          && child.isClickable
+        && (child is ImageView || child is TextView)
+        && child.isClickable
       ) {
         child.setOnClickListener(this)
       }
@@ -87,23 +93,23 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     candidatesList.setHasFixedSize(true)
     candidatesList.adapter = candidatesAdapter
     RvItemClickSupport.addTo(candidatesList)
-        .setOnItemClickListener(object : RvItemClickSupport.OnItemClickListener {
-          var lastPosition = 0
-          override fun onItemClicked(
-            recyclerView: RecyclerView?,
-            position: Int,
-            v: View?
-          ) {
-            val lastItemEntity = candidatesData[lastPosition]
-            val curItemEntity = candidatesData[position]
-            lastItemEntity.isSelected = false
-            curItemEntity.isSelected = true
-            candidatesAdapter.notifyItemChanged(lastPosition)
-            candidatesAdapter.notifyItemChanged(position)
-            lastPosition = position
-            curEntry = curItemEntity.obj as PwEntry
-          }
-        })
+      .setOnItemClickListener(object : RvItemClickSupport.OnItemClickListener {
+        var lastPosition = 0
+        override fun onItemClicked(
+          recyclerView: RecyclerView?,
+          position: Int,
+          v: View?
+        ) {
+          val lastItemEntity = candidatesData[lastPosition]
+          val curItemEntity = candidatesData[position]
+          lastItemEntity.isSelected = false
+          curItemEntity.isSelected = true
+          candidatesAdapter.notifyItemChanged(lastPosition)
+          candidatesAdapter.notifyItemChanged(position)
+          lastPosition = position
+          curEntry = curItemEntity.obj as PwEntry
+        }
+      })
   }
 
   /**
@@ -121,9 +127,19 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     candidatesList.visibility = View.GONE
     curEntry = null
     ic = currentInputConnection
-    Timber.d( "pkgName = ${info?.packageName}")
+    Timber.d("pkgName = ${info?.packageName}")
     appPkgName = info?.packageName
     showEntryList(searchEntry(appPkgName))
+  }
+
+  override fun onCreateInlineSuggestionsRequest(uiExtras: Bundle): InlineSuggestionsRequest? {
+    Timber.d("onCreateInlineSuggestionsRequest")
+    return super.onCreateInlineSuggestionsRequest(uiExtras)
+  }
+
+  override fun onInlineSuggestionsResponse(response: InlineSuggestionsResponse): Boolean {
+    Timber.d("onInlineSuggestionsResponse")
+    return super.onInlineSuggestionsResponse(response)
   }
 
   /**
@@ -142,12 +158,16 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         BaseApp.isLocked = true
         NotificationUtil.startDbLocked(this)
         val isOpenQuickLock = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-            .getBoolean(applicationContext.getString(R.string.set_quick_unlock), false)
+          .getBoolean(applicationContext.getString(R.string.set_quick_unlock), false)
         if (isOpenQuickLock) {
           return
         }
+        curEntry = null
+        candidatesData.clear()
         BaseApp.KDB?.clear(this)
         BaseApp.KDB = null
+        Timber.d("数据库已锁定")
+        HitUtil.toaskShort(getString(R.string.notify_db_locked))
         return
       }
 
@@ -239,11 +259,31 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
   @Subscribe(threadMode = MAIN)
   fun onFillOtherInfo(event: FillInfoEvent) {
     Timber.d("getOtherInfo, info = ${event.infoStr}")
-    MainScope().launch (Dispatchers.IO){
-      delay(600)
-      withContext(Dispatchers.Main){
-        fillData(event.infoStr.toString())
+    MainScope().launch {
+      withContext(Dispatchers.IO) {
+        delay(600)
       }
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        requestShowSelf(InputMethodManager.SHOW_IMPLICIT)
+      } else {
+        try {
+          val inm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+          val field = InputMethodService::class.java.getDeclaredField("mToken")
+          field.isAccessible = true
+          inm.showSoftInputFromInputMethod(
+            field.get(this@InputIMEService) as IBinder,
+            InputMethodManager.SHOW_IMPLICIT
+          )
+        } catch (e: Exception) {
+          e.printStackTrace()
+        }
+      }
+
+      withContext(Dispatchers.IO) {
+        delay(600)
+      }
+
+      fillData(event.infoStr.toString())
     }
   }
 
@@ -298,7 +338,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       }
 
       val isOpenQuickLock = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-          .getBoolean(applicationContext.getString(R.string.set_quick_unlock), false)
+        .getBoolean(applicationContext.getString(R.string.set_quick_unlock), false)
 
       if (isOpenQuickLock) {
         QuickUnlockActivity.startQuickUnlockActivity(this, Intent.FLAG_ACTIVITY_NEW_TASK)

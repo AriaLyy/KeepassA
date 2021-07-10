@@ -10,8 +10,10 @@
 package com.lyy.keepassa.service.autofill
 
 import android.annotation.TargetApi
+import android.app.PendingIntent
 import android.app.assist.AssistStructure
 import android.content.Context
+import android.content.Intent
 import android.content.IntentSender
 import android.graphics.Bitmap.Config
 import android.graphics.BitmapFactory
@@ -272,6 +274,7 @@ object AutoFillHelper {
 //      )
 //    })
 
+
     return if (metadata.saveType != 0) {
       val autoFillIds = metadata.autoFillIds
       // 设置触发保存的类型
@@ -282,6 +285,24 @@ object AutoFillHelper {
           )
               .build()
       )
+
+//      val rev = RemoteViews(context.packageName, R.layout.item_auto_fill)
+//      rev.setTextViewText(R.id.text, context.resources.getString(R.string.other))
+//
+//      IconUtil.getBitmapFromDrawable(context,  R.drawable.ic_search, 20.toPx())?.let {
+//        rev.setImageViewBitmap(R.id.img, it)
+//      }
+////      rev.setIntent(R.id.llContent, )
+//      rev.setOnClickPendingIntent(R.id.text, PendingIntent.getBroadcast(
+//        context,
+//        1,
+//        Intent(AutoFillClickReceiver.ACTION_CLICK_OTHER),
+//        PendingIntent.FLAG_UPDATE_CURRENT
+//      ))
+//
+//      setTextColor(rev, context)
+//      responseBuilder.setHeader(rev)
+
       responseBuilder.build()
     } else {
       Timber.d("These fields are not meant to be saved by autofill.")
