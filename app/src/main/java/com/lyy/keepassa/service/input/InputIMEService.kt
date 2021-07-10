@@ -238,6 +238,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
 
   @Subscribe(threadMode = MAIN)
   fun onFillOtherInfo(event: FillInfoEvent) {
+    Timber.d("getOtherInfo, info = ${event.infoStr}")
     MainScope().launch (Dispatchers.IO){
       delay(600)
       withContext(Dispatchers.Main){

@@ -25,6 +25,7 @@ import com.arialyy.frame.util.KeyStoreUtil;
 import com.keepassdroid.Database;
 import com.leon.channel.helper.ChannelReaderUtil;
 import com.lyy.keepassa.BuildConfig;
+import com.lyy.keepassa.KpaEventBusIndex;
 import com.lyy.keepassa.R;
 import com.lyy.keepassa.common.PassType;
 import com.lyy.keepassa.dao.AppDatabase;
@@ -41,6 +42,7 @@ import com.tencent.wcdb.room.db.WCDBOpenHelperFactory;
 import com.zzhoujay.richtext.RichText;
 import java.util.Locale;
 import me.weishu.reflection.Reflection;
+import org.greenrobot.eventbus.EventBus;
 import timber.log.Timber;
 
 public class BaseApp extends MultiDexApplication {
@@ -111,6 +113,8 @@ public class BaseApp extends MultiDexApplication {
         .getBoolean(getString(R.string.set_key_title_show_state_bar), true);
     BaseActivity.Companion.setShowStatusBar(showStatusBar);
     initBugly();
+
+    EventBus.builder().addIndex(new KpaEventBusIndex()).installDefaultEventBus();
   }
 
   private void initBugly() {
