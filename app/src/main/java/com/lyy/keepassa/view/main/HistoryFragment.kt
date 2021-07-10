@@ -29,13 +29,11 @@ import com.lyy.keepassa.entity.EntryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.util.EventBusHelper
-import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import com.lyy.keepassa.view.menu.EntryPopMenu
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
-import java.util.UUID
 
 class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
 
@@ -53,27 +51,27 @@ class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
     binding.list.adapter = adapter
 
     RvItemClickSupport.addTo(binding.list)
-        .setOnItemClickListener { _, position, v ->
-          if (position < 0 || position >= entryData.size) {
-            return@setOnItemClickListener
-          }
-          val item = entryData[position]
-          val icon = v.findViewById<AppCompatImageView>(R.id.icon)
-          KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwEntry, icon)
+      .setOnItemClickListener { _, position, v ->
+        if (position < 0 || position >= entryData.size) {
+          return@setOnItemClickListener
         }
+        val item = entryData[position]
+        val icon = v.findViewById<AppCompatImageView>(R.id.icon)
+        KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwEntry, icon)
+      }
 
     // 长按处理
     RvItemClickSupport.addTo(binding.list)
-        .setOnItemLongClickListener { _, position, v ->
-          val pop = EntryPopMenu(
-              requireActivity(),
-              v,
-              entryData[position].obj as PwEntry,
-              curx
-          )
-          pop.show()
-          true
-        }
+      .setOnItemLongClickListener { _, position, v ->
+        val pop = EntryPopMenu(
+          requireActivity(),
+          v,
+          entryData[position].obj as PwEntry,
+          curx
+        )
+        pop.show()
+        true
+      }
 
     // 获取点击位置
     binding.list.addOnItemTouchListener(object : OnItemTouchListener {
@@ -104,9 +102,9 @@ class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
 
   private fun initRefresh() {
     binding.swipe.setColorSchemeColors(
-        Color.parseColor("#4E85DB"),
-        Color.parseColor("#B48CFF"),
-        Color.parseColor("#95DAED")
+      Color.parseColor("#4E85DB"),
+      Color.parseColor("#B48CFF"),
+      Color.parseColor("#95DAED")
     )
     binding.swipe.setOnRefreshListener {
       setData()
@@ -115,19 +113,19 @@ class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
 
   private fun setData() {
     module.getEntryHistoryRecord()
-        .observe(this, Observer { list ->
-          if (list == null) {
-            binding.temp.visibility = View.VISIBLE
-            binding.swipe.isRefreshing = false
-            return@Observer
-          }
-          entryData.sortByDescending { it.time }
-          binding.temp.visibility = View.GONE
-          entryData.clear()
-          entryData.addAll(list)
-          adapter.notifyDataSetChanged()
+      .observe(this, Observer { list ->
+        if (list == null) {
+          binding.temp.visibility = View.VISIBLE
           binding.swipe.isRefreshing = false
-        })
+          return@Observer
+        }
+        entryData.sortByDescending { it.time }
+        binding.temp.visibility = View.GONE
+        entryData.clear()
+        entryData.addAll(list)
+        adapter.notifyDataSetChanged()
+        binding.swipe.isRefreshing = false
+      })
   }
 
   @Subscribe(threadMode = MAIN)
@@ -140,7 +138,7 @@ class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
     val oldRecord = entryData.find { (it.obj as PwEntry).uuid == newRecordUUid }
 
     val entry = BaseApp.KDB.pm.entries[newRecordUUid]
-    entry?.let {
+    entry?.let { it ->
       if (oldRecord == null) {
         val itemData = KeepassAUtil.instance.convertPwEntry2Item(it)
         itemData.time = record.time
@@ -152,7 +150,9 @@ class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
         oldRecord.time = record.time
       }
 
-//    entryData.sortByDescending { it.time }
+      entryData.sortByDescending { entry->
+        entry.time
+      }
       adapter.notifyDataSetChanged()
     }
   }

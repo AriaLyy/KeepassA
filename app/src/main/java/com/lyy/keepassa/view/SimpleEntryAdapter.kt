@@ -61,10 +61,12 @@ class SimpleEntryAdapter(
       IconUtil.setGroupIcon(context, item.obj as PwGroup, holder!!.icon)
     } else if (item.obj is PwEntry) {
       IconUtil.setEntryIcon(context, item.obj as PwEntry, holder!!.icon)
+      val paint = holder.title.paint
       if ((item.obj as PwEntry).expires()){
-        val paint = holder.title.paint
         paint.flags = Paint.STRIKE_THRU_TEXT_FLAG
         paint.isAntiAlias = true
+      }else{
+        paint.flags = 0
       }
     }
 
