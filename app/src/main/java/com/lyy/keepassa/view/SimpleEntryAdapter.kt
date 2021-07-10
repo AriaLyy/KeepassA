@@ -10,6 +10,7 @@
 package com.lyy.keepassa.view
 
 import android.content.Context
+import android.graphics.Paint
 import android.view.View
 import android.widget.CheckBox
 import android.widget.RelativeLayout
@@ -60,6 +61,11 @@ class SimpleEntryAdapter(
       IconUtil.setGroupIcon(context, item.obj as PwGroup, holder!!.icon)
     } else if (item.obj is PwEntry) {
       IconUtil.setEntryIcon(context, item.obj as PwEntry, holder!!.icon)
+      if ((item.obj as PwEntry).expires()){
+        val paint = holder.title.paint
+        paint.flags = Paint.STRIKE_THRU_TEXT_FLAG
+        paint.isAntiAlias = true
+      }
     }
 
     holder!!.title.text = item.title

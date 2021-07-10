@@ -12,6 +12,7 @@ package com.lyy.keepassa.view.detail
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Paint
 import android.graphics.Rect
 import android.os.Bundle
 import android.text.Html
@@ -130,7 +131,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       if (item.itemId == R.id.history) {
         // todo 查看历史
       } else if (item.itemId == R.id.edit) {
-        CreateEntryActivity.editEntry(this)
+        CreateEntryActivity.editEntry(this, pwEntry)
       }
 
       true
@@ -344,6 +345,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
    * 处理时间
    */
   private fun handleTime() {
+    // 处理已过期
     if (pwEntry.expires() && pwEntry.expiryTime != null) {
       if (pwEntry.expiryTime.after(Date())) {
         binding.time.text =
@@ -357,12 +359,19 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
         )
       }
 
-      binding.time1.text = KeepassAUtil.instance.formatTime(pwEntry.creationTime)
+      val createTime = KeepassAUtil.instance.formatTime(pwEntry.creationTime)
+      binding.time1.text = createTime
       binding.time1.setLeftIcon(R.drawable.ic_create_time)
-      binding.time1.setOnClickListener { HitUtil.toaskShort(getString(R.string.create_time)) }
+      binding.time1.setOnClickListener { HitUtil.toaskShort(getString(R.string.create_time, createTime)) }
       binding.time2.text = KeepassAUtil.instance.formatTime(pwEntry.lastModificationTime)
       binding.time2.setLeftIcon(R.drawable.ic_modify_time)
       binding.time2.setOnClickListener { HitUtil.toaskShort(getString(R.string.modify_time)) }
+
+      // 标题横线
+      val paint = binding.title.paint
+      paint.flags = Paint.STRIKE_THRU_TEXT_FLAG
+      paint.isAntiAlias = true
+
     } else {
       binding.time.text =
         getString(R.string.create_time, KeepassAUtil.instance.formatTime(pwEntry.creationTime))
