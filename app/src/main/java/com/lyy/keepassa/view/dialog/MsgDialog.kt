@@ -15,22 +15,19 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.Button
 import androidx.annotation.ColorInt
+import androidx.lifecycle.lifecycleScope
 import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogMsgBinding
 import com.lyy.keepassa.event.MsgDialogEvent
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 
 class MsgDialog : BaseDialog<DialogMsgBinding>(), View.OnClickListener {
-
-  private val scope = MainScope()
 
   private var enterBtName: String? = null
   private var cancelBtName: String? = null
@@ -187,7 +184,7 @@ class MsgDialog : BaseDialog<DialogMsgBinding>(), View.OnClickListener {
   private fun handleCountDown() {
     if (showCountDownTimer.first) {
       setBtnsEnable(false)
-      scope.launch(Dispatchers.Main) {
+      lifecycleScope.launch(Dispatchers.Main) {
         val oldText = binding.enter.text
         for (i in showCountDownTimer.second downTo 1) {
           binding.enter.text = "$oldText (${i} s) "
@@ -255,10 +252,6 @@ class MsgDialog : BaseDialog<DialogMsgBinding>(), View.OnClickListener {
     dismiss()
   }
 
-  override fun onDestroy() {
-    super.onDestroy()
-    scope.cancel()
-  }
 
   fun build(): MsgDialog {
     return this

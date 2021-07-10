@@ -20,7 +20,6 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.isVisible
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Autowired
@@ -53,13 +52,13 @@ import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.getFileInfo
 import com.lyy.keepassa.util.putArgument
 import com.lyy.keepassa.util.takePermission
-import com.lyy.keepassa.view.dir.ChooseGroupActivity
 import com.lyy.keepassa.view.MarkDownEditorActivity
 import com.lyy.keepassa.view.dialog.AddMoreDialog
 import com.lyy.keepassa.view.dialog.CreateTotpDialog
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.dialog.TimerDialog
+import com.lyy.keepassa.view.dir.ChooseGroupActivity
 import com.lyy.keepassa.view.icon.IconBottomSheetDialog
 import com.lyy.keepassa.view.icon.IconItemCallback
 import com.lyy.keepassa.view.launcher.LauncherActivity

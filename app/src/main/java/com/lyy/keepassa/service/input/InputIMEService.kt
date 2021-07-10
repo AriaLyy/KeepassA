@@ -264,6 +264,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       curEntry = entries[0]
       return
     }
+    candidatesData.clear()
     candidatesList.visibility = View.VISIBLE
     entries.forEachIndexed { index, pwEntry ->
       val item = SimpleItemEntity()

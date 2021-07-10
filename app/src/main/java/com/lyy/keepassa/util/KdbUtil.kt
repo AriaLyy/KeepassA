@@ -257,6 +257,7 @@ object KdbUtil {
                 .equals("androidapp://$pkgName", ignoreCase = true)
         ) {
           listStorage.add(pe4)
+          break
         }
       }
     }
