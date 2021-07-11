@@ -177,12 +177,12 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
 
     // 处理快捷方式进入的情况
     if (isShortcuts) {
-      if (BaseApp.isLocked) {
-        Timber.w("数据库已锁定，进入解锁界面")
-        KeepassAUtil.instance.reOpenDb(this)
-        finish()
-        return
-      }
+//      if (BaseApp.isLocked) {
+//        Timber.w("数据库已锁定，进入解锁界面")
+//        KeepassAUtil.instance.reOpenDb(this)
+//        finish()
+//        return
+//      }
       type = TYPE_NEW_ENTRY
     }
 

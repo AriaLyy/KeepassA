@@ -26,7 +26,6 @@
     <activity
         android:name=".view.launcher.LauncherActivity"
         android:configChanges="layoutDirection|locale"
-        android:launchMode="singleTask"
         android:screenOrientation="portrait"
         android:windowSoftInputMode="adjustResize"> <!-- taskAffinity 指定activity栈，可以使用finishAffinity关闭该栈中的activity -->
       <!--        android:windowSoftInputMode="stateVisible|adjustResize"-->
@@ -99,8 +98,8 @@
     </activity>
 
     <activity
-        android:launchMode="singleInstance"
         android:name=".service.input.EntryOtherInfoDialog"
+        android:launchMode="singleInstance"
         android:screenOrientation="portrait"
         android:theme="@style/DialogActivityStyle" />
 
@@ -186,6 +185,22 @@
             android:host="msal_package_name"
             android:path="/msal_signature_hash"
             android:scheme="msauth" />
+      </intent-filter>
+    </activity>
+
+    <activity
+        android:name=".router.RouterActivity"
+        android:noHistory="true"
+        >
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data
+            android:scheme="kpa-router"
+            android:host="com.lyy.keepassa" />
       </intent-filter>
     </activity>
 

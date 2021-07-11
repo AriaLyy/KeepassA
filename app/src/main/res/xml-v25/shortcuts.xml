@@ -8,12 +8,13 @@
       android:shortcutShortLabel="@string/create_entry">
     <intent
         android:action="android.intent.action.VIEW"
-        android:targetClass="com.lyy.keepassa.view.create.CreateEntryActivity"
+        android:targetClass="com.lyy.keepassa.router.RouterActivity"
         android:targetPackage="com.lyy.keepassa" >
 
       <extra
-          android:name="isShortcuts"
-          android:value="true" />
+          android:name="shortcutData"
+          android:value="kpa-router%3A%2F%2Fcom.lyy.keepassa%2Fshortcut%3Fac%3DcreateEntry"
+          />
 
     </intent>
     <!-- If your shortcut is associated with multiple intents, include them
@@ -32,16 +33,13 @@
       android:shortcutShortLabel="@string/search">
     <intent
         android:action="android.intent.action.VIEW"
-        android:targetClass="com.lyy.keepassa.view.main.MainActivity"
+        android:targetClass="com.lyy.keepassa.router.RouterActivity"
         android:targetPackage="com.lyy.keepassa">
 
       <extra
-          android:name="isShortcuts"
-          android:value="true" />
-
-      <extra
-          android:name="shortcutsType"
-          android:value="1" />
+          android:name="shortcutData"
+          android:value="kpa-router%3A%2F%2Fcom.lyy.keepassa%2Fshortcut%3Fac%3Dsearch%26shortcutsType%3D1"
+          />
 
     </intent>
     <!-- If your shortcut is associated with multiple intents, include them

@@ -26,6 +26,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.alibaba.android.arouter.facade.annotation.Autowired
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.core.AbsFrame
 import com.google.android.material.tabs.TabLayoutMediator
 import com.lyy.keepassa.R
@@ -46,6 +49,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import timber.log.Timber
 
+@Route(path = "/main/ac")
 class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
   private var reenterListener: ReenterListener? = null
@@ -56,6 +60,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   companion object {
     private const val MIN_SCALE = 0.85f
     private const val MIN_ALPHA = 0.5f
+
+    const val KEY_IS_SHORTCUTS = "KEY_IS_SHORTCUTS"
 
     // 快捷方式类型
     const val SHORTCUTS_TYPE = "shortcutsType"
@@ -72,28 +78,29 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     }
   }
 
+  @Autowired(name = KEY_IS_SHORTCUTS)
+  @JvmField
+  var isShortcuts = false
+
+  @Autowired(name = SHORTCUTS_TYPE)
+  @JvmField
+  var shortcutType = 1
+
   override fun setLayoutId(): Int {
     return R.layout.activity_main
   }
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
+    ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
     module = ViewModelProvider(this)[MainModule::class.java]
 
-    val isShortcuts = intent.getBooleanExtra("isShortcuts", false)
-    Timber.i("isShortcuts = $isShortcuts")
-
     // 处理快捷方式进入的情况
     if (isShortcuts) {
-      val openType = intent.getIntExtra(SHORTCUTS_TYPE, -1)
       // 启动搜索页
-      if (openType == OPEN_SEARCH) {
+      if (shortcutType == OPEN_SEARCH) {
         showSearchDialog()
-      }
-      if (BaseApp.isLocked) {
-        KeepassAUtil.instance.reOpenDb(this)
-        return
       }
     }
     module.setEcoIcon(this, binding.dbName)

@@ -31,6 +31,7 @@ import androidx.biometric.BiometricPrompt.CryptoObject
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.arialyy.frame.util.KeyStoreUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
@@ -51,6 +52,7 @@ import java.io.IOException
 /**
  * 快速解锁对话框
  */
+@Route(path = "/launcher/quickLock")
 class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
   private var isAutoFill = false
   private var apkPkgName = ""
@@ -66,11 +68,11 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
     isAutoFill = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL, false)
     if (isAutoFill) {
       apkPkgName = intent.getStringExtra(KEY_PKG_NAME) ?: ""
-    }
-    if (apkPkgName.isBlank()){
-      BaseApp.KDB = null
-      finish()
-      return
+      if (apkPkgName.isBlank()){
+        BaseApp.KDB = null
+        finish()
+        return
+      }
     }
   }
 
@@ -185,29 +187,6 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
           assets.open("lockedAnim.json", AssetManager.ACCESS_STREAMING),
           "LottieCacheLock"
       )
-//      binding.anim.addAnimatorUpdateListener {
-//        KLog.d(TAG, "anim is running")
-//        if (binding.anim.frame == 102) {
-//          binding.anim.cancelAnimation()
-//          binding.anim.frame = 102
-//        }
-//      }
-//      binding.anim.addAnimatorListener(object : AnimatorListener {
-//        override fun onAnimationRepeat(animation: Animator?) {
-//        }
-//
-//        override fun onAnimationEnd(animation: Animator?) {
-//        }
-//
-//        override fun onAnimationCancel(animation: Animator?) {
-//          binding.title.visibility = View.VISIBLE
-//          ObjectAnimator.ofFloat(binding.title, "alpha", 0f, 1f).setDuration(1000).start()
-//        }
-//
-//        override fun onAnimationStart(animation: Animator?) {
-//        }
-//
-//      })
     } catch (e: IOException) {
       e.printStackTrace()
     }
@@ -310,7 +289,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
 
   override fun onBackPressed() {
 //    super.onBackPressed()
-    moveTaskToBack(false)
+    moveTaskToBack(true)
   }
 
   override fun setLayoutId(): Int {

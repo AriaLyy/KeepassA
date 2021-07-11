@@ -200,10 +200,10 @@ class KeepassAUtil private constructor() {
       if (isOpenQuickLock) {
         NotificationUtil.startQuickUnlockNotify(BaseApp.APP)
         val cActivity = AbsFrame.getInstance().currentActivity
-        if (cActivity != null && cActivity is QuickUnlockActivity) {
-          Timber.w("快速解锁已启动，不再启动快速解锁")
-          return
-        }
+//        if (cActivity != null && cActivity is QuickUnlockActivity) {
+//          Timber.w("快速解锁已启动，不再启动快速解锁")
+//          return
+//        }
 
         Timber.d("启动快速解锁")
         BaseApp.APP.startActivity(Intent(Intent.ACTION_MAIN).also {
@@ -257,9 +257,10 @@ class KeepassAUtil private constructor() {
   fun isHomeActivity(ac: Activity): Boolean {
     val clazz = ac.javaClass
     return (clazz == LauncherActivity::class.java
-      || clazz == CreateDbActivity::class.java
-      || clazz == OpenDbHistoryActivity::class.java
-      )
+        || clazz == CreateDbActivity::class.java
+        || clazz == OpenDbHistoryActivity::class.java
+        || clazz == QuickUnlockActivity::class.java
+        )
   }
 
   /**
@@ -300,12 +301,12 @@ class KeepassAUtil private constructor() {
     }
 
     return (
-      clazz != LauncherActivity::class.java
-        && clazz != QuickUnlockActivity::class.java
-        && clazz != CreateDbActivity::class.java
-        && clazz != AutoFillEntrySearchActivity::class.java
-        && clazz != OpenDbHistoryActivity::class.java
-      )
+        clazz != LauncherActivity::class.java
+            && clazz != QuickUnlockActivity::class.java
+            && clazz != CreateDbActivity::class.java
+            && clazz != AutoFillEntrySearchActivity::class.java
+            && clazz != OpenDbHistoryActivity::class.java
+        )
   }
 
   /**
@@ -390,7 +391,7 @@ class KeepassAUtil private constructor() {
     item.title = pwGroup.name
     item.subTitle = BaseApp.APP.resources.getString(
       R.string.hint_group_desc, KdbUtil.getGroupEntryNum(pwGroup)
-      .toString()
+        .toString()
     )
     item.obj = pwGroup
     return item
@@ -586,6 +587,7 @@ class KeepassAUtil private constructor() {
           )
       }
     }
+    Timber.d("shortPass = $shortPass")
     BaseApp.shortPass = QuickUnLockUtil.encryptStr(shortPass)
   }
 
@@ -612,7 +614,7 @@ class KeepassAUtil private constructor() {
 
       // 增加TOP密码字段
       if (!addOTPPass && (str.key.startsWith("TOTP", ignoreCase = true)
-          || str.key.startsWith("OTP", ignoreCase = true))
+            || str.key.startsWith("OTP", ignoreCase = true))
       ) {
         addOTPPass = true
         val totpPass = OtpUtil.getOtpPass(entryV4)
@@ -905,7 +907,7 @@ fun Uri.getFileInfo(
 
 fun PwEntry.isRef(): Boolean {
   return (!username.isNullOrEmpty() && username.startsWith("{REF:", ignoreCase = true))
-    || (!password.isNullOrEmpty() && password.startsWith("{REF:", ignoreCase = true))
+      || (!password.isNullOrEmpty() && password.startsWith("{REF:", ignoreCase = true))
 }
 
 /**

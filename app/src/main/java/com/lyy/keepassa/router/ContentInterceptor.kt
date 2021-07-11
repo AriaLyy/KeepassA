@@ -8,6 +8,7 @@
 package com.lyy.keepassa.router
 
 import android.content.Context
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import com.alibaba.android.arouter.facade.Postcard
 import com.alibaba.android.arouter.facade.annotation.Interceptor
 import com.alibaba.android.arouter.facade.callback.InterceptorCallback
@@ -15,6 +16,7 @@ import com.alibaba.android.arouter.facade.template.IInterceptor
 import com.alibaba.android.arouter.launcher.ARouter
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.util.KdbUtil.isNull
+import com.lyy.keepassa.view.main.QuickUnlockActivity
 import timber.log.Timber
 
 /**
@@ -24,6 +26,14 @@ import timber.log.Timber
  **/
 @Interceptor(priority = 8, name = "ContentInterceptor")
 class ContentInterceptor : IInterceptor {
+
+  companion object{
+    val ROUTE_WHITE_LIST = arrayListOf<String>().apply {
+      add("/launcher/activity")
+      add("/launcher/quickLock")
+    }
+  }
+
   override fun init(context: Context) {
     // 拦截器的初始化，会在sdk初始化的时候调用该方法，仅会调用一次
   }
@@ -33,7 +43,7 @@ class ContentInterceptor : IInterceptor {
     callback: InterceptorCallback
   ) {
     Timber.d("route path => ${postcard.path}")
-    if (postcard.path == "/launcher/activity"){
+    if (postcard.path in ROUTE_WHITE_LIST){
       callback.onContinue(postcard)
       return
     }
@@ -46,6 +56,10 @@ class ContentInterceptor : IInterceptor {
     }
     if (BaseApp.isLocked && BaseApp.dbRecord != null) {
       callback.onInterrupt(Exception("database is locked"))
+      ARouter.getInstance()
+        .build("/launcher/quickLock")
+        .withFlags(FLAG_ACTIVITY_NEW_TASK)
+        .navigation()
       return
     }
 
