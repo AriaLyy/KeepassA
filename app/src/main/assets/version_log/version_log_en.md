@@ -1,3 +1,12 @@
+#### 2.1.3（2021/7/13）
+- 【New】KDBV4 support
+- 【New】Added reminder for expired entries
+- 【Fix】Group can be moved to itself
+- 【Fix】Other fields of the security keyboard cannot be filled
+- 【Fix】History is not sorted by time
+- 【Fix】Unable to start the quick unlock interface
+- 【Optimize】Safe keyboard multi-entry de-duplication
+
 #### 2.1.2 (2021/5/29)
 - 【New】Allow password to be empty
 - 【New】OneDrive added prompt description
