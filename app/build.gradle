@@ -32,7 +32,7 @@ android {
     ndk.abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
 
     // 只保留以下语言包
-    resConfigs "zh-rCN", "zh-rTW", "en", "fr-rCA", "nb-rNO", "ru-rRU", "fr"
+    resConfigs "zh-rCN", "zh-rTW", "en", "fr-rCA", "nb-rNO", "ru-rRU", "fr", "de-rDE"
   }
 
   signingConfigs {
@@ -246,7 +246,7 @@ dependencies {
   implementation 'com.google.crypto.tink:tink-android:1.5.0'
 
   // android 自动填充工具
-  implementation "androidx.autofill:autofill:1.0.0"
+  implementation "androidx.autofill:autofill:1.1.0"
 
   // 下拉刷新控件
   implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
@@ -301,13 +301,13 @@ dependencies {
   implementation 'com.leon.channel:helper:2.0.3'
 
   // XP/调试/多开/模拟器/root 判断
-  implementation 'com.lahm.library:easy-protector-release:latest.release'
+  implementation 'com.lahm.library:easy-protector-release:1.1.2'
   // auto-size
   implementation 'me.jessyan:autosize:1.2.1'
 
   // bugly
-  implementation 'com.tencent.bugly:crashreport:latest.release'
-  implementation 'com.tencent.bugly:nativecrashreport:latest.release'
+  implementation 'com.tencent.bugly:crashreport:3.4.4'
+  implementation 'com.tencent.bugly:nativecrashreport:3.9.2'
   implementation "com.google.code.gson:gson:${rootProject.ext.gsonVersion}"
 
 //  implementation "androidx.asynclayoutinflater:asynclayoutinflater:${rootProject.ext.asynclayoutinflaterVersion}"

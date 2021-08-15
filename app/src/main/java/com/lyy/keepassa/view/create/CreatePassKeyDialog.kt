@@ -24,7 +24,7 @@ import com.lyy.keepassa.databinding.DialogPassKeyBinding
 import com.lyy.keepassa.event.KeyPathEvent
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.PasswordBuilUtil
+import com.lyy.keepassa.util.PasswordBuildUtil
 import com.lyy.keepassa.util.takePermission
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
@@ -72,7 +72,7 @@ class CreatePassKeyDialog : BaseBottomSheetDialogFragment<DialogPassKeyBinding>(
   private fun writeData(uri: Uri?) {
     val fos = requireContext().contentResolver.openOutputStream(uri!!) as FileOutputStream
     try {
-      val str = PasswordBuilUtil.getInstance()
+      val str = PasswordBuildUtil.getInstance()
           .addLowerChar()
           .addNumChar()
           .addMinus()

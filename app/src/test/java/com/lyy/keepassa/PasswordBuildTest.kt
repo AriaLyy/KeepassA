@@ -9,8 +9,7 @@
 
 package com.lyy.keepassa
 
-import com.lyy.keepassa.util.PasswordBuilUtil
-import com.lyy.keepassa.util.QuickUnLockUtil
+import com.lyy.keepassa.util.PasswordBuildUtil
 import org.junit.Test
 
 class PasswordBuildTest {
@@ -24,7 +23,7 @@ class PasswordBuildTest {
   @Test
   fun buildPassWord() {
     val sTime = System.currentTimeMillis()
-    val pass = PasswordBuilUtil.getInstance()
+    val pass = PasswordBuildUtil.getInstance()
     val len = 16
     pass
         .addNumChar()
