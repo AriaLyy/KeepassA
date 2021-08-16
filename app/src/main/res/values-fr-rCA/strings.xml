@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="db">Base de données</string>
+   <string name="db">Base de données</string>
   <string name="db1"><![CDATA[database\t|\t<font color="#757575">%s</font>]]></string>
   <string name="password">Mot de passe</string>
   <string name="key">Clé secrète</string>
@@ -286,10 +287,36 @@ Si vous créez une nouvelle base de données Keepass, les opérations suivantes 
   <string name="shrink">réduire</string>
   <string name="ui_setting">Paramètres de l\'interface</string>
   <string name="set_key_title_opr_env_check">Vérification de l\'environnement opérationnel</string>
-  <string name="set_key_title_opr_env_check_turn_off">Vérification de l\'environnement désactivé</string>
-  <string name="set_key_title_opr_env_check_turn_on">Vérification de l\'environnement activé</string>
+  <string name="set_key_title_opr_env_check_turn_off">Désactivée</string>
+  <string name="set_key_title_opr_env_check_turn_on">Activée</string>
   <string name="cur_app_not_autofill">Pas de remplissage automatique</string>
   <string name="other">Autre</string>
+   <string name="ref_entry">Entrée de référence</string>
   <string name="multi_choice">Choix multiple</string>
+  <string name="set_summary_screen_lock_off">Ne verrouille pas la base de données</string>
+  <string name="set_summary_screen_lock_on">Verrouille automatiquement la BD</string>
+  <string name="set_title_screen_lock">Verrouillage d\'écran</string>
   <string name="close">Fermer</string>
+  <string name="Alipay">Alipay</string>
+  <string name="error_webdav_end_suffix">Utilisez le chemin de dossier. E.g: \"https://example.org/dav/kpa/\"</string>
+  <string name="error_webdav_end_dav_suffix">Chemin /dav/ non permis. Utilisez un chemin valide comme : \"https://example.org/dav/kpa/\"</string>
+  <string name="set_key_title_fillet_bg_icon">Icônes aux coins arrondis</string>
+  <string name="set_key_title_fillet_bg_icon_turn_on">Activé</string>
+  <string name="set_key_title_fillet_bg_icon_turn_off">Désactivé</string>
+  <string name="set_key_title_show_state_bar">Barre de statut</string>
+  <string name="set_key_title_show_state_bar_turn_on">Affichée</string>
+  <string name="set_key_title_show_state_bar_turn_off">Cachée</string>
+  <string name="set_key_title_close_load_anim">Animation de chargement</string>
+  <string name="set_key_title_close_load_anim_turn_on">Activée</string>
+  <string name="set_key_title_close_load_anim_turn_off">Désactivée</string>
+  <string name="s_default">Défaut</string>
+  <string name="customize">Personnaliser</string>
+  <string name="set_key_title_auto_lock_database">Verrouiller automatiquement la BD</string>
+  <string name="set_key_title_auto_lock_database_turn_on">Oui</string>
+  <string name="set_key_title_auto_lock_database_turn_off">Non</string>
+  <string name="translate_language">Traduire l\'app dans votre langue</string>
+  <string name="get_token_fail">Impossible d\'obtenir le jeton</string>
+  <string name="one_drive_init_failure">Échec de l\'initialisation de OneDrive</string>
+  <string name="one_drive_hint"><![CDATA[Dans le but de protéger votre vie privée, KeepassA va accéder seulement au répertoire<font color="#FF0000">【application/KeepassA】</font>. Si vous voulez lire la base de données Keepass de OneDrive, <font color="#FF0000">veuillez sauvegarder la BD dans ce répertoire.</font>]]></string>
+
 </resources>
