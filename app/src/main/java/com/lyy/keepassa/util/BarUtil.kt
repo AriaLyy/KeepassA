@@ -13,15 +13,13 @@ import android.content.Context.WINDOW_SERVICE
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.os.Build
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.view.Gravity
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.Window
 import android.view.WindowManager
-import android.view.WindowManager.LayoutParams
 import com.arialyy.frame.util.ResUtil
+import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.R
 import timber.log.Timber
 import java.lang.reflect.Field
@@ -44,6 +42,7 @@ object BarUtil {
     val window = activity.window
     var vis: Int = window.decorView.systemUiVisibility
     if (show) {
+//      setStatusBarLightMode(activity)
       window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
       window.statusBarColor = ResUtil.getColor(R.color.background_color)
       window.navigationBarColor = ResUtil.getColor(R.color.background_color)
@@ -52,6 +51,19 @@ object BarUtil {
             or View.SYSTEM_UI_FLAG_VISIBLE
             or setMode()
             )
+
+//      ImmersionBar.with(activity)
+//        .statusBarColor(R.color.background_color)
+//        .autoStatusBarDarkModeEnable(true, 0.2f) //自动状态栏字体变色，必须指定状态栏颜色才可以自动变色哦
+//        .flymeOSStatusBarFontColor(R.color.text_black_color)
+//        .fitsSystemWindows(true)
+////          .hideBar(FLAG_HIDE_STATUS_BAR)
+//        .autoNavigationBarDarkModeEnable(true, 0.2f) // 自动导航栏图标变色，必须指定导航栏颜色才可以自动变色哦
+//        .navigationBarColor(R.color.background_color)
+//        .statusBarDarkFont(
+//          true, 0.2f
+//        )  //原理：如果当前设备支持状态栏字体变色，会设置状态栏字体为黑色，如果当前设备不支持状态栏字体变色，会使当前状态栏加上透明度，否则不执行透明度
+//        .init()
       return
     }
     window.navigationBarColor = ResUtil.getColor(R.color.background_color)
@@ -106,16 +118,16 @@ object BarUtil {
     callback: (Boolean) -> Unit
   ) {
     val wm = context.getSystemService(WINDOW_SERVICE) as WindowManager?
-    val p = LayoutParams()
-    p.type = LayoutParams.TYPE_SYSTEM_OVERLAY
+    val p = WindowManager.LayoutParams()
+    p.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY
     //放在左上角
     p.gravity = Gravity.START or Gravity.TOP
     // 不可触摸，不可获得焦点
-    p.flags = (LayoutParams.FLAG_NOT_TOUCH_MODAL
-        or LayoutParams.FLAG_NOT_TOUCHABLE)
+    p.flags = (WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+        or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
 
     p.width = 1
-    p.height = LayoutParams.MATCH_PARENT
+    p.height = WindowManager.LayoutParams.MATCH_PARENT
     p.format = PixelFormat.TRANSPARENT
     val helperWnd = View(context) //View helperWnd;
 
@@ -148,7 +160,7 @@ object BarUtil {
       FLYMESetStatusBarLightMode(activity.window, true) -> {
         result = FLYME
       }
-      VERSION.SDK_INT >= VERSION_CODES.M -> {
+      Build.VERSION.SDK_INT >=  Build.VERSION_CODES.M -> {
         activity.window.decorView.systemUiVisibility =
           View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         result = ANDROID_M
@@ -216,10 +228,10 @@ object BarUtil {
     var result = false
     if (window != null) {
       try {
-        val lp: LayoutParams = window.attributes
-        val darkFlag: Field = LayoutParams::class.java
+        val lp: WindowManager.LayoutParams = window.attributes
+        val darkFlag: Field = WindowManager.LayoutParams::class.java
             .getDeclaredField("MEIZU_FLAG_DARK_STATUS_BAR_ICON")
-        val meizuFlags: Field = LayoutParams::class.java
+        val meizuFlags: Field = WindowManager.LayoutParams::class.java
             .getDeclaredField("meizuFlags")
         darkFlag.isAccessible = true
         meizuFlags.isAccessible = true
@@ -269,7 +281,7 @@ object BarUtil {
           extraFlagField.invoke(window, 0, darkModeFlag) //清除黑色字体
         }
         result = true
-        if (VERSION.SDK_INT >= VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
           //开发版 7.7.13 及以后版本采用了系统API，旧方法无效但不会报错，所以两个方式都要加上
           if (dark) {
             activity.window.decorView.systemUiVisibility =

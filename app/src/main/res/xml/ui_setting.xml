@@ -19,6 +19,7 @@
       app:key="@string/set_key_need_root_check" />
 
   <SwitchPreference
+      app:isPreferenceVisible="false"
       android:defaultValue="true"
       android:summaryOff="@string/set_key_title_show_state_bar_turn_off"
       android:summaryOn="@string/set_key_title_show_state_bar_turn_on"

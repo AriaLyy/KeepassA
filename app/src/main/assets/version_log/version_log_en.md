@@ -1,3 +1,9 @@
+#### 2.1.4 (2021/9/2)
+- 【New】German translation
+- 【Optimize】Update some multilingual translations
+- 【Fix】The password generation tool has a high probability of selecting data without numbers.
+- 【Fix】The problem of failure to open some KDBV4 DB
+
 #### 2.1.3（2021/7/13）
 - 【New】KDBV4 support
 - 【New】Added reminder for expired entries
