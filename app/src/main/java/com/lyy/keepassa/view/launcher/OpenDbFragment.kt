@@ -147,8 +147,6 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
       binding.changeDb.visibility = View.GONE
     }
 
-    binding.password.setText("Chen123456@")
-
     binding.password.setOnEditorActionListener { _, actionId, _ ->
       // actionId 和android:imeOptions 属性要保持一致
       if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(binding.password.text)) {
