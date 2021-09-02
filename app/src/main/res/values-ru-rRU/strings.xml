@@ -165,4 +165,8 @@
     <string name="numer">Цифры</string>
     <string name="len">Длина</string>
     <string name="hint">Подсказка</string>
+    <string name="need_key">Нужен ключ\?</string>
+    <string name="no_record">Нет записей</string>
+    <string name="set_key_praise_value">Оценить KeePassA</string>
+    <string name="encrypt_type_2">Пароль + ключ</string>
 </resources>
