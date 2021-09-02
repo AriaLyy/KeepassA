@@ -20,7 +20,7 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.databinding.ActivityGeneratePassBinding
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.PasswordBuilUtil
+import com.lyy.keepassa.util.PasswordBuildUtil
 import com.lyy.keepassa.widget.discreteSeekBar.DiscreteSeekBar
 import com.lyy.keepassa.widget.discreteSeekBar.DiscreteSeekBar.OnProgressChangeListener
 
@@ -29,7 +29,7 @@ import com.lyy.keepassa.widget.discreteSeekBar.DiscreteSeekBar.OnProgressChangeL
  */
 class GeneratePassActivity : BaseActivity<ActivityGeneratePassBinding>(), OnCheckedChangeListener {
 
-  private lateinit var generater: PasswordBuilUtil
+  private lateinit var generater: PasswordBuildUtil
   private var passLen = 6
   private var isUserInputPass = false
 
@@ -66,7 +66,7 @@ class GeneratePassActivity : BaseActivity<ActivityGeneratePassBinding>(), OnChec
       }
 
     })
-    generater = PasswordBuilUtil.getInstance()
+    generater = PasswordBuildUtil.getInstance()
     binding.upper.setOnCheckedChangeListener(this)
     binding.lower.setOnCheckedChangeListener(this)
     binding.numer.setOnCheckedChangeListener(this)
@@ -147,7 +147,7 @@ class GeneratePassActivity : BaseActivity<ActivityGeneratePassBinding>(), OnChec
       generater.addSymbolChar()
     }
     if (binding.bracket.isChecked) {
-      generater.addbracketChar()
+      generater.addBracketChar()
     }
 
     val pass = generater.builder(len)
