@@ -29,6 +29,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.KeyStoreUtil
 import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.Database
@@ -44,6 +45,7 @@ import com.lyy.keepassa.common.PassType
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
@@ -56,7 +58,6 @@ import com.lyy.keepassa.view.StorageType.AFS
 import com.lyy.keepassa.view.StorageType.DROPBOX
 import com.lyy.keepassa.view.StorageType.ONE_DRIVE
 import com.lyy.keepassa.view.StorageType.WEBDAV
-import com.lyy.keepassa.view.dialog.MsgDialog
 import com.tencent.bugly.crashreport.BuglyLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -110,69 +111,69 @@ class LauncherModule : BaseModule() {
       return
     }
     if (record == null) {
-      Timber.e( "解锁记录为空")
+      Timber.e("解锁记录为空")
       return
     }
     val resource = fragment.requireContext().resources
     val promptInfo =
       BiometricPrompt.PromptInfo.Builder()
-          .setTitle(resource.getString(R.string.fingerprint_unlock))
-          .setSubtitle(resource.getString(R.string.verify_finger))
-          .setNegativeButtonText(resource.getString(R.string.cancel))
-          //        .setConfirmationRequired(false)
-          .build()
+        .setTitle(resource.getString(R.string.fingerprint_unlock))
+        .setSubtitle(resource.getString(R.string.verify_finger))
+        .setNegativeButtonText(resource.getString(R.string.cancel))
+        //        .setConfirmationRequired(false)
+        .build()
 
     val biometricPrompt = BiometricPrompt(fragment,
-        ArchTaskExecutor.getMainThreadExecutor(),
-        object : AuthenticationCallback() {
-          override fun onAuthenticationError(
-            errorCode: Int,
-            errString: CharSequence
-          ) {
-            if (!fragment.isAdded) {
-              Timber.e( "Fragment没有被加载")
-              return
-            }
-            val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
-              "${resource.getString(R.string.verify_finger)}${resource.getString(R.string.cancel)}"
-            } else {
+      ArchTaskExecutor.getMainThreadExecutor(),
+      object : AuthenticationCallback() {
+        override fun onAuthenticationError(
+          errorCode: Int,
+          errString: CharSequence
+        ) {
+          if (!fragment.isAdded) {
+            Timber.e("Fragment没有被加载")
+            return
+          }
+          val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
+            "${resource.getString(R.string.verify_finger)}${resource.getString(R.string.cancel)}"
+          } else {
+            resource.getString(R.string.verify_finger_fail)
+          }
+          HitUtil.snackShort(fragment.getRootView(), str)
+          unlockEvent.postValue(Pair(false, null))
+        }
+
+        override fun onAuthenticationSucceeded(result: AuthenticationResult) {
+          super.onAuthenticationSucceeded(result)
+          try {
+            val auth: CryptoObject? = result.cryptoObject
+            val cipher = auth!!.cipher!!
+            val pass = QuickUnLockUtil.decryption(
+              keyStoreUtil?.decryptData(cipher, record.dbPass)
+            )
+            unlockEvent.postValue(Pair(true, pass))
+          } catch (e: Exception) {
+            e.printStackTrace()
+            deleteBiomKey(fragment, openDbRecord)
+          }
+        }
+
+        override fun onAuthenticationFailed() {
+          super.onAuthenticationFailed()
+          if (fragment.isAdded) {
+            HitUtil.snackShort(
+              fragment.getRootView(),
               resource.getString(R.string.verify_finger_fail)
-            }
-            HitUtil.snackShort(fragment.getRootView(), str)
-            unlockEvent.postValue(Pair(false, null))
+            )
           }
-
-          override fun onAuthenticationSucceeded(result: AuthenticationResult) {
-            super.onAuthenticationSucceeded(result)
-            try {
-              val auth: CryptoObject? = result.cryptoObject
-              val cipher = auth!!.cipher!!
-              val pass = QuickUnLockUtil.decryption(
-                  keyStoreUtil?.decryptData(cipher, record.dbPass)
-              )
-              unlockEvent.postValue(Pair(true, pass))
-            } catch (e: Exception) {
-              e.printStackTrace()
-              deleteBiomKey(fragment, openDbRecord)
-            }
-          }
-
-          override fun onAuthenticationFailed() {
-            super.onAuthenticationFailed()
-            if (fragment.isAdded) {
-              HitUtil.snackShort(
-                  fragment.getRootView(),
-                  resource.getString(R.string.verify_finger_fail)
-              )
-            }
-            unlockEvent.postValue(Pair(false, null))
-          }
-        })
+          unlockEvent.postValue(Pair(false, null))
+        }
+      })
     try {
       // Displays the "log in" prompt.
       keyStoreUtil?.let {
         biometricPrompt.authenticate(
-            promptInfo, CryptoObject(it.getDecryptCipher(record.passIv!!))
+          promptInfo, CryptoObject(it.getDecryptCipher(record.passIv!!))
         )
       }
     } catch (e: Exception) {
@@ -194,54 +195,54 @@ class LauncherModule : BaseModule() {
       return
     }
     if (record == null) {
-      Timber.e( "解锁记录为空")
+      Timber.e("解锁记录为空")
       return
     }
     val resource = fragment.requireContext().resources
     val promptInfo =
       BiometricPrompt.PromptInfo.Builder()
-          .setTitle(resource.getString(R.string.fingerprint_unlock))
-          .setSubtitle(resource.getString(R.string.verify_finger))
-          .setNegativeButtonText(resource.getString(R.string.cancel))
-          //        .setConfirmationRequired(false)
-          .build()
+        .setTitle(resource.getString(R.string.fingerprint_unlock))
+        .setSubtitle(resource.getString(R.string.verify_finger))
+        .setNegativeButtonText(resource.getString(R.string.cancel))
+        //        .setConfirmationRequired(false)
+        .build()
 
     val biometricPrompt = BiometricPrompt(fragment,
-        ArchTaskExecutor.getMainThreadExecutor(),
-        object : AuthenticationCallback() {
-          override fun onAuthenticationError(
-            errorCode: Int,
-            errString: CharSequence
-          ) {
-            if (!fragment.isAdded) {
-              Timber.e( "Fragment没有被加载")
-              return
-            }
-            val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
-              "${resource.getString(R.string.verify_finger)}${resource.getString(R.string.cancel)}"
-            } else {
+      ArchTaskExecutor.getMainThreadExecutor(),
+      object : AuthenticationCallback() {
+        override fun onAuthenticationError(
+          errorCode: Int,
+          errString: CharSequence
+        ) {
+          if (!fragment.isAdded) {
+            Timber.e("Fragment没有被加载")
+            return
+          }
+          val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
+            "${resource.getString(R.string.verify_finger)}${resource.getString(R.string.cancel)}"
+          } else {
+            resource.getString(R.string.verify_finger_fail)
+          }
+          HitUtil.snackShort(fragment.getRootView(), str)
+          unlockEvent.postValue(Pair(false, null))
+        }
+
+        override fun onAuthenticationSucceeded(result: AuthenticationResult) {
+          super.onAuthenticationSucceeded(result)
+          unlockEvent.postValue(Pair(true, null))
+        }
+
+        override fun onAuthenticationFailed() {
+          super.onAuthenticationFailed()
+          if (fragment.isAdded) {
+            HitUtil.snackShort(
+              fragment.getRootView(),
               resource.getString(R.string.verify_finger_fail)
-            }
-            HitUtil.snackShort(fragment.getRootView(), str)
-            unlockEvent.postValue(Pair(false, null))
+            )
           }
-
-          override fun onAuthenticationSucceeded(result: AuthenticationResult) {
-            super.onAuthenticationSucceeded(result)
-            unlockEvent.postValue(Pair(true, null))
-          }
-
-          override fun onAuthenticationFailed() {
-            super.onAuthenticationFailed()
-            if (fragment.isAdded) {
-              HitUtil.snackShort(
-                  fragment.getRootView(),
-                  resource.getString(R.string.verify_finger_fail)
-              )
-            }
-            unlockEvent.postValue(Pair(false, null))
-          }
-        })
+          unlockEvent.postValue(Pair(false, null))
+        }
+      })
     biometricPrompt.authenticate(promptInfo)
   }
 
@@ -279,7 +280,7 @@ class LauncherModule : BaseModule() {
    */
   fun securityCheck(context: Context) {
     val needCheckEnv = PreferenceManager.getDefaultSharedPreferences(context)
-        .getBoolean(context.resources.getString(R.string.set_key_need_root_check), true)
+      .getBoolean(context.resources.getString(R.string.set_key_need_root_check), true)
     if (!needCheckEnv) {
       return
     }
@@ -288,14 +289,14 @@ class LauncherModule : BaseModule() {
     if (EasyProtectorLib.checkIsRoot()) {
       val vector = VectorDrawableCompat.create(resources, R.drawable.ic_eco, context.theme)
       vector?.setTint(ResUtil.getColor(R.color.red))
-      val dialog = MsgDialog.generate {
-        msgTitle = resources.getString(R.string.warning)
-        msgContent = resources.getString(R.string.warning_rooted)
-        msgTitleEndIcon = vector
-        showCancelBt = false
-        build()
-      }
-      dialog.show()
+      Routerfit.create(DialogRouter::class.java)
+        .toMsgDialog(
+          msgTitle = ResUtil.getString(R.string.warning),
+          msgContent = resources.getString(R.string.warning_rooted),
+          showCoverBt = false,
+          msgTitleEndIcon = vector
+        )
+        .show()
     }
   }
 
@@ -343,10 +344,10 @@ class LauncherModule : BaseModule() {
       val dao = BaseApp.appDatabase.quickUnlockDao()
       val record = dao.findRecord(dbUri)
       PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-          .edit {
-            putBoolean(BaseApp.APP.getString(R.string.set_quick_unlock), false)
-            commit()
-          }
+        .edit {
+          putBoolean(BaseApp.APP.getString(R.string.set_quick_unlock), false)
+          commit()
+        }
       if (record != null) {
         dao.deleteRecord(record)
       }
@@ -366,14 +367,14 @@ class LauncherModule : BaseModule() {
       val unlockDao = BaseApp.appDatabase.quickUnlockDao()
       val unLockRecord = unlockDao.findRecord(dbUri)
       if (unLockRecord == null) {
-        Timber.d( "unLockRecord is null")
+        Timber.d("unLockRecord is null")
         return@withContext false
       }
-      Timber.d( "is full unlock = ${unLockRecord.isUseFingerprint}")
+      Timber.d("is full unlock = ${unLockRecord.isUseFingerprint}")
       val dbDao = BaseApp.appDatabase.dbRecordDao()
       val dbRecord = dbDao.findRecord(dbUri)
       if (dbRecord == null) {
-        Timber.d( "dbRecord is null")
+        Timber.d("dbRecord is null")
         return@withContext false
       }
 
@@ -391,7 +392,7 @@ class LauncherModule : BaseModule() {
     record: DbHistoryRecord,
     dbPass: String
   ) = liveData {
-    Timber.d( "打开数据库")
+    Timber.d("打开数据库")
 
     val db: Database? = withContext(Dispatchers.IO) {
       var temp: Database? = null
@@ -441,16 +442,16 @@ class LauncherModule : BaseModule() {
       OneDriveUtil.loginCallback = object : OneDriveUtil.OnLoginCallback {
         override fun callback(success: Boolean) {
           scope.launch {
-            if (!success){
+            if (!success) {
               channel.send(null)
               return@launch
             }
             val cacheFile = record.getDbUri()
-                .toFile()
+              .toFile()
             if (cacheFile.exists()
-                && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
+              && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
             ) {
-              Timber.i( "文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
+              Timber.i("文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
               db = openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
             }
             val cachePath = DbSynUtil.downloadOnly(context, record, Uri.fromFile(cacheFile))
@@ -487,16 +488,16 @@ class LauncherModule : BaseModule() {
       return null
     }
     WebDavUtil.login(
-        serviceInfo.cloudPath, QuickUnLockUtil.decryption(serviceInfo.userName),
-        QuickUnLockUtil.decryption(serviceInfo.password)
+      serviceInfo.cloudPath, QuickUnLockUtil.decryption(serviceInfo.userName),
+      QuickUnLockUtil.decryption(serviceInfo.password)
     )
 
     val cacheFile = record.getDbUri()
-        .toFile()
+      .toFile()
     if (cacheFile.exists()
-        && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
+      && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
     ) {
-      Timber.i( "文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
+      Timber.i("文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
       return openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
     }
     val cachePath = DbSynUtil.downloadOnly(context, record, Uri.fromFile(cacheFile))
@@ -516,11 +517,11 @@ class LauncherModule : BaseModule() {
     dbPass: String
   ): Database? {
     val cacheFile = record.getDbUri()
-        .toFile()
+      .toFile()
     if (cacheFile.exists()
-        && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
+      && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
     ) {
-      Timber.i( "文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
+      Timber.i("文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
       return openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
     }
     val cachePath = DbSynUtil.downloadOnly(context, record, Uri.fromFile(cacheFile))
@@ -544,7 +545,7 @@ class LauncherModule : BaseModule() {
   ): Database? {
     try {
       val db = KDBHandlerHelper.getInstance(context)
-          .openDb(dbUri, dbPass, keyUri)
+        .openDb(dbUri, dbPass, keyUri)
       if (db != null) {
         val dbName = UriUtil.getFileNameFromUri(context, dbUri)
         BaseApp.dbPass = QuickUnLockUtil.encryptStr(dbPass)

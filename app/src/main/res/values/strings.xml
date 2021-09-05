@@ -319,5 +319,6 @@ If you are creating a new KeePass database, the above operations are not be need
   <string name="one_drive_init_failure">OneDrive init failure</string>
   <string name="one_drive_hint"><![CDATA[In order to protect your privacy, KeepassA will only access the<font color="#FF0000">【application/KeepassA】</font>directory. If you want to read the Keepass database of OneDrive, <font color="#FF0000">please store the database in this directory.</font>]]></string>
 
-
+  <string name="open_permissions">Open permissions</string>
+  <string name="miui_permissions">The miui system needs permission to open the background pop-up interface in order to use the auto-fill function.</string>
 </resources>

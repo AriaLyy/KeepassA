@@ -20,6 +20,7 @@ import android.text.InputType
 import android.text.Spanned
 import android.util.Pair
 import android.view.View
+import android.widget.Button
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.transition.addListener
@@ -29,6 +30,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.arialyy.frame.router.Routerfit
+import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV3
 import com.keepassdroid.database.PwEntryV4
@@ -40,6 +43,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityEntryDetailBinding
 import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
 import com.lyy.keepassa.event.DelEvent
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
@@ -50,7 +54,7 @@ import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.dialog.LoadingDialog
-import com.lyy.keepassa.view.dialog.MsgDialog
+import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
 import com.lyy.keepassa.widget.expand.ExpandAttrStrLayout
@@ -231,33 +235,34 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       Html.fromHtml(getString(R.string.hint_del_entry_no_recycle, pwEntry.title))
     }
 
-    val dialog = MsgDialog.generate {
-      msgTitle = this@EntryDetailActivity.getString(R.string.del_entry)
-      msgContent = msg
-      build()
-    }
-    dialog.setOnBtClickListener(object : MsgDialog.OnBtClickListener {
-      override fun onBtClick(
-        type: Int,
-        view: View
-      ) {
-        if (type == MsgDialog.TYPE_ENTER) {
-          loadDialog = LoadingDialog(this@EntryDetailActivity)
-          loadDialog.show()
-          module.recycleEntry(pwEntry)
-            .observe(this@EntryDetailActivity, Observer { code ->
-              if (code == DbSynUtil.STATE_SUCCEED) {
-                onComplete(pwEntry)
+    Routerfit.create(DialogRouter::class.java)
+      .toMsgDialog(
+        msgTitle = ResUtil.getString(R.string.del_entry),
+        msgContent = msg,
+        btnClickListener = object : OnMsgBtClickListener {
+          override fun onCover(v: Button) {
+          }
+
+          override fun onEnter(v: Button) {
+            loadDialog = LoadingDialog(this@EntryDetailActivity)
+            loadDialog.show()
+            module.recycleEntry(pwEntry)
+              .observe(this@EntryDetailActivity, Observer { code ->
+                if (code == DbSynUtil.STATE_SUCCEED) {
+                  onComplete(pwEntry)
+                  return@Observer
+                }
+                HitUtil.toaskShort(getString(R.string.save_db_fail))
                 return@Observer
-              }
-              HitUtil.toaskShort(getString(R.string.save_db_fail))
-              return@Observer
-            })
+              })
+          }
+
+          override fun onCancel(v: Button) {
+          }
+
         }
-        dialog.dismiss()
-      }
-    })
-    dialog.show()
+      )
+      .show()
   }
 
   override fun onClick(v: View?) {
@@ -362,7 +367,14 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       val createTime = KeepassAUtil.instance.formatTime(pwEntry.creationTime)
       binding.time1.text = createTime
       binding.time1.setLeftIcon(R.drawable.ic_create_time)
-      binding.time1.setOnClickListener { HitUtil.toaskShort(getString(R.string.create_time, createTime)) }
+      binding.time1.setOnClickListener {
+        HitUtil.toaskShort(
+          getString(
+            R.string.create_time,
+            createTime
+          )
+        )
+      }
       binding.time2.text = KeepassAUtil.instance.formatTime(pwEntry.lastModificationTime)
       binding.time2.setLeftIcon(R.drawable.ic_modify_time)
       binding.time2.setOnClickListener { HitUtil.toaskShort(getString(R.string.modify_time)) }

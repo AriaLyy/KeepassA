@@ -15,18 +15,22 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.animation.AccelerateInterpolator
+import android.widget.Button
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.arialyy.frame.router.Routerfit
+import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityFingerprintBinding
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.FingerprintUtil
-import com.lyy.keepassa.view.dialog.MsgDialog
+import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 
 /**
  * 指纹签名验证，切换功能后，如果不重新验证指纹，弹出对话框提示验证
@@ -101,24 +105,23 @@ class FingerprintActivity : BaseActivity<ActivityFingerprintBinding>() {
   override fun finishAfterTransition() {
     // 当前标志不为关闭，并且当前标志和进入的标志不一致，则需要提示用户验证指纹
     if (module.curFlag != FLAG_CLOSE && module.curFlag != module.oldFlag) {
-      val dialog = MsgDialog.generate {
-        msgTitle = this@FingerprintActivity.getString(R.string.hint)
-        msgContent = this@FingerprintActivity.getString(R.string.hint_finger_print_verfiy)
-        build()
-      }
-      dialog.setOnBtClickListener(object : MsgDialog.OnBtClickListener {
-        override fun onBtClick(
-          type: Int,
-          view: View
-        ) {
-          if (type == MsgDialog.TYPE_CANCEL) {
-            super@FingerprintActivity.finishAfterTransition()
-          } else {
+      Routerfit.create(DialogRouter::class.java).toMsgDialog(
+        msgContent = ResUtil.getString(R.string.hint_finger_print_verfiy),
+        btnClickListener = object : OnMsgBtClickListener {
+          override fun onCover(v: Button) {
+          }
+
+          override fun onEnter(v: Button) {
             fingerprintDescFragment.showBiometricPrompt()
           }
+
+          override fun onCancel(v: Button) {
+            finishAfterTransition()
+          }
+
         }
-      })
-      dialog.show()
+      )
+        .show()
     } else {
       super@FingerprintActivity.finishAfterTransition()
     }

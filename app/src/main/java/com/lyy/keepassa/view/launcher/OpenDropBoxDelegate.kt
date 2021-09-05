@@ -10,17 +10,17 @@ package com.lyy.keepassa.view.launcher
 import android.content.Intent
 import android.text.Html
 import android.text.TextUtils
-import android.view.View
+import android.widget.Button
 import androidx.fragment.app.FragmentActivity
+import com.arialyy.frame.router.Routerfit
 import com.dropbox.core.android.Auth
 import com.lyy.keepassa.R
-import com.lyy.keepassa.util.HitUtil
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.cloud.DropboxUtil
 import com.lyy.keepassa.util.putArgument
 import com.lyy.keepassa.view.StorageType.DROPBOX
 import com.lyy.keepassa.view.dialog.CloudFileListDialog
-import com.lyy.keepassa.view.dialog.MsgDialog
-import com.lyy.keepassa.view.dialog.MsgDialog.OnBtClickListener
+import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 
 /**
  * @Author laoyuyu
@@ -68,27 +68,24 @@ class OpenDropBoxDelegate : IOpenDbDelegate {
       showCloudListDialog()
     } else {
       startDropboxAuth = true
-      val title = delegateRequireActivity().getString(R.string.hint)
-      val msgDialog = MsgDialog.generate {
-        msgTitle = title
-        msgContent = Html.fromHtml(delegateRequireActivity().getString(R.string.dropbox_msg))
-        showCancelBt = true
-        interceptBackKey = true
-        build()
-      }
-      msgDialog.setOnBtClickListener(object : OnBtClickListener {
-        override fun onBtClick(
-          type: Int,
-          view: View
-        ) {
-          if (type == MsgDialog.TYPE_ENTER) {
+      Routerfit.create(DialogRouter::class.java).toMsgDialog(
+        msgContent = Html.fromHtml(delegateRequireActivity().getString(R.string.dropbox_msg)),
+        showCancelBt = true,
+        interceptBackKey = true,
+        btnClickListener = object : OnMsgBtClickListener {
+          override fun onCover(v: Button) {
+          }
+
+          override fun onEnter(v: Button) {
             Auth.startOAuth2Authentication(delegateRequireActivity(), DropboxUtil.APP_KEY)
-          } else {
+          }
+
+          override fun onCancel(v: Button) {
             startDropboxAuth = false
           }
+
         }
-      })
-      msgDialog.show()
+      ).show()
     }
   }
 

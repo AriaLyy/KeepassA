@@ -2,83 +2,106 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <LinearLayout
+  <data>
+
+    <variable
+        name="dialog"
+        type="com.lyy.keepassa.view.dialog.MsgDialog" />
+
+    <import type="android.text.TextUtils" />
+
+    <import type="android.view.View" />
+
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
       style="@style/KpaDialogLayoutStyle"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
       android:elevation="4dp"
       android:minWidth="@dimen/dialog_min_width"
-      android:orientation="vertical">
+      android:layout_height="wrap_content">
+
 
     <com.lyy.keepassa.widget.BubbleTextView
-        android:id="@+id/title"
+        android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_gravity="center_horizontal"
         android:gravity="center_vertical"
-        android:text="title"
+        android:text="@{TextUtils.isEmpty(dialog.msgTitle) ? @string/hint : dialog.msgTitle}"
         android:textColor="@color/text_blue_color"
         android:textSize="@dimen/text_size_biggest"
-        app:icon_size="24dp" />
+        app:icon_size="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
+        android:id="@+id/vLine"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/line_color" />
+        android:background="@color/line_color"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/vLine">
 
       <TextView
-          android:id="@+id/msg"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_margin="16dp"
           android:maxHeight="400dp"
-          android:text="xxx"
+          android:text="@{dialog.msgContent}"
           android:textColor="@color/text_black_color"
           android:textSize="@dimen/text_size_normal" />
 
     </androidx.core.widget.NestedScrollView>
 
 
-    <LinearLayout
-        android:id="@+id/btns"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginEnd="4dp"
-        android:orientation="horizontal">
+        android:layout_marginStart="4dp"
+        android:onClick="@{(v) -> dialog.onClick(v)}"
+        android:background="@drawable/ripple_white_selector"
+        android:text="@{TextUtils.isEmpty(dialog.cancelText) ?  @string/cancel : dialog.cancelText}"
+        android:visibility="@{dialog.showCancelBt ? View.VISIBLE : View.GONE}"
+        android:textColor="@{dialog.resources.getColor(dialog.cancelBtTextColor)}" />
 
-      <Button
-          android:id="@+id/cancel"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="4dp"
-          android:background="@drawable/ripple_white_selector"
-          android:text="@string/cancel"
-          android:textColor="@color/text_gray_color" />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/enter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:visibility="@{dialog.showEnterBt ? View.VISIBLE : View.GONE}"
+        android:background="@drawable/ripple_white_selector"
+        android:onClick="@{(v) -> dialog.onClick(v)}"
+        android:text="@{TextUtils.isEmpty(dialog.enterText) ? @string/enter : dialog.enterText}"
+        android:textColor="@{dialog.resources.getColor(dialog.enterBtTextColor)}" />
 
-      <Button
-          android:id="@+id/enter"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="4dp"
-          android:background="@drawable/ripple_white_selector"
-          android:text="@string/enter"
-          android:textColor="@color/text_blue_color" />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/cover"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:visibility="@{dialog.showCoverBt ? View.VISIBLE : View.GONE}"
+        android:background="@drawable/ripple_white_selector"
+        android:onClick="@{(v) -> dialog.onClick(v)}"
+        android:text="@{TextUtils.isEmpty(dialog.coverText) ? @string/cover : dialog.coverText}"
+        android:textColor="@{dialog.resources.getColor(dialog.coverBtTextColor)}" />
 
-      <Button
-          android:id="@+id/cover"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:background="@drawable/ripple_white_selector"
-          android:text="@string/cover"
-          android:textColor="@color/text_blue_color"
-          android:visibility="gone" />
 
-    </LinearLayout>
+    <androidx.constraintlayout.helper.widget.Flow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="cover,enter,cancel"
+        app:flow_horizontalStyle="packed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scroll" />
 
-  </LinearLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

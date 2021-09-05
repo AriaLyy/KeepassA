@@ -203,7 +203,7 @@ dependencies {
   // keepassA组件
   implementation 'me.laoyuyu.keepassa:KeepassIcon:0.2.6'
   implementation 'me.laoyuyu.keepassa:KeepassLib:0.2.7'
-  implementation 'me.laoyuyu.keepassa:KPAFrame:0.2.6'
+  implementation 'me.laoyuyu.keepassa:KPAFrame:0.2.7'
   implementation 'me.laoyuyu.keepassa:UIWidget:0.2.6'
 
   // kotlin
@@ -320,9 +320,7 @@ dependencies {
 
   implementation "com.squareup.retrofit2:retrofit:${rootProject.ext.retrofitVersion}"
 
-  implementation 'com.jakewharton.timber:timber:4.7.1'
 
-  implementation 'com.alibaba:arouter-api:1.5.2'
   kapt 'com.alibaba:arouter-compiler:1.5.2'
 
   // // =========================== 三方库 end =====================================

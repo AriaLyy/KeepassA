@@ -39,6 +39,7 @@ object W3cHints {
       "org.codeaurora.swe.browser",
       "com.amazon.cloud9",
       "mark.via.gp",
+      "mark.via",
       "org.bromite.bromite",
       "org.chromium.chrome",
       "com.kiwibrowser.browser",

@@ -18,6 +18,7 @@ import android.text.InputType
 import android.text.TextUtils
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Button
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
@@ -25,6 +26,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.arialyy.frame.router.Routerfit
+import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroupId
@@ -45,6 +48,7 @@ import com.lyy.keepassa.event.DelAttrFileEvent
 import com.lyy.keepassa.event.DelAttrStrEvent
 import com.lyy.keepassa.event.EditorEvent
 import com.lyy.keepassa.event.TimeEvent
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
@@ -56,7 +60,7 @@ import com.lyy.keepassa.view.MarkDownEditorActivity
 import com.lyy.keepassa.view.dialog.AddMoreDialog
 import com.lyy.keepassa.view.dialog.CreateTotpDialog
 import com.lyy.keepassa.view.dialog.LoadingDialog
-import com.lyy.keepassa.view.dialog.MsgDialog
+import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.dialog.TimerDialog
 import com.lyy.keepassa.view.dir.ChooseGroupActivity
 import com.lyy.keepassa.view.icon.IconBottomSheetDialog
@@ -492,22 +496,25 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   }
 
   override fun onBackPressed() {
-    val msgDialog = MsgDialog.generate {
-      msgTitle = this@CreateEntryActivity.getString(R.string.warning)
-      msgContent = this@CreateEntryActivity.getString(R.string.create_entry_no_save)
-      build()
-    }
-    msgDialog.setOnBtClickListener(object : MsgDialog.OnBtClickListener {
-      override fun onBtClick(
-        type: Int,
-        view: View
-      ) {
-        if (type == MsgDialog.TYPE_ENTER) {
-          finishAfterTransition()
+    Routerfit.create(DialogRouter::class.java)
+      .toMsgDialog(
+        msgTitle = ResUtil.getString(R.string.warning),
+        msgContent = ResUtil.getString(R.string.create_entry_no_save),
+        btnClickListener = object : OnMsgBtClickListener {
+          override fun onCover(v: Button) {
+          }
+
+          override fun onEnter(v: Button) {
+            finishAfterTransition()
+          }
+
+          override fun onCancel(v: Button) {
+
+          }
+
         }
-      }
-    })
-    msgDialog.show()
+      )
+      .show()
   }
 
   /**
@@ -704,7 +711,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     binding.attrFiles.addValue(fileName, fileUri = uri)
     module.attrFileMap[fileName] = ProtectedBinary(
       false, UriUtil.getUriInputStream(this, uri)
-      .readBytes()
+        .readBytes()
     )
   }
 

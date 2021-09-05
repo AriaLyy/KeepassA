@@ -316,4 +316,6 @@
     <string name="get_token_fail">获取Token失败</string>
     <string name="one_drive_init_failure">OneDrive初始化失败</string>
     <string name="one_drive_hint"><![CDATA[为了保护您的隐私，KeepassA仅会访问<font color="#FF0000">【应用/KeepassA】</font>目录，如果您希望读取OneDrive的keepass数据库，<font color="#FF0000">请将数据库存放到该目录下。</font>]]></string>
+    <string name="open_permissions">打开权限</string>
+    <string name="miui_permissions">miui系统需要打开后台弹出界面的权限，才能使用自动填充功能。</string>
 </resources>

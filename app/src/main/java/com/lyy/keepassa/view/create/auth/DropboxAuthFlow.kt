@@ -11,19 +11,20 @@ import android.content.Context
 import android.content.Intent
 import android.text.Html
 import android.text.TextUtils
-import android.view.View
+import android.widget.Button
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
+import com.arialyy.frame.router.Routerfit
 import com.dropbox.core.android.Auth
 import com.lyy.keepassa.R
 import com.lyy.keepassa.event.DbPathEvent
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.cloud.DropboxUtil
 import com.lyy.keepassa.view.StorageType.DROPBOX
 import com.lyy.keepassa.view.create.CreateDbFirstFragment
-import com.lyy.keepassa.view.dialog.MsgDialog
-import com.lyy.keepassa.view.dialog.MsgDialog.OnBtClickListener
+import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import timber.log.Timber
 
 /**
@@ -46,7 +47,7 @@ class DropboxAuthFlow : IAuthFlow {
   }
 
   override fun onResume() {
-    Timber.d( "onResume")
+    Timber.d("onResume")
     if (!isNeedAuth || DropboxUtil.isAuthorized()) {
       return
     }
@@ -72,12 +73,12 @@ class DropboxAuthFlow : IAuthFlow {
     }
     val name = "$dbName.kdbx"
     callback.onFinish(
-        DbPathEvent(
-            dbName = name,
-            fileUri = DbSynUtil.getCloudDbTempPath(DROPBOX.name, name),
-            storageType = DROPBOX,
-            cloudDiskPath = "/$name"
-        )
+      DbPathEvent(
+        dbName = name,
+        fileUri = DbSynUtil.getCloudDbTempPath(DROPBOX.name, name),
+        storageType = DROPBOX,
+        cloudDiskPath = "/$name"
+      )
     )
   }
 
@@ -95,26 +96,29 @@ class DropboxAuthFlow : IAuthFlow {
    * 只有dropbox为授权才显示该对话框
    */
   private fun authDropbox() {
-    val msgDialog = MsgDialog.generate {
-      msgTitle = this@DropboxAuthFlow.context.getString(R.string.hint)
-      msgContent = Html.fromHtml(this@DropboxAuthFlow.context.getString(R.string.dropbox_msg))
-      showCancelBt = false
-      build()
-    }
-    msgDialog.setOnBtClickListener(object : OnBtClickListener {
-      override fun onBtClick(
-        type: Int,
-        view: View
-      ) {
-        Auth.startOAuth2Authentication(context, DropboxUtil.APP_KEY)
-      }
-    })
-    msgDialog.show()
+    Routerfit.create(DialogRouter::class.java)
+      .toMsgDialog(
+        msgContent = Html.fromHtml(context.getString(R.string.dropbox_msg)),
+        showCancelBt = false,
+        btnClickListener = object : OnMsgBtClickListener {
+          override fun onCover(v: Button) {
+          }
+
+          override fun onEnter(v: Button) {
+            Auth.startOAuth2Authentication(context, DropboxUtil.APP_KEY)
+          }
+
+          override fun onCancel(v: Button) {
+          }
+
+        }
+      )
+      .show()
   }
 
   @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
   override fun onDestroy() {
-    Timber.d( "onDestroy")
+    Timber.d("onDestroy")
   }
 
   override fun onActivityResult(
