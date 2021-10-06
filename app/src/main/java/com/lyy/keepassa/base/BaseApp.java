@@ -22,6 +22,7 @@ import androidx.room.Room;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.arialyy.frame.core.AbsFrame;
 import com.arialyy.frame.util.KeyStoreUtil;
+import com.blankj.utilcode.util.AppUtils;
 import com.keepassdroid.Database;
 import com.leon.channel.helper.ChannelReaderUtil;
 import com.lyy.keepassa.BuildConfig;
@@ -126,13 +127,14 @@ public class BaseApp extends MultiDexApplication {
     KeepassAUtil kUtil = KeepassAUtil.Companion.getInstance();
     // 获取当前包名
     String packageName = getPackageName();
+
     // 获取当前进程名
     String processName = kUtil.getProcessName(android.os.Process.myPid());
     CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(this);
     strategy.setUploadProcess(processName == null || processName.equals(packageName));
     strategy.setAppChannel(getChannel());
     strategy.setAppVersion(kUtil.getAppVersionName(this));
-    Bugly.init(this, getChannel(), BuildConfig.DEBUG, strategy);
+    CrashReport.initCrashReport(getApplicationContext(), "59fc0ec759", AppUtils.isAppDebug(), strategy);
     //CrashReport.testJavaCrash();
   }
 
