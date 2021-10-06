@@ -18,7 +18,6 @@ import android.content.Intent
 import android.content.IntentSender
 import android.os.Build
 import android.os.Bundle
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -40,8 +39,6 @@ import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.PermissionsUtil
 import com.lyy.keepassa.view.create.CreateEntryActivity
-import com.lyy.keepassa.view.dialog.MsgDialog
-import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.main.MainActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 import org.greenrobot.eventbus.Subscribe
@@ -100,28 +97,22 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
 
     val b = PermissionsUtil.miuiCanBackgroundStart()
     if (!b) {
-//      (ARouter.getInstance().build("/dialog/msgDialog")
-//        .withObject("msgTitle", "123")
-//        .withSerializable("showCountDownTimer", Pair(true, 5))
-//        .navigation() as MsgDialog)
-//        .show()
       Routerfit.create(DialogRouter::class.java).toMsgDialog(
         msgTitle = ResUtil.getString(R.string.open_permissions),
         msgContent = ResUtil.getString(R.string.miui_permissions),
-        btnClickListener = object : OnMsgBtClickListener {
-          override fun onCover(v: Button) {
-          }
-
-          override fun onEnter(v: Button) {
-            PermissionsUtil.miuiStartPermissionsUI(this@LauncherActivity)
-          }
-
-          override fun onCancel(v: Button) {
-          }
-
-        }
+        // btnClickListener = object : OnMsgBtClickListener {
+        //   override fun onCover(v: Button) {
+        //   }
+        //
+        //   override fun onEnter(v: Button) {
+        //     PermissionsUtil.miuiStartPermissionsUI(this@LauncherActivity)
+        //   }
+        //
+        //   override fun onCancel(v: Button) {
+        //   }
+        //
+        // }
       ).show()
-
     }
 
 

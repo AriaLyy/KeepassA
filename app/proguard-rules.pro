@@ -87,9 +87,13 @@
 ##保持 Parcelable 不被混淆
 -keep class * implements android.os.Parcelable {
   public static final android.os.Parcelable$Creator *;
+   *;
 }
 ##保持 Serializable 不被混淆
 -keepnames class * implements java.io.Serializable
+-keep class * implements java.io.Serializable{
+  *;
+}
 #
 #保持 Serializable 不被混淆并且enum 类也不被混淆
 -keepclassmembers class * implements java.io.Serializable {
