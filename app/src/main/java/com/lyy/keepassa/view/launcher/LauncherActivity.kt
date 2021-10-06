@@ -95,28 +95,6 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     initUI()
     module.securityCheck(this)
 
-    val b = PermissionsUtil.miuiCanBackgroundStart()
-    if (!b) {
-      Routerfit.create(DialogRouter::class.java).toMsgDialog(
-        msgTitle = ResUtil.getString(R.string.open_permissions),
-        msgContent = ResUtil.getString(R.string.miui_permissions),
-        // btnClickListener = object : OnMsgBtClickListener {
-        //   override fun onCover(v: Button) {
-        //   }
-        //
-        //   override fun onEnter(v: Button) {
-        //     PermissionsUtil.miuiStartPermissionsUI(this@LauncherActivity)
-        //   }
-        //
-        //   override fun onCancel(v: Button) {
-        //   }
-        //
-        // }
-      ).show()
-    }
-
-
-    Timber.d("能否从后台启动：${b}")
   }
 
   override fun useAnim(): Boolean {

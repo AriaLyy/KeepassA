@@ -32,7 +32,7 @@ android {
     ndk.abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
 
     // 只保留以下语言包
-    resConfigs "zh-rCN", "zh-rTW", "en", "fr-rCA", "nb-rNO", "ru-rRU", "fr", "de-rDE"
+    resConfigs "zh-rCN", "zh-rTW", "en", "fr-rCA", "nb-rNO", "ru-rRU", "fr", "de-rDE", "pl"
   }
 
   signingConfigs {
