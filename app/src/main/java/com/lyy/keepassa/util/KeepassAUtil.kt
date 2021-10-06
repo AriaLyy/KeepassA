@@ -15,6 +15,7 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.app.ActivityManager
 import android.app.ActivityManager.RunningAppProcessInfo
+import android.app.AppOpsManager
 import android.app.assist.AssistStructure
 import android.content.ComponentName
 import android.content.ContentUris
@@ -27,6 +28,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION
 import android.os.Environment
+import android.os.Process
 import android.provider.DocumentsContract
 import android.provider.MediaStore.Audio
 import android.provider.MediaStore.Images.Media

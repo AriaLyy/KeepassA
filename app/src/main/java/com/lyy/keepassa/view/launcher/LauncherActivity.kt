@@ -24,6 +24,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.arialyy.frame.router.Routerfit
+import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.R.layout
 import com.lyy.keepassa.base.BaseActivity
@@ -32,14 +34,23 @@ import com.lyy.keepassa.databinding.ActivityLauncherBinding
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.event.DbHistoryEvent
-import com.lyy.keepassa.service.autofill.AutoFillClickReceiver
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.PermissionsUtil
 import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.main.MainActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
+import com.tencent.bugly.crashreport.CrashReport
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
+import timber.log.Timber
+import java.lang.NullPointerException
 
 @Route(path = "/launcher/activity")
 class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
@@ -90,6 +101,13 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
       .get(LauncherModule::class.java)
     initUI()
     module.securityCheck(this)
+//    MainScope().launch {
+//      withContext(Dispatchers.IO){
+//        delay(2000)
+//        CrashReport.testJavaCrash()
+//      }
+//    }
+//    throw NullPointerException("bugly测试")
   }
 
   override fun useAnim(): Boolean {
@@ -170,7 +188,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
             putExtra(KEY_SAVE_USER_NAME, intent.getStringExtra(KEY_SAVE_USER_NAME))
             putExtra(KEY_SAVE_PASS, intent.getStringExtra(KEY_SAVE_PASS))
           }, REQUEST_SAVE_ENTRY_CODE, ActivityOptions.makeSceneTransitionAnimation(this)
-          .toBundle()
+            .toBundle()
         )
       }
     }

@@ -10,11 +10,12 @@
 package com.lyy.keepassa.view.main
 
 import android.content.Context
-import android.view.View
+import android.widget.Button
 import androidx.core.content.edit
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.AndroidUtils
 import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.Database
@@ -32,13 +33,14 @@ import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.view.UpgradeLogDialog
 import com.lyy.keepassa.view.dialog.DonateDialog
-import com.lyy.keepassa.view.dialog.MsgDialog
+import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.widget.BubbleTextView
 import com.lyy.keepassa.widget.BubbleTextView.OnIconClickListener
 import kotlinx.coroutines.Dispatchers
@@ -66,7 +68,7 @@ class MainModule : BaseModule() {
     btText: BubbleTextView
   ) {
     val needCheckEnv = PreferenceManager.getDefaultSharedPreferences(cxt)
-        .getBoolean(cxt.resources.getString(R.string.set_key_need_root_check), true)
+      .getBoolean(cxt.resources.getString(R.string.set_key_need_root_check), true)
     if (!needCheckEnv) {
       btText.clearIcon(BubbleTextView.LOCATION_RIGHT)
       return
@@ -79,7 +81,7 @@ class MainModule : BaseModule() {
       msg = cxt.getString(R.string.hint_security_red)
     } else if (EasyProtectorLib.checkIsRunningInEmulator(cxt) {
 //          BuglyLog.d(TAG, it)
-        }) {
+      }) {
       vector = ResUtil.getSvgIcon(R.drawable.ic_eco, R.color.yellow)
       msg = cxt.getString(R.string.hint_security_yellow)
     }
@@ -90,14 +92,12 @@ class MainModule : BaseModule() {
         index: Int
       ) {
         if (index == 2) {
-          val msgDialog = MsgDialog.generate {
-            msgTitle = cxt.getString(R.string.hint)
-            msgContent = msg
-            showCancelBt = false
+          Routerfit.create(DialogRouter::class.java).toMsgDialog(
+            msgContent = msg,
+            showCancelBt = false,
             msgTitleEndIcon = vector
-            build()
-          }
-          msgDialog.show()
+          )
+            .show()
         }
       }
     })
@@ -124,7 +124,7 @@ class MainModule : BaseModule() {
     val dbUri = record.getDbUri()
     val keyUri = record.getDbKeyUri()
     val db = KDBHandlerHelper.getInstance(context)
-        .openDb(dbUri, dbPass, keyUri)
+      .openDb(dbUri, dbPass, keyUri)
     if (db != null) {
       val dbName = UriUtil.getFileNameFromUri(context, dbUri)
       BaseApp.dbPass = QuickUnLockUtil.encryptStr(dbPass)
@@ -146,22 +146,22 @@ class MainModule : BaseModule() {
     return db
   }
 
-  fun showInfoDialog(activity: BaseActivity<*>){
+  fun showInfoDialog(activity: BaseActivity<*>) {
     showVersionLog(activity)
-    if (!upgradeLogDialogIsShow){
+    if (!upgradeLogDialogIsShow) {
       checkDevBirthdayData(activity)
       return
     }
-    if (!devBirthDayDialogIsShow){
+    if (!devBirthDayDialogIsShow) {
       showDonateDialog(activity)
       return
     }
   }
 
-  private fun showDonateDialog(context: Context){
+  private fun showDonateDialog(context: Context) {
     val pre = context.getSharedPreferences(Constance.PRE_FILE_NAME, Context.MODE_PRIVATE)
     val startNum = pre.getInt(Constance.PRE_KEY_START_APP_NUM, 0)
-    if (startNum >= Constance.START_DONATE_JUDGMENT_VALUE){
+    if (startNum >= Constance.START_DONATE_JUDGMENT_VALUE) {
       val donateDialog = DonateDialog()
       donateDialog.setOnDismissListener {
         pre.edit {
@@ -176,7 +176,7 @@ class MainModule : BaseModule() {
    * 显示版本日志对话框，显示逻辑：
    * 配置文件的版本号不存在，或当前版本号大于配置文件的版本号
    */
-   private fun showVersionLog(activity: BaseActivity<*>) {
+  private fun showVersionLog(activity: BaseActivity<*>) {
     upgradeLogDialogIsShow = true
     viewModelScope.launch {
       withContext(Dispatchers.IO) {
@@ -276,7 +276,7 @@ class MainModule : BaseModule() {
       data.add(KeepassAUtil.instance.convertPwGroup2Item(group))
     }
     Timber.d(
-        "getRootEntry， 保存前的数据库hash：${BaseApp.KDB.hashCode()}, num = ${BaseApp.KDB!!.pm.entries.size}"
+      "getRootEntry， 保存前的数据库hash：${BaseApp.KDB.hashCode()}, num = ${BaseApp.KDB!!.pm.entries.size}"
     )
     for (entry in rootGroup.childEntries) {
       data.add(KeepassAUtil.instance.convertPwEntry2Item(entry))
@@ -299,7 +299,7 @@ class MainModule : BaseModule() {
       item.title = group.name
       item.subTitle =
         context.getString(
-            R.string.hint_group_desc, KdbUtil.getGroupEntryNum(group)
+          R.string.hint_group_desc, KdbUtil.getGroupEntryNum(group)
             .toString()
         )
       item.obj = group
@@ -319,25 +319,25 @@ class MainModule : BaseModule() {
 
   private fun showDevBirthdayDialog(context: Context) {
     devBirthDayDialogIsShow = true
-    val dialog = MsgDialog.generate {
-      msgTitle = context.getString(R.string.donate)
-      msgContent = context.getString(R.string.dev_birthday)
-      setCancelBtText("NO")
-      setEnterBtText("YES")
-      build()
-    }
-    dialog.setOnBtClickListener(object : MsgDialog.OnBtClickListener {
-      override fun onBtClick(
-        type: Int,
-        view: View
-      ) {
-        if (type == MsgDialog.TYPE_ENTER) {
+    Routerfit.create(DialogRouter::class.java).toMsgDialog(
+      msgTitle = ResUtil.getString(R.string.donate),
+      msgContent = ResUtil.getString(R.string.dev_birthday),
+      cancelText = "NO",
+      enterText = "YES",
+      btnClickListener = object : OnMsgBtClickListener {
+        override fun onCover(v: Button) {
+        }
+
+        override fun onEnter(v: Button) {
           DonateDialog().show()
         }
-      }
-    })
 
-    dialog.show()
+        override fun onCancel(v: Button) {
+        }
+
+      }
+    )
+      .show()
   }
 
 }

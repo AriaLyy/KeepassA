@@ -22,18 +22,19 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.arialyy.frame.core.AbsFrame
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.SharePreUtil
+import com.blankj.utilcode.util.RomUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.common.PassType
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.PermissionsUtil
-import com.lyy.keepassa.util.RoomUtil
 import com.lyy.keepassa.view.UpgradeLogDialog
-import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.fingerprint.FingerprintActivity
 import de.psdev.licensesdialog.LicensesDialog
 import kotlinx.coroutines.GlobalScope
@@ -84,10 +85,10 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     findPreference<Preference>(getString(R.string.set_key_license))?.setOnPreferenceClickListener {
 
       LicensesDialog.Builder(requireContext())
-          .setNotices(R.raw.notices)
-          .setIncludeOwnLicense(true)
-          .build()
-          .show()
+        .setNotices(R.raw.notices)
+        .setIncludeOwnLicense(true)
+        .build()
+        .show()
       true
     }
   }
@@ -121,15 +122,15 @@ class AppSettingFragment : PreferenceFragmentCompat() {
       findPreference<ListPreference>(getString(R.string.set_quick_pass_len))
     passTypeList = findPreference(getString(R.string.set_quick_pass_type))!!
 
-    if (BaseApp.passType == PassType.ONLY_KEY){
+    if (BaseApp.passType == PassType.ONLY_KEY) {
       passLenLayout?.isVisible = false
       passTypeList.isVisible = false
       return
     }
     passLenLayout!!.setOnPreferenceChangeListener { _, newValue ->
-      Timber.i( "短密码长度：$newValue")
+      Timber.i("短密码长度：$newValue")
       passLen = newValue.toString()
-          .toInt()
+        .toInt()
       setPassTypeEntries()
       true
     }
@@ -138,8 +139,8 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     // 密码截取类型
     passTypeList.setOnPreferenceChangeListener { _, newValue ->
       val subTitle = passTypeList.entries[newValue.toString()
-          .toInt() - 1]
-      Timber.i( "短密码类型：$subTitle")
+        .toInt() - 1]
+      Timber.i("短密码类型：$subTitle")
       passTypeList.summary = subTitle.toString()
       subShortPass()
       true
@@ -190,16 +191,16 @@ class AppSettingFragment : PreferenceFragmentCompat() {
       }
       // miui 检查后台弹出权限
       if (am.isAutofillSupported
-          && RoomUtil.isMiui()
-          && !PermissionsUtil.miuiBackgroundStartAllowed(context)
+        && RomUtils.isXiaomi()
+        && !PermissionsUtil.miuiCanBackgroundStart()
       ) {
         showAutoFillMsgDialog(getString(R.string.setting_miui_background_start))
       }
 
       // vivo 检查后台弹出权限
       if (am.isAutofillSupported
-          && RoomUtil.isVivo()
-          && !PermissionsUtil.vivoBackgroundStartAllowed(context)
+        && RomUtils.isVivo()
+        && !PermissionsUtil.vivoBackgroundStartAllowed()
       ) {
         showAutoFillMsgDialog(getString(R.string.setting_vivo_background_start))
       }
@@ -214,19 +215,19 @@ class AppSettingFragment : PreferenceFragmentCompat() {
         if (!(newValue as Boolean)) {
           // 如果已启用，需要包名不同才能重新打开自动填充设置
           startActivityForResult(
-              Intent(
-                  Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE,
-                  Uri.parse("package:${requireContext().packageName}1")
-              ),
-              requestCodeAutoFill
+            Intent(
+              Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE,
+              Uri.parse("package:${requireContext().packageName}1")
+            ),
+            requestCodeAutoFill
           )
         } else {
           startActivityForResult(
-              Intent(
-                  Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE,
-                  Uri.parse("package:${requireContext().packageName}")
-              ),
-              requestCodeAutoFill
+            Intent(
+              Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE,
+              Uri.parse("package:${requireContext().packageName}")
+            ),
+            requestCodeAutoFill
           )
         }
         true
@@ -242,12 +243,12 @@ class AppSettingFragment : PreferenceFragmentCompat() {
    */
   private fun setQuickUnLock() {
     val unLock = findPreference<SwitchPreference>(getString(R.string.set_quick_unlock))!!
-    if (BaseApp.passType == PassType.ONLY_KEY){
+    if (BaseApp.passType == PassType.ONLY_KEY) {
       unLock.isVisible = false
       return
     }
     unLock.setOnPreferenceChangeListener { _, newValue ->
-      Timber.d( "quick unlock newValue = $newValue")
+      Timber.d("quick unlock newValue = $newValue")
       if (newValue as Boolean) {
         subShortPass()
       }
@@ -263,7 +264,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     langPre!!.setOnPreferenceChangeListener { _, newValue ->
       var lang = Locale.ENGLISH
       when (newValue.toString()
-          .toInt()) {
+        .toInt()) {
         1 -> {
           lang = Locale.ENGLISH
         }
@@ -285,15 +286,18 @@ class AppSettingFragment : PreferenceFragmentCompat() {
         7 -> {
           lang = Locale.FRENCH
         }
-        8 ->{
+        8 -> {
           lang = Locale.GERMANY
+        }
+        9 ->{
+          lang = Locale("pl")
         }
       }
       BaseApp.currentLang = lang
       LanguageUtil.saveLanguage(requireContext(), lang)
       for (ac in AbsFrame.getInstance().activityStack) {
         AbsFrame.getInstance()
-            .removeActivity(ac)
+          .removeActivity(ac)
         ac.recreate()
       }
       true
@@ -309,7 +313,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
 
     entries.forEachIndexed { index, value ->
       newEntries[index] = value.toString()
-          .format(passLen.toString())
+        .format(passLen.toString())
     }
 
     passTypeList.entries = newEntries
@@ -325,29 +329,26 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     val IS_HOWED_AUTO_FILL_HINT_DIALOG = "IS_HOWED_AUTO_FILL_HINT_DIALOG"
     val isShowed =
       SharePreUtil.getBoolean(
-          Constance.PRE_FILE_NAME,
-          requireContext(),
-          IS_HOWED_AUTO_FILL_HINT_DIALOG
+        Constance.PRE_FILE_NAME,
+        requireContext(),
+        IS_HOWED_AUTO_FILL_HINT_DIALOG
       )
 
     if (!isShowed) {
-      val msgDialog = MsgDialog.generate {
-        msgTitle = BaseApp.APP.getString(R.string.hint)
-        msgContent =
-          Html.fromHtml(BaseApp.APP.getString(R.string.hint_background_start, msg))
-        showCancelBt = false
+      Routerfit.create(DialogRouter::class.java).toMsgDialog(
+        msgContent = Html.fromHtml(BaseApp.APP.getString(R.string.hint_background_start, msg)),
+        showCancelBt = false,
         showCountDownTimer = Pair(true, 5)
-        build()
-      }
-      msgDialog.show()
+      )
+        .show()
       SharePreUtil.putBoolean(
-          Constance.PRE_FILE_NAME,
-          requireContext(),
-          IS_HOWED_AUTO_FILL_HINT_DIALOG,
-          true
+        Constance.PRE_FILE_NAME,
+        requireContext(),
+        IS_HOWED_AUTO_FILL_HINT_DIALOG,
+        true
       )
     } else {
-      Timber.i( "已显示过自动填充对话框，不再重复显示")
+      Timber.i("已显示过自动填充对话框，不再重复显示")
     }
 
   }
@@ -362,7 +363,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
         autoFill.isChecked = true
       } else {
         autoFill.isChecked = requireContext().getSystemService(AutofillManager::class.java)
-            .hasEnabledAutofillServices()
+          .hasEnabledAutofillServices()
       }
     }
   }

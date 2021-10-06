@@ -14,118 +14,89 @@ import android.graphics.drawable.Drawable
 import android.view.KeyEvent
 import android.view.View
 import android.widget.Button
-import androidx.annotation.ColorInt
 import androidx.lifecycle.lifecycleScope
+import com.alibaba.android.arouter.facade.annotation.Autowired
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogMsgBinding
-import com.lyy.keepassa.event.MsgDialogEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.greenrobot.eventbus.EventBus
 
+/**
+ * @author laoyuyu
+ * @date 2021/9/5
+ */
+@Route(path = "/dialog/msgDialog")
 class MsgDialog : BaseDialog<DialogMsgBinding>(), View.OnClickListener {
 
-  private var enterBtName: String? = null
-  private var cancelBtName: String? = null
-  private var coverBtName: String? = null
+  @Autowired(name = "enterBtTextColor")
+  @JvmField
+  var enterBtTextColor: Int = R.color.text_blue_color
 
-  @ColorInt private var enterBtTextColor: Int? = null
-  @ColorInt private var cancelBtTextColor: Int? = null
-  @ColorInt private var coverBtTextColor: Int? = null
+  @Autowired(name = "cancelBtTextColor")
+  @JvmField
+  var cancelBtTextColor: Int = R.color.text_gray_color
 
-  // 以下是构造参数
+  @Autowired(name = "coverBtTextColor")
+  @JvmField
+  var coverBtTextColor: Int = R.color.text_blue_color
+
+  @Autowired(name = "msgTitle")
+  @JvmField
   var msgTitle: CharSequence = ""
+
+  @Autowired(name = "msgContent")
+  @JvmField
   var msgContent: CharSequence = ""
+
+  @Autowired(name = "showCancelBt")
+  @JvmField
   var showCancelBt: Boolean = true // 显示取消按钮
-  var requestCode: Int = 0 // dialog请求码
-  var showCoverBt: Boolean = false //显示覆盖按钮
+
+  @Autowired(name = "showEnterBt")
+  @JvmField
+  var showEnterBt: Boolean = true // 显示确认按钮
+
+  @Autowired(name = "showCoverBt")
+  @JvmField
+  var showCoverBt: Boolean = false // 显示覆盖按钮
+
+  @Autowired(name = "showCountDownTimer")
+  @JvmField
   var showCountDownTimer: Pair<Boolean, Int> = Pair(false, 5) // 显示确认按钮倒计时定时器，倒计时5s
+
+  @Autowired(name = "interceptBackKey")
+  @JvmField
   var interceptBackKey: Boolean = false // 是否拦截返回键
+
+  @Autowired(name = "msgTitleEndIcon")
+  @JvmField
   var msgTitleEndIcon: Drawable? = null
+
+  @Autowired(name = "msgTitleStartIcon")
+  @JvmField
   var msgTitleStartIcon: Drawable? = null
 
-  companion object {
-    const val TYPE_ENTER = 1
-    const val TYPE_CANCEL = 2
-    const val TYPE_COVER = 3
+  @Autowired(name = "enterText")
+  @JvmField
+  var enterText: CharSequence = ""
 
-    fun generate(body: MsgDialog.() -> MsgDialog): MsgDialog {
-      return with(MsgDialog()) { body() }
-    }
-  }
+  @Autowired(name = "coverText")
+  @JvmField
+  var coverText: CharSequence = ""
 
-  private var listener: OnBtClickListener? = null
-  private var useEventBusSendMsg = false
+  @Autowired(name = "cancelText")
+  @JvmField
+  var cancelText: CharSequence = ""
 
-  public interface OnBtClickListener {
-    /**
-     * @param type [TYPE_ENTER],[TYPE_CANCEL],[TYPE_COVER]
-     */
-    fun onBtClick(
-      type: Int,
-      view: View
-    )
-  }
-
-  /**
-   * 设置确认按钮文字
-   */
-  fun setEnterBtText(charSequence: CharSequence): MsgDialog {
-    enterBtName = charSequence.toString()
-    return this
-  }
-
-  /**
-   * 设置覆盖钮的问题
-   */
-  fun setCoverBtText(charSequence: CharSequence): MsgDialog {
-    coverBtName = charSequence.toString()
-    return this
-  }
-
-  /**
-   * 设置取消钮的问题
-   */
-  fun setCancelBtText(charSequence: CharSequence): MsgDialog {
-    cancelBtName = charSequence.toString()
-    return this
-  }
-
-  /**
-   * 设置确认按钮文字颜色
-   */
-  fun setEnterBtTextColor(@ColorInt color: Int): MsgDialog {
-    enterBtTextColor = color
-    return this
-  }
-
-  /**
-   * 设置取消按钮文字颜色
-   */
-  fun setCancelBtTextColor(@ColorInt color: Int): MsgDialog {
-    cancelBtTextColor = color
-    return this
-  }
-
-  /**
-   * 设置覆盖按钮文字颜色
-   */
-  fun setCoverBtTextColor(@ColorInt color: Int): MsgDialog {
-    coverBtTextColor = color
-    return this
-  }
-
-  /**
-   * 使用eventbus 替代回调发送事件
-   */
-  fun useEventBusSendMsg(): MsgDialog {
-    this.useEventBusSendMsg = true
-    return this
-  }
+  @Autowired(name = "btnClickListener")
+  @JvmField
+  var btnClickListener: OnMsgBtClickListener? = null
 
   override fun setLayoutId(): Int {
     return R.layout.dialog_msg
@@ -133,40 +104,14 @@ class MsgDialog : BaseDialog<DialogMsgBinding>(), View.OnClickListener {
 
   override fun initData() {
     super.initData()
-    binding.cancel.visibility = if (showCancelBt) View.VISIBLE else View.GONE
-    binding.cover.visibility = if (showCoverBt) View.VISIBLE else View.GONE
-    binding.title.text = msgTitle
-    binding.msg.text = msgContent
-    binding.enter.setOnClickListener(this)
-    binding.cancel.setOnClickListener(this)
-    binding.cover.setOnClickListener(this)
-    enterBtName?.let {
-      binding.enter.text = enterBtName
-    }
-    cancelBtName?.let {
-      binding.cancel.text = cancelBtName
-    }
-    coverBtName?.let {
-      binding.cover.text = coverBtName
-    }
-    enterBtTextColor?.let {
-      binding.enter.setTextColor(enterBtTextColor!!)
-    }
-
-    cancelBtTextColor?.let {
-      binding.cancel.setTextColor(cancelBtTextColor!!)
-    }
-
-    coverBtTextColor?.let {
-      binding.cover.setTextColor(coverBtTextColor!!)
-    }
+    ARouter.getInstance().inject(this)
 
     msgTitleEndIcon?.let {
-      binding.title.setEndIcon(msgTitleEndIcon!!)
+      binding.tvTitle.setEndIcon(it)
     }
 
     msgTitleStartIcon?.let {
-      binding.title.setLeftIcon(msgTitleStartIcon!!)
+      binding.tvTitle.setLeftIcon(it)
     }
 
     handleCountDown()
@@ -175,6 +120,23 @@ class MsgDialog : BaseDialog<DialogMsgBinding>(), View.OnClickListener {
         return@setOnKeyListener keyCode == KeyEvent.KEYCODE_BACK
       }
     }
+    binding.dialog = this
+  }
+
+  /**
+   * 设置标题左边icon
+   */
+  fun setTitleStartIcon(icon: Drawable): MsgDialog {
+    msgTitleStartIcon = icon
+    return this
+  }
+
+  /**
+   * 设置标题右边icon
+   */
+  fun setTitleEndIcon(icon: Drawable): MsgDialog {
+    msgTitleEndIcon = icon
+    return this
   }
 
   /**
@@ -199,62 +161,36 @@ class MsgDialog : BaseDialog<DialogMsgBinding>(), View.OnClickListener {
   }
 
   private fun setBtnsEnable(enable: Boolean) {
-    val count = binding.btns.childCount
-    for (index in 0 until count) {
-      val child = binding.btns.getChildAt(index)
-      if (child.visibility == View.GONE) {
+    val btns = arrayListOf(binding.cover, binding.enter, binding.cancel)
+    for (btn in btns) {
+      if (btn.visibility == View.GONE) {
         continue
       }
       if (enable) {
-        child.isEnabled = true
-        (child as Button).setTextColor(ResUtil.getColor(R.color.text_blue_color))
-        child.background = requireContext().getDrawable(R.drawable.ripple_white_selector)
+        btn.isEnabled = true
+        btn.setTextColor(ResUtil.getColor(R.color.text_blue_color))
+        btn.background = ResUtil.getDrawable(R.drawable.ripple_white_selector)
       } else {
-        child.isEnabled = false
-        (child as Button).setTextColor(ResUtil.getColor(R.color.text_gray_color))
-        child.setBackgroundColor(ResUtil.getColor(R.color.transparent))
+        btn.isEnabled = false
+        btn.setTextColor(ResUtil.getColor(R.color.text_gray_color))
+        btn.setBackgroundColor(ResUtil.getColor(R.color.transparent))
       }
     }
-  }
-
-  /**
-   * [useEventBusSendMsg]
-   */
-//  @Deprecated("使用 useEventBusSendMsg() 替代")
-  fun setOnBtClickListener(listener: OnBtClickListener) {
-    this.listener = listener
   }
 
   override fun onClick(v: View?) {
     when (v!!.id) {
       R.id.enter -> {
-        listener?.onBtClick(TYPE_ENTER, v)
-        if (useEventBusSendMsg) {
-          EventBus.getDefault()
-              .post(MsgDialogEvent(TYPE_ENTER, requestCode = requestCode))
-        }
+        btnClickListener?.onEnter(v as Button)
       }
       R.id.cancel -> {
-        listener?.onBtClick(TYPE_CANCEL, v)
-        if (useEventBusSendMsg) {
-          EventBus.getDefault()
-              .post(MsgDialogEvent(TYPE_CANCEL, requestCode = requestCode))
-        }
+        btnClickListener?.onCancel(v as Button)
       }
       R.id.cover -> {
-        listener?.onBtClick(TYPE_COVER, v)
-        if (useEventBusSendMsg) {
-          EventBus.getDefault()
-              .post(MsgDialogEvent(TYPE_COVER, requestCode = requestCode))
-        }
+        btnClickListener?.onCover(v as Button)
       }
     }
     dismiss()
-  }
-
-
-  fun build(): MsgDialog {
-    return this
   }
 
 }

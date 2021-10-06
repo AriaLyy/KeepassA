@@ -19,14 +19,15 @@ import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.RadioButton
 import androidx.lifecycle.ViewModelProvider
+import com.arialyy.frame.router.Routerfit
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentCreateDbSecondBinding
 import com.lyy.keepassa.event.KeyPathEvent
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.widget.BubbleTextView
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
@@ -35,7 +36,7 @@ import org.greenrobot.eventbus.ThreadMode.MAIN
  * 设置密码、密钥等信息
  */
 class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
-    BubbleTextView.OnIconClickListener {
+  BubbleTextView.OnIconClickListener {
 
   private var keyPassLayoutH: Int = 0
   private var isShowPass = false
@@ -103,7 +104,7 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
 
   private fun showPassLayout() {
     val h = resources.getDimension(R.dimen.create_pass_key_h)
-        .toInt()
+      .toInt()
     binding.passKeyLayoutWrap.visibility = View.VISIBLE
     binding.passKeyLayout.layoutParams.height = 0
     binding.passKeyLayout.visibility = View.VISIBLE
@@ -119,7 +120,7 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
 
   private fun hintPassLayout() {
     val h = resources.getDimension(R.dimen.create_pass_key_h)
-        .toInt()
+      .toInt()
     binding.passKeyLayoutWrap.visibility = View.VISIBLE
     binding.passKeyLayout.layoutParams.height = 0
     binding.passKeyLayout.visibility = View.VISIBLE
@@ -146,9 +147,9 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
    */
   fun getPass(): String? {
     val pass = binding.password.text.toString()
-        .trim()
+      .trim()
     val enterPass = binding.enterPassword.text.toString()
-        .trim()
+      .trim()
     if (TextUtils.isEmpty(pass)) {
       HitUtil.toaskShort(getString(R.string.error_pass_null))
       return null
@@ -199,13 +200,12 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
         msg = getString(R.string.help_pass_key)
       }
     }
-    val dialog = MsgDialog.generate {
-      msgTitle = this@CreateDbSecondFragment.getString(R.string.hint)
-      msgContent = msg
-      showCancelBt = false
-      build()
-    }
-    dialog.show()
+    Routerfit.create(DialogRouter::class.java)
+      .toMsgDialog(
+        msgContent = msg,
+        showCancelBt = false
+      )
+      .show()
   }
 
   override fun onDestroy() {

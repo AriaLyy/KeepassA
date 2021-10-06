@@ -13,7 +13,9 @@ import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Pair
-import android.view.View
+import android.widget.Button
+import com.arialyy.frame.router.Routerfit
+import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.SharePreUtil
 import com.arialyy.frame.util.StringUtil
 import com.keepassdroid.database.PwDataInf
@@ -22,10 +24,10 @@ import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.helper.KDBHandlerHelper
 import com.lyy.keepassa.R
-import com.lyy.keepassa.R.string
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.entity.DbHistoryRecord
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
@@ -33,8 +35,7 @@ import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.view.StorageType
 import com.lyy.keepassa.view.StorageType.DROPBOX
 import com.lyy.keepassa.view.StorageType.WEBDAV
-import com.lyy.keepassa.view.dialog.MsgDialog
-import com.lyy.keepassa.view.dialog.MsgDialog.OnBtClickListener
+import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
@@ -66,7 +67,7 @@ object DbSynUtil : SynStateCode {
    */
   suspend fun getFileServiceModifyTime(record: DbHistoryRecord): Date {
     return CloudUtilFactory.getCloudUtil(record.getDbPathType())
-        .getFileServiceModifyTime(record.cloudDiskPath!!)
+      .getFileServiceModifyTime(record.cloudDiskPath!!)
   }
 
   /**
@@ -76,13 +77,13 @@ object DbSynUtil : SynStateCode {
     record: DbHistoryRecord
   ) {
     serviceModifyTime = CloudUtilFactory.getCloudUtil(record.getDbPathType())
-        .getFileServiceModifyTime(record.cloudDiskPath!!)
+      .getFileServiceModifyTime(record.cloudDiskPath!!)
     SharePreUtil.putLong(
-        Constance.PRE_FILE_NAME,
-        BaseApp.APP, KEY_SERVICE_MODIFY_TIME, serviceModifyTime.time
+      Constance.PRE_FILE_NAME,
+      BaseApp.APP, KEY_SERVICE_MODIFY_TIME, serviceModifyTime.time
     )
     Timber.d(
-        TAG, "更新云端文件修改时间：${ KeepassAUtil.instance.formatTime(serviceModifyTime)}"
+      TAG, "更新云端文件修改时间：${KeepassAUtil.instance.formatTime(serviceModifyTime)}"
     )
   }
 
@@ -95,7 +96,7 @@ object DbSynUtil : SynStateCode {
     dbName: String
   ): Uri {
     val file = File("${BaseApp.APP.cacheDir.path}/$cloudTypeName/${dbName}")
-    if (file.parentFile != null && !file.parentFile!!.exists()){
+    if (file.parentFile != null && !file.parentFile!!.exists()) {
       file.parentFile!!.mkdirs()
     }
     return Uri.fromFile(file)
@@ -109,25 +110,25 @@ object DbSynUtil : SynStateCode {
     record: DbHistoryRecord
   ): Int {
     if (BaseApp.isAFS()) {
-      Timber.i( "AFS 不需要上传")
+      Timber.i("AFS 不需要上传")
       return STATE_SUCCEED
     }
     HitUtil.toaskShort(context.getString(R.string.start_upload_db))
-    Timber.d( "上传文件：${record.getDbUri()}，云盘路径：${record.cloudDiskPath}")
+    Timber.d("上传文件：${record.getDbUri()}，云盘路径：${record.cloudDiskPath}")
     val util = CloudUtilFactory.getCloudUtil(record.getDbPathType())
     val cloudFileInfo = util.getFileInfo(record.cloudDiskPath!!)
-    Timber.i( "获取文件信息成功：${cloudFileInfo.toString()}")
+    Timber.i("获取文件信息成功：${cloudFileInfo.toString()}")
     if (cloudFileInfo == null) {
-      Timber.i( "云端文件不存在，开始上传文件")
+      Timber.i("云端文件不存在，开始上传文件")
       return uploadFile(util, context, record)
     }
     if (cloudFileInfo.contentHash != null
-        && util.checkContentHash(cloudFileInfo.contentHash, record.getDbUri())
+      && util.checkContentHash(cloudFileInfo.contentHash, record.getDbUri())
     ) {
-      Timber.i( "云端文件和本地文件的hash一致，忽略该上传")
+      Timber.i("云端文件和本地文件的hash一致，忽略该上传")
       return STATE_SUCCEED
     }
-    Timber.i( "云端文件存在，开始同步数据")
+    Timber.i("云端文件存在，开始同步数据")
     return synUploadFile(util, context, record)
   }
 
@@ -139,7 +140,7 @@ object DbSynUtil : SynStateCode {
     dbRecord: DbHistoryRecord,
     filePath: Uri
   ): String? {
-    Timber.i( "开始下载文件，云端路径：${dbRecord.cloudDiskPath}，文件保存路径：${filePath}")
+    Timber.i("开始下载文件，云端路径：${dbRecord.cloudDiskPath}，文件保存路径：${filePath}")
     val util = CloudUtilFactory.getCloudUtil(StorageType.valueOf(dbRecord.type))
     val path = util.downloadFile(context, dbRecord, filePath)
     if (!TextUtils.isEmpty(path)) {
@@ -157,28 +158,28 @@ object DbSynUtil : SynStateCode {
     filePath: Uri
   ): Int {
     if (BaseApp.isAFS()) {
-      Timber.i( "AFS 不需要下载")
+      Timber.i("AFS 不需要下载")
       return STATE_SUCCEED
     }
     val util = CloudUtilFactory.getCloudUtil(record.getDbPathType())
     if (serviceModifyTime == util.getFileServiceModifyTime(record.cloudDiskPath!!)) {
-      Timber.i( "云端文件没有修改")
+      Timber.i("云端文件没有修改")
       return STATE_SUCCEED
     }
 
     val path = util.downloadFile(context, record, filePath)
     if (path.isNullOrEmpty()) {
-      Timber.e( "下载文件失败，${record.cloudDiskPath}")
+      Timber.e("下载文件失败，${record.cloudDiskPath}")
       toask(context.getString(R.string.sync_db), false, context.getString(R.string.net_error))
       return STATE_DOWNLOAD_FILE_FAIL
     }
     val kdb = openDb(context, dbPath = path)
     if (kdb == null) {
-      Timber.e( "打开云端数据库失败，将覆盖云端数据库")
+      Timber.e("打开云端数据库失败，将覆盖云端数据库")
       return coverFile(util, context, record)
     }
-    if (BaseApp.KDB?.pm == null){
-      Timber.e( "downloadSyn, local db is null")
+    if (BaseApp.KDB?.pm == null) {
+      Timber.e("downloadSyn, local db is null")
       return STATE_FAIL
     }
     return compareDb(util, context, record, kdb, BaseApp.KDB!!.pm, false)
@@ -195,43 +196,47 @@ object DbSynUtil : SynStateCode {
     val st = util.getFileServiceModifyTime(record.cloudDiskPath!!)
     if (st == serviceModifyTime) {
       Timber.i(
-          "云端文件修改时间:${ KeepassAUtil.instance.formatTime(st)} 和本地缓存的云端文件时间:${ KeepassAUtil.instance.formatTime(
-              serviceModifyTime
-          )} 一致，开始覆盖云端文件"
+        "云端文件修改时间:${KeepassAUtil.instance.formatTime(st)} 和本地缓存的云端文件时间:${
+          KeepassAUtil.instance.formatTime(
+            serviceModifyTime
+          )
+        } 一致，开始覆盖云端文件"
       )
       return coverFile(util, context, record)
     }
 
     Timber.i(
-        "云端文件修改时间:${ KeepassAUtil.instance.formatTime(st)} 和本地缓存的云端文件时间:${ KeepassAUtil.instance.formatTime(
-            serviceModifyTime
-        )} 不一致，开始下载云端文件"
+      "云端文件修改时间:${KeepassAUtil.instance.formatTime(st)} 和本地缓存的云端文件时间:${
+        KeepassAUtil.instance.formatTime(
+          serviceModifyTime
+        )
+      } 不一致，开始下载云端文件"
     )
 
     // 下载临时文件
     val filePath = getCloudDbTempPath(
-        record.type, "kpa_${StringUtil.keyToHashKey(record.cloudDiskPath)}.kdbx"
+      record.type, "kpa_${StringUtil.keyToHashKey(record.cloudDiskPath)}.kdbx"
     )
     val path = util.downloadFile(context, record, filePath)
     if (path.isNullOrEmpty()) {
-      Timber.e( "下载文件失败，${record.cloudDiskPath}")
+      Timber.e("下载文件失败，${record.cloudDiskPath}")
       toask(context.getString(R.string.sync_db), false, context.getString(R.string.net_error))
       return STATE_DOWNLOAD_FILE_FAIL
     }
 
     val db = File(path)
-    Timber.i( "云端文件下载成功，开始打开数据库，filePath = ${db.path}，fileSize = ${db.length()}")
+    Timber.i("云端文件下载成功，开始打开数据库，filePath = ${db.path}，fileSize = ${db.length()}")
     val kdb = openDb(context, dbPath = path)
     if (kdb == null) {
-      Timber.e( "打开云端数据库失败，将覆盖云端数据库")
+      Timber.e("打开云端数据库失败，将覆盖云端数据库")
       return coverFile(util, context, record)
     }
 
-    if (BaseApp.KDB?.pm == null){
-      Timber.e( "synUploadFile, local db is null")
+    if (BaseApp.KDB?.pm == null) {
+      Timber.e("synUploadFile, local db is null")
       return STATE_FAIL
     }
-    Timber.i( "打开云端数据库成功，开始比对数据")
+    Timber.i("打开云端数据库成功，开始比对数据")
     return compareDb(util, context, record, kdb, BaseApp.KDB!!.pm, true)
   }
 
@@ -266,7 +271,7 @@ object DbSynUtil : SynStateCode {
           delList.add(cloudEntry)
         }
         cloudEntry != localEntry -> {
-          Timber.d( "修改的条目：${cloudEntry.title}")
+          Timber.d("修改的条目：${cloudEntry.title}")
           modifyList.add(Pair(cloudEntry, localEntry))
         }
       }
@@ -280,7 +285,7 @@ object DbSynUtil : SynStateCode {
           newList.add(cloudGroup)
         }
         cloudGroup.parent == null -> {
-          Timber.w( "云端数据库的群组的parent为空，群组名：${cloudGroup.name}")
+          Timber.w("云端数据库的群组的parent为空，群组名：${cloudGroup.name}")
         }
         cloudGroup.parent.id != localGroup.parent.id -> {
           moveList.add(PwDataMap(cloudGroup, localGroup))
@@ -289,42 +294,42 @@ object DbSynUtil : SynStateCode {
           delList.add(cloudGroup)
         }
         cloudGroup != localGroup -> {
-          Timber.d( "修改的群组：${cloudGroup.name}")
+          Timber.d("修改的群组：${cloudGroup.name}")
           modifyList.add(Pair(cloudGroup, localGroup))
         }
       }
     }
 
     Timber.i(
-        "比对数据完成，newListSize = ${newList.size}，moveListSize = ${moveList.size}，delListSize = ${delList.size}，modifyListSize = ${modifyList.size}"
+      "比对数据完成，newListSize = ${newList.size}，moveListSize = ${moveList.size}，delListSize = ${delList.size}，modifyListSize = ${modifyList.size}"
     )
 
     if (newList.size == 0 && moveList.size == 0 && delList.size == 0 && modifyList.size == 0) {
-      Timber.i( "对比结果：无新增，无删除，无移动，无修改，忽略该次上传，并更新缓存的云端文件修改时间")
+      Timber.i("对比结果：无新增，无删除，无移动，无修改，忽略该次上传，并更新缓存的云端文件修改时间")
       updateServiceModifyTime(record)
       return STATE_SUCCEED
     }
 
     if (newList.size > 0) {
       // 本地需要新增的条目
-      Timber.i( "本地需要新增条目")
+      Timber.i("本地需要新增条目")
       localAddNewEntry(newList, localDb)
     }
 
     if (moveList.size > 0) {
       // 本地需要移动的条目
-      Timber.i( "本地需要移动条目")
+      Timber.i("本地需要移动条目")
       moveLocalEntry(moveList, localDb)
     }
 
     if (modifyList.size <= 0) {
       val code = KdbUtil.saveDb(uploadDb = false, isSync = true)
-      Timber.i( "没有冲突的条目，保存数据库${if (code == STATE_SUCCEED) "成功" else "失败"}")
+      Timber.i("没有冲突的条目，保存数据库${if (code == STATE_SUCCEED) "成功" else "失败"}")
       return code
     }
 
     // 有改动提示用户合并数据
-    Timber.i( "有改动提示用户合并数据")
+    Timber.i("有改动提示用户合并数据")
     var code = STATE_FAIL
     val channel = Channel<Int>()
     if (isUpload) {
@@ -340,7 +345,7 @@ object DbSynUtil : SynStateCode {
     job.join()
     job.cancel()
     channel.cancel()
-    Timber.d( "compareDb end point, code = $code")
+    Timber.d("compareDb end point, code = $code")
     return code
   }
 
@@ -427,32 +432,30 @@ object DbSynUtil : SynStateCode {
     }
 
     val res = BaseApp.APP.resources
-    val dialog = MsgDialog.generate {
-      msgTitle = res.getString(R.string.warning)
-      msgContent = res.getString(R.string.file_conflict_msg, sb.toString())
-      showCancelBt = true
-      showCoverBt = false
-      interceptBackKey = true
-      build()
-    }
-    dialog.setEnterBtText(res.getString(R.string.cover_local))
-    dialog.setOnBtClickListener(object : OnBtClickListener {
-      override fun onBtClick(
-        type: Int,
-        view: View
-      ) {
-        GlobalScope.launch {
-
-          // 覆盖本地数据
-          if (type == MsgDialog.TYPE_ENTER) {
-            channel.send(coverModifyEntry(modifyList))
-            return@launch
-          }
-          channel.send(STATE_SUCCEED)
+    Routerfit.create(DialogRouter::class.java).toMsgDialog(
+      msgTitle = ResUtil.getString(R.string.warning),
+      msgContent = res.getString(R.string.file_conflict_msg, sb.toString()),
+      showCoverBt = false,
+      showCancelBt = false,
+      interceptBackKey = true,
+      enterText = ResUtil.getString(R.string.cover_local),
+      btnClickListener = object : OnMsgBtClickListener {
+        override fun onCover(v: Button) {
         }
+
+        override fun onEnter(v: Button) {
+          GlobalScope.launch {
+            // 覆盖本地数据
+            channel.send(coverModifyEntry(modifyList))
+            channel.send(STATE_SUCCEED)
+          }
+        }
+
+        override fun onCancel(v: Button) {
+        }
+
       }
-    })
-    dialog.show()
+    ).show()
   }
 
   /**
@@ -477,40 +480,39 @@ object DbSynUtil : SynStateCode {
       sb.append("\n")
     }
     val res = BaseApp.APP.resources
-    val dialog = MsgDialog.generate {
-      msgTitle = res.getString(string.warning)
-      msgContent = res.getString(string.file_conflict_msg, sb.toString())
-      showCancelBt = false
-      showCoverBt = true
-      interceptBackKey = true
-      build()
-    }
-    dialog.setEnterBtText(res.getString(string.cover_local))
-    dialog.setCoverBtText(res.getString(string.cover_cloud))
-    dialog.setOnBtClickListener(object : OnBtClickListener {
-      override fun onBtClick(
-        type: Int,
-        view: View
-      ) {
-        GlobalScope.launch {
-          // 覆盖本地数据
-          if (type == MsgDialog.TYPE_ENTER) {
+
+    Routerfit.create(DialogRouter::class.java).toMsgDialog(
+      msgTitle = ResUtil.getString(R.string.warning),
+      msgContent = res.getString(R.string.file_conflict_msg, sb.toString()),
+      showCancelBt = false,
+      showCoverBt = true,
+      interceptBackKey = true,
+      enterText = ResUtil.getString(R.string.cover_local),
+      coverText = ResUtil.getString(R.string.cover_cloud),
+      btnClickListener = object : OnMsgBtClickListener {
+        override fun onCover(v: Button) {
+          // 覆盖云端数据
+          GlobalScope.launch {
+            channel.send(coverFile(util, context, dbRecord))
+          }
+        }
+
+        override fun onEnter(v: Button) {
+          GlobalScope.launch {
+            // 覆盖本地数据
             coverModifyEntry(modifyList)
             channel.send(coverFile(util, context, dbRecord))
-            return@launch
           }
-
-          // 覆盖云端数据
-          if (type == MsgDialog.TYPE_COVER) {
-            channel.send(coverFile(util, context, dbRecord))
-            return@launch
-          }
-          channel.send(STATE_SUCCEED)
         }
+
+        override fun onCancel(v: Button) {
+
+        }
+
       }
-    })
-    dialog.show()
-    Timber.d( "showUploadCoverDialog endPoint")
+    ).show()
+
+    Timber.d("showUploadCoverDialog endPoint")
   }
 
   /**
@@ -527,7 +529,7 @@ object DbSynUtil : SynStateCode {
     }
 
     val code = KdbUtil.saveDb(uploadDb = false, isSync = true)
-    Timber.i( "保存数据库${if (code == STATE_SUCCEED) "成功" else "失败"}")
+    Timber.i("保存数据库${if (code == STATE_SUCCEED) "成功" else "失败"}")
     return code
   }
 
@@ -539,14 +541,14 @@ object DbSynUtil : SynStateCode {
     dbPath: String
   ): PwDatabase? {
     val uri = Uri.parse(dbPath)
-    Timber.i( "dbUri = $uri")
+    Timber.i("dbUri = $uri")
     val temp = KDBHandlerHelper.getInstance(context)
-        .openDb(
-            uri, QuickUnLockUtil.decryption(BaseApp.dbPass),
-            if (TextUtils.isEmpty(BaseApp.dbKeyPath)) null else Uri.parse(
-                QuickUnLockUtil.decryption(BaseApp.dbKeyPath)
-            )
+      .openDb(
+        uri, QuickUnLockUtil.decryption(BaseApp.dbPass),
+        if (TextUtils.isEmpty(BaseApp.dbKeyPath)) null else Uri.parse(
+          QuickUnLockUtil.decryption(BaseApp.dbKeyPath)
         )
+      )
     if (temp?.pm == null) {
       return null
     }
@@ -569,11 +571,11 @@ object DbSynUtil : SynStateCode {
     // 处理需要删除文件的情况
     if (needDelFile) {
       if (util.delFile(record.cloudDiskPath!!)) {
-        Timber.i( "删除云端文件成功：${record.cloudDiskPath}")
+        Timber.i("删除云端文件成功：${record.cloudDiskPath}")
         return uploadFile(util, context, record)
       }
 
-      Timber.e( "删除云端文件失败：${record.cloudDiskPath}")
+      Timber.e("删除云端文件失败：${record.cloudDiskPath}")
       return STATE_DEL_FILE_FAIL
     }
 
@@ -589,7 +591,7 @@ object DbSynUtil : SynStateCode {
     record: DbHistoryRecord
   ): Int {
     val b = util.uploadFile(context, record)
-    Timber.d( "上传文件${if (b) "成功" else "失败"}, fileKey = ${record.cloudDiskPath}")
+    Timber.d("上传文件${if (b) "成功" else "失败"}, fileKey = ${record.cloudDiskPath}")
     return if (b) STATE_SUCCEED else STATE_FAIL
   }
 
@@ -600,9 +602,11 @@ object DbSynUtil : SynStateCode {
   ) {
     BaseApp.handler.post {
       HitUtil.toaskShort(
-          "$msg ${if (success) BaseApp.APP.getString(R.string.success) else BaseApp.APP.getString(
-              R.string.fail
-          )} $des"
+        "$msg ${
+          if (success) BaseApp.APP.getString(R.string.success) else BaseApp.APP.getString(
+            R.string.fail
+          )
+        } $des"
       )
     }
   }

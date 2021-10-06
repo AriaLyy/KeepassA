@@ -9,16 +9,17 @@ package com.lyy.keepassa.view.launcher
 
 import android.content.Intent
 import android.text.Html
-import android.view.View
+import android.widget.Button
 import androidx.fragment.app.FragmentActivity
-import com.arialyy.frame.util.ResUtil
+import com.arialyy.frame.router.Routerfit
 import com.lyy.keepassa.R
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.cloud.OneDriveUtil
 import com.lyy.keepassa.util.putArgument
 import com.lyy.keepassa.view.StorageType.ONE_DRIVE
 import com.lyy.keepassa.view.dialog.CloudFileListDialog
-import com.lyy.keepassa.view.dialog.MsgDialog
+import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 
 /**
  * @Author laoyuyu
@@ -55,22 +56,22 @@ class OpenOneDriveDelegate : IOpenDbDelegate {
   }
 
   private fun showHitDialog(onClick: () -> Unit) {
-    val title = ResUtil.getString(R.string.hint)
-    val content = Html.fromHtml(activity!!.resources.getString(R.string.one_drive_hint))
-    val msgDialog = MsgDialog.generate {
-      msgTitle = title
-      msgContent = content
-      build()
-    }
-    msgDialog.setOnBtClickListener(object : MsgDialog.OnBtClickListener {
-      override fun onBtClick(type: Int, view: View) {
-        if (type == MsgDialog.TYPE_ENTER){
-          onClick.invoke()
-          return
+    Routerfit.create(DialogRouter::class.java).toMsgDialog(
+      msgContent = Html.fromHtml(activity!!.resources.getString(R.string.one_drive_hint)),
+      btnClickListener = object : OnMsgBtClickListener {
+        override fun onCover(v: Button) {
         }
+
+        override fun onEnter(v: Button) {
+          onClick.invoke()
+        }
+
+        override fun onCancel(v: Button) {
+        }
+
       }
-    })
-    msgDialog.show()
+    )
+      .show()
   }
 
   /**

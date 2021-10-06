@@ -15,25 +15,29 @@ import android.text.Spanned
 import android.view.Gravity
 import android.view.MenuInflater
 import android.view.View
+import android.widget.Button
 import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ReflectionUtil
+import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.event.DelEvent
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.ClipboardUtil
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.OtpUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
-import com.lyy.keepassa.view.dir.ChooseGroupActivity
 import com.lyy.keepassa.view.dialog.LoadingDialog
-import com.lyy.keepassa.view.dialog.MsgDialog
+import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
+import com.lyy.keepassa.view.dir.ChooseGroupActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -89,25 +93,25 @@ class EntryPopMenu(
         R.id.copy_user -> {
           val userName = KdbUtil.getUserName(entry)
           ClipboardUtil.get()
-              .copyDataToClip(userName)
+            .copyDataToClip(userName)
           HitUtil.toaskShort(context.getString(R.string.hint_copy_user))
         }
         R.id.copy_pw -> {
           val pass = KdbUtil.getPassword(entry)
           ClipboardUtil.get()
-              .copyDataToClip(pass)
+            .copyDataToClip(pass)
           HitUtil.toaskShort(context.getString(R.string.hint_copy_pass))
         }
         R.id.copy_totp -> {
           val totpPass = OtpUtil.getOtpPass(entry as PwEntryV4)
           if (totpPass.second == null) {
             HitUtil.toaskShort(
-                "${context.getString(R.string.create_totp)}${context.getString(R.string.fail)}"
+              "${context.getString(R.string.create_totp)}${context.getString(R.string.fail)}"
             )
           } else {
-            Timber.d( "totp = ${totpPass.second}")
+            Timber.d("totp = ${totpPass.second}")
             ClipboardUtil.get()
-                .copyDataToClip(totpPass.second!!)
+              .copyDataToClip(totpPass.second!!)
             HitUtil.toaskShort(context.getString(R.string.hint_copy_totp))
           }
         }
@@ -127,7 +131,7 @@ class EntryPopMenu(
   private fun delEntry() {
     // 是否直接删除条目
     val deleteDirectly = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-        .getBoolean(context.getString(R.string.set_key_delete_no_recycle_bin), false)
+      .getBoolean(context.getString(R.string.set_key_delete_no_recycle_bin), false)
 
     if (deleteDirectly) {
       loadDialog = LoadingDialog(context)
@@ -146,26 +150,25 @@ class EntryPopMenu(
       Html.fromHtml(context.getString(R.string.hint_del_entry_no_recycle, entry.title))
     }
 
-    val dialog = MsgDialog.generate {
-      msgTitle = this@EntryPopMenu.context.getString(R.string.del_entry)
-      msgContent = msg
-      build()
-    }
-    dialog.setOnBtClickListener(object : MsgDialog.OnBtClickListener {
-      override fun onBtClick(
-        type: Int,
-        view: View
-      ) {
-        if (type == MsgDialog.TYPE_ENTER) {
+    Routerfit.create(DialogRouter::class.java).toMsgDialog(
+      msgTitle = ResUtil.getString(R.string.del_entry),
+      msgContent = msg,
+      btnClickListener = object : OnMsgBtClickListener {
+        override fun onCover(v: Button) {
+        }
+
+        override fun onEnter(v: Button) {
           loadDialog = LoadingDialog(context)
           loadDialog.show()
           handleDelEntry()
-
         }
-        dialog.dismiss()
+
+        override fun onCancel(v: Button) {
+        }
+
       }
-    })
-    dialog.show()
+    )
+      .show()
   }
 
   /**
@@ -194,11 +197,11 @@ class EntryPopMenu(
       }
 
       EventBus.getDefault()
-          .post(DelEvent(entry))
+        .post(DelEvent(entry))
 
       if (code == DbSynUtil.STATE_SUCCEED) {
         HitUtil.toaskShort(
-            "${context.getString(R.string.del_entry)}${context.getString(R.string.success)}"
+          "${context.getString(R.string.del_entry)}${context.getString(R.string.success)}"
         )
       } else {
         HitUtil.toaskShort(context.getString(R.string.save_db_fail))

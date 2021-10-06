@@ -16,12 +16,14 @@ import android.view.View
 import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.FragmentActivity
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.FileUtil
 import com.arialyy.frame.util.ReflectionUtil
+import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.security.ProtectedBinary
 import com.lyy.keepassa.R
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.view.dialog.ImgViewerDialog
-import com.lyy.keepassa.view.dialog.MsgDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -68,17 +70,16 @@ class EntryDetailFilePopMenu(
           onDownloadClick?.onDownload(key, file)
         }
         R.id.open_whit_text -> {
-          val msgDialog = MsgDialog.generate {
-            msgTitle = this@EntryDetailFilePopMenu.context.getString(R.string.txt_viewer)
-            msgContent = String(file.data.readBytes())
+          Routerfit.create(DialogRouter::class.java).toMsgDialog(
+            msgTitle = ResUtil.getString(R.string.txt_viewer),
+            msgContent = String(file.data.readBytes()),
             showCancelBt = false
-            build()
-          }
-          msgDialog.show()
+          )
+            .show()
         }
         R.id.open_whit_img -> {
           val bytes = file.data.readBytes()
-          if (bytes.isNotEmpty()){
+          if (bytes.isNotEmpty()) {
             val imgDialog = ImgViewerDialog(bytes)
             imgDialog.show(context.supportFragmentManager, "img_dialog")
           }

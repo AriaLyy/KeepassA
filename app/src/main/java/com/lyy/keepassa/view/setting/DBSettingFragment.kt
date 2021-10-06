@@ -101,7 +101,7 @@ class DBSettingFragment : PreferenceFragmentCompat() {
    */
   private fun setOutDb() {
     val outDb = findPreference<ListPreference>(getString(R.string.set_key_out_db))
-    outDb!!.setOnPreferenceChangeListener { preference, newValue ->
+    outDb!!.setOnPreferenceChangeListener { _, newValue ->
       // todo 导出文件
       when (newValue as Int) {
         0 -> {

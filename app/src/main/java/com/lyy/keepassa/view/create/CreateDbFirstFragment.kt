@@ -15,10 +15,13 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.collection.arrayMapOf
 import androidx.lifecycle.ViewModelProvider
+import com.arialyy.frame.router.Routerfit
+import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentCreateDbFirstBinding
 import com.lyy.keepassa.event.DbPathEvent
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
@@ -32,7 +35,6 @@ import com.lyy.keepassa.view.create.auth.AuthFlowFactory
 import com.lyy.keepassa.view.create.auth.IAuthCallback
 import com.lyy.keepassa.view.create.auth.IAuthFlow
 import com.lyy.keepassa.view.create.auth.OnNextFinishCallback
-import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.widget.BubbleTextView
 import com.lyy.keepassa.widget.BubbleTextView.OnIconClickListener
 import timber.log.Timber
@@ -65,13 +67,12 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
         index: Int
       ) {
         if (index == 2) {
-          val dialog = MsgDialog.generate {
-            msgTitle = this@CreateDbFirstFragment.getString(R.string.hint)
-            msgContent = this@CreateDbFirstFragment.getString(R.string.help_create_db_path)
-            showCancelBt = false
-            build()
-          }
-          dialog.show()
+          Routerfit.create(DialogRouter::class.java)
+            .toMsgDialog(
+              msgContent = ResUtil.getString(R.string.help_create_db_path),
+              showCancelBt = false
+            )
+            .show()
         }
       }
     })
@@ -117,14 +118,14 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
    */
   fun getDbName(): String {
     module.dbName = binding.dbName.text.toString()
-        .trim()
+      .trim()
     return module.dbName
   }
 
   fun showSaveTypeDialog() {
     pathTypeDialog = PathTypeDialog(
-        binding.dbName.text.toString()
-            .trim()
+      binding.dbName.text.toString()
+        .trim()
     )
     pathTypeDialog.showNow(childFragmentManager, "PathDialog")
     pathTypeDialog.setOnDismissListener {
@@ -205,7 +206,7 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
    */
   fun startNext(): Boolean {
     val temp = binding.dbName.text.toString()
-        .trim()
+      .trim()
     if (TextUtils.isEmpty(temp)) {
       HitUtil.toaskShort(getString(R.string.error_db_name_null))
       return false

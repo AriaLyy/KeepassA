@@ -15,25 +15,29 @@ import android.text.Spanned
 import android.view.Gravity
 import android.view.MenuInflater
 import android.view.View
+import android.widget.Button
 import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ReflectionUtil
+import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwDatabaseV4
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.event.DelEvent
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
-import com.lyy.keepassa.view.dir.ChooseGroupActivity
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.ModifyGroupDialog
-import com.lyy.keepassa.view.dialog.MsgDialog
+import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
+import com.lyy.keepassa.view.dir.ChooseGroupActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -64,10 +68,10 @@ class GroupPopMenu(
     inflater.inflate(R.menu.pop_group_summary, popup.menu)
 
     popup.menu.findItem(R.id.undo)
-        .isVisible = isInRecycleBin
+      .isVisible = isInRecycleBin
     // 回收站不允许删除
     popup.menu.findItem(R.id.del)
-        .isVisible = !(BaseApp.KDB!!.pm.recycleBin != null && BaseApp.KDB!!.pm.recycleBin == pwGroup)
+      .isVisible = !(BaseApp.KDB!!.pm.recycleBin != null && BaseApp.KDB!!.pm.recycleBin == pwGroup)
 
     // 以下代码为强制显示icon
     val mPopup = ReflectionUtil.getField(PopupMenu::class.java, "mPopup")
@@ -110,7 +114,7 @@ class GroupPopMenu(
   private fun delGroup() {
     // 是否直接删除条目
     val deleteDirectly = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-        .getBoolean(context.getString(R.string.set_key_delete_no_recycle_bin), false)
+      .getBoolean(context.getString(R.string.set_key_delete_no_recycle_bin), false)
 
     if (deleteDirectly) {
       loadDialog = LoadingDialog(context)
@@ -123,32 +127,32 @@ class GroupPopMenu(
         Html.fromHtml(context.getString(R.string.hint_del_group_no_recycle, pwGroup.name))
       } else {
         Html.fromHtml(
-            context.getString(R.string.hint_del_group, pwGroup.name, pwGroup.name)
+          context.getString(R.string.hint_del_group, pwGroup.name, pwGroup.name)
         )
       }
     } else {
       Html.fromHtml(context.getString(R.string.hint_del_group_no_recycle, pwGroup.name))
     }
 
-    val dialog = MsgDialog.generate {
-      msgTitle = this@GroupPopMenu.context.getString(R.string.del_group)
-      msgContent = msg
-      build()
-    }
-    dialog.setOnBtClickListener(object : MsgDialog.OnBtClickListener {
-      override fun onBtClick(
-        type: Int,
-        view: View
-      ) {
-        if (type == MsgDialog.TYPE_ENTER) {
+    Routerfit.create(DialogRouter::class.java).toMsgDialog(
+      msgTitle = ResUtil.getString(R.string.del_group),
+      msgContent = msg,
+      btnClickListener = object : OnMsgBtClickListener {
+        override fun onCover(v: Button) {
+        }
+
+        override fun onEnter(v: Button) {
           loadDialog = LoadingDialog(context)
           loadDialog.show()
           handleDelGroup()
         }
-        dialog.dismiss()
+
+        override fun onCancel(v: Button) {
+        }
+
       }
-    })
-    dialog.show()
+    )
+      .show()
   }
 
   /**
@@ -176,12 +180,12 @@ class GroupPopMenu(
         return@withContext DbSynUtil.STATE_SAVE_DB_FAIL
       }
       EventBus.getDefault()
-          .post(DelEvent(pwGroup))
+        .post(DelEvent(pwGroup))
 
 
       if (code == DbSynUtil.STATE_SUCCEED) {
         HitUtil.toaskShort(
-            "${context.getString(R.string.del_group)}${context.getString(R.string.success)}"
+          "${context.getString(R.string.del_group)}${context.getString(R.string.success)}"
         )
       } else {
         HitUtil.toaskShort(context.getString(R.string.save_db_fail))
