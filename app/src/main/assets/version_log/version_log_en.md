@@ -1,3 +1,7 @@
+#### 2.1.5 (2021/10/06)
+- 【New】Polish
+- 【Fix】After modifying the data, the database cannot be opened
+
 #### 2.1.4 (2021/9/2)
 - 【New】German translation
 - 【Optimize】Update some multilingual translations

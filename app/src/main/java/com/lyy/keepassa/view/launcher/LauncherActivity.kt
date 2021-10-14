@@ -41,9 +41,16 @@ import com.lyy.keepassa.util.PermissionsUtil
 import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.main.MainActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
+import com.tencent.bugly.crashreport.CrashReport
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import timber.log.Timber
+import java.lang.NullPointerException
 
 @Route(path = "/launcher/activity")
 class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
@@ -94,29 +101,13 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
       .get(LauncherModule::class.java)
     initUI()
     module.securityCheck(this)
-
-    val b = PermissionsUtil.miuiCanBackgroundStart()
-    if (!b) {
-      Routerfit.create(DialogRouter::class.java).toMsgDialog(
-        msgTitle = ResUtil.getString(R.string.open_permissions),
-        msgContent = ResUtil.getString(R.string.miui_permissions),
-        // btnClickListener = object : OnMsgBtClickListener {
-        //   override fun onCover(v: Button) {
-        //   }
-        //
-        //   override fun onEnter(v: Button) {
-        //     PermissionsUtil.miuiStartPermissionsUI(this@LauncherActivity)
-        //   }
-        //
-        //   override fun onCancel(v: Button) {
-        //   }
-        //
-        // }
-      ).show()
-    }
-
-
-    Timber.d("能否从后台启动：${b}")
+//    MainScope().launch {
+//      withContext(Dispatchers.IO){
+//        delay(2000)
+//        CrashReport.testJavaCrash()
+//      }
+//    }
+//    throw NullPointerException("bugly测试")
   }
 
   override fun useAnim(): Boolean {
