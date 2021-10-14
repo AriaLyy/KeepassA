@@ -39,7 +39,7 @@ interface DialogRouter {
     @RouterArgName(name = "enterBtTextColor") enterBtTextColor: Int = R.color.text_blue_color,
     @RouterArgName(name = "cancelBtTextColor") cancelBtTextColor: Int = R.color.text_gray_color,
     @RouterArgName(name = "coverBtTextColor") coverBtTextColor: Int = R.color.text_blue_color,
-    @RouterArgName(name = "btnClickListener") btnClickListener: OnMsgBtClickListener? = null,
+    @RouterArgName(name = "btnClickListener", isObject = true) btnClickListener: OnMsgBtClickListener? = null,
     @RouterArgName(name = "msgTitleEndIcon", isObject = true) msgTitleEndIcon: Drawable? = null,
     @RouterArgName(name = "msgTitleStartIcon", isObject = true) msgTitleStartIcon: Drawable? = null,
     @RouterArgName(name = "showCountDownTimer") showCountDownTimer: Pair<Boolean, Int> = Pair(
