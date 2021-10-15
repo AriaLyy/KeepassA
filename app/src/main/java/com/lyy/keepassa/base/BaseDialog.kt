@@ -9,8 +9,10 @@ package com.lyy.keepassa.base
 
 import android.content.Context
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.lifecycleScope
 import com.arialyy.frame.base.FrameDialog
 import com.lyy.keepassa.util.LanguageUtil
+import kotlinx.coroutines.launch
 
 /**
  * @Author laoyuyu
@@ -21,5 +23,17 @@ abstract class BaseDialog<VB : ViewDataBinding>:FrameDialog<VB>() {
 
   override fun onAttach(context: Context) {
     super.onAttach(LanguageUtil.setLanguage(context, BaseApp.currentLang))
+  }
+
+  override fun show() {
+    lifecycleScope.launch {
+      super.show()
+    }
+  }
+
+  override fun dismiss() {
+    lifecycleScope.launch {
+      super.dismiss()
+    }
   }
 }
