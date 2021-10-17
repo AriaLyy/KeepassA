@@ -1,3 +1,7 @@
+#### 2.1.6 (2021/10/17)
+- 【Fix】Some carsh bug
+- 【Optimize】Logic of expiration time setting
+
 #### 2.1.5 (2021/10/06)
 - 【New】Polish
 - 【Fix】After modifying the data, the database cannot be opened
