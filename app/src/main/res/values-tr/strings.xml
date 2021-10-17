@@ -1,2 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="hint_enter_password">Şifreyi onayla</string>
+    <string name="encrypt_type">Şifreleme</string>
+    <string name="encrypt_type_1">Sadece şifre</string>
+    <string name="encrypt_type_2">Şifre + anahtar</string>
+    <string name="choose_pass_key">Anahtar seç</string>
+    <string name="hint_set_pass_key">Lütfen bir anahtar seçin</string>
+    <string name="db">Veritabanı</string>
+    <string name="password">Şifre</string>
+    <string name="key">Gizli anahtar</string>
+    <string name="key1">Gizli anahtar: %s</string>
+    <string name="open">Kilidi aç</string>
+    <string name="helper_create_pass">Karışık şifre önerilir (büyük ve küçük harf + sayılar + semboller)</string>
+    <string name="open_db">Veritabanını aç</string>
+    <string name="db_name">Veritabanı adını girin</string>
+    <string name="create_db">Veritabanı oluştur</string>
+    <string name="next">Sonraki adım</string>
+    <string name="up">Önceki</string>
+    <string name="hint_set_password">Şifreyi belirle</string>
+    <string name="help_create_db">Varsayılan olarak v4 KeepPass veritabanı oluşturun</string>
+    <string name="help_create_group">16 veya daha az karakterden oluşan bir grup adı seçin</string>
+    <string name="hint_input_password">6-16 basamaklı bir şifre girin</string>
+    <string name="pass_key">Dosya anahtarı</string>
+</resources>
