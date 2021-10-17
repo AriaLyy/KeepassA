@@ -18,21 +18,30 @@ import android.widget.DatePicker
 import android.widget.FrameLayout
 import android.widget.TimePicker
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.alibaba.android.arouter.facade.annotation.Autowired
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.util.DpUtils
 import com.google.android.material.tabs.TabLayoutMediator
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogTimerBinding
 import com.lyy.keepassa.event.TimeEvent
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 
 /**
  * 时间选择器
  */
-class TimerDialog : BaseDialog<DialogTimerBinding>(), View.OnClickListener {
+@Route(path = "/dialog/timeChange")
+class TimeChangeDialog : BaseDialog<DialogTimerBinding>(), View.OnClickListener {
   private lateinit var vpAdapter: VpAdapter
   private val fragments = arrayListOf<Fragment>()
+
+  var timeFlow =  MutableStateFlow<TimeEvent?>(null)
 
   override fun setLayoutId(): Int {
     return R.layout.dialog_timer
@@ -45,6 +54,7 @@ class TimerDialog : BaseDialog<DialogTimerBinding>(), View.OnClickListener {
     fragments.add(TimerPickerFragment())
     vpAdapter = VpAdapter(fragments, this)
     binding.vp.adapter = vpAdapter
+    binding.vp.offscreenPageLimit = 2
     TabLayoutMediator(binding.tabLayout, binding.vp) { tab, position ->
       tab.text = titles[position]
     }.attach()
@@ -70,7 +80,9 @@ class TimerDialog : BaseDialog<DialogTimerBinding>(), View.OnClickListener {
         } else {
           TimeEvent(date.year, date.month + 1, date.dayOfMonth, time.hour, time.minute)
         }
-        EventBus.getDefault().post(event)
+        lifecycleScope.launch {
+          timeFlow.emit(event)
+        }
         dismiss()
       }
     }
@@ -96,13 +108,15 @@ class TimerDialog : BaseDialog<DialogTimerBinding>(), View.OnClickListener {
   }
 
   class DatePickerFragment : Fragment() {
-    lateinit var datePicker: DatePicker
+    val datePicker by lazy {
+      DatePicker(requireContext())
+    }
+
     override fun onCreateView(
       inflater: LayoutInflater,
       container: ViewGroup?,
       savedInstanceState: Bundle?
     ): View {
-      datePicker = DatePicker(requireContext())
       datePicker.layoutParams = FrameLayout.LayoutParams(
         FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT
       )
@@ -111,13 +125,15 @@ class TimerDialog : BaseDialog<DialogTimerBinding>(), View.OnClickListener {
   }
 
   class TimerPickerFragment : Fragment() {
-    lateinit var timerPicker: TimePicker
+    val timerPicker by lazy {
+      TimePicker(requireContext())
+    }
+
     override fun onCreateView(
       inflater: LayoutInflater,
       container: ViewGroup?,
       savedInstanceState: Bundle?
     ): View {
-      timerPicker = TimePicker(context)
       timerPicker.layoutParams = FrameLayout.LayoutParams(
         FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT
       )

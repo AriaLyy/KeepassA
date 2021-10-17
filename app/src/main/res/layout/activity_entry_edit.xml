@@ -40,7 +40,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:hint="@string/hint_input_title"
-              android:imeOptions="actionNext"/>
+              android:imeOptions="actionNext" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -60,7 +60,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:hint="@string/hint_input_user_name"
-              android:imeOptions="actionNext"/>
+              android:imeOptions="actionNext" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -96,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/password"
                 android:imeOptions="actionNext"
-                android:inputType="textPassword"/>
+                android:inputType="textPassword" />
 
           </com.google.android.material.textfield.TextInputLayout>
 
@@ -130,7 +130,7 @@
               android:layout_height="wrap_content"
               android:hint="@string/hint_enter_password"
               android:imeOptions="actionDone"
-              android:inputType="textPassword"/>
+              android:inputType="textPassword" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -149,7 +149,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:hint="@string/hint_input_url"
-              android:imeOptions="actionNext"/>
+              android:imeOptions="actionNext" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -272,7 +272,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:hint="@string/hint_input_tag"
-              android:imeOptions="actionNext"/>
+              android:imeOptions="actionNext" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -292,20 +292,41 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:hint="@string/hint_input_cover_url"
-              android:imeOptions="actionNext"/>
+              android:imeOptions="actionNext" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <CheckBox
+        <LinearLayout
             android:id="@+id/lose_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_marginStart="25dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:textColor="@color/text_black_color"
-            android:textSize="@dimen/text_size_normal"
-            android:visibility="gone" />
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+          <CheckBox
+              android:id="@+id/cbLoseTime"
+              android:layout_gravity="center_vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/text_black_color"
+              android:textSize="@dimen/text_size_normal" />
+
+          <androidx.appcompat.widget.AppCompatImageView
+              android:layout_marginStart="20dp"
+              android:id="@+id/ivLoseTimeClick"
+              android:background="@drawable/ripple_primary_selector"
+              android:clickable="true"
+              android:focusable="true"
+              android:src="@drawable/ic_detail_edit"
+              android:layout_width="wrap_content"
+              android:layout_gravity="center_vertical|end"
+              android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
 
         <TextView
             android:id="@+id/add_more"

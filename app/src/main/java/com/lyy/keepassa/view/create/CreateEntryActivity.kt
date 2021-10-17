@@ -9,6 +9,7 @@
 
 package com.lyy.keepassa.view.create
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
@@ -23,6 +24,7 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
@@ -47,7 +49,6 @@ import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
 import com.lyy.keepassa.event.DelAttrFileEvent
 import com.lyy.keepassa.event.DelAttrStrEvent
 import com.lyy.keepassa.event.EditorEvent
-import com.lyy.keepassa.event.TimeEvent
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
@@ -61,7 +62,6 @@ import com.lyy.keepassa.view.dialog.AddMoreDialog
 import com.lyy.keepassa.view.dialog.CreateTotpDialog
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
-import com.lyy.keepassa.view.dialog.TimerDialog
 import com.lyy.keepassa.view.dir.ChooseGroupActivity
 import com.lyy.keepassa.view.icon.IconBottomSheetDialog
 import com.lyy.keepassa.view.icon.IconItemCallback
@@ -73,6 +73,8 @@ import com.lyy.keepassa.widget.expand.AttrFileItemView
 import com.lyy.keepassa.widget.expand.AttrStrItemView
 import com.lyy.keepassa.widget.expand.ExpandFileAttrView
 import com.lyy.keepassa.widget.expand.ExpandStrAttrView
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
@@ -181,12 +183,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
 
     // 处理快捷方式进入的情况
     if (isShortcuts) {
-//      if (BaseApp.isLocked) {
-//        Timber.w("数据库已锁定，进入解锁界面")
-//        KeepassAUtil.instance.reOpenDb(this)
-//        finish()
-//        return
-//      }
       type = TYPE_NEW_ENTRY
     }
 
@@ -237,16 +233,8 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
    * 设置各种事件
    */
   private fun setWidgetListener() {
-    binding.loseTime.setOnCheckedChangeListener { _, isChecked ->
-      if (isChecked) {
-        val dialog = TimerDialog()
-        dialog.setOnDismissListener {
-          if (module.loseDate == null) {
-            binding.loseTime.isChecked = false
-          }
-        }
-        dialog.show(supportFragmentManager, "timer_dialog")
-      }
+    binding.cbLoseTime.setOnCheckedChangeListener { _, isChecked ->
+      pwEntry.setExpires(isChecked)
     }
     binding.noticeLayout.setOnClickListener {
       MarkDownEditorActivity.turnMarkDownEditor(
@@ -267,6 +255,27 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
           }
         }
       })
+  }
+
+  /**
+   * time change dialog
+   */
+  private fun showTimeChangeDialog() {
+    val dialog = Routerfit.create(DialogRouter::class.java).toTimeChangeDialog()
+    lifecycleScope.launch {
+      dialog.timeFlow.collectLatest { event ->
+        if (event == null) {
+          return@collectLatest
+        }
+        val time = "${event.year}/${event.month}/${event.dayOfMonth} ${event.hour}:${event.minute}"
+        val dateTime = DateTime(
+          event.year, event.month, event.dayOfMonth, event.hour, event.minute, DateTimeZone.UTC
+        )
+        module.loseDate = dateTime.toDate()
+        binding.cbLoseTime.text = time
+      }
+    }
+    dialog.show(supportFragmentManager, "timer_dialog")
   }
 
   /**
@@ -294,10 +303,11 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     }
 
     val v4Entry = pwEntry
+    module.loseDate = v4Entry.expiryTime
     if (v4Entry.expires()) {
       binding.loseTime.visibility = View.VISIBLE
-      binding.loseTime.isChecked = v4Entry.expires()
-      binding.loseTime.text = KeepassAUtil.instance.formatTime(v4Entry.expiryTime)
+      binding.cbLoseTime.isChecked = v4Entry.expires()
+      binding.cbLoseTime.text = KeepassAUtil.instance.formatTime(v4Entry.expiryTime)
     }
     if (v4Entry.tags.isNotEmpty()) {
       binding.tag.visibility = View.VISIBLE
@@ -347,7 +357,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
                 showOtherItem(binding.coverUrlLayout)
               }
               R.drawable.ic_lose_time -> {
-                showOtherItem(binding.loseTime)
+                showLoseTimeLayout()
               }
               R.drawable.ic_notice -> {
                 MarkDownEditorActivity.turnMarkDownEditor(
@@ -397,6 +407,25 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       }
       addMoreDialog!!.notifyData()
       addMoreDialog!!.show(supportFragmentManager, "add_more_dialog")
+    }
+  }
+
+  @SuppressLint("SetTextI18n")
+  private fun showLoseTimeLayout() {
+    binding.loseTime.apply {
+      visibility = View.VISIBLE
+      requestFocus()
+      if (module.loseDate == null) {
+        module.loseDate = DateTime(System.currentTimeMillis()).toDate()
+      }
+      val lt = DateTime(module.loseDate)
+      binding.cbLoseTime.text = KeepassAUtil.instance.formatTime(lt.toDate())
+    }
+    binding.ivLoseTimeClick.setOnClickListener {
+      showTimeChangeDialog()
+    }
+    if (binding.otherLine.visibility == View.GONE) {
+      binding.otherLine.visibility = View.VISIBLE
     }
   }
 
@@ -593,20 +622,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       showOtherItem(binding.noticeLayout, false)
       binding.notice.text = module.noteStr
     }
-  }
-
-  /**
-   * 获取时间事件
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onTimeEvent(event: TimeEvent) {
-    val time = "${event.year}/${event.month}/${event.dayOfMonth} ${event.hour}:${event.minute}"
-    val dateTime = DateTime(
-      event.year, event.month, event.dayOfMonth, event.hour, event.minute, DateTimeZone.UTC
-    )
-    module.loseDate = dateTime.toDate()
-    binding.loseTime.text = time
-    binding.loseTime.isChecked = true
   }
 
   /**

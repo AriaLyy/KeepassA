@@ -189,7 +189,7 @@
     </activity>
 
     <activity
-        android:name=".router.RouterActivity"
+        android:name=".router.DeeplinkActivity"
         android:noHistory="true"
         >
       <intent-filter>

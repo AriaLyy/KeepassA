@@ -29,6 +29,7 @@ import com.lyy.keepassa.databinding.FragmentFingerprintDesxBinding
 import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.VibratorUtil
+import timber.log.Timber
 import java.lang.Exception
 
 /**
@@ -182,7 +183,7 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
       )
     } catch (e: Exception) {
       keyStoreUtil.deleteKeyStore()
-      e.printStackTrace()
+      Timber.e(e)
     }
 
   }
