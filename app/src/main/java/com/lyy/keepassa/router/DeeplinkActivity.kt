@@ -21,7 +21,7 @@ import java.net.URLDecoder
  * @Description
  * @Date 2021/7/11
  **/
-class RouterActivity : AppCompatActivity() {
+class DeeplinkActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

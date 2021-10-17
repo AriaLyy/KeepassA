@@ -15,7 +15,7 @@ import java.io.Serializable
  * @author laoyuyu
  * @date 2021/9/5
  */
-interface OnMsgBtClickListener : Serializable {
+interface OnMsgBtClickListener {
 
   fun onCover(v: Button)
 

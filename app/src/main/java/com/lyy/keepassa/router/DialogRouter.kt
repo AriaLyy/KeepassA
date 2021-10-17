@@ -11,8 +11,11 @@ import android.graphics.drawable.Drawable
 import com.arialyy.frame.router.RouterArgName
 import com.arialyy.frame.router.RouterPath
 import com.lyy.keepassa.R
+import com.lyy.keepassa.event.TimeEvent
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
+import com.lyy.keepassa.view.dialog.TimeChangeDialog
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
  * @Author laoyuyu
@@ -39,7 +42,10 @@ interface DialogRouter {
     @RouterArgName(name = "enterBtTextColor") enterBtTextColor: Int = R.color.text_blue_color,
     @RouterArgName(name = "cancelBtTextColor") cancelBtTextColor: Int = R.color.text_gray_color,
     @RouterArgName(name = "coverBtTextColor") coverBtTextColor: Int = R.color.text_blue_color,
-    @RouterArgName(name = "btnClickListener", isObject = true) btnClickListener: OnMsgBtClickListener? = null,
+    @RouterArgName(
+      name = "btnClickListener",
+      isObject = true
+    ) btnClickListener: OnMsgBtClickListener? = null,
     @RouterArgName(name = "msgTitleEndIcon", isObject = true) msgTitleEndIcon: Drawable? = null,
     @RouterArgName(name = "msgTitleStartIcon", isObject = true) msgTitleStartIcon: Drawable? = null,
     @RouterArgName(name = "showCountDownTimer") showCountDownTimer: Pair<Boolean, Int> = Pair(
@@ -47,4 +53,10 @@ interface DialogRouter {
       5
     )
   ): MsgDialog
+
+  /**
+   * 日期选择对话框
+   */
+  @RouterPath(path = "/dialog/timeChange")
+  fun toTimeChangeDialog(): TimeChangeDialog
 }

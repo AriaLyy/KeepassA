@@ -116,7 +116,7 @@ class FingerprintActivity : BaseActivity<ActivityFingerprintBinding>() {
           }
 
           override fun onCancel(v: Button) {
-            finishAfterTransition()
+            super@FingerprintActivity.finishAfterTransition()
           }
 
         }
