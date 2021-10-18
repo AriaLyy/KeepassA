@@ -380,9 +380,11 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       binding.time2.setOnClickListener { HitUtil.toaskShort(getString(R.string.modify_time)) }
 
       // 标题横线
-      val paint = binding.title.paint
-      paint.flags = Paint.STRIKE_THRU_TEXT_FLAG
-      paint.isAntiAlias = true
+      if (pwEntry.expiryTime.before(Date(System.currentTimeMillis()))){
+        val paint = binding.title.paint
+        paint.flags = Paint.STRIKE_THRU_TEXT_FLAG
+        paint.isAntiAlias = true
+      }
 
     } else {
       binding.time.text =

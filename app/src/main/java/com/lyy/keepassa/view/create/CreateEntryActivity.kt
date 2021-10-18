@@ -234,6 +234,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
    */
   private fun setWidgetListener() {
     binding.cbLoseTime.setOnCheckedChangeListener { _, isChecked ->
+      module.expires = isChecked
       pwEntry.setExpires(isChecked)
     }
     binding.noticeLayout.setOnClickListener {
@@ -255,6 +256,12 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
           }
         }
       })
+
+    // lose time modify
+    binding.ivLoseTimeClick.setOnClickListener {
+      Timber.d("ivLoseTimeClick ")
+      showTimeChangeDialog()
+    }
   }
 
   /**
@@ -308,6 +315,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       binding.loseTime.visibility = View.VISIBLE
       binding.cbLoseTime.isChecked = v4Entry.expires()
       binding.cbLoseTime.text = KeepassAUtil.instance.formatTime(v4Entry.expiryTime)
+      module.expires = v4Entry.expires()
     }
     if (v4Entry.tags.isNotEmpty()) {
       binding.tag.visibility = View.VISIBLE
@@ -420,9 +428,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       }
       val lt = DateTime(module.loseDate)
       binding.cbLoseTime.text = KeepassAUtil.instance.formatTime(lt.toDate())
-    }
-    binding.ivLoseTimeClick.setOnClickListener {
-      showTimeChangeDialog()
     }
     if (binding.otherLine.visibility == View.GONE) {
       binding.otherLine.visibility = View.VISIBLE

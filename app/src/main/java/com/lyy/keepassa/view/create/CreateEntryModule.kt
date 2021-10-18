@@ -49,6 +49,7 @@ class CreateEntryModule : BaseModule() {
   var loseDate: Date? = null // 失效时间
   var userNameCache = arrayListOf<String>()
   var noteStr: CharSequence = ""
+  var expires:Boolean = false
 
   /**
    * Traverse database and get all userName
@@ -113,7 +114,7 @@ class CreateEntryModule : BaseModule() {
       Timber.d( "notes = $noteStr")
       entry.setNotes(noteStr.toString(), BaseApp.KDB.pm)
     }
-    entry.setExpires(loseDate != null)
+    entry.setExpires(expires)
     if (loseDate != null) {
       entry.expiryTime = loseDate
     }
