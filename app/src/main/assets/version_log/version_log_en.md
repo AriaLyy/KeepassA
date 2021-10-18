@@ -1,3 +1,7 @@
+#### 2.1.7（2021/10/18）
+- 【Fix】Dialog layout is out of order
+- 【Fix】Abnormal expiration time display problem
+
 #### 2.1.6 (2021/10/17)
 - 【Fix】Some carsh bug
 - 【Optimize】Logic of expiration time setting

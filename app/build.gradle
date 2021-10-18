@@ -21,8 +21,8 @@ android {
     applicationId "com.lyy.keepassa"
     minSdkVersion rootProject.ext.minSdkVersion
     targetSdkVersion rootProject.ext.targetSdkVersion
-    versionCode 42
-    versionName "2.1.6"
+    versionCode 43
+    versionName "2.1.7"
     multiDexEnabled true
     vectorDrawables.useSupportLibrary = true
 
@@ -134,7 +134,8 @@ rebuildChannel {
   channelFile = file("${project.getProjectDir()}/channel")
   //  baseDebugApk = 已有Debug APK
   // 已有Release APK
-  baseReleaseApk = new File("${project.buildDir}/AndResGuardFinal.apk")
+//  baseReleaseApk = new File("${project.buildDir}/AndResGuardFinal.apk")
+  baseReleaseApk = new File("${project.buildDir}/outputs/apk/dev/release/app-dev-release.apk")
   //默认为new File(project.buildDir, "rebuildChannel/debug")
   //  debugOutputDir = Debug渠道包输出目录
   //默认为new File(project.buildDir, "rebuildChannel/release")
@@ -150,7 +151,10 @@ rebuildChannel {
 // 这几行代码表示reBuildChannel任务是依赖于resguardRelease任务的，也就是说先执行完资源混淆后再执行多渠道打包。
 afterEvaluate {
   tasks.getByName('reBuildChannel') {
-    dependsOn('resguardRelease')
+    dependsOn(assembleRelease) // 暂时使用这个
+
+    // 不要使用，1.2.21打包出来的apk，消息对话框布局错乱
+//    dependsOn('resguardRelease')
   }
 }
 
@@ -330,4 +334,5 @@ dependencies {
 
 }
 
-apply from: 'AndResGuard.gradle'
+// 不要使用，1.2.21打包出来的apk，消息对话框布局错乱
+//apply from: 'AndResGuard.gradle'

@@ -25,6 +25,7 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.view.SimpleEntryAdapter.Holder
+import java.util.Date
 
 /**
  * list适配器
@@ -62,7 +63,10 @@ class SimpleEntryAdapter(
     } else if (item.obj is PwEntry) {
       IconUtil.setEntryIcon(context, item.obj as PwEntry, holder!!.icon)
       val paint = holder.title.paint
-      if ((item.obj as PwEntry).expires()){
+      if ((item.obj as PwEntry).expires()
+        && (item.obj as PwEntry).expiryTime != null
+        && (item.obj as PwEntry).expiryTime.before(Date(System.currentTimeMillis()))
+      ){
         paint.flags = Paint.STRIKE_THRU_TEXT_FLAG
         paint.isAntiAlias = true
       }else{

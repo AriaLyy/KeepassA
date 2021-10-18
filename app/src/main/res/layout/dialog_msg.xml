@@ -44,7 +44,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/scroll"
+        android:id="@+id/msgScroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/vLine">
@@ -101,7 +101,7 @@
         app:constraint_referenced_ids="cover,enter,cancel"
         app:flow_horizontalStyle="packed"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scroll" />
+        app:layout_constraintTop_toBottomOf="@+id/msgScroll" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
