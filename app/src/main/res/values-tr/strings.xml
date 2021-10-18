@@ -22,4 +22,17 @@
     <string name="help_create_group">16 veya daha az karakterden oluşan bir grup adı seçin</string>
     <string name="hint_input_password">6-16 basamaklı bir şifre girin</string>
     <string name="pass_key">Dosya anahtarı</string>
+    <string name="hint_select_db_path">Veri kaydetme yöntemini ayarlamak için tıklayın</string>
+    <string name="hint_select_path_type">Veritabanınızı nereye kaydedeceğinizi seçin</string>
+    <string name="error_db_name_null">Lütfen bir veritabanı adı girin</string>
+    <string name="done">Tamam</string>
+    <string name="enter">Kaydet</string>
+    <string name="cancel">İptal et</string>
+    <string name="hint">İleti</string>
+    <string name="help_create_db_path">Dropbox ve WebDAV gibi bulut yollarını kullanmanız önerilir. Bu veritabanınızı bulutla otomatik olarak senkronize ederek veritabanını diğer cihazlarda kullanmayı kolaylaştırır.
+\n Veritabanı AES-256 kullanılarak şifrelenir. Şifreniz olmadan, kimse veritabanınıza giremez.</string>
+    <string name="help_pass_type">Sadece şifre kullan:
+\n Veritabanına girmek için sadece şifreniz gerekli；
+\n Şifre + anahtar:
+\n Veritabanına girmek için bir şifre ve bir anahtar dosyası seçmeniz gerekir.</string>
 </resources>
