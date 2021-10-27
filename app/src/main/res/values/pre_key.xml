@@ -21,6 +21,7 @@
   <string name="set_key_fillet_bg_icon" translatable="false">set_key_fillet_bg_icon</string>
   <string name="set_key_show_state_bar" translatable="false">set_key_show_state_bar</string>
   <string name="set_key_loading_anim" translatable="false">set_key_close_load_anim</string>
+  <string name="set_key_main_show_totp_tab" translatable="false">set_key_main_show_totp_tab</string>
   <string name="set_key_auto_lock_database" translatable="false">set_key_auto_lock_database</string>
 
   <string name="set_key_version_log" translatable="false">set_key_version_log</string>

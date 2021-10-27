@@ -9,6 +9,7 @@
 
 package com.lyy.keepassa.view.main
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
@@ -49,7 +50,7 @@ import org.greenrobot.eventbus.ThreadMode.MAIN
 
 class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
 
-  private lateinit var module: MainModule
+  private lateinit var module: EntryModule
   private lateinit var adapter: SimpleEntryAdapter
   private val entryData = ArrayList<SimpleItemEntity>()
   private var curx = 0
@@ -58,9 +59,13 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
     LoadingDialog(requireContext())
   }
 
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    module = ViewModelProvider(this).get(EntryModule::class.java)
+  }
+
   override fun initData() {
     EventBusHelper.reg(this)
-    module = ViewModelProvider(this).get(MainModule::class.java)
     adapter = SimpleEntryAdapter(requireContext(), entryData)
     binding.list.setHasFixedSize(true)
     binding.list.layoutManager = LinearLayoutManager(context)
@@ -94,7 +99,6 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
         rv: RecyclerView,
         e: MotionEvent
       ) {
-
       }
 
       override fun onInterceptTouchEvent(
@@ -109,14 +113,8 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
 
       override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
       }
-
     })
 
-//    if (!BaseApp.dbRecord.isAFS()) {
-//
-//    }else{
-//      binding.swipe.isEnabled = false
-//    }
     initRefresh()
 
     getData()
@@ -127,7 +125,6 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
       Color.parseColor("#4E85DB"),
       Color.parseColor("#B48CFF"),
       Color.parseColor("#95DAED")
-
     )
     binding.swipe.setOnRefreshListener {
       if (BaseApp.dbRecord == null) {
@@ -297,7 +294,6 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
   @Subscribe(threadMode = MAIN)
   fun onMultiChoice(mcEvent: MultiChoiceEvent) {
     adapter.showCheckBox(true)
-
   }
 
   override fun onDestroy() {

@@ -54,17 +54,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
   private var reenterListener: ReenterListener? = null
   private lateinit var module: MainModule
-  private lateinit var historyFm: HistoryFragment
-  private lateinit var entryFm: EntryFragment
 
   companion object {
     private const val MIN_SCALE = 0.85f
     private const val MIN_ALPHA = 0.5f
-
-    const val KEY_IS_SHORTCUTS = "KEY_IS_SHORTCUTS"
-
-    // 快捷方式类型
-    const val SHORTCUTS_TYPE = "shortcutsType"
 
     // 打开搜索
     const val OPEN_SEARCH = 1
@@ -78,11 +71,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     }
   }
 
-  @Autowired(name = KEY_IS_SHORTCUTS)
+  @Autowired(name = "KEY_IS_SHORTCUTS")
   @JvmField
   var isShortcuts = false
 
-  @Autowired(name = SHORTCUTS_TYPE)
+  @Autowired(name = "shortcutsType")
   @JvmField
   var shortcutType = 1
 
@@ -115,8 +108,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     binding.search.setOnClickListener(this)
     binding.lock.setOnClickListener(this)
 
-    historyFm = HistoryFragment()
-    entryFm = EntryFragment()
+    val historyFm = HistoryFragment()
+    val entryFm = EntryFragment()
     binding.dbName.text = BaseApp.dbFileName
     binding.dbVersion.text = BaseApp.dbName
 

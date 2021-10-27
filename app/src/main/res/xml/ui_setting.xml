@@ -36,6 +36,14 @@
       app:icon="@drawable/ic_anim"
       app:key="@string/set_key_loading_anim" />
 
+
+  <SwitchPreference
+      android:defaultValue="true"
+      android:summaryOff="@string/set_key_main_show_totp_tab_off"
+      android:summaryOn="@string/set_key_main_show_totp_tab_on"
+      android:title="@string/set_key_main_show_totp_tab_title"
+      app:icon="@drawable/ic_anim"
+      app:key="@string/set_key_main_show_totp_tab" />
 <!--  <SwitchPreference-->
 <!--      android:defaultValue="true"-->
 <!--      android:summaryOff="@string/set_key_title_fillet_bg_icon_turn_off"-->

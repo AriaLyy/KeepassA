@@ -9,6 +9,7 @@
 
 package com.lyy.keepassa.view.main
 
+import android.content.Context
 import android.graphics.Color
 import android.view.MotionEvent
 import android.view.View
@@ -37,14 +38,18 @@ import org.greenrobot.eventbus.ThreadMode.MAIN
 
 class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
 
-  private lateinit var module: MainModule
+  private lateinit var module: HistoryModule
   private lateinit var adapter: SimpleEntryAdapter
   private val entryData = ArrayList<SimpleItemEntity>()
   private var curx = 0
 
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    module = ViewModelProvider(this).get(HistoryModule::class.java)
+  }
+
   override fun initData() {
     EventBusHelper.reg(this)
-    module = ViewModelProvider(this).get(MainModule::class.java)
     adapter = SimpleEntryAdapter(requireContext(), entryData)
     binding.list.setHasFixedSize(true)
     binding.list.layoutManager = LinearLayoutManager(context)

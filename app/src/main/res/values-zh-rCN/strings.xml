@@ -318,4 +318,7 @@
     <string name="one_drive_hint"><![CDATA[为了保护您的隐私，KeepassA仅会访问<font color="#FF0000">【应用/KeepassA】</font>目录，如果您希望读取OneDrive的keepass数据库，<font color="#FF0000">请将数据库存放到该目录下。</font>]]></string>
     <string name="open_permissions">打开权限</string>
     <string name="miui_permissions">miui系统需要打开后台弹出界面的权限，才能使用自动填充功能。</string>
+    <string name="set_key_main_show_totp_tab_title">主页显示TOTP分类</string>
+    <string name="set_key_main_show_totp_tab_off">显示TOTP分类</string>
+    <string name="set_key_main_show_totp_tab_on">不显示TOTP分类</string>
 </resources>

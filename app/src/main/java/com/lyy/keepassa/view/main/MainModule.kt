@@ -18,25 +18,16 @@ import androidx.preference.PreferenceManager
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.AndroidUtils
 import com.arialyy.frame.util.ResUtil
-import com.keepassdroid.Database
-import com.keepassdroid.database.PwDatabase
-import com.keepassdroid.database.PwEntry
-import com.keepassdroid.database.PwGroup
-import com.keepassdroid.database.helper.KDBHandlerHelper
-import com.keepassdroid.utils.Types
-import com.keepassdroid.utils.UriUtil
 import com.lahm.library.EasyProtectorLib
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.base.Constance
-import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.view.UpgradeLogDialog
 import com.lyy.keepassa.view.dialog.DonateDialog
@@ -103,49 +94,6 @@ class MainModule : BaseModule() {
     })
   }
 
-  /**
-   * 同步数据库
-   */
-  fun syncDb() = liveData(Dispatchers.IO) {
-    val code = KdbUtil.saveDb(true)
-    Timber.d("同步数据库结束，code = $code")
-    if (code != DbSynUtil.STATE_SUCCEED) {
-      emit(false)
-      return@liveData
-    }
-    emit(true)
-  }
-
-  private fun openDbFile(
-    context: Context,
-    record: DbHistoryRecord,
-    dbPass: String
-  ): Database? {
-    val dbUri = record.getDbUri()
-    val keyUri = record.getDbKeyUri()
-    val db = KDBHandlerHelper.getInstance(context)
-      .openDb(dbUri, dbPass, keyUri)
-    if (db != null) {
-      val dbName = UriUtil.getFileNameFromUri(context, dbUri)
-      BaseApp.dbPass = QuickUnLockUtil.encryptStr(dbPass)
-      KeepassAUtil.instance.subShortPass()
-      if (keyUri != null) {
-        BaseApp.dbKeyPath = QuickUnLockUtil.encryptStr(keyUri.toString())
-      }
-      //              BaseApp.KDB?.clear(context)
-      // 保存打开记录
-      BaseApp.KDB = db
-      BaseApp.dbName = db.pm.name
-      BaseApp.dbFileName = dbName
-
-      BaseApp.dbVersion = "Keepass ${if (PwDatabase.isKDBExtension(dbName)) "3.x" else "4.x"}"
-      BaseApp.isV4 = !PwDatabase.isKDBExtension(dbName)
-      BaseApp.dbRecord = record
-      KeepassAUtil.instance.saveLastOpenDbHistory(record)
-    }
-    return db
-  }
-
   fun showInfoDialog(activity: BaseActivity<*>) {
     showVersionLog(activity)
     if (!upgradeLogDialogIsShow) {
@@ -195,22 +143,6 @@ class MainModule : BaseModule() {
   }
 
   /**
-   * 删除历史记录
-   */
-  fun delHistoryRecord(entry: PwEntry) {
-    viewModelScope.launch(Dispatchers.IO) {
-      BaseApp.dbRecord?.let {
-        val dao = BaseApp.appDatabase.entryRecordDao()
-        val record = dao.getRecord(Types.UUIDtoBytes(entry.uuid), it.localDbUri)
-        if (record != null) {
-          dao.delReocrd(record)
-        }
-      }
-
-    }
-  }
-
-  /**
    * 检查是否有记录
    */
   fun checkHasHistoryRecord() = liveData {
@@ -228,86 +160,6 @@ class MainModule : BaseModule() {
 
   }
 
-  /**
-   * 获取历史记录
-   */
-  fun getEntryHistoryRecord() = liveData {
-    if (BaseApp.dbRecord == null) {
-      emit(null)
-      return@liveData
-    }
-    val list = withContext(Dispatchers.IO) {
-      val dao = BaseApp.appDatabase.entryRecordDao()
-      val records = dao.getRecord(BaseApp.dbRecord!!.localDbUri)
-      if (records.isNullOrEmpty()) {
-        null
-      } else {
-        val temp = ArrayList<SimpleItemEntity>()
-        for (record in records) {
-          val entry = BaseApp.KDB!!.pm.entries[Types.bytestoUUID(record.uuid)] ?: continue
-          val item = KeepassAUtil.instance.convertPwEntry2Item(entry)
-          item.time = record.time
-          temp.add(item)
-        }
-        temp
-      }
-    }
-    emit(list)
-  }
-
-  /**
-   * 获取keepassdb的首页数据
-   */
-  fun getRootEntry(context: Context) = liveData {
-    val data = ArrayList<SimpleItemEntity>()
-    if (BaseApp.KDB == null) {
-      emit(data)
-      return@liveData
-    }
-    val pm = BaseApp.KDB!!.pm
-
-    if (pm == null) {
-      emit(data)
-      return@liveData
-    }
-    val rootGroup = pm.rootGroup
-
-    for (group in rootGroup.childGroups) {
-      data.add(KeepassAUtil.instance.convertPwGroup2Item(group))
-    }
-    Timber.d(
-      "getRootEntry， 保存前的数据库hash：${BaseApp.KDB.hashCode()}, num = ${BaseApp.KDB!!.pm.entries.size}"
-    )
-    for (entry in rootGroup.childEntries) {
-      data.add(KeepassAUtil.instance.convertPwEntry2Item(entry))
-    }
-    emit(data)
-  }
-
-  /**
-   * 只获取群组数据
-   */
-  fun getRootGroup(
-    context: Context,
-    rootGroup: PwGroup
-  ) = liveData {
-
-    val data = ArrayList<SimpleItemEntity>()
-
-    for (group in rootGroup.childGroups) {
-      val item = SimpleItemEntity()
-      item.title = group.name
-      item.subTitle =
-        context.getString(
-          R.string.hint_group_desc, KdbUtil.getGroupEntryNum(group)
-            .toString()
-        )
-      item.obj = group
-      data.add(item)
-    }
-
-    emit(data)
-  }
 
   private fun checkDevBirthdayData(context: Context) {
 //    val dt = DateTime(2020, 10, 2, 0, 0)
@@ -334,10 +186,8 @@ class MainModule : BaseModule() {
 
         override fun onCancel(v: Button) {
         }
-
       }
     )
       .show()
   }
-
 }

@@ -9,19 +9,24 @@
 
 package com.lyy.keepassa.view.create
 
+import android.app.ActivityOptions
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.view.ViewAnimationUtils
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.Transition
 import androidx.transition.TransitionInflater
+import com.alibaba.android.arouter.launcher.ARouter
+import com.arialyy.frame.router.Routerfit
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityCreateDbBinding
+import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.NotificationUtil
@@ -114,7 +119,9 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
           Timber.d("创建数据库成功")
           HitUtil.toaskShort(getString(R.string.hint_db_create_success, module.dbName))
           NotificationUtil.startDbOpenNotify(this)
-          MainActivity.startMainActivity(this)
+          Routerfit.create(ActivityRouter::class.java, this).toMainActivity(
+            opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
+          )
           KeepassAUtil.instance.saveLastOpenDbHistory(BaseApp.dbRecord)
         })
   }

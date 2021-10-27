@@ -109,6 +109,7 @@ class CreateDbModule : BaseModule() {
             dbName = dbName
         )
         BaseApp.dbRecord = record
+        BaseApp.isLocked = false
 
         // 保存并上传数据库到云端
         val code = KdbUtil.saveDb()

@@ -16,7 +16,7 @@ import com.alibaba.android.arouter.facade.template.IInterceptor
 import com.alibaba.android.arouter.launcher.ARouter
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.util.KdbUtil.isNull
-import com.lyy.keepassa.view.main.QuickUnlockActivity
+import com.lyy.keepassa.util.isOpenQuickLock
 import timber.log.Timber
 
 /**
@@ -27,7 +27,7 @@ import timber.log.Timber
 @Interceptor(priority = 8, name = "ContentInterceptor")
 class ContentInterceptor : IInterceptor {
 
-  companion object{
+  companion object {
     val ROUTE_WHITE_LIST = arrayListOf<String>().apply {
       add("/launcher/activity")
       add("/launcher/quickLock")
@@ -43,7 +43,7 @@ class ContentInterceptor : IInterceptor {
     callback: InterceptorCallback
   ) {
     Timber.d("route path => ${postcard.path}")
-    if (postcard.path in ROUTE_WHITE_LIST){
+    if (postcard.path in ROUTE_WHITE_LIST) {
       callback.onContinue(postcard)
       return
     }
@@ -54,7 +54,7 @@ class ContentInterceptor : IInterceptor {
         .navigation()
       return
     }
-    if (BaseApp.isLocked && BaseApp.dbRecord != null) {
+    if (BaseApp.isLocked && BaseApp.dbRecord != null && BaseApp.APP.isOpenQuickLock()) {
       callback.onInterrupt(Exception("database is locked"))
       ARouter.getInstance()
         .build("/launcher/quickLock")

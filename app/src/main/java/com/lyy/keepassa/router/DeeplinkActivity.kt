@@ -11,8 +11,8 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.alibaba.android.arouter.launcher.ARouter
+import com.arialyy.frame.router.Routerfit
 import com.lyy.keepassa.view.create.CreateEntryActivity
-import com.lyy.keepassa.view.main.MainActivity
 import timber.log.Timber
 import java.net.URLDecoder
 
@@ -27,7 +27,7 @@ class DeeplinkActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     Timber.d("uri = ${intent.data}")
     val shortcutData = intent.getStringExtra("shortcutData")
-    if (!shortcutData.isNullOrEmpty()){
+    if (!shortcutData.isNullOrEmpty()) {
       Timber.d("shortcutData = $shortcutData")
       val uriString = URLDecoder.decode(shortcutData)
       val uri = Uri.parse(uriString)
@@ -35,12 +35,11 @@ class DeeplinkActivity : AppCompatActivity() {
       finish()
       return
     }
-
   }
 
-  private fun handleFormShortcutRoute(uri:Uri){
+  private fun handleFormShortcutRoute(uri: Uri) {
     val ac = uri.getQueryParameter("ac")
-    if (ac == "createEntry"){
+    if (ac == "createEntry") {
       Timber.d("to create entry")
       ARouter.getInstance()
         .build("/entry/create")
@@ -48,14 +47,11 @@ class DeeplinkActivity : AppCompatActivity() {
         .navigation()
       return
     }
-    if (ac == "search"){
+    if (ac == "search") {
       val type = uri.getQueryParameter("shortcutsType")
       Timber.d("to search ac")
-      ARouter.getInstance()
-        .build("/main/ac")
-        .withBoolean(MainActivity.KEY_IS_SHORTCUTS, true)
-        .withInt(MainActivity.SHORTCUTS_TYPE, type!!.toInt())
-        .navigation()
+      Routerfit.create(ActivityRouter::class.java)
+        .toMainActivity(true, type!!.toInt())
     }
   }
 }

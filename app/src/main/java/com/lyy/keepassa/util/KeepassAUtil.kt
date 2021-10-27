@@ -192,10 +192,9 @@ class KeepassAUtil private constructor() {
    * lock the db
    */
   fun lock() {
-    val isOpenQuickLock = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-      .getBoolean(BaseApp.APP.getString(R.string.set_quick_unlock), false)
     Timber.d("锁定数据库")
     BaseApp.isLocked = true
+    val isOpenQuickLock = BaseApp.APP.isOpenQuickLock()
     // 只有应用在前台才会跳转到锁屏页面
     if (isRunningForeground(BaseApp.APP) && BaseApp.KDB != null) {
       // 开启快速解锁则跳转到快速解锁页面
@@ -317,9 +316,7 @@ class KeepassAUtil private constructor() {
    * 否则跳转到快速启动页
    */
   fun reOpenDb(context: Context) {
-    val isOpenQuickLock = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-      .getBoolean(context.getString(R.string.set_quick_unlock), false)
-    if (BaseApp.KDB == null || !isOpenQuickLock) {
+    if (BaseApp.KDB == null || !BaseApp.APP.isOpenQuickLock()) {
       ARouter.getInstance()
         .build("/launcher/activity")
         .withInt(LauncherActivity.KEY_OPEN_TYPE, LauncherActivity.OPEN_TYPE_OPEN_DB)

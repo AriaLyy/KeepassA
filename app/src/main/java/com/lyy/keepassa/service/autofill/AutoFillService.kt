@@ -30,6 +30,7 @@ import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.LanguageUtil
+import com.lyy.keepassa.util.isOpenQuickLock
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
@@ -81,8 +82,7 @@ class AutoFillService : AutofillService() {
 
     // 如果数据库没打开，或者数据库已经锁定，打开登录页面
     if (needAuth) {
-      val isOpenQuickLock = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-          .getBoolean(applicationContext.getString(R.string.set_quick_unlock), false)
+      val isOpenQuickLock = BaseApp.APP.isOpenQuickLock()
 
       if (BaseApp.KDB == null) {
         openLoginActivity(callback, autoFillFields, apkPackageName)

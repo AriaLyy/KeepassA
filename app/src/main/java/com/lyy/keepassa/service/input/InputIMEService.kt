@@ -40,6 +40,7 @@ import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.util.OtpUtil
+import com.lyy.keepassa.util.isOpenQuickLock
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
 import kotlinx.coroutines.Dispatchers
@@ -157,9 +158,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         }
         BaseApp.isLocked = true
         NotificationUtil.startDbLocked(this)
-        val isOpenQuickLock = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-          .getBoolean(applicationContext.getString(R.string.set_quick_unlock), false)
-        if (isOpenQuickLock) {
+        if (BaseApp.APP.isOpenQuickLock()) {
           return
         }
         curEntry = null
@@ -337,10 +336,8 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         return false
       }
 
-      val isOpenQuickLock = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-        .getBoolean(applicationContext.getString(R.string.set_quick_unlock), false)
 
-      if (isOpenQuickLock) {
+      if (BaseApp.APP.isOpenQuickLock()) {
         QuickUnlockActivity.startQuickUnlockActivity(this, Intent.FLAG_ACTIVITY_NEW_TASK)
       }
       return false

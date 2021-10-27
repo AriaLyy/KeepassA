@@ -10,11 +10,9 @@ package com.lyy.keepassa.router
 import android.view.View
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.FragmentActivity
-import com.alibaba.android.arouter.launcher.ARouter
+import com.arialyy.frame.router.RouterArgName
+import com.arialyy.frame.router.RouterPath
 import com.keepassdroid.database.PwEntry
-import com.lyy.keepassa.R
-import com.lyy.keepassa.view.detail.EntryDetailActivity
-import com.lyy.keepassa.view.detail.EntryDetailActivity.Companion
 
 /**
  * @Author laoyuyu
@@ -22,6 +20,13 @@ import com.lyy.keepassa.view.detail.EntryDetailActivity.Companion
  * @Date 2021/10/17
  **/
 interface ActivityRouter {
+
+  @RouterPath(path = "/main/ac")
+  fun toMainActivity(
+    @RouterArgName(name = "isShortcuts") isShortcuts: Boolean = false,
+    @RouterArgName(name = "shortcutType") shortcutType: Int = 1,
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null
+  )
 
   /**
    * 跳转群组详情或项目详情
