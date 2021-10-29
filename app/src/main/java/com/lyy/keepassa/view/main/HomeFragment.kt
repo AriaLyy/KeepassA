@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.arialyy.frame.util.DpUtils
 import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwEntry
@@ -48,7 +49,8 @@ import com.lyy.keepassa.view.menu.GroupPopMenu
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 
-class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
+@Route(path = "/main/fragment/home")
+class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
 
   private lateinit var module: EntryModule
   private lateinit var adapter: SimpleEntryAdapter
@@ -140,7 +142,7 @@ class EntryFragment : BaseFragment<FragmentOnlyListBinding>() {
 
       loadingDialog.show()
       module.syncDb()
-        .observe(this@EntryFragment, Observer {
+        .observe(this@HomeFragment, Observer {
           if (!it) {
             finishRefresh(false)
             return@Observer

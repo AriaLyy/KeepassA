@@ -19,11 +19,11 @@
       app:key="@string/set_key_need_root_check" />
 
   <SwitchPreference
-      app:isPreferenceVisible="false"
       android:defaultValue="true"
       android:summaryOff="@string/set_key_title_show_state_bar_turn_off"
       android:summaryOn="@string/set_key_title_show_state_bar_turn_on"
       android:title="@string/set_key_title_show_state_bar"
+      app:isPreferenceVisible="false"
       app:icon="@drawable/ic_state_bar"
       app:key="@string/set_key_show_state_bar" />
 
@@ -38,18 +38,18 @@
 
 
   <SwitchPreference
-      android:defaultValue="true"
-      android:summaryOff="@string/set_key_main_show_totp_tab_off"
-      android:summaryOn="@string/set_key_main_show_totp_tab_on"
+      android:defaultValue="false"
+      android:summaryOff="@string/set_key_main_show_totp_tab_on"
+      android:summaryOn="@string/set_key_main_show_totp_tab_off"
       android:title="@string/set_key_main_show_totp_tab_title"
-      app:icon="@drawable/ic_anim"
+      app:icon="@drawable/ic_token_grey"
       app:key="@string/set_key_main_show_totp_tab" />
-<!--  <SwitchPreference-->
-<!--      android:defaultValue="true"-->
-<!--      android:summaryOff="@string/set_key_title_fillet_bg_icon_turn_off"-->
-<!--      android:summaryOn="@string/set_key_title_fillet_bg_icon_turn_on"-->
-<!--      android:title="@string/set_key_title_fillet_bg_icon"-->
-<!--      app:icon="@drawable/ic_eco"-->
-<!--      app:key="@string/set_key_fillet_bg_icon" />-->
+  <!--  <SwitchPreference-->
+  <!--      android:defaultValue="true"-->
+  <!--      android:summaryOff="@string/set_key_title_fillet_bg_icon_turn_off"-->
+  <!--      android:summaryOn="@string/set_key_title_fillet_bg_icon_turn_on"-->
+  <!--      android:title="@string/set_key_title_fillet_bg_icon"-->
+  <!--      app:icon="@drawable/ic_eco"-->
+  <!--      app:key="@string/set_key_fillet_bg_icon" />-->
 
 </PreferenceScreen>

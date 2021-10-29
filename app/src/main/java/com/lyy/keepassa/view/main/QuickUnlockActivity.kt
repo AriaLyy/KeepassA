@@ -28,16 +28,19 @@ import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.AuthenticationCallback
 import androidx.biometric.BiometricPrompt.AuthenticationResult
 import androidx.biometric.BiometricPrompt.CryptoObject
+import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.KeyStoreUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.DialogQuickUnlockBinding
 import com.lyy.keepassa.entity.QuickUnLockRecord
+import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.NotificationUtil
@@ -232,7 +235,9 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
       setResult(Activity.RESULT_OK, data)
       finish()
     } else {
-      MainActivity.startMainActivity(this@QuickUnlockActivity)
+      Routerfit.create(ActivityRouter::class.java, this).toMainActivity(
+        opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
+      )
     }
   }
 

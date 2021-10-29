@@ -319,6 +319,6 @@
     <string name="open_permissions">打开权限</string>
     <string name="miui_permissions">miui系统需要打开后台弹出界面的权限，才能使用自动填充功能。</string>
     <string name="set_key_main_show_totp_tab_title">主页显示TOTP分类</string>
-    <string name="set_key_main_show_totp_tab_off">显示TOTP分类</string>
-    <string name="set_key_main_show_totp_tab_on">不显示TOTP分类</string>
+    <string name="set_key_main_show_totp_tab_on">显示TOTP分类</string>
+    <string name="set_key_main_show_totp_tab_off">不显示TOTP分类</string>
 </resources>

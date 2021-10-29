@@ -7,15 +7,17 @@
  */
 package com.lyy.keepassa.view.main
 
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.keepassdroid.database.PwEntry
+import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.utils.Types
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.hasTOTP
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -24,7 +26,35 @@ import kotlinx.coroutines.withContext
  * @Description
  * @Date 4:02 下午 2021/10/25
  **/
-class HistoryModule:BaseModule() {
+class EntryListModule : BaseModule() {
+
+  fun getData(type: String) =
+    if (type == EntryListFragment.TYPE_HISTORY) getEntryHistoryRecord() else getTOTPData()
+
+  /**
+   * get totp data
+   */
+  private fun getTOTPData() = flow {
+
+    if (BaseApp.KDB == null) {
+      emit(null)
+      return@flow
+    }
+    val pm = BaseApp.KDB!!.pm
+
+    if (pm == null) {
+      emit(null)
+      return@flow
+    }
+    val data = ArrayList<SimpleItemEntity>()
+    for (map in pm.entries) {
+      val entry = map.value
+      if (entry is PwEntryV4 && entry.hasTOTP()) {
+        data.add(KeepassAUtil.instance.convertPwEntry2Item(entry))
+      }
+    }
+    emit(data)
+  }
 
   /**
    * 删除历史记录
@@ -38,17 +68,16 @@ class HistoryModule:BaseModule() {
           dao.delReocrd(record)
         }
       }
-
     }
   }
 
   /**
    * 获取历史记录
    */
-  fun getEntryHistoryRecord() = liveData {
+  private fun getEntryHistoryRecord() = flow {
     if (BaseApp.dbRecord == null) {
       emit(null)
-      return@liveData
+      return@flow
     }
     val list = withContext(Dispatchers.IO) {
       val dao = BaseApp.appDatabase.entryRecordDao()

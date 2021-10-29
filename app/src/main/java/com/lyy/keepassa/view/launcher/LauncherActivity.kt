@@ -18,6 +18,7 @@ import android.content.Intent
 import android.content.IntentSender
 import android.os.Build
 import android.os.Bundle
+import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -34,6 +35,7 @@ import com.lyy.keepassa.databinding.ActivityLauncherBinding
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.event.DbHistoryEvent
+import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
@@ -151,7 +153,9 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     super.onResume()
     // 如果数据库已经打开，直接启用到主页，用于快捷方式添加数据后返回的情况
     if (BaseApp.KDB != null && !BaseApp.isLocked) {
-      MainActivity.startMainActivity(this)
+      Routerfit.create(ActivityRouter::class.java, this).toMainActivity(
+        opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
+      )
     }
   }
 

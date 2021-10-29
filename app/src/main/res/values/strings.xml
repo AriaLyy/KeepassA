@@ -322,6 +322,6 @@ If you are creating a new KeePass database, the above operations are not be need
   <string name="open_permissions">Open permissions</string>
   <string name="miui_permissions">The miui system needs permission to open the background pop-up interface in order to use the auto-fill function.</string>
   <string name="set_key_main_show_totp_tab_title">Home page shows TOTP category</string>
-  <string name="set_key_main_show_totp_tab_off">Display TOTP category</string>
-  <string name="set_key_main_show_totp_tab_on">Do not display TOTP category</string>
+  <string name="set_key_main_show_totp_tab_on">Display TOTP category</string>
+  <string name="set_key_main_show_totp_tab_off">Do not display TOTP category</string>
 </resources>

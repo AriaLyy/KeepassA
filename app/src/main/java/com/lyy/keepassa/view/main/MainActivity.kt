@@ -12,7 +12,6 @@ package com.lyy.keepassa.view.main
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
-import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
@@ -30,6 +29,7 @@ import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.core.AbsFrame
+import com.arialyy.frame.router.Routerfit
 import com.google.android.material.tabs.TabLayoutMediator
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
@@ -37,6 +37,8 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityMainBinding
 import com.lyy.keepassa.event.CheckEnvEvent
 import com.lyy.keepassa.event.ModifyDbNameEvent
+import com.lyy.keepassa.event.ShowTOTPEvent
+import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.create.CreateDbActivity
@@ -61,14 +63,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
     // 打开搜索
     const val OPEN_SEARCH = 1
-
-    fun startMainActivity(activity: Activity) {
-      val intent = Intent(activity, MainActivity::class.java)
-      activity.startActivity(
-        intent, ActivityOptions.makeSceneTransitionAnimation(activity)
-          .toBundle()
-      )
-    }
   }
 
   @Autowired(name = "KEY_IS_SHORTCUTS")
@@ -78,6 +72,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   @Autowired(name = "shortcutsType")
   @JvmField
   var shortcutType = 1
+
+  private val historyFm by lazy {
+    Routerfit.create(FragmentRouter::class.java).toMainHistoryFragment()
+  }
+
+  private val entryFm by lazy {
+    Routerfit.create(FragmentRouter::class.java).toMainHomeFragment()
+  }
 
   override fun setLayoutId(): Int {
     return R.layout.activity_main
@@ -108,32 +110,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     binding.search.setOnClickListener(this)
     binding.lock.setOnClickListener(this)
 
-    val historyFm = HistoryFragment()
-    val entryFm = EntryFragment()
     binding.dbName.text = BaseApp.dbFileName
     binding.dbVersion.text = BaseApp.dbName
-
-    module.checkHasHistoryRecord()
-      .observe(this, { hasHistory ->
-        binding.vp.adapter = VpAdapter(listOf(historyFm, entryFm), this)
-        TabLayoutMediator(binding.tab, binding.vp) { tab, position ->
-//      tab.text = "OBJECT ${(position + 1)}"
-        }.attach()
-
-        // 是否优先显示条目
-        val showEntries = PreferenceManager.getDefaultSharedPreferences(this)
-          .getBoolean(getString(R.string.set_key_main_allow_show_entries), false)
-        if (showEntries) {
-          binding.vp.currentItem = 1
-        } else {
-          binding.vp.currentItem = if (hasHistory) 0 else 1
-        }
-
-        binding.tab.getTabAt(0)!!.icon = getDrawable(R.drawable.selector_ic_tab_history)
-        binding.tab.getTabAt(0)!!.text = getString(R.string.history)
-        binding.tab.getTabAt(1)!!.icon = getDrawable(R.drawable.selector_ic_tab_db)
-        binding.tab.getTabAt(1)!!.text = getString(R.string.all)
-      })
+    val needShowTotp = PreferenceManager.getDefaultSharedPreferences(this)
+      .getBoolean(getString(R.string.set_key_main_show_totp_tab), false)
+    initVP(needShowTotp)
 
     binding.fab.setOnItemClickListener(object : MainExpandFloatActionButton.OnItemClickListener {
       override fun onKeyClick() {
@@ -153,8 +134,52 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         dialog.show(supportFragmentManager, "CreateGroupDialog")
         binding.fab.hintMoreOperate()
       }
-
     })
+  }
+
+  private fun initVP(needShowTotp: Boolean) {
+
+    val totpFm = if (needShowTotp) {
+      Routerfit.create(FragmentRouter::class.java).toMainTOTPFragment()
+    } else {
+      null
+    }
+
+    val list = arrayListOf<Fragment>()
+    list.add(historyFm)
+    list.add(entryFm)
+    totpFm?.let {
+      list.add(it)
+    }
+    module.checkHasHistoryRecord()
+      .observe(this, { hasHistory ->
+        binding.vp.adapter = VpAdapter(list, this)
+        TabLayoutMediator(binding.tab, binding.vp) { tab, position ->
+//      tab.text = "OBJECT ${(position + 1)}"
+        }.attach()
+
+        // 是否优先显示条目
+        val showEntries = PreferenceManager.getDefaultSharedPreferences(this)
+          .getBoolean(getString(R.string.set_key_main_allow_show_entries), false)
+        if (showEntries) {
+          binding.vp.currentItem = 1
+        } else {
+          binding.vp.currentItem = if (hasHistory) 0 else 1
+        }
+        binding.vp.adapter!!.notifyDataSetChanged()
+
+        binding.tab.getTabAt(0)!!.icon = getDrawable(R.drawable.selector_ic_tab_history)
+        binding.tab.getTabAt(0)!!.text = getString(R.string.history)
+        binding.tab.getTabAt(1)!!.icon = getDrawable(R.drawable.selector_ic_tab_db)
+        binding.tab.getTabAt(1)!!.text = getString(R.string.all)
+
+        val totpTab = binding.tab.getTabAt(2)
+        totpTab?.let {
+          it.icon = getDrawable(R.drawable.selector_ic_tab_token)
+          it.text = "TOTP"
+        }
+
+      })
   }
 
   private fun initVpAnim() {
@@ -170,7 +195,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
             val scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position))
             // Fade the page relative to its size.
             alpha = (MIN_ALPHA +
-                (((scaleFactor - MIN_SCALE) / (1 - MIN_SCALE)) * (1 - MIN_ALPHA)))
+              (((scaleFactor - MIN_SCALE) / (1 - MIN_SCALE)) * (1 - MIN_ALPHA)))
           }
           else -> { // (1,+Infinity]
             // This page is way off-screen to the right.
@@ -181,6 +206,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 //        binding.tab.getTabAt(1)?.view?.alpha = alpha
       }
     }
+  }
+
+  @Subscribe(threadMode = MAIN)
+  fun onShowTOTP(event: ShowTOTPEvent) {
+    initVP(event.show)
+    Timber.d("update totp")
   }
 
   @Subscribe(threadMode = MAIN)
@@ -231,7 +262,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         ac.overridePendingTransition(0, 0)
       }
     }
-
   }
 
   override fun onPause() {
@@ -318,7 +348,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     override fun onTransitionStart(transition: Transition?) {
       Timber.d("onTransitionStart")
     }
-
   }
 
   private class VpAdapter(

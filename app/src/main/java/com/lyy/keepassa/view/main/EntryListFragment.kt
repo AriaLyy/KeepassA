@@ -14,11 +14,12 @@ import android.graphics.Color
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
+import com.alibaba.android.arouter.facade.annotation.Autowired
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.utils.Types
@@ -33,19 +34,35 @@ import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import com.lyy.keepassa.view.menu.EntryPopMenu
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 
-class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
+@Route(path = "/main/fragment/entry")
+class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
 
-  private lateinit var module: HistoryModule
+  companion object {
+    const val TYPE_HISTORY = "TYPE_HISTORY"
+    const val TYPE_TOTP = "TYPE_TOTP"
+  }
+
+  private lateinit var module: EntryListModule
   private lateinit var adapter: SimpleEntryAdapter
   private val entryData = ArrayList<SimpleItemEntity>()
   private var curx = 0
+  private var scope = MainScope()
+
+  @Autowired(name = "type")
+  @JvmField
+  var type = TYPE_HISTORY
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    module = ViewModelProvider(this).get(HistoryModule::class.java)
+    module = ViewModelProvider(this).get(EntryListModule::class.java)
   }
 
   override fun initData() {
@@ -84,7 +101,6 @@ class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
         rv: RecyclerView,
         e: MotionEvent
       ) {
-
       }
 
       override fun onInterceptTouchEvent(
@@ -99,7 +115,6 @@ class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
 
       override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
       }
-
     })
     initRefresh()
     setData()
@@ -112,25 +127,35 @@ class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
       Color.parseColor("#95DAED")
     )
     binding.swipe.setOnRefreshListener {
+      scope.cancel()
       setData()
     }
   }
 
+  private fun checkScope() {
+    if (!scope.isActive) {
+      scope = MainScope()
+    }
+  }
+
   private fun setData() {
-    module.getEntryHistoryRecord()
-      .observe(this, Observer { list ->
-        if (list == null) {
-          binding.temp.visibility = View.VISIBLE
+    checkScope()
+    scope.launch {
+      module.getData(type)
+        .collectLatest { list ->
+          if (list == null) {
+            binding.temp.visibility = View.VISIBLE
+            binding.swipe.isRefreshing = false
+            return@collectLatest
+          }
+          entryData.sortByDescending { it.time }
+          binding.temp.visibility = View.GONE
+          entryData.clear()
+          entryData.addAll(list)
+          adapter.notifyDataSetChanged()
           binding.swipe.isRefreshing = false
-          return@Observer
         }
-        entryData.sortByDescending { it.time }
-        binding.temp.visibility = View.GONE
-        entryData.clear()
-        entryData.addAll(list)
-        adapter.notifyDataSetChanged()
-        binding.swipe.isRefreshing = false
-      })
+    }
   }
 
   @Subscribe(threadMode = MAIN)
@@ -155,7 +180,7 @@ class HistoryFragment : BaseFragment<FragmentEntryRecordBinding>() {
         oldRecord.time = record.time
       }
 
-      entryData.sortByDescending { entry->
+      entryData.sortByDescending { entry ->
         entry.time
       }
       adapter.notifyDataSetChanged()
