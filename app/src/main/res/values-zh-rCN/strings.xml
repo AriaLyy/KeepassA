@@ -82,7 +82,7 @@
     <string name="copy_user_name">复制用户名</string>
     <string name="copy_password">复制密码</string>
     <string name="copy_totp">复制TOTP令牌</string>
-    <string name="hint_del_group"><![CDATA[确认删除群组【<font color="#FF0000">%s</font>】？<br> 该操作将会将群组【<font color="#FF0000">%s</font>】移动到回收站中，如果您想撤销删除操作，请在回收站中恢复该群组。]]></string>
+    <string name="hint_del_group">确认要删除群组【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】吗？&lt;br&gt; 该操作将会将群组移动到回收站中，您可以在回收站中恢复该群组。</string>
     <string name="hint_del_group_no_recycle"><![CDATA[确认删除群组【<font color="#FF0000">%s</font>】？该操作将会从数据库中删除该群组。]]></string>
     <string name="hint_del_entry"><![CDATA[确认删除条目【<font color="#FF0000">%s</font>】？<br> 该操作将会将条目【<font color="#FF0000">%s</font>】移动到回收站中，如果您想撤销删除操作，请在回收站中恢复该条目。]]></string>
     <string name="hint_del_entry_no_recycle"><![CDATA[确认删除条目【<font color="#FF0000">%s</font>】？该操作将会从数据库中删除该条目。]]></string>
