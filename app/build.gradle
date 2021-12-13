@@ -32,7 +32,7 @@ android {
     ndk.abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
 
     // 只保留以下语言包
-    resConfigs "zh-rCN", "zh-rTW", "en", "fr-rCA", "nb-rNO", "ru-rRU", "fr", "de-rDE", "pl"
+    resConfigs "zh-rCN", "zh-rTW", "en", "fr-rCA", "nb-rNO", "ru-rRU", "fr", "de-rDE", "pl", "tr"
   }
 
   signingConfigs {
@@ -57,7 +57,6 @@ android {
       // 下面两个是debug-db的参数
       resValue("string", "PORT_NUMBER", "10086") // 端口
       resValue("string", "DB_PASSWORD_keepassA.db", "stVz7QxFgzA7yMnH") // sqlcipher 加密密码
-      consumerProguardFiles 'proguard-rules.pro'
     }
 
     release {
@@ -67,7 +66,7 @@ android {
       shrinkResources true // 移除无用资源
       //      multiDexKeepFile file('multidex-config.txt')
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-      consumerProguardFiles 'proguard-rules.pro' // wcdb 需要增加这个混淆
+      // wcdb 需要增加这个混淆
       signingConfig signingConfigs.release
     }
   }
@@ -240,12 +239,12 @@ dependencies {
   // android 设置库
   implementation "androidx.preference:preference-ktx:1.1.1"
   // workmanager
-  def work_version = '2.4.0'
+  def work_version = '2.7.1'
 //  implementation "androidx.work:work-runtime:$work_version"
   implementation "androidx.work:work-runtime-ktx:$work_version"
 
   // room
-  def room_version = '2.2.5'
+  def room_version = '2.3.0'
   //  implementation "androidx.room:room-runtime:$room_version"
   kapt "androidx.room:room-compiler:$room_version"
   implementation "androidx.room:room-ktx:$room_version" // ktx 扩展插件
@@ -287,11 +286,11 @@ dependencies {
   kapt "org.greenrobot:eventbus-annotation-processor:$eventbus_version"
 
   // json 动画库
-  implementation 'com.airbnb.android:lottie:3.5.0'
+  implementation 'com.airbnb.android:lottie:3.7.0'
 
   // glide
-  implementation 'com.github.bumptech.glide:glide:4.11.0'
-  kapt 'com.github.bumptech.glide:compiler:4.11.0'
+  implementation 'com.github.bumptech.glide:glide:4.12.0'
+  kapt 'com.github.bumptech.glide:compiler:4.12.0'
   //  debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.1' // 2.1 之后不需要再代码中初始化
 
   // dropbox

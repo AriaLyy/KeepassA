@@ -23,11 +23,8 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.arch.core.executor.ArchTaskExecutor
-import androidx.biometric.BiometricConstants
 import androidx.biometric.BiometricPrompt
-import androidx.biometric.BiometricPrompt.AuthenticationCallback
-import androidx.biometric.BiometricPrompt.AuthenticationResult
-import androidx.biometric.BiometricPrompt.CryptoObject
+import androidx.biometric.BiometricPrompt.*
 import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -156,7 +153,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
             errorCode: Int,
             errString: CharSequence
           ) {
-            val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
+            val str = if (errorCode == ERROR_NEGATIVE_BUTTON) {
               "${getString(R.string.verify_finger)}${getString(R.string.cancel)}"
             } else {
               getString(R.string.verify_finger_fail)

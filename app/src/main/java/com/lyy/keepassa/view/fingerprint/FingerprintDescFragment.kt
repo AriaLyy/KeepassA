@@ -14,11 +14,8 @@ import android.os.Build.VERSION_CODES
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.arch.core.executor.ArchTaskExecutor
-import androidx.biometric.BiometricConstants
 import androidx.biometric.BiometricPrompt
-import androidx.biometric.BiometricPrompt.AuthenticationCallback
-import androidx.biometric.BiometricPrompt.AuthenticationResult
-import androidx.biometric.BiometricPrompt.CryptoObject
+import androidx.biometric.BiometricPrompt.*
 import androidx.lifecycle.ViewModelProvider
 import com.arialyy.frame.util.KeyStoreUtil
 import com.lyy.keepassa.R
@@ -111,7 +108,7 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
    */
   @SuppressLint("RestrictedApi")
   fun showNormalBiometricPrompt() {
-    val promptInfo = BiometricPrompt.PromptInfo.Builder()
+    val promptInfo = PromptInfo.Builder()
         .setTitle(getString(R.string.fingerprint_unlock))
         .setSubtitle(getString(R.string.verify_finger))
         .setNegativeButtonText(getString(R.string.cancel))
@@ -127,7 +124,7 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
             if (!isAdded) {
               return
             }
-            val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
+            val str = if (errorCode == ERROR_NEGATIVE_BUTTON) {
               "${getString(R.string.verify_finger)}${getString(R.string.cancel)}"
             } else {
               getString(R.string.verify_finger_fail)
@@ -194,7 +191,7 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
    */
   @SuppressLint("RestrictedApi")
   fun showOnlyKeyBiometricPrompt() {
-    val promptInfo = BiometricPrompt.PromptInfo.Builder()
+    val promptInfo = PromptInfo.Builder()
         .setTitle(getString(R.string.fingerprint_unlock))
         .setSubtitle(getString(R.string.verify_finger))
         .setNegativeButtonText(getString(R.string.cancel))
@@ -210,7 +207,7 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
             if (!isAdded) {
               return
             }
-            val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
+            val str = if (errorCode == ERROR_NEGATIVE_BUTTON) {
               "${getString(R.string.verify_finger)}${getString(R.string.cancel)}"
             } else {
               getString(R.string.verify_finger_fail)

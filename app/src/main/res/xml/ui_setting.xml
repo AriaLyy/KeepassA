@@ -39,8 +39,8 @@
 
   <SwitchPreference
       android:defaultValue="false"
-      android:summaryOff="@string/set_key_main_show_totp_tab_on"
-      android:summaryOn="@string/set_key_main_show_totp_tab_off"
+      android:summaryOff="@string/set_key_main_show_totp_tab_off"
+      android:summaryOn="@string/set_key_main_show_totp_tab_on"
       android:title="@string/set_key_main_show_totp_tab_title"
       app:icon="@drawable/ic_token_grey"
       app:key="@string/set_key_main_show_totp_tab" />

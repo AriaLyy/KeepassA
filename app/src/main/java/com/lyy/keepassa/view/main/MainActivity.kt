@@ -22,6 +22,7 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -353,7 +354,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   private class VpAdapter(
     private val fragments: List<Fragment>,
     fm: FragmentActivity
-  ) : FragmentStateAdapter(fm) {
+  ) :  FragmentStateAdapter(fm) {
 
     override fun getItemCount(): Int {
       return fragments.size
