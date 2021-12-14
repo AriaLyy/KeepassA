@@ -28,6 +28,11 @@ interface ActivityRouter {
     @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null
   )
 
+  @RouterPath(path = "/launcher/createDb")
+  fun toCreateDbActivity(
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null
+  )
+
   /**
    * 跳转群组详情或项目详情
    */

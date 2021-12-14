@@ -43,7 +43,6 @@ import timber.log.Timber
  */
 @TargetApi(VERSION_CODES.O)
 class AutoFillService : AutofillService() {
-  private val TAG = javaClass.simpleName
 
   /**
    * 接收请求
@@ -61,7 +60,7 @@ class AutoFillService : AutofillService() {
       return
     }
     if (!PackageVerifier.isValidPackage(applicationContext, apkPackageName)) {
-      Timber.e("无效的包名：$apkPackageName")
+      Timber.e("invalid package name：$apkPackageName")
       return
     }
     Timber.d("onFillRequest(): flags = ${request.flags}, requestId = ${request.id}, clientState = ${KLog.b(request.clientState)}")

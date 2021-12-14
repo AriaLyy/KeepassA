@@ -31,6 +31,7 @@ class ContentInterceptor : IInterceptor {
     val ROUTE_WHITE_LIST = arrayListOf<String>().apply {
       add("/launcher/activity")
       add("/launcher/quickLock")
+      add("/launcher/createDb")
     }
   }
 
@@ -63,6 +64,7 @@ class ContentInterceptor : IInterceptor {
       return
     }
 
+    Timber.i("拦截：${postcard.path}")
 
     callback.onContinue(postcard)  // 处理完成，交还控制权
     // callback.onInterrupt(new RuntimeException("我觉得有点异常"));      // 觉得有问题，中断路由流程

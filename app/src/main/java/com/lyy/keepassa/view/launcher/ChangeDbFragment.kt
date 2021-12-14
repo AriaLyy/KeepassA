@@ -15,11 +15,13 @@ import android.content.Intent
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.TransitionInflater
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.adapter.AbsHolder
 import com.arialyy.frame.util.adapter.AbsRVAdapter
 import com.arialyy.frame.util.adapter.RvItemClickSupport
@@ -27,13 +29,13 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentChangeDbBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
+import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.StorageType
 import com.lyy.keepassa.view.StorageType.AFS
 import com.lyy.keepassa.view.StorageType.DROPBOX
 import com.lyy.keepassa.view.StorageType.ONE_DRIVE
 import com.lyy.keepassa.view.StorageType.WEBDAV
-import com.lyy.keepassa.view.create.CreateDbActivity
 import com.lyy.keepassa.view.launcher.ChangeDbFragment.Adataer.Holder
 import java.util.ArrayList
 
@@ -52,11 +54,11 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
 
   override fun initData() {
     enterTransition = TransitionInflater.from(context)
-        .inflateTransition(R.transition.slide_enter)
+      .inflateTransition(R.transition.slide_enter)
     exitTransition = TransitionInflater.from(context)
-        .inflateTransition(R.transition.slide_exit)
+      .inflateTransition(R.transition.slide_exit)
     returnTransition = TransitionInflater.from(context)
-        .inflateTransition(R.transition.slide_return)
+      .inflateTransition(R.transition.slide_return)
     initList()
   }
 
@@ -72,66 +74,65 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
     binding.list.adapter = adapter
 
     modlue.getDbOpenTypeData(requireContext())
-        ?.observe(this, Observer { simpleItemDaos ->
-          run {
-            data.addAll(simpleItemDaos)
-            adapter.notifyDataSetChanged()
-          }
-        })
+      ?.observe(this, Observer { simpleItemDaos ->
+        run {
+          data.addAll(simpleItemDaos)
+          adapter.notifyDataSetChanged()
+        }
+      })
     RvItemClickSupport.addTo(binding.list)
-        .setOnItemClickListener { _, position, _ ->
-          if (KeepassAUtil.instance.isFastClick()
-              || activity == null
-              || position < 0
-              || position >= data.size
-          ) {
-            return@setOnItemClickListener
+      .setOnItemClickListener { _, position, _ ->
+        if (KeepassAUtil.instance.isFastClick()
+          || activity == null
+          || position < 0
+          || position >= data.size
+        ) {
+          return@setOnItemClickListener
+        }
+        val typeId = data[position].id
+        if (this::dbDelegate.isInitialized) {
+          lifecycle.removeObserver(dbDelegate)
+        }
+        when (typeId) {
+          // 文件系统选择db
+          AFS.type -> {
+            storageType = AFS
+            dbDelegate = OpenAFSDelegate()
           }
-          val typeId = data[position].id
-          if(this::dbDelegate.isInitialized){
-            lifecycle.removeObserver(dbDelegate)
+          DROPBOX.type -> {
+            storageType = DROPBOX
+            dbDelegate = OpenDropBoxDelegate()
           }
-          when (typeId) {
-            // 文件系统选择db
-            AFS.type -> {
-              storageType = AFS
-              dbDelegate = OpenAFSDelegate()
-            }
-            DROPBOX.type -> {
-              storageType = DROPBOX
-              dbDelegate = OpenDropBoxDelegate()
-            }
-            WEBDAV.type -> {
-              storageType = WEBDAV
-              dbDelegate = OpenWebDavDelegate()
-            }
-            ONE_DRIVE.type -> {
-              storageType = ONE_DRIVE
-              dbDelegate = OpenOneDriveDelegate()
-            }
-            LauncherModule.HISTORY_ID -> { // 历史记录
-              startActivity(
-                  Intent(context, OpenDbHistoryActivity::class.java),
-                  ActivityOptions.makeSceneTransitionAnimation(activity)
-                      .toBundle()
-              )
-            }
+          WEBDAV.type -> {
+            storageType = WEBDAV
+            dbDelegate = OpenWebDavDelegate()
           }
-
-          if (typeId != LauncherModule.HISTORY_ID) {
-            dbDelegate.startFlow(this)
-            lifecycle.addObserver(dbDelegate)
+          ONE_DRIVE.type -> {
+            storageType = ONE_DRIVE
+            dbDelegate = OpenOneDriveDelegate()
+          }
+          LauncherModule.HISTORY_ID -> { // 历史记录
+            startActivity(
+              Intent(context, OpenDbHistoryActivity::class.java),
+              ActivityOptions.makeSceneTransitionAnimation(activity)
+                .toBundle()
+            )
           }
         }
+
+        if (typeId != LauncherModule.HISTORY_ID) {
+          dbDelegate.startFlow(this)
+          lifecycle.addObserver(dbDelegate)
+        }
+      }
     binding.fab.setOnClickListener {
-      startActivity(
-          Intent(context, CreateDbActivity::class.java),
-          ActivityOptions.makeSceneTransitionAnimation(activity)
-              .toBundle()
-      )
+      activity?.let { ac ->
+        Routerfit.create(ActivityRouter::class.java, ac).toCreateDbActivity(
+          ActivityOptionsCompat.makeSceneTransitionAnimation(ac)
+        )
+      }
     }
   }
-
 
   override fun onActivityResult(
     requestCode: Int,
@@ -175,7 +176,6 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
     private class Holder(itemView: View) : AbsHolder(itemView) {
       val icon: AppCompatImageView = itemView.findViewById(R.id.img)
       var text: TextView = itemView.findViewById(R.id.text)
-
     }
   }
 }

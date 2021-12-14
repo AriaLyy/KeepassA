@@ -51,12 +51,12 @@ class ChoseDirModule : BaseModule() {
     curGroup: PwGroup
   ) = liveData {
     val p = withContext(Dispatchers.IO) {
-      val entryV4 = BaseApp.KDB.pm.entries[entryId] as PwEntryV4
+      val entry = BaseApp.KDB.pm.entries[entryId] ?: return@withContext null
+      val entryV4 = entry as PwEntryV4
       (BaseApp.KDB.pm as PwDatabaseV4).undoRecycle(entryV4, curGroup)
       val b = KdbUtil.saveDb()
       Pair(b == DbSynUtil.STATE_SUCCEED, entryV4)
     }
     emit(p)
   }
-
 }

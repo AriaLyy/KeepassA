@@ -185,6 +185,10 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
           loadDialog!!.show()
           module.moveEntry(recycleEntryId!!, curGroup)
             .observe(this, Observer { t ->
+              if (t == null) {
+                HitUtil.toaskShort(getString(R.string.save_db_fail))
+                return@Observer
+              }
               undoEntry = t.second
               if (t.first) {
                 onComplete(t.second)
@@ -283,5 +287,4 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
       .commit()
     curGroup = pwGroup
   }
-
 }

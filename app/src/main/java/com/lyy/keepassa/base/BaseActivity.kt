@@ -62,7 +62,9 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     ) {
       BaseApp.isLocked = true
       HitUtil.toaskShort(getString(R.string.notify_db_locked))
-      finishAfterTransition()
+      // Cannot be used finishAfterTransition(), because binding invalid
+      finish()
+
       return false
     }
     return true
