@@ -7,12 +7,14 @@
  */
 package com.lyy.keepassa.router
 
-import android.view.View
 import androidx.core.app.ActivityOptionsCompat
-import androidx.fragment.app.FragmentActivity
 import com.arialyy.frame.router.RouterArgName
 import com.arialyy.frame.router.RouterPath
-import com.keepassdroid.database.PwEntry
+import com.keepassdroid.database.PwGroupId
+import com.lyy.keepassa.view.create.CreateEntryActivity
+import com.lyy.keepassa.view.detail.EntryDetailActivity
+import com.lyy.keepassa.view.detail.GroupDetailActivity
+import java.util.UUID
 
 /**
  * @Author laoyuyu
@@ -20,6 +22,45 @@ import com.keepassdroid.database.PwEntry
  * @Date 2021/10/17
  **/
 interface ActivityRouter {
+
+  @RouterPath(path = "/entry/detail")
+  fun toEntryDetailActivity(
+    @RouterArgName(name = EntryDetailActivity.KEY_ENTRY_ID) entryId: UUID,
+    @RouterArgName(name = EntryDetailActivity.KEY_GROUP_TITLE) groupName: String,
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null
+  )
+
+  /**
+   * to group detail
+   */
+  @RouterPath(path = "/group/detail")
+  fun toGroupDetailActivity(
+    @RouterArgName(name = GroupDetailActivity.KEY_TITLE) groupName: String,
+    @RouterArgName(name = GroupDetailActivity.KEY_GROUP_ID) groupId: PwGroupId,
+    @RouterArgName(name = GroupDetailActivity.KEY_IS_IN_RECYCLE_BIN) isRecycleBin: Boolean = false,
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null
+  )
+
+  /**
+   * create entry
+   */
+  @RouterPath(path = "/entry/create")
+  fun toCreateEntryActivity(
+    @RouterArgName(name = CreateEntryActivity.PARENT_GROUP_ID) groupId: PwGroupId?,
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null,
+    @RouterArgName(name = CreateEntryActivity.IS_SHORTCUTS) isFromShortcuts: Boolean = false,
+    @RouterArgName(name = CreateEntryActivity.KEY_TYPE) type: Int = CreateEntryActivity.TYPE_NEW_ENTRY
+  )
+
+  /**
+   * edit entry
+   */
+  @RouterPath(path = "/entry/create")
+  fun toEditEntryActivity(
+    @RouterArgName(name = CreateEntryActivity.KEY_ENTRY) uuid: UUID,
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null,
+    @RouterArgName(name = CreateEntryActivity.KEY_TYPE) type: Int = CreateEntryActivity.TYPE_EDIT_ENTRY
+  )
 
   @RouterPath(path = "/main/ac")
   fun toMainActivity(
@@ -32,14 +73,4 @@ interface ActivityRouter {
   fun toCreateDbActivity(
     @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null
   )
-
-  /**
-   * 跳转群组详情或项目详情
-   */
-  fun toEntryDetail(
-    activity: FragmentActivity,
-    entry: PwEntry,
-    showElement: View? = null
-  ) {
-  }
 }

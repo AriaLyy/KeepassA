@@ -26,7 +26,6 @@ import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
-import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.R.layout
 import com.lyy.keepassa.base.BaseActivity
@@ -36,23 +35,13 @@ import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.event.DbHistoryEvent
 import com.lyy.keepassa.router.ActivityRouter
-import com.lyy.keepassa.router.DialogRouter
+import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.PermissionsUtil
 import com.lyy.keepassa.view.create.CreateEntryActivity
-import com.lyy.keepassa.view.main.MainActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
-import com.tencent.bugly.crashreport.CrashReport
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
-import timber.log.Timber
-import java.lang.NullPointerException
 
 @Route(path = "/launcher/activity")
 class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
@@ -262,9 +251,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   private fun buildChangDbFragment(): Pair<String, ChangeDbFragment> {
     var fragment = supportFragmentManager.findFragmentByTag(ChangeDbFragment.FM_TAG)
     if (fragment == null || fragment !is ChangeDbFragment) {
-      fragment = ARouter.getInstance()
-        .build("/launcher/changeDb")
-        .navigation() as ChangeDbFragment
+      fragment = Routerfit.create(FragmentRouter::class.java).getChangeDbFragment()
     }
     return Pair(ChangeDbFragment.FM_TAG, fragment)
   }
@@ -272,11 +259,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   private fun buildOpenDbFragment(record: DbHistoryRecord): Pair<String, OpenDbFragment> {
     var fragment = supportFragmentManager.findFragmentByTag(OpenDbFragment.FM_TAG)
     if (fragment == null || fragment !is OpenDbFragment) {
-      fragment = ARouter.getInstance()
-        .build("/launcher/opendb")
-        .withBoolean("openIsFromFill", isFromFill)
-        .withParcelable("openDbRecord", record)
-        .navigation() as OpenDbFragment
+      fragment = Routerfit.create(FragmentRouter::class.java).getOpenDbFragment(isFromFill, record)
     }
     return Pair(OpenDbFragment.FM_TAG, fragment)
   }

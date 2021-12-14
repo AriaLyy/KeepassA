@@ -47,7 +47,7 @@ task clean(type: Delete) {
 ext {
   compileSdkVersion = 31
   supportLibVersion = "27.1.1"
-  buildToolsVersion = "29.0.3" // https://developer.android.com/studio/releases/build-tools
+  buildToolsVersion = "30.0.2" // https://developer.android.com/studio/releases/build-tools
   targetSdkVersion = 30
   minSdkVersion = 21
   ndkVersion = '21.3.6528147'

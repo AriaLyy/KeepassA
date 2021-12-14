@@ -15,7 +15,6 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.app.ActivityManager
 import android.app.ActivityManager.RunningAppProcessInfo
-import android.app.AppOpsManager
 import android.app.assist.AssistStructure
 import android.content.ComponentName
 import android.content.ContentUris
@@ -28,7 +27,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION
 import android.os.Environment
-import android.os.Process
 import android.provider.DocumentsContract
 import android.provider.MediaStore.Audio
 import android.provider.MediaStore.Images.Media
@@ -39,6 +37,7 @@ import android.view.View
 import android.view.autofill.AutofillManager
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.ColorInt
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.graphics.ColorUtils
 import androidx.documentfile.provider.DocumentFile
@@ -47,6 +46,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.core.AbsFrame
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.StringUtil
 import com.keepassdroid.database.PwDataInf
@@ -59,11 +59,11 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
+import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.service.autofill.AutoFillHelper
 import com.lyy.keepassa.service.autofill.StructureParser
 import com.lyy.keepassa.view.create.CreateDbActivity
 import com.lyy.keepassa.view.detail.EntryDetailActivity
-import com.lyy.keepassa.view.detail.GroupDetailActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.launcher.OpenDbHistoryActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
@@ -258,10 +258,10 @@ class KeepassAUtil private constructor() {
   fun isHomeActivity(ac: Activity): Boolean {
     val clazz = ac.javaClass
     return (clazz == LauncherActivity::class.java
-        || clazz == CreateDbActivity::class.java
-        || clazz == OpenDbHistoryActivity::class.java
-        || clazz == QuickUnlockActivity::class.java
-        )
+      || clazz == CreateDbActivity::class.java
+      || clazz == OpenDbHistoryActivity::class.java
+      || clazz == QuickUnlockActivity::class.java
+      )
   }
 
   /**
@@ -302,12 +302,12 @@ class KeepassAUtil private constructor() {
     }
 
     return (
-        clazz != LauncherActivity::class.java
-            && clazz != QuickUnlockActivity::class.java
-            && clazz != CreateDbActivity::class.java
-            && clazz != AutoFillEntrySearchActivity::class.java
-            && clazz != OpenDbHistoryActivity::class.java
-        )
+      clazz != LauncherActivity::class.java
+        && clazz != QuickUnlockActivity::class.java
+        && clazz != CreateDbActivity::class.java
+        && clazz != AutoFillEntrySearchActivity::class.java
+        && clazz != OpenDbHistoryActivity::class.java
+      )
   }
 
   /**
@@ -613,7 +613,7 @@ class KeepassAUtil private constructor() {
 
       // 增加TOP密码字段
       if (!addOTPPass && (str.key.startsWith("TOTP", ignoreCase = true)
-            || str.key.startsWith("OTP", ignoreCase = true))
+          || str.key.startsWith("OTP", ignoreCase = true))
       ) {
         addOTPPass = true
         val totpPass = OtpUtil.getOtpPass(entryV4)
@@ -668,12 +668,28 @@ class KeepassAUtil private constructor() {
     showElement: View? = null
   ) {
     if (entry is PwGroup) {
-      GroupDetailActivity.toGroupDetail(activity, entry)
+      Routerfit.create(ActivityRouter::class.java, activity).toGroupDetailActivity(
+        groupName = entry.name,
+        groupId = entry.id,
+        opt = ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
+      )
       return
     }
 
     if (entry is PwEntry) {
-      EntryDetailActivity.toEntryDetail(activity, entry, showElement)
+      val opt = if (showElement != null) {
+        val pair = androidx.core.util.Pair(
+          showElement, activity.getString(R.string.transition_entry_icon)
+        )
+        ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pair)
+      } else {
+        ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
+      }
+      Routerfit.create(ActivityRouter::class.java, activity).toEntryDetailActivity(
+        entryId = entry.uuid,
+        groupName = entry.parent.name,
+        opt = opt
+      )
     }
   }
 
@@ -906,7 +922,7 @@ fun Uri.getFileInfo(
 
 fun PwEntry.isRef(): Boolean {
   return (!username.isNullOrEmpty() && username.startsWith("{REF:", ignoreCase = true))
-      || (!password.isNullOrEmpty() && password.startsWith("{REF:", ignoreCase = true))
+    || (!password.isNullOrEmpty() && password.startsWith("{REF:", ignoreCase = true))
 }
 
 /**

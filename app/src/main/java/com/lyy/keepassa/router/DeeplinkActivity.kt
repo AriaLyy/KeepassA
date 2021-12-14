@@ -10,9 +10,7 @@ package com.lyy.keepassa.router
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
-import com.lyy.keepassa.view.create.CreateEntryActivity
 import timber.log.Timber
 import java.net.URLDecoder
 
@@ -41,17 +39,16 @@ class DeeplinkActivity : AppCompatActivity() {
     val ac = uri.getQueryParameter("ac")
     if (ac == "createEntry") {
       Timber.d("to create entry")
-      ARouter.getInstance()
-        .build("/entry/create")
-        .withBoolean(CreateEntryActivity.IS_SHORTCUTS, true)
-        .navigation()
+      Routerfit.create(ActivityRouter::class.java).toCreateEntryActivity(
+        groupId = null,
+        isFromShortcuts = true
+      )
       return
     }
     if (ac == "search") {
       val type = uri.getQueryParameter("shortcutsType")
       Timber.d("to search ac")
-      Routerfit.create(ActivityRouter::class.java)
-        .toMainActivity(true, type!!.toInt())
+      Routerfit.create(ActivityRouter::class.java).toMainActivity(true, type!!.toInt())
     }
   }
 }

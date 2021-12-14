@@ -110,37 +110,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     // 编辑条目
     const val TYPE_EDIT_ENTRY = 3
 
-    /**
-     * 编辑
-     */
-    fun editEntry(
-      activity: FragmentActivity,
-      pwEntry: PwEntry
-    ) {
-      ARouter.getInstance()
-        .build("/entry/create")
-        .withInt(KEY_TYPE, TYPE_EDIT_ENTRY)
-        .withSerializable(KEY_ENTRY, pwEntry.uuid)
-        .withOptionsCompat(ActivityOptionsCompat.makeSceneTransitionAnimation(activity))
-        .navigation(activity)
-    }
-
-    /**
-     * 创建条目
-     */
-    fun createEntry(
-      activity: FragmentActivity,
-      parenGroupId: PwGroupId
-    ) {
-      ARouter.getInstance()
-        .build("/entry/create")
-        .withInt(KEY_TYPE, TYPE_NEW_ENTRY)
-        .withSerializable(PARENT_GROUP_ID, parenGroupId)
-        .withOptionsCompat(
-          ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
-        )
-        .navigation(activity)
-    }
   }
 
   private val passRequestCode = 0xA2

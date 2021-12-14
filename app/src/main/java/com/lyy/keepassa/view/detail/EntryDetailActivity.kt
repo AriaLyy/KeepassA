@@ -24,7 +24,6 @@ import android.widget.Button
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.transition.addListener
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Autowired
@@ -43,6 +42,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityEntryDetailBinding
 import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
 import com.lyy.keepassa.event.DelEvent
+import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
@@ -52,7 +52,6 @@ import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.takePermission
-import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
@@ -73,31 +72,6 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   companion object {
     const val KEY_GROUP_TITLE = "KEY_GROUP_TITLE"
     const val KEY_ENTRY_ID = "KEY_ENTRY_ID"
-
-    /**
-     * 跳转群组详情或项目详情
-     */
-    fun toEntryDetail(
-      activity: FragmentActivity,
-      entry: PwEntry,
-      showElement: View? = null
-    ) {
-      ARouter.getInstance()
-        .build("/entry/detail")
-        .withSerializable(KEY_ENTRY_ID, entry.uuid)
-        .withString(KEY_GROUP_TITLE, entry.parent.name)
-        .withOptionsCompat(
-          if (showElement != null) {
-            val pair = androidx.core.util.Pair(
-              showElement, activity.getString(R.string.transition_entry_icon)
-            )
-            ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pair)
-          } else {
-            ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
-          }
-        )
-        .navigation(activity)
-    }
   }
 
   private lateinit var module: EntryDetailModule
@@ -135,7 +109,10 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       if (item.itemId == R.id.history) {
         // todo 查看历史
       } else if (item.itemId == R.id.edit) {
-        CreateEntryActivity.editEntry(this, pwEntry)
+        Routerfit.create(ActivityRouter::class.java, this).toEditEntryActivity(
+          pwEntry.uuid,
+          ActivityOptionsCompat.makeSceneTransitionAnimation(this)
+        )
       }
 
       true
@@ -259,7 +236,6 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
 
           override fun onCancel(v: Button) {
           }
-
         }
       )
       .show()
@@ -380,12 +356,11 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       binding.time2.setOnClickListener { HitUtil.toaskShort(getString(R.string.modify_time)) }
 
       // 标题横线
-      if (pwEntry.expiryTime.before(Date(System.currentTimeMillis()))){
+      if (pwEntry.expiryTime.before(Date(System.currentTimeMillis()))) {
         val paint = binding.title.paint
         paint.flags = Paint.STRIKE_THRU_TEXT_FLAG
         paint.isAntiAlias = true
       }
-
     } else {
       binding.time.text =
         getString(R.string.create_time, KeepassAUtil.instance.formatTime(pwEntry.creationTime))

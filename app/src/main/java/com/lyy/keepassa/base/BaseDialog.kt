@@ -9,10 +9,12 @@ package com.lyy.keepassa.base
 
 import android.content.Context
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.arialyy.frame.base.FrameDialog
 import com.lyy.keepassa.util.LanguageUtil
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /**
  * @Author laoyuyu
@@ -25,15 +27,23 @@ abstract class BaseDialog<VB : ViewDataBinding>:FrameDialog<VB>() {
     super.onAttach(LanguageUtil.setLanguage(context, BaseApp.currentLang))
   }
 
-  override fun show() {
-    lifecycleScope.launch {
-      super.show()
+  override fun show(manager: FragmentManager, tag: String?) {
+    if (manager.isStateSaved) {
+      Timber.d("ac 已经保存状态了，不再启动对话框")
+      return
     }
+    if (isAdded || manager.findFragmentByTag(tag) != null) {
+      Timber.d("fragment 已经被add")
+      return
+    }
+    super.show(manager, tag)
   }
 
   override fun dismiss() {
-    lifecycleScope.launch {
-      super.dismiss()
+    if (childFragmentManager.isStateSaved) {
+      Timber.d("状态已经保存，不再dismiss")
+      return
     }
+    super.dismiss()
   }
 }

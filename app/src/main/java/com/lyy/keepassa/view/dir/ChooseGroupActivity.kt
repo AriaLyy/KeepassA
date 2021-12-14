@@ -20,6 +20,7 @@ import androidx.transition.TransitionInflater
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.arialyy.frame.router.Routerfit
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupId
@@ -29,6 +30,7 @@ import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityGroupDirBinding
 import com.lyy.keepassa.event.MoveEvent
+import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.view.ChoseDirModule
 import com.lyy.keepassa.view.dialog.LoadingDialog
@@ -269,12 +271,11 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
     toolbar.title = pwGroup.name
     var fragment = fragmentMap[pwGroup.id]
     if (fragment == null) {
-      fragment = ARouter.getInstance()
-        .build("/group/choose/dir")
-        .withSerializable(DirFragment.KEY_CUR_GROUP, pwGroup)
-        .withBoolean(DirFragment.KEY_IS_MOVE_GROUP, recycleType != DATA_SELECT_GROUP)
-        .withSerializable(DirFragment.KEY_IS_RECYCLE_GROUP_ID, recycleGroupId)
-        .navigation() as DirFragment
+      fragment = Routerfit.create(FragmentRouter::class.java).getDirFragment(
+        pwGroup,
+        recycleType != DATA_SELECT_GROUP,
+        recycleGroupId
+      )
 
       fragment.enterTransition = getRlAnim()
       fragment.exitTransition = getLrAnim()

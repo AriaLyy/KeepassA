@@ -9,6 +9,12 @@ package com.lyy.keepassa.router
 
 import com.arialyy.frame.router.RouterArgName
 import com.arialyy.frame.router.RouterPath
+import com.keepassdroid.database.PwGroup
+import com.keepassdroid.database.PwGroupId
+import com.lyy.keepassa.entity.DbHistoryRecord
+import com.lyy.keepassa.view.dir.DirFragment
+import com.lyy.keepassa.view.launcher.ChangeDbFragment
+import com.lyy.keepassa.view.launcher.OpenDbFragment
 import com.lyy.keepassa.view.main.EntryListFragment
 import com.lyy.keepassa.view.main.HomeFragment
 
@@ -19,6 +25,14 @@ import com.lyy.keepassa.view.main.HomeFragment
  **/
 interface FragmentRouter {
 
+  @RouterPath(path = "/group/choose/dir")
+  fun getDirFragment(
+    @RouterArgName(name = DirFragment.KEY_CUR_GROUP) group: PwGroup,
+    @RouterArgName(name = DirFragment.KEY_IS_MOVE_GROUP) isMoveGroup: Boolean,
+    @RouterArgName(name = DirFragment.KEY_IS_RECYCLE_GROUP_ID) recycleGroupId: PwGroupId?
+
+  ): DirFragment
+
   @RouterPath(path = "/main/fragment/home")
   fun toMainHomeFragment(): HomeFragment
 
@@ -27,4 +41,13 @@ interface FragmentRouter {
 
   @RouterPath(path = "/main/fragment/entry")
   fun toMainTOTPFragment(@RouterArgName(name = "type") type: String = EntryListFragment.TYPE_TOTP): EntryListFragment
+
+  @RouterPath(path = "/launcher/opendb")
+  fun getOpenDbFragment(
+    @RouterArgName(name = "openIsFromFill") openIsFromFill: Boolean,
+    @RouterArgName(name = "openDbRecord") openDbRecord: DbHistoryRecord
+  ): OpenDbFragment
+
+  @RouterPath(path = "/launcher/changeDb")
+  fun getChangeDbFragment(): ChangeDbFragment
 }
