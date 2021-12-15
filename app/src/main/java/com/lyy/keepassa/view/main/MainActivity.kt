@@ -39,6 +39,7 @@ import com.lyy.keepassa.databinding.ActivityMainBinding
 import com.lyy.keepassa.event.CheckEnvEvent
 import com.lyy.keepassa.event.ModifyDbNameEvent
 import com.lyy.keepassa.event.ShowTOTPEvent
+import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
@@ -119,11 +120,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
     binding.fab.setOnItemClickListener(object : MainExpandFloatActionButton.OnItemClickListener {
       override fun onKeyClick() {
-        startActivity(
-          Intent(this@MainActivity, CreateEntryActivity::class.java),
-          ActivityOptions.makeSceneTransitionAnimation(this@MainActivity)
-            .toBundle()
-        )
+        Routerfit.create(ActivityRouter::class.java).toCreateEntryActivity(null)
         binding.fab.hintMoreOperate()
       }
 

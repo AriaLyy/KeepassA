@@ -30,7 +30,6 @@ interface FragmentRouter {
     @RouterArgName(name = DirFragment.KEY_CUR_GROUP) group: PwGroup,
     @RouterArgName(name = DirFragment.KEY_IS_MOVE_GROUP) isMoveGroup: Boolean,
     @RouterArgName(name = DirFragment.KEY_IS_RECYCLE_GROUP_ID) recycleGroupId: PwGroupId?
-
   ): DirFragment
 
   @RouterPath(path = "/main/fragment/home")

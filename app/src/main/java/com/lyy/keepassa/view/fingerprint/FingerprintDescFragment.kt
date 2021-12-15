@@ -32,6 +32,7 @@ import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.VibratorUtil
 import timber.log.Timber
+import java.security.KeyStoreException
 
 /**
  * 指纹解锁描述
@@ -148,6 +149,9 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
             val cipher = auth.cipher!!
             val useKey = BaseApp.dbKeyPath.isNotEmpty()
 
+            Timber.d("passLen = ${BaseApp.dbPass.length}, cipherBloack = ${cipher.blockSize}, byteLen = ${BaseApp.dbPass.toByteArray(Charsets.UTF_8).size}")
+            // val encrypted = cipher.doFinal(BaseApp.dbPass.toByteArray(Charsets.UTF_8))
+
             val passPair = keyStoreUtil.encryptData(cipher, BaseApp.dbPass)
             val quickInfo = QuickUnLockRecord(
               dbUri = BaseApp.dbRecord!!.localDbUri,
@@ -169,8 +173,13 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
 
             requireActivity().finishAfterTransition()
             lastFlag = module.curFlag
+          } catch (e: KeyStoreException) {
+            keyStoreUtil.deleteKeyStore()
+            keyStoreUtil.load(null)
+            HitUtil.snackShort(mRootView, ResUtil.getString(R.string.error_keystore))
           } catch (e: Exception) {
-            HitUtil.snackShort(mRootView, ResUtil.getString(R.string.verify_finger_fail))
+            keyStoreUtil.deleteKeyStore()
+            HitUtil.snackLong(mRootView, ResUtil.getString(R.string.error_keystore))
             Timber.e(e)
           }
         }

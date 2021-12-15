@@ -23,6 +23,11 @@ import java.util.UUID
  **/
 interface ActivityRouter {
 
+  @RouterPath(path = "/launcher/quickLock")
+  fun toQuickUnlockActivity(
+    @RouterArgName(name = "flag", isFlag = true) flags: Int
+  )
+
   @RouterPath(path = "/entry/detail")
   fun toEntryDetailActivity(
     @RouterArgName(name = EntryDetailActivity.KEY_ENTRY_ID) entryId: UUID,

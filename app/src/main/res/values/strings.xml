@@ -324,4 +324,5 @@ If you are creating a new KeePass database, the above operations are not be need
   <string name="set_key_main_show_totp_tab_title">Home page shows TOTP category</string>
   <string name="set_key_main_show_totp_tab_on">Display TOTP category</string>
   <string name="set_key_main_show_totp_tab_off">Do not display TOTP category</string>
+  <string name="error_keystore">Keystore exception, please try again</string>
 </resources>

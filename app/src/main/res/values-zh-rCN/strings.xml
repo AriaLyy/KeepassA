@@ -321,4 +321,5 @@
     <string name="set_key_main_show_totp_tab_title">主页显示TOTP分类</string>
     <string name="set_key_main_show_totp_tab_on">显示TOTP分类</string>
     <string name="set_key_main_show_totp_tab_off">不显示TOTP分类</string>
+    <string name="error_keystore">keystore 异常，请重试</string>
 </resources>
