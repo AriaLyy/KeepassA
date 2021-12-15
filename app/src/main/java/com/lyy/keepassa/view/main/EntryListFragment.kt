@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.utils.Types
@@ -66,6 +67,7 @@ class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
   }
 
   override fun initData() {
+    ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
     adapter = SimpleEntryAdapter(requireContext(), entryData)
     binding.list.setHasFixedSize(true)
