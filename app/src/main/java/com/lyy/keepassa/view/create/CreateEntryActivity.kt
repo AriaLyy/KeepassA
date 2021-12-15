@@ -11,7 +11,7 @@ package com.lyy.keepassa.view.create
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.ActivityOptions
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -20,9 +20,9 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.annotation.Autowired
@@ -30,7 +30,6 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
-import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroupId
 import com.keepassdroid.database.PwGroupV4
@@ -109,11 +108,8 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
 
     // 编辑条目
     const val TYPE_EDIT_ENTRY = 3
-
   }
 
-  private val passRequestCode = 0xA2
-  private val groupDirRequestCode = 0xA3
   private val getFileRequestCode = 0xA4
   private val editorRequestCode = 0xA5
 
@@ -142,6 +138,44 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   @Autowired(name = IS_SHORTCUTS)
   @JvmField
   var isShortcuts: Boolean = false
+
+  /**
+   * 密码创建器
+   */
+  private val passGenerateLauncher =
+    registerForActivityResult(object : ActivityResultContract<String?, String>() {
+      override fun createIntent(context: Context, input: String?): Intent {
+        return Intent(context, GeneratePassActivity::class.java)
+      }
+
+      override fun parseResult(resultCode: Int, intent: Intent?): String {
+        return intent?.getStringExtra(GeneratePassActivity.DATA_PASS_WORD) ?: ""
+      }
+    }) {
+      binding.password.setText(it)
+      binding.enterPassword.setText(it)
+    }
+
+  /**
+   * 选择群组
+   */
+  private val chooseGroupLauncher =
+    registerForActivityResult(object : ActivityResultContract<String?, PwGroupId?>() {
+      override fun createIntent(context: Context, input: String?): Intent {
+        return Intent(context, ChooseGroupActivity::class.java).apply {
+          putExtra(ChooseGroupActivity.KEY_TYPE, ChooseGroupActivity.DATA_SELECT_GROUP)
+        }
+      }
+
+      override fun parseResult(resultCode: Int, intent: Intent?): PwGroupId? {
+        return intent?.getSerializableExtra(ChooseGroupActivity.DATA_PARENT) as PwGroupId?
+      }
+    }) {
+      if (it == null) {
+        Timber.d("pwGroupId is null")
+        return@registerForActivityResult
+      }
+    }
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
@@ -469,7 +503,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
 
     if (type == TYPE_NEW_ENTRY) {
       if (parentGroupId == null) {
-        ChooseGroupActivity.chooseGroup(this, groupDirRequestCode)
+        chooseGroupLauncher.launch(null, ActivityOptionsCompat.makeSceneTransitionAnimation(this))
       } else {
         createEntry(parentGroupId!!)
       }
@@ -512,9 +546,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
           }
 
           override fun onCancel(v: Button) {
-
           }
-
         }
       )
       .show()
@@ -573,12 +605,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       binding.password.requestFocus()
     }
     binding.passGenerate.setOnClickListener {
-      startActivityForResult(
-        Intent(this, GeneratePassActivity::class.java),
-        passRequestCode,
-        ActivityOptions.makeSceneTransitionAnimation(this)
-          .toBundle()
-      )
+      passGenerateLauncher.launch(null, ActivityOptionsCompat.makeSceneTransitionAnimation(this))
     }
   }
 
@@ -739,15 +766,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     super.onActivityResult(requestCode, resultCode, data)
     if (resultCode == Activity.RESULT_OK && data != null) {
       when (requestCode) {
-        // 处理获取密码
-        passRequestCode -> {
-          binding.password.setText(data.getStringExtra(GeneratePassActivity.DATA_PASS_WORD))
-          binding.enterPassword.setText(data.getStringExtra(GeneratePassActivity.DATA_PASS_WORD))
-        }
-        // 处理群组选择
-        groupDirRequestCode -> {
-          createEntry(data.getSerializableExtra(ChooseGroupActivity.DATA_PARENT) as PwGroupId)
-        }
         // 处理附件
         getFileRequestCode -> {
           data.data?.takePermission()

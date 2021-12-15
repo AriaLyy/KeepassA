@@ -54,33 +54,20 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
     private const val KEY_ENTRY_ID = "KEY_ENTRY_ID"
 
     // 1: 恢复群组，2: 恢复项目，3: 选择群组，4: 移动
-    private const val KEY_TYPE = "KEY_TYPE"
+    const val KEY_TYPE = "KEY_TYPE"
 
     // 恢复群组
-    private const val DATA_MOVE_GROUP = 1
+    const val DATA_MOVE_GROUP = 1
 
     // 恢复条目
-    private const val DATA_MOVE_ENTRY = 2
+    const val DATA_MOVE_ENTRY = 2
 
     // 选择群组
-    private const val DATA_SELECT_GROUP = 3
+    const val DATA_SELECT_GROUP = 3
 
     // 路径地址
     const val DATA_PARENT = "DATA_PARENT"
 
-    /**
-     * 选择群组
-     */
-    fun chooseGroup(
-      context: Activity,
-      groupDirRequestCode: Int
-    ) {
-      ARouter.getInstance()
-        .build("/group/choose")
-        .withInt(KEY_TYPE, DATA_SELECT_GROUP)
-        .withOptionsCompat(ActivityOptionsCompat.makeSceneTransitionAnimation(context))
-        .navigation(context, groupDirRequestCode)
-    }
 
     /**
      * 移动条目

@@ -720,7 +720,7 @@ class KeepassAUtil private constructor() {
         obj.startActivityForResult(intent, requestCode)
       }
     } catch (e: Exception) {
-      Timber.e("打开文件失败");
+      Timber.e("打开文件失败")
       e.printStackTrace()
     }
   }
