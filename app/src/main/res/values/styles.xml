@@ -1,13 +1,17 @@
 <resources>
 
   <!-- Base application theme. -->
-  <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.DayNight.Bridge">
+  <style name="AppTheme.NoActionBar" parent="BaseTheme">
+
+  </style>
+
+  <style name="BaseTheme" parent="Theme.MaterialComponents.DayNight.Bridge">
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorAccent</item>
-<!--    <item name="android:windowIsTranslucent">true</item>-->
+    <!--    <item name="android:windowIsTranslucent">true</item>-->
     <!--    处理状态栏颜色 -->
     <!--    <item name="android:windowTranslucentStatus">false</item>-->
     <!--    <item name="android:windowTranslucentNavigation">false</item>-->
@@ -15,20 +19,6 @@
 
   </style>
 
-  <style name="AppTheme.NoActionBar.Night" parent="ThemeOverlay.MaterialComponents.Dark">
-    <item name="windowActionBar">false</item>
-    <item name="windowNoTitle">true</item>
-    <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-    <item name="colorAccent">@color/colorAccent</item>
-<!--    <item name="android:windowIsTranslucent">true</item>-->
-    <!--    处理状态栏颜色 -->
-    <!--    <item name="android:windowTranslucentStatus">false</item>-->
-    <!--    <item name="android:windowTranslucentNavigation">false</item>-->
-    <item name="android:statusBarColor">@color/colorPrimary</item>
-
-    <!-- New MaterialComponents attributes. -->
-  </style>
 
   <style name="DialogActivityStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
     <!--设置dialog的背景-->

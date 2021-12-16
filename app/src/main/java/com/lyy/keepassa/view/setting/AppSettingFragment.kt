@@ -68,6 +68,8 @@ class AppSettingFragment : PreferenceFragmentCompat() {
   @JvmField
   var scrollKey: String? = null
 
+  private var isHighlighted = false
+
   override fun onCreatePreferences(
     savedInstanceState: Bundle?,
     rootKey: String?
@@ -94,13 +96,14 @@ class AppSettingFragment : PreferenceFragmentCompat() {
    * turn to scrollKey
    */
   private fun scrollToKey() {
-    if (!scrollKey.isNullOrEmpty()) {
+    if (!scrollKey.isNullOrEmpty() && !isHighlighted) {
       try {
         val mList = ReflectUtils.reflect(this).field("mList").get<RecyclerView>()
         val adapter = mList.adapter
         val position =
           (adapter as PreferencePositionCallback).getPreferenceAdapterPosition(scrollKey)
         Timber.d("postiion = $position, key = $scrollKey")
+        isHighlighted = true
         lifecycleScope.launch(Dispatchers.IO) {
           delay(200)
           withContext(Dispatchers.Main) {
