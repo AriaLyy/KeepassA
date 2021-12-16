@@ -14,6 +14,7 @@ import android.os.Build.VERSION_CODES
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.arch.core.executor.ArchTaskExecutor
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.AuthenticationCallback
 import androidx.biometric.BiometricPrompt.AuthenticationResult
@@ -118,6 +119,10 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
       .setTitle(ResUtil.getString(R.string.fingerprint_unlock))
       .setSubtitle(ResUtil.getString(R.string.verify_finger))
       .setNegativeButtonText(ResUtil.getString(R.string.cancel))
+
+      // DEVICE_CREDENTIAL pin 码
+      // BIOMETRIC_STRONG 指纹
+      .setAllowedAuthenticators(BIOMETRIC_STRONG)
 //        .setConfirmationRequired(false)
       .build()
     val biometricPrompt = BiometricPrompt(this, ArchTaskExecutor.getMainThreadExecutor(),
@@ -149,7 +154,13 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
             val cipher = auth.cipher!!
             val useKey = BaseApp.dbKeyPath.isNotEmpty()
 
-            Timber.d("passLen = ${BaseApp.dbPass.length}, cipherBloack = ${cipher.blockSize}, byteLen = ${BaseApp.dbPass.toByteArray(Charsets.UTF_8).size}")
+            Timber.d(
+              "passLen = ${BaseApp.dbPass.length}, cipherBloack = ${cipher.blockSize}, byteLen = ${
+                BaseApp.dbPass.toByteArray(
+                  Charsets.UTF_8
+                ).size
+              }"
+            )
             // val encrypted = cipher.doFinal(BaseApp.dbPass.toByteArray(Charsets.UTF_8))
 
             val passPair = keyStoreUtil.encryptData(cipher, BaseApp.dbPass)

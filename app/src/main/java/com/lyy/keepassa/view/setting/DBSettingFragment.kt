@@ -17,6 +17,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.arialyy.frame.util.StringUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
@@ -37,8 +38,8 @@ import timber.log.Timber
 /**
  * 数据库设置
  */
+@Route(path = "/setting/DbFm")
 class DBSettingFragment : PreferenceFragmentCompat() {
-  private val TAG = StringUtil.getClassName(this)
   private lateinit var loadingDialog: LoadingDialog
   private lateinit var module: SettingModule
 

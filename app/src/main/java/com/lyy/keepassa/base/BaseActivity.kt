@@ -24,12 +24,14 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.ViewDataBinding
 import com.arialyy.frame.core.AbsActivity
 import com.arialyy.frame.util.ReflectionUtil
+import com.blankj.utilcode.util.ScreenUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.R
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.LanguageUtil
+import me.jessyan.autosize.AutoSizeConfig
 import timber.log.Timber
 import java.lang.reflect.Field
 import java.util.ArrayList
@@ -71,6 +73,8 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    AutoSizeConfig.getInstance().screenHeight = ScreenUtils.getScreenHeight()
+    AutoSizeConfig.getInstance().screenWidth = ScreenUtils.getScreenWidth()
     super.onCreate(savedInstanceState)
     // 进入系统多任务，界面变空白，设置无法截图
     window.setFlags(
@@ -82,7 +86,6 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     }
 
     handleStatusBar()
-
   }
 
   private fun handleStatusBar() {
@@ -198,7 +201,6 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
           )
           val b = buildSharedElements()
           mPendingExitNamesField.set(stateObj, b)
-
         } catch (e: java.lang.Exception) {
           e.printStackTrace()
         }

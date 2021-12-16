@@ -36,13 +36,14 @@
   <color name="color_note_bg">#CBCBCB</color>
   <color name="error_color">#e6162d</color>
   <color name="bg_first_create_db">#84BA55</color>
-  <color name="bg_second_create_db">#49A064</color>
 
   <color name="color_icon_grey">#333333</color>
-  <color name="color_ime_background">#E7EAED</color>
-  <color name="color_ime_icon">#4E85DB</color>
-  <color name="color_ime_pressed">#22fefefe</color>
-  <color name="color_ime_no_press">#FFFFFF</color>
+  <color name="color_E7EAED">#E7EAED</color>
+  <color name="color_4E85DB">#4E85DB</color>
+  <color name="color_22FEFEFE">#22fefefe</color>
+  <color name="color_FFFFFF">#FFFFFF</color>
+  <color name="color_524E85DB">#524E85DB</color>
+
 
 
 </resources>

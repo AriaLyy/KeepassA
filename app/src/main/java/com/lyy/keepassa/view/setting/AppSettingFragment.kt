@@ -16,14 +16,23 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.Html
+import android.view.View
 import android.view.autofill.AutofillManager
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceGroup.PreferencePositionCallback
 import androidx.preference.SwitchPreference
+import androidx.recyclerview.widget.RecyclerView
+import com.alibaba.android.arouter.facade.annotation.Autowired
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.core.AbsFrame
 import com.arialyy.frame.router.Routerfit
+import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.SharePreUtil
+import com.blankj.utilcode.util.ReflectUtils
 import com.blankj.utilcode.util.RomUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
@@ -37,25 +46,33 @@ import com.lyy.keepassa.util.PermissionsUtil
 import com.lyy.keepassa.view.UpgradeLogDialog
 import com.lyy.keepassa.view.fingerprint.FingerprintActivity
 import de.psdev.licensesdialog.LicensesDialog
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.Locale
 
 /**
  * 应用设置
  */
+@Route(path = "/setting/appFm")
 class AppSettingFragment : PreferenceFragmentCompat() {
   private lateinit var passTypeList: ListPreference
   private var passLen = 3
   private val requestCodeAutoFill = 0xa1
   private lateinit var autoFill: SwitchPreference
 
+  @Autowired(name = "scrollKey")
+  @JvmField
+  var scrollKey: String? = null
+
   override fun onCreatePreferences(
     savedInstanceState: Bundle?,
     rootKey: String?
   ) {
+    ARouter.getInstance().inject(this)
     setPreferencesFromResource(R.xml.app_setting, rootKey)
     setSubPassType()
     setAtoFill()
@@ -66,6 +83,48 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     setIme()
     license()
     screenLock()
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    scrollToKey()
+  }
+
+  /**
+   * turn to scrollKey
+   */
+  private fun scrollToKey() {
+    if (!scrollKey.isNullOrEmpty()) {
+      try {
+        val mList = ReflectUtils.reflect(this).field("mList").get<RecyclerView>()
+        val adapter = mList.adapter
+        val position =
+          (adapter as PreferencePositionCallback).getPreferenceAdapterPosition(scrollKey)
+        Timber.d("postiion = $position, key = $scrollKey")
+        lifecycleScope.launch(Dispatchers.IO) {
+          delay(200)
+          withContext(Dispatchers.Main) {
+            mList.scrollToPosition(position)
+            val v = mList.layoutManager?.findViewByPosition(position)
+            v?.let {
+              itemViewAnim(v)
+            }
+          }
+        }
+      } catch (e: Exception) {
+        Timber.e(e)
+      }
+    }
+  }
+
+  private suspend fun itemViewAnim(view: View) {
+    withContext(Dispatchers.Main) {
+      view.setBackgroundColor(ResUtil.getColor(R.color.color_524E85DB))
+    }
+    withContext(Dispatchers.IO) {
+      delay(2000)
+    }
+    view.setBackgroundColor(ResUtil.getColor(R.color.color_FFFFFF))
   }
 
   /**
@@ -232,7 +291,6 @@ class AppSettingFragment : PreferenceFragmentCompat() {
         }
         true
       }
-
     } else {
       autoFill.isVisible = false
     }
@@ -289,7 +347,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
         8 -> {
           lang = Locale.GERMANY
         }
-        9 ->{
+        9 -> {
           lang = Locale("pl")
         }
         10 -> {
@@ -353,7 +411,6 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     } else {
       Timber.i("已显示过自动填充对话框，不再重复显示")
     }
-
   }
 
   override fun onActivityResult(
@@ -370,5 +427,4 @@ class AppSettingFragment : PreferenceFragmentCompat() {
       }
     }
   }
-
 }

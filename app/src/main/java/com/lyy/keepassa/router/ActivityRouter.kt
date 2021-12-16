@@ -14,6 +14,7 @@ import com.keepassdroid.database.PwGroupId
 import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.detail.EntryDetailActivity
 import com.lyy.keepassa.view.detail.GroupDetailActivity
+import com.lyy.keepassa.view.setting.SettingActivity
 import java.util.UUID
 
 /**
@@ -22,6 +23,19 @@ import java.util.UUID
  * @Date 2021/10/17
  **/
 interface ActivityRouter {
+
+  @RouterPath(path = "/setting/app")
+  fun toAppSetting(
+    @RouterArgName(name = SettingActivity.KEY_TYPE) type: Int = SettingActivity.TYPE_APP,
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null,
+    @RouterArgName(name = "scrollKey") scrollKey: String? = null
+  )
+
+  @RouterPath(path = "/setting/app")
+  fun toDbSetting(
+    @RouterArgName(name = SettingActivity.KEY_TYPE) type: Int = SettingActivity.TYPE_DB,
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null
+  )
 
   @RouterPath(path = "/launcher/quickLock")
   fun toQuickUnlockActivity(

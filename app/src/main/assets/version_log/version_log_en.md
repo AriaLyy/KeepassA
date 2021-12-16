@@ -1,3 +1,12 @@
+### 2.1.8
+- 【Add】Turkish
+- 【Add】TOTP Bar switch，[Setting](route://keepassA.com/kpa?activity=SettingActivity&type=app&scrollKey=setKeyUiSetting)
+
+![totp_bar](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/totpBar.png)
+- 【Fix】After the data is created, the quick unlock is opened instead of the home page
+- 【Fix】The problem of fingerprint unlocking
+
+
 #### 2.1.7（2021/10/18）
 - 【Fix】Dialog layout is out of order
 - 【Fix】Abnormal expiration time display problem
