@@ -14,11 +14,6 @@
     <item>6</item>
   </string-array>
 
-  <string-array name="quick_pass_type_entries">
-    <item>Database password in front of %s</item>
-    <item>%s at the end of the database password</item>
-  </string-array>
-
   <string-array name="quick_pass_type_value">
     <item>1</item>
     <item>2</item>
@@ -38,18 +33,18 @@
     <item>300</item>
   </string-array>
 
-  <string-array name="quick_lock_entries">
-    <item>2 minute</item>
-    <item>5 minute</item>
-    <item>10 minute</item>
-    <item>20 minute</item>
-  </string-array>
 
   <string-array name="quick_lock_value">
     <item>120</item>
     <item>300</item>
     <item>600</item>
     <item>1200</item>
+  </string-array>
+
+  <string-array name="set_key_theme_values">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
   </string-array>
 
 
@@ -72,7 +67,7 @@
     <!--    <item>@drawable/ic_google_drive</item>-->
     <item>@drawable/ic_http</item>
     <!--    <item>@drawable/ic_ftp</item>-->
-<!--    <item>@drawable/ic_history</item>-->
+    <!--    <item>@drawable/ic_history</item>-->
     <!--    <item>@drawable/ic_other</item>-->
   </integer-array>
 
@@ -84,7 +79,7 @@
     <!--    <item>3</item>-->
     <item>4</item>
     <!--    <item>5</item>-->
-<!--    <item>6</item>-->
+    <!--    <item>6</item>-->
   </integer-array>
 
   <string-array name="cloud_names">

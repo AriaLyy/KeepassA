@@ -64,7 +64,7 @@
     <item name="theme">@style/ToolbarMenuTheme</item>
     <item name="titleTextAppearance">@style/Toolbar.TitleText</item>
     <item name="android:layout_height">48dp</item>
-    <item name="android:background">@color/white</item>
+    <item name="android:background">@color/background_color</item>
   </style>
 
   <!-- 设置CollapsingToolbarLayout标题 展开的字体的颜色大小 -->

@@ -7,6 +7,7 @@
  */
 package com.lyy.keepassa.router
 
+import androidx.preference.PreferenceFragmentCompat
 import com.arialyy.frame.router.RouterArgName
 import com.arialyy.frame.router.RouterPath
 import com.keepassdroid.database.PwGroup
@@ -30,10 +31,10 @@ interface FragmentRouter {
   @RouterPath(path = "/setting/appFm")
   fun getAppSettingFragment(
     @RouterArgName(name = "scrollKey") scrollKey: String? = null
-  ): AppSettingFragment
+  ): PreferenceFragmentCompat
 
   @RouterPath(path = "/setting/DbFm")
-  fun getDbSettingFragment(): DBSettingFragment
+  fun getDbSettingFragment(): PreferenceFragmentCompat
 
   @RouterPath(path = "/group/choose/dir")
   fun getDirFragment(

@@ -18,6 +18,13 @@
 <notices>
 
     <notice>
+        <name>AndroidUtilCode</name>
+        <url>https://github.com/Blankj/AndroidUtilCode</url>
+        <copyright/>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
         <name>timber</name>
         <url>https://github.com/JakeWharton/timber</url>
         <copyright/>

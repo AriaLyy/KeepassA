@@ -8,6 +8,7 @@
     android:layout_marginRight="6dp"
     android:layout_marginBottom="6dp"
     android:clickable="true"
+    android:focusable="true"
     android:foreground="@drawable/ripple_white_selector"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"

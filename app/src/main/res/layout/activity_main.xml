@@ -14,7 +14,7 @@
         android:id="@+id/head_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/background_color"
         android:minHeight="48dp"
         >
 
@@ -25,6 +25,7 @@
           android:background="@drawable/ripple_white_selector"
           android:clickable="true"
           android:descendantFocusability="blocksDescendants"
+          android:focusable="true"
           android:paddingBottom="8dp"
           android:paddingLeft="16dp"
           android:paddingRight="16dp"

@@ -324,5 +324,26 @@ If you are creating a new KeePass database, the above operations are not be need
   <string name="set_key_main_show_totp_tab_title">Home page shows TOTP category</string>
   <string name="set_key_main_show_totp_tab_on">Display TOTP category</string>
   <string name="set_key_main_show_totp_tab_off">Do not display TOTP category</string>
+  <string name="set_key_theme_style_title">Theme style</string>
+  <string name="set_key_theme_style_summary">Following system</string>
+  <string-array name="sek_ley_theme_style_entries">
+    <item>Following system</item>
+    <item>Dark</item>
+    <item>Light</item>
+  </string-array>
   <string name="error_keystore">Keystore exception, please try again</string>
+
+  <string-array name="quick_pass_type_entries">
+    <item>Database password in front of %s</item>
+    <item>%s at the end of the database password</item>
+  </string-array>
+
+  <string-array name="quick_lock_entries">
+    <item>2 minute</item>
+    <item>5 minute</item>
+    <item>10 minute</item>
+    <item>20 minute</item>
+  </string-array>
+
+
 </resources>

@@ -28,6 +28,7 @@
   <string name="set_key_license" translatable="false">set_key_license</string>
   <string name="set_key_language" translatable="false">set_key_language</string>
   <string name="set_key_ui_setting" translatable="false">setKeyUiSetting</string>
+  <string name="set_key_theme_style" translatable="false">set_key_theme_style</string>
 
   <!-- 分享动画元素的信息 -->
   <string name="transition_db_name" translatable="false">transitionDbName</string>

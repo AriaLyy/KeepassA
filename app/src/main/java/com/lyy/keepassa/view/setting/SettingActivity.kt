@@ -42,6 +42,14 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
   @JvmField
   var scrollKey: String? = null
 
+  private val appFm: PreferenceFragmentCompat by lazy {
+    Routerfit.create(FragmentRouter::class.java).getAppSettingFragment(scrollKey = scrollKey)
+  }
+
+  private val dbFm :PreferenceFragmentCompat by lazy {
+    Routerfit.create(FragmentRouter::class.java).getDbSettingFragment()
+  }
+
   override fun setLayoutId(): Int {
     return R.layout.activity_setting
   }
@@ -53,14 +61,14 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
     val fragment: PreferenceFragmentCompat
     if (type == TYPE_DB) {
       title = getString(R.string.db_setting)
-      fragment = Routerfit.create(FragmentRouter::class.java).getDbSettingFragment()
+      fragment = dbFm
     } else {
       title = getString(R.string.app_setting)
-      fragment = Routerfit.create(FragmentRouter::class.java).getAppSettingFragment(scrollKey = scrollKey)
+      fragment = appFm
     }
     toolbar.title = title
     supportFragmentManager.beginTransaction()
       .replace(R.id.content, fragment)
-      .commitNow()
+      .commitAllowingStateLoss()
   }
 }

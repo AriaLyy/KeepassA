@@ -9,10 +9,15 @@ package com.lyy.keepassa.view.setting
 
 import android.os.Bundle
 import android.view.animation.Animation
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreference
 import com.arialyy.frame.core.AbsFrame
+import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
+import com.lyy.keepassa.R.string
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.event.CheckEnvEvent
 import com.lyy.keepassa.event.ShowTOTPEvent
@@ -22,6 +27,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
+import timber.log.Timber
 
 /**
  * @Author laoyuyu
@@ -37,6 +43,7 @@ class UISettingFragment : PreferenceFragmentCompat() {
     handleEnvCheck()
     handleShowStatusBar()
     handleShowMainTotpTab()
+    handleThemStyle()
   }
 
   override fun onCreateAnimation(
@@ -46,6 +53,37 @@ class UISettingFragment : PreferenceFragmentCompat() {
   ): Animation? {
     // clear anim
     return null
+  }
+
+  /**
+   * handle theme style
+   */
+  private fun handleThemStyle() {
+    val lp = findPreference<ListPreference>(ResUtil.getString(R.string.set_key_theme_style))
+    val summaryArray =
+      requireContext().resources.getStringArray(R.array.sek_ley_theme_style_entries)
+    val mode = PreferenceManager.getDefaultSharedPreferences(requireContext())
+      .getString(getString(string.set_key_theme_style), "1")!!.toInt()
+
+    lp?.summary = summaryArray[mode]
+
+    lp?.setOnPreferenceChangeListener { _, newValue ->
+      val index = newValue.toString().toInt()
+      lp.summary = summaryArray[index]
+      when (index) {
+        0 -> {
+          AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        }
+        1 -> {
+          AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
+        2 -> {
+          AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+      }
+
+      return@setOnPreferenceChangeListener true
+    }
   }
 
   private fun handleShowMainTotpTab() {
