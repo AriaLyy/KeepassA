@@ -327,4 +327,6 @@
     <string name="open_permissions">İzinleri aç</string>
     <string name="miui_permissions">Otomatik doldurma işlevini kullanmak için MIUI sisteminin arka plan açılır pencere arayüzünü açma iznine ihtiyacı var.</string>
     <string name="error_keystore">Anahtar deposu istisnası, lütfen tekrar deneyin</string>
+    <string name="set_key_theme_style_title">Tema tarzı</string>
+    <string name="set_key_theme_style_summary">Sistemi takip et</string>
 </resources>
