@@ -27,7 +27,9 @@
         android:name=".view.launcher.LauncherActivity"
         android:configChanges="layoutDirection|locale"
         android:screenOrientation="portrait"
-        android:windowSoftInputMode="adjustResize"> <!-- taskAffinity 指定activity栈，可以使用finishAffinity关闭该栈中的activity -->
+        android:windowSoftInputMode="adjustResize|stateVisible"
+        >
+      <!-- taskAffinity 指定activity栈，可以使用finishAffinity关闭该栈中的activity -->
       <!--        android:windowSoftInputMode="stateVisible|adjustResize"-->
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
