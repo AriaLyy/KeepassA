@@ -5,7 +5,7 @@
     <string name="app_setting">Programinnstillinger</string>
     <string name="db_setting">Databaseinnstillinger</string>
     <string name="setting">Innstilling</string>
-    <string name="all">Alle elementer</string>
+    <string name="all">Elementer</string>
     <string name="change_db">Bytt database</string>
     <string name="history">Historikk</string>
     <string name="create_file">Opprett ny fil</string>
@@ -135,7 +135,7 @@
     <string name="undo_entryed">Elementet ble flyttet til angitt sted</string>
     <string name="undo_grouped">Gruppen ble flyttet til angitt sted</string>
     <string name="undo_to">Flytt til denne gruppen</string>
-    <string name="undo_entry">Fortsatt …</string>
+    <string name="undo_entry">Gjenopptatt …</string>
     <string name="choose_icon">Velg ikon</string>
     <string name="title_too_long">Gruppenavnet er for langt</string>
     <string name="error_group_no_modify">Ingen gruppeendringer</string>
@@ -158,13 +158,13 @@
     <string name="expire_time">Utløper %s</string>
     <string name="create_pass_key_file_des">Opprett en ny fil å bruke som din nøkkel</string>
     <string name="error_db_name_null">Skriv inn et databasenavn</string>
-    <string name="hint_select_path_type">Velg databaselagringssti</string>
+    <string name="hint_select_path_type">Velg hvor du vil lagre databasen din</string>
     <string name="hint_select_db_path">Klikk for å sette datalagringsmetoden</string>
     <string name="helper_create_pass">Blandet pass</string>
     <string name="pass_key">Filnøkkel</string>
     <string name="help_create_db">Opprett v4-KeePass-database som forvalg</string>
     <string name="feedback_email_msg">Hei, jeg er KeePassA, har du noen spørsmål\?<br/> <br/> <br/> _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/> Mobiltelefonmerker: %s <br/> Telefonmodell: %s <br/> Systemversjon:%s <br/> Oppløsning: %s <br/> Programversjon: %s</string>
-    <string name="error_db_pass_too_short">Bruk mer enn 5 tegn for databasepassordet for å beskytte din data</string>
+    <string name="error_db_pass_too_short">Bruk mer enn 6 tegn for databasepassordet for å beskytte din data</string>
     <string name="hint_db_pass_modify_success">Bruk det nye databasepassordet for å åpne databasen neste gang</string>
     <string name="create_entry_no_save">Forlat nåværende side uten å lagre oppføringen\?</string>
     <string name="expire">Utløpte &lt;font color=#FF0000&gt;%s&lt;/font&gt;</string>
@@ -173,7 +173,7 @@
     <string name="error_pass_null">Sett et databasepassord</string>
     <string name="totp_len">Lengde:</string>
     <string name="set_key_title_auto_lock_database">Lås databasen automatisk</string>
-    <string name="set_key_title_auto_lock_database_turn_on">Lås databasen automatisk</string>
+    <string name="set_key_title_auto_lock_database_turn_on">Ja</string>
     <string name="set_key_title_auto_lock_database_turn_off">Nei</string>
     <string name="ui_setting">Grensesnittsinnstillinger</string>
     <string name="shrink">Krymp</string>
@@ -199,4 +199,134 @@
     <string name="add_more">Legg til flere</string>
     <string name="error_genera_params">Velg minst én passordgenereringstype</string>
     <string name="hint_input_cover_url">Overskriv lenke</string>
+    <string name="open_permissions">Åpne tilganger</string>
+    <string name="miui_permissions">MIUI-systemet trenger tilgang til å endre bakgrunnsoppsprettsgrensesnittet for å kunne bruke auto-fyllingsfuksjonen.</string>
+    <string name="set_key_title_show_state_bar">Statusfelt</string>
+    <string name="customize">Tilpass</string>
+    <string name="enter">Enter</string>
+    <string name="hint">Merknad</string>
+    <string name="help_pass_type">Kun bruk passord:
+\n Kun passordet ditt trengs for å åpne databsen ;
+\n Passord+nøkkel
+\n Du må skrive inn et passord og velge en nøkkelfil for å åpne databasen.</string>
+    <string name="choose_pass_key_file_des">Velg vilkårlig fil å bruke som nøkkel</string>
+    <string name="help_create_db_path">Det anbefales at du bruker sky-tjenester som Dropbox og WebDAV. Dette synkroniserer databasen din til skyen automatisk, slik at det blir lett å bruke databasen på andre tjenester.
+\nDetabasen er kryptert med AES-256. Uten passordet ditt kan ingen åpne databasen din.</string>
+    <string name="create_pass_key_success">Opprettet nøkkel [%s]</string>
+    <string name="error_pass_unfit">Passordene samsvarer ikke</string>
+    <string name="hint_db_create_success">Opprettet database [%s]</string>
+    <string name="history_record">Historikkloggføring</string>
+    <string name="welcome">Velkommen</string>
+    <string name="hint_group_desc">Elementer for %s-gruppe</string>
+    <string name="error_open_db_arcfour_error">Ugyldig algoritme for kryptering av strøm</string>
+    <string name="error_group_id_null">gruppe-ID har ingen verdi</string>
+    <string name="create_time">Bygd på %s</string>
+    <string name="error_entry_id_null">oppførings-ID har ingen verdi</string>
+    <string name="hint_del_group">Slett【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】-gruppen\?&lt;br&gt;Dette flytter den til papirkurven, hvorfra du kan gjenopprette den senere.</string>
+    <string name="hint_del_group_no_recycle">Slett 【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】-gruppen\?</string>
+    <string name="hint_del_entry">Slett 【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】-elementet\? &lt;br&gt; Dette flytter den til papirkurven, hvorfra du kan gjenopprette den senere.</string>
+    <string name="hint_del_entry_no_recycle">Slett 【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】-oppføringen for godt\?</string>
+    <string name="create_group">Bygg gruppe</string>
+    <string name="hint_quick_unlock">Skriv inn de siste %s sifrene av ditt databasepassord</string>
+    <string name="hint_input_title">Tittel</string>
+    <string name="hint_input_url">Lenke-adresse</string>
+    <string name="notice">Notis</string>
+    <string name="hint_input_tag">Etikett1, etikett2</string>
+    <string name="bracket">Parentes</string>
+    <string name="no_matching_entry">Ingen samsvarende elementer</string>
+    <string name="relevance_db">Lenket data</string>
+    <string name="hint_save_auto_fill">Hvorvidt pakkenavnet【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】skal tilknyttes oppføringen【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】</string>
+    <string name="mark_not_exit">Programmarked finnes ikke</string>
+    <string name="title">Tittel</string>
+    <string name="clean_clip_time_summary">Tøm utklippstavle etter %s, når passordet er kopiert</string>
+    <string name="quick_pass_len_title">Kort passordslengde</string>
+    <string name="quick_pass_len_summary">Kort passordslengde: %s</string>
+    <string name="des_quick_unlock">Lås opp databasen din med et kort passord</string>
+    <string name="error_short_pass_lenght">Lag et kort passord på 6 tegn eller mindre</string>
+    <string name="quick_pass_type">Hvor skal det korte passordet vises</string>
+    <string name="error_short_pass_short">Lag et kort passord på 3 tegn eller mindre</string>
+    <string name="cover">Omslag</string>
+    <string name="file_conflict_msg">Konflikt mellom lokal- og data lagret i skyen. Velg løsningsmetode. De forskjellige oppføringene er:
+\n %s</string>
+    <string name="login">Innlogging</string>
+    <string name="net_error">Unormalt nettverk</string>
+    <string name="auth">Identitetsbekreftelse</string>
+    <string name="helper_webdav">f.eks: https://dav.example.org/dav/[din mappe]/xxx.kdbx</string>
+    <string name="helper_webdav_dir">f.eks: https://dav.example.org/dav/[din mappe]/</string>
+    <string name="invalid_auth">Kunne ikke identitetsbekrefte. Prøv igjen.</string>
+    <string name="start_upload_db">Begynn å laste opp databasen til din nettverksdisk</string>
+    <string name="notify_channel_db_open">Merknad om opplåsing av database</string>
+    <string name="hint_kdbx_name">Feil endelsesnavn. Det skal være .kdbx</string>
+    <string name="notify_quick_unlock_start">Databasen er låst. Hurtiglåsing er påslått.</string>
+    <string name="hint_quick_use_fingerprint">Kun bruk fingeravtrykk til opplåsing på hurtigopplåsingssiden</string>
+    <string name="hint_finger_print_verfiy">Bekreft fingeravtrykkene igjen for å bruke de nye innstillingene</string>
+    <string name="set_delete_no_into_recycle_bin">Slett oppføringer fra databasen for godt.</string>
+    <string name="hint_fingerprint_modify">Sjekk at fingeravtrykket har endret seg. Tilbakestill funksjonen for opplåsing av fingeravtrykk for egen sikkerhet.</string>
+    <string name="warning_rooted">Ikke åpne databasen din på en telefon med rot-tilgang. Da forblir den trygg.</string>
+    <string name="hint_security_green">"Dette programmet er i et trygt miljø "</string>
+    <string name="hint_security_yellow">Advarsel. Kjører i simulatoren. Miljøet medfører uforutsigbar risiko for databasen.</string>
+    <string name="donate">Doner</string>
+    <string name="dev_birthday">I dag er det utviklerens geburtsdag🎂. Vil du sende en skål til gudene\?</string>
+    <string name="donate_desc">[KeePassA](https://github.com/AriaLyy/KeepassA) er fri programvare. Doner for å støtte arbeidet. Takk skal du ha.</string>
+    <string name="totp_defaule">Forvalgte innstillinger for RFC 6238-symbol</string>
+    <string name="totp_custom">Bruk egendefinerte innstillinger</string>
+    <string name="totp_custom_hint">Egendefinerte innstillinger</string>
+    <string name="totp_steam">Innstillinger for Steam-symbol</string>
+    <string name="totp_Arithmetic">Algoritme:</string>
+    <string name="totp_time">Tid(sek):</string>
+    <string name="sort">Sortering</string>
+    <string name="sort_time_asc">Tid nyligst-senest</string>
+    <string name="sort_time_desc">Tid senest-nyligst</string>
+    <string name="ime_entry_other_info">Fyll inn alle feltene</string>
+    <string name="hint_not_nore_info">Ingen videre info</string>
+    <string name="error_uri_grant_permission">URI-bekreftelse mislyktes</string>
+    <string name="set_key_title_main_allow_show_entries">Hjemmeside</string>
+    <string name="set_key_title_opr_env_check_turn_off">Av</string>
+    <string name="set_key_title_opr_env_check_turn_on">På</string>
+    <string name="set_key_title_opr_env_check">Sjekk av kjøringsmiljø</string>
+    <string name="other">Annet</string>
+    <string name="ref_entry">Referanseoppføring</string>
+    <string name="multi_choice">Flervalg</string>
+    <string name="cur_app_not_autofill">Ingen automatisk utfylling</string>
+    <string name="set_summary_screen_lock_off">Låser ikke databasen</string>
+    <string name="close">Lukk</string>
+    <string name="Alipay">Apipay</string>
+    <string name="error_webdav_end_suffix">Bruk mappestien. F.eks: «https://example.org/dav/kpa/»</string>
+    <string name="set_key_title_fillet_bg_icon">Avrundede hjørner for listeikoner</string>
+    <string name="error_webdav_end_dav_suffix">/dav/sti tillates ikke. Bruk en gyldig sti, som f.eks. «https://example.org/dav/kpa/»</string>
+    <string name="set_key_main_show_totp_tab_title">Hjemmesiden viser TOTP-kategori</string>
+    <string name="set_key_main_show_totp_tab_on">Vis TOTP-kategori</string>
+    <string name="set_key_main_show_totp_tab_off">Ikke vis TOTP-kategori</string>
+    <string name="setting_vivo_background_start">Innstillinger → Flere innstillinger → Tilgangshåndtering → KeePassA → Tilgangsinnstillinger → Bakgrunnsoppsprett</string>
+    <string name="set_key_title_fillet_bg_icon_turn_on">På</string>
+    <string name="set_key_sum_main_show_history">Vis historikk etter opplåsing av databasen</string>
+    <string name="totp_key_error">Kunne ikke generere en TOTP-kode. Uvanlig nøkkel.</string>
+    <string name="set_key_sum_main_show_entries">Vis alle elementer etter opplåsing av databasen</string>
+    <string name="set_key_title_close_load_anim">Laster inn animasjon …</string>
+    <string name="set_key_title_close_load_anim_turn_on">På</string>
+    <string name="set_key_title_close_load_anim_turn_off">Av</string>
+    <string name="s_default">Forvalg</string>
+    <string name="translate_language">Bistå oversettelsen</string>
+    <string name="set_summary_screen_lock_on">Låser databasen automatisk</string>
+    <string name="set_title_screen_lock">Skjermlås</string>
+    <string name="set_key_title_show_state_bar_turn_on">Vis</string>
+    <string name="set_key_title_show_state_bar_turn_off">Skjul</string>
+    <string name="hint_security_red">Enheten din har rot-tilgang, og databasen er derfor i et veldig farlig miljø</string>
+    <string name="error_keystore">Nøkkelknippe-unntak. Prøv igjen.</string>
+    <string name="get_token_fail">Klarte ikke å hente symbol</string>
+    <string name="set_key_title_fillet_bg_icon_turn_off">Av</string>
+    <string name="set_key_theme_style_title">Draktstil</string>
+    <string name="set_key_theme_style_summary">System</string>
+    <string name="setting_miui_background_start">Innstillinger → Programinnstilinger → Programhåndtering → KeePassA → Tilgangshåndtering</string>
+    <string name="help_pass_key">En nøkkelfil tilsvarer en nøkkel for åpning av data, og er vanligvis mer kompleks og pålitelig enn et passord. Den er også vanskeligere å skjule. Hvis du har databasen i skyen, må du unngå å legge nøkkelen med databasen der.
+\n Du kan velge vilkårlig fil til åpning av databasen. Et bilde, eller en TXT-fil for eksempel.
+\n⚠️ Merk: Hvis dette bildet eller TXT-dokumentet endres, vil du ikke kunne åpne databasen!
+\n Det anbefales sterkt å kun bruke skrivebeskyttede filer som nøkler.</string>
+    <string name="one_drive_init_failure">Kunne ikke starte OneDrive</string>
+    <string name="sort_chart_asc">Første bokstav stigende (A-Z)</string>
+    <string name="sort_chart_desc">Første bokstav synkende (Å-A)</string>
+    <string name="one_drive_hint">For å beskytte personvernet vil KeePassA kun bruke &lt;font color=#FF0000&gt;【application/KeepassA】&lt;/font&gt;-mappen. Hvis du vil lese KeePass-databasen til OneDrive, &lt;font color=#FF0000&gt;må du lagre databasen i denne mappen.&lt;/font&gt;</string>
+    <string name="hint_background_start">Gå til &lt;font color=#FF0000&gt;【%s】&lt;/font&gt; og innvilg bakgrunnsoppsprettet for å gjøre bedre bruk av auto-utfyllingstjenesten.&lt;br&gt; &lt;font color=#FF0000&gt;KeePassA viser tilhørende grensesnitt for åpning av databasen når du bruker funksjon for automatisk utfylling.&lt;/font&gt;</string>
+    <string name="hint_full_fingerprint">Fingeravtrykket brukes til å låse opp databasen i grensesnittene for hurtigopplåsing og databaseopplåsing. KeePassA krypterer og lagrer hovedpassordet for databasen og nøkkelinfo i det lokale nøkkelknippet til Android. Identitetsbekreftelse med fingeravtrykk brukes for beskyttelse Kun ditt fingeravtrykk kan låse opp databasen.</string>
+    <string name="dropbox_msg">For bedret personvern spør ikke KeePassA om tilgang til alle filene i din Dropbox, kun &lt;font color = # FF0000&gt; tilgang til 【Apps/KeePassA】-mappen&lt;/ font &gt;.&lt;br /&gt;Derfor:&lt;br /&gt; &lt;b&gt;Hvis du allerede har en KeePass-database innvilger du tilgagn til 【Apps/KeePassA】-mappen i 【Application/KeePassA】 -mappen etter at identitetsbekreftelsen er fullført.&lt;/b&gt;&lt;br /&gt;&lt;br /&gt; Hvis du oppretter en ny KeePass-database kan du se bort fra den instruksen. Etter at du har laget databasen lager KeePassA en tilsvarende mappe og laster opp databasen til 【Apps/KeePassA】-mappen i Dropbox.</string>
 </resources>
