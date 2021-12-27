@@ -453,7 +453,6 @@ object DbSynUtil : SynStateCode {
 
         override fun onCancel(v: Button) {
         }
-
       }
     ).show()
   }
@@ -506,9 +505,7 @@ object DbSynUtil : SynStateCode {
         }
 
         override fun onCancel(v: Button) {
-
         }
-
       }
     ).show()
 
@@ -595,7 +592,7 @@ object DbSynUtil : SynStateCode {
     return if (b) STATE_SUCCEED else STATE_FAIL
   }
 
-  private fun toask(
+  fun toask(
     msg: String,
     success: Boolean,
     des: String
@@ -611,9 +608,5 @@ object DbSynUtil : SynStateCode {
     }
   }
 
-  private data class PwDataMap(
-    val cloudPwData: PwDataInf,
-    val localPwData: PwDataInf
-  )
 
 }
