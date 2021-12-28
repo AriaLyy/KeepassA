@@ -49,7 +49,7 @@ ext {
   supportLibVersion = "27.1.1"
   buildToolsVersion = "30.0.2" // https://developer.android.com/studio/releases/build-tools
   targetSdkVersion = 30
-  minSdkVersion = 21
+  minSdkVersion = 23
   ndkVersion = '21.3.6528147'
 
   lifecycleVersion = '2.4.0'
