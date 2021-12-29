@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'channel'
+apply plugin: 'com.tencent.vasdolly'
 apply plugin: 'com.alibaba.arouter'
 
 android {
@@ -21,8 +21,8 @@ android {
     applicationId "com.lyy.keepassa"
     minSdkVersion rootProject.ext.minSdkVersion
     targetSdkVersion rootProject.ext.targetSdkVersion
-    versionCode 43
-    versionName "2.1.7"
+    versionCode VERSION_CODE.toInteger()
+    versionName VERSION_NAME
     multiDexEnabled true
     vectorDrawables.useSupportLibrary = true
 
@@ -134,14 +134,14 @@ rebuildChannel {
   //  baseDebugApk = 已有Debug APK
   // 已有Release APK
 //  baseReleaseApk = new File("${project.buildDir}/AndResGuardFinal.apk")
-  baseReleaseApk = new File("${project.buildDir}/outputs/apk/dev/release/app-dev-release.apk")
+  baseApk = new File("${project.buildDir}/outputs/apk/dev/release/app-dev-release.apk")
   //默认为new File(project.buildDir, "rebuildChannel/debug")
   //  debugOutputDir = Debug渠道包输出目录
   //默认为new File(project.buildDir, "rebuildChannel/release")
   // Release渠道包输出目录
-  releaseOutputDir = new File("${project.buildDir}/outputs/channels")
+  outputDir = new File("${project.buildDir}/outputs/channels")
   //快速模式：生成渠道包时不进行校验（速度可以提升10倍以上，默认为false）
-  isFastMode = false
+  fastMode = false
   //低内存模式（仅针对V2签名，默认为false）：只把签名块、中央目录和EOCD读取到内存，不把最大头的内容块读取到内存，在手机上合成APK时，可以使用该模式
   lowMemory = false
 }
@@ -304,7 +304,7 @@ dependencies {
   implementation 'com.tencent.wcdb:room:1.0.8' // 代替 room-runtime，同时也不需要再引用 wcdb-android
 
   // 腾讯多渠道 VasDolly
-  implementation 'com.leon.channel:helper:2.0.3'
+  implementation 'com.tencent.vasdolly:helper:3.0.3'
 
   // XP/调试/多开/模拟器/root 判断
   implementation 'com.lahm.library:easy-protector-release:1.1.2'
@@ -335,3 +335,4 @@ dependencies {
 
 // 不要使用，1.2.21打包出来的apk，消息对话框布局错乱
 //apply from: 'AndResGuard.gradle'
+apply from: 'bugly.gradle'

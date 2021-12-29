@@ -17,7 +17,7 @@ buildscript {
     // 资源文件混淆
     classpath 'com.tencent.mm:AndResGuard-gradle-plugin:1.2.21'
     // 腾讯多渠道打包工具：VasDolly
-    classpath 'com.leon.channel:plugin:2.0.3'
+    classpath 'com.tencent.vasdolly:plugin:3.0.3'
 
     classpath "com.alibaba:arouter-register:1.0.2"
     // 华为的
