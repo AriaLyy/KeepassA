@@ -549,6 +549,8 @@ class LauncherModule : BaseModule() {
         KeepassAUtil.instance.subShortPass()
         if (keyUri != null) {
           BaseApp.dbKeyPath = QuickUnLockUtil.encryptStr(keyUri.toString())
+        }else{
+          BaseApp.dbKeyPath = null
         }
         //              BaseApp.KDB?.clear(context)
         // 保存打开记录

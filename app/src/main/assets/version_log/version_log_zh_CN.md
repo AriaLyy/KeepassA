@@ -1,4 +1,5 @@
 ### 2.1.8
+- 【新增】网络重试，提升OneDrive\Dropbox\webdav的网络连接稳定性
 - 【新增】土耳其语
 - 【新增】夜间模式，[应用设置->主题设置](route://keepassA.com/kpa?activity=SettingActivity&type=app&scrollKey=setKeyUiSetting)
 - 【新增】TOTP栏开关[应用设置->界面设置](route://keepassA.com/kpa?activity=SettingActivity&type=app&scrollKey=setKeyUiSetting)

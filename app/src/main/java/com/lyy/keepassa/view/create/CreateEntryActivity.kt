@@ -175,6 +175,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
         Timber.d("pwGroupId is null")
         return@registerForActivityResult
       }
+      createEntry(it)
     }
 
   override fun initData(savedInstanceState: Bundle?) {
