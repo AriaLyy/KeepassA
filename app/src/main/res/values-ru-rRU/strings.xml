@@ -15,7 +15,7 @@
     <string name="show_pass">Показать пароль</string>
     <string name="copy_to_clip">Копировать в буфер обмена</string>
     <string name="db_name_modify">Название базы данных изменилось</string>
-    <string name="db_name_no_alter">Название базы данных не изменилось</string>
+    <string name="db_name_no_alter">Имя базы не изменилось</string>
     <string name="out_db">Экспорт базы данных</string>
     <string name="modify_db_pass">Изменить пароль базы данных</string>
     <string name="modify_db_name">Изменить название базы данных</string>
@@ -24,7 +24,7 @@
     <string name="hint_copy_pass">Пароль скопирован в буфер обмена</string>
     <string name="hint_copy_user">Имя пользователя скопировано в буфер обмена</string>
     <string name="choose_icon">Выберите значок</string>
-    <string name="title_too_long">Название группы слишком длинное</string>
+    <string name="title_too_long">Имя группы слишком большое</string>
     <string name="modify_group">Редактировать группу</string>
     <string name="group_name">Название группы</string>
     <string name="copy_password">Копировать пароль</string>
@@ -44,23 +44,23 @@
     <string name="error_open_db_pass_error">Неверный пароль</string>
     <string name="error_input_pass_null">Пожалуйста, введите пароль базы данных</string>
     <string name="help_input_db_pass">Введите пароль базы данных</string>
-    <string name="welcome">Добро пожаловать</string>
+    <string name="welcome">Приветствую</string>
     <string name="app_setting">Настройки приложения</string>
     <string name="db_setting">Настройки базы данных</string>
     <string name="setting">Настройки</string>
     <string name="all">Элементы</string>
-    <string name="change_db">Переключить базу данных</string>
+    <string name="change_db">Выбрать базу</string>
     <string name="edit">Редактировать</string>
     <string name="history_record">Запись истории</string>
     <string name="history">История</string>
-    <string name="hint_db_create_success">База данных [%s] создана успешно</string>
+    <string name="hint_db_create_success">База данных [%s] создана</string>
     <string name="error_pass_null">Пожалуйста, установите пароль базы данных</string>
     <string name="create_file">Создать новый файл</string>
     <string name="choose_file">Выберите файл</string>
     <string name="cancel">Отмена</string>
     <string name="done">Готово</string>
     <string name="error_db_name_null">Пожалуйста, введите название базы данных</string>
-    <string name="hint_select_path_type">Выберите путь сохранения базы данных</string>
+    <string name="hint_select_path_type">Выберите место хранения базы</string>
     <string name="hint_select_db_path">Нажмите, чтобы установить метод сохранения данных</string>
     <string name="up">Предыдущий</string>
     <string name="next">Следующий шаг</string>
@@ -69,13 +69,13 @@
     <string name="open_db">Открыть базу данных</string>
     <string name="encrypt_type_1">Только пароль</string>
     <string name="encrypt_type">Шифрование</string>
-    <string name="help_create_group">Название группы не может превышать 16 символов</string>
+    <string name="help_create_group">Не более 16 символов</string>
     <string name="hint_enter_password">Подтвердить пароль</string>
     <string name="hint_input_password">Введите пароль из 6-16 цифр</string>
-    <string name="hint_set_password">Установить пароль</string>
-    <string name="open">Разблокировать</string>
+    <string name="hint_set_password">Задать пароль</string>
+    <string name="open">Открыть</string>
     <string name="password">Пароль</string>
-    <string name="set_title_screen_lock">Настройки блокировки экрана</string>
+    <string name="set_title_screen_lock">Блокировать экран</string>
     <string name="multi_choice">Множественный выбор</string>
     <string name="ref_entry">Справочная запись</string>
     <string name="other">Другое</string>
@@ -91,7 +91,7 @@
     <string name="warning">Предупреждение</string>
     <string name="hint_webdav_url">URL-адрес файла</string>
     <string name="helper_webdav_dir">например: https://dav.xxxx.com/dav/[ваша папка]/</string>
-    <string name="helper_webdav">например https://dav.xxxx.com/dav/[ваша папка]/xxx.kdbx</string>
+    <string name="helper_webdav">например: https://dav.example.org/dav/[your folder]/xxx.kdbx</string>
     <string name="login">Войти</string>
     <string name="no_file">Нет файла</string>
     <string name="cover_cloud">Облако</string>
@@ -101,7 +101,7 @@
     <string name="quick_pass_len_summary">Длина короткого пароля: %s</string>
     <string name="quick_pass_len_title">Длина короткого пароля</string>
     <string name="error_short_pass_short">Длина короткого пароля не может быть меньше 3 символов</string>
-    <string name="error_short_pass_lenght">Длина короткого пароля не может быть больше 6 символов</string>
+    <string name="error_short_pass_lenght">Длина короткого пароля должна быть не более 6 символов</string>
     <string name="sort">Сортировка</string>
     <string name="totp_len">Длина:</string>
     <string name="totp_Arithmetic">Арифметика:</string>
@@ -110,7 +110,7 @@
     <string name="donate">Пожертвование</string>
     <string name="set_delete_no_into_recycle_bin_des">Переместить удаленные элементы в корзину</string>
     <string name="set_delete_setting">Удалить настройки</string>
-    <string name="hint_please_open_database">Пожалуйста, откройте базу данных</string>
+    <string name="hint_please_open_database">Пожалуйста, откройте базу</string>
     <string name="add_attr_file">Добавить вложения</string>
     <string name="open1">открытие</string>
     <string name="upload">Выгрузить</string>
@@ -169,4 +169,64 @@
     <string name="no_record">Нет записей</string>
     <string name="set_key_praise_value">Оценить KeePassA</string>
     <string name="encrypt_type_2">Пароль + ключ</string>
+    <string name="hint_set_pass_key">Выберите ключ</string>
+    <string name="create_pass_key_success">Файл с ключом [%s] создан</string>
+    <string name="error_enter_pass_null">Введите пароль</string>
+    <string name="error_pass_unfit">Дважды выедён неподходящий пароль</string>
+    <string name="db1">база\t|\t&lt;font color=#757575&gt;%s&lt;/font&gt;</string>
+    <string name="key1">Ключ: %s</string>
+    <string name="enter">ОК</string>
+    <string name="create_pass_key_file_des">Создать новый файл с ключом</string>
+    <string name="error_uri">Ошибка URI</string>
+    <string name="error_open_db_key_empty">Ключ не выбран</string>
+    <string name="create_time">Создано %s</string>
+    <string name="expire_time">Истекает %s</string>
+    <string name="error_group_name_null">Не задано имя группы</string>
+    <string name="create_group_success">Группа создана</string>
+    <string name="hint_query">Имя пользователя, адрес, другие атрибуты…</string>
+    <string name="verify_finger_fail">Не удалось проверить отпечаток пальца</string>
+    <string name="undo_grouped">Группа была перемещена</string>
+    <string name="undo_entryed">Запись была перемещена</string>
+    <string name="hint_quick_unlock">Введите последние %s символов пароля базы</string>
+    <string name="hint_input_cover_url">Перезаписать ссылку</string>
+    <string name="underline">Подчёркивание</string>
+    <string name="space">Пробел</string>
+    <string name="special">Специальные</string>
+    <string name="bracket">Скобки</string>
+    <string name="add_custom_str">Создать поле</string>
+    <string name="use_full_fingerprint">Полная разблокировка отпечатком пальца</string>
+    <string name="del_attr_str">Удалить поле</string>
+    <string name="upper">Заглавные</string>
+    <string name="lower">Прописные</string>
+    <string name="hint_pass_null">Пароль не задан</string>
+    <string name="error_attr_str_null">Пустое имя поля</string>
+    <string name="hint_del_entry">Удалить запись 【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】\? &lt;br&gt;При этом она будет перемещена в корзину.</string>
+    <string name="hint_del_group">"Удалить группу【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】\?&lt;br&gt;При этом  она будет перемещена в корзину."</string>
+    <string name="hint_del_group_no_recycle">Удалить группу 【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】\?</string>
+    <string name="help_create_db">По умолчанию создавать KeePass версии 4</string>
+    <string name="helper_create_pass">Рекомендуются различные символы (прописные, строчные, цифры и специальные)</string>
+    <string name="help_create_db_path">Рекомендуется использовать облачные сервисы (например Dropbox или WebDAV). Это автоматически синхронизирует базу с облаком, упрощая её использование на разных устройствах.
+\n
+\nБаза шифруется с помощью AES-256: не зная пароля никто не сможет её открыть.</string>
+    <string name="error_open_db">Не удалось открыть базу. Возможно неверный пароль или нужен ключ\?</string>
+    <string name="choose_pass_key_file_des">Выберите файл для ключа</string>
+    <string name="help_pass_type">Только пароль:
+\nДля открытия базы нужен только пароль;
+\nПароль + ключ:
+\nДля открытия базы требуются пароль и файл с ключом.</string>
+    <string name="expire">Истекает &lt;font color=#FF0000&gt;%s&lt;/font&gt;</string>
+    <string name="help_pass_key">Файл-ключ это ключ, необходимый для открытия данных, и, обычно, более сложный и надёжный, чем пароль. При этом его сложнее скрывать. При хранении базы в облаке не храните в том же месте и ключ.
+\nДля ключа можно взять любой файл: например фото или текстовый.
+\n⚠️ Внимание: если этот файл будет изменён, то открыть им базу уже не получится.
+\nДля этого файла рекомендуется установить атрибут \"только для чтения \".</string>
+    <string name="expand">Развернуть</string>
+    <string name="hint_del_entry_no_recycle">Удалить запись 【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】навсегда\?</string>
+    <string name="create_group_fail">Не удалось создать группу</string>
+    <string name="undo_entry">Восстановить…</string>
+    <string name="undo_to">Переместить в эту группу</string>
+    <string name="verify_finger">Проверка отпечатка пальца</string>
+    <string name="create_group">Новая группа</string>
+    <string name="ban_fingerprint">Нет разблокировки отпечатком пальца</string>
+    <string name="quick_use_fingerprint">Использовать отпечаток пальца для быстрой разблокировки</string>
+    <string name="error_genera_params">Выберите хотя бы 1 тип</string>
 </resources>

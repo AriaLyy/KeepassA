@@ -112,8 +112,7 @@
             android:layout_height="@dimen/input_pass_key_h"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="8dp"
-            android:layout_toRightOf="@+id/cb"
+            android:layout_marginStart="8dp"
             android:visibility="gone">
 
           <TextView
@@ -124,6 +123,7 @@
               android:layout_marginLeft="16dp"
               android:layout_marginRight="16dp"
               android:clickable="true"
+              android:focusable="true"
               android:ellipsize="middle"
               android:gravity="center_vertical"
               android:singleLine="true"
@@ -161,29 +161,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/background_color">
+        android:background="@color/background_color"
+        >
 
       <Button
           android:id="@+id/change_db"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
-          android:layout_marginLeft="16dp"
+          android:layout_alignParentStart="true"
+          android:layout_marginStart="16dp"
           android:background="@drawable/ripple_white_selector"
           android:text="@string/change_db"
           android:textColor="@color/text_blue_color"
-          android:textSize="@dimen/text_size_normal" />
+          android:textSize="@dimen/text_size_normal"
+          />
 
       <Button
           android:id="@+id/open"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_alignParentRight="true"
-          android:layout_marginRight="16dp"
+          android:layout_alignParentEnd="true"
+          android:layout_marginEnd="16dp"
           android:background="@drawable/ripple_white_selector"
           android:text="@string/open"
           android:textColor="@color/text_blue_color"
-          android:textSize="@dimen/text_size_normal" />
+          android:textSize="@dimen/text_size_normal"
+          />
 
     </RelativeLayout>
 

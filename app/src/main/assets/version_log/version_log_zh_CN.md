@@ -1,3 +1,16 @@
+### 2.1.8 (2021/12/31)
+新年快乐！！
+- 【新增】网络重试，提升OneDrive\Dropbox\webdav的网络连接稳定性
+- 【新增】土耳其语
+- 【新增】夜间模式，[应用设置->主题设置](route://keepassA.com/kpa?activity=SettingActivity&type=app&scrollKey=setKeyUiSetting)
+- 【新增】TOTP栏开关[应用设置->界面设置](route://keepassA.com/kpa?activity=SettingActivity&type=app&scrollKey=setKeyUiSetting)
+
+![totp_bar](https://gitee.com/laoyuyu/blog/raw/master/keepassA/totpBar.png)
+- 【修复】创建完成数据后，打开的是快速解锁而不是主页
+- 【修复】指纹解锁的问题
+- 【修复】移动条目失败的问题
+- 【优化】浏览器自动填充
+
 #### 2.1.7（2021/10/18）
 - 【修复】对话框布局错乱问题
 - 【修复】失效时间异常显示问题

@@ -7,14 +7,15 @@
  */
 package com.lyy.keepassa.router
 
-import android.view.View
 import androidx.core.app.ActivityOptionsCompat
-import androidx.fragment.app.FragmentActivity
-import com.alibaba.android.arouter.launcher.ARouter
-import com.keepassdroid.database.PwEntry
-import com.lyy.keepassa.R
+import com.arialyy.frame.router.RouterArgName
+import com.arialyy.frame.router.RouterPath
+import com.keepassdroid.database.PwGroupId
+import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.detail.EntryDetailActivity
-import com.lyy.keepassa.view.detail.EntryDetailActivity.Companion
+import com.lyy.keepassa.view.detail.GroupDetailActivity
+import com.lyy.keepassa.view.setting.SettingActivity
+import java.util.UUID
 
 /**
  * @Author laoyuyu
@@ -23,13 +24,72 @@ import com.lyy.keepassa.view.detail.EntryDetailActivity.Companion
  **/
 interface ActivityRouter {
 
+  @RouterPath(path = "/setting/app")
+  fun toAppSetting(
+    @RouterArgName(name = SettingActivity.KEY_TYPE) type: Int = SettingActivity.TYPE_APP,
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null,
+    @RouterArgName(name = "scrollKey") scrollKey: String? = null
+  )
+
+  @RouterPath(path = "/setting/app")
+  fun toDbSetting(
+    @RouterArgName(name = SettingActivity.KEY_TYPE) type: Int = SettingActivity.TYPE_DB,
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null
+  )
+
+  @RouterPath(path = "/launcher/quickLock")
+  fun toQuickUnlockActivity(
+    @RouterArgName(name = "flag", isFlag = true) flags: Int
+  )
+
+  @RouterPath(path = "/entry/detail")
+  fun toEntryDetailActivity(
+    @RouterArgName(name = EntryDetailActivity.KEY_ENTRY_ID) entryId: UUID,
+    @RouterArgName(name = EntryDetailActivity.KEY_GROUP_TITLE) groupName: String,
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null
+  )
+
   /**
-   * 跳转群组详情或项目详情
+   * to group detail
    */
-  fun toEntryDetail(
-    activity: FragmentActivity,
-    entry: PwEntry,
-    showElement: View? = null
-  ) {
-  }
+  @RouterPath(path = "/group/detail")
+  fun toGroupDetailActivity(
+    @RouterArgName(name = GroupDetailActivity.KEY_TITLE) groupName: String,
+    @RouterArgName(name = GroupDetailActivity.KEY_GROUP_ID) groupId: PwGroupId,
+    @RouterArgName(name = GroupDetailActivity.KEY_IS_IN_RECYCLE_BIN) isRecycleBin: Boolean = false,
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null
+  )
+
+  /**
+   * create entry
+   */
+  @RouterPath(path = "/entry/create")
+  fun toCreateEntryActivity(
+    @RouterArgName(name = CreateEntryActivity.PARENT_GROUP_ID) groupId: PwGroupId?,
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null,
+    @RouterArgName(name = CreateEntryActivity.IS_SHORTCUTS) isFromShortcuts: Boolean = false,
+    @RouterArgName(name = CreateEntryActivity.KEY_TYPE) type: Int = CreateEntryActivity.TYPE_NEW_ENTRY
+  )
+
+  /**
+   * edit entry
+   */
+  @RouterPath(path = "/entry/create")
+  fun toEditEntryActivity(
+    @RouterArgName(name = CreateEntryActivity.KEY_ENTRY) uuid: UUID,
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null,
+    @RouterArgName(name = CreateEntryActivity.KEY_TYPE) type: Int = CreateEntryActivity.TYPE_EDIT_ENTRY
+  )
+
+  @RouterPath(path = "/main/ac")
+  fun toMainActivity(
+    @RouterArgName(name = "isShortcuts") isShortcuts: Boolean = false,
+    @RouterArgName(name = "shortcutType") shortcutType: Int = 1,
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null
+  )
+
+  @RouterPath(path = "/launcher/createDb")
+  fun toCreateDbActivity(
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null
+  )
 }

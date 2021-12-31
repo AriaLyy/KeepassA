@@ -30,6 +30,7 @@ import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.LanguageUtil
+import com.lyy.keepassa.util.isOpenQuickLock
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
@@ -42,7 +43,6 @@ import timber.log.Timber
  */
 @TargetApi(VERSION_CODES.O)
 class AutoFillService : AutofillService() {
-  private val TAG = javaClass.simpleName
 
   /**
    * 接收请求
@@ -52,6 +52,7 @@ class AutoFillService : AutofillService() {
     cancellationSignal: CancellationSignal,
     callback: FillCallback
   ) {
+    request.inlineSuggestionsRequest?.hostPackageName
     val isManual = request.flags == FillRequest.FLAG_MANUAL_REQUEST
     val structure = request.fillContexts[request.fillContexts.size - 1].structure
     val apkPackageName = structure.activityComponent.packageName
@@ -60,7 +61,7 @@ class AutoFillService : AutofillService() {
       return
     }
     if (!PackageVerifier.isValidPackage(applicationContext, apkPackageName)) {
-      Timber.e("无效的包名：$apkPackageName")
+      Timber.e("invalid package name：$apkPackageName")
       return
     }
     Timber.d("onFillRequest(): flags = ${request.flags}, requestId = ${request.id}, clientState = ${KLog.b(request.clientState)}")
@@ -75,14 +76,14 @@ class AutoFillService : AutofillService() {
     val needAuth = BaseApp.KDB == null || BaseApp.isLocked
 
     if (autoFillFields.autoFillIds.size <= 0) {
+      Timber.i("autoFillIds is nulll")
       callback.onSuccess(null)
       return
     }
 
     // 如果数据库没打开，或者数据库已经锁定，打开登录页面
     if (needAuth) {
-      val isOpenQuickLock = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-          .getBoolean(applicationContext.getString(R.string.set_quick_unlock), false)
+      val isOpenQuickLock = BaseApp.APP.isOpenQuickLock()
 
       if (BaseApp.KDB == null) {
         openLoginActivity(callback, autoFillFields, apkPackageName)

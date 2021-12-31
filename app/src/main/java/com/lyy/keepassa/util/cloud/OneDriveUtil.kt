@@ -399,6 +399,7 @@ object OneDriveUtil : ICloudUtil {
           .build()
       val response = okClient.newCall(request)
           .execute()
+      Timber.d("code = ${response.code}, body = ${response.body?.string()}")
     } catch (e: Exception) {
       e.printStackTrace()
     }

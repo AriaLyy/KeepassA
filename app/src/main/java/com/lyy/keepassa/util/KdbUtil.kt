@@ -22,6 +22,7 @@ import com.keepassdroid.database.PwIconStandard
 import com.keepassdroid.database.helper.KDBHandlerHelper
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.util.cloud.DbSynUtil
+import com.lyy.keepassa.util.cloud.interceptor.DbSyncResponse
 import timber.log.Timber
 import java.util.UUID
 
@@ -64,7 +65,7 @@ object KdbUtil {
     needUpload: Boolean = false
   ) {
     KDBHandlerHelper.getInstance(BaseApp.APP)
-        .deleteGroup(BaseApp.KDB, group, save)
+      .deleteGroup(BaseApp.KDB, group, save)
     if (needUpload) {
       uploadDb()
     }
@@ -83,9 +84,10 @@ object KdbUtil {
     parent: PwGroupV4
   ): PwGroup? {
     val group = KDBHandlerHelper.getInstance(BaseApp.APP)
-        .createGroup(BaseApp.KDB, groupName, icon, parent)
-    val code = uploadDb()
-    if (code != DbSynUtil.STATE_SUCCEED) {
+      .createGroup(BaseApp.KDB, groupName, icon, parent)
+    val response = uploadDb()
+    if (response.code != DbSynUtil.STATE_SUCCEED) {
+      Timber.e(response.msg)
       return null
     }
     return group
@@ -104,7 +106,7 @@ object KdbUtil {
     parent: PwGroup
   ): PwGroup {
     val group = KDBHandlerHelper.getInstance(BaseApp.APP)
-        .createGroup(BaseApp.KDB, groupName, icon, parent)
+      .createGroup(BaseApp.KDB, groupName, icon, parent)
     uploadDb()
     return group
   }
@@ -118,10 +120,10 @@ object KdbUtil {
     save: Boolean,
     needUpload: Boolean = false
   ): Int {
-    KDBHandlerHelper.getInstance(BaseApp.APP)
-        .deleteEntry(BaseApp.KDB, entry, save)
+    KDBHandlerHelper.getInstance(BaseApp.APP).deleteEntry(BaseApp.KDB, entry, save)
     if (needUpload) {
-      return uploadDb()
+      val response = uploadDb()
+      return response.code
     }
     return DbSynUtil.STATE_SUCCEED
   }
@@ -143,12 +145,14 @@ object KdbUtil {
   ): Int {
     if (save) {
       KDBHandlerHelper.getInstance(BaseApp.APP)
-          .saveEntry(BaseApp.KDB, entry)
+        .saveEntry(BaseApp.KDB, entry)
     } else {
       BaseApp.KDB!!.pm.addEntryTo(entry, entry.parent)
     }
     if (uploadDb) {
-      return uploadDb()
+      val response = uploadDb()
+      Timber.i(response.msg)
+      return response.code
     }
     return DbSynUtil.STATE_SUCCEED
   }
@@ -161,13 +165,15 @@ object KdbUtil {
     uploadDb: Boolean = true,
     isSync: Boolean = false
   ): Int {
-    Timber.d( "保存前的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
+    Timber.d("保存前的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
     val b = KDBHandlerHelper.getInstance(BaseApp.APP)
-        .save(BaseApp.KDB)
+      .save(BaseApp.KDB)
     if (uploadDb) {
-      return uploadDb()
+      val response = uploadDb()
+      Timber.i(response.msg)
+      return response.code
     }
-    Timber.d( "保存后的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
+    Timber.d("保存后的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
 //    // 更新rootGroup条目
 //    if (b && isSync) {
 //      updateRootGroup()
@@ -202,15 +208,8 @@ object KdbUtil {
   /**
    * 上传数据库到云端
    */
-  private suspend fun uploadDb(): Int {
-    if (!BaseApp.isAFS()) {
-      val code = DbSynUtil.uploadSyn(BaseApp.APP, BaseApp.dbRecord!!)
-      if (code != DbSynUtil.STATE_SUCCEED) {
-        Timber.e( "同步数据库失败，code：$code")
-      }
-      return code
-    }
-    return DbSynUtil.STATE_SUCCEED
+  private suspend fun uploadDb(): DbSyncResponse {
+    return DbSynUtil.uploadSyn(BaseApp.dbRecord!!)
   }
 
   /**
@@ -226,11 +225,11 @@ object KdbUtil {
       return
     }
     val topDomain = Regex(RegularRule.DOMAIN_TOP, RegexOption.IGNORE_CASE).find(domain)
-    Timber.d( "topDomain = ${topDomain?.value}")
+    Timber.d("topDomain = ${topDomain?.value}")
     for (entry in BaseApp.KDB.pm.entries.values) {
       val pe4 = entry as PwEntryV4
       if (pe4.getUrl()
-              .contains(topDomain?.value.toString(), true)
+          .contains(topDomain?.value.toString(), true)
       ) {
         listStorage.add(pe4)
       }
@@ -254,7 +253,7 @@ object KdbUtil {
       }
       for (ps in pe4.strings.values) {
         if (ps.toString()
-                .equals("androidapp://$pkgName", ignoreCase = true)
+            .equals("androidapp://$pkgName", ignoreCase = true)
         ) {
           listStorage.add(pe4)
           break
@@ -303,5 +302,4 @@ object KdbUtil {
 
     return groups[PwGroupIdV4(groupId)]
   }
-
 }

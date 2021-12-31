@@ -1,0 +1,32 @@
+apply {
+  plugin "com.android.application"
+}
+
+android.applicationVariants.all { variant ->
+
+  def taskName = variant.name
+  println('taskName = ' + taskName)
+  tasks.all {
+    if (taskName.endsWith("Debug")){
+      return
+    }
+    if ("assemble${taskName.capitalize()}".equalsIgnoreCase(it.name)) {
+      it.doLast {
+        def localProj = new Properties()
+        localProj.load(project.rootProject.file('local.properties').newDataInputStream())
+
+        def appId = localProj.getProperty("buglyAppId")
+        def appKey = localProj.getProperty("buglyAppKey")
+        def pkgName = 'com.lyy.keepassa'
+        def versionName = VERSION_NAME
+        def jdk = '/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/bin/java'
+        def mappingPath = "app/build/outputs/mapping/${it.name.replace('assemble', '')}/mapping.txt"
+        def toolPath = 'app/buglyqq-upload-symbol.jar'
+        def cmd = "${jdk} -jar ${toolPath} -appid ${appId} -appkey ${appKey} -bundleid ${pkgName} -version ${versionName} -platform Android -inputMapping ${mappingPath}"
+        print("开始上传符号表，cmd = ${cmd}")
+        def p = cmd.execute()
+        p.waitForProcessOutput(System.out, System.err)
+      }
+    }
+  }
+}

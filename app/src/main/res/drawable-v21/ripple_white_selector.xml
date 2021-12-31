@@ -10,5 +10,5 @@
   <!--</item>-->
   <item
       android:id="@android:id/mask"
-      android:drawable="@android:color/white" />
+      android:drawable="@color/background_color" />
 </ripple>

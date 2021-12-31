@@ -20,6 +20,7 @@ import androidx.transition.TransitionInflater
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.arialyy.frame.router.Routerfit
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupId
@@ -29,6 +30,7 @@ import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityGroupDirBinding
 import com.lyy.keepassa.event.MoveEvent
+import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.view.ChoseDirModule
 import com.lyy.keepassa.view.dialog.LoadingDialog
@@ -52,33 +54,20 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
     private const val KEY_ENTRY_ID = "KEY_ENTRY_ID"
 
     // 1: 恢复群组，2: 恢复项目，3: 选择群组，4: 移动
-    private const val KEY_TYPE = "KEY_TYPE"
+    const val KEY_TYPE = "KEY_TYPE"
 
     // 恢复群组
-    private const val DATA_MOVE_GROUP = 1
+    const val DATA_MOVE_GROUP = 1
 
     // 恢复条目
-    private const val DATA_MOVE_ENTRY = 2
+    const val DATA_MOVE_ENTRY = 2
 
     // 选择群组
-    private const val DATA_SELECT_GROUP = 3
+    const val DATA_SELECT_GROUP = 3
 
     // 路径地址
     const val DATA_PARENT = "DATA_PARENT"
 
-    /**
-     * 选择群组
-     */
-    fun chooseGroup(
-      context: Activity,
-      groupDirRequestCode: Int
-    ) {
-      ARouter.getInstance()
-        .build("/group/choose")
-        .withInt(KEY_TYPE, DATA_SELECT_GROUP)
-        .withOptionsCompat(ActivityOptionsCompat.makeSceneTransitionAnimation(context))
-        .navigation(context, groupDirRequestCode)
-    }
 
     /**
      * 移动条目
@@ -185,6 +174,10 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
           loadDialog!!.show()
           module.moveEntry(recycleEntryId!!, curGroup)
             .observe(this, Observer { t ->
+              if (t == null) {
+                HitUtil.toaskShort(getString(R.string.save_db_fail))
+                return@Observer
+              }
               undoEntry = t.second
               if (t.first) {
                 onComplete(t.second)
@@ -265,12 +258,11 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
     toolbar.title = pwGroup.name
     var fragment = fragmentMap[pwGroup.id]
     if (fragment == null) {
-      fragment = ARouter.getInstance()
-        .build("/group/choose/dir")
-        .withSerializable(DirFragment.KEY_CUR_GROUP, pwGroup)
-        .withBoolean(DirFragment.KEY_IS_MOVE_GROUP, recycleType != DATA_SELECT_GROUP)
-        .withSerializable(DirFragment.KEY_IS_RECYCLE_GROUP_ID, recycleGroupId)
-        .navigation() as DirFragment
+      fragment = Routerfit.create(FragmentRouter::class.java).getDirFragment(
+        pwGroup,
+        recycleType != DATA_SELECT_GROUP,
+        recycleGroupId
+      )
 
       fragment.enterTransition = getRlAnim()
       fragment.exitTransition = getLrAnim()
@@ -283,5 +275,4 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
       .commit()
     curGroup = pwGroup
   }
-
 }

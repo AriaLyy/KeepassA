@@ -16,11 +16,8 @@ import android.net.Uri
 import android.os.Build
 import android.text.TextUtils
 import androidx.arch.core.executor.ArchTaskExecutor
-import androidx.biometric.BiometricConstants
 import androidx.biometric.BiometricPrompt
-import androidx.biometric.BiometricPrompt.AuthenticationCallback
-import androidx.biometric.BiometricPrompt.AuthenticationResult
-import androidx.biometric.BiometricPrompt.CryptoObject
+import androidx.biometric.BiometricPrompt.*
 import androidx.core.content.edit
 import androidx.core.net.toFile
 import androidx.lifecycle.LiveData
@@ -134,7 +131,7 @@ class LauncherModule : BaseModule() {
             Timber.e("Fragment没有被加载")
             return
           }
-          val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
+          val str = if (errorCode == ERROR_NEGATIVE_BUTTON) {
             "${resource.getString(R.string.verify_finger)}${resource.getString(R.string.cancel)}"
           } else {
             resource.getString(R.string.verify_finger_fail)
@@ -218,7 +215,7 @@ class LauncherModule : BaseModule() {
             Timber.e("Fragment没有被加载")
             return
           }
-          val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
+          val str = if (errorCode == ERROR_NEGATIVE_BUTTON) {
             "${resource.getString(R.string.verify_finger)}${resource.getString(R.string.cancel)}"
           } else {
             resource.getString(R.string.verify_finger_fail)
@@ -552,6 +549,8 @@ class LauncherModule : BaseModule() {
         KeepassAUtil.instance.subShortPass()
         if (keyUri != null) {
           BaseApp.dbKeyPath = QuickUnLockUtil.encryptStr(keyUri.toString())
+        }else{
+          BaseApp.dbKeyPath = null
         }
         //              BaseApp.KDB?.clear(context)
         // 保存打开记录

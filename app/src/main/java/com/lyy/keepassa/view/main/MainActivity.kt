@@ -12,7 +12,6 @@ package com.lyy.keepassa.view.main
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
-import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
@@ -23,6 +22,7 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -30,6 +30,7 @@ import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.core.AbsFrame
+import com.arialyy.frame.router.Routerfit
 import com.google.android.material.tabs.TabLayoutMediator
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
@@ -37,6 +38,9 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityMainBinding
 import com.lyy.keepassa.event.CheckEnvEvent
 import com.lyy.keepassa.event.ModifyDbNameEvent
+import com.lyy.keepassa.event.ShowTOTPEvent
+import com.lyy.keepassa.router.ActivityRouter
+import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.create.CreateDbActivity
@@ -54,37 +58,30 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
   private var reenterListener: ReenterListener? = null
   private lateinit var module: MainModule
-  private lateinit var historyFm: HistoryFragment
-  private lateinit var entryFm: EntryFragment
 
   companion object {
     private const val MIN_SCALE = 0.85f
     private const val MIN_ALPHA = 0.5f
 
-    const val KEY_IS_SHORTCUTS = "KEY_IS_SHORTCUTS"
-
-    // 快捷方式类型
-    const val SHORTCUTS_TYPE = "shortcutsType"
-
     // 打开搜索
     const val OPEN_SEARCH = 1
-
-    fun startMainActivity(activity: Activity) {
-      val intent = Intent(activity, MainActivity::class.java)
-      activity.startActivity(
-        intent, ActivityOptions.makeSceneTransitionAnimation(activity)
-          .toBundle()
-      )
-    }
   }
 
-  @Autowired(name = KEY_IS_SHORTCUTS)
+  @Autowired(name = "KEY_IS_SHORTCUTS")
   @JvmField
   var isShortcuts = false
 
-  @Autowired(name = SHORTCUTS_TYPE)
+  @Autowired(name = "shortcutsType")
   @JvmField
   var shortcutType = 1
+
+  private val historyFm by lazy {
+    Routerfit.create(FragmentRouter::class.java).toMainHistoryFragment()
+  }
+
+  private val entryFm by lazy {
+    Routerfit.create(FragmentRouter::class.java).toMainHomeFragment()
+  }
 
   override fun setLayoutId(): Int {
     return R.layout.activity_main
@@ -115,14 +112,46 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     binding.search.setOnClickListener(this)
     binding.lock.setOnClickListener(this)
 
-    historyFm = HistoryFragment()
-    entryFm = EntryFragment()
     binding.dbName.text = BaseApp.dbFileName
     binding.dbVersion.text = BaseApp.dbName
+    val needShowTotp = PreferenceManager.getDefaultSharedPreferences(this)
+      .getBoolean(getString(R.string.set_key_main_show_totp_tab), false)
+    initVP(needShowTotp)
 
+    binding.fab.setOnItemClickListener(object : MainExpandFloatActionButton.OnItemClickListener {
+      override fun onKeyClick() {
+        Routerfit.create(ActivityRouter::class.java).toCreateEntryActivity(null)
+        binding.fab.hintMoreOperate()
+      }
+
+      override fun onGroupClick() {
+        val dialog = CreateGroupDialog.generate {
+          parentGroup = BaseApp.KDB!!.pm.rootGroup
+          build()
+        }
+        dialog.show(supportFragmentManager, "CreateGroupDialog")
+        binding.fab.hintMoreOperate()
+      }
+    })
+  }
+
+  private fun initVP(needShowTotp: Boolean) {
+
+    val totpFm = if (needShowTotp) {
+      Routerfit.create(FragmentRouter::class.java).toMainTOTPFragment()
+    } else {
+      null
+    }
+
+    val list = arrayListOf<Fragment>()
+    list.add(historyFm)
+    list.add(entryFm)
+    totpFm?.let {
+      list.add(it)
+    }
     module.checkHasHistoryRecord()
       .observe(this, { hasHistory ->
-        binding.vp.adapter = VpAdapter(listOf(historyFm, entryFm), this)
+        binding.vp.adapter = VpAdapter(list, this)
         TabLayoutMediator(binding.tab, binding.vp) { tab, position ->
 //      tab.text = "OBJECT ${(position + 1)}"
         }.attach()
@@ -135,33 +164,20 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         } else {
           binding.vp.currentItem = if (hasHistory) 0 else 1
         }
+        binding.vp.adapter!!.notifyDataSetChanged()
 
         binding.tab.getTabAt(0)!!.icon = getDrawable(R.drawable.selector_ic_tab_history)
         binding.tab.getTabAt(0)!!.text = getString(R.string.history)
         binding.tab.getTabAt(1)!!.icon = getDrawable(R.drawable.selector_ic_tab_db)
         binding.tab.getTabAt(1)!!.text = getString(R.string.all)
-      })
 
-    binding.fab.setOnItemClickListener(object : MainExpandFloatActionButton.OnItemClickListener {
-      override fun onKeyClick() {
-        startActivity(
-          Intent(this@MainActivity, CreateEntryActivity::class.java),
-          ActivityOptions.makeSceneTransitionAnimation(this@MainActivity)
-            .toBundle()
-        )
-        binding.fab.hintMoreOperate()
-      }
-
-      override fun onGroupClick() {
-        val dialog = CreateGroupDialog.generate {
-          parentGroup = BaseApp.KDB!!.pm.rootGroup
-          build()
+        val totpTab = binding.tab.getTabAt(2)
+        totpTab?.let {
+          it.icon = getDrawable(R.drawable.selector_ic_tab_token)
+          it.text = "TOTP"
         }
-        dialog.show(supportFragmentManager, "CreateGroupDialog")
-        binding.fab.hintMoreOperate()
-      }
 
-    })
+      })
   }
 
   private fun initVpAnim() {
@@ -177,7 +193,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
             val scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position))
             // Fade the page relative to its size.
             alpha = (MIN_ALPHA +
-                (((scaleFactor - MIN_SCALE) / (1 - MIN_SCALE)) * (1 - MIN_ALPHA)))
+              (((scaleFactor - MIN_SCALE) / (1 - MIN_SCALE)) * (1 - MIN_ALPHA)))
           }
           else -> { // (1,+Infinity]
             // This page is way off-screen to the right.
@@ -188,6 +204,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 //        binding.tab.getTabAt(1)?.view?.alpha = alpha
       }
     }
+  }
+
+  @Subscribe(threadMode = MAIN)
+  fun onShowTOTP(event: ShowTOTPEvent) {
+    initVP(event.show)
+    Timber.d("update totp")
   }
 
   @Subscribe(threadMode = MAIN)
@@ -238,7 +260,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         ac.overridePendingTransition(0, 0)
       }
     }
-
   }
 
   override fun onPause() {
@@ -325,13 +346,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     override fun onTransitionStart(transition: Transition?) {
       Timber.d("onTransitionStart")
     }
-
   }
 
   private class VpAdapter(
     private val fragments: List<Fragment>,
     fm: FragmentActivity
-  ) : FragmentStateAdapter(fm) {
+  ) :  FragmentStateAdapter(fm) {
 
     override fun getItemCount(): Int {
       return fragments.size

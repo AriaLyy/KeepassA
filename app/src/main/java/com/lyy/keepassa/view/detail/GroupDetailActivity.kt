@@ -17,7 +17,6 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.transition.addListener
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwGroup
@@ -44,10 +44,10 @@ import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
 import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.event.MoveEvent
+import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.SimpleEntryAdapter
-import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.create.CreateGroupDialog
 import com.lyy.keepassa.view.menu.EntryPopMenu
 import com.lyy.keepassa.view.menu.GroupPopMenu
@@ -65,23 +65,6 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
     const val KEY_TITLE = "KEY_TITLE"
     const val KEY_GROUP_ID = "KEY_V3_GROUP_ID"
     const val KEY_IS_IN_RECYCLE_BIN = "KEY_IS_IN_RECYCLE_BIN"
-
-    /**
-     * 跳转群组详情或项目详情
-     */
-    fun toGroupDetail(
-      activity: FragmentActivity,
-      group: PwGroup,
-      isRecycleBin: Boolean = false
-    ) {
-      ARouter.getInstance()
-        .build("/group/detail")
-        .withString(KEY_TITLE, group.name)
-        .withSerializable(KEY_GROUP_ID, group.id)
-        .withBoolean(KEY_IS_IN_RECYCLE_BIN, isRecycleBin)
-        .withOptionsCompat(ActivityOptionsCompat.makeSceneTransitionAnimation(activity))
-        .navigation(activity)
-    }
   }
 
   private lateinit var module: GroupDetailModule
@@ -192,7 +175,11 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
     }
     binding.fab.setOnItemClickListener(object : MainExpandFloatActionButton.OnItemClickListener {
       override fun onKeyClick() {
-        CreateEntryActivity.createEntry(this@GroupDetailActivity, groupId)
+        Routerfit.create(ActivityRouter::class.java, this@GroupDetailActivity)
+          .toCreateEntryActivity(
+            groupId,
+            ActivityOptionsCompat.makeSceneTransitionAnimation(this@GroupDetailActivity)
+          )
         binding.fab.hintMoreOperate()
       }
 
@@ -220,7 +207,12 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
         val item = entryData[position]
         if (item.obj is PwGroup) {
           val group = item.obj as PwGroup
-          toGroupDetail(this, group, isRecycleBin)
+          Routerfit.create(ActivityRouter::class.java, this).toGroupDetailActivity(
+            groupName = group.name,
+            groupId = group.id,
+            isRecycleBin = isRecycleBin,
+            opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
+          )
           return@setOnItemClickListener
         }
 

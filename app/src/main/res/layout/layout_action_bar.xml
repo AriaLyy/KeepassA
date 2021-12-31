@@ -4,7 +4,7 @@
     android:id="@+id/kpa_toolbar"
     android:layout_width="match_parent"
     android:layout_height="@dimen/bar_height"
-    android:background="@color/white"
+    android:background="@color/background_color"
     android:elevation="4dp"
     app:navigationIcon="@drawable/ic_up"
     app:subtitleTextAppearance="@style/Toolbar.SubTitleText"

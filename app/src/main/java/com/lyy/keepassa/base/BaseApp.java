@@ -16,6 +16,8 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.multidex.MultiDexApplication;
 import androidx.preference.PreferenceManager;
 import androidx.room.Room;
@@ -24,7 +26,6 @@ import com.arialyy.frame.core.AbsFrame;
 import com.arialyy.frame.util.KeyStoreUtil;
 import com.blankj.utilcode.util.AppUtils;
 import com.keepassdroid.Database;
-import com.leon.channel.helper.ChannelReaderUtil;
 import com.lyy.keepassa.BuildConfig;
 import com.lyy.keepassa.KpaEventBusIndex;
 import com.lyy.keepassa.R;
@@ -32,13 +33,12 @@ import com.lyy.keepassa.common.PassType;
 import com.lyy.keepassa.dao.AppDatabase;
 import com.lyy.keepassa.entity.DbHistoryRecord;
 import com.lyy.keepassa.receiver.ScreenLockReceiver;
-import com.lyy.keepassa.service.autofill.AutoFillClickReceiver;
 import com.lyy.keepassa.util.KeepassAUtil;
 import com.lyy.keepassa.util.LanguageUtil;
 import com.lyy.keepassa.util.QuickUnLockUtil;
 import com.lyy.keepassa.view.StorageType;
-import com.tencent.bugly.Bugly;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.tencent.vasdolly.helper.ChannelReaderUtil;
 import com.tencent.wcdb.database.SQLiteCipherSpec;
 import com.tencent.wcdb.room.db.WCDBOpenHelperFactory;
 import com.zzhoujay.richtext.RichText;
@@ -78,7 +78,24 @@ public class BaseApp extends MultiDexApplication {
     currentLang = setLanguage(base);
     //super.attachBaseContext(LanguageUtil.INSTANCE.setLanguage(base, currentLang));
     super.attachBaseContext(base);
+    setThemeStyle();
     Reflection.unseal(base);
+  }
+
+  private void setThemeStyle() {
+    String mode = PreferenceManager.getDefaultSharedPreferences(this)
+        .getString(getString(R.string.set_key_theme_style), "0");
+    switch (mode) {
+      case "0":
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        break;
+      case "1":
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        break;
+      case "2":
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        break;
+    }
   }
 
   //@Override public Resources getResources() {
@@ -134,7 +151,8 @@ public class BaseApp extends MultiDexApplication {
     strategy.setUploadProcess(processName == null || processName.equals(packageName));
     strategy.setAppChannel(getChannel());
     strategy.setAppVersion(kUtil.getAppVersionName(this));
-    CrashReport.initCrashReport(getApplicationContext(), "59fc0ec759", AppUtils.isAppDebug(), strategy);
+    CrashReport.initCrashReport(getApplicationContext(), "59fc0ec759", AppUtils.isAppDebug(),
+        strategy);
     //CrashReport.testJavaCrash();
   }
 

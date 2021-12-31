@@ -42,8 +42,7 @@
         app:key="@string/set_key_lock_screen_auto_lock_db"
         app:summaryOff="@string/set_summary_screen_lock_off"
         app:summaryOn="@string/set_summary_screen_lock_on"
-        app:title="@string/set_title_screen_lock"
-      />
+        app:title="@string/set_title_screen_lock" />
 
     <Preference
         android:defaultValue="false"
@@ -70,6 +69,7 @@
 
     <Preference
         android:title="@string/ui_setting"
+        app:key="@string/set_key_ui_setting"
         app:fragment="com.lyy.keepassa.view.setting.UISettingFragment"
         app:icon="@drawable/ic_app" />
 

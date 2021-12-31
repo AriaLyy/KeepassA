@@ -19,8 +19,10 @@ import android.os.Bundle
 import android.transition.TransitionInflater
 import android.util.Pair
 import android.view.View
+import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.AndroidUtils
 import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
@@ -30,6 +32,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityChangeDbBinding
 import com.lyy.keepassa.event.CheckEnvEvent
 import com.lyy.keepassa.event.ModifyDbNameEvent
+import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
@@ -141,10 +144,14 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
 //        finishAfterTransition()
       }
       R.id.change_setting -> {
-        SettingActivity.turnDbSetting(this)
+        Routerfit.create(ActivityRouter::class.java, this).toDbSetting(
+          opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
+        )
       }
       R.id.app_setting -> {
-        SettingActivity.turnAppSetting(this)
+        Routerfit.create(ActivityRouter::class.java, this).toAppSetting(
+          opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
+        )
       }
       R.id.change_db -> {
          KeepassAUtil.instance.turnLauncher()

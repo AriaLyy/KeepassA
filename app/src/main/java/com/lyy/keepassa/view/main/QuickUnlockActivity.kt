@@ -13,7 +13,6 @@ import KDBAutoFillRepository
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
-import android.app.ActivityOptions
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -22,22 +21,23 @@ import android.content.res.AssetManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.arch.core.executor.ArchTaskExecutor
-import androidx.biometric.BiometricConstants
 import androidx.biometric.BiometricPrompt
-import androidx.biometric.BiometricPrompt.AuthenticationCallback
-import androidx.biometric.BiometricPrompt.AuthenticationResult
-import androidx.biometric.BiometricPrompt.CryptoObject
+import androidx.biometric.BiometricPrompt.*
+import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.KeyStoreUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.DialogQuickUnlockBinding
 import com.lyy.keepassa.entity.QuickUnLockRecord
+import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.NotificationUtil
@@ -48,6 +48,7 @@ import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 import com.lyy.keepassa.widget.ShortPasswordView
 import timber.log.Timber
 import java.io.IOException
+import java.util.UUID
 
 /**
  * 快速解锁对话框
@@ -60,6 +61,60 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
   private var fingerRecord: QuickUnLockRecord? = null
   private lateinit var keyStoreUtil: KeyStoreUtil
 
+  /**
+   * 搜索启动器
+   */
+  private val searchLauncher =
+    registerForActivityResult(object : ActivityResultContract<String, Pair<Boolean, UUID?>?>() {
+      override fun createIntent(context: Context, input: String?): Intent {
+        val intent =
+          Intent(this@QuickUnlockActivity, AutoFillEntrySearchActivity::class.java).apply {
+            putExtra(LauncherActivity.KEY_PKG_NAME, input)
+          }
+        return intent
+      }
+
+      override fun parseResult(resultCode: Int, data: Intent?): Pair<Boolean, UUID?>? {
+        if (data == null) {
+          return null
+        }
+        val isSaveRelevance = data.getBooleanExtra(
+          AutoFillEntrySearchActivity.EXTRA_IS_SAVE_RELEVANCE, false
+        )
+        val uid =
+          data.getSerializableExtra(AutoFillEntrySearchActivity.EXTRA_ENTRY_ID) as UUID?
+        return Pair(isSaveRelevance, uid)
+      }
+    }) { it ->
+      // 搜索返回的数据
+      if (it == null) {
+        setResult(
+          Activity.RESULT_OK,
+          KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName)
+        )
+        super.finish()
+        return@registerForActivityResult
+      }
+
+      val isSaveRelevance = it.first
+
+      if (isSaveRelevance) {
+        setResult(
+          Activity.RESULT_OK,
+          KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName)
+        )
+      } else {
+        val id = it.second
+        setResult(
+          Activity.RESULT_OK,
+          BaseApp.KDB.pm.entries[id]?.let {
+            KeepassAUtil.instance.getFillResponse(this, intent, it, apkPkgName)
+          }
+        )
+      }
+      super.finish()
+    }
+
   override fun initData(savedInstanceState: Bundle?) {
     module = ViewModelProvider(this).get(FingerprintModule::class.java)
     NotificationUtil.startQuickUnlockNotify(this)
@@ -68,7 +123,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
     isAutoFill = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL, false)
     if (isAutoFill) {
       apkPkgName = intent.getStringExtra(KEY_PKG_NAME) ?: ""
-      if (apkPkgName.isBlank()){
+      if (apkPkgName.isBlank()) {
         BaseApp.KDB = null
         finish()
         return
@@ -79,19 +134,19 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
   private fun initUi() {
 
     module.getQuickUnlockRecord(BaseApp.dbRecord!!.localDbUri)
-        .observe(this, Observer { record ->
-          if (record != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            fingerRecord = record
-            binding.fingerprint.visibility = View.VISIBLE
-            binding.fingerprint.playAnimation()
-            keyStoreUtil = KeyStoreUtil()
-            binding.fingerprint.setOnClickListener {
-              showBiometricPrompt()
-            }
-            return@Observer
+      .observe(this, Observer { record ->
+        if (record != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+          fingerRecord = record
+          binding.fingerprint.visibility = View.VISIBLE
+          binding.fingerprint.playAnimation()
+          keyStoreUtil = KeyStoreUtil()
+          binding.fingerprint.setOnClickListener {
+            showBiometricPrompt()
           }
-          binding.fingerprint.visibility = View.GONE
-        })
+          return@Observer
+        }
+        binding.fingerprint.visibility = View.GONE
+      })
 
     binding.pass.setInputCompleteListener(object : ShortPasswordView.InputCompleteListener {
       override fun inputComplete(text: String) {
@@ -104,20 +159,18 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
       }
 
       override fun invalidContent() {
-
       }
-
     })
 
     val sh = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
     val passLen = sh
-        .getString(getString(R.string.set_quick_pass_len), "3")!!
-        .toString()
-        .toInt()
+      .getString(getString(R.string.set_quick_pass_len), "3")!!
+      .toString()
+      .toInt()
 
     val value = sh.getString(getString(R.string.set_quick_pass_type), "1")!!
-        .toString()
-        .toInt()
+      .toString()
+      .toInt()
     binding.title.text =
       resources.getStringArray(R.array.quick_pass_type_entries)[value - 1].format(passLen)
 
@@ -137,44 +190,44 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
   @TargetApi(Build.VERSION_CODES.M)
   private fun showBiometricPrompt() {
     val promptInfo = BiometricPrompt.PromptInfo.Builder()
-        .setTitle(getString(R.string.fingerprint_unlock))
-        .setSubtitle(getString(R.string.verify_finger))
-        .setNegativeButtonText(getString(R.string.cancel))
+      .setTitle(getString(R.string.fingerprint_unlock))
+      .setSubtitle(getString(R.string.verify_finger))
+      .setNegativeButtonText(getString(R.string.cancel))
 //        .setConfirmationRequired(false)
-        .build()
+      .build()
 
     if (fingerRecord == null) {
       Timber.e("解锁记录为空")
       return
     }
     val biometricPrompt = BiometricPrompt(this, ArchTaskExecutor.getMainThreadExecutor(),
-        object : AuthenticationCallback() {
-          override fun onAuthenticationError(
-            errorCode: Int,
-            errString: CharSequence
-          ) {
-            val str = if (errorCode == BiometricConstants.ERROR_NEGATIVE_BUTTON) {
-              "${getString(R.string.verify_finger)}${getString(R.string.cancel)}"
-            } else {
-              getString(R.string.verify_finger_fail)
-            }
-            HitUtil.snackShort(mRootView, str)
+      object : AuthenticationCallback() {
+        override fun onAuthenticationError(
+          errorCode: Int,
+          errString: CharSequence
+        ) {
+          val str = if (errorCode == ERROR_NEGATIVE_BUTTON) {
+            "${getString(R.string.verify_finger)}${getString(R.string.cancel)}"
+          } else {
+            getString(R.string.verify_finger_fail)
           }
+          HitUtil.snackShort(mRootView, str)
+        }
 
-          override fun onAuthenticationSucceeded(result: AuthenticationResult) {
-            super.onAuthenticationSucceeded(result)
-            turnActivity()
-          }
+        override fun onAuthenticationSucceeded(result: AuthenticationResult) {
+          super.onAuthenticationSucceeded(result)
+          turnActivity()
+        }
 
-          override fun onAuthenticationFailed() {
-            super.onAuthenticationFailed()
-            HitUtil.snackShort(mRootView, getString(R.string.verify_finger_fail))
-          }
-        })
+        override fun onAuthenticationFailed() {
+          super.onAuthenticationFailed()
+          HitUtil.snackShort(mRootView, getString(R.string.verify_finger_fail))
+        }
+      })
     try {
       biometricPrompt.authenticate(
-          promptInfo,
-          CryptoObject(keyStoreUtil.getDecryptCipher(fingerRecord!!.passIv!!))
+        promptInfo,
+        CryptoObject(keyStoreUtil.getDecryptCipher(fingerRecord!!.passIv!!))
       )
     } catch (e: Exception) {
       e.printStackTrace()
@@ -184,8 +237,8 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
   private fun startBgAnim() {
     try {
       binding.anim.setAnimation(
-          assets.open("lockedAnim.json", AssetManager.ACCESS_STREAMING),
-          "LottieCacheLock"
+        assets.open("lockedAnim.json", AssetManager.ACCESS_STREAMING),
+        "LottieCacheLock"
       )
     } catch (e: IOException) {
       e.printStackTrace()
@@ -220,65 +273,16 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
       // 如果查找不到数据，跳转到搜索页面
       if (datas == null || datas.isEmpty()) {
 //      if (true) {
-        startActivityForResult(
-            Intent(this, AutoFillEntrySearchActivity::class.java).apply {
-              putExtra(LauncherActivity.KEY_PKG_NAME, apkPkgName)
-            }, REQUEST_SEARCH_ENTRY_CODE, ActivityOptions.makeSceneTransitionAnimation(this)
-            .toBundle()
-        )
+        searchLauncher.launch(packageName, ActivityOptionsCompat.makeSceneTransitionAnimation(this))
         return
       }
       val data = KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName)
       setResult(Activity.RESULT_OK, data)
       finish()
     } else {
-      MainActivity.startMainActivity(this@QuickUnlockActivity)
-    }
-  }
-
-  override fun onActivityResult(
-    requestCode: Int,
-    resultCode: Int,
-    data: Intent?
-  ) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-        && resultCode == Activity.RESULT_OK
-        && requestCode == REQUEST_SEARCH_ENTRY_CODE
-    ) {
-      // 搜索页返回的数据
-      if (data != null) {
-        val isSaveRelevance = data.getBooleanExtra(
-            AutoFillEntrySearchActivity.EXTRA_IS_SAVE_RELEVANCE, false
-        )
-
-        if (isSaveRelevance) {
-          setResult(
-              Activity.RESULT_OK,
-              KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName)
-          )
-        } else {
-          val id = data.getSerializableExtra(AutoFillEntrySearchActivity.EXTRA_ENTRY_ID)
-          setResult(
-              Activity.RESULT_OK,
-              BaseApp.KDB.pm.entries[id]?.let {
-                KeepassAUtil.instance.getFillResponse(
-                    this,
-                    intent,
-                    it,
-                    apkPkgName
-                )
-              }
-          )
-        }
-
-      } else {
-        setResult(
-            Activity.RESULT_OK,
-            KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName)
-        )
-      }
-      super.finish()
+      Routerfit.create(ActivityRouter::class.java, this).toMainActivity(
+        opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
+      )
     }
   }
 
@@ -345,7 +349,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         it.putExtra(KEY_PKG_NAME, pkgName)
       }
       return PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-          .intentSender
+        .intentSender
     }
   }
 }

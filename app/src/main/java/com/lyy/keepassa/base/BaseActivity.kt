@@ -24,12 +24,14 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.ViewDataBinding
 import com.arialyy.frame.core.AbsActivity
 import com.arialyy.frame.util.ReflectionUtil
+import com.blankj.utilcode.util.ScreenUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.R
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.LanguageUtil
+import me.jessyan.autosize.AutoSizeConfig
 import timber.log.Timber
 import java.lang.reflect.Field
 import java.util.ArrayList
@@ -62,25 +64,28 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     ) {
       BaseApp.isLocked = true
       HitUtil.toaskShort(getString(R.string.notify_db_locked))
-      finishAfterTransition()
+      // Cannot be used finishAfterTransition(), because binding invalid
+      finish()
+
       return false
     }
     return true
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    AutoSizeConfig.getInstance().screenHeight = ScreenUtils.getScreenHeight()
+    AutoSizeConfig.getInstance().screenWidth = ScreenUtils.getScreenWidth()
     super.onCreate(savedInstanceState)
     // 进入系统多任务，界面变空白，设置无法截图
-    window.setFlags(
-      WindowManager.LayoutParams.FLAG_SECURE,
-      WindowManager.LayoutParams.FLAG_SECURE
-    )
+    // window.setFlags(
+    //   WindowManager.LayoutParams.FLAG_SECURE,
+    //   WindowManager.LayoutParams.FLAG_SECURE
+    // )
     if (useAnim()) {
       setWindowAnim()
     }
 
     handleStatusBar()
-
   }
 
   private fun handleStatusBar() {
@@ -117,13 +122,13 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     window.exitTransition = TransitionInflater.from(this)
       .inflateTransition(R.transition.slide_exit)
 
-    // A <- B, B的返回动画
-    window.returnTransition = TransitionInflater.from(this)
-      .inflateTransition(R.transition.slide_return)
-
-    // A <- B, A的进入动画
-    window.reenterTransition = TransitionInflater.from(this)
-      .inflateTransition(R.transition.slide_reeter)
+    // // A <- B, B的返回动画
+    // window.returnTransition = TransitionInflater.from(this)
+    //   .inflateTransition(R.transition.slide_return)
+    //
+    // // A <- B, A的进入动画
+    // window.reenterTransition = TransitionInflater.from(this)
+    //   .inflateTransition(R.transition.slide_reeter)
 
     // A -> B, B的enter动画和A的exit动画是否同时执行，false 禁止
     window.allowEnterTransitionOverlap = true
@@ -196,7 +201,6 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
           )
           val b = buildSharedElements()
           mPendingExitNamesField.set(stateObj, b)
-
         } catch (e: java.lang.Exception) {
           e.printStackTrace()
         }

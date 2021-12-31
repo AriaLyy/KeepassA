@@ -9,7 +9,6 @@
 
 package com.lyy.keepassa.view
 
-import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -17,13 +16,14 @@ import android.provider.Settings
 import android.text.TextUtils
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.edit
-import com.alibaba.android.arouter.launcher.ARouter
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.AndroidUtils
 import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.databinding.DialogUpgradeBinding
+import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.view.dialog.DonateDialog
@@ -147,10 +147,19 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
           }
           "SettingActivity" -> {
             val type = uri.getQueryParameter("type")
-            if (type == "db") {
-              SettingActivity.turnDbSetting(requireActivity())
-            } else {
-              SettingActivity.turnAppSetting(requireActivity())
+            when (type) {
+              "db" -> {
+                Routerfit.create(ActivityRouter::class.java, requireActivity()).toAppSetting(
+                  opt = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
+                )
+              }
+              "app" -> {
+                val scrollKey = uri.getQueryParameter("scrollKey")
+                Routerfit.create(ActivityRouter::class.java, requireActivity()).toAppSetting(
+                  opt = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity()),
+                  scrollKey = scrollKey
+                )
+              }
             }
             return true
           }

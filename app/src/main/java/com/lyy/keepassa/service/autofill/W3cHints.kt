@@ -10,54 +10,56 @@
 package com.lyy.keepassa.service.autofill
 
 import android.annotation.TargetApi
+import android.app.assist.AssistStructure.ViewNode
 import android.os.Build
 import timber.log.Timber
 import java.util.Locale
-import java.util.Timer
 
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete
+ */
 @TargetApi(Build.VERSION_CODES.O)
 object W3cHints {
 
   val CompatBrowsers = setOf(
-      "org.mozilla.firefox",
-      "org.mozilla.firefox_beta",
-      "com.microsoft.emmx",
-      "com.android.chrome",
-      "com.chrome.beta",
-      "com.android.browser",
-      "com.brave.browser",
-      "com.opera.browser",
-      "com.opera.browser.beta",
-      "com.opera.mini.native",
-      "com.chrome.dev",
-      "com.chrome.canary",
-      "com.google.android.apps.chrome",
-      "com.google.android.apps.chrome_dev",
-      "com.yandex.browser",
-      "com.sec.android.app.sbrowser",
-      "com.sec.android.app.sbrowser.beta",
-      "org.codeaurora.swe.browser",
-      "com.amazon.cloud9",
-      "mark.via.gp",
-      "mark.via",
-      "org.bromite.bromite",
-      "org.chromium.chrome",
-      "com.kiwibrowser.browser",
-      "com.ecosia.android",
-      "com.opera.mini.native.beta",
-      "org.mozilla.fennec_aurora",
-      "org.mozilla.fennec_fdroid",
-      "com.qwant.liberty",
-      "com.opera.touch",
-      "org.mozilla.fenix",
-      "org.mozilla.fenix.nightly",
-      "org.mozilla.reference.browser",
-      "org.mozilla.rocket",
-      "org.torproject.torbrowser",
-      "com.vivaldi.browser"
+    "org.mozilla.firefox",
+    "org.mozilla.firefox_beta",
+    "com.microsoft.emmx",
+    "com.android.chrome",
+    "com.chrome.beta",
+    "com.android.browser",
+    "com.brave.browser",
+    "com.opera.browser",
+    "com.opera.browser.beta",
+    "com.opera.mini.native",
+    "com.chrome.dev",
+    "com.chrome.canary",
+    "com.google.android.apps.chrome",
+    "com.google.android.apps.chrome_dev",
+    "com.yandex.browser",
+    "com.sec.android.app.sbrowser",
+    "com.sec.android.app.sbrowser.beta",
+    "org.codeaurora.swe.browser",
+    "com.amazon.cloud9",
+    "mark.via.gp",
+    "mark.via",
+    "org.bromite.bromite",
+    "org.chromium.chrome",
+    "com.kiwibrowser.browser",
+    "com.ecosia.android",
+    "com.opera.mini.native.beta",
+    "org.mozilla.fennec_aurora",
+    "org.mozilla.fennec_fdroid",
+    "com.qwant.liberty",
+    "com.opera.touch",
+    "org.mozilla.fenix",
+    "org.mozilla.fenix.nightly",
+    "org.mozilla.reference.browser",
+    "org.mozilla.rocket",
+    "org.torproject.torbrowser",
+    "com.vivaldi.browser"
   )
 
-  const val TAG = "W3cHints"
   const val HONORIFIC_PREFIX = "honorific-prefix"
   const val NAME = "name"
   const val GIVEN_NAME = "given-name"
@@ -126,6 +128,12 @@ object W3cHints {
   const val TEXT = "text"
   const val IMPP = "impp"
 
+  // totp
+  const val ONE_TIME_CODE = "one-time-code"
+
+  private val PASSWORD_HINT_LIST = arrayListOf(PASSWORD, NEW_PASSWORD, CURRENT_PASSWORD)
+  private val USER_HINT_LIST = arrayListOf(NAME, USERNAME, TEL, GIVEN_NAME, EMAIL, IMPP)
+
   /**
    * 是否是浏览器
    */
@@ -137,25 +145,67 @@ object W3cHints {
    * 是否是用户名
    */
   fun isW3cUserName(p: android.util.Pair<String, String>): Boolean {
-    return p.first == "type" && (p.second == NAME
-        || p.second == USERNAME
-        || p.second == TEL
-        || p.second == TEXT
-        || p.second == GIVEN_NAME)
+    val temp = p.second.uppercase()
+    return p.first == "type" && (USER_HINT_LIST.contains(temp))
   }
 
   /**
    * 是否是密码
    */
   fun isW3cPassWord(p: android.util.Pair<String, String>): Boolean {
-    return (p.first == "type" && (p.second == PASSWORD || p.second == NEW_PASSWORD || p.second == CURRENT_PASSWORD))
-        // https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion
-        || (p.first == "autocomplete")
+    val temp = p.second.uppercase()
+    return (p.first == "type" && (PASSWORD_HINT_LIST.contains(temp))
+      // https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion
+      || (p.first == "autocomplete"))
+  }
+
+  fun isW3CUserByHints(viewNode: ViewNode): Boolean {
+    if (!viewNode.htmlInfo?.tag.equals("input", true)) {
+      return false
+    }
+    val hints = viewNode.autofillHints
+    hints?.forEach {
+      val temp = it.uppercase()
+      if (USER_HINT_LIST.contains(temp)) {
+        return true
+      }
+
+      if (StructureParser.usernameHints.contains(temp)) {
+        return true
+      }
+
+      if (temp.contains("user", true) || temp.contains("account", true)) {
+        return true
+      }
+    }
+    return false
+  }
+
+  fun isW3CPassByHints(viewNode: ViewNode): Boolean {
+    if (!viewNode.htmlInfo?.tag.equals("input", true)) {
+      return false
+    }
+    val hints = viewNode.autofillHints
+    hints?.forEach {
+      val temp = it.uppercase()
+      if (PASSWORD_HINT_LIST.contains(temp)) {
+        return true
+      }
+
+      if (StructureParser.passHints.contains(temp)) {
+        return true
+      }
+
+      if (temp.contains("password", true)) {
+        return true
+      }
+    }
+    return false
   }
 
   fun isW3cSectionPrefix(hint: String): Boolean {
     return hint.toUpperCase(Locale.ROOT)
-        .startsWith(PREFIX_SECTION);
+      .startsWith(PREFIX_SECTION);
   }
 
   fun isW3cAddressType(hint: String): Boolean {

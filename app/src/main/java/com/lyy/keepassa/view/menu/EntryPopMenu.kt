@@ -58,7 +58,6 @@ class EntryPopMenu(
   private val x: Int,
   private val isInRecycleBin: Boolean = false
 ) : IPopMenu {
-  private val TAG = "EntryPopMenu"
   private val popup: PopupMenu = PopupMenu(context, view, Gravity.START)
   private val help: MenuPopupHelper
   private lateinit var loadDialog: LoadingDialog

@@ -26,12 +26,14 @@ import android.text.TextUtils
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.view.inputmethod.EditorInfo
+import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionInflater
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.arialyy.frame.router.Routerfit
 import com.keepassdroid.Database
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
@@ -39,14 +41,13 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentOpenDbBinding
 import com.lyy.keepassa.entity.DbHistoryRecord
+import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.util.VibratorUtil
-import com.lyy.keepassa.util.getArgument
 import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.dialog.LoadingDialog
-import com.lyy.keepassa.view.main.MainActivity
 import com.tencent.bugly.crashreport.BuglyLog
 import timber.log.Timber
 import java.io.IOException
@@ -105,7 +106,9 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         activity?.finish()
       } else {
         NotificationUtil.startDbOpenNotify(requireContext())
-        MainActivity.startMainActivity(requireActivity())
+        Routerfit.create(ActivityRouter::class.java, requireActivity()).toMainActivity(
+          opt = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
+        )
       }
     }
   }

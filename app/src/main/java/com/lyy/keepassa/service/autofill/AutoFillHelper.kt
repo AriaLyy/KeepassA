@@ -10,15 +10,12 @@
 package com.lyy.keepassa.service.autofill
 
 import android.annotation.TargetApi
-import android.app.PendingIntent
 import android.app.assist.AssistStructure
 import android.content.Context
-import android.content.Intent
 import android.content.IntentSender
 import android.graphics.Bitmap.Config
 import android.graphics.BitmapFactory
 import android.os.Build
-import android.os.Bundle
 import android.service.autofill.Dataset
 import android.service.autofill.FillResponse
 import android.service.autofill.SaveInfo
@@ -27,7 +24,6 @@ import android.view.autofill.AutofillId
 import android.view.autofill.AutofillValue
 import android.widget.RemoteViews
 import androidx.annotation.DrawableRes
-import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwIconCustom
@@ -36,7 +32,6 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
-import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 import com.lyy.keepassa.widget.toPx
@@ -60,9 +55,9 @@ object AutoFillHelper {
     @DrawableRes drawableId: Int
   ): RemoteViews {
     val rev = RemoteViews(packageName, R.layout.item_auto_fill)
-    setTextColor(rev, context)
     rev.setTextViewText(R.id.text, remoteViewsText)
     rev.setImageViewResource(R.id.img, drawableId)
+    rev.setViewVisibility(R.id.hint, View.GONE)
     return rev
   }
 
@@ -75,12 +70,12 @@ object AutoFillHelper {
   ): Dataset {
     val rev = RemoteViews(context.packageName, R.layout.item_auto_fill)
     rev.setTextViewText(R.id.text, context.resources.getString(R.string.cur_app_not_autofill))
-    setTextColor(rev, context)
     IconUtil.getAppIcon(context, apkPageName)
-        ?.let {
-          rev.setImageViewBitmap(R.id.img, it)
-        }
+      ?.let {
+        rev.setImageViewBitmap(R.id.img, it)
+      }
 //    rev.setOnClickResponse()
+    rev.setViewVisibility(R.id.hint, View.GONE)
     val db = Dataset.Builder(rev)
 
     return db.build()
@@ -97,32 +92,22 @@ object AutoFillHelper {
   ): Dataset {
     val rev = RemoteViews(context.packageName, R.layout.item_auto_fill)
     rev.setTextViewText(R.id.text, context.resources.getString(R.string.other))
-
-    IconUtil.getBitmapFromDrawable(context,  R.drawable.ic_search, 20.toPx())?.let {
+    rev.setViewVisibility(R.id.hint, View.GONE)
+    IconUtil.getBitmapFromDrawable(context, R.drawable.ic_search, 20.toPx())?.let {
       rev.setImageViewBitmap(R.id.img, it)
     }
 
-    setTextColor(rev, context)
-
     val sender = AutoFillEntrySearchActivity.createSearchPending(context, apkPageName, structure)
     rev.setOnClickPendingIntent(
-        R.id.llContent,
-        sender
+      R.id.llContent,
+      sender
     )
-
 
 //    newSaveResponse(context, metadata, sender)
 
     val db = Dataset.Builder(rev)
     db.setValue(tempFillId, AutofillValue.forText(""))
     return db.build()
-  }
-
-  @Deprecated("临时解决方案，后面适配黑暗模式后，只要设置values-night 就会解决")
-  private fun setTextColor(rev:RemoteViews, context: Context){
-    if (KeepassAUtil.instance.isNightMode()){
-      rev.setTextColor(R.id.text, ResUtil.getColor(R.color.white))
-    }
   }
 
   /**
@@ -144,24 +129,26 @@ object AutoFillHelper {
     val dataSetBuilder: Dataset.Builder
     if (!dataSetAuth) {
       dataSetBuilder = Dataset.Builder(
-          buildRemoteView(
-              context,
-              entry.title,
-              if (entry is PwEntryV4) entry.customIcon else null,
-              entry.icon
-          )
+        buildRemoteView(
+          context,
+          entry.title,
+          if (entry is PwEntryV4) entry.customIcon else null,
+          entry.icon,
+          entry.username
+        )
       )
       // 设置点击事件，用于数据库没有打开的情况
       val sender = LauncherActivity.getAuthDbIntentSender(context, apkPageName)
       dataSetBuilder.setAuthentication(sender)
     } else {
       dataSetBuilder = Dataset.Builder(
-          buildRemoteView(
-              context,
-              entry.title,
-              if (entry is PwEntryV4) entry.customIcon else null,
-              entry.icon
-          )
+        buildRemoteView(
+          context,
+          entry.title,
+          if (entry is PwEntryV4) entry.customIcon else null,
+          entry.icon,
+          entry.username
+        )
       )
     }
     // 填充数据
@@ -179,11 +166,13 @@ object AutoFillHelper {
     context: Context,
     title: String,
     customIcon: PwIconCustom?,
-    icon: PwIconStandard
+    icon: PwIconStandard,
+    account: String
   ): RemoteViews {
     val rev = RemoteViews(context.packageName, R.layout.item_auto_fill)
     rev.setTextViewText(R.id.text, title)
-    setTextColor(rev, context)
+    rev.setViewVisibility(R.id.hint, if (account.isBlank()) View.GONE else View.VISIBLE)
+    rev.setTextViewText(R.id.hint, account)
     if (customIcon?.imageData != null && customIcon.imageData.isNotEmpty()) {
       val byte = customIcon.imageData
       val option = BitmapFactory.Options()
@@ -206,10 +195,10 @@ object AutoFillHelper {
   ): FillResponse {
     val responseBuilder = FillResponse.Builder()
     val presentation = newRemoteViews(
-        context,
-        context.packageName,
-        context.getString(R.string.autofill_sign_in_prompt),
-        R.mipmap.ic_launcher
+      context,
+      context.packageName,
+      context.getString(R.string.autofill_sign_in_prompt),
+      R.mipmap.ic_launcher
     )
     responseBuilder.setAuthentication(metadataList.autoFillIds.toTypedArray(), sender, presentation)
     val dataSetBuild = Dataset.Builder()
@@ -229,8 +218,8 @@ object AutoFillHelper {
      */
     val sbi = SaveInfo.Builder(metadataList.saveType, metadataList.autoFillIds.toTypedArray())
 //        .setOptionalIds(metadataList.autoFillIds.toTypedArray())
-        .setFlags(SaveInfo.FLAG_SAVE_ON_ALL_VIEWS_INVISIBLE)
-        .build()
+      .setFlags(SaveInfo.FLAG_SAVE_ON_ALL_VIEWS_INVISIBLE)
+      .build()
 
     responseBuilder.setSaveInfo(sbi)
 
@@ -274,16 +263,15 @@ object AutoFillHelper {
 //      )
 //    })
 
-
     return if (metadata.saveType != 0) {
       val autoFillIds = metadata.autoFillIds
       // 设置触发保存的类型
       responseBuilder.setSaveInfo(
-          SaveInfo.Builder(
-              metadata.saveType,
-              autoFillIds.toTypedArray()
-          )
-              .build()
+        SaveInfo.Builder(
+          metadata.saveType,
+          autoFillIds.toTypedArray()
+        )
+          .build()
       )
 
 //      val rev = RemoteViews(context.packageName, R.layout.item_auto_fill)
@@ -311,6 +299,10 @@ object AutoFillHelper {
   }
 
   fun isValidHint(hint: String): Boolean {
+    if (hint.contains("user", true) || hint.contains("pass")) {
+      return true
+    }
+
     when (hint) {
       View.AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_DATE,
       View.AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_DAY,
@@ -324,7 +316,8 @@ object AutoFillHelper {
       View.AUTOFILL_HINT_PASSWORD,
       View.AUTOFILL_HINT_POSTAL_ADDRESS,
       View.AUTOFILL_HINT_POSTAL_CODE,
-      View.AUTOFILL_HINT_USERNAME ->
+      View.AUTOFILL_HINT_USERNAME,
+      ->
         return true
       else ->
         return false
@@ -363,8 +356,8 @@ object AutoFillHelper {
             fillField.autoFillField.dateValue ?: continue@loop
 
             dataSetBuilder.setValue(
-                fillId,
-                AutofillValue.forDate(fillField.autoFillField.dateValue!!)
+              fillId,
+              AutofillValue.forDate(fillField.autoFillField.dateValue!!)
             )
             setValueAtLeastOnce = true
           }
@@ -382,8 +375,8 @@ object AutoFillHelper {
             fillField.autoFillField.toggleValue ?: continue@loop
 
             dataSetBuilder.setValue(
-                fillId,
-                AutofillValue.forToggle(fillField.autoFillField.toggleValue!!)
+              fillId,
+              AutofillValue.forToggle(fillField.autoFillField.toggleValue!!)
             )
             setValueAtLeastOnce = true
           }
@@ -426,8 +419,8 @@ object AutoFillHelper {
             fillField.autoFillField.dateValue ?: continue@loop
 
             dataSetBuilder.setValue(
-                fillId,
-                AutofillValue.forDate(fillField.autoFillField.dateValue!!)
+              fillId,
+              AutofillValue.forDate(fillField.autoFillField.dateValue!!)
             )
             setValueAtLeastOnce = true
           }
@@ -438,9 +431,9 @@ object AutoFillHelper {
               continue@loop
             }
             dataSetBuilder.setValue(
-                fillId,
-                AutofillValue.forText(fillField.autoFillField.textValue),
-                rv
+              fillId,
+              AutofillValue.forText(fillField.autoFillField.textValue),
+              rv
             )
             setValueAtLeastOnce = true
           }
@@ -449,8 +442,8 @@ object AutoFillHelper {
             fillField.autoFillField.toggleValue ?: continue@loop
 
             dataSetBuilder.setValue(
-                fillId,
-                AutofillValue.forToggle(fillField.autoFillField.toggleValue!!)
+              fillId,
+              AutofillValue.forToggle(fillField.autoFillField.toggleValue!!)
             )
             setValueAtLeastOnce = true
           }

@@ -26,7 +26,7 @@
       android:layout_marginStart="24dp"
       android:layout_toEndOf="@+id/icon"
       android:text="标题"
-      android:textColor="@color/black"
+      android:textColor="@color/text_black_color"
       android:textSize="@dimen/text_size_normal" />
 
   <androidx.appcompat.widget.AppCompatTextView

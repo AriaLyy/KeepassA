@@ -19,11 +19,11 @@
       app:key="@string/set_key_need_root_check" />
 
   <SwitchPreference
-      app:isPreferenceVisible="false"
       android:defaultValue="true"
       android:summaryOff="@string/set_key_title_show_state_bar_turn_off"
       android:summaryOn="@string/set_key_title_show_state_bar_turn_on"
       android:title="@string/set_key_title_show_state_bar"
+      app:isPreferenceVisible="false"
       app:icon="@drawable/ic_state_bar"
       app:key="@string/set_key_show_state_bar" />
 
@@ -36,12 +36,31 @@
       app:icon="@drawable/ic_anim"
       app:key="@string/set_key_loading_anim" />
 
-<!--  <SwitchPreference-->
-<!--      android:defaultValue="true"-->
-<!--      android:summaryOff="@string/set_key_title_fillet_bg_icon_turn_off"-->
-<!--      android:summaryOn="@string/set_key_title_fillet_bg_icon_turn_on"-->
-<!--      android:title="@string/set_key_title_fillet_bg_icon"-->
-<!--      app:icon="@drawable/ic_eco"-->
-<!--      app:key="@string/set_key_fillet_bg_icon" />-->
+
+  <SwitchPreference
+      android:defaultValue="false"
+      android:summaryOff="@string/set_key_main_show_totp_tab_off"
+      android:summaryOn="@string/set_key_main_show_totp_tab_on"
+      android:title="@string/set_key_main_show_totp_tab_title"
+      app:icon="@drawable/ic_token_grey"
+      app:key="@string/set_key_main_show_totp_tab" />
+
+
+  <ListPreference
+      android:defaultValue="0"
+      android:icon="@drawable/ic_theme_style"
+      android:summary="@string/set_key_theme_style_summary"
+      app:entries="@array/sek_ley_theme_style_entries"
+      app:entryValues="@array/set_key_theme_values"
+      app:key="@string/set_key_theme_style"
+      app:title="@string/set_key_theme_style_title" />
+
+  <!--  <SwitchPreference-->
+  <!--      android:defaultValue="true"-->
+  <!--      android:summaryOff="@string/set_key_title_fillet_bg_icon_turn_off"-->
+  <!--      android:summaryOn="@string/set_key_title_fillet_bg_icon_turn_on"-->
+  <!--      android:title="@string/set_key_title_fillet_bg_icon"-->
+  <!--      app:icon="@drawable/ic_eco"-->
+  <!--      app:key="@string/set_key_fillet_bg_icon" />-->
 
 </PreferenceScreen>

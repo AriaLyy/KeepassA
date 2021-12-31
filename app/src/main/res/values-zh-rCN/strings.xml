@@ -82,7 +82,7 @@
     <string name="copy_user_name">复制用户名</string>
     <string name="copy_password">复制密码</string>
     <string name="copy_totp">复制TOTP令牌</string>
-    <string name="hint_del_group"><![CDATA[确认删除群组【<font color="#FF0000">%s</font>】？<br> 该操作将会将群组【<font color="#FF0000">%s</font>】移动到回收站中，如果您想撤销删除操作，请在回收站中恢复该群组。]]></string>
+    <string name="hint_del_group">确认要删除群组【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】吗？&lt;br&gt; 该操作将会将群组移动到回收站中，您可以在回收站中恢复该群组。</string>
     <string name="hint_del_group_no_recycle"><![CDATA[确认删除群组【<font color="#FF0000">%s</font>】？该操作将会从数据库中删除该群组。]]></string>
     <string name="hint_del_entry"><![CDATA[确认删除条目【<font color="#FF0000">%s</font>】？<br> 该操作将会将条目【<font color="#FF0000">%s</font>】移动到回收站中，如果您想撤销删除操作，请在回收站中恢复该条目。]]></string>
     <string name="hint_del_entry_no_recycle"><![CDATA[确认删除条目【<font color="#FF0000">%s</font>】？该操作将会从数据库中删除该条目。]]></string>
@@ -318,4 +318,15 @@
     <string name="one_drive_hint"><![CDATA[为了保护您的隐私，KeepassA仅会访问<font color="#FF0000">【应用/KeepassA】</font>目录，如果您希望读取OneDrive的keepass数据库，<font color="#FF0000">请将数据库存放到该目录下。</font>]]></string>
     <string name="open_permissions">打开权限</string>
     <string name="miui_permissions">miui系统需要打开后台弹出界面的权限，才能使用自动填充功能。</string>
+    <string name="set_key_main_show_totp_tab_title">主页显示TOTP分类</string>
+    <string name="set_key_main_show_totp_tab_on">显示TOTP分类</string>
+    <string name="set_key_main_show_totp_tab_off">不显示TOTP分类</string>
+    <string name="set_key_theme_style_title">主题风格</string>
+    <string name="set_key_theme_style_summary">跟随系统</string>
+    <string-array name="sek_ley_theme_style_entries">
+        <item>跟随系统</item>
+        <item>深色模式</item>
+        <item>浅色模式</item>
+    </string-array>
+    <string name="error_keystore">keystore 异常，请重试</string>
 </resources>

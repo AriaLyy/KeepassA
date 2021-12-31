@@ -1,3 +1,16 @@
+### 2.1.8 (2021/12/31)
+Happy New Year!!
+- 【Add】Network retry，Improve link stability
+- 【Add】Turkish
+- 【Add】Night mode，[Setting->Theme Style](route://keepassA.com/kpa?activity=SettingActivity&type=app&scrollKey=setKeyUiSetting)
+- 【Add】TOTP Bar switch，[Setting->TOTP](route://keepassA.com/kpa?activity=SettingActivity&type=app&scrollKey=setKeyUiSetting)
+
+![totp_bar](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/totpBar.png)
+- 【Fix】After the data is created, the quick unlock is opened instead of the home page
+- 【Fix】The problem of fingerprint unlocking
+- 【Fix】Failed to move item
+- 【Optimize】Browser auto-fill
+
 #### 2.1.7（2021/10/18）
 - 【Fix】Dialog layout is out of order
 - 【Fix】Abnormal expiration time display problem
