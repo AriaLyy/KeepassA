@@ -1,4 +1,4 @@
-### 2.1.
+### 2.1.8 (2021/12/31)
 Happy New Year!!
 - 【Add】Network retry，Improve link stability
 - 【Add】Turkish
