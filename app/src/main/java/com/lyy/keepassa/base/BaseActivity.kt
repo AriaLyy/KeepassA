@@ -122,13 +122,13 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     window.exitTransition = TransitionInflater.from(this)
       .inflateTransition(R.transition.slide_exit)
 
-    // A <- B, B的返回动画
-    window.returnTransition = TransitionInflater.from(this)
-      .inflateTransition(R.transition.slide_return)
-
-    // A <- B, A的进入动画
-    window.reenterTransition = TransitionInflater.from(this)
-      .inflateTransition(R.transition.slide_reeter)
+    // // A <- B, B的返回动画
+    // window.returnTransition = TransitionInflater.from(this)
+    //   .inflateTransition(R.transition.slide_return)
+    //
+    // // A <- B, A的进入动画
+    // window.reenterTransition = TransitionInflater.from(this)
+    //   .inflateTransition(R.transition.slide_reeter)
 
     // A -> B, B的enter动画和A的exit动画是否同时执行，false 禁止
     window.allowEnterTransitionOverlap = true

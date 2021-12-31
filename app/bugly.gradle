@@ -7,6 +7,9 @@ android.applicationVariants.all { variant ->
   def taskName = variant.name
   println('taskName = ' + taskName)
   tasks.all {
+    if (taskName.endsWith("Debug")){
+      return
+    }
     if ("assemble${taskName.capitalize()}".equalsIgnoreCase(it.name)) {
       it.doLast {
         def localProj = new Properties()

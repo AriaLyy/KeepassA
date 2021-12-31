@@ -305,6 +305,10 @@ object AutoFillHelper {
   }
 
   fun isValidHint(hint: String): Boolean {
+    if (hint.contains("user", true) || hint.contains("pass")){
+      return true
+    }
+
     when (hint) {
       View.AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_DATE,
       View.AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_DAY,
@@ -318,7 +322,7 @@ object AutoFillHelper {
       View.AUTOFILL_HINT_PASSWORD,
       View.AUTOFILL_HINT_POSTAL_ADDRESS,
       View.AUTOFILL_HINT_POSTAL_CODE,
-      View.AUTOFILL_HINT_USERNAME ->
+      View.AUTOFILL_HINT_USERNAME, ->
         return true
       else ->
         return false

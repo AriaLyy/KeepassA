@@ -27,12 +27,12 @@ import timber.log.Timber
  */
 @TargetApi(Build.VERSION_CODES.O)
 internal class StructureParser(private val autofillStructure: AssistStructure) {
-  val TAG = javaClass.simpleName
   val autoFillFields = AutoFillFieldMetadataCollection()
   val useFields = ArrayList<ViewNode>()
   val passFields = ArrayList<ViewNode>()
   var domainUrl = ""
   var pkgName = ""
+  var isW3c = false
 
   companion object {
     // 其它应用editText 可能设置的id名，如：R.id.email
@@ -60,7 +60,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     }
   }
 
-  private fun clear(){
+  private fun clear() {
     autoFillFields.clear()
     useFields.clear()
     passFields.clear()
@@ -81,6 +81,8 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
    * Traverse AssistStructure and add ViewNode metadata to a flat list.
    */
   private fun parse(isManual: Boolean) {
+    isW3c = false
+    domainUrl = ""
     Timber.d("Parsing structure for ${autofillStructure.activityComponent}")
     val nodeSize = autofillStructure.windowNodeCount
     clear()
@@ -88,7 +90,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       parseLocked(autofillStructure.getWindowNodeAt(i).rootViewNode)
     }
     // 如果密码为空，默认不弹出选择item，这是为了防止遇到editText就弹出item的情况
-    if (passFields.isEmpty() && !isManual) {
+    if (passFields.isEmpty() && !isManual && !isW3c) {
       autoFillFields.clear()
     }
   }
@@ -96,29 +98,24 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
   private fun parseLocked(viewNode: ViewNode) {
     // 处理editText 增加 android:autofillHints 的情况
     if (!viewNode.autofillHints.isNullOrEmpty()) {
-      autoFillFields.add(AutoFillFieldMetadata(viewNode))
+      if (isW3c) {
+        if (W3cHints.isW3CUserByHints(viewNode)) {
+          Timber.i("addUser by hints")
+          addUserField(viewNode)
+        } else if (W3cHints.isW3CPassByHints(viewNode)) {
+          Timber.i("addPassword by hints")
+          addPassField(viewNode)
+        }
+      } else {
+        if (isPassword(viewNode)) {
+          addPassField(viewNode)
+        } else if (isUserName(viewNode)) {
+          addUserField(viewNode)
+        }
+      }
+      // autoFillFields.add(AutoFillFieldMetadata(viewNode))
     } else {
       val className = viewNode.className
-      val isW3c = viewNode.htmlInfo?.tag == "input"
-      if (isW3c) {
-        domainUrl = viewNode.webDomain ?: ""
-
-        Timber.d("webDomain = $domainUrl")
-        if (viewNode.htmlInfo == null || viewNode.htmlInfo!!.attributes == null) {
-          return
-        }
-        val attrs = viewNode.htmlInfo!!.attributes
-        attrs?.forEach {
-          if (W3cHints.isW3cPassWord(it)) {
-            addPassField(viewNode)
-            return@forEach
-          }
-          if (W3cHints.isW3cUserName(it)) {
-            addUserField(viewNode)
-          }
-        }
-        return
-      }
 
       if (className == "android.widget.EditText") {
         when {
@@ -130,9 +127,21 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
           }
           else -> {
             Timber.d(
-                "unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused},  idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, isOpaque = ${viewNode.isOpaque}"
+              "unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused},  idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, isOpaque = ${viewNode.isOpaque}"
             )
           }
+        }
+      }
+
+      if (W3cHints.isBrowser(pkgName)) {
+        Timber.i("is browser, start get web info")
+        checkW3C(viewNode)
+        if (isW3c) {
+          if (domainUrl.isBlank()) {
+            domainUrl = viewNode.webDomain ?: ""
+            Timber.d("webDomain = $domainUrl")
+          }
+          getW3CInfo(viewNode)
         }
       }
     }
@@ -143,18 +152,42 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     }
   }
 
+  private fun getW3CInfo(viewNode: ViewNode) {
+    viewNode.htmlInfo?.let {
+      if (it.attributes != null) {
+        it.attributes!!.forEach { attr ->
+          if (W3cHints.isW3cPassWord(attr)) {
+            addPassField(viewNode)
+            return@forEach
+          }
+          if (W3cHints.isW3cUserName(attr)) {
+            addUserField(viewNode)
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Check whether the web page
+   */
+  private fun checkW3C(viewNode: ViewNode): Boolean {
+    if (isW3c) {
+      return true
+    }
+    isW3c = viewNode.htmlInfo?.tag == "input" || viewNode.className == "android.webkit.WebView"
+    return isW3c
+  }
+
   /**
    * add pass field
    */
   private fun addPassField(viewNode: ViewNode) {
-    if (viewNode.visibility != View.VISIBLE || !viewNode.isFocusable) {
+    if (!isW3c && (viewNode.visibility != View.VISIBLE || !viewNode.isFocusable)) {
       return
     }
     autoFillFields.tempPassFillId = viewNode.autofillId
-    Timber.d(
-        TAG,
-        "pass autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, text = ${viewNode.text}, hint = ${viewNode.hint}, visibility = ${viewNode.visibility}, isActivated = ${viewNode.isActivated}"
-    )
+    Timber.d("pass autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, text = ${viewNode.text}, hint = ${viewNode.hint}, visibility = ${viewNode.visibility}, isActivated = ${viewNode.isActivated}")
     passFields.add(viewNode)
     autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_PASSWORD))
   }
@@ -163,18 +196,12 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
    * add userName field
    */
   private fun addUserField(viewNode: ViewNode) {
-    if (viewNode.visibility != View.VISIBLE || !viewNode.isFocusable) {
+    if (!isW3c && (viewNode.visibility != View.VISIBLE || !viewNode.isFocusable)) {
       return
     }
-    if (autoFillFields.tempUserFillId == null || viewNode.isFocused){
+    if (autoFillFields.tempUserFillId == null || viewNode.isFocused) {
       autoFillFields.tempUserFillId = viewNode.autofillId
-      Timber.d(
-          TAG,
-          "user autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, idEntry = ${viewNode.idEntry}, fillValue = ${viewNode.autofillValue} text = ${viewNode.text}, hint = ${viewNode.hint}, visibility = ${viewNode.visibility}, isActivated = ${viewNode.isActivated}"
-      )
-//      if (useFields.isNotEmpty()){
-//        useFields.clear()
-//      }
+      Timber.d("user autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, idEntry = ${viewNode.idEntry}, fillValue = ${viewNode.autofillValue} text = ${viewNode.text}, hint = ${viewNode.hint}, visibility = ${viewNode.visibility}, isActivated = ${viewNode.isActivated}")
       useFields.add(viewNode)
       autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_USERNAME))
     }
@@ -185,11 +212,11 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
    */
   private fun isUserName(f: ViewNode): Boolean {
     if (!isPassword(f)
-        || usernameHints.any { f.idEntry != null && f.idEntry!!.contains(it, ignoreCase = true) }
-        || usernameHints.any { f.hint != null && f.hint!!.contains(it, ignoreCase = true) }
+      || usernameHints.any { f.idEntry != null && f.idEntry!!.contains(it, ignoreCase = true) }
+      || usernameHints.any { f.hint != null && f.hint!!.contains(it, ignoreCase = true) }
     ) {
       if ((f.idEntry != null && f.idEntry!!.contains("search", ignoreCase = false))
-          || (f.hint != null && f.hint!!.contains("search", ignoreCase = false))
+        || (f.hint != null && f.hint!!.contains("search", ignoreCase = false))
       ) {
         return false
       }
@@ -205,14 +232,13 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
   private fun isPassword(f: ViewNode): Boolean {
     val inputType = f.inputType
     if (inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-        || inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD
-        || inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-        || inputType == InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
-        || passHints.any { f.idEntry != null && f.idEntry!!.contains(it, ignoreCase = true) }
+      || inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD
+      || inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+      || inputType == InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
+      || passHints.any { f.idEntry != null && f.idEntry!!.contains(it, ignoreCase = true) }
     ) {
       return true
     }
     return false
   }
-
 }

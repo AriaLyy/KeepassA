@@ -75,6 +75,7 @@ class AutoFillService : AutofillService() {
     val needAuth = BaseApp.KDB == null || BaseApp.isLocked
 
     if (autoFillFields.autoFillIds.size <= 0) {
+      Timber.i("autoFillIds is nulll")
       callback.onSuccess(null)
       return
     }
