@@ -36,7 +36,13 @@ class ChoseDirModule : BaseModule() {
   ) = liveData {
     val p = withContext(Dispatchers.IO) {
       val group = BaseApp.KDB.pm.groups[groupId] as PwGroupV4
-      (BaseApp.KDB.pm as PwDatabaseV4).undoRecycle(group, curGroup)
+
+      if (group.parent == BaseApp.KDB.pm.recycleBin){
+        (BaseApp.KDB.pm as PwDatabaseV4).undoRecycle(group, curGroup)
+      }else{
+        (BaseApp.KDB.pm as PwDatabaseV4).moveGroup(group, curGroup)
+      }
+
       val b = KdbUtil.saveDb()
       Pair(b == DbSynUtil.STATE_SUCCEED, group)
     }
@@ -53,7 +59,13 @@ class ChoseDirModule : BaseModule() {
     val p = withContext(Dispatchers.IO) {
       val entry = BaseApp.KDB.pm.entries[entryId] ?: return@withContext null
       val entryV4 = entry as PwEntryV4
-      (BaseApp.KDB.pm as PwDatabaseV4).undoRecycle(entryV4, curGroup)
+
+      if (entryV4.parent == BaseApp.KDB.pm.recycleBin){
+        (BaseApp.KDB.pm as PwDatabaseV4).undoRecycle(entryV4, curGroup)
+      }else{
+        (BaseApp.KDB.pm as PwDatabaseV4).moveEntry(entryV4, curGroup)
+      }
+
       val b = KdbUtil.saveDb()
       Pair(b == DbSynUtil.STATE_SUCCEED, entryV4)
     }
