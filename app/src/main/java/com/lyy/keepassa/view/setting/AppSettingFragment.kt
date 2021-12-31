@@ -10,14 +10,19 @@
 package com.lyy.keepassa.view.setting
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.provider.Settings
 import android.text.Html
 import android.view.View
 import android.view.autofill.AutofillManager
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -61,7 +66,6 @@ import java.util.Locale
 class AppSettingFragment : PreferenceFragmentCompat() {
   private lateinit var passTypeList: ListPreference
   private var passLen = 3
-  private val requestCodeAutoFill = 0xa1
   private lateinit var autoFill: SwitchPreference
 
   @Autowired(name = "scrollKey")
@@ -69,6 +73,28 @@ class AppSettingFragment : PreferenceFragmentCompat() {
   var scrollKey: String? = null
 
   private var isHighlighted = false
+
+  @RequiresApi(VERSION_CODES.O)
+  private val autoFillLauncher =
+    registerForActivityResult(object : ActivityResultContract<String, Int>() {
+      override fun createIntent(context: Context, input: String): Intent {
+        return Intent(
+          Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE,
+          Uri.parse(input)
+        )
+      }
+
+      override fun parseResult(resultCode: Int, intent: Intent?): Int {
+        return resultCode
+      }
+    }) {
+      if (it == Activity.RESULT_OK) {
+        autoFill.isChecked = true
+      } else {
+        autoFill.isChecked = requireContext().getSystemService(AutofillManager::class.java)
+          .hasEnabledAutofillServices()
+      }
+    }
 
   override fun onCreatePreferences(
     savedInstanceState: Bundle?,
@@ -160,7 +186,10 @@ class AppSettingFragment : PreferenceFragmentCompat() {
    */
   private fun setIme() {
     findPreference<Preference>(getString(R.string.set_key_open_kpa_ime))?.setOnPreferenceClickListener {
-      startActivity(Intent(Settings.ACTION_INPUT_METHOD_SETTINGS))
+      startActivity(
+        Intent(Settings.ACTION_INPUT_METHOD_SETTINGS),
+        ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity()).toBundle()
+      )
       true
     }
   }
@@ -276,20 +305,14 @@ class AppSettingFragment : PreferenceFragmentCompat() {
       autoFill.setOnPreferenceChangeListener { _, newValue ->
         if (!(newValue as Boolean)) {
           // 如果已启用，需要包名不同才能重新打开自动填充设置
-          startActivityForResult(
-            Intent(
-              Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE,
-              Uri.parse("package:${requireContext().packageName}1")
-            ),
-            requestCodeAutoFill
+          autoFillLauncher.launch(
+            "package:${requireContext().packageName}1",
+            ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
           )
         } else {
-          startActivityForResult(
-            Intent(
-              Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE,
-              Uri.parse("package:${requireContext().packageName}")
-            ),
-            requestCodeAutoFill
+          autoFillLauncher.launch(
+            "package:${requireContext().packageName}",
+            ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
           )
         }
         true
@@ -413,21 +436,6 @@ class AppSettingFragment : PreferenceFragmentCompat() {
       )
     } else {
       Timber.i("已显示过自动填充对话框，不再重复显示")
-    }
-  }
-
-  override fun onActivityResult(
-    requestCode: Int,
-    resultCode: Int,
-    data: Intent?
-  ) {
-    if (requestCode == requestCodeAutoFill && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      if (resultCode == Activity.RESULT_OK) {
-        autoFill.isChecked = true
-      } else {
-        autoFill.isChecked = requireContext().getSystemService(AutofillManager::class.java)
-          .hasEnabledAutofillServices()
-      }
     }
   }
 }

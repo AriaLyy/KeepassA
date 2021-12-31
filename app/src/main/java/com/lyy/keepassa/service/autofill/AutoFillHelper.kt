@@ -24,7 +24,6 @@ import android.view.autofill.AutofillId
 import android.view.autofill.AutofillValue
 import android.widget.RemoteViews
 import androidx.annotation.DrawableRes
-import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwIconCustom
@@ -56,9 +55,9 @@ object AutoFillHelper {
     @DrawableRes drawableId: Int
   ): RemoteViews {
     val rev = RemoteViews(packageName, R.layout.item_auto_fill)
-    setTextColor(rev, context)
     rev.setTextViewText(R.id.text, remoteViewsText)
     rev.setImageViewResource(R.id.img, drawableId)
+    rev.setViewVisibility(R.id.hint, View.GONE)
     return rev
   }
 
@@ -71,12 +70,12 @@ object AutoFillHelper {
   ): Dataset {
     val rev = RemoteViews(context.packageName, R.layout.item_auto_fill)
     rev.setTextViewText(R.id.text, context.resources.getString(R.string.cur_app_not_autofill))
-    setTextColor(rev, context)
     IconUtil.getAppIcon(context, apkPageName)
       ?.let {
         rev.setImageViewBitmap(R.id.img, it)
       }
 //    rev.setOnClickResponse()
+    rev.setViewVisibility(R.id.hint, View.GONE)
     val db = Dataset.Builder(rev)
 
     return db.build()
@@ -93,12 +92,10 @@ object AutoFillHelper {
   ): Dataset {
     val rev = RemoteViews(context.packageName, R.layout.item_auto_fill)
     rev.setTextViewText(R.id.text, context.resources.getString(R.string.other))
-
+    rev.setViewVisibility(R.id.hint, View.GONE)
     IconUtil.getBitmapFromDrawable(context, R.drawable.ic_search, 20.toPx())?.let {
       rev.setImageViewBitmap(R.id.img, it)
     }
-
-    setTextColor(rev, context)
 
     val sender = AutoFillEntrySearchActivity.createSearchPending(context, apkPageName, structure)
     rev.setOnClickPendingIntent(
@@ -111,13 +108,6 @@ object AutoFillHelper {
     val db = Dataset.Builder(rev)
     db.setValue(tempFillId, AutofillValue.forText(""))
     return db.build()
-  }
-
-  // @Deprecated("临时解决方案，后面适配黑暗模式后，只要设置values-night 就会解决")
-  private fun setTextColor(rev: RemoteViews, context: Context) {
-    // if (KeepassAUtil.instance.isNightMode()){
-    rev.setTextColor(R.id.text, ResUtil.getColor(R.color.white))
-    // }
   }
 
   /**
@@ -143,7 +133,8 @@ object AutoFillHelper {
           context,
           entry.title,
           if (entry is PwEntryV4) entry.customIcon else null,
-          entry.icon
+          entry.icon,
+          entry.username
         )
       )
       // 设置点击事件，用于数据库没有打开的情况
@@ -155,7 +146,8 @@ object AutoFillHelper {
           context,
           entry.title,
           if (entry is PwEntryV4) entry.customIcon else null,
-          entry.icon
+          entry.icon,
+          entry.username
         )
       )
     }
@@ -174,11 +166,13 @@ object AutoFillHelper {
     context: Context,
     title: String,
     customIcon: PwIconCustom?,
-    icon: PwIconStandard
+    icon: PwIconStandard,
+    account: String
   ): RemoteViews {
     val rev = RemoteViews(context.packageName, R.layout.item_auto_fill)
     rev.setTextViewText(R.id.text, title)
-    setTextColor(rev, context)
+    rev.setViewVisibility(R.id.hint, if (account.isBlank()) View.GONE else View.VISIBLE)
+    rev.setTextViewText(R.id.hint, account)
     if (customIcon?.imageData != null && customIcon.imageData.isNotEmpty()) {
       val byte = customIcon.imageData
       val option = BitmapFactory.Options()
@@ -305,7 +299,7 @@ object AutoFillHelper {
   }
 
   fun isValidHint(hint: String): Boolean {
-    if (hint.contains("user", true) || hint.contains("pass")){
+    if (hint.contains("user", true) || hint.contains("pass")) {
       return true
     }
 
@@ -322,7 +316,8 @@ object AutoFillHelper {
       View.AUTOFILL_HINT_PASSWORD,
       View.AUTOFILL_HINT_POSTAL_ADDRESS,
       View.AUTOFILL_HINT_POSTAL_CODE,
-      View.AUTOFILL_HINT_USERNAME, ->
+      View.AUTOFILL_HINT_USERNAME,
+      ->
         return true
       else ->
         return false

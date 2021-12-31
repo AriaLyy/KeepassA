@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="@integer/anim_duration_long"
+    android:duration="@integer/anim_duration_medium"
     android:transitionOrdering="sequential">
   <slide
       android:interpolator="@android:interpolator/linear"
-      android:slideEdge="left" />
+      android:slideEdge="start" />
 <!--  <changeBounds android:interpolator="@android:interpolator/bounce" />-->
   <!--  状态栏和导航栏不参与动画 -->
   <targets>

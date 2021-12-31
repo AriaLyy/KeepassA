@@ -68,6 +68,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
 
   /**
    * 是否是用户手动 用户手机选择了自动填充，也就是editText获取了焦点才开始弹出
+   * @param pkgName 目标应用包名
    */
   fun parseForFill(
     isManual: Boolean,

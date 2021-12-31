@@ -1,29 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/llContent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/ripple_white_selector"
     android:orientation="horizontal"
+    android:paddingBottom="8dp"
+    android:paddingEnd="16dp"
     android:paddingStart="16dp"
     android:paddingTop="8dp"
-    android:paddingEnd="16dp"
-    android:paddingBottom="8dp">
+    >
 
   <ImageView
       android:id="@+id/img"
       android:layout_width="32dp"
       android:layout_height="32dp"
-      android:src="@drawable/ic_android" />
+      android:layout_centerVertical="true"
+      android:src="@drawable/ic_android"
+      />
 
-
-  <TextView
-      android:id="@+id/text"
+  <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_gravity="center_vertical"
+      android:layout_centerVertical="true"
       android:layout_marginStart="16dp"
-      android:textColor="@color/text_black_color"
-      android:textSize="@dimen/text_size_normal" />
+      android:layout_toEndOf="@+id/img"
+      android:orientation="vertical"
+      >
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/text_size_normal"
+        />
+
+    <TextView
+        android:id="@+id/hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/text_gray_color"
+        android:textSize="@dimen/text_size_smaller"
+        />
+  </LinearLayout>
+
+
+</RelativeLayout>
