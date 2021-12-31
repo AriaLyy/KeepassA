@@ -47,7 +47,7 @@
 
 
   <ListPreference
-      android:defaultValue="1"
+      android:defaultValue="0"
       android:icon="@drawable/ic_theme_style"
       android:summary="@string/set_key_theme_style_summary"
       app:entries="@array/sek_ley_theme_style_entries"

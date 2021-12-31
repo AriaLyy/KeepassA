@@ -15,6 +15,9 @@ import android.os.Build
 import timber.log.Timber
 import java.util.Locale
 
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete
+ */
 @TargetApi(Build.VERSION_CODES.O)
 object W3cHints {
 
@@ -57,7 +60,6 @@ object W3cHints {
     "com.vivaldi.browser"
   )
 
-  const val TAG = "W3cHints"
   const val HONORIFIC_PREFIX = "honorific-prefix"
   const val NAME = "name"
   const val GIVEN_NAME = "given-name"
@@ -126,6 +128,12 @@ object W3cHints {
   const val TEXT = "text"
   const val IMPP = "impp"
 
+  // totp
+  const val ONE_TIME_CODE = "one-time-code"
+
+  private val PASSWORD_HINT_LIST = arrayListOf(PASSWORD, NEW_PASSWORD, CURRENT_PASSWORD)
+  private val USER_HINT_LIST = arrayListOf(NAME, USERNAME, TEL, GIVEN_NAME, EMAIL, IMPP)
+
   /**
    * 是否是浏览器
    */
@@ -137,32 +145,36 @@ object W3cHints {
    * 是否是用户名
    */
   fun isW3cUserName(p: android.util.Pair<String, String>): Boolean {
-    return p.first == "type" && (p.second == NAME
-      || p.second == USERNAME
-      || p.second == TEL
-      || p.second == TEXT
-      || p.second == GIVEN_NAME)
+    val temp = p.second.uppercase()
+    return p.first == "type" && (USER_HINT_LIST.contains(temp))
   }
 
   /**
    * 是否是密码
    */
   fun isW3cPassWord(p: android.util.Pair<String, String>): Boolean {
-    return (p.first == "type" && (p.second == PASSWORD || p.second == NEW_PASSWORD || p.second == CURRENT_PASSWORD))
+    val temp = p.second.uppercase()
+    return (p.first == "type" && (PASSWORD_HINT_LIST.contains(temp))
       // https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion
-      || (p.first == "autocomplete")
+      || (p.first == "autocomplete"))
   }
 
   fun isW3CUserByHints(viewNode: ViewNode): Boolean {
-    if (!viewNode.htmlInfo?.tag.equals("input", true)){
+    if (!viewNode.htmlInfo?.tag.equals("input", true)) {
       return false
     }
     val hints = viewNode.autofillHints
     hints?.forEach {
-      if (StructureParser.usernameHints.contains(it)) {
+      val temp = it.uppercase()
+      if (USER_HINT_LIST.contains(temp)) {
         return true
       }
-      if (it.contains("user", true) || it.contains("name", true)) {
+
+      if (StructureParser.usernameHints.contains(temp)) {
+        return true
+      }
+
+      if (temp.contains("user", true) || temp.contains("account", true)) {
         return true
       }
     }
@@ -170,15 +182,21 @@ object W3cHints {
   }
 
   fun isW3CPassByHints(viewNode: ViewNode): Boolean {
-    if (!viewNode.htmlInfo?.tag.equals("input", true)){
+    if (!viewNode.htmlInfo?.tag.equals("input", true)) {
       return false
     }
     val hints = viewNode.autofillHints
     hints?.forEach {
-      if (StructureParser.passHints.contains(it)) {
+      val temp = it.uppercase()
+      if (PASSWORD_HINT_LIST.contains(temp)) {
         return true
       }
-      if (it.contains("password", true) || it.contains("pass", true)) {
+
+      if (StructureParser.passHints.contains(temp)) {
+        return true
+      }
+
+      if (temp.contains("password", true)) {
         return true
       }
     }

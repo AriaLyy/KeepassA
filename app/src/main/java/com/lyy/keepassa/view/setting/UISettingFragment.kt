@@ -63,7 +63,7 @@ class UISettingFragment : PreferenceFragmentCompat() {
     val summaryArray =
       requireContext().resources.getStringArray(R.array.sek_ley_theme_style_entries)
     val mode = PreferenceManager.getDefaultSharedPreferences(requireContext())
-      .getString(getString(string.set_key_theme_style), "1")!!.toInt()
+      .getString(getString(string.set_key_theme_style), "0")!!.toInt()
 
     lp?.summary = summaryArray[mode]
 

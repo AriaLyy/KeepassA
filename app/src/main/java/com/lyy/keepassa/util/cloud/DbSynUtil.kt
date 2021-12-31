@@ -27,6 +27,7 @@ import com.lyy.keepassa.util.cloud.interceptor.DbSyncResponse
 import com.lyy.keepassa.util.cloud.interceptor.DbSyncUploadInterceptor
 import com.lyy.keepassa.util.cloud.interceptor.IDbSyncInterceptor
 import com.lyy.keepassa.view.StorageType
+import com.lyy.keepassa.view.StorageType.AFS
 import timber.log.Timber
 import java.io.File
 import java.util.Date
@@ -99,7 +100,11 @@ object DbSynUtil : SynStateCode {
    * 上传同步
    */
   suspend fun uploadSyn(record: DbHistoryRecord): DbSyncResponse {
-    val util = CloudUtilFactory.getCloudUtil(record.getDbPathType())
+    val storageType = record.getDbPathType()
+    if (storageType == AFS) {
+      return DbSyncResponse(STATE_SUCCEED, "")
+    }
+    val util = CloudUtilFactory.getCloudUtil(storageType)
     return interceptors[0].intercept(DbSyncRequest(record, util, interceptors))
   }
 

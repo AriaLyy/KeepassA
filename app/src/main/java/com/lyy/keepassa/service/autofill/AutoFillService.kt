@@ -52,6 +52,7 @@ class AutoFillService : AutofillService() {
     cancellationSignal: CancellationSignal,
     callback: FillCallback
   ) {
+    request.inlineSuggestionsRequest?.hostPackageName
     val isManual = request.flags == FillRequest.FLAG_MANUAL_REQUEST
     val structure = request.fillContexts[request.fillContexts.size - 1].structure
     val apkPackageName = structure.activityComponent.packageName

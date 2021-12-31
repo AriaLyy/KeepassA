@@ -84,7 +84,7 @@ public class BaseApp extends MultiDexApplication {
 
   private void setThemeStyle() {
     String mode = PreferenceManager.getDefaultSharedPreferences(this)
-        .getString(getString(R.string.set_key_theme_style), "1");
+        .getString(getString(R.string.set_key_theme_style), "0");
     switch (mode) {
       case "0":
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
