@@ -11,11 +11,10 @@ import android.graphics.drawable.Drawable
 import com.arialyy.frame.router.RouterArgName
 import com.arialyy.frame.router.RouterPath
 import com.lyy.keepassa.R
-import com.lyy.keepassa.event.TimeEvent
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.dialog.TimeChangeDialog
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.lyy.keepassa.view.dialog.TotpDisplayDialog
 
 /**
  * @Author laoyuyu
@@ -23,6 +22,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
  * @Date 2021/9/5
  **/
 interface DialogRouter {
+
+  /**
+   * show display dialog
+   * @param uuid don't use UUID, because is that Serializable
+   */
+  @RouterPath(path = "/dialog/totpDisplay")
+  fun getTotpDisplayDialog(
+    @RouterArgName(name = "uuid") uuid: String
+  ): TotpDisplayDialog
 
   /**
    * 显示消息对话框

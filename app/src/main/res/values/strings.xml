@@ -332,6 +332,8 @@ If you are creating a new KeePass database, the above operations are not be need
     <item>Light</item>
   </string-array>
   <string name="error_keystore">Keystore exception, please try again</string>
+  <string name="kpa_totp">Token</string>
+  <string name="kpa_copy">Copy</string>
 
   <string-array name="quick_pass_type_entries">
     <item>Database password in front of %s</item>

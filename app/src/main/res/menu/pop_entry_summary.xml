@@ -23,8 +23,8 @@
 
   <item
       android:id="@+id/copy_totp"
-      android:icon="@drawable/ic_totp"
-      android:title="@string/copy_totp"
+      android:icon="@drawable/ic_token_grey"
+      android:title="@string/kpa_totp"
       app:showAsAction="ifRoom" />
 
 
