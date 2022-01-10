@@ -183,7 +183,7 @@
     <string name="autofill_sign_in_prompt">使用 KeePassA 自动填充密码</string>
     <string name="hint_background_start">请转到 &lt;font color=#FF0000&gt;【%s】&lt;/font&gt; 并授予后台弹出窗口权限，以便更好地使用自动填充服务。&lt;br&gt; &lt;font color=#FF0000&gt;当你使用自动填充功能时，KeePassA 会显示相应的打开数据库的界面&lt;/font&gt;</string>
     <string name="setting_miui_background_start">设置 &gt;应用设置 &gt;应用管理 &gt;KeePassA &gt;权限管理</string>
-    <string name="setting_vivo_background_start">设置 &gt;更多设置 &gt;权限管理-&gt;KeepassA &gt;权限设置 &gt;后台弹出</string>
+    <string name="setting_vivo_background_start">设置 &gt;更多设置 &gt;权限管理-&gt;KeePassA &gt;权限设置 &gt;后台弹出</string>
     <string name="no_matching_entry">没有匹配的条目</string>
     <string name="hint_save_auto_fill"><![CDATA[是否将包名【<font color="#FF0000">%s</font>】和条目【<font color="#FF0000">%s</font>】进行关联]]></string>
     <string name="relevance_db">关联数据</string>
@@ -195,7 +195,7 @@
     <string name="feedback">意见反馈 ^_^</string>
     <string name="submit">提交</string>
     <string name="send_email_fail">先安装一个可以发送电子邮件的应用程序</string>
-    <string name="feedback_email_msg">你好，我是 KeepassA，你有什么问题吗？<br/> <br/> <br/> _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/> 手机品牌：%s <br/> 手机型号：%s <br/> 系统版本：%s <br/> 分辨率：%s <br/> 应用版本：%s</string>
+    <string name="feedback_email_msg">你好，我是 KeePassA，你有什么问题吗？<br/> <br/> <br/> _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/> 手机品牌：%s <br/> 手机型号：%s <br/> 系统版本：%s <br/> 分辨率：%s <br/> 应用版本：%s</string>
     <string name="mark_not_exit">应用市场不存在</string>
     <string name="set_open_auto_fill_title">自动填充服务</string>
     <string name="set_key_praise_value">给 KeePassA 评分</string>
@@ -260,7 +260,7 @@
     <string name="hint_security_red">你的设备已经 root，数据库处于一个非常危险的环境中</string>
     <string name="hint_security_yellow">警告，运用运行于模拟器中，该环境会给数据库带来一些不可预测的风险</string>
     <string name="donate">捐赠</string>
-    <string name="donate_desc">[KeepassA](https://github.com/AriaLyy/KeepassA)是一款自由软件。请考虑给我们捐赠，以支持我们的工作，非常感谢你。</string>
+    <string name="donate_desc">[KeePassA](https://github.com/AriaLyy/KeepassA)是一款自由软件。请考虑给我们捐赠，以支持我们的工作，非常感谢你。</string>
     <string name="dev_birthday">今天是开发者生日🎂，你想向众神敬酒吗？</string>
     <string name="totp_defaule">默认 RFC 6238令牌设置</string>
     <string name="totp_steam">Steam令牌设置</string>
@@ -320,7 +320,7 @@
     <string name="set_key_title_auto_lock_database_turn_off">关闭</string>
     <string name="get_token_fail">获取Token失败</string>
     <string name="one_drive_init_failure">OneDrive初始化失败</string>
-    <string name="one_drive_hint">为了保护你的隐私，KeepassA仅会访问&lt;font color=#FF0000&gt;【应用/KeepassA】&lt;/font&gt;目录，如果你希望读取OneDrive的keepass数据库，&lt;font color=#FF0000&gt;请将数据库存放到该目录下。&lt;/font&gt;</string>
+    <string name="one_drive_hint">为了保护你的隐私，KeePassA 仅会访问&lt;font color=#FF0000&gt;【应用/KeepassA】&lt;/font&gt;目录，如果你希望读取OneDrive的 Keepass 数据库，&lt;font color=#FF0000&gt;请将数据库存放到该目录下。&lt;/font&gt;</string>
     <string name="open_permissions">打开权限</string>
     <string name="miui_permissions">miui系统需要打开后台弹出界面的权限，才能使用自动填充功能。</string>
     <string name="set_key_main_show_totp_tab_title">主页显示TOTP分类</string>
