@@ -22,7 +22,7 @@
     <string name="encrypt_type_2">Passord + nøkkel</string>
     <string name="encrypt_type_1">Kun passord</string>
     <string name="encrypt_type">Kryptering</string>
-    <string name="help_create_group">Gruppenavn kan ikke være på mer enn 16 tegn</string>
+    <string name="help_create_group">Velg et gruppenavn på mindre enn 17 tegn</string>
     <string name="hint_enter_password">Bekreft passord</string>
     <string name="hint_input_password">Skriv inn et passord på 6-16 tegn</string>
     <string name="hint_set_password">Sett passord</string>
