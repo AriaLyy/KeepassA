@@ -329,4 +329,6 @@
     <string name="error_keystore">Anahtar deposu istisnası, lütfen tekrar deneyin</string>
     <string name="set_key_theme_style_title">Tema tarzı</string>
     <string name="set_key_theme_style_summary">Sistemi takip et</string>
+    <string name="kpa_totp">Belirteç</string>
+    <string name="kpa_copy">Kopyala</string>
 </resources>
