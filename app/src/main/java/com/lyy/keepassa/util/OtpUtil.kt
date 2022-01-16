@@ -40,20 +40,44 @@ object OtpUtil {
     if (isSteamEntry(entry)) {
       fix1_7bug(entry)
     }
-    val isSteam = isSteam(entry)
+
     val totpSetting = entry.strings["TOTP Settings"]
-    var period = TokenCalculator.TOTP_DEFAULT_PERIOD
-    var digits = TokenCalculator.TOTP_DEFAULT_DIGITS
     if (totpSetting != null) {
-      val s = totpSetting.toString()
-          .split(";")
-      if (!s.isNullOrEmpty() && s.size == 2) {
-        period = s[0].toInt()
-        digits = if (isSteam) TokenCalculator.STEAM_DEFAULT_DIGITS else s[1].toInt()
-      }
+      return getKeeTrayTotp(entry, totpSetting)
     }
 
-    return Pair(period, getTotpPass(entry.strings["TOTP Seed"].toString(), period, digits, isSteam))
+    val otp2Setting = entry.strings["TimeOtp-Secret-Base32"]
+    if (otp2Setting != null) {
+      return getKeeOtp2Totp(entry, otp2Setting)
+    }
+
+
+    return Pair(-1, null)
+  }
+
+  /**
+   * 兼容KeeOtp2插件的totp获取
+   */
+  private fun getKeeOtp2Totp(entry: PwEntryV4, totpSetting: ProtectedString): Pair<Int, String?> {
+  }
+
+  /**
+   * 兼容KeeTrayTOTP插件的totp获取
+   */
+  private fun getKeeTrayTotp(entry: PwEntryV4, totpSetting: ProtectedString): Pair<Int, String?> {
+    val isSteam = isSteam(entry)
+    var period = TokenCalculator.TOTP_DEFAULT_PERIOD
+    var digits = TokenCalculator.TOTP_DEFAULT_DIGITS
+    val s = totpSetting.toString()
+      .split(";")
+    if (!s.isNullOrEmpty() && s.size == 2) {
+      period = s[0].toInt()
+      digits = if (isSteam) TokenCalculator.STEAM_DEFAULT_DIGITS else s[1].toInt()
+    }
+    return Pair(
+      period,
+      getTotpPass(entry.strings["TOTP Seed"].toString(), period, digits, isSteam)
+    )
   }
 
   /**
@@ -63,7 +87,7 @@ object OtpUtil {
     val totpSetting = entry.strings["TOTP Settings"]
     if (totpSetting != null) {
       val tempArray = totpSetting.toString()
-          .split(";")
+        .split(";")
       if (!tempArray.isNullOrEmpty() && tempArray.size == 2 && !tempArray[1].equals("S", true)) {
         entry.strings["TOTP Settings"] = ProtectedString(false, "${tempArray[0]};S")
         GlobalScope.launch {
@@ -77,7 +101,7 @@ object OtpUtil {
     val otpSettings = entry.strings["TOTP Settings"]
     if (otpSettings != null) {
       val tempArray = otpSettings.toString()
-          .split(";")
+        .split(";")
       return tempArray[1] == "S"
     }
 
@@ -89,13 +113,13 @@ object OtpUtil {
    */
   private fun isSteamEntry(entry: PwEntryV4): Boolean {
     return entry.getUrl()
-        .contains("steampowered", ignoreCase = true) ||
-        entry.customData.any {
-          it.value.equals(
-              "androidapp://com.valvesoftware.android.steam.community",
-              true
-          )
-        }
+      .contains("steampowered", ignoreCase = true) ||
+      entry.customData.any {
+        it.value.equals(
+          "androidapp://com.valvesoftware.android.steam.community",
+          true
+        )
+      }
   }
 
   private fun getTotpPass(
@@ -109,8 +133,8 @@ object OtpUtil {
       val b = Base32String.decode(seed)
       return if (isSteam) {
         TokenCalculator.TOTP_Steam(
-            b, TokenCalculator.TOTP_DEFAULT_PERIOD, TokenCalculator.STEAM_DEFAULT_DIGITS,
-            TokenCalculator.DEFAULT_ALGORITHM
+          b, TokenCalculator.TOTP_DEFAULT_PERIOD, TokenCalculator.STEAM_DEFAULT_DIGITS,
+          TokenCalculator.DEFAULT_ALGORITHM
         )
       } else {
         TokenCalculator.TOTP_RFC6238(b, period, digits, TokenCalculator.DEFAULT_ALGORITHM)
@@ -163,28 +187,27 @@ object OtpUtil {
       val b = Base32String.decode(secret)
       if (isSteam) {
         val pass = TokenCalculator.TOTP_Steam(
-            b, TokenCalculator.TOTP_DEFAULT_PERIOD, TokenCalculator.STEAM_DEFAULT_DIGITS,
-            TokenCalculator.DEFAULT_ALGORITHM
+          b, TokenCalculator.TOTP_DEFAULT_PERIOD, TokenCalculator.STEAM_DEFAULT_DIGITS,
+          TokenCalculator.DEFAULT_ALGORITHM
         )
         return Pair(period.toInt(), pass)
       }
       val pass = when (uri.host) {
         "totp", "TOTP" -> {
           TokenCalculator.TOTP_RFC6238(
-              b,
-              period.toInt(),
-              digits.toInt(),
-              HashAlgorithm.valueOf(algorithm.toUpperCase(Locale.ROOT))
+            b,
+            period.toInt(),
+            digits.toInt(),
+            HashAlgorithm.valueOf(algorithm.toUpperCase(Locale.ROOT))
           )
         }
         "hotp", "HOTP" -> {
           TokenCalculator.HOTP(
-              b,
-              counter.toLong(),
-              digits.toInt(),
-              HashAlgorithm.valueOf(algorithm.toUpperCase(Locale.ROOT))
+            b,
+            counter.toLong(),
+            digits.toInt(),
+            HashAlgorithm.valueOf(algorithm.toUpperCase(Locale.ROOT))
           )
-
         }
         else -> {
           Timber.e("不识别的类型：${uri.host}")
