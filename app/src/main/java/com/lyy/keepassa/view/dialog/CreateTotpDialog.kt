@@ -10,7 +10,11 @@ package com.lyy.keepassa.view.dialog
 import android.view.View
 import android.widget.AdapterView
 import android.widget.RadioButton
+import com.blankj.utilcode.util.ToastUtils
 import com.google.android.material.slider.Slider
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanIntentResult
+import com.journeyapps.barcodescanner.ScanOptions
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
@@ -21,6 +25,7 @@ import com.lyy.keepassa.entity.TotpType.DEFAULT
 import com.lyy.keepassa.entity.TotpType.STEAM
 import com.lyy.keepassa.event.CreateAttrStrEvent
 import com.lyy.keepassa.util.getArgument
+import com.lyy.keepassa.view.QrCodeScannerActivity
 import com.lyy.keepassa.widget.expand.AttrStrItemView
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
@@ -42,6 +47,14 @@ class CreateTotpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickList
   private val entryUserName by lazy {
     getArgument<String>("entryUserName") ?: "name"
   }
+
+  private val barcodeLauncher =
+    registerForActivityResult(ScanContract()) { result: ScanIntentResult ->
+      if (result.contents == null) {
+        ToastUtils.showLong("Cancelled")
+        return@registerForActivityResult
+      }
+    }
 
   var itemView: AttrStrItemView? = null
 
@@ -103,6 +116,17 @@ class CreateTotpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickList
         len = slider.value.toInt()
       }
     })
+    binding.strKeyLayout.setEndIconOnClickListener {
+      // start qrcode
+      val options = ScanOptions()
+      options.captureActivity = QrCodeScannerActivity::class.java
+      options.setDesiredBarcodeFormats(ScanOptions.ONE_D_CODE_TYPES)
+      options.setPrompt("Scan a barcode")
+      options.setCameraId(0) // Use a specific camera of the device
+      options.setBeepEnabled(false)
+      options.setBarcodeImageEnabled(true)
+      barcodeLauncher.launch(options)
+    }
   }
 
   override fun onClick(v: View?) {
@@ -110,7 +134,7 @@ class CreateTotpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickList
       R.id.enter -> {
         val keyStr = binding.strKey.text.toString()
         if (keyStr.isEmpty()) {
-          binding.strKey.error = "key is null"
+          ToastUtils.showLong("key is null")
           return
         }
         Timber.d("key = $keyStr arit = $arithmetic, time = $time, len = $len")
