@@ -35,6 +35,8 @@ fun PwEntryV4.hasTOTP(): Boolean {
     // 增加TOP密码字段
     if (str.key.startsWith("TOTP", ignoreCase = true)
       || str.key.startsWith("OTP", ignoreCase = true)
+      || str.key.startsWith("HmacOtp", ignoreCase = true)
+      || str.key.startsWith("TimeOtp", ignoreCase = true)
     ) {
       return true
     }

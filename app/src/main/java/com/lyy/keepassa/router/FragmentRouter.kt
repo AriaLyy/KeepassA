@@ -28,6 +28,7 @@ import com.lyy.keepassa.view.setting.DBSettingFragment
  **/
 interface FragmentRouter {
 
+
   @RouterPath(path = "/setting/appFm")
   fun getAppSettingFragment(
     @RouterArgName(name = "scrollKey") scrollKey: String? = null

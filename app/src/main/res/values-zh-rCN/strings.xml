@@ -337,4 +337,5 @@
     <string name="kpa_totp">令牌</string>
     <string name="kpa_copy">复制</string>
     <string name="translate_language">将应用程序翻译成你的语言</string>
+    <string name="error_qr_code_str">二维码异常，请确认该二维码是谷歌验证器支持的二维码</string>
 </resources>

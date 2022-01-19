@@ -346,6 +346,7 @@ If you are creating a new KeePass database, the above operations are not be need
     <item>10 minute</item>
     <item>20 minute</item>
   </string-array>
+  <string name="error_qr_code_str">The QR code is abnormal. Please make sure that the QR code is supported by Google Authenticator</string>
 
 
 </resources>
