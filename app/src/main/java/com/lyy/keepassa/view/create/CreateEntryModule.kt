@@ -30,6 +30,8 @@ import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
+import com.lyy.keepassa.util.hasNote
+import com.lyy.keepassa.util.hasTOTP
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -49,7 +51,7 @@ class CreateEntryModule : BaseModule() {
   var loseDate: Date? = null // 失效时间
   var userNameCache = arrayListOf<String>()
   var noteStr: CharSequence = ""
-  var expires:Boolean = false
+  var expires: Boolean = false
 
   /**
    * Traverse database and get all userName
@@ -110,8 +112,8 @@ class CreateEntryModule : BaseModule() {
     entry.setPassword(pass, BaseApp.KDB.pm)
     entry.setUrl(url, BaseApp.KDB.pm)
 
-    if (noteStr.isNotEmpty()){
-      Timber.d( "notes = $noteStr")
+    if (noteStr.isNotEmpty()) {
+      Timber.d("notes = $noteStr")
       entry.setNotes(noteStr.toString(), BaseApp.KDB.pm)
     }
     entry.setExpires(expires)
@@ -192,7 +194,7 @@ class CreateEntryModule : BaseModule() {
       try {
         if (customIcon != null && customIcon != PwIconCustom.ZERO && BaseApp.isV4) {
           return@withContext KdbUtil.createGroup(
-              groupName, customIcon, parentGroup as PwGroupV4
+            groupName, customIcon, parentGroup as PwGroupV4
           )
         }
 
@@ -205,11 +207,11 @@ class CreateEntryModule : BaseModule() {
     }
     if (b != null) {
       HitUtil.toaskShort(
-          "${BaseApp.APP.getString(R.string.create_group)}${
-            BaseApp.APP.getString(
-                R.string.success
-            )
-          }"
+        "${BaseApp.APP.getString(R.string.create_group)}${
+          BaseApp.APP.getString(
+            R.string.success
+          )
+        }"
       )
     }
     emit(b)
@@ -232,11 +234,11 @@ class CreateEntryModule : BaseModule() {
 
     if (code == DbSynUtil.STATE_SUCCEED) {
       HitUtil.toaskShort(
-          "${BaseApp.APP.getString(R.string.create_entry)}${
-            BaseApp.APP.getString(
-                R.string.success
-            )
-          }"
+        "${BaseApp.APP.getString(R.string.create_entry)}${
+          BaseApp.APP.getString(
+            R.string.success
+          )
+        }"
       )
     }
     emit(code == DbSynUtil.STATE_SUCCEED)
@@ -262,32 +264,26 @@ class CreateEntryModule : BaseModule() {
   /**
    * 构建的更多选择项目
    */
-  fun getMoreItem(context: Context): ArrayList<SimpleItemEntity> {
+  fun getMoreItem(context: Context, entry: PwEntryV4): ArrayList<SimpleItemEntity> {
     val list = ArrayList<SimpleItemEntity>()
-    if (!BaseApp.isV4) {
-      val titles = context.resources.getStringArray(R.array.v3_add_mor_item)
-      val icons = context.resources.obtainTypedArray(R.array.v3_add_more_icon)
-      val len = titles.size - 1
-      for (i in 0..len) {
-        val item = SimpleItemEntity()
-        item.title = titles[i]
-        item.icon = icons.getResourceId(i, 0)
-        list.add(item)
+    val titles = context.resources.getStringArray(R.array.v4_add_mor_item)
+    val icons = context.resources.obtainTypedArray(R.array.v4_add_more_icon)
+    val len = titles.size - 1
+    for (i in 0..len) {
+      val item = SimpleItemEntity()
+      item.title = titles[i]
+      item.icon = icons.getResourceId(i, 0)
+      if (item.icon == R.drawable.ic_token_grey && entry.hasTOTP()) {
+        Timber.d("Already used totp")
+        continue
       }
-      icons.recycle()
-    } else {
-      val titles = context.resources.getStringArray(R.array.v4_add_mor_item)
-      val icons = context.resources.obtainTypedArray(R.array.v4_add_more_icon)
-      val len = titles.size - 1
-      for (i in 0..len) {
-        val item = SimpleItemEntity()
-        item.title = titles[i]
-        item.icon = icons.getResourceId(i, 0)
-        list.add(item)
+      if (item.icon == R.drawable.ic_notice && entry.hasNote()) {
+        Timber.d("Already used note")
+        continue
       }
-      icons.recycle()
+      list.add(item)
     }
+    icons.recycle()
     return list
   }
-
 }

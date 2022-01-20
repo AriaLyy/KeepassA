@@ -8,12 +8,14 @@
 package com.lyy.keepassa.view.dialog
 
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewStub
 import android.widget.AdapterView
 import android.widget.Button
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Spinner
+import androidx.constraintlayout.widget.Group
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProvider
 import com.arialyy.frame.util.ResUtil
@@ -35,6 +37,7 @@ import com.lyy.keepassa.event.CreateAttrStrEvent
 import com.lyy.keepassa.util.getArgument
 import com.lyy.keepassa.view.QrCodeScannerActivity
 import com.lyy.keepassa.widget.expand.AttrStrItemView
+import com.lyy.keepassa.widget.toPx
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 
@@ -106,8 +109,8 @@ class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListe
    */
   private fun handleDefaultFlow() {
     val vs = binding.root.findViewById<ViewStub>(R.id.vsCustom)
-    vs.setOnInflateListener { _, _ ->
-      val clConstom = findViewById<View>(R.id.group)
+    vs.setOnInflateListener { _, parent ->
+      val clConstom = findViewById<Group>(R.id.group)
       findViewById<Button>(R.id.enter).setOnClickListener(this)
       findViewById<Button>(R.id.cancel).setOnClickListener(this)
 
@@ -115,13 +118,12 @@ class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListe
         val rb = findViewById<RadioButton>(checkedId)
         totpType = TotpType.from(rb.tag as String)
         when (totpType) {
-          DEFAULT -> {
-            clConstom.visibility = View.GONE
-          }
-          STEAM -> {
+          DEFAULT, STEAM -> {
+            parent.layoutParams.height = 228.toPx()
             clConstom.visibility = View.GONE
           }
           CUSTOM -> {
+            parent.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             clConstom.visibility = View.VISIBLE
           }
         }
@@ -177,7 +179,7 @@ class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListe
 
 
     if (vs != null && vs.parent != null && vs.visibility == View.GONE) {
-      vs.visibility = View.VISIBLE
+      vs.inflate()
     }
   }
 
@@ -194,12 +196,11 @@ class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListe
         return
       }
       R.id.ivNormal -> {
-        binding.menuLayout.visibility = View.GONE
         handleDefaultFlow()
+        binding.menuLayout.visibility = View.GONE
         return
       }
       R.id.ivQrCode -> {
-        // binding.menuLayout.visibility = View.GONE
         val options = ScanOptions()
         options.captureActivity = QrCodeScannerActivity::class.java
         options.setDesiredBarcodeFormats(ScanOptions.QR_CODE)

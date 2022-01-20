@@ -353,7 +353,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
         return@setOnClickListener
       }
       if (addMoreDialog == null) {
-        addMoreData = module.getMoreItem(this)
+        addMoreData = module.getMoreItem(this, pwEntry)
         addMoreDialog = AddMoreDialog(addMoreData)
         addMoreDialog!!.setOnItemClickListener(object : AddMoreDialog.OnItemClickListener {
           override fun onItemClick(

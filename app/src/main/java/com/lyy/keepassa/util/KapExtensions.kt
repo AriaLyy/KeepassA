@@ -21,6 +21,15 @@ fun BaseApp.isOpenQuickLock(): Boolean {
     .getBoolean(applicationContext.getString(R.string.set_quick_unlock), false)
 }
 
+fun PwEntryV4.hasNote():Boolean{
+  for (str in this.strings){
+    if (str.key.equals(PwEntryV4.STR_NOTES, true)){
+      return true
+    }
+  }
+  return false
+}
+
 fun PwEntryV4.hasTOTP(): Boolean {
   for (str in this.strings) {
     if (str.key.equals(PwEntryV4.STR_NOTES, true)
