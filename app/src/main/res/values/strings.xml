@@ -347,6 +347,9 @@ If you are creating a new KeePass database, the above operations are not be need
     <item>20 minute</item>
   </string-array>
   <string name="error_qr_code_str">The QR code is abnormal. Please make sure that the QR code is supported by Google Authenticator</string>
-
+  <string name="error_connect_play">Failed to connect to Google service</string>
+  <string name="disposable">Disposable</string>
+  <string name="monthly">Monthly</string>
+  <string name="year">Year</string>
 
 </resources>
