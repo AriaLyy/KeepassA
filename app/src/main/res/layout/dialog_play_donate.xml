@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
+  <data>
+    <variable
+        name="dialog"
+        type="com.lyy.keepassa.view.dialog.PlayDonateDialog"
+        />
+  </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      android:layout_width="match_parent"
+  <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="@dimen/dialog_min_width"
       android:layout_height="wrap_content"
+      android:elevation="4dp"
+      style="@style/KpaDialogLayoutStyle"
       >
 
     <com.lyy.keepassa.widget.BubbleTextView
@@ -17,7 +26,7 @@
         android:text="@string/donate"
         android:textColor="@color/text_blue_color"
         android:textSize="@dimen/text_size_biggest"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -32,41 +41,68 @@
         app:layout_constraintTop_toBottomOf="@+id/tvTitle"
         />
 
-    <com.google.android.material.button.MaterialButtonToggleGroup
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/slider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="46dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="40dp"
+        android:stepSize="1"
+        android:value="2"
+        android:valueFrom="1"
+        android:valueTo="5"
+        app:layout_constraintEnd_toEndOf="@+id/cancel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vLine"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvMoney"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:text="$5"
+        android:textColor="@color/text_blue_color"
+        android:textSize="@dimen/text_size_normal"
+        app:layout_constraintBottom_toBottomOf="@+id/slider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/slider"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/ripple_white_selector"
+        android:onClick="@{(v) -> dialog.onClick(v)}"
+        android:text="@string/cancel"
+        android:textColor="@color/text_gray_color"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/enter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/ripple_white_selector"
+        android:onClick="@{(v) -> dialog.onClick(v)}"
+        android:text="@string/enter"
+        android:textColor="@color/text_blue_color"
+        />
+
+
+    <androidx.constraintlayout.helper.widget.Flow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vLine"
-        app:singleSelection="true"
-        >
-
-      <com.google.android.material.button.MaterialButton
-          android:id="@+id/btnDisposable"
-          android:layout_width="100dp"
-          android:layout_height="wrap_content"
-          android:text="@string/disposable"
-          style="?attr/materialButtonOutlinedStyle"
-          />
-
-      <com.google.android.material.button.MaterialButton
-          android:id="@+id/btnMonthly"
-          android:layout_width="100dp"
-          android:layout_height="wrap_content"
-          android:text="@string/monthly"
-          style="?attr/materialButtonOutlinedStyle"
-          />
-
-      <com.google.android.material.button.MaterialButton
-          android:id="@+id/btnYear"
-          android:layout_width="100dp"
-          android:layout_height="wrap_content"
-          android:text="@string/year"
-          style="?attr/materialButtonOutlinedStyle"
-          />
-    </com.google.android.material.button.MaterialButtonToggleGroup>
+        app:layout_constraintTop_toBottomOf="@+id/slider"
+        app:constraint_referenced_ids="cancel, enter"
+        app:flow_horizontalStyle="packed"
+        />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

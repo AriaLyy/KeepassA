@@ -7,6 +7,7 @@
  */
 package com.lyy.keepassa.view.dialog
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewStub

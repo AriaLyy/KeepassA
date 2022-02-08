@@ -211,7 +211,7 @@ dependencies {
   implementation 'me.laoyuyu.keepassa:KeepassIcon:0.2.6'
   implementation 'me.laoyuyu.keepassa:KeepassLib:0.2.7'
 //  implementation project(path: ':KpaLib')
-  implementation 'me.laoyuyu.keepassa:KPAFrame:0.2.9'
+  implementation 'me.laoyuyu.keepassa:KPAFrame:0.2.10'
   implementation 'me.laoyuyu.keepassa:UIWidget:0.2.7'
 
 
@@ -341,6 +341,7 @@ dependencies {
   def billing_version = "4.0.0"
 
   implementation("com.android.billingclient:billing-ktx:$billing_version")
+  implementation 'com.google.android.gms:play-services-base:18.0.1'
 
 }
 

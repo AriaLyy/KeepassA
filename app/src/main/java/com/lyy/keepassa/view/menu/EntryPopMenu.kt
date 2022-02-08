@@ -100,9 +100,7 @@ class EntryPopMenu(
           HitUtil.toaskShort(context.getString(R.string.hint_copy_pass))
         }
         R.id.copy_totp -> {
-          val displayDialog =
-            Routerfit.create(DialogRouter::class.java).getTotpDisplayDialog(entry.uuid.toString())
-          displayDialog.show(context.supportFragmentManager, displayDialog::javaClass.name)
+          Routerfit.create(DialogRouter::class.java).toTotpDisplayDialog(entry.uuid.toString())
         }
         R.id.undo, R.id.move -> {
           ChooseGroupActivity.moveEntry(context, entry.uuid)

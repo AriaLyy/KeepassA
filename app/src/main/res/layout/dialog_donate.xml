@@ -88,7 +88,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/rlPayPal"
+        android:id="@+id/rlPlay"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginTop="16dp"
@@ -99,6 +99,37 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rlAliPay">
+
+      <ImageView
+          android:id="@+id/ivPlay"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_centerVertical="true"
+          android:src="@drawable/ic_google_play" />
+
+      <TextView
+          style="@style/KpaTitleTextStyle"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerVertical="true"
+          android:layout_marginStart="32dp"
+          android:layout_toEndOf="@+id/ivPlay"
+          android:text="@string/google_play"
+          android:textSize="20sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlPayPal"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/ripple_white_selector"
+        android:clickable="true"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rlPlay">
 
       <ImageView
           android:id="@+id/ivPayPal"

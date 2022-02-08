@@ -348,8 +348,11 @@ If you are creating a new KeePass database, the above operations are not be need
   </string-array>
   <string name="error_qr_code_str">The QR code is abnormal. Please make sure that the QR code is supported by Google Authenticator</string>
   <string name="error_connect_play">Failed to connect to Google service</string>
-  <string name="disposable">Disposable</string>
+  <string name="disposable">Once</string>
   <string name="monthly">Monthly</string>
   <string name="year">Year</string>
+  <string name="error_donate">Donation failed</string>
+  <string name="thank_donate">Thank you for your donation.</string>
+  <string name="google_play">Google play</string>
 
 </resources>

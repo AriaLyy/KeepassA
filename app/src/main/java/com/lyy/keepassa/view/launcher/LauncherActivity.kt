@@ -96,7 +96,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     initUI()
     module.securityCheck(this)
 
-    test()
+    // test()
   }
 
   private fun test(){
