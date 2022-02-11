@@ -20,6 +20,8 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogDonateBinding
 import com.lyy.keepassa.router.DialogRouter
+import com.lyy.keepassa.service.play.PlayServiceUtil
+import com.lyy.keepassa.util.PlayUtil
 import com.lyy.keepassa.widget.DrawableTextView
 import com.lyy.keepassa.widget.toPx
 import com.zzhoujay.richtext.RichText
@@ -53,6 +55,9 @@ class DonateDialog : BaseDialog<DialogDonateBinding>(), View.OnClickListener {
         24.toPx(),
         24.toPx()
     )
+    if (PlayUtil.playServiceExist(requireActivity())){
+      binding.rlPlay.visibility = View.VISIBLE
+    }
   }
 
   override fun onClick(v: View?) {
