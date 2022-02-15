@@ -152,7 +152,7 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
               return
             }
             val cipher = auth.cipher!!
-            val useKey = BaseApp.dbKeyPath.isNotEmpty()
+            val useKey = BaseApp.dbKeyPath.isNullOrEmpty()
 
             Timber.d(
               "passLen = ${BaseApp.dbPass.length}, cipherBloack = ${cipher.blockSize}, byteLen = ${
@@ -185,13 +185,14 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
             requireActivity().finishAfterTransition()
             lastFlag = module.curFlag
           } catch (e: KeyStoreException) {
+            Timber.e(e)
             keyStoreUtil.deleteKeyStore()
             keyStoreUtil.load(null)
             HitUtil.snackShort(mRootView, ResUtil.getString(R.string.error_keystore))
           } catch (e: Exception) {
+            Timber.e(e)
             keyStoreUtil.deleteKeyStore()
             HitUtil.snackLong(mRootView, ResUtil.getString(R.string.error_keystore))
-            Timber.e(e)
           }
         }
 
