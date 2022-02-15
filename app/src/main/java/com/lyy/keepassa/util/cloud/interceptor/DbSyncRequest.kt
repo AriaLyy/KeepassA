@@ -19,7 +19,7 @@ class DbSyncRequest constructor(
   var record: DbHistoryRecord,
   var syncUtil: ICloudUtil,
   val interceptors: List<IDbSyncInterceptor>,
-  val index: Int = 0,
+  val index: Int = 0
 ) {
 
   fun nextInterceptor(): IDbSyncInterceptor? {

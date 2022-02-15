@@ -112,7 +112,7 @@ class CreateDbModule : BaseModule() {
         BaseApp.isLocked = false
 
         // 保存并上传数据库到云端
-        val code = KdbUtil.saveDb()
+        val code = KdbUtil.saveDb(isCreate = true)
 
         if (code != DbSynUtil.STATE_SUCCEED) {
           return@withContext null

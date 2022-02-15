@@ -36,6 +36,7 @@ interface DialogRouter {
    * @param uuid don't use UUID, because is that Serializable
    */
   @RouterPath(path = "/dialog/totpDisplay")
+  @DialogArg(showDialog = true)
   fun toTotpDisplayDialog(
     @RouterArgName(name = "uuid") uuid: String
   )
