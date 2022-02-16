@@ -343,6 +343,6 @@
     <string name="year">每年</string>
     <string name="error_donate">捐赠失败</string>
     <string name="thank_donate">感谢您的捐赠。</string>
-    <string name="error_connect_play">未能连接到 Google 服务</string>
+    <string name="error_connect_play">无法连接到 Google 服务</string>
     <string name="monthly">每月</string>
 </resources>
