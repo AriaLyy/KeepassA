@@ -338,7 +338,7 @@
     <string name="kpa_copy">复制</string>
     <string name="translate_language">将应用程序翻译成你的语言</string>
     <string name="error_qr_code_str">二维码异常，请确认该二维码是谷歌验证器支持的二维码</string>
-    <string name="google_play">Google play 商店</string>
+    <string name="google_play">Google Play 商店</string>
     <string name="disposable">一次性</string>
     <string name="year">每年</string>
     <string name="error_donate">捐赠失败</string>
