@@ -2,7 +2,8 @@
 - 【Optimize】TOTP display
 
 ![totp_bar](https://raw.githubusercontent.com/AriaLyy/KeepassA/master/img/totpDisplay.png)
-
+- 【Fix】Failed to create webdav database
+- 【Fix】Failed to set fingerprint
 
 ### 2.1.8 (2021/12/31)
 Happy New Year!!
