@@ -31,6 +31,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.core.AbsFrame
 import com.arialyy.frame.router.Routerfit
+import com.arialyy.frame.util.ResUtil
 import com.google.android.material.tabs.TabLayoutMediator
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
@@ -174,7 +175,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         val totpTab = binding.tab.getTabAt(2)
         totpTab?.let {
           it.icon = getDrawable(R.drawable.selector_ic_tab_token)
-          it.text = "TOTP"
+          it.text = ResUtil.getString(R.string.kpa_totp)
         }
 
       })

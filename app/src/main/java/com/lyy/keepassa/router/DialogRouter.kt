@@ -8,14 +8,14 @@
 package com.lyy.keepassa.router
 
 import android.graphics.drawable.Drawable
+import com.arialyy.frame.router.DialogArg
 import com.arialyy.frame.router.RouterArgName
 import com.arialyy.frame.router.RouterPath
 import com.lyy.keepassa.R
-import com.lyy.keepassa.event.TimeEvent
+import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.dialog.TimeChangeDialog
-import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
  * @Author laoyuyu
@@ -23,6 +23,23 @@ import kotlinx.coroutines.flow.MutableStateFlow
  * @Date 2021/9/5
  **/
 interface DialogRouter {
+
+  /**
+   * show play donate dialog
+   */
+  @RouterPath(path = "/dialog/playDonate")
+  @DialogArg(showDialog = true)
+  fun toPlayDonateDialog()
+
+  /**
+   * show display dialog
+   * @param uuid don't use UUID, because is that Serializable
+   */
+  @RouterPath(path = "/dialog/totpDisplay")
+  @DialogArg(showDialog = true)
+  fun toTotpDisplayDialog(
+    @RouterArgName(name = "uuid") uuid: String
+  )
 
   /**
    * 显示消息对话框

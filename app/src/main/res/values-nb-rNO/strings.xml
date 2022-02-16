@@ -22,7 +22,7 @@
     <string name="encrypt_type_2">Passord + nøkkel</string>
     <string name="encrypt_type_1">Kun passord</string>
     <string name="encrypt_type">Kryptering</string>
-    <string name="help_create_group">Gruppenavn kan ikke være på mer enn 16 tegn</string>
+    <string name="help_create_group">Velg et gruppenavn på mindre enn 17 tegn</string>
     <string name="hint_enter_password">Bekreft passord</string>
     <string name="hint_input_password">Skriv inn et passord på 6-16 tegn</string>
     <string name="hint_set_password">Sett passord</string>
@@ -329,4 +329,7 @@
     <string name="hint_background_start">Gå til &lt;font color=#FF0000&gt;【%s】&lt;/font&gt; og innvilg bakgrunnsoppsprettet for å gjøre bedre bruk av auto-utfyllingstjenesten.&lt;br&gt; &lt;font color=#FF0000&gt;KeePassA viser tilhørende grensesnitt for åpning av databasen når du bruker funksjon for automatisk utfylling.&lt;/font&gt;</string>
     <string name="hint_full_fingerprint">Fingeravtrykket brukes til å låse opp databasen i grensesnittene for hurtigopplåsing og databaseopplåsing. KeePassA krypterer og lagrer hovedpassordet for databasen og nøkkelinfo i det lokale nøkkelknippet til Android. Identitetsbekreftelse med fingeravtrykk brukes for beskyttelse Kun ditt fingeravtrykk kan låse opp databasen.</string>
     <string name="dropbox_msg">For bedret personvern spør ikke KeePassA om tilgang til alle filene i din Dropbox, kun &lt;font color = # FF0000&gt; tilgang til 【Apps/KeePassA】-mappen&lt;/ font &gt;.&lt;br /&gt;Derfor:&lt;br /&gt; &lt;b&gt;Hvis du allerede har en KeePass-database innvilger du tilgagn til 【Apps/KeePassA】-mappen i 【Application/KeePassA】 -mappen etter at identitetsbekreftelsen er fullført.&lt;/b&gt;&lt;br /&gt;&lt;br /&gt; Hvis du oppretter en ny KeePass-database kan du se bort fra den instruksen. Etter at du har laget databasen lager KeePassA en tilsvarende mappe og laster opp databasen til 【Apps/KeePassA】-mappen i Dropbox.</string>
+    <string name="kpa_totp">Symbol</string>
+    <string name="kpa_copy">Kopier</string>
+    <string name="error_qr_code_str">Denne QR-koden er unormal. Forsikre deg om at den støttes av i OTP-programmer.</string>
 </resources>

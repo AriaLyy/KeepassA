@@ -24,6 +24,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.ViewDataBinding
 import com.arialyy.frame.core.AbsActivity
 import com.arialyy.frame.util.ReflectionUtil
+import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.R
@@ -77,10 +78,13 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     AutoSizeConfig.getInstance().screenWidth = ScreenUtils.getScreenWidth()
     super.onCreate(savedInstanceState)
     // 进入系统多任务，界面变空白，设置无法截图
-    // window.setFlags(
-    //   WindowManager.LayoutParams.FLAG_SECURE,
-    //   WindowManager.LayoutParams.FLAG_SECURE
-    // )
+    if (!AppUtils.isAppDebug()){
+      window.setFlags(
+        WindowManager.LayoutParams.FLAG_SECURE,
+        WindowManager.LayoutParams.FLAG_SECURE
+      )
+    }
+
     if (useAnim()) {
       setWindowAnim()
     }

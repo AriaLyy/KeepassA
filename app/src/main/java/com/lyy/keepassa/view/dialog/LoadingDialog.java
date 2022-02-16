@@ -54,5 +54,4 @@ public class LoadingDialog extends AbsDialog<DialogLoadingBinding> {
   public void dismiss(long delay) {
     BaseApp.handler.postDelayed(this::dismiss, delay);
   }
-
 }

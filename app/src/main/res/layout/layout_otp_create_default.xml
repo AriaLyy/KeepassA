@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+  <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/str_key_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="16dp"
+      android:layout_marginStart="16dp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:errorIconDrawable="@drawable/ic_info_filled"
+      app:errorTextAppearance="@style/InputEditTextErrorStyle"
+      app:startIconDrawable="@drawable/ic_title_24px"
+      app:startIconTint="@color/color_icon_grey"
+      >
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/str_key"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:hint="@string/key"
+        android:singleLine="true"
+        android:textColor="@color/text_black_grey_color"
+        android:textColorHint="@color/text_hint_color"
+        android:textSize="@dimen/text_size_normal"
+        >
+
+    </com.google.android.material.textfield.TextInputEditText>
+
+  </com.google.android.material.textfield.TextInputLayout>
+
+
+  <RadioGroup
+      android:id="@+id/rgTotp"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="16dp"
+      android:orientation="vertical"
+      android:paddingEnd="16dp"
+      android:paddingStart="16dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/str_key_layout"
+      >
+
+    <RadioButton
+        android:id="@+id/rbDefault"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:tag="default"
+        android:text="@string/totp_defaule"
+        style="@style/KpaRadioButtonStyle"
+        />
+
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:tag="steam"
+        android:text="@string/totp_steam"
+        style="@style/KpaRadioButtonStyle"
+        />
+
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:tag="custom"
+        android:text="@string/totp_custom"
+        style="@style/KpaRadioButtonStyle"
+        />
+  </RadioGroup>
+
+  <androidx.constraintlayout.widget.Group
+      android:id="@+id/group"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:visibility="gone"
+      app:constraint_referenced_ids="tvSettingHint, textView, sp, textView1, slTime, textView2, slLen"
+      />
+
+  <TextView
+      android:id="@+id/tvSettingHint"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="24dp"
+      android:layout_marginTop="16dp"
+      android:paddingBottom="12sp"
+      android:text="@string/totp_custom_hint"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/rgTotp"
+      style="@style/KpaTitleTextStyle"
+      />
+
+  <TextView
+      android:id="@+id/textView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="24dp"
+      android:text="@string/totp_Arithmetic"
+      app:layout_constraintBottom_toBottomOf="@+id/sp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/sp"
+      style="@style/KpaContentTextStyle"
+      />
+
+  <Spinner
+      android:id="@+id/sp"
+      android:layout_width="200dp"
+      android:layout_height="40dp"
+      android:entries="@array/totp_arithmetic"
+      app:layout_constraintStart_toEndOf="@+id/textView"
+      app:layout_constraintTop_toBottomOf="@+id/tvSettingHint"
+      />
+
+  <TextView
+      android:id="@+id/textView1"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/totp_time"
+      app:layout_constraintBottom_toBottomOf="@+id/slTime"
+      app:layout_constraintEnd_toStartOf="@+id/slTime"
+      app:layout_constraintHorizontal_chainStyle="spread"
+      app:layout_constraintTop_toBottomOf="@+id/sp"
+      style="@style/KpaContentTextStyle"
+      />
+
+  <com.google.android.material.slider.Slider
+      android:id="@+id/slTime"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:stepSize="1"
+      android:value="30"
+      android:valueFrom="0"
+      android:valueTo="60"
+      android:valueType="intType"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@+id/sp"
+      app:layout_constraintTop_toBottomOf="@+id/sp"
+      />
+
+
+  <TextView
+      android:id="@+id/textView2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/totp_len"
+      app:layout_constraintBottom_toBottomOf="@+id/slLen"
+      app:layout_constraintEnd_toStartOf="@+id/slLen"
+      app:layout_constraintTop_toBottomOf="@+id/slTime"
+      style="@style/KpaContentTextStyle"
+      />
+
+  <com.google.android.material.slider.Slider
+      android:id="@+id/slLen"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:stepSize="1"
+      android:value="6"
+      android:valueFrom="6"
+      android:valueTo="10"
+      android:valueType="intType"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@+id/slTime"
+      app:layout_constraintTop_toBottomOf="@+id/slTime"
+      />
+
+  <Button
+      android:id="@+id/cancel"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="@drawable/ripple_white_selector"
+      android:text="@string/cancel"
+      android:textColor="@color/text_gray_color"
+      />
+
+  <Button
+      android:id="@+id/enter"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="@drawable/ripple_white_selector"
+      android:text="@string/enter"
+      android:textColor="@color/text_blue_color"
+      />
+
+  <androidx.constraintlayout.helper.widget.Flow
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/slLen"
+      app:constraint_referenced_ids="cancel, enter"
+      />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

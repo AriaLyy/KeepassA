@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+  <data>
+
+    <variable
+        name="dialog"
+        type="com.lyy.keepassa.view.dialog.TotpDisplayDialog"
+        />
+
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:elevation="4dp"
+      style="@style/KpaDialogLayoutStyle"
+      >
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical"
+        android:text="@string/kpa_totp"
+        android:textColor="@color/text_blue_color"
+        android:textSize="@dimen/text_size_biggest"
+        />
+
+    <com.lyy.keepassa.widget.CountdownView
+        android:id="@+id/cvTime"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:cv_bar_unreached_color="@color/text_blue_color"
+        app:cv_bar_reached_color="@color/color_BB757575"
+        app:cv_bar_time="30"
+        />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/titleFlow"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        app:constraint_referenced_ids="tvTitle, cvTime"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:flow_verticalAlign="baseline"
+        app:flow_horizontalGap="6dp"
+        />
+
+    <View
+        android:id="@+id/vLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"
+        app:layout_constraintTop_toBottomOf="@+id/titleFlow"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvTotp"
+        android:layout_width="wrap_content"
+        android:textSize="50sp"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vLine"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/cover"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_white_selector"
+        android:onClick="@{(v) -> dialog.onClick(v)}"
+        android:text="@string/kpa_copy"
+        android:textColor="@color/text_blue_color"
+        app:layout_constraintTop_toBottomOf="@+id/tvTotp"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

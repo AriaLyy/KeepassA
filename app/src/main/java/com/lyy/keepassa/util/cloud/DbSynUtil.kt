@@ -99,13 +99,25 @@ object DbSynUtil : SynStateCode {
   /**
    * 上传同步
    */
-  suspend fun uploadSyn(record: DbHistoryRecord): DbSyncResponse {
+  suspend fun uploadSyn(record: DbHistoryRecord, isCreate: Boolean = false): DbSyncResponse {
     val storageType = record.getDbPathType()
     if (storageType == AFS) {
       return DbSyncResponse(STATE_SUCCEED, "")
     }
     val util = CloudUtilFactory.getCloudUtil(storageType)
-    return interceptors[0].intercept(DbSyncRequest(record, util, interceptors))
+    if (isCreate){
+      val ins = arrayListOf<IDbSyncInterceptor>().apply {
+        add(DbSyncUploadInterceptor())
+      }
+      return ins[0].intercept(DbSyncRequest(record, util, ins))
+    }
+    return interceptors[0].intercept(
+      DbSyncRequest(
+        record,
+        util,
+        interceptors
+      )
+    )
   }
 
   /**

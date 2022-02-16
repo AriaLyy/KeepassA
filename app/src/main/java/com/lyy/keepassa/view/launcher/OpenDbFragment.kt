@@ -42,6 +42,7 @@ import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentOpenDbBinding
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.router.ActivityRouter
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.NotificationUtil
@@ -257,6 +258,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
       R.id.open -> {
         VibratorUtil.vibrator(300)
         openDb(binding.password.text.toString())
+        // val dialog = Routerfit.create(DialogRouter::class.java).toPlayDonateDialog()
       }
       R.id.change_db -> {
         binding.cbKey.isChecked = false

@@ -17,9 +17,9 @@ class DbSyncCheckInterceptor : IDbSyncInterceptor {
       return normal(DbSynUtil.STATE_SUCCEED, "AFS 不需要上传")
     }
     val nextInterceptor = request.nextInterceptor() ?: throw IllegalArgumentException("没有上传一个拦截器")
-
     val util = request.syncUtil
     val record = request.record
+
     val cloudFileInfo = util.getFileInfo(record.cloudDiskPath!!)
     Timber.i("获取文件信息成功：${cloudFileInfo.toString()}")
     if (cloudFileInfo == null) {

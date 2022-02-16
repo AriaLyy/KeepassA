@@ -9,6 +9,8 @@ android {
   buildToolsVersion rootProject.ext.buildToolsVersion
 
   compileOptions {
+    // Flag to enable support for the new language APIs
+    coreLibraryDesugaringEnabled true
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
   }
@@ -57,6 +59,7 @@ android {
       // 下面两个是debug-db的参数
       resValue("string", "PORT_NUMBER", "10086") // 端口
       resValue("string", "DB_PASSWORD_keepassA.db", "stVz7QxFgzA7yMnH") // sqlcipher 加密密码
+      signingConfig signingConfigs.release
     }
 
     release {
@@ -208,8 +211,8 @@ dependencies {
   implementation 'me.laoyuyu.keepassa:KeepassIcon:0.2.6'
   implementation 'me.laoyuyu.keepassa:KeepassLib:0.2.7'
 //  implementation project(path: ':KpaLib')
-  implementation 'me.laoyuyu.keepassa:KPAFrame:0.2.9'
-  implementation 'me.laoyuyu.keepassa:UIWidget:0.2.6'
+  implementation 'me.laoyuyu.keepassa:KPAFrame:0.2.10'
+  implementation 'me.laoyuyu.keepassa:UIWidget:0.2.7'
 
 
   // kotlin
@@ -329,7 +332,16 @@ dependencies {
 
   kapt 'com.alibaba:arouter-compiler:1.5.2'
 
+  implementation('com.journeyapps:zxing-android-embedded:4.3.0') { transitive = false }
+  implementation 'com.google.zxing:core:3.4.1'
+  coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+
   // // =========================== 三方库 end =====================================
+
+  def billing_version = "4.0.0"
+
+  implementation("com.android.billingclient:billing-ktx:$billing_version")
+  implementation 'com.google.android.gms:play-services-base:18.0.1'
 
 }
 

@@ -117,7 +117,7 @@ object DbMergeDelegate {
     }
 
     if (modifyList.size <= 0) {
-      val code = KdbUtil.saveDb(uploadDb = false, isSync = true)
+      val code = KdbUtil.saveDb(uploadDb = false)
       Timber.i("没有冲突的条目，保存数据库${if (code == DbSynUtil.STATE_SUCCEED) "成功" else "失败"}")
       return code
     }
@@ -252,7 +252,7 @@ object DbMergeDelegate {
       }
     }
 
-    val code = KdbUtil.saveDb(uploadDb = false, isSync = true)
+    val code = KdbUtil.saveDb(uploadDb = false)
     Timber.i("保存数据库${if (code == DbSynUtil.STATE_SUCCEED) "成功" else "失败"}")
     return code
   }

@@ -163,13 +163,13 @@ object KdbUtil {
    */
   suspend fun saveDb(
     uploadDb: Boolean = true,
-    isSync: Boolean = false
+    isCreate: Boolean = false
   ): Int {
     Timber.d("保存前的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
     val b = KDBHandlerHelper.getInstance(BaseApp.APP)
       .save(BaseApp.KDB)
     if (uploadDb) {
-      val response = uploadDb()
+      val response = uploadDb(isCreate = isCreate)
       Timber.i(response.msg)
       return response.code
     }
@@ -208,8 +208,8 @@ object KdbUtil {
   /**
    * 上传数据库到云端
    */
-  private suspend fun uploadDb(): DbSyncResponse {
-    return DbSynUtil.uploadSyn(BaseApp.dbRecord!!)
+  private suspend fun uploadDb(isCreate: Boolean = false): DbSyncResponse {
+    return DbSynUtil.uploadSyn(BaseApp.dbRecord!!, isCreate)
   }
 
   /**

@@ -58,7 +58,7 @@ import com.lyy.keepassa.util.putArgument
 import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.MarkDownEditorActivity
 import com.lyy.keepassa.view.dialog.AddMoreDialog
-import com.lyy.keepassa.view.dialog.CreateTotpDialog
+import com.lyy.keepassa.view.dialog.CreateOtpDialog
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.dir.ChooseGroupActivity
@@ -353,7 +353,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
         return@setOnClickListener
       }
       if (addMoreDialog == null) {
-        addMoreData = module.getMoreItem(this)
+        addMoreData = module.getMoreItem(this, pwEntry)
         addMoreDialog = AddMoreDialog(addMoreData)
         addMoreDialog!!.setOnItemClickListener(object : AddMoreDialog.OnItemClickListener {
           override fun onItemClick(
@@ -388,8 +388,8 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
                   getFileRequestCode
                 )
               }
-              R.drawable.ic_totp -> { // totp
-                CreateTotpDialog().apply {
+              R.drawable.ic_token_grey -> { // totp
+                CreateOtpDialog().apply {
                   putArgument("isEdit", false)
                   putArgument("entryTitle", pwEntry.title)
                   putArgument("entryUserName", pwEntry.username)

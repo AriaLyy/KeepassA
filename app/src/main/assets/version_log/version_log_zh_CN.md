@@ -1,3 +1,10 @@
+### 2.1.10 (2022/01/05)
+- 【优化】totp显示优化
+
+![totp_bar](https://gitee.com/laoyuyu/blog/raw/master/img/totpDisplay.png)
+- 【修复】创建webdav数据库失败的问题
+- 【修复】设置指纹失败的问题
+
 ### 2.1.8 (2021/12/31)
 新年快乐！！
 - 【新增】网络重试，提升OneDrive\Dropbox\webdav的网络连接稳定性

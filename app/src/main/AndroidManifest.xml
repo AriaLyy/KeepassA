@@ -14,6 +14,7 @@
 
 
   <application
+      android:hardwareAccelerated="true"
       android:extractNativeLibs="true"
       android:name=".base.BaseApp"
       android:allowBackup="true"
@@ -206,6 +207,10 @@
             android:host="com.lyy.keepassa" />
       </intent-filter>
     </activity>
+
+    <activity android:name=".view.QrCodeScannerActivity"
+        android:screenOrientation="portrait"
+        />
 
     <service
         android:name=".service.autofill.AutoFillService"
