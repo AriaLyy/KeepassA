@@ -289,7 +289,7 @@ dependencies {
   kapt "org.greenrobot:eventbus-annotation-processor:$eventbus_version"
 
   // json 动画库
-  implementation 'com.airbnb.android:lottie:3.7.0'
+  implementation 'com.airbnb.android:lottie:4.2.2'
 
   // glide
   implementation 'com.github.bumptech.glide:glide:4.12.0'

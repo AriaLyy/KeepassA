@@ -104,5 +104,8 @@
   <compatibility-package
       android:name="com.mmbox.xbrowser"
       android:maxLongVersionCode="10000000000" />
+  <compatibility-package
+      android:name="info.torapp.uweb"
+      android:maxLongVersionCode="10000000000" />
 
 </autofill-service>

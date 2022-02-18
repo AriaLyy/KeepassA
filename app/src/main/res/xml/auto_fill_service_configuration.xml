@@ -36,5 +36,6 @@
   <compatibility-package android:name="com.vivaldi.browser" />
   <compatibility-package android:name="mark.via" />
   <compatibility-package android:name="com.mmbox.xbrowser" />
+  <compatibility-package android:name="info.torapp.uweb" />
 
 </autofill-service>

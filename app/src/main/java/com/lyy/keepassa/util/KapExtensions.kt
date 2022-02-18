@@ -9,8 +9,10 @@ package com.lyy.keepassa.util
 
 import androidx.preference.PreferenceManager
 import com.keepassdroid.database.PwEntryV4
+import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.base.Constance
 
 /**
  * isOpenQuickLock
@@ -21,9 +23,9 @@ fun BaseApp.isOpenQuickLock(): Boolean {
     .getBoolean(applicationContext.getString(R.string.set_quick_unlock), false)
 }
 
-fun PwEntryV4.hasNote():Boolean{
-  for (str in this.strings){
-    if (str.key.equals(PwEntryV4.STR_NOTES, true)){
+fun PwEntryV4.hasNote(): Boolean {
+  for (str in this.strings) {
+    if (str.key.equals(PwEntryV4.STR_NOTES, true)) {
       return true
     }
   }
@@ -51,4 +53,13 @@ fun PwEntryV4.hasTOTP(): Boolean {
     }
   }
   return false
+}
+
+fun PwEntryV4.isCollection(): Boolean {
+  val value = strings[Constance.KPA_IS_COLLECTION]
+  return value != null && value.toString().equals("true", true)
+}
+
+fun PwEntryV4.setCollection(isCollection: Boolean) {
+  this.strings[Constance.KPA_IS_COLLECTION] = ProtectedString(false, isCollection.toString())
 }

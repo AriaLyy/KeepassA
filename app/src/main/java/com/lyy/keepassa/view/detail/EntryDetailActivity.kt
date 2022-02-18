@@ -12,6 +12,7 @@ package com.lyy.keepassa.view.detail
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.res.AssetManager
 import android.graphics.Paint
 import android.graphics.Rect
 import android.os.Bundle
@@ -51,6 +52,8 @@ import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
+import com.lyy.keepassa.util.isCollection
+import com.lyy.keepassa.util.setCollection
 import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
@@ -60,7 +63,7 @@ import com.lyy.keepassa.widget.expand.ExpandAttrStrLayout
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
-import java.util.ArrayList
+import timber.log.Timber
 import java.util.Date
 import java.util.UUID
 
@@ -142,9 +145,9 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       return
     }
     module.finishAnim(this, binding.rlRoot, binding.icon)
-      .observe(this, {
+      .observe(this) {
         super.finishAfterTransition()
-      })
+      }
   }
 
   private fun showContent(show: Boolean) {
@@ -153,7 +156,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       binding.kpaToolbar.visibility = View.VISIBLE
       binding.line.visibility = View.VISIBLE
       binding.scrollView.visibility = View.VISIBLE
-      binding.bottomBar.visibility = View.VISIBLE
+      binding.flowBottom.visibility = View.VISIBLE
       binding.bottomLine.visibility = View.VISIBLE
       return
     }
@@ -161,7 +164,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     binding.kpaToolbar.visibility = View.INVISIBLE
     binding.line.visibility = View.INVISIBLE
     binding.scrollView.visibility = View.INVISIBLE
-    binding.bottomBar.visibility = View.INVISIBLE
+    binding.flowBottom.visibility = View.INVISIBLE
     binding.bottomLine.visibility = View.INVISIBLE
   }
 
@@ -191,9 +194,9 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       },
       onEnd = {
         module.startAnim(this, binding.rlRoot, binding.icon)
-          .observe(this, {
+          .observe(this) {
             showContent(true)
-          })
+          }
       })
   }
 
@@ -280,6 +283,27 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
           pop.setHidePass()
         }
         pop.show()
+      }
+      R.id.ivCollection -> {
+        if (binding.ivCollection.isAnimating) {
+          Timber.d("the collection anim is running")
+          return
+        }
+
+        if ((pwEntry as PwEntryV4).isCollection()) {
+          Timber.d("cancel collection")
+          (pwEntry as PwEntryV4).setCollection(false)
+          binding.ivCollection.setBackgroundResource(R.drawable.ic_cards_heart_outline)
+          return
+        }
+
+        (pwEntry as PwEntryV4).setCollection(true)
+        binding.ivCollection.setAnimation(
+          assets.open("collectionBlueAnimation.json", AssetManager.ACCESS_STREAMING),
+          "collectionBlueAnimation"
+        )
+        binding.ivCollection.setMaxFrame(36) // 只播放到36帧
+        binding.ivCollection.playAnimation()
       }
     }
   }
@@ -427,6 +451,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     } else {
       binding.tag.visibility = View.GONE
     }
+    binding.ivCollection.setOnClickListener(this)
   }
 
   /**

@@ -58,7 +58,8 @@ object W3cHints {
     "org.mozilla.rocket",
     "org.torproject.torbrowser",
     "com.vivaldi.browser",
-    "com.mmbox.xbrowser"
+    "com.mmbox.xbrowser",
+    "info.torapp.uweb"
   )
 
   const val HONORIFIC_PREFIX = "honorific-prefix"
