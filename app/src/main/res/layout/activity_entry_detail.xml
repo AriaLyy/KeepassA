@@ -56,8 +56,8 @@
         app:layout_constraintTop_toTopOf="@+id/icon"
         />
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/ivCollection"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivCollectionDef"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
@@ -68,7 +68,23 @@
         app:layout_constraintTop_toTopOf="@+id/icon"
         app:lottie_autoPlay="false"
         app:lottie_loop="false"
-        app:srcCompat="@drawable/ic_cards_heart_outline"
+        android:visibility="visible"
+        app:srcCompat="@drawable/ic_star_outline"
+        />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/ivCollection"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_marginEnd="6dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/kpa_toolbar"
+        app:layout_constraintTop_toTopOf="@+id/icon"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false"
         />
 
 

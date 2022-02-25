@@ -9,6 +9,8 @@
 
 package com.lyy.keepassa.view.detail
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -132,6 +134,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     }
 
     setData()
+    setCollectionAnimListener()
   }
 
   override fun useAnim(): Boolean {
@@ -198,6 +201,8 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
             showContent(true)
           }
       })
+
+    binding.ivCollectionDef.setImageResource(if ((pwEntry as PwEntryV4).isCollection()) R.drawable.ic_star else R.drawable.ic_star_outline)
   }
 
   /**
@@ -291,21 +296,38 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
         }
 
         if ((pwEntry as PwEntryV4).isCollection()) {
-          Timber.d("cancel collection")
+          Timber.d("取消收藏")
           (pwEntry as PwEntryV4).setCollection(false)
-          binding.ivCollection.setBackgroundResource(R.drawable.ic_cards_heart_outline)
+          binding.ivCollectionDef.setImageResource(R.drawable.ic_star_outline)
+          binding.ivCollectionDef.visibility = View.VISIBLE
           return
         }
+
+        Timber.d("收藏")
+        binding.ivCollectionDef.visibility = View.GONE
+        binding.ivCollection.visibility = View.VISIBLE
 
         (pwEntry as PwEntryV4).setCollection(true)
         binding.ivCollection.setAnimation(
           assets.open("collectionBlueAnimation.json", AssetManager.ACCESS_STREAMING),
           "collectionBlueAnimation"
         )
-        binding.ivCollection.setMaxFrame(36) // 只播放到36帧
+        binding.ivCollection.setMaxFrame(80) // 只播放到36帧
         binding.ivCollection.playAnimation()
       }
     }
+  }
+
+  private fun setCollectionAnimListener() {
+    binding.ivCollection.addAnimatorListener(object : AnimatorListenerAdapter() {
+
+      override fun onAnimationEnd(animation: Animator?) {
+        super.onAnimationEnd(animation)
+        binding.ivCollection.visibility = View.GONE
+        binding.ivCollectionDef.visibility = View.VISIBLE
+        binding.ivCollectionDef.setImageResource(R.drawable.ic_star)
+      }
+    })
   }
 
   /**
@@ -346,6 +368,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     }
     EventBusHelper.unReg(this)
     super.onDestroy()
+    binding.ivCollection.removeAllAnimatorListeners()
   }
 
   /**
