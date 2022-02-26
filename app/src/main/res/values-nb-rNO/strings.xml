@@ -332,4 +332,11 @@
     <string name="kpa_totp">Symbol</string>
     <string name="kpa_copy">Kopier</string>
     <string name="error_qr_code_str">Denne QR-koden er unormal. Forsikre deg om at den støttes av i OTP-programmer.</string>
+    <string name="disposable">Én gang</string>
+    <string name="monthly">Månedlig</string>
+    <string name="thank_donate">Takk for din donasjon.</string>
+    <string name="google_play">Google Play</string>
+    <string name="error_connect_play">Klarte ikke å koble til Google-tjeneste</string>
+    <string name="year">Årlig</string>
+    <string name="error_donate">Donasjon mislyktes</string>
 </resources>
