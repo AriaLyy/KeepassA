@@ -325,4 +325,15 @@
     <string name="error_keystore">Erreur du trousseau d\'accès, veuillez réessayer</string>
     <string name="kpa_totp">Jeton</string>
     <string name="kpa_copy">Copier</string>
+    <string name="error_connect_play">Échec de la connexion aux services Google</string>
+    <string name="miui_permissions">Le système « miui » a besoin d\'autorisations pour ouvrir une fenêtre en arrière-plan pour vous permettre d\'utiliser le remplissage automatique.</string>
+    <string name="one_drive_init_failure">Échec de OneDrive</string>
+    <string name="set_key_title_close_load_anim">Animation de chargement</string>
+    <string name="error_qr_code_str">Ce QR code n\'est pas normal. Veuillez vérifier que ce QR code est supporté par Google Authenticator</string>
+    <string name="thank_donate">Merci pour votre don.</string>
+    <string name="error_donate">Échec du don</string>
+    <string name="year">Année</string>
+    <string name="monthly">Tous les mois</string>
+    <string name="disposable">Une seule fois</string>
+    <string name="google_play">Google Play</string>
 </resources>
