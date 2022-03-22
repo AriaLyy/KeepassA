@@ -9,12 +9,9 @@
 
 package com.lyy.keepassa.view.detail
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.content.res.AssetManager
 import android.graphics.Paint
 import android.graphics.Rect
 import android.os.Bundle
@@ -52,6 +49,7 @@ import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.isCollection
@@ -134,7 +132,6 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     }
 
     setData()
-    setCollectionAnimListener()
   }
 
   override fun useAnim(): Boolean {
@@ -143,6 +140,9 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
 
   override fun finishAfterTransition() {
     showContent(false)
+    if (module.lastCollection != (pwEntry as PwEntryV4).isCollection()){
+      KpaUtil.saveDbByBackground()
+    }
     if (!KeepassAUtil.instance.isDisplayLoadingAnim()) {
       super.finishAfterTransition()
       return
@@ -154,21 +154,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   }
 
   private fun showContent(show: Boolean) {
-    if (show) {
-      binding.title.visibility = View.VISIBLE
-      binding.kpaToolbar.visibility = View.VISIBLE
-      binding.line.visibility = View.VISIBLE
-      binding.scrollView.visibility = View.VISIBLE
-      binding.flowBottom.visibility = View.VISIBLE
-      binding.bottomLine.visibility = View.VISIBLE
-      return
-    }
-    binding.title.visibility = View.GONE
-    binding.kpaToolbar.visibility = View.INVISIBLE
-    binding.line.visibility = View.INVISIBLE
-    binding.scrollView.visibility = View.INVISIBLE
-    binding.flowBottom.visibility = View.INVISIBLE
-    binding.bottomLine.visibility = View.INVISIBLE
+    binding.groupContent.visibility = if (show) View.VISIBLE else View.INVISIBLE
   }
 
   override fun buildSharedElements(vararg sharedElements: Pair<View, String>): ArrayList<String> {
@@ -201,8 +187,10 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
             showContent(true)
           }
       })
-
-    binding.ivCollectionDef.setImageResource(if ((pwEntry as PwEntryV4).isCollection()) R.drawable.ic_star else R.drawable.ic_star_outline)
+    (pwEntry as PwEntryV4).isCollection().let {
+      module.lastCollection = it
+      binding.ivCollection.isSelected = it
+    }
   }
 
   /**
@@ -290,44 +278,18 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
         pop.show()
       }
       R.id.ivCollection -> {
-        if (binding.ivCollection.isAnimating) {
-          Timber.d("the collection anim is running")
-          return
-        }
-
         if ((pwEntry as PwEntryV4).isCollection()) {
           Timber.d("取消收藏")
           (pwEntry as PwEntryV4).setCollection(false)
-          binding.ivCollectionDef.setImageResource(R.drawable.ic_star_outline)
-          binding.ivCollectionDef.visibility = View.VISIBLE
+          binding.ivCollection.isSelected = false
           return
         }
 
         Timber.d("收藏")
-        binding.ivCollectionDef.visibility = View.GONE
-        binding.ivCollection.visibility = View.VISIBLE
-
         (pwEntry as PwEntryV4).setCollection(true)
-        binding.ivCollection.setAnimation(
-          assets.open("collectionBlueAnimation.json", AssetManager.ACCESS_STREAMING),
-          "collectionBlueAnimation"
-        )
-        binding.ivCollection.setMaxFrame(80) // 只播放到36帧
-        binding.ivCollection.playAnimation()
+        binding.ivCollection.isSelected = true
       }
     }
-  }
-
-  private fun setCollectionAnimListener() {
-    binding.ivCollection.addAnimatorListener(object : AnimatorListenerAdapter() {
-
-      override fun onAnimationEnd(animation: Animator?) {
-        super.onAnimationEnd(animation)
-        binding.ivCollection.visibility = View.GONE
-        binding.ivCollectionDef.visibility = View.VISIBLE
-        binding.ivCollectionDef.setImageResource(R.drawable.ic_star)
-      }
-    })
   }
 
   /**
@@ -368,7 +330,6 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     }
     EventBusHelper.unReg(this)
     super.onDestroy()
-    binding.ivCollection.removeAllAnimatorListeners()
   }
 
   /**

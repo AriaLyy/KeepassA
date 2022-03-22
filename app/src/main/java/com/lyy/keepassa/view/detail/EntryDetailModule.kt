@@ -55,6 +55,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
@@ -65,6 +67,7 @@ import org.greenrobot.eventbus.EventBus
 class EntryDetailModule : BaseModule() {
   var curDLoadFile: ProtectedBinary? = null
   val createFileRequestCode = 0xA1
+  var lastCollection:Boolean = false
   private lateinit var pwEntry: PwEntry
   private val scope = MainScope()
   private val finishAnimEvent = SingleLiveEvent<Boolean>()

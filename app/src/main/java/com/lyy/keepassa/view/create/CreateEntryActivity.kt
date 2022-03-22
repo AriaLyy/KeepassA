@@ -250,7 +250,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     }
     // the user name field, can show history
     module.getUserNameCache()
-      .observe(this, {
+      .observe(this) {
         val adapter = ArrayAdapter(this, R.layout.android_simple_dropdown_item_1line, it)
         binding.user.setAdapter(adapter)
         binding.user.threshold = 1 // 设置输入几个字符后开始出现提示 默认是2
@@ -259,7 +259,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
             binding.user.showDropDown()
           }
         }
-      })
+      }
 
     // lose time modify
     binding.ivLoseTimeClick.setOnClickListener {
@@ -521,7 +521,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       tags = binding.tag.text.toString()
     )
     module.saveDb()
-      .observe(this, { success ->
+      .observe(this) { success ->
         EventBus.getDefault()
           .post(CreateOrUpdateEntryEvent(pwEntry, true))
         loadDialog.dismiss()
@@ -530,7 +530,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
         } else {
           finishAfterTransition()
         }
-      })
+      }
   }
 
   override fun onBackPressed() {

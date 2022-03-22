@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -9,8 +8,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@color/background_color"
-      android:orientation="vertical"
-      >
+      android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/kpa_toolbar"
@@ -22,29 +20,27 @@
         app:navigationIcon="@drawable/ic_up"
         app:subtitleTextAppearance="@style/Toolbar.SubTitleText"
         app:theme="@style/ToolbarMenuTheme"
-        app:titleTextAppearance="@style/Toolbar.TitleText"
-        />
+        app:titleTextAppearance="@style/Toolbar.TitleText" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icon"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:transitionName="@string/transition_entry_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/kpa_toolbar"
-        app:srcCompat="@drawable/ic_android"
-        />
+        app:srcCompat="@drawable/ic_android" />
 
     <TextView
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:ellipsize="end"
         android:singleLine="true"
         android:text="title"
@@ -53,51 +49,32 @@
         app:layout_constraintBottom_toBottomOf="@+id/icon"
         app:layout_constraintEnd_toStartOf="@+id/ivCollection"
         app:layout_constraintStart_toEndOf="@+id/icon"
-        app:layout_constraintTop_toTopOf="@+id/icon"
-        />
+        app:layout_constraintTop_toTopOf="@+id/icon" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/ivCollectionDef"
+        android:id="@+id/ivCollection"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
         android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/icon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/kpa_toolbar"
-        app:layout_constraintTop_toTopOf="@+id/icon"
-        app:lottie_autoPlay="false"
-        app:lottie_loop="false"
         android:visibility="visible"
-        app:srcCompat="@drawable/ic_star_outline"
-        />
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/ivCollection"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:layout_marginEnd="6dp"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/kpa_toolbar"
         app:layout_constraintTop_toTopOf="@+id/icon"
         app:lottie_autoPlay="false"
         app:lottie_loop="false"
-        />
-
+        app:srcCompat="@drawable/ic_start_selector" />
 
     <View
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
         android:background="@color/line_color"
-        app:layout_constraintTop_toBottomOf="@+id/icon"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/icon" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
@@ -105,22 +82,21 @@
         android:layout_height="0dp"
         android:layout_above="@+id/bottom_line"
         android:layout_below="@+id/line"
-        android:paddingEnd="16dp"
         android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line"
-        >
+        app:layout_constraintTop_toBottomOf="@+id/line">
 
       <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:orientation="vertical"
-          >
+          android:orientation="vertical">
 
         <com.lyy.keepassa.widget.BubbleTextView
             android:id="@+id/user_name"
+            style="@style/KpaEntryDetailTextStyle"
             android:layout_width="match_parent"
             android:layout_height="@dimen/entry_detail_item_h"
             android:layout_marginTop="12dp"
@@ -128,45 +104,40 @@
             android:singleLine="true"
             android:text="name"
             app:left_icon="@drawable/ic_user"
-            app:right_icon="@drawable/ic_more_read"
-            style="@style/KpaEntryDetailTextStyle"
-            />
+            app:right_icon="@drawable/ic_more_read" />
 
         <com.lyy.keepassa.widget.BubbleTextView
             android:id="@+id/pass"
+            style="@style/KpaEntryDetailTextStyle"
             android:layout_width="match_parent"
             android:layout_height="@dimen/entry_detail_item_h"
             android:inputType="textPassword"
             android:longClickable="false"
             android:text="name"
             app:left_icon="@drawable/ic_password"
-            app:right_icon="@drawable/ic_more_read"
-            style="@style/KpaEntryDetailTextStyle"
-            />
+            app:right_icon="@drawable/ic_more_read" />
 
         <com.lyy.keepassa.widget.BubbleTextView
             android:id="@+id/url"
+            style="@style/KpaEntryDetailTextStyle"
             android:layout_width="match_parent"
             android:layout_height="@dimen/entry_detail_item_h"
             android:inputType="textUri"
             android:longClickable="false"
             android:text="net"
             app:left_icon="@drawable/ic_net"
-            app:right_icon="@drawable/ic_more_read"
-            style="@style/KpaEntryDetailTextStyle"
-            />
+            app:right_icon="@drawable/ic_more_read" />
 
         <com.lyy.keepassa.widget.BubbleTextView
             android:id="@+id/tag"
+            style="@style/KpaEntryDetailTextStyle"
             android:layout_width="match_parent"
             android:layout_height="@dimen/entry_detail_item_h"
             android:inputType="textUri"
             android:longClickable="false"
             android:text="tag"
             app:left_icon="@drawable/ic_tag"
-            app:right_icon="@drawable/ic_more_read"
-            style="@style/KpaEntryDetailTextStyle"
-            />
+            app:right_icon="@drawable/ic_more_read" />
 
 
         <RelativeLayout
@@ -176,38 +147,34 @@
             android:background="@drawable/ripple_white_selector"
             android:clickable="true"
             android:orientation="horizontal"
-            android:paddingBottom="12dp"
             android:paddingStart="8dp"
             android:paddingTop="12dp"
-            >
+            android:paddingBottom="12dp">
 
           <androidx.appcompat.widget.AppCompatImageView
               android:id="@+id/notice_icon"
               android:layout_width="24dp"
               android:layout_height="24dp"
-              app:srcCompat="@drawable/ic_notice"
-              />
+              app:srcCompat="@drawable/ic_notice" />
 
           <com.lyy.keepassa.widget.ExpandableTextView1
               android:id="@+id/notice"
+              style="@style/KpaExpandAbleTextViewStyle"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_centerVertical="true"
-              android:layout_marginEnd="8dp"
               android:layout_marginStart="24dp"
-              android:layout_toEndOf="@+id/notice_icon"
+              android:layout_marginEnd="8dp"
               android:layout_toStartOf="@+id/notice_more"
-              android:text="notice"
-              style="@style/KpaExpandAbleTextViewStyle"
-              />
+              android:layout_toEndOf="@+id/notice_icon"
+              android:text="notice" />
 
           <androidx.appcompat.widget.AppCompatImageView
               android:id="@+id/notice_more"
               android:layout_width="24dp"
               android:layout_height="24dp"
               android:layout_alignParentEnd="true"
-              app:srcCompat="@drawable/ic_more_read"
-              />
+              app:srcCompat="@drawable/ic_more_read" />
 
         </RelativeLayout>
 
@@ -215,8 +182,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="12dp"
-            android:background="@color/line_color"
-            />
+            android:background="@color/line_color" />
 
         <com.lyy.keepassa.widget.expand.ExpandAttrStrLayout
             android:id="@+id/attr_str"
@@ -226,8 +192,7 @@
             android:paddingStart="8dp"
             android:visibility="gone"
             app:expand_tt_icon="@drawable/ic_attr_str"
-            app:expand_tt_title="@string/hint_attr"
-            />
+            app:expand_tt_title="@string/hint_attr" />
 
         <com.lyy.keepassa.widget.expand.ExpandAttrStrLayout
             android:id="@+id/attr_file"
@@ -237,19 +202,18 @@
             android:paddingStart="8dp"
             android:visibility="gone"
             app:expand_tt_icon="@drawable/ic_attr_file"
-            app:expand_tt_title="@string/attachment"
-            />
+            app:expand_tt_title="@string/attachment" />
 
         <View
             android:id="@+id/time_line"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="12dp"
-            android:background="@color/line_color"
-            />
+            android:background="@color/line_color" />
 
         <com.lyy.keepassa.widget.BubbleTextView
             android:id="@+id/time1"
+            style="@style/KpaEntryDetailTextStyle"
             android:layout_width="match_parent"
             android:layout_height="@dimen/entry_detail_item_h"
             android:layout_marginTop="12dp"
@@ -258,12 +222,11 @@
             android:paddingStart="12dp"
             android:text="时间1"
             app:icon_size="18dp"
-            app:left_icon="@drawable/ic_lose_time"
-            style="@style/KpaEntryDetailTextStyle"
-            />
+            app:left_icon="@drawable/ic_lose_time" />
 
         <com.lyy.keepassa.widget.BubbleTextView
             android:id="@+id/time2"
+            style="@style/KpaEntryDetailTextStyle"
             android:layout_width="match_parent"
             android:layout_height="@dimen/entry_detail_item_h"
             android:inputType="textUri"
@@ -271,9 +234,7 @@
             android:paddingStart="12dp"
             android:text="时间2"
             app:icon_size="18dp"
-            app:left_icon="@drawable/ic_create_time"
-            style="@style/KpaEntryDetailTextStyle"
-            />
+            app:left_icon="@drawable/ic_create_time" />
 
       </LinearLayout>
 
@@ -287,8 +248,7 @@
         android:layout_gravity="center_vertical"
         android:text="time"
         android:textColor="@color/text_black_color"
-        android:textSize="@dimen/text_size_normal"
-        />
+        android:textSize="@dimen/text_size_normal" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/del_bt"
@@ -296,27 +256,30 @@
         android:layout_height="30dp"
         android:layout_centerVertical="true"
         android:background="@drawable/ripple_white_selector"
-        android:src="@drawable/ic_del"
-        />
+        android:src="@drawable/ic_del" />
 
     <androidx.constraintlayout.helper.widget.Flow
         android:id="@+id/flowBottom"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:paddingEnd="16dp"
         android:paddingStart="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:flow_firstHorizontalStyle="spread_inside"
+        android:paddingEnd="16dp"
         app:constraint_referenced_ids="time, del_bt"
-        />
+        app:flow_firstHorizontalStyle="spread_inside"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <View
         android:id="@+id/bottom_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/line_color"
-        app:layout_constraintBottom_toTopOf="@+id/flowBottom"
-        />
+        app:layout_constraintBottom_toTopOf="@+id/flowBottom" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="title,kpa_toolbar,line,scrollView,flowBottom,bottom_line,ivCollection" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
