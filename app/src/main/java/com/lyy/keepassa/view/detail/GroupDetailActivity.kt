@@ -40,6 +40,7 @@ import com.lyy.keepassa.common.SortType.TIME_ASC
 import com.lyy.keepassa.common.SortType.TIME_DESC
 import com.lyy.keepassa.databinding.ActivityGroupDetailBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
+import com.lyy.keepassa.entity.showPopMenu
 import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
 import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.event.DelEvent
@@ -49,8 +50,6 @@ import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import com.lyy.keepassa.view.create.CreateGroupDialog
-import com.lyy.keepassa.view.menu.EntryPopMenu
-import com.lyy.keepassa.view.menu.GroupPopMenu
 import com.lyy.keepassa.widget.MainExpandFloatActionButton
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
@@ -155,11 +154,11 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       }
       if (type != NONE) {
         module.sortData(type, entryData)
-          .observe(this, { sortData ->
+          .observe(this) { sortData ->
             entryData.clear()
             entryData.addAll(sortData)
             adapter.notifyDataSetChanged()
-          })
+          }
       }
       return@setOnMenuItemClickListener true
     }
@@ -225,7 +224,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
 
     RvItemClickSupport.addTo(binding.list)
       .setOnItemLongClickListener { _, position, v ->
-        showPopMenu(v, position)
+        entryData[position].showPopMenu(this, v, curx, isRecycleBin)
         true
       }
 
@@ -327,28 +326,6 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
   @Subscribe(threadMode = MAIN)
   fun onMove(event: MoveEvent) {
     getData()
-  }
-
-  /**
-   * 长按悬浮菜单
-   */
-  private fun showPopMenu(
-    v: View,
-    position: Int
-  ) {
-    val data = entryData[position]
-    if (data.obj is PwGroup) {
-      val group = data.obj as PwGroup
-      val pop = GroupPopMenu(this, v, group, curx, isRecycleBin)
-      pop.show()
-      return
-    }
-
-    if (data.obj is PwEntry) {
-      val entry = data.obj as PwEntry
-      val pop = EntryPopMenu(this, v, entry, curx, isRecycleBin)
-      pop.show()
-    }
   }
 
   override fun onDestroy() {

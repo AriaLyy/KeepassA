@@ -14,7 +14,6 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.view.MotionEvent
-import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -32,6 +31,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentOnlyListBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
+import com.lyy.keepassa.entity.showPopMenu
 import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
 import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.event.DelEvent
@@ -44,8 +44,6 @@ import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.isAFS
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import com.lyy.keepassa.view.dialog.LoadingDialog
-import com.lyy.keepassa.view.menu.EntryPopMenu
-import com.lyy.keepassa.view.menu.GroupPopMenu
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 
@@ -91,7 +89,7 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
     // 长按处理
     RvItemClickSupport.addTo(binding.list)
       .setOnItemLongClickListener { _, position, v ->
-        showPopMenu(v, position)
+        entryData[position].showPopMenu(requireActivity(), v, curx)
         true
       }
 
@@ -185,35 +183,6 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
 
   override fun setLayoutId(): Int {
     return R.layout.fragment_only_list
-  }
-
-  /**
-   * 长按显示的悬浮菜单
-   */
-  private fun showPopMenu(
-    v: View,
-    position: Int
-  ) {
-    val data = entryData[position]
-    if (data.obj is PwGroup) {
-      val pop = GroupPopMenu(
-        requireActivity(),
-        v,
-        data.obj as PwGroup,
-        curx
-      )
-      pop.show()
-      return
-    }
-    if (data.obj is PwEntry) {
-      val pop = EntryPopMenu(
-        requireActivity(),
-        v,
-        data.obj as PwEntry,
-        curx
-      )
-      pop.show()
-    }
   }
 
   /**

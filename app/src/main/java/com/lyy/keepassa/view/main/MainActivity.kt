@@ -151,7 +151,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       list.add(it)
     }
     module.checkHasHistoryRecord()
-      .observe(this, { hasHistory ->
+      .observe(this) { hasHistory ->
         binding.vp.adapter = VpAdapter(list, this)
         TabLayoutMediator(binding.tab, binding.vp) { tab, position ->
 //      tab.text = "OBJECT ${(position + 1)}"
@@ -178,7 +178,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
           it.text = ResUtil.getString(R.string.kpa_totp)
         }
 
-      })
+      }
   }
 
   private fun initVpAnim() {

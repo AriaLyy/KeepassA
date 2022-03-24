@@ -30,11 +30,11 @@ import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentEntryRecordBinding
 import com.lyy.keepassa.entity.EntryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
+import com.lyy.keepassa.entity.showPopMenu
 import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.SimpleEntryAdapter
-import com.lyy.keepassa.view.menu.EntryPopMenu
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
@@ -87,13 +87,7 @@ class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
     // 长按处理
     RvItemClickSupport.addTo(binding.list)
       .setOnItemLongClickListener { _, position, v ->
-        val pop = EntryPopMenu(
-          requireActivity(),
-          v,
-          entryData[position].obj as PwEntry,
-          curx
-        )
-        pop.show()
+        entryData[position].showPopMenu(requireActivity(), v, curx)
         true
       }
 
