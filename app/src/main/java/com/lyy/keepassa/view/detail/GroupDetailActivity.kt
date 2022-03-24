@@ -12,11 +12,15 @@ package com.lyy.keepassa.view.detail
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
+import android.text.TextWatcher
 import android.view.MotionEvent
 import android.view.View
+import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.transition.addListener
+import androidx.core.widget.doBeforeTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -48,6 +52,7 @@ import com.lyy.keepassa.event.MoveEvent
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.doOnInterceptTouchEvent
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import com.lyy.keepassa.view.create.CreateGroupDialog
 import com.lyy.keepassa.widget.MainExpandFloatActionButton
@@ -229,26 +234,12 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       }
 
     // 获取点击位置
-    binding.list.addOnItemTouchListener(object : OnItemTouchListener {
-      override fun onTouchEvent(
-        rv: RecyclerView,
-        e: MotionEvent
-      ) {
+    binding.list.doOnInterceptTouchEvent { rv, e ->
+      if (e.action == MotionEvent.ACTION_DOWN) {
+        curx = e.x.toInt()
       }
-
-      override fun onInterceptTouchEvent(
-        rv: RecyclerView,
-        e: MotionEvent
-      ): Boolean {
-        if (e.action == MotionEvent.ACTION_DOWN) {
-          curx = e.x.toInt()
-        }
-        return false
-      }
-
-      override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
-      }
-    })
+      return@doOnInterceptTouchEvent false
+    }
   }
 
   private fun getData() {

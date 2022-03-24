@@ -44,12 +44,12 @@ import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
 import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.DialogRouter
+import com.lyy.keepassa.router.ServiceRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.isCollection
@@ -89,6 +89,10 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
 
   @Autowired(name = KEY_GROUP_TITLE)
   lateinit var groupTitle: String
+
+  private val saveService by lazy {
+    Routerfit.create(ServiceRouter::class.java).getDbSaveService()
+  }
 
   override fun setLayoutId(): Int {
     return R.layout.activity_entry_detail
@@ -140,8 +144,8 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
 
   override fun finishAfterTransition() {
     showContent(false)
-    if (module.lastCollection != (pwEntry as PwEntryV4).isCollection()){
-      KpaUtil.saveDbByBackground()
+    if (module.lastCollection != (pwEntry as PwEntryV4).isCollection()) {
+      saveService.saveDbByBackground()
     }
     if (!KeepassAUtil.instance.isDisplayLoadingAnim()) {
       super.finishAfterTransition()

@@ -17,9 +17,6 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
-import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.databinding.ActivityOnlyListBinding
@@ -27,8 +24,11 @@ import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.event.DbHistoryEvent
-import com.lyy.keepassa.view.StorageType
+import com.lyy.keepassa.util.doOnInterceptTouchEvent
+import com.lyy.keepassa.util.doOnItemClickListener
+import com.lyy.keepassa.util.doOnItemLongClickListener
 import com.lyy.keepassa.view.SimpleAdapter
+import com.lyy.keepassa.view.StorageType
 import org.greenrobot.eventbus.EventBus
 
 /**
@@ -55,66 +55,47 @@ class OpenDbHistoryActivity : BaseActivity<ActivityOnlyListBinding>() {
     binding.list.adapter = adapter
 
     module.getDbOpenRecordList(this)
-        .observe(this, Observer { list ->
-          if (list != null && list.isNotEmpty()) {
-            data.addAll(list)
-            adapter.notifyDataSetChanged()
-          }
-          if (data.size > 0) {
-            binding.temp.visibility = View.GONE
-          } else {
-            binding.temp.visibility = View.VISIBLE
-          }
-        })
-
-
-    RvItemClickSupport.addTo(binding.list)
-        .setOnItemClickListener { _, position, _ ->
-          val record = data[position].obj as DbHistoryRecord
-          finishAfterTransition()
-          EventBus.getDefault()
-              .post(
-                  ChangeDbEvent(
-                      dbName = record.dbName,
-                      localFileUri = Uri.parse(record.localDbUri),
-                      cloudPath = record.cloudDiskPath,
-                      uriType = StorageType.valueOf(record.type),
-                      keyUri = if (TextUtils.isEmpty(record.keyUri)) null else Uri.parse(
-                          record.keyUri
-                      )
-                  )
-              )
+      .observe(this, Observer { list ->
+        if (list != null && list.isNotEmpty()) {
+          data.addAll(list)
+          adapter.notifyDataSetChanged()
         }
-
-    RvItemClickSupport.addTo(binding.list)
-        .setOnItemLongClickListener { _, position, v ->
-          showDelPopMenu(position, v)
-          return@setOnItemLongClickListener true
+        if (data.size > 0) {
+          binding.temp.visibility = View.GONE
+        } else {
+          binding.temp.visibility = View.VISIBLE
         }
+      })
+
+    binding.list.doOnItemClickListener { _, position, _ ->
+      val record = data[position].obj as DbHistoryRecord
+      finishAfterTransition()
+      EventBus.getDefault()
+        .post(
+          ChangeDbEvent(
+            dbName = record.dbName,
+            localFileUri = Uri.parse(record.localDbUri),
+            cloudPath = record.cloudDiskPath,
+            uriType = StorageType.valueOf(record.type),
+            keyUri = if (TextUtils.isEmpty(record.keyUri)) null else Uri.parse(
+              record.keyUri
+            )
+          )
+        )
+    }
+
+    binding.list.doOnItemLongClickListener { _, position, v ->
+      showDelPopMenu(position, v)
+      return@doOnItemLongClickListener true
+    }
 
     // 获取点击位置
-    binding.list.addOnItemTouchListener(object : OnItemTouchListener {
-      override fun onTouchEvent(
-        rv: RecyclerView,
-        e: MotionEvent
-      ) {
-
+    binding.list.doOnInterceptTouchEvent { _, e ->
+      if (e.action == MotionEvent.ACTION_DOWN) {
+        curx = e.x.toInt()
       }
-
-      override fun onInterceptTouchEvent(
-        rv: RecyclerView,
-        e: MotionEvent
-      ): Boolean {
-        if (e.action == MotionEvent.ACTION_DOWN) {
-          curx = e.x.toInt()
-        }
-        return false
-      }
-
-      override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
-      }
-
-    })
+      return@doOnInterceptTouchEvent false
+    }
   }
 
   private fun showDelPopMenu(
@@ -123,22 +104,21 @@ class OpenDbHistoryActivity : BaseActivity<ActivityOnlyListBinding>() {
   ) {
     val popM = DelHistoryPopMenu(this, v, curx)
     popM.getPopMenu()
-        .setOnMenuItemClickListener {
-          val item = data[position]
-          module.deleteHistoryRecord(item)
-          data.removeAt(position)
-          adapter.notifyItemRemoved(position)
-          if (data.isEmpty()){
-            binding.temp.visibility = View.VISIBLE
-            EventBus.getDefault().post(DbHistoryEvent(true))
-          }
-          return@setOnMenuItemClickListener true
+      .setOnMenuItemClickListener {
+        val item = data[position]
+        module.deleteHistoryRecord(item)
+        data.removeAt(position)
+        adapter.notifyItemRemoved(position)
+        if (data.isEmpty()) {
+          binding.temp.visibility = View.VISIBLE
+          EventBus.getDefault().post(DbHistoryEvent(true))
         }
+        return@setOnMenuItemClickListener true
+      }
     popM.show()
   }
 
   override fun onDestroy() {
     super.onDestroy()
   }
-
 }

@@ -19,11 +19,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.arialyy.frame.util.DpUtils
-import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwGroup
 import com.lyy.keepassa.R
@@ -41,6 +38,9 @@ import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.doOnInterceptTouchEvent
+import com.lyy.keepassa.util.doOnItemClickListener
+import com.lyy.keepassa.util.doOnItemLongClickListener
 import com.lyy.keepassa.util.isAFS
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import com.lyy.keepassa.view.dialog.LoadingDialog
@@ -70,16 +70,16 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
     binding.list.setHasFixedSize(true)
     binding.list.layoutManager = LinearLayoutManager(context)
     binding.list.adapter = adapter
-    RvItemClickSupport.addTo(binding.list)
-      .setOnItemClickListener { _, position, v ->
-        val item = entryData[position]
-        if (item.obj is PwGroup) {
-          KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwGroup)
-        } else if (item.obj is PwEntry) {
-          val icon = v.findViewById<AppCompatImageView>(R.id.icon)
-          KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwEntry, icon)
-        }
+    binding.list.doOnItemClickListener { _, position, v ->
+      val item = entryData[position]
+      if (item.obj is PwGroup) {
+        KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwGroup)
+      } else if (item.obj is PwEntry) {
+        val icon = v.findViewById<AppCompatImageView>(R.id.icon)
+        KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwEntry, icon)
       }
+    }
+
     val div = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
     val drawable = ColorDrawable(Color.TRANSPARENT)
     drawable.bounds = Rect(0, 0, 200, DpUtils.dp2px(20))
@@ -87,36 +87,20 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
     binding.list.addItemDecoration(div)
 
     // 长按处理
-    RvItemClickSupport.addTo(binding.list)
-      .setOnItemLongClickListener { _, position, v ->
-        entryData[position].showPopMenu(requireActivity(), v, curx)
-        true
-      }
+    binding.list.doOnItemLongClickListener { _, position, v ->
+      entryData[position].showPopMenu(requireActivity(), v, curx)
+      true
+    }
 
     // 获取点击位置
-    binding.list.addOnItemTouchListener(object : OnItemTouchListener {
-      override fun onTouchEvent(
-        rv: RecyclerView,
-        e: MotionEvent
-      ) {
+    binding.list.doOnInterceptTouchEvent { _, e ->
+      if (e.action == MotionEvent.ACTION_DOWN) {
+        curx = e.x.toInt()
       }
-
-      override fun onInterceptTouchEvent(
-        rv: RecyclerView,
-        e: MotionEvent
-      ): Boolean {
-        if (e.action == MotionEvent.ACTION_DOWN) {
-          curx = e.x.toInt()
-        }
-        return false
-      }
-
-      override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
-      }
-    })
+      return@doOnInterceptTouchEvent false
+    }
 
     initRefresh()
-
     getData()
   }
 

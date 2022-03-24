@@ -7,7 +7,12 @@
  */
 package com.lyy.keepassa.util
 
+import android.view.MotionEvent
+import android.view.View
 import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
+import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
@@ -62,4 +67,82 @@ fun PwEntryV4.isCollection(): Boolean {
 
 fun PwEntryV4.setCollection(isCollection: Boolean) {
   this.strings[Constance.KPA_IS_COLLECTION] = ProtectedString(false, isCollection.toString())
+}
+
+inline fun RecyclerView.doOnItemClickListener(
+  crossinline action: (
+    rv: RecyclerView,
+    position: Int,
+    v: View
+  ) -> Unit
+) {
+  RvItemClickSupport.addTo(this)
+    .setOnItemClickListener { rv, position, v ->
+      return@setOnItemClickListener action.invoke(rv, position, v)
+    }
+}
+
+inline fun RecyclerView.doOnItemLongClickListener(
+  crossinline action: (
+    rv: RecyclerView,
+    position: Int,
+    v: View
+  ) -> Boolean
+) {
+  RvItemClickSupport.addTo(this)
+    .setOnItemLongClickListener { rv, position, v ->
+      return@setOnItemLongClickListener action.invoke(rv, position, v)
+    }
+}
+
+inline fun RecyclerView.doOnTouchEvent(
+  crossinline action: (
+    rv: RecyclerView,
+    e: MotionEvent
+  ) -> Unit
+) = addOnItemTouchListener(onTouchEvent = action)
+
+inline fun RecyclerView.doOnInterceptTouchEvent(
+  crossinline action: (rv: RecyclerView, e: MotionEvent) -> Boolean
+) = addOnItemTouchListener(onInterceptTouchEvent = action)
+
+inline fun RecyclerView.doOnRequestDisallowInterceptTouchEvent(
+  crossinline action: (disallowIntercept: Boolean) -> Unit
+) = addOnItemTouchListener(onRequestDisallowInterceptTouchEvent = action)
+
+inline fun RecyclerView.addOnItemTouchListener(
+  crossinline onTouchEvent: (
+    rv: RecyclerView,
+    e: MotionEvent
+  ) -> Unit = { _, _ -> },
+  crossinline onInterceptTouchEvent: (
+    rv: RecyclerView,
+    e: MotionEvent
+  ) -> Boolean = { _, _ -> false },
+  crossinline onRequestDisallowInterceptTouchEvent: (
+    disallowIntercept: Boolean
+  ) -> Unit = { _ -> }
+): OnItemTouchListener {
+  val touchListener = object : OnItemTouchListener {
+    override fun onTouchEvent(
+      rv: RecyclerView,
+      e: MotionEvent
+    ) {
+      onTouchEvent.invoke(rv, e)
+    }
+
+    override fun onInterceptTouchEvent(
+      rv: RecyclerView,
+      e: MotionEvent
+    ): Boolean {
+      return onInterceptTouchEvent.invoke(rv, e)
+    }
+
+    override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+      onRequestDisallowInterceptTouchEvent.invoke(disallowIntercept)
+    }
+  }
+
+  addOnItemTouchListener(touchListener)
+  return touchListener
 }

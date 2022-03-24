@@ -5,15 +5,18 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package com.lyy.keepassa.util
+package com.lyy.keepassa.router
 
-import kotlinx.coroutines.MainScope
+import com.arialyy.frame.router.RouterPath
+import com.lyy.keepassa.service.feat.KdbSaveService
 
 /**
  * @Author laoyuyu
  * @Description
- * @Date 2022/3/22
+ * @Date 2:05 下午 2022/3/24
  **/
-object KpaUtil {
-  var scope = MainScope()
+internal interface ServiceRouter {
+
+  @RouterPath(path = "/service/dbSave")
+  fun getDbSaveService(): KdbSaveService
 }

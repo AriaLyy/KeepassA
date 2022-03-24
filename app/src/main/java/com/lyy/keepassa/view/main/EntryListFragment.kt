@@ -16,8 +16,6 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
@@ -34,6 +32,7 @@ import com.lyy.keepassa.entity.showPopMenu
 import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.doOnInterceptTouchEvent
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -92,26 +91,12 @@ class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
       }
 
     // 获取点击位置
-    binding.list.addOnItemTouchListener(object : OnItemTouchListener {
-      override fun onTouchEvent(
-        rv: RecyclerView,
-        e: MotionEvent
-      ) {
+    binding.list.doOnInterceptTouchEvent { _, e ->
+      if (e.action == MotionEvent.ACTION_DOWN) {
+        curx = e.x.toInt()
       }
-
-      override fun onInterceptTouchEvent(
-        rv: RecyclerView,
-        e: MotionEvent
-      ): Boolean {
-        if (e.action == MotionEvent.ACTION_DOWN) {
-          curx = e.x.toInt()
-        }
-        return false
-      }
-
-      override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
-      }
-    })
+      return@doOnInterceptTouchEvent false
+    }
     initRefresh()
     setData()
   }
