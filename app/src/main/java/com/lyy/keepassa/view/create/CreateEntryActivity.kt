@@ -59,7 +59,6 @@ import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.MarkDownEditorActivity
 import com.lyy.keepassa.view.dialog.AddMoreDialog
 import com.lyy.keepassa.view.dialog.CreateOtpDialog
-import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.dir.ChooseGroupActivity
 import com.lyy.keepassa.view.icon.IconBottomSheetDialog
@@ -118,7 +117,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   private var addMoreDialog: AddMoreDialog? = null
   private lateinit var addMoreData: ArrayList<SimpleItemEntity>
   private lateinit var pwEntry: PwEntryV4
-  private lateinit var loadDialog: LoadingDialog
 
   @Autowired(name = KEY_IS_AUTH_FORM_FILL_SAVE)
   @JvmField
@@ -510,8 +508,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       }
       return
     }
-    loadDialog = LoadingDialog(this)
-    loadDialog.show()
     module.updateEntry(
       entry = pwEntry,
       title = binding.title.text.toString(),
@@ -520,17 +516,10 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       url = binding.url.text.toString(),
       tags = binding.tag.text.toString()
     )
-    module.saveDb()
-      .observe(this) { success ->
-        EventBus.getDefault()
-          .post(CreateOrUpdateEntryEvent(pwEntry, true))
-        loadDialog.dismiss()
-        if (!success) {
-          HitUtil.toaskLong(getString(R.string.save_db_fail))
-        } else {
-          finishAfterTransition()
-        }
-      }
+    module.saveDb {
+      EventBus.getDefault().post(CreateOrUpdateEntryEvent(pwEntry, true))
+      finishAfterTransition()
+    }
   }
 
   override fun onBackPressed() {
@@ -567,19 +556,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       url = binding.url.text.toString(),
       tags = binding.tag.text.toString()
     )
-    loadDialog = LoadingDialog(this)
-    loadDialog.show()
-    module.addEntry(pwEntry)
-      .observe(this, { success ->
-        EventBus.getDefault()
-          .post(CreateOrUpdateEntryEvent(pwEntry, false))
-        loadDialog.dismiss()
-        if (!success) {
-          HitUtil.toaskLong(getString(R.string.save_db_fail))
-        } else {
-          finishAfterTransition()
-        }
-      })
+    module.addEntry(this, pwEntry)
   }
 
   /**

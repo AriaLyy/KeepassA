@@ -19,8 +19,8 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.SearchRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
-import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KpaUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -33,28 +33,26 @@ class SearchModule : BaseModule() {
    */
   fun relevanceEntry(
     pwEntry: PwEntryV4,
-    apkPkgName: String
-  ) = liveData {
-    val code = withContext(Dispatchers.IO) {
-      // 关联数据
-      var nextId = 1
-      for (i in 1 until 100) {
-        if (pwEntry.strings["KP2A_URL_$i"] != null) {
-          continue
-        }
-        nextId = i
-        break
+    apkPkgName: String,
+    callback: (Int) -> Unit
+  ) {
+    // 关联数据
+    var nextId = 1
+    for (i in 1 until 100) {
+      if (pwEntry.strings["KP2A_URL_$i"] != null) {
+        continue
       }
-      pwEntry.strings["KP2A_URL_$nextId"] = ProtectedString(false, "androidapp://$apkPkgName")
-      return@withContext KdbUtil.saveDb()
+      nextId = i
+      break
     }
-    emit(code)
+    pwEntry.strings["KP2A_URL_$nextId"] = ProtectedString(false, "androidapp://$apkPkgName")
+    KpaUtil.kdbService.saveDbByForeground(callback = callback)
   }
 
   /**
    * 搜索项目
    */
-  fun searchEntry(query: String, isFromAutoFill:Boolean = false) = liveData {
+  fun searchEntry(query: String, isFromAutoFill: Boolean = false) = liveData {
     val sp = SearchParametersV4()
     val entryList = ArrayList<PwEntry>()
     val groupList = ArrayList<PwGroup>()
@@ -65,7 +63,7 @@ class SearchModule : BaseModule() {
     /*
       自动填充不搜索群组
      */
-    if (isFromAutoFill){
+    if (isFromAutoFill) {
       searchGroup(query, groupList)
 
       if (entryList.isEmpty() && groupList.isEmpty()) {
@@ -76,14 +74,14 @@ class SearchModule : BaseModule() {
 
     // 组合群组信息
     for (group in groupList) {
-      val item =  KeepassAUtil.instance.convertPwGroup2Item(group)
+      val item = KeepassAUtil.instance.convertPwGroup2Item(group)
       item.type = SearchAdapter.ITEM_TYPE_GROUP
       data.add(item)
     }
 
     // 组合条目信息
     for (entry in entryList) {
-      val item =  KeepassAUtil.instance.convertPwEntry2Item(entry)
+      val item = KeepassAUtil.instance.convertPwEntry2Item(entry)
       item.type = SearchAdapter.ITEM_TYPE_ENTRY
       data.add(item)
     }
@@ -99,7 +97,7 @@ class SearchModule : BaseModule() {
     listStorage: ArrayList<PwGroup>
   ) {
     for ((_, group) in BaseApp.KDB!!.pm.groups) {
-      if (group == BaseApp.KDB!!.pm.recycleBin){
+      if (group == BaseApp.KDB!!.pm.recycleBin) {
         continue
       }
       if (group.name.contains(query, true)) {

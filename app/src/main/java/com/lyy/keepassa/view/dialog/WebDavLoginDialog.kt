@@ -13,12 +13,14 @@ import android.net.Uri
 import android.text.TextUtils
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.FileUtil
 import com.lyy.keepassa.BuildConfig
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogWebdavLoginBinding
 import com.lyy.keepassa.event.ChangeDbEvent
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
@@ -31,11 +33,14 @@ import java.io.File
  * webdav 登录
  */
 class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
-  private var loadingDialog: LoadingDialog? = null
+
   private lateinit var module: WebDavLoginModule
   private var webDavUri: String? = null
   var userName: String? = null
   var pass: String? = null
+  private val loadingDialog by lazy {
+    Routerfit.create(DialogRouter::class.java).getLoadingDialog()
+  }
 
   /**
    * true，创建数据库时的登录
@@ -126,8 +131,7 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
 
     // start login
     this.webDavUri = uri
-    loadingDialog = LoadingDialog(context)
-    loadingDialog?.show()
+    loadingDialog.show()
 
     if (!webDavIsCreateLogin) {
       handleLoginFlow(uri, userName, pass)
@@ -146,8 +150,8 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
     pass: String
   ) {
     module.handleCreateLoginFlow(requireContext(), uri, userName, pass)
-        .observe(this, {
-          loadingDialog?.dismiss()
+        .observe(this) {
+          loadingDialog.dismiss()
           if (!it) {
             HitUtil.toaskLong("${getString(R.string.login)} ${getString(R.string.fail)}")
             return@observe
@@ -157,7 +161,7 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
           this.userName = userName
           this.pass = pass
           dismiss()
-        })
+        }
   }
 
   /**
@@ -170,7 +174,7 @@ class WebDavLoginDialog : BaseDialog<DialogWebdavLoginBinding>() {
   ) {
     module.checkLogin(requireContext(), uri, userName, pass)
         .observe(this, Observer { success ->
-          loadingDialog?.dismiss()
+          loadingDialog.dismiss()
           if (success) {
             var dbName = Uri.parse(uri).lastPathSegment
             if (dbName == null) {

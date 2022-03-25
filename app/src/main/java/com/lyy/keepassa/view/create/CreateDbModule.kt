@@ -11,28 +11,22 @@ package com.lyy.keepassa.view.create
 
 import android.content.Context
 import android.net.Uri
+import androidx.core.app.ActivityOptionsCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.liveData
-import com.keepassdroid.Database
-import com.keepassdroid.database.PwDatabase
-import com.keepassdroid.database.PwDatabaseV4
-import com.keepassdroid.database.PwGroupV4
-import com.keepassdroid.database.PwIconStandard
-import com.keepassdroid.database.helper.CreateDBHelper
+import com.arialyy.frame.router.Routerfit
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
-import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
+import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.QuickUnLockUtil
-import com.lyy.keepassa.util.cloud.DbSynUtil
+import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.view.StorageType
-import com.lyy.keepassa.view.StorageType.AFS
 import com.lyy.keepassa.view.StorageType.UNKNOWN
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class CreateDbModule : BaseModule() {
 
@@ -74,82 +68,15 @@ class CreateDbModule : BaseModule() {
   /**
    * 创建并打开数据库
    */
-  fun createAndOpenDb(
-    context: Context
-  ) = liveData {
-    val db: Database? = withContext(Dispatchers.IO) {
-      try {
-        // 创建db
-        val cdb = CreateDBHelper(context, dbName, localDbUri)
-        if (keyUri != null) {
-          cdb.setKeyFile(keyUri)
-          BaseApp.dbKeyPath = QuickUnLockUtil.encryptStr(keyUri.toString())
-        }
-        cdb.setPass(dbPass, null)
-        val db = cdb.build()
-
-        // 保存打开记录
-        BaseApp.KDB = db
-        BaseApp.dbName = db.pm.name
-        BaseApp.dbFileName = dbName
-        BaseApp.dbPass = QuickUnLockUtil.encryptStr(dbPass)
-        KeepassAUtil.instance.subShortPass()
-
-        // 创建默认群组
-        createDefaultGroup(context)
-
-        BaseApp.dbVersion = "Keepass ${if (PwDatabase.isKDBExtension(dbName)) "3.x" else "4.x"}"
-        BaseApp.isV4 = !PwDatabase.isKDBExtension(dbName)
-        val record = DbHistoryRecord(
-            time = System.currentTimeMillis(),
-            type = storageType.name,
-            localDbUri = localDbUri.toString(),
-            cloudDiskPath = cloudPath,
-            keyUri = if (keyUri == null) "" else keyUri.toString(),
-            dbName = dbName
-        )
-        BaseApp.dbRecord = record
-        BaseApp.isLocked = false
-
-        // 保存并上传数据库到云端
-        val code = KdbUtil.saveDb(isCreate = true)
-
-        if (code != DbSynUtil.STATE_SUCCEED) {
-          return@withContext null
-        }
-
-        return@withContext BaseApp.KDB
-      } catch (e: Exception) {
-        e.printStackTrace()
-        HitUtil.toaskOpenDbException(e)
-      }
-      return@withContext null
-    }
-
-    emit(db)
-  }
-
-
-  /**
-   * 创建数据库时创建默认的群组
-   */
-  private fun createDefaultGroup(context: Context) {
-    val icons = arrayListOf(25, 47, 66, 62, 43)
-    val names = context.resources.getStringArray(R.array.create_normal_group)
-    val pm: PwDatabase = BaseApp.KDB.pm
-    for ((index, name) in names.withIndex()) {
-      val group = pm.createGroup() as PwGroupV4
-      group.initNewGroup(name, pm.newGroupId())
-      group.icon = PwIconStandard(icons[index]) // 需要设置默认图标
-
-      // 处理回收站
-      if (icons[index] == 43) {
-        group.enableAutoType = false
-        group.enableSearching = false
-        group.isExpanded = false
-        (BaseApp.KDB.pm as PwDatabaseV4).recycleBinUUID = group.uuid
-      }
-      pm.addGroupTo(group, pm.rootGroup)
+  fun createAndOpenDb(ac: FragmentActivity) {
+    KpaUtil.kdbService.createDb(dbName, localDbUri, dbPass, keyUri, cloudPath, storageType) {
+      Timber.d("创建数据库成功")
+      HitUtil.toaskShort(ac.getString(R.string.hint_db_create_success, dbName))
+      NotificationUtil.startDbOpenNotify(ac)
+      Routerfit.create(ActivityRouter::class.java, ac).toMainActivity(
+        opt = ActivityOptionsCompat.makeSceneTransitionAnimation(ac)
+      )
+      KeepassAUtil.instance.saveLastOpenDbHistory(BaseApp.dbRecord)
     }
   }
 
@@ -172,5 +99,4 @@ class CreateDbModule : BaseModule() {
     icons.recycle()
     emit(items)
   }
-
 }

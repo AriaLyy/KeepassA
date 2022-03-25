@@ -161,25 +161,25 @@ object KdbUtil {
    * 保存数据库，并上传数据库到云端
    * @return [DbSynUtil.STATE_SUCCEED]
    */
-  suspend fun saveDb(
-    uploadDb: Boolean = true,
-    isCreate: Boolean = false
-  ): Int {
-    Timber.d("保存前的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
-    val b = KDBHandlerHelper.getInstance(BaseApp.APP)
-      .save(BaseApp.KDB)
-    if (uploadDb) {
-      val response = uploadDb(isCreate = isCreate)
-      Timber.i(response.msg)
-      return response.code
-    }
-    Timber.d("保存后的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
-//    // 更新rootGroup条目
-//    if (b && isSync) {
-//      updateRootGroup()
-//    }
-    return if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
-  }
+//   suspend fun saveDb(
+//     uploadDb: Boolean = true,
+//     isCreate: Boolean = false
+//   ): Int {
+//     Timber.d("保存前的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
+//     val b = KDBHandlerHelper.getInstance(BaseApp.APP)
+//       .save(BaseApp.KDB)
+//     if (uploadDb) {
+//       val response = uploadDb(isCreate = isCreate)
+//       Timber.i(response.msg)
+//       return response.code
+//     }
+//     Timber.d("保存后的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
+// //    // 更新rootGroup条目
+// //    if (b && isSync) {
+// //      updateRootGroup()
+// //    }
+//     return if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
+//   }
 
   /**
    * 更新根rootGroup条目，pm.rootGroup是新new的，并不是索引，从云端同步后，该内容不会更新，需要手动更新

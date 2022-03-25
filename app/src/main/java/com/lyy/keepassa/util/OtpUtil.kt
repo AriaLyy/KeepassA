@@ -10,23 +10,26 @@ package com.lyy.keepassa.util
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.text.TextUtils
+import com.arialyy.frame.router.Routerfit
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.EncodeUtils
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.router.ServiceRouter
 import com.lyy.keepassa.util.totp.Base32String
 import com.lyy.keepassa.util.totp.TokenCalculator
 import com.lyy.keepassa.util.totp.TokenCalculator.HashAlgorithm
 import com.lyy.keepassa.util.totp.TokenCalculator.HashAlgorithm.SHA256
 import com.lyy.keepassa.util.totp.TokenCalculator.HashAlgorithm.SHA512
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Locale
 
 object OtpUtil {
+  private val kdbService by lazy {
+    Routerfit.create(ServiceRouter::class.java).getDbSaveService()
+  }
 
   /**
    * 获取totp密码
@@ -248,9 +251,7 @@ object OtpUtil {
         .split(";")
       if (!tempArray.isNullOrEmpty() && tempArray.size == 2 && !tempArray[1].equals("S", true)) {
         entry.strings["TOTP Settings"] = ProtectedString(false, "${tempArray[0]};S")
-        GlobalScope.launch {
-          KdbUtil.saveDb(true)
-        }
+        kdbService.saveDbByBackground()
       }
     }
   }
@@ -272,12 +273,12 @@ object OtpUtil {
   private fun isSteamEntry(entry: PwEntryV4): Boolean {
     return entry.getUrl()
       .contains("steampowered", ignoreCase = true) ||
-        entry.customData.any {
-          it.value.equals(
-            "androidapp://com.valvesoftware.android.steam.community",
-            true
-          )
-        }
+      entry.customData.any {
+        it.value.equals(
+          "androidapp://com.valvesoftware.android.steam.community",
+          true
+        )
+      }
   }
 
   private fun getTotpPass(

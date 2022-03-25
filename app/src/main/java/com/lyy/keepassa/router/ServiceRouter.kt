@@ -8,15 +8,15 @@
 package com.lyy.keepassa.router
 
 import com.arialyy.frame.router.RouterPath
-import com.lyy.keepassa.service.feat.KdbSaveService
+import com.lyy.keepassa.service.feat.KdbService
 
 /**
  * @Author laoyuyu
  * @Description
  * @Date 2:05 下午 2022/3/24
  **/
-internal interface ServiceRouter {
+interface ServiceRouter {
 
-  @RouterPath(path = "/service/dbSave")
-  fun getDbSaveService(): KdbSaveService
+  @RouterPath(path = "/service/kdb")
+  fun getDbSaveService(): KdbService
 }

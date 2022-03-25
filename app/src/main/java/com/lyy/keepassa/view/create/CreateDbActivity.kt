@@ -14,24 +14,14 @@ import android.text.TextUtils
 import android.view.View
 import android.view.ViewAnimationUtils
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityOptionsCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.transition.Transition
 import androidx.transition.TransitionInflater
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.arialyy.frame.router.Routerfit
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
-import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityCreateDbBinding
-import com.lyy.keepassa.router.ActivityRouter
-import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.NotificationUtil
-import com.lyy.keepassa.view.dialog.LoadingDialog
-import timber.log.Timber
 
 /**
  * 创建见数据库页面
@@ -42,7 +32,6 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
   private lateinit var firstFragment: CreateDbFirstFragment
   private var secondFragment: CreateDbSecondFragment? = null
   private lateinit var module: CreateDbModule
-  private lateinit var loadingDialog: LoadingDialog
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
@@ -107,23 +96,7 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
   private fun done() {
     // 密码需要重新获取，将密码设置到module中
     secondFragment?.getPass()
-    loadingDialog = LoadingDialog(this)
-    loadingDialog.show()
     module.createAndOpenDb(this)
-      .observe(this, Observer { db ->
-        loadingDialog.dismiss()
-        if (db == null) {
-          HitUtil.toaskShort(getString(R.string.create_db) + getString(R.string.fail))
-          return@Observer
-        }
-        Timber.d("创建数据库成功")
-        HitUtil.toaskShort(getString(R.string.hint_db_create_success, module.dbName))
-        NotificationUtil.startDbOpenNotify(this)
-        Routerfit.create(ActivityRouter::class.java, this).toMainActivity(
-          opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
-        )
-        KeepassAUtil.instance.saveLastOpenDbHistory(BaseApp.dbRecord)
-      })
   }
 
   /**

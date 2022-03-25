@@ -1,6 +1,5 @@
 package com.lyy.keepassa.util.cloud.interceptor
 
-import android.content.Context
 import android.util.Pair
 import android.widget.Button
 import com.arialyy.frame.router.Routerfit
@@ -14,8 +13,8 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
-import com.lyy.keepassa.util.cloud.ICloudUtil
 import com.lyy.keepassa.util.cloud.PwDataMap
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -117,9 +116,8 @@ object DbMergeDelegate {
     }
 
     if (modifyList.size <= 0) {
-      val code = KdbUtil.saveDb(uploadDb = false)
-      Timber.i("没有冲突的条目，保存数据库${if (code == DbSynUtil.STATE_SUCCEED) "成功" else "失败"}")
-      return code
+      KpaUtil.kdbService.saveDbByBackground()
+      return DbSynUtil.STATE_SUCCEED
     }
 
     // 有改动提示用户合并数据
@@ -243,7 +241,7 @@ object DbMergeDelegate {
    * 覆盖本地数据库有修改冲突的条目和群组
    * @param modifyList 有改动的条目，first 为云端的条目，second 为本地的条目
    */
-  private suspend fun coverModifyEntry(modifyList: ArrayList<Pair<PwDataInf, PwDataInf>>): Int {
+  private fun coverModifyEntry(modifyList: ArrayList<Pair<PwDataInf, PwDataInf>>): Int {
     for (p in modifyList) {
       if (p.first is PwEntry) {
         (p.second as PwEntry).assign(p.first as PwEntry)
@@ -251,10 +249,8 @@ object DbMergeDelegate {
         (p.second as PwGroup).assign(p.first as PwGroup)
       }
     }
-
-    val code = KdbUtil.saveDb(uploadDb = false)
-    Timber.i("保存数据库${if (code == DbSynUtil.STATE_SUCCEED) "成功" else "失败"}")
-    return code
+    KpaUtil.kdbService.saveDbByBackground()
+    return DbSynUtil.STATE_SUCCEED
   }
 
   /**

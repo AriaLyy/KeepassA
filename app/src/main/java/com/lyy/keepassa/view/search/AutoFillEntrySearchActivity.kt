@@ -44,7 +44,6 @@ import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.view.create.CreateEntryActivity
-import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
@@ -57,7 +56,6 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
   private lateinit var module: SearchModule
   private lateinit var adapter: SearchAdapter
   private val listData: ArrayList<SimpleItemEntity> = ArrayList()
-  private lateinit var loadingDialog: LoadingDialog
   private var curEntry: PwEntry? = null
 
   companion object {
@@ -174,7 +172,6 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
         }
         return true
       }
-
     })
 
     binding.exFab.setOnClickListener {
@@ -213,7 +210,6 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
         adapter.notifyDataSetChanged()
         binding.noEntryLayout.visibility = View.VISIBLE
       })
-
   }
 
   /**
@@ -271,7 +267,6 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
             override fun onCancel(v: Button) {
               callbackAutoFillService(false, entry)
             }
-
           }
         )
           .show()
@@ -283,19 +278,14 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
    */
   private fun relevanceEntry(pwEntry: PwEntryV4) {
     curEntry = pwEntry
-    loadingDialog = LoadingDialog(this)
-    loadingDialog.show()
 
-    module.relevanceEntry(pwEntry, apkPkgName!!)
-      .observe(this, Observer { code ->
-        loadingDialog.dismiss()
-        if (code != DbSynUtil.STATE_SUCCEED) {
-          HitUtil.toaskShort("${getString(R.string.relevance_db)}${getString(R.string.fail)}")
-        }
-        HitUtil.toaskShort("${getString(R.string.relevance_db)}${getString(R.string.success)}")
-        callbackAutoFillService(false, pwEntry)
-      })
-
+    module.relevanceEntry(pwEntry, apkPkgName!!) {
+      if (it != DbSynUtil.STATE_SUCCEED) {
+        HitUtil.toaskShort("${getString(R.string.relevance_db)}${getString(R.string.fail)}")
+      }
+      HitUtil.toaskShort("${getString(R.string.relevance_db)}${getString(R.string.success)}")
+      callbackAutoFillService(false, pwEntry)
+    }
   }
 
   /**
@@ -356,5 +346,4 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
     super.onDestroy()
     EventBusHelper.unReg(this)
   }
-
 }

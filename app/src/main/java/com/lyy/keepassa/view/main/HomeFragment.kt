@@ -38,12 +38,12 @@ import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.doOnInterceptTouchEvent
 import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.util.doOnItemLongClickListener
 import com.lyy.keepassa.util.isAFS
 import com.lyy.keepassa.view.SimpleEntryAdapter
-import com.lyy.keepassa.view.dialog.LoadingDialog
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 
@@ -55,9 +55,6 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
   private val entryData = ArrayList<SimpleItemEntity>()
   private var curx = 0
   private var isSyncDb = false
-  private val loadingDialog by lazy {
-    LoadingDialog(requireContext())
-  }
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -122,16 +119,14 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
         return@setOnRefreshListener
       }
 
-      loadingDialog.show()
-      module.syncDb()
-        .observe(this@HomeFragment, Observer {
-          if (!it) {
-            finishRefresh(false)
-            return@Observer
-          }
-          isSyncDb = true
-          getData()
-        })
+      module.syncDb{
+        if (it != DbSynUtil.STATE_SUCCEED){
+          finishRefresh(false)
+          return@syncDb
+        }
+        isSyncDb = true
+        getData()
+      }
     }
   }
 
@@ -147,10 +142,7 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
       })
   }
 
-  private fun finishRefresh(
-    isSuccess: Boolean,
-    isAfs: Boolean = false
-  ) {
+  private fun finishRefresh(isSuccess: Boolean) {
     binding.swipe.isRefreshing = false
     HitUtil.snackShort(
       mRootView,
@@ -160,9 +152,6 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
         )
       }"
     )
-    if (!isAfs) {
-      loadingDialog.dismiss()
-    }
   }
 
   override fun setLayoutId(): Int {

@@ -7,6 +7,8 @@
  */
 package com.lyy.keepassa.util
 
+import com.arialyy.frame.router.Routerfit
+import com.lyy.keepassa.router.ServiceRouter
 import kotlinx.coroutines.MainScope
 
 /**
@@ -16,4 +18,7 @@ import kotlinx.coroutines.MainScope
  **/
 object KpaUtil {
   var scope = MainScope()
+  val kdbService by lazy {
+    Routerfit.create(ServiceRouter::class.java).getDbSaveService()
+  }
 }

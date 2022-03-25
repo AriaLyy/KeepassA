@@ -75,7 +75,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   private var showChangeDbBt: Boolean = true
 
   private val loadingDialog by lazy {
-    LoadingDialog(context)
+    Routerfit.create(DialogRouter::class.java).getLoadingDialog()
   }
 
   /**

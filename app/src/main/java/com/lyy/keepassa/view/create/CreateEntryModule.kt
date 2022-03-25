@@ -12,7 +12,9 @@ package com.lyy.keepassa.view.create
 import KDBAutoFillRepository
 import android.content.Context
 import android.graphics.Bitmap.CompressFormat.PNG
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.keepassdroid.database.PwDatabaseV4
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
@@ -26,14 +28,17 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.SimpleItemEntity
+import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
+import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
-import com.lyy.keepassa.util.cloud.DbSynUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.hasNote
 import com.lyy.keepassa.util.hasTOTP
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.util.Date
@@ -189,50 +194,27 @@ class CreateEntryModule : BaseModule() {
     parentGroup: PwGroup,
     icon: PwIconStandard,
     customIcon: PwIconCustom?
-  ) = liveData {
-    val b = withContext(Dispatchers.IO) {
-      try {
-        if (customIcon != null && customIcon != PwIconCustom.ZERO && BaseApp.isV4) {
-          return@withContext KdbUtil.createGroup(
-            groupName, customIcon, parentGroup as PwGroupV4
-          )
-        }
-
-        return@withContext KdbUtil.createGroup(groupName, icon, parentGroup)
-      } catch (e: Exception) {
-        e.printStackTrace()
-        HitUtil.toaskOpenDbException(e)
-      }
-      return@withContext null
-    }
-    if (b != null) {
-      HitUtil.toaskShort(
-        "${BaseApp.APP.getString(R.string.create_group)}${
-          BaseApp.APP.getString(
-            R.string.success
-          )
-        }"
-      )
-    }
-    emit(b)
+  ) = flow<Boolean> {
+    val group = KpaUtil.kdbService.createGroup(groupName, icon, customIcon, parentGroup)
+    HitUtil.toaskShort(
+      "${BaseApp.APP.getString(R.string.create_group)}${
+        BaseApp.APP.getString(
+          R.string.success
+        )
+      }"
+    )
+    EventBus.getDefault().post(CreateOrUpdateGroupEvent(group))
+    emit(true)
   }
 
   /**
    * 添加条目
    * @param pwEntry 需要添加的条目
    */
-  fun addEntry(pwEntry: PwEntry) = liveData {
-    val code = withContext(Dispatchers.IO) {
-      try {
-        return@withContext KdbUtil.addEntry(pwEntry, save = true, uploadDb = true)
-      } catch (e: Exception) {
-        e.printStackTrace()
-        HitUtil.toaskOpenDbException(e)
-      }
-      return@withContext DbSynUtil.STATE_FAIL
-    }
-
-    if (code == DbSynUtil.STATE_SUCCEED) {
+  fun addEntry(ac: FragmentActivity, pwEntry: PwEntry) {
+    viewModelScope.launch {
+      KpaUtil.kdbService.addEntry(pwEntry)
+      KdbUtil.addEntry(pwEntry, save = true, uploadDb = true)
       HitUtil.toaskShort(
         "${BaseApp.APP.getString(R.string.create_entry)}${
           BaseApp.APP.getString(
@@ -240,25 +222,20 @@ class CreateEntryModule : BaseModule() {
           )
         }"
       )
+      EventBus.getDefault()
+        .post(CreateOrUpdateEntryEvent(pwEntry, false))
+      ac.finishAfterTransition()
     }
-    emit(code == DbSynUtil.STATE_SUCCEED)
   }
 
   /**
    * 保存条目
    */
-  fun saveDb() = liveData {
-    val code = withContext(Dispatchers.IO) {
-      try {
-        return@withContext KdbUtil.saveDb()
-      } catch (e: Exception) {
-        e.printStackTrace()
-        HitUtil.toaskOpenDbException(e)
-      }
-      return@withContext DbSynUtil.STATE_FAIL
+  fun saveDb(callback: () -> Unit) {
+    viewModelScope.launch {
+      KpaUtil.kdbService.saveOnly()
+      callback.invoke()
     }
-    emit(code == DbSynUtil.STATE_SUCCEED)
-
   }
 
   /**

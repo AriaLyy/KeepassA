@@ -10,14 +10,14 @@
 package com.lyy.keepassa.view.dialog
 
 import android.view.View
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.keepassdroid.database.PwGroup
+import com.alibaba.android.arouter.facade.annotation.Autowired
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
 import com.lyy.keepassa.R
-import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogAddGroupBinding
 import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
@@ -31,24 +31,15 @@ import org.greenrobot.eventbus.EventBus
 /**
  * 编辑群组
  */
+@Route(path = "/dialog/modifyGroup")
 class ModifyGroupDialog : BaseDialog<DialogAddGroupBinding>(), View.OnClickListener {
 
-  private lateinit var loadDialog: LoadingDialog
   private var icon: PwIconStandard = PwIconStandard(1)
   private var csIcon: PwIconCustom? = null
-  private val requestCode = 0xA1
   private lateinit var module: CreateEntryModule
-  lateinit var modifyPwGroup: PwGroup
 
-  companion object {
-    fun generate(body: ModifyGroupDialog.() -> ModifyGroupDialog): ModifyGroupDialog {
-      return with(ModifyGroupDialog()) { body() }
-    }
-  }
-
-  fun build(): ModifyGroupDialog {
-    return this
-  }
+  @Autowired(name = "pwGroup")
+  var pwGroup: PwGroupV4? = null
 
   override fun setLayoutId(): Int {
     return R.layout.dialog_add_group
@@ -56,6 +47,11 @@ class ModifyGroupDialog : BaseDialog<DialogAddGroupBinding>(), View.OnClickListe
 
   override fun initData() {
     super.initData()
+    ARouter.getInstance().inject(this)
+    if (pwGroup == null) {
+      dismiss()
+      return
+    }
     module = ViewModelProvider(this).get(CreateEntryModule::class.java)
     binding.groupNameLayout.setEndIconOnClickListener {
       showIconDialog()
@@ -63,13 +59,13 @@ class ModifyGroupDialog : BaseDialog<DialogAddGroupBinding>(), View.OnClickListe
     binding.enter.setOnClickListener(this)
     binding.cancel.setOnClickListener(this)
     binding.title.text = getString(R.string.modify_group)
-    binding.groupName.setText(modifyPwGroup.name)
-    binding.groupNameLayout.endIconDrawable =
-      IconUtil.getGroupIconDrawable(requireContext(), modifyPwGroup, true)
 
-    icon = modifyPwGroup.icon
-    if (BaseApp.isV4) {
-      csIcon = (modifyPwGroup as PwGroupV4).customIcon
+    pwGroup?.let {
+      binding.groupName.setText(it.name)
+      binding.groupNameLayout.endIconDrawable =
+        IconUtil.getGroupIconDrawable(requireContext(), it, true)
+      icon = it.icon
+      csIcon = it.customIcon
     }
   }
 
@@ -88,7 +84,6 @@ class ModifyGroupDialog : BaseDialog<DialogAddGroupBinding>(), View.OnClickListe
         binding.groupNameLayout.endIconDrawable =
           IconUtil.convertCustomIcon2Drawable(requireContext(), csIcon!!)
       }
-
     })
     iconDialog.show(childFragmentManager, IconBottomSheetDialog::class.java.simpleName)
   }
@@ -97,44 +92,24 @@ class ModifyGroupDialog : BaseDialog<DialogAddGroupBinding>(), View.OnClickListe
     when (v!!.id) {
       R.id.enter -> {
         val newTitle = binding.groupName.text.toString()
-            .trim()
+          .trim()
         if (newTitle.isEmpty()) {
           HitUtil.toaskShort(getString(R.string.error_group_name_null))
           return
         }
 
-        loadDialog = LoadingDialog(context)
-        loadDialog.show()
-        if (BaseApp.isV4) {
-          (modifyPwGroup as PwGroupV4).customIcon = csIcon
+        pwGroup?.let {
+          it.customIcon = csIcon
+          it.icon = icon
+          it.name = newTitle
+          module.saveDb {
+            EventBus.getDefault().post(CreateOrUpdateGroupEvent(it, true))
+          }
         }
-        modifyPwGroup.icon = icon
-        modifyPwGroup.name = newTitle
-        module.saveDb()
-            .observe(this, Observer { success ->
-              loadDialog.dismiss()
-              if (success) {
-                complete(modifyPwGroup)
-                return@Observer
-              }
-              HitUtil.toaskShort(getString(R.string.update_group_fail))
-            })
       }
       R.id.cancel -> {
         dismiss()
       }
     }
   }
-
-  private fun complete(group: PwGroup?) {
-    if (group == null) {
-      HitUtil.toaskShort(getString(R.string.update_group_fail))
-    } else {
-      HitUtil.toaskShort(getString(R.string.update_group_success))
-      EventBus.getDefault()
-          .post(CreateOrUpdateGroupEvent(group, true))
-      dismiss()
-    }
-  }
-
 }

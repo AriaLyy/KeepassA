@@ -731,6 +731,7 @@ class KeepassAUtil private constructor() {
    * @param mimeType mime
    * @see <a href="https://developer.android.com/guide/topics/providers/document-provider?hl=zh-cn#create">创建文档</a>
    */
+  @Deprecated("请使用registerForActivityResult(ActivityResultContracts.CreateDocument())")
   fun createFile(
     obj: Any,
     mimeType: String,

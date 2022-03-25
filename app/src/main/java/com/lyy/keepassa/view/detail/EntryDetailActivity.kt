@@ -21,6 +21,7 @@ import android.text.Spanned
 import android.util.Pair
 import android.view.View
 import android.widget.Button
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.transition.addListener
@@ -41,17 +42,14 @@ import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityEntryDetailBinding
 import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
-import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.DialogRouter
-import com.lyy.keepassa.router.ServiceRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.VibratorUtil
-import com.lyy.keepassa.util.cloud.DbSynUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.isCollection
 import com.lyy.keepassa.util.setCollection
 import com.lyy.keepassa.util.takePermission
@@ -60,7 +58,6 @@ import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
 import com.lyy.keepassa.widget.expand.ExpandAttrStrLayout
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import timber.log.Timber
@@ -79,7 +76,6 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
 
   private lateinit var module: EntryDetailModule
   private lateinit var pwEntry: PwEntry
-  private lateinit var loadDialog: LoadingDialog
   private var isInRecycleBin = false
   private var curTouchX = 0f
   private var curTouchY = 0f
@@ -90,9 +86,11 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   @Autowired(name = KEY_GROUP_TITLE)
   lateinit var groupTitle: String
 
-  private val saveService by lazy {
-    Routerfit.create(ServiceRouter::class.java).getDbSaveService()
-  }
+  val saveAttachmentResult =
+    registerForActivityResult(ActivityResultContracts.CreateDocument()) { resultUri ->
+      resultUri.takePermission()
+      module.saveAttachment(this, resultUri, module.curDLoadFile!!)
+    }
 
   override fun setLayoutId(): Int {
     return R.layout.activity_entry_detail
@@ -145,7 +143,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   override fun finishAfterTransition() {
     showContent(false)
     if (module.lastCollection != (pwEntry as PwEntryV4).isCollection()) {
-      saveService.saveDbByBackground()
+      KpaUtil.kdbService.saveDbByBackground()
     }
     if (!KeepassAUtil.instance.isDisplayLoadingAnim()) {
       super.finishAfterTransition()
@@ -221,17 +219,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
           }
 
           override fun onEnter(v: Button) {
-            loadDialog = LoadingDialog(this@EntryDetailActivity)
-            loadDialog.show()
-            module.recycleEntry(pwEntry)
-              .observe(this@EntryDetailActivity, Observer { code ->
-                if (code == DbSynUtil.STATE_SUCCEED) {
-                  onComplete(pwEntry)
-                  return@Observer
-                }
-                HitUtil.toaskShort(getString(R.string.save_db_fail))
-                return@Observer
-              })
+            module.recycleEntry(this@EntryDetailActivity, pwEntry)
           }
 
           override fun onCancel(v: Button) {
@@ -312,17 +300,6 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       binding.attrStr.removeAllViews()
     }
     setData()
-  }
-
-  private fun onComplete(pwEntry: PwEntry) {
-    loadDialog.dismiss()
-    EventBus.getDefault()
-      .post(DelEvent(pwEntry))
-    HitUtil.toaskShort(
-      "${getString(R.string.del_entry)}${getString(R.string.success)}"
-    )
-    VibratorUtil.vibrator(300)
-    finishAfterTransition()
   }
 
   override fun onDestroy() {
@@ -517,28 +494,5 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
         module.showAttrFilePopMenu(this@EntryDetailActivity, v)
       }
     })
-  }
-
-  override fun onActivityResult(
-    requestCode: Int,
-    resultCode: Int,
-    data: Intent?
-  ) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (resultCode == Activity.RESULT_OK
-      && data != null
-      && data.data != null
-      && requestCode == module.createFileRequestCode
-      && module.curDLoadFile != null
-    ) {
-      data.data?.takePermission()
-      val dialog = LoadingDialog(this)
-      dialog.show()
-      module.saveAttachment(this, data.data!!, module.curDLoadFile!!)
-        .observe(this, Observer { fileName ->
-          dialog.dismiss()
-          HitUtil.toaskShort(getString(R.string.save_file_success, fileName))
-        })
-    }
   }
 }

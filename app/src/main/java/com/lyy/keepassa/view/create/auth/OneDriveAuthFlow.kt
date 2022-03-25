@@ -9,7 +9,9 @@ package com.lyy.keepassa.view.create.auth
 
 import android.content.Context
 import android.content.Intent
+import com.arialyy.frame.router.Routerfit
 import com.lyy.keepassa.event.DbPathEvent
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.cloud.OneDriveUtil
 import com.lyy.keepassa.view.StorageType.ONE_DRIVE
@@ -23,12 +25,13 @@ import timber.log.Timber
  * @Date 2021/4/26
  **/
 class OneDriveAuthFlow : IAuthFlow {
-  private val TAG = javaClass.simpleName
   private lateinit var context: Context
   private lateinit var callback: IAuthCallback
   private var loginCallback: OneDriveUtil.OnLoginCallback? = null
   private var isAuthid = false
-  private var loadingDialog: LoadingDialog? = null
+  private val loadingDialog by lazy {
+    Routerfit.create(DialogRouter::class.java).getLoadingDialog()
+  }
 
   override fun initContent(
     context: Context,
@@ -56,35 +59,34 @@ class OneDriveAuthFlow : IAuthFlow {
     }
     val name = "$dbName.kdbx"
     callback.onFinish(
-        DbPathEvent(
-            dbName = name,
-            fileUri = DbSynUtil.getCloudDbTempPath(ONE_DRIVE.name, name),
-            storageType = ONE_DRIVE,
-            cloudDiskPath = "/$name"
-        )
+      DbPathEvent(
+        dbName = name,
+        fileUri = DbSynUtil.getCloudDbTempPath(ONE_DRIVE.name, name),
+        storageType = ONE_DRIVE,
+        cloudDiskPath = "/$name"
+      )
     )
   }
 
   private fun auth() {
-    if (isAuthid){
-      Timber.d( "已经完成授权")
+    if (isAuthid) {
+      Timber.d("已经完成授权")
       return
     }
-    loadingDialog = LoadingDialog(context)
-    loadingDialog?.show()
+    loadingDialog.show()
     OneDriveUtil.initOneDrive {
       if (it) {
         OneDriveUtil.loadAccount()
         return@initOneDrive
       }
       this.callback.callback(false)
-      loadingDialog?.dismiss()
+      loadingDialog.dismiss()
     }
     OneDriveUtil.loginCallback = object : OneDriveUtil.OnLoginCallback {
       override fun callback(success: Boolean) {
         isAuthid = success
         this@OneDriveAuthFlow.callback.callback(success)
-        loadingDialog?.dismiss()
+        loadingDialog.dismiss()
       }
     }
   }

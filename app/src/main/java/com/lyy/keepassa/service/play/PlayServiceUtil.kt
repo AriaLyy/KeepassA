@@ -32,9 +32,7 @@ import timber.log.Timber
  * @Date 1:58 下午 2022/1/20
  **/
 class PlayServiceUtil {
-  private val scope = MainScope()
   private var isConnected = false
-  private val loadingDialog = LoadingDialog(BaseApp.APP)
 
   /**
    * 购买回调
@@ -98,7 +96,6 @@ class PlayServiceUtil {
         // Try to restart the connection on the next request to
         // Google Play by calling the startConnection() method.
         isConnected = false
-        loadingDialog.dismiss()
       }
     })
   }

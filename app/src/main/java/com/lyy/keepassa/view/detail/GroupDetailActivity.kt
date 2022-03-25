@@ -12,20 +12,14 @@ package com.lyy.keepassa.view.detail
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
-import android.text.TextWatcher
 import android.view.MotionEvent
 import android.view.View
-import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.transition.addListener
-import androidx.core.widget.doBeforeTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
@@ -50,11 +44,11 @@ import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.event.MoveEvent
 import com.lyy.keepassa.router.ActivityRouter
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.doOnInterceptTouchEvent
 import com.lyy.keepassa.view.SimpleEntryAdapter
-import com.lyy.keepassa.view.create.CreateGroupDialog
 import com.lyy.keepassa.widget.MainExpandFloatActionButton
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
@@ -188,11 +182,8 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       }
 
       override fun onGroupClick() {
-        val dialog = CreateGroupDialog.generate {
-          parentGroup = BaseApp.KDB!!.pm.groups[groupId] ?: BaseApp.KDB!!.pm.rootGroup
-          build()
-        }
-        dialog.show(supportFragmentManager, "CreateGroupDialog")
+        Routerfit.create(DialogRouter::class.java)
+          .showCreateGroupDialog(BaseApp.KDB!!.pm.groups[groupId] ?: BaseApp.KDB!!.pm.rootGroup)
         binding.fab.hintMoreOperate()
       }
     })

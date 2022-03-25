@@ -22,7 +22,6 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
@@ -37,12 +36,10 @@ import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.event.DbHistoryEvent
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.FragmentRouter
-import com.lyy.keepassa.service.play.PlayServiceUtil
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
-import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 
@@ -91,27 +88,9 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     isFromFill = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL, false)
     isFromFillSave = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL_SAVE, false)
     apkPkgName = intent.getStringExtra(KEY_PKG_NAME)
-    module = ViewModelProvider(this)
-      .get(LauncherModule::class.java)
+    module = ViewModelProvider(this).get(LauncherModule::class.java)
     initUI()
     module.securityCheck(this)
-
-    // test()
-  }
-
-  private fun test(){
-    lifecycleScope.launchWhenCreated {
-      val util = PlayServiceUtil()
-      util.connectPlay {
-        if (it){
-          lifecycleScope.launch {
-            val skuResult = util.queryInappSkuDetails()
-            util.startPlayFlow(this@LauncherActivity, skuResult.skuDetailsList?.get(0)!!)
-          }
-
-        }
-      }
-    }
   }
 
   override fun useAnim(): Boolean {

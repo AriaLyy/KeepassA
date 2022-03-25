@@ -23,26 +23,17 @@ import androidx.preference.PreferenceManager
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ReflectionUtil
 import com.arialyy.frame.util.ResUtil
-import com.keepassdroid.database.PwDatabaseV4
-import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
-import com.lyy.keepassa.view.dialog.LoadingDialog
-import com.lyy.keepassa.view.dialog.ModifyGroupDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.dir.ChooseGroupActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 
 /**
@@ -53,15 +44,12 @@ import org.greenrobot.eventbus.EventBus
 class GroupPopMenu(
   private val context: FragmentActivity,
   view: View,
-  private val pwGroup: PwGroup,
+  private val pwGroup: PwGroupV4,
   private val x: Int,
   private val isInRecycleBin: Boolean = false
 ) : IPopMenu {
   private val popup: PopupMenu = PopupMenu(context, view, Gravity.START)
   private val help: MenuPopupHelper
-  private lateinit var loadDialog: LoadingDialog
-  private val saveDbReqCode = 0xA6
-  private val scope = MainScope()
 
   init {
     val inflater: MenuInflater = popup.menuInflater
@@ -84,7 +72,7 @@ class GroupPopMenu(
           delGroup()
         }
         R.id.edit -> {
-          editGroup()
+          Routerfit.create(DialogRouter::class.java).showModifyGroupDialog(pwGroup)
         }
         R.id.undo, R.id.move -> {
           ChooseGroupActivity.moveGroup(context, pwGroup.id)
@@ -97,17 +85,6 @@ class GroupPopMenu(
   }
 
   /**
-   * 编辑群组
-   */
-  private fun editGroup() {
-    val dialog = ModifyGroupDialog.generate {
-      modifyPwGroup = pwGroup
-      build()
-    }
-    dialog.show(context.supportFragmentManager, "modify_group")
-  }
-
-  /**
    * 删除群组
    */
   @SuppressLint("StringFormatMatches")
@@ -117,8 +94,6 @@ class GroupPopMenu(
       .getBoolean(context.getString(R.string.set_key_delete_no_recycle_bin), false)
 
     if (deleteDirectly) {
-      loadDialog = LoadingDialog(context)
-      loadDialog.show()
       handleDelGroup()
       return
     }
@@ -142,14 +117,11 @@ class GroupPopMenu(
         }
 
         override fun onEnter(v: Button) {
-          loadDialog = LoadingDialog(context)
-          loadDialog.show()
           handleDelGroup()
         }
 
         override fun onCancel(v: Button) {
         }
-
       }
     )
       .show()
@@ -159,30 +131,9 @@ class GroupPopMenu(
    * 处理删除群组
    */
   private fun handleDelGroup() {
-    scope.launch {
-      val code = withContext(Dispatchers.IO) {
-        try {
-          if (BaseApp.isV4) {
-            if (BaseApp.KDB!!.pm.canRecycle(pwGroup) && !isInRecycleBin) {
-              (BaseApp.KDB!!.pm as PwDatabaseV4).recycle(pwGroup as PwGroupV4)
-            } else {
-              // 回收站中直接删除
-              KdbUtil.deleteGroup(pwGroup, false, needUpload = false)
-            }
-          } else {
-            KdbUtil.deleteGroup(pwGroup, false, needUpload = false)
-          }
-          return@withContext KdbUtil.saveDb()
-        } catch (e: Exception) {
-          e.printStackTrace()
-          HitUtil.toaskOpenDbException(e)
-        }
-        return@withContext DbSynUtil.STATE_SAVE_DB_FAIL
-      }
-      EventBus.getDefault()
-        .post(DelEvent(pwGroup))
-
-
+    KpaUtil.kdbService.deleteGroup(pwGroup)
+    KpaUtil.kdbService.saveDbByForeground { code ->
+      EventBus.getDefault().post(DelEvent(pwGroup))
       if (code == DbSynUtil.STATE_SUCCEED) {
         HitUtil.toaskShort(
           "${context.getString(R.string.del_group)}${context.getString(R.string.success)}"
@@ -192,8 +143,6 @@ class GroupPopMenu(
       }
 
       VibratorUtil.vibrator(300)
-      loadDialog.dismiss()
-      scope.cancel()
     }
   }
 
@@ -204,5 +153,4 @@ class GroupPopMenu(
   fun getPopMenu(): PopupMenu {
     return popup
   }
-
 }

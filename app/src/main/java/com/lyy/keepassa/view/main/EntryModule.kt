@@ -12,10 +12,9 @@ import androidx.lifecycle.liveData
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.SimpleItemEntity
-import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.cloud.DbSynUtil
-import kotlinx.coroutines.Dispatchers
+import com.lyy.keepassa.util.KpaUtil
+import kotlinx.coroutines.flow.MutableSharedFlow
 import timber.log.Timber
 
 /**
@@ -28,14 +27,8 @@ class EntryModule : BaseModule() {
   /**
    * 同步数据库
    */
-  fun syncDb() = liveData(Dispatchers.IO) {
-    val code = KdbUtil.saveDb(true)
-    Timber.d("同步数据库结束，code = $code")
-    if (code != DbSynUtil.STATE_SUCCEED) {
-      emit(false)
-      return@liveData
-    }
-    emit(true)
+  fun syncDb(callback: (Int) -> Unit) {
+    KpaUtil.kdbService.saveDbByForeground(callback = callback)
   }
 
   /**

@@ -9,37 +9,32 @@
 
 package com.lyy.keepassa.view.dialog;
 
-import android.content.Context;
 import android.content.res.AssetManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import com.airbnb.lottie.LottieAnimationView;
-import com.arialyy.frame.core.AbsDialog;
+import android.view.ViewGroup;
+import androidx.fragment.app.DialogFragment;
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.lyy.keepassa.R;
 import com.lyy.keepassa.base.BaseApp;
+import com.lyy.keepassa.base.BaseDialog;
 import com.lyy.keepassa.databinding.DialogLoadingBinding;
 import java.io.IOException;
 
 /**
  * Created by AriaL on 2017/12/15.
  */
-public class LoadingDialog extends AbsDialog<DialogLoadingBinding> {
-  private LottieAnimationView animationView;
+@Route(path = "/dialog/loading")
+public class LoadingDialog extends BaseDialog<DialogLoadingBinding> {
 
-  public LoadingDialog(Context context) {
-    super(context);
-    if (getWindow() != null) {
-      getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-    }
-    animationView = findViewById(R.id.anim);
+  @Override protected void initData() {
+    super.initData();
+    setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+    getDialog().getWindow()
+        .setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
     setCancelable(false);
-  }
-
-  @Override protected void onStart() {
-    super.onStart();
     try {
-      animationView.setAnimation(
-          getContext().getAssets().open("loadingAnimation.json", AssetManager.ACCESS_STREAMING),
+      getBinding().anim.setAnimation(
+          requireContext().getAssets().open("loadingAnimation.json", AssetManager.ACCESS_STREAMING),
           "LottieCache");
     } catch (IOException e) {
       e.printStackTrace();

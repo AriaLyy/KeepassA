@@ -41,12 +41,12 @@ import com.lyy.keepassa.event.CheckEnvEvent
 import com.lyy.keepassa.event.ModifyDbNameEvent
 import com.lyy.keepassa.event.ShowTOTPEvent
 import com.lyy.keepassa.router.ActivityRouter
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.create.CreateDbActivity
 import com.lyy.keepassa.view.create.CreateEntryActivity
-import com.lyy.keepassa.view.create.CreateGroupDialog
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.search.SearchDialog
 import com.lyy.keepassa.widget.MainExpandFloatActionButton
@@ -126,11 +126,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       }
 
       override fun onGroupClick() {
-        val dialog = CreateGroupDialog.generate {
-          parentGroup = BaseApp.KDB!!.pm.rootGroup
-          build()
-        }
-        dialog.show(supportFragmentManager, "CreateGroupDialog")
+        Routerfit.create(DialogRouter::class.java).showCreateGroupDialog(BaseApp.KDB!!.pm.rootGroup)
         binding.fab.hintMoreOperate()
       }
     })

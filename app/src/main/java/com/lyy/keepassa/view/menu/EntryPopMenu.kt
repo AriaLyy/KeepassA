@@ -32,16 +32,12 @@ import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.ClipboardUtil
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.dir.ChooseGroupActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 
 /**
@@ -58,8 +54,6 @@ class EntryPopMenu(
 ) : IPopMenu {
   private val popup: PopupMenu = PopupMenu(context, view, Gravity.START)
   private val help: MenuPopupHelper
-  private lateinit var loadDialog: LoadingDialog
-  private val scope = MainScope()
 
   init {
     val inflater: MenuInflater = popup.menuInflater
@@ -121,8 +115,6 @@ class EntryPopMenu(
       .getBoolean(context.getString(R.string.set_key_delete_no_recycle_bin), false)
 
     if (deleteDirectly) {
-      loadDialog = LoadingDialog(context)
-      loadDialog.show()
       handleDelEntry()
       return
     }
@@ -145,8 +137,6 @@ class EntryPopMenu(
         }
 
         override fun onEnter(v: Button) {
-          loadDialog = LoadingDialog(context)
-          loadDialog.show()
           handleDelEntry()
         }
 
@@ -161,31 +151,10 @@ class EntryPopMenu(
    * 处理删除条目
    */
   private fun handleDelEntry() {
-    scope.launch {
-      val code = withContext(Dispatchers.IO) {
-        try {
-          if (BaseApp.isV4) {
-            val v4Entry = entry as PwEntryV4
-            if (BaseApp.KDB!!.pm.canRecycle(v4Entry)) {
-              BaseApp.KDB!!.pm.recycle(v4Entry)
-            } else {
-              KdbUtil.deleteEntry(entry, false, needUpload = false)
-            }
-          } else {
-            KdbUtil.deleteEntry(entry, false, needUpload = false)
-          }
-          return@withContext KdbUtil.saveDb()
-        } catch (e: Exception) {
-          e.printStackTrace()
-          HitUtil.toaskOpenDbException(e)
-        }
-        return@withContext DbSynUtil.STATE_SAVE_DB_FAIL
-      }
-
-      EventBus.getDefault()
-        .post(DelEvent(entry))
-
-      if (code == DbSynUtil.STATE_SUCCEED) {
+    KpaUtil.kdbService.deleteEntry(entry)
+    KpaUtil.kdbService.saveDbByForeground {
+      EventBus.getDefault().post(DelEvent(entry))
+      if (it == DbSynUtil.STATE_SUCCEED) {
         HitUtil.toaskShort(
           "${context.getString(R.string.del_entry)}${context.getString(R.string.success)}"
         )
@@ -194,8 +163,6 @@ class EntryPopMenu(
       }
 
       VibratorUtil.vibrator(300)
-      loadDialog.dismiss()
-      scope.cancel()
     }
   }
 
