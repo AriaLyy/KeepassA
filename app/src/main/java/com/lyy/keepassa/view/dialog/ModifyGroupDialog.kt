@@ -39,6 +39,7 @@ class ModifyGroupDialog : BaseDialog<DialogAddGroupBinding>(), View.OnClickListe
   private lateinit var module: CreateEntryModule
 
   @Autowired(name = "pwGroup")
+  @JvmField
   var pwGroup: PwGroupV4? = null
 
   override fun setLayoutId(): Int {

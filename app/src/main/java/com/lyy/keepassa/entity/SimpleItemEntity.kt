@@ -13,6 +13,7 @@ import android.view.View
 import androidx.fragment.app.FragmentActivity
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwGroup
+import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.view.menu.EntryPopMenu
 import com.lyy.keepassa.view.menu.GroupPopMenu
 
@@ -52,7 +53,7 @@ fun SimpleItemEntity.showPopMenu(
     val pop = GroupPopMenu(
       ac,
       v,
-      obj as PwGroup,
+      obj as PwGroupV4,
       curx,
       isInRecycleBin
     )

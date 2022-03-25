@@ -40,6 +40,7 @@ class CreateGroupDialog : BaseDialog<DialogAddGroupBinding>(), View.OnClickListe
   private lateinit var module: CreateEntryModule
 
   @Autowired(name = "parentGroup")
+  @JvmField
   var parentGroup: PwGroup = BaseApp.KDB!!.pm.rootGroup
 
   override fun setLayoutId(): Int {
