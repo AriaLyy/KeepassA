@@ -27,7 +27,6 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
@@ -59,11 +58,19 @@ class KdbService : IProvider {
     Routerfit.create(DialogRouter::class.java).getLoadingDialog()
   }
 
-  private fun showLoading() {
+  private suspend fun showLoading() {
     if (loadingDialog.isVisible) {
       return
     }
-    loadingDialog.show()
+    withContext(Dispatchers.Main){
+      loadingDialog.show()
+    }
+  }
+
+  private suspend fun dismissLoading(){
+    withContext(Dispatchers.Main){
+      loadingDialog.dismiss()
+    }
   }
 
   /**
@@ -105,8 +112,8 @@ class KdbService : IProvider {
     callback: (Int) -> Unit
   ) {
     val context = BaseApp.APP
-    showLoading()
     scope.launch(Dispatchers.IO) {
+      showLoading()
       try {
         // 创建db
         val cdb = CreateDBHelper(context, dbName, localDbUri)
@@ -221,9 +228,16 @@ class KdbService : IProvider {
     BaseApp.KDB!!.pm.addEntryTo(entry, entry.parent)
   }
 
-  suspend fun saveOnly(): Int {
+  suspend fun saveOnly(showLoading: Boolean = false): Int {
     return withContext(Dispatchers.IO) {
+      if (showLoading) {
+        showLoading()
+      }
+
       val b = KDBHandlerHelper.getInstance(BaseApp.APP).save(BaseApp.KDB)
+      if (showLoading) {
+        dismissLoading()
+      }
       return@withContext if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
     }
   }
@@ -276,7 +290,9 @@ class KdbService : IProvider {
       if (uploadDb) {
         val startTime = System.currentTimeMillis()
         showLoading()
-        val response = DbSynUtil.uploadSyn(BaseApp.dbRecord!!, isCreate)
+        val response = withContext(Dispatchers.IO) {
+          return@withContext DbSynUtil.uploadSyn(BaseApp.dbRecord!!, isCreate)
+        }
         Timber.i(response.msg)
         val endTime = System.currentTimeMillis()
         loadingDialog.dismiss(if ((endTime - startTime) < MIN_TIME) 0L else MIN_TIME)

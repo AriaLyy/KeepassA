@@ -21,6 +21,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -109,7 +110,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     const val TYPE_EDIT_ENTRY = 3
   }
 
-  private val getFileRequestCode = 0xA4
   private val editorRequestCode = 0xA5
 
   private var isShowPass = false
@@ -136,6 +136,11 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   @Autowired(name = IS_SHORTCUTS)
   @JvmField
   var isShortcuts: Boolean = false
+
+  private val getFileLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()){
+    it.takePermission()
+    addAttrFile(it)
+  }
 
   /**
    * 密码创建器
@@ -380,11 +385,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
                 CreateCustomStrDialog().show()
               }
               R.drawable.ic_attr_file -> { // 附件
-                KeepassAUtil.instance.openSysFileManager(
-                  this@CreateEntryActivity,
-                  "*/*",
-                  getFileRequestCode
-                )
+                getFileLauncher.launch(arrayOf("*/*"))
               }
               R.drawable.ic_token_grey -> { // totp
                 CreateOtpDialog().apply {
@@ -734,23 +735,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
 
   override fun setLayoutId(): Int {
     return R.layout.activity_entry_edit
-  }
-
-  override fun onActivityResult(
-    requestCode: Int,
-    resultCode: Int,
-    data: Intent?
-  ) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (resultCode == Activity.RESULT_OK && data != null) {
-      when (requestCode) {
-        // 处理附件
-        getFileRequestCode -> {
-          data.data?.takePermission()
-          addAttrFile(data.data)
-        }
-      }
-    }
   }
 
   override fun onDestroy() {

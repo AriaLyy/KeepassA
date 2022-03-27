@@ -212,9 +212,8 @@ class CreateEntryModule : BaseModule() {
    * @param pwEntry 需要添加的条目
    */
   fun addEntry(ac: FragmentActivity, pwEntry: PwEntry) {
-    viewModelScope.launch {
-      KpaUtil.kdbService.addEntry(pwEntry)
-      KdbUtil.addEntry(pwEntry, save = true, uploadDb = true)
+    KpaUtil.kdbService.addEntry(pwEntry)
+    KpaUtil.kdbService.saveDbByForeground {
       HitUtil.toaskShort(
         "${BaseApp.APP.getString(R.string.create_entry)}${
           BaseApp.APP.getString(
@@ -233,7 +232,7 @@ class CreateEntryModule : BaseModule() {
    */
   fun saveDb(callback: () -> Unit) {
     viewModelScope.launch {
-      KpaUtil.kdbService.saveOnly()
+      KpaUtil.kdbService.saveOnly(true)
       callback.invoke()
     }
   }

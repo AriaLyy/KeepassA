@@ -29,13 +29,13 @@ interface DialogRouter {
   @RouterPath(path = "/dialog/modifyGroup")
   @DialogArg(showDialog = true)
   fun showModifyGroupDialog(
-    @RouterArgName(name = "pwGroup", isObject = true) pwGroup: PwGroupV4
+    @RouterArgName(name = "pwGroup") pwGroup: PwGroupV4
   )
 
   @RouterPath(path = "/dialog/createDb")
   @DialogArg(showDialog = true)
   fun showCreateGroupDialog(
-    @RouterArgName(name = "parentGroup", isObject = true) parentGroup: PwGroup
+    @RouterArgName(name = "parentGroup") parentGroup: PwGroup
   )
 
   @RouterPath(path = "/dialog/loading")

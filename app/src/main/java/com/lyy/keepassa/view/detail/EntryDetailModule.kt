@@ -50,8 +50,6 @@ import com.lyy.keepassa.widget.expand.AttrFileItemView
 import com.lyy.keepassa.widget.expand.AttrStrItemView
 import com.lyy.keepassa.widget.toPx
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
@@ -277,19 +275,14 @@ class EntryDetailModule : BaseModule() {
    * @param pwEntry 需要回收的条目
    */
   fun recycleEntry(ac: FragmentActivity, pwEntry: PwEntry) {
-    try {
-      KpaUtil.kdbService.deleteEntry(pwEntry)
-      KpaUtil.kdbService.saveDbByForeground {
-        EventBus.getDefault().post(DelEvent(pwEntry))
-        HitUtil.toaskShort(
-          "${ac.getString(R.string.del_entry)}${ac.getString(R.string.success)}"
-        )
-        VibratorUtil.vibrator(300)
-        ac.finishAfterTransition()
-      }
-    } catch (e: Exception) {
-      e.printStackTrace()
-      HitUtil.toaskOpenDbException(e)
+    KpaUtil.kdbService.deleteEntry(pwEntry)
+    KpaUtil.kdbService.saveDbByForeground {
+      EventBus.getDefault().post(DelEvent(pwEntry))
+      HitUtil.toaskShort(
+        "${ac.getString(R.string.del_entry)}${ac.getString(R.string.success)}"
+      )
+      VibratorUtil.vibrator(300)
+      ac.finishAfterTransition()
     }
   }
 

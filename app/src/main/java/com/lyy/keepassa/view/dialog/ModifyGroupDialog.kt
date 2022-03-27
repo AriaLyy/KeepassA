@@ -105,6 +105,7 @@ class ModifyGroupDialog : BaseDialog<DialogAddGroupBinding>(), View.OnClickListe
           it.name = newTitle
           module.saveDb {
             EventBus.getDefault().post(CreateOrUpdateGroupEvent(it, true))
+            dismiss()
           }
         }
       }
