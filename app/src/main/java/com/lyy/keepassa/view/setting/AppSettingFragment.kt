@@ -46,6 +46,7 @@ import com.lyy.keepassa.common.PassType
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.PermissionsUtil
 import com.lyy.keepassa.view.UpgradeLogDialog
@@ -246,7 +247,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
    * 截取短密码，需要延时截取，因为Preference的保存是异步的，有可能会比较慢
    */
   private fun subShortPass() {
-    GlobalScope.launch {
+    KpaUtil.scope.launch {
       delay(1000)
       KeepassAUtil.instance.subShortPass()
     }

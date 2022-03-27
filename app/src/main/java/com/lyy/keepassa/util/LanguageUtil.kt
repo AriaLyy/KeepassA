@@ -27,7 +27,12 @@ object LanguageUtil {
 
   @JvmField
   val SUPPORT_LAN =
-    arrayListOf(Locale.ENGLISH, Locale.SIMPLIFIED_CHINESE, Locale.TRADITIONAL_CHINESE, Locale.CANADA_FRENCH)
+    arrayListOf(
+      Locale.ENGLISH,
+      Locale.SIMPLIFIED_CHINESE,
+      Locale.TRADITIONAL_CHINESE,
+      Locale.CANADA_FRENCH
+    )
 
   /**
    * 设置app语言
@@ -49,7 +54,7 @@ object LanguageUtil {
     return cx
   }
 
-  fun getLanguageConfig(context: Context, locale: Locale):Configuration{
+  fun getLanguageConfig(context: Context, locale: Locale): Configuration {
     val res: Resources = context.resources
     val conf = res.configuration
     conf.setLocale(locale)
@@ -67,8 +72,7 @@ object LanguageUtil {
     return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
       Locale.getDefault()
     } else {
-      LocaleList.getDefault()
-          .get(0)
+      LocaleList.getDefault().get(0)
     }
   }
 

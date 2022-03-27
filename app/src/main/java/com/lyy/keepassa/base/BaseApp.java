@@ -135,9 +135,6 @@ public class BaseApp extends MultiDexApplication {
 
     EventBus.builder().addIndex(new KpaEventBusIndex()).installDefaultEventBus();
 
-    //IntentFilter ift = new IntentFilter();
-    //ift.addAction(AutoFillClickReceiver.ACTION_CLICK_OTHER);
-    //registerReceiver(new AutoFillClickReceiver(), ift);
   }
 
   private void initBugly() {
@@ -229,6 +226,7 @@ public class BaseApp extends MultiDexApplication {
       } else {
         LanguageUtil.INSTANCE.setLanguage(context, Locale.ENGLISH);
       }
+      LanguageUtil.INSTANCE.saveLanguage(context, lang);
     }
     return lang;
   }
