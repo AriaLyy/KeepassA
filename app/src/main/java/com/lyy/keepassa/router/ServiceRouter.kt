@@ -8,7 +8,8 @@
 package com.lyy.keepassa.router
 
 import com.arialyy.frame.router.RouterPath
-import com.lyy.keepassa.service.feat.KdbService
+import com.lyy.keepassa.service.feat.KdbHandlerService
+import com.lyy.keepassa.service.feat.KdbOpenService
 
 /**
  * @Author laoyuyu
@@ -17,6 +18,9 @@ import com.lyy.keepassa.service.feat.KdbService
  **/
 interface ServiceRouter {
 
-  @RouterPath(path = "/service/kdb")
-  fun getDbSaveService(): KdbService
+  @RouterPath(path = "/service/kdbHandler")
+  fun getDbSaveService(): KdbHandlerService
+
+  @RouterPath(path = "/service/kdbOpen")
+  fun getDbOpenService(): KdbOpenService
 }

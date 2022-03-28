@@ -10,7 +10,6 @@
 package com.lyy.keepassa.view
 
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.viewModelScope
 import com.keepassdroid.database.PwDatabaseV4
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
@@ -21,12 +20,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.event.MoveEvent
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
-import com.lyy.keepassa.util.cloud.DbSynUtil
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import java.util.UUID
 
@@ -48,7 +42,7 @@ class ChoseDirModule : BaseModule() {
     } else {
       (BaseApp.KDB.pm as PwDatabaseV4).moveGroup(group, curGroup)
     }
-    KpaUtil.kdbService.saveDbByBackground()
+    KpaUtil.kdbHandlerService.saveDbByBackground()
     EventBus.getDefault().post(MoveEvent(MoveEvent.MOVE_TYPE_GROUP, null, group))
     HitUtil.toaskShort(ac.getString(R.string.undo_grouped))
     ac.finishAfterTransition()
@@ -70,7 +64,7 @@ class ChoseDirModule : BaseModule() {
     } else {
       (BaseApp.KDB.pm as PwDatabaseV4).moveEntry(entryV4, curGroup)
     }
-    KpaUtil.kdbService.saveDbByBackground()
+    KpaUtil.kdbHandlerService.saveDbByBackground()
     EventBus.getDefault()
       .post(MoveEvent(MoveEvent.MOVE_TYPE_ENTRY, entryV4, null))
     HitUtil.toaskShort(ac.getString(R.string.undo_entryed))

@@ -116,7 +116,7 @@ object DbMergeDelegate {
     }
 
     if (modifyList.size <= 0) {
-      KpaUtil.kdbService.saveDbByBackground()
+      KpaUtil.kdbHandlerService.saveDbByBackground()
       return DbSynUtil.STATE_SUCCEED
     }
 
@@ -249,7 +249,7 @@ object DbMergeDelegate {
         (p.second as PwGroup).assign(p.first as PwGroup)
       }
     }
-    KpaUtil.kdbService.saveDbByBackground()
+    KpaUtil.kdbHandlerService.saveDbByBackground()
     return DbSynUtil.STATE_SUCCEED
   }
 

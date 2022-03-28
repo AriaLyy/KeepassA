@@ -47,6 +47,10 @@ public class LoadingDialog extends BaseDialog<DialogLoadingBinding> {
   }
 
   public void dismiss(long delay) {
+    if (delay == 0) {
+      super.dismiss();
+      return;
+    }
     BaseApp.handler.postDelayed(this::dismiss, delay);
   }
 }

@@ -195,7 +195,7 @@ class CreateEntryModule : BaseModule() {
     icon: PwIconStandard,
     customIcon: PwIconCustom?
   ) = flow<Boolean> {
-    val group = KpaUtil.kdbService.createGroup(groupName, icon, customIcon, parentGroup)
+    val group = KpaUtil.kdbHandlerService.createGroup(groupName, icon, customIcon, parentGroup)
     HitUtil.toaskShort(
       "${BaseApp.APP.getString(R.string.create_group)}${
         BaseApp.APP.getString(
@@ -212,8 +212,8 @@ class CreateEntryModule : BaseModule() {
    * @param pwEntry 需要添加的条目
    */
   fun addEntry(ac: FragmentActivity, pwEntry: PwEntry) {
-    KpaUtil.kdbService.addEntry(pwEntry)
-    KpaUtil.kdbService.saveDbByForeground {
+    KpaUtil.kdbHandlerService.addEntry(pwEntry)
+    KpaUtil.kdbHandlerService.saveDbByForeground {
       HitUtil.toaskShort(
         "${BaseApp.APP.getString(R.string.create_entry)}${
           BaseApp.APP.getString(
@@ -232,7 +232,7 @@ class CreateEntryModule : BaseModule() {
    */
   fun saveDb(callback: () -> Unit) {
     viewModelScope.launch {
-      KpaUtil.kdbService.saveOnly(true)
+      KpaUtil.kdbHandlerService.saveOnly(true)
       callback.invoke()
     }
   }

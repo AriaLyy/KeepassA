@@ -46,7 +46,7 @@ class SearchModule : BaseModule() {
       break
     }
     pwEntry.strings["KP2A_URL_$nextId"] = ProtectedString(false, "androidapp://$apkPkgName")
-    KpaUtil.kdbService.saveDbByForeground(callback = callback)
+    KpaUtil.kdbHandlerService.saveDbByForeground(callback = callback)
   }
 
   /**

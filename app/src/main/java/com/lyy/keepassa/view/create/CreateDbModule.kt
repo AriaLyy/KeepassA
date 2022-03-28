@@ -68,16 +68,8 @@ class CreateDbModule : BaseModule() {
   /**
    * 创建并打开数据库
    */
-  fun createAndOpenDb(ac: FragmentActivity) {
-    KpaUtil.kdbService.createDb(dbName, localDbUri, dbPass, keyUri, cloudPath, storageType) {
-      Timber.d("创建数据库成功")
-      HitUtil.toaskShort(ac.getString(R.string.hint_db_create_success, dbName))
-      NotificationUtil.startDbOpenNotify(ac)
-      Routerfit.create(ActivityRouter::class.java, ac).toMainActivity(
-        opt = ActivityOptionsCompat.makeSceneTransitionAnimation(ac)
-      )
-      KeepassAUtil.instance.saveLastOpenDbHistory(BaseApp.dbRecord)
-    }
+  fun createAndOpenDb() {
+    KpaUtil.kdbOpenService.createDb(dbName, localDbUri, dbPass, keyUri, cloudPath, storageType)
   }
 
   /**

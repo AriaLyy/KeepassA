@@ -17,6 +17,7 @@ import android.view.MotionEvent
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -38,19 +39,22 @@ import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.doOnInterceptTouchEvent
 import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.util.doOnItemLongClickListener
 import com.lyy.keepassa.util.isAFS
 import com.lyy.keepassa.view.SimpleEntryAdapter
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 
 @Route(path = "/main/fragment/home")
 class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
 
-  private lateinit var module: EntryModule
+  private lateinit var module: HomeModule
   private lateinit var adapter: SimpleEntryAdapter
   private val entryData = ArrayList<SimpleItemEntity>()
   private var curx = 0
@@ -58,7 +62,7 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    module = ViewModelProvider(this).get(EntryModule::class.java)
+    module = ViewModelProvider(this).get(HomeModule::class.java)
   }
 
   override fun initData() {
@@ -96,9 +100,33 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
       }
       return@doOnInterceptTouchEvent false
     }
-
+    listenerDataGet()
+    listenerCollection()
     initRefresh()
-    getData()
+    module.getRootEntry()
+  }
+
+  private fun listenerDataGet() {
+    lifecycleScope.launch {
+      module.itemDataFlow.collectLatest {
+        entryData.clear()
+        if (it != null) {
+          entryData.addAll(it)
+        }
+        adapter.notifyDataSetChanged()
+        if (isSyncDb) {
+          finishRefresh(true)
+        }
+      }
+    }
+  }
+
+  private fun listenerCollection() {
+    lifecycleScope.launch {
+      KpaUtil.kdbHandlerService.collectionStateFlow.collectLatest {
+
+      }
+    }
   }
 
   private fun initRefresh() {
@@ -115,32 +143,21 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
 
       if (BaseApp.dbRecord!!.isAFS()) {
         isSyncDb = true
-        getData()
+        module.getRootEntry()
         return@setOnRefreshListener
       }
 
-      module.syncDb{
-        if (it != DbSynUtil.STATE_SUCCEED){
+      module.syncDb {
+        if (it != DbSynUtil.STATE_SUCCEED) {
           finishRefresh(false)
           return@syncDb
         }
         isSyncDb = true
-        getData()
+        module.getRootEntry()
       }
     }
   }
 
-  private fun getData() {
-    module.getRootEntry(requireContext())
-      .observe(this, Observer { list ->
-        entryData.clear()
-        entryData.addAll(list)
-        adapter.notifyDataSetChanged()
-        if (isSyncDb) {
-          finishRefresh(true)
-        }
-      })
-  }
 
   private fun finishRefresh(isSuccess: Boolean) {
     binding.swipe.isRefreshing = false
@@ -172,7 +189,7 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
       }
       return
     }
-    getData()
+    module.getRootEntry()
   }
 
   /**
@@ -193,7 +210,7 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
       }
       return
     }
-    getData()
+    module.getRootEntry()
   }
 
   /**
@@ -201,7 +218,7 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
    */
   @Subscribe(threadMode = MAIN)
   fun onMove(event: MoveEvent) {
-    getData()
+    module.getRootEntry()
   }
 
   /**
@@ -227,7 +244,7 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
       }
     } else {
       // 如果回收站不存在，重新刷新界面，进行删除操作时会自动添加回收站
-      getData()
+      module.getRootEntry()
     }
     adapter.notifyDataSetChanged()
   }

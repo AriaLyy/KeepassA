@@ -18,7 +18,11 @@ import kotlinx.coroutines.MainScope
  **/
 object KpaUtil {
   var scope = MainScope()
-  val kdbService by lazy {
+  val kdbHandlerService by lazy {
     Routerfit.create(ServiceRouter::class.java).getDbSaveService()
+  }
+
+  val kdbOpenService by lazy {
+    Routerfit.create(ServiceRouter::class.java).getDbOpenService()
   }
 }

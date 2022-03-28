@@ -14,10 +14,8 @@ import android.net.Uri
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
-import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
-import com.lyy.keepassa.util.cloud.DbSynUtil
 
 /**
  * 设置页面的module
@@ -29,7 +27,7 @@ class SettingModule : BaseModule() {
    */
   fun modifyDbName(newDbName: String, callback: (Int) -> Unit) {
     BaseApp.KDB.pm.name = newDbName
-    KpaUtil.kdbService.saveDbByForeground(callback = callback)
+    KpaUtil.kdbHandlerService.saveDbByForeground(callback = callback)
   }
 
   /**
@@ -48,6 +46,6 @@ class SettingModule : BaseModule() {
       )
       BaseApp.KDB.pm.setMasterKey(newPass, ios)
     }
-    KpaUtil.kdbService.saveDbByBackground(callback = callback)
+    KpaUtil.kdbHandlerService.saveDbByBackground(callback = callback)
   }
 }

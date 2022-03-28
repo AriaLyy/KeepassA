@@ -35,7 +35,6 @@ import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
-import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.dir.ChooseGroupActivity
 import org.greenrobot.eventbus.EventBus
@@ -151,8 +150,8 @@ class EntryPopMenu(
    * 处理删除条目
    */
   private fun handleDelEntry() {
-    KpaUtil.kdbService.deleteEntry(entry)
-    KpaUtil.kdbService.saveDbByForeground {
+    KpaUtil.kdbHandlerService.deleteEntry(entry)
+    KpaUtil.kdbHandlerService.saveDbByForeground {
       EventBus.getDefault().post(DelEvent(entry))
       if (it == DbSynUtil.STATE_SUCCEED) {
         HitUtil.toaskShort(

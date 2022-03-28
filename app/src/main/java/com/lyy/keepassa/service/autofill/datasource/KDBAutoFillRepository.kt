@@ -10,7 +10,6 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap.CompressFormat.PNG
 import android.view.View
 import com.arialyy.frame.config.CommonConstant
-import com.arialyy.frame.router.Routerfit
 import com.keepassdroid.database.PwDatabaseV4
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV3
@@ -21,7 +20,6 @@ import com.keepassdroid.database.PwIconStandard
 import com.keepassdroid.database.SearchParametersV4
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.base.BaseApp
-import com.lyy.keepassa.router.ServiceRouter
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
@@ -142,7 +140,7 @@ object KDBAutoFillRepository {
         }
       }
     }
-    KpaUtil.kdbService.saveDbByBackground()
+    KpaUtil.kdbHandlerService.saveDbByBackground()
     Timber.d("密码信息保存成功")
   }
 

@@ -10,8 +10,6 @@
 package com.lyy.keepassa.view.detail
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
 import android.graphics.Paint
 import android.graphics.Rect
 import android.os.Bundle
@@ -25,7 +23,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.transition.addListener
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -51,9 +48,7 @@ import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.isCollection
-import com.lyy.keepassa.util.setCollection
 import com.lyy.keepassa.util.takePermission
-import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
@@ -143,7 +138,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   override fun finishAfterTransition() {
     showContent(false)
     if (module.lastCollection != (pwEntry as PwEntryV4).isCollection()) {
-      KpaUtil.kdbService.saveDbByBackground()
+      KpaUtil.kdbHandlerService.saveDbByBackground()
     }
     if (!KeepassAUtil.instance.isDisplayLoadingAnim()) {
       super.finishAfterTransition()
@@ -272,13 +267,13 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       R.id.ivCollection -> {
         if ((pwEntry as PwEntryV4).isCollection()) {
           Timber.d("取消收藏")
-          (pwEntry as PwEntryV4).setCollection(false)
+          KpaUtil.kdbHandlerService.collection(pwEntry as PwEntryV4, false)
           binding.ivCollection.isSelected = false
           return
         }
 
         Timber.d("收藏")
-        (pwEntry as PwEntryV4).setCollection(true)
+        KpaUtil.kdbHandlerService.collection(pwEntry as PwEntryV4, true)
         binding.ivCollection.isSelected = true
       }
     }

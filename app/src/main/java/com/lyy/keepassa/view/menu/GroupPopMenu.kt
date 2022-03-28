@@ -131,8 +131,8 @@ class GroupPopMenu(
    * 处理删除群组
    */
   private fun handleDelGroup() {
-    KpaUtil.kdbService.deleteGroup(pwGroup)
-    KpaUtil.kdbService.saveDbByForeground { code ->
+    KpaUtil.kdbHandlerService.deleteGroup(pwGroup)
+    KpaUtil.kdbHandlerService.saveDbByForeground { code ->
       EventBus.getDefault().post(DelEvent(pwGroup))
       if (code == DbSynUtil.STATE_SUCCEED) {
         HitUtil.toaskShort(

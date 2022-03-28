@@ -87,11 +87,7 @@ class LauncherModule : BaseModule() {
   }
 
   private val keyStoreUtil by lazy {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      KeyStoreUtil()
-    } else {
-      null
-    }
+    KeyStoreUtil()
   }
 
   /**
@@ -266,7 +262,7 @@ class LauncherModule : BaseModule() {
       return
     }
     val resource = fragment.requireContext().resources
-    keyStoreUtil?.deleteKeyStore()
+    keyStoreUtil.deleteKeyStore()
     HitUtil.snackLong(fragment.getRootView(), resource.getString(R.string.hint_fingerprint_modify))
     fragment.hideFingerprint()
     deleteFingerprint(openDbRecord.localDbUri)
@@ -378,201 +374,6 @@ class LauncherModule : BaseModule() {
       return@withContext unLockRecord.isUseFingerprint
     }
     emit(needOpen)
-  }
-
-  /**
-   * 打开数据库
-   *
-   */
-  fun openDb(
-    context: Context,
-    record: DbHistoryRecord,
-    dbPass: String
-  ) = liveData {
-    Timber.d("打开数据库")
-
-    val db: Database? = withContext(Dispatchers.IO) {
-      var temp: Database? = null
-      try {
-        temp = when (record.getDbPathType()) {
-          AFS -> {
-            openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
-          }
-          DROPBOX -> {
-            openDropboxDb(context, record, dbPass)
-          }
-          WEBDAV -> {
-            openWebDavDb(context, record, dbPass)
-          }
-          ONE_DRIVE -> {
-            openOneDriveDb(context, record, dbPass)
-          }
-          else -> null
-        }
-      } catch (e: Exception) {
-        HitUtil.toaskOpenDbException(e)
-        e.printStackTrace()
-      }
-      temp
-    }
-    emit(db)
-  }
-
-  /**
-   * 打开OneDrive数据库
-   */
-  private suspend fun openOneDriveDb(
-    context: Context,
-    record: DbHistoryRecord,
-    dbPass: String
-  ): Database? {
-    val channel = Channel<Database?>()
-    var db: Database? = null
-
-    OneDriveUtil.initOneDrive {
-      if (!it) {
-        scope.launch {
-          channel.send(null)
-        }
-        return@initOneDrive
-      }
-      OneDriveUtil.loginCallback = object : OneDriveUtil.OnLoginCallback {
-        override fun callback(success: Boolean) {
-          scope.launch {
-            if (!success) {
-              channel.send(null)
-              return@launch
-            }
-            val cacheFile = record.getDbUri()
-              .toFile()
-            if (cacheFile.exists()
-              && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
-            ) {
-              Timber.i("文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
-              db = openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
-            }
-            val cachePath = DbSynUtil.downloadOnly(context, record, Uri.fromFile(cacheFile))
-            db = if (TextUtils.isEmpty(cachePath)) {
-              null
-            } else {
-              openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
-            }
-            channel.send(db)
-          }
-        }
-      }
-      OneDriveUtil.loadAccount()
-    }
-    repeat(1) {
-      db = channel.receive()
-    }
-
-    return db
-  }
-
-  /**
-   * 打开坚果云数据
-   */
-  private suspend fun openWebDavDb(
-    context: Context,
-    record: DbHistoryRecord,
-    dbPass: String
-  ): Database? {
-    val dao = BaseApp.appDatabase.cloudServiceInfoDao()
-    val serviceInfo = dao.queryServiceInfo(record.cloudDiskPath!!)
-    if (serviceInfo == null) {
-      HitUtil.toaskShort(context.getString(R.string.invalid_auth))
-      return null
-    }
-    WebDavUtil.login(
-      serviceInfo.cloudPath, QuickUnLockUtil.decryption(serviceInfo.userName),
-      QuickUnLockUtil.decryption(serviceInfo.password)
-    )
-
-    val cacheFile = record.getDbUri()
-      .toFile()
-    if (cacheFile.exists()
-      && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
-    ) {
-      Timber.i("文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
-      return openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
-    }
-    val cachePath = DbSynUtil.downloadOnly(context, record, Uri.fromFile(cacheFile))
-    return if (TextUtils.isEmpty(cachePath)) {
-      null
-    } else {
-      openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
-    }
-  }
-
-  /**
-   * 打开dropbox的数据库
-   */
-  private suspend fun openDropboxDb(
-    context: Context,
-    record: DbHistoryRecord,
-    dbPass: String
-  ): Database? {
-    val cacheFile = record.getDbUri()
-      .toFile()
-    if (cacheFile.exists()
-      && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
-    ) {
-      Timber.i("文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
-      return openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
-    }
-    val cachePath = DbSynUtil.downloadOnly(context, record, Uri.fromFile(cacheFile))
-    return if (TextUtils.isEmpty(cachePath)) {
-      null
-    } else {
-      openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
-    }
-  }
-
-  /**
-   * 打开数据库文件
-   * @param dbUri 如果是AFS，dbUri表示本地文件的Uri；如果是云端文件，表示的是云端文件的路径
-   */
-  private suspend fun openDbFile(
-    context: Context,
-    dbUri: Uri,
-    dbPass: String,
-    keyUri: Uri?,
-    record: DbHistoryRecord
-  ): Database? {
-    try {
-      val db = KDBHandlerHelper.getInstance(context)
-        .openDb(dbUri, dbPass, keyUri)
-      if (db != null) {
-        val dbName = UriUtil.getFileNameFromUri(context, dbUri)
-        BaseApp.dbPass = QuickUnLockUtil.encryptStr(dbPass)
-        KeepassAUtil.instance.subShortPass()
-        if (keyUri != null) {
-          BaseApp.dbKeyPath = QuickUnLockUtil.encryptStr(keyUri.toString())
-        }else{
-          BaseApp.dbKeyPath = null
-        }
-        //              BaseApp.KDB?.clear(context)
-        // 保存打开记录
-        BaseApp.KDB = db
-        BaseApp.dbName = db.pm.name
-        BaseApp.dbFileName = dbName
-
-        BaseApp.dbVersion = "Keepass ${if (PwDatabase.isKDBExtension(dbName)) "3.x" else "4.x"}"
-        BaseApp.isV4 = !PwDatabase.isKDBExtension(dbName)
-        BaseApp.dbRecord = record
-        KeepassAUtil.instance.saveLastOpenDbHistory(record)
-
-        if (!BaseApp.isAFS()) {
-          DbSynUtil.updateServiceModifyTime(record)
-        }
-      }
-      return db
-    } catch (e: Exception) {
-      HitUtil.toaskOpenDbException(e)
-      e.printStackTrace()
-    }
-    return null
   }
 
   /**

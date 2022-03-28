@@ -275,8 +275,8 @@ class EntryDetailModule : BaseModule() {
    * @param pwEntry 需要回收的条目
    */
   fun recycleEntry(ac: FragmentActivity, pwEntry: PwEntry) {
-    KpaUtil.kdbService.deleteEntry(pwEntry)
-    KpaUtil.kdbService.saveDbByForeground {
+    KpaUtil.kdbHandlerService.deleteEntry(pwEntry)
+    KpaUtil.kdbHandlerService.saveDbByForeground {
       EventBus.getDefault().post(DelEvent(pwEntry))
       HitUtil.toaskShort(
         "${ac.getString(R.string.del_entry)}${ac.getString(R.string.success)}"
