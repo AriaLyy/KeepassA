@@ -12,6 +12,7 @@ import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
+import com.lyy.keepassa.entity.EntryType
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
@@ -35,7 +36,7 @@ internal class HomeModule : BaseModule() {
     entity.title = ResUtil.getString(R.string.my_collection)
     entity.subTitle = ResUtil.getString(R.string.current_collection_num, "0")
     entity.icon = R.drawable.ic_star
-    entity.obj = "collection"
+    entity.obj = EntryType.TYPE_COLLECTION
     entity
   }
 

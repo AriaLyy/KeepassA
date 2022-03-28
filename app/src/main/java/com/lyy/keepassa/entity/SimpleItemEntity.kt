@@ -40,6 +40,10 @@ class SimpleItemEntity {
   var isCheck = false
 }
 
+enum class EntryType{
+   TYPE_COLLECTION
+}
+
 /**
  * show pop menu
  */

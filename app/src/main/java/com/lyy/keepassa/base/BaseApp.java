@@ -123,9 +123,7 @@ public class BaseApp extends MultiDexApplication {
     }
     ARouter.init(this); // 尽可能早，推荐在Application中初始化
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      KeyStoreUtil.Companion.setKeyStorePass(QuickUnLockUtil.getDbPass().toCharArray());
-    }
+    KeyStoreUtil.Companion.setKeyStorePass(QuickUnLockUtil.getDbPass().toCharArray());
     RichText.initCacheDir(this);
     initReceiver();
     boolean showStatusBar = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)

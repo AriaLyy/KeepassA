@@ -13,7 +13,6 @@ import android.content.Context
 import android.graphics.Paint
 import android.view.View
 import android.widget.CheckBox
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.isVisible
@@ -22,8 +21,10 @@ import com.arialyy.frame.util.adapter.AbsRVAdapter
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwGroup
 import com.lyy.keepassa.R
+import com.lyy.keepassa.entity.EntryType
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.IconUtil
+import com.lyy.keepassa.util.loadImg
 import com.lyy.keepassa.view.SimpleEntryAdapter.Holder
 import java.util.Date
 
@@ -36,7 +37,7 @@ class SimpleEntryAdapter(
 ) : AbsRVAdapter<SimpleItemEntity, Holder>(context, data) {
   private var showCheckBox = false
 
-  fun showCheckBox(showCheckBox:Boolean){
+  fun showCheckBox(showCheckBox: Boolean) {
     this.showCheckBox = showCheckBox
     notifyDataSetChanged()
   }
@@ -57,7 +58,6 @@ class SimpleEntryAdapter(
     position: Int,
     item: SimpleItemEntity
   ) {
-
     if (item.obj is PwGroup) {
       IconUtil.setGroupIcon(context, item.obj as PwGroup, holder!!.icon)
     } else if (item.obj is PwEntry) {
@@ -66,12 +66,14 @@ class SimpleEntryAdapter(
       if ((item.obj as PwEntry).expires()
         && (item.obj as PwEntry).expiryTime != null
         && (item.obj as PwEntry).expiryTime.before(Date(System.currentTimeMillis()))
-      ){
+      ) {
         paint.flags = Paint.STRIKE_THRU_TEXT_FLAG
         paint.isAntiAlias = true
-      }else{
+      } else {
         paint.flags = 0
       }
+    } else if (item.obj == EntryType.TYPE_COLLECTION) {
+      holder!!.icon.loadImg(mContext, item.icon)
     }
 
     holder!!.title.text = item.title
@@ -79,7 +81,7 @@ class SimpleEntryAdapter(
     holder.des.visibility = if (item.subTitle.isBlank()) View.GONE else View.VISIBLE
 
     holder.cb.isVisible = showCheckBox
-    if (showCheckBox){
+    if (showCheckBox) {
       holder.cb.isChecked = item.isCheck
       holder.cb.setOnCheckedChangeListener { _, isChecked ->
         item.isCheck = isChecked

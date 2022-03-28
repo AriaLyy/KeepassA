@@ -34,9 +34,7 @@ import androidx.transition.TransitionInflater
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
-import com.arialyy.frame.base.FrameApp
 import com.arialyy.frame.router.Routerfit
-import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
@@ -138,21 +136,6 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
       }
     }
     listenerOpenDb()
-    Timber.d(
-      "str = ${
-        ResUtil.getString(
-          R.string.current_collection_num,
-          0
-        )
-      }"
-    )
-    Timber.d(
-      "str = ${
-        String.format(FrameApp.app.getString(
-          R.string.current_collection_num,
-        ), 0)
-      }"
-    )
   }
 
   private fun listenerOpenDb() {
@@ -170,7 +153,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         Routerfit.create(ActivityRouter::class.java, requireActivity()).toMainActivity(
           opt = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
         )
-        requireActivity().finish()
+//        requireActivity().finish()
       }
     }
   }

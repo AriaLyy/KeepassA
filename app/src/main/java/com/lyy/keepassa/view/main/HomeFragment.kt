@@ -102,9 +102,9 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
       return@doOnInterceptTouchEvent false
     }
     listenerDataGet()
-    listenerCollection()
     initRefresh()
     module.getRootEntry()
+    listenerCollection()
   }
 
   private fun listenerDataGet() {
@@ -131,11 +131,17 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
         }
 
         if (entryData[0] == module.collectionEntry) {
+          if (it == 0) {
+            entryData.removeAt(0)
+            adapter.notifyItemRemoved(0)
+            return@collectLatest
+          }
           entryData[0].subTitle = ResUtil.getString(R.string.current_collection_num, it.toString())
           adapter.notifyItemChanged(0)
           return@collectLatest
         }
-        module.collectionEntry.subTitle = ResUtil.getString(R.string.current_collection_num, it.toString())
+        module.collectionEntry.subTitle =
+          ResUtil.getString(R.string.current_collection_num, it.toString())
         entryData.add(0, module.collectionEntry)
         adapter.notifyItemInserted(0)
       }
@@ -167,6 +173,7 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
         }
         isSyncDb = true
         module.getRootEntry()
+        finishRefresh(true)
       }
     }
   }
