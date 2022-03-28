@@ -76,14 +76,7 @@ class SimpleEntryAdapter(
 
     holder!!.title.text = item.title
     holder.des.text = item.subTitle
-
-    if (item.subTitle.isBlank()){
-      holder.des.visibility = View.GONE
-      (holder.title.layoutParams as RelativeLayout.LayoutParams).addRule(RelativeLayout.CENTER_VERTICAL)
-    }else{
-      holder.des.visibility = View.VISIBLE
-      (holder.title.layoutParams as RelativeLayout.LayoutParams).removeRule(RelativeLayout.CENTER_VERTICAL)
-    }
+    holder.des.visibility = if (item.subTitle.isBlank()) View.GONE else View.VISIBLE
 
     holder.cb.isVisible = showCheckBox
     if (showCheckBox){
