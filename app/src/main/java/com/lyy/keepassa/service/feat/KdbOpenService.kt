@@ -215,20 +215,24 @@ class KdbOpenService : IProvider {
         }
         temp
       }
-      withContext(Dispatchers.IO) {
-        var collectionNum = 0
-        BaseApp.KDB.pm.entries.forEach {
-          if ((it.value as PwEntryV4).isCollection()) {
-            collectionNum++
+
+      if (db != null) {
+        BaseApp.isLocked = false
+        BaseApp.KDB = db
+        NotificationUtil.startDbOpenNotify(context)
+        withContext(Dispatchers.IO) {
+          var collectionNum = 0
+          BaseApp.KDB.pm.entries.forEach {
+            if ((it.value as PwEntryV4).isCollection()) {
+              collectionNum++
+            }
           }
+          KpaUtil.kdbHandlerService.updateCollectionNum(collectionNum)
         }
-        KpaUtil.kdbHandlerService.updateCollectionNum(collectionNum)
       }
+
       if (needShowLoading) {
         dismissLoading()
-      }
-      if (db != null) {
-        NotificationUtil.startDbOpenNotify(context)
       }
       openDbFlow.emit(db)
     }

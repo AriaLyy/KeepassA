@@ -54,6 +54,8 @@ class KdbHandlerService : IProvider {
     Routerfit.create(DialogRouter::class.java).getLoadingDialog()
   }
 
+  fun getCollectionNum() = collectionNum.get()
+
   internal fun updateCollectionNum(newCollectionNum: Int) {
     collectionNum.set(newCollectionNum)
     scope.launch {

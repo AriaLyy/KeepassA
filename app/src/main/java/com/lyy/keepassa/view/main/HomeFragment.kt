@@ -15,13 +15,13 @@ import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.view.MotionEvent
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.arialyy.frame.util.DpUtils
+import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwGroup
 import com.lyy.keepassa.R
@@ -50,6 +50,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
+import timber.log.Timber
 
 @Route(path = "/main/fragment/home")
 class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
@@ -124,7 +125,19 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
   private fun listenerCollection() {
     lifecycleScope.launch {
       KpaUtil.kdbHandlerService.collectionStateFlow.collectLatest {
+        if (entryData.isEmpty()) {
+          Timber.d("current no any data, please wait get root data.")
+          return@collectLatest
+        }
 
+        if (entryData[0] == module.collectionEntry) {
+          entryData[0].subTitle = ResUtil.getString(R.string.current_collection_num, it.toString())
+          adapter.notifyItemChanged(0)
+          return@collectLatest
+        }
+        module.collectionEntry.subTitle = ResUtil.getString(R.string.current_collection_num, it.toString())
+        entryData.add(0, module.collectionEntry)
+        adapter.notifyItemInserted(0)
       }
     }
   }
@@ -157,7 +170,6 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
       }
     }
   }
-
 
   private fun finishRefresh(isSuccess: Boolean) {
     binding.swipe.isRefreshing = false

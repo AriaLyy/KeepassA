@@ -8,6 +8,8 @@
 package com.lyy.keepassa.view.main
 
 import androidx.lifecycle.viewModelScope
+import com.arialyy.frame.util.ResUtil
+import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.SimpleItemEntity
@@ -28,8 +30,17 @@ internal class HomeModule : BaseModule() {
 
   val itemDataFlow = MutableStateFlow<ArrayList<SimpleItemEntity>?>(null)
 
+  val collectionEntry by lazy {
+    val entity = SimpleItemEntity()
+    entity.title = ResUtil.getString(R.string.my_collection)
+    entity.subTitle = ResUtil.getString(R.string.current_collection_num, "0")
+    entity.icon = R.drawable.ic_star
+    entity.obj = "collection"
+    entity
+  }
+
   /**
-   * 同步数据库
+   * synchronize database
    */
   fun syncDb(callback: (Int) -> Unit) {
     KpaUtil.kdbHandlerService.saveDbByForeground(callback = callback)
@@ -50,6 +61,14 @@ internal class HomeModule : BaseModule() {
       if (pm == null) {
         itemDataFlow.emit(null)
         return@launch
+      }
+
+      if (KpaUtil.kdbHandlerService.getCollectionNum() != 0) {
+        collectionEntry.subTitle = ResUtil.getString(
+          R.string.current_collection_num,
+          KpaUtil.kdbHandlerService.getCollectionNum().toString()
+        )
+        itemDataList.add(collectionEntry)
       }
 
       val rootGroup = pm.rootGroup

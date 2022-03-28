@@ -345,4 +345,6 @@
     <string name="thank_donate">感谢您的捐赠。</string>
     <string name="error_connect_play">无法连接到 Google 服务</string>
     <string name="monthly">每月</string>
+    <string name="my_collection">我的收藏</string>
+    <string name="current_collection_num">%1$s 个收藏</string>
 </resources>

@@ -211,7 +211,7 @@ dependencies {
   implementation 'me.laoyuyu.keepassa:KeepassIcon:0.2.6'
   implementation 'me.laoyuyu.keepassa:KeepassLib:0.2.7'
 //  implementation project(path: ':KpaLib')
-  implementation 'me.laoyuyu.keepassa:KPAFrame:0.2.10'
+  implementation 'me.laoyuyu.keepassa:KPAFrame:0.2.11'
   implementation 'me.laoyuyu.keepassa:UIWidget:0.2.7'
 
 
