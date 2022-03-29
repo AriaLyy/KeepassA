@@ -9,12 +9,15 @@
 
 package com.lyy.keepassa.view.main
 
+import android.app.ActivityOptions
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.view.MotionEvent
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -49,6 +52,7 @@ import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.util.doOnItemLongClickListener
 import com.lyy.keepassa.util.isAFS
 import com.lyy.keepassa.view.SimpleEntryAdapter
+import com.lyy.keepassa.view.collection.CollectionActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
@@ -78,7 +82,9 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
     binding.list.doOnItemClickListener { _, position, v ->
       val item = entryData[position]
       if (item.obj == EntryType.TYPE_COLLECTION) {
-        Routerfit.create(ActivityRouter::class.java).toMyCollection()
+        Routerfit.create(ActivityRouter::class.java, requireActivity()).toMyCollection(
+          ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
+        )
         return@doOnItemClickListener
       }
       if (item.obj is PwGroup) {

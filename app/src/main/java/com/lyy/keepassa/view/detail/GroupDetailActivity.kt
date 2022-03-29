@@ -86,8 +86,6 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
-
-
     ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
 

@@ -70,8 +70,8 @@ internal class CollectionModule : BaseModule() {
   }
 
   fun getData() {
+    itemDataList.clear()
     KpaUtil.kdbHandlerService.getCollectionEntries().forEach {
-      itemDataList.clear()
       itemDataList.add(KeepassAUtil.instance.convertPwEntry2Item(it))
     }
     viewModelScope.launch {

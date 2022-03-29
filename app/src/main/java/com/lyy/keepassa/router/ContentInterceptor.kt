@@ -62,7 +62,7 @@ class ContentInterceptor : IInterceptor {
       return
     }
 
-    Timber.i("拦截：${postcard.path}")
+//    Timber.i("拦截：${postcard.path}")
 
     callback.onContinue(postcard)  // 处理完成，交还控制权
     // callback.onInterrupt(new RuntimeException("我觉得有点异常"));      // 觉得有问题，中断路由流程

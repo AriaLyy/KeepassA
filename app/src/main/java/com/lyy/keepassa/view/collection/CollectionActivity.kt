@@ -15,6 +15,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntry
 import com.lyy.keepassa.R
@@ -23,6 +25,7 @@ import com.lyy.keepassa.databinding.ActivityCollectionBinding
 import com.lyy.keepassa.event.CollectionEventType.COLLECTION_STATE_ADD
 import com.lyy.keepassa.event.CollectionEventType.COLLECTION_STATE_REMOVE
 import com.lyy.keepassa.event.CollectionEventType.COLLECTION_STATE_TOTAL
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.doOnItemClickListener
@@ -39,6 +42,9 @@ import kotlinx.coroutines.launch
 internal class CollectionActivity : BaseActivity<ActivityCollectionBinding>() {
   private lateinit var module: CollectionModule
   private lateinit var adapter: SimpleEntryAdapter
+  private val loadingDialog by lazy {
+    Routerfit.create(DialogRouter::class.java).getLoadingDialog()
+  }
 
   override fun setLayoutId(): Int {
     return R.layout.activity_collection
@@ -48,6 +54,8 @@ internal class CollectionActivity : BaseActivity<ActivityCollectionBinding>() {
     super.initData(savedInstanceState)
     toolbar.title = ResUtil.getString(R.string.my_collection)
     module = ViewModelProvider(this)[CollectionModule::class.java]
+
+    loadingDialog.show()
 
     adapter = SimpleEntryAdapter(this, module.itemDataList)
     binding.rvList.let {
@@ -62,6 +70,8 @@ internal class CollectionActivity : BaseActivity<ActivityCollectionBinding>() {
       KeepassAUtil.instance.turnEntryDetail(this, item.obj as PwEntry, icon)
     }
 
+    binding.emptyView.setText(ResUtil.getString(R.string.no_collection))
+
     listenerCollection()
     listenerGetData()
     module.getData()
@@ -71,6 +81,7 @@ internal class CollectionActivity : BaseActivity<ActivityCollectionBinding>() {
   private fun listenerGetData() {
     lifecycleScope.launch {
       module.itemDataFlow.collectLatest {
+        loadingDialog.dismiss(2000)
         if (it == null) {
           binding.emptyView.visibility = View.VISIBLE
           return@collectLatest
