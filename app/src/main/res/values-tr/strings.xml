@@ -341,4 +341,5 @@
     <string name="thank_donate">Bağışınız için teşekkür ederiz.</string>
     <string name="current_collection_num">%1$s koleksiyon</string>
     <string name="my_collection">Koleksiyonum</string>
+    <string name="no_collection">Koleksiyon yok</string>
 </resources>
