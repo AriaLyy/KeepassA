@@ -222,12 +222,15 @@ class KdbOpenService : IProvider {
         NotificationUtil.startDbOpenNotify(context)
         withContext(Dispatchers.IO) {
           var collectionNum = 0
+          val entrySet = hashSetOf<PwEntryV4>()
           BaseApp.KDB.pm.entries.forEach {
             if ((it.value as PwEntryV4).isCollection()) {
+              entrySet.add(it.value as PwEntryV4)
               collectionNum++
             }
           }
           KpaUtil.kdbHandlerService.updateCollectionNum(collectionNum)
+          KpaUtil.kdbHandlerService.updateCollectionEntries(entrySet)
         }
       }
 

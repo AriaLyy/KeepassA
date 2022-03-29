@@ -21,6 +21,10 @@ import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
 import com.keepassdroid.database.helper.KDBHandlerHelper
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.event.CollectionEvent
+import com.lyy.keepassa.event.CollectionEventType
+import com.lyy.keepassa.event.CollectionEventType.COLLECTION_STATE_ADD
+import com.lyy.keepassa.event.CollectionEventType.COLLECTION_STATE_REMOVE
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.setCollection
@@ -48,18 +52,29 @@ class KdbHandlerService : IProvider {
   private var scope = MainScope()
   private var collectionNum = AtomicInteger(0)
   val saveStateFlow = MutableSharedFlow<Int>()
-  val collectionStateFlow = MutableStateFlow(collectionNum.get())
+  val collectionStateFlow = MutableStateFlow(CollectionEvent())
+  private val collectionEntries = hashSetOf<PwEntryV4>()
 
   private val loadingDialog: LoadingDialog by lazy {
     Routerfit.create(DialogRouter::class.java).getLoadingDialog()
   }
 
+  fun getCollectionEntries() = collectionEntries
   fun getCollectionNum() = collectionNum.get()
+
+  internal fun updateCollectionEntries(collectionEntries: Set<PwEntryV4>) {
+    this.collectionEntries.addAll(collectionEntries)
+  }
 
   internal fun updateCollectionNum(newCollectionNum: Int) {
     collectionNum.set(newCollectionNum)
     scope.launch {
-      collectionStateFlow.emit(collectionNum.get())
+      collectionStateFlow.emit(
+        CollectionEvent(
+          state = CollectionEventType.COLLECTION_STATE_TOTAL,
+          collectionNum = collectionNum.get()
+        )
+      )
     }
   }
 
@@ -68,12 +83,30 @@ class KdbHandlerService : IProvider {
    */
   fun collection(pwEntryV4: PwEntryV4, collection: Boolean) {
     pwEntryV4.setCollection(collection)
+    if (collection) {
+      collectionEntries.add(pwEntryV4)
+    } else {
+      collectionEntries.remove(pwEntryV4)
+    }
     scope.launch {
       if (collection) {
-        collectionStateFlow.emit(collectionNum.incrementAndGet())
+        collectionStateFlow.emit(
+          CollectionEvent(
+            COLLECTION_STATE_ADD,
+            collectionNum.incrementAndGet(),
+            pwEntryV4
+          )
+
+        )
         return@launch
       }
-      collectionStateFlow.emit(collectionNum.decrementAndGet())
+      collectionStateFlow.emit(
+        CollectionEvent(
+          COLLECTION_STATE_REMOVE,
+          collectionNum.decrementAndGet(),
+          pwEntryV4
+        )
+      )
     }
   }
 

@@ -212,6 +212,10 @@
         android:screenOrientation="portrait"
         />
 
+    <activity android:name=".view.collection.CollectionActivity"
+        android:screenOrientation="portrait"
+        />
+
     <service
         android:name=".service.autofill.AutoFillService"
         android:permission="android.permission.BIND_AUTOFILL_SERVICE">

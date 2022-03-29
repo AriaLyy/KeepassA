@@ -20,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.DpUtils
 import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntry
@@ -28,6 +29,7 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentOnlyListBinding
+import com.lyy.keepassa.entity.EntryType
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.entity.showPopMenu
 import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
@@ -35,6 +37,7 @@ import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.event.MoveEvent
 import com.lyy.keepassa.event.MultiChoiceEvent
+import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
@@ -74,6 +77,10 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
     binding.list.adapter = adapter
     binding.list.doOnItemClickListener { _, position, v ->
       val item = entryData[position]
+      if (item.obj == EntryType.TYPE_COLLECTION) {
+        Routerfit.create(ActivityRouter::class.java).toMyCollection()
+        return@doOnItemClickListener
+      }
       if (item.obj is PwGroup) {
         KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwGroup)
       } else if (item.obj is PwEntry) {
@@ -131,17 +138,18 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
         }
 
         if (entryData[0] == module.collectionEntry) {
-          if (it == 0) {
+          if (it.collectionNum == 0) {
             entryData.removeAt(0)
             adapter.notifyItemRemoved(0)
             return@collectLatest
           }
-          entryData[0].subTitle = ResUtil.getString(R.string.current_collection_num, it.toString())
+          entryData[0].subTitle =
+            ResUtil.getString(R.string.current_collection_num, it.collectionNum.toString())
           adapter.notifyItemChanged(0)
           return@collectLatest
         }
         module.collectionEntry.subTitle =
-          ResUtil.getString(R.string.current_collection_num, it.toString())
+          ResUtil.getString(R.string.current_collection_num, it.collectionNum.toString())
         entryData.add(0, module.collectionEntry)
         adapter.notifyItemInserted(0)
       }
