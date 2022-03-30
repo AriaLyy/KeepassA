@@ -262,17 +262,21 @@ object KdbUtil {
     }
   }
 
+  fun getGroupEntryNum(pwGroup: PwGroup): Int {
+    return pwGroup.childEntries.size + pwGroup.childGroups.size
+  }
+
   /**
    * 获取组中的条目数
    */
-  fun getGroupEntryNum(pwGroup: PwGroup): Int {
+  fun getGroupAllEntryNum(pwGroup: PwGroup): Int {
     var num = 0
     if (pwGroup.childEntries.isEmpty() && pwGroup.childGroups.isEmpty()) {
       return 0
     }
     if (pwGroup.childGroups.isNotEmpty()) {
       for (group in pwGroup.childGroups) {
-        num += getGroupEntryNum(group)
+        num += getGroupAllEntryNum(group)
       }
       num += pwGroup.childEntries.size
     } else {

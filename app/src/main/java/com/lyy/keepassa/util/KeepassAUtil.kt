@@ -63,7 +63,6 @@ import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.service.autofill.AutoFillHelper
 import com.lyy.keepassa.service.autofill.StructureParser
 import com.lyy.keepassa.view.create.CreateDbActivity
-import com.lyy.keepassa.view.detail.EntryDetailActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.launcher.OpenDbHistoryActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
@@ -258,10 +257,10 @@ class KeepassAUtil private constructor() {
   fun isHomeActivity(ac: Activity): Boolean {
     val clazz = ac.javaClass
     return (clazz == LauncherActivity::class.java
-      || clazz == CreateDbActivity::class.java
-      || clazz == OpenDbHistoryActivity::class.java
-      || clazz == QuickUnlockActivity::class.java
-      )
+        || clazz == CreateDbActivity::class.java
+        || clazz == OpenDbHistoryActivity::class.java
+        || clazz == QuickUnlockActivity::class.java
+        )
   }
 
   /**
@@ -302,12 +301,12 @@ class KeepassAUtil private constructor() {
     }
 
     return (
-      clazz != LauncherActivity::class.java
-        && clazz != QuickUnlockActivity::class.java
-        && clazz != CreateDbActivity::class.java
-        && clazz != AutoFillEntrySearchActivity::class.java
-        && clazz != OpenDbHistoryActivity::class.java
-      )
+        clazz != LauncherActivity::class.java
+            && clazz != QuickUnlockActivity::class.java
+            && clazz != CreateDbActivity::class.java
+            && clazz != AutoFillEntrySearchActivity::class.java
+            && clazz != OpenDbHistoryActivity::class.java
+        )
   }
 
   /**
@@ -388,7 +387,7 @@ class KeepassAUtil private constructor() {
   fun convertPwGroup2Item(pwGroup: PwGroup): SimpleItemEntity {
     val item = SimpleItemEntity()
     item.title = pwGroup.name
-    item.subTitle = BaseApp.APP.resources.getString(
+    item.subTitle = ResUtil.getString(
       R.string.hint_group_desc, KdbUtil.getGroupEntryNum(pwGroup)
         .toString()
     )
@@ -613,7 +612,7 @@ class KeepassAUtil private constructor() {
 
       // 增加TOP密码字段
       if (!addOTPPass && (str.key.startsWith("TOTP", ignoreCase = true)
-          || str.key.startsWith("OTP", ignoreCase = true))
+            || str.key.startsWith("OTP", ignoreCase = true))
       ) {
         addOTPPass = true
         val totpPass = OtpUtil.getOtpPass(entryV4)
@@ -923,7 +922,7 @@ fun Uri.getFileInfo(
 
 fun PwEntry.isRef(): Boolean {
   return (!username.isNullOrEmpty() && username.startsWith("{REF:", ignoreCase = true))
-    || (!password.isNullOrEmpty() && password.startsWith("{REF:", ignoreCase = true))
+      || (!password.isNullOrEmpty() && password.startsWith("{REF:", ignoreCase = true))
 }
 
 /**

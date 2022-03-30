@@ -9,9 +9,7 @@
 
 package com.lyy.keepassa.view.main
 
-import android.app.ActivityOptions
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
@@ -33,17 +31,16 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentOnlyListBinding
 import com.lyy.keepassa.entity.EntryType
-import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.entity.showPopMenu
 import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
 import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.event.DelEvent
+import com.lyy.keepassa.event.EntryState.CREATE
 import com.lyy.keepassa.event.MoveEvent
 import com.lyy.keepassa.event.MultiChoiceEvent
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
@@ -52,7 +49,6 @@ import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.util.doOnItemLongClickListener
 import com.lyy.keepassa.util.isAFS
 import com.lyy.keepassa.view.SimpleEntryAdapter
-import com.lyy.keepassa.view.collection.CollectionActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
@@ -64,7 +60,6 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
 
   private lateinit var module: HomeModule
   private lateinit var adapter: SimpleEntryAdapter
-  private val entryData = ArrayList<SimpleItemEntity>()
   private var curx = 0
   private var isSyncDb = false
 
@@ -75,12 +70,12 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
 
   override fun initData() {
     EventBusHelper.reg(this)
-    adapter = SimpleEntryAdapter(requireContext(), entryData)
+    adapter = SimpleEntryAdapter(requireContext(), module.itemDataList)
     binding.list.setHasFixedSize(true)
     binding.list.layoutManager = LinearLayoutManager(context)
     binding.list.adapter = adapter
     binding.list.doOnItemClickListener { _, position, v ->
-      val item = entryData[position]
+      val item = module.itemDataList[position]
       if (item.obj == EntryType.TYPE_COLLECTION) {
         Routerfit.create(ActivityRouter::class.java, requireActivity()).toMyCollection(
           ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
@@ -103,7 +98,7 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
 
     // 长按处理
     binding.list.doOnItemLongClickListener { _, position, v ->
-      entryData[position].showPopMenu(requireActivity(), v, curx)
+      module.itemDataList[position].showPopMenu(requireActivity(), v, curx)
       true
     }
 
@@ -118,15 +113,34 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
     initRefresh()
     module.getRootEntry()
     listenerCollection()
+    listenerEntryStateChange()
   }
 
+  /**
+   * listener the entry status change, there are three states: create, delete, and modify.
+   */
+  private fun listenerEntryStateChange() {
+    lifecycleScope.launch {
+      KpaUtil.kdbHandlerService.entryStateChangeFlow.collectLatest {
+        it.pwEntryV4?.let { entry ->
+          when (it.state) {
+            CREATE -> {
+              module.createNewEntry(adapter, entry)
+            }
+
+          }
+        }
+
+      }
+    }
+  }
+
+  /**
+   * listener update root data
+   */
   private fun listenerDataGet() {
     lifecycleScope.launch {
       module.itemDataFlow.collectLatest {
-        entryData.clear()
-        if (it != null) {
-          entryData.addAll(it)
-        }
         adapter.notifyDataSetChanged()
         if (isSyncDb) {
           finishRefresh(true)
@@ -135,28 +149,26 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
     }
   }
 
+  /**
+   * listener collection state
+   */
   private fun listenerCollection() {
     lifecycleScope.launch {
       KpaUtil.kdbHandlerService.collectionStateFlow.collectLatest {
-        if (entryData.isEmpty()) {
+        if (module.itemDataList.isEmpty()) {
           Timber.d("current no any data, please wait get root data.")
           return@collectLatest
         }
 
-        if (entryData[0] == module.collectionEntry) {
-          if (it.collectionNum == 0) {
-            entryData.removeAt(0)
-            adapter.notifyItemRemoved(0)
-            return@collectLatest
-          }
-          entryData[0].subTitle =
+        if (module.itemDataList[0] == module.collectionEntry) {
+          module.itemDataList[0].subTitle =
             ResUtil.getString(R.string.current_collection_num, it.collectionNum.toString())
           adapter.notifyItemChanged(0)
           return@collectLatest
         }
         module.collectionEntry.subTitle =
           ResUtil.getString(R.string.current_collection_num, it.collectionNum.toString())
-        entryData.add(0, module.collectionEntry)
+        module.itemDataList.add(0, module.collectionEntry)
         adapter.notifyItemInserted(0)
       }
     }
@@ -213,16 +225,16 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
    */
   @Subscribe(threadMode = MAIN)
   fun onEntryCreate(event: CreateOrUpdateEntryEvent) {
-    if (event.isUpdate) {
-      val entry: SimpleItemEntity? = entryData.find { it.obj == event.entry }
-      entry?.let {
-        val pos = entryData.indexOf(it)
-        entryData[pos] = KeepassAUtil.instance.convertPwEntry2Item(event.entry)
-        adapter.notifyItemChanged(pos)
-      }
-      return
-    }
-    module.getRootEntry()
+//    if (event.isUpdate) {
+//      val entry: SimpleItemEntity? = entryData.find { it.obj == event.entry }
+//      entry?.let {
+//        val pos = entryData.indexOf(it)
+//        entryData[pos] = KeepassAUtil.instance.convertPwEntry2Item(event.entry)
+//        adapter.notifyItemChanged(pos)
+//      }
+//      return
+//    }
+//    module.getRootEntry()
   }
 
   /**
@@ -230,20 +242,20 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
    */
   @Subscribe(threadMode = MAIN)
   fun onGroupCreate(event: CreateOrUpdateGroupEvent) {
-    if (event.pwGroup.parent != BaseApp.KDB.pm.rootGroup) {
-      return
-    }
-    if (event.isUpdate) {
-      val entry: SimpleItemEntity? = entryData.find { it.obj == event.pwGroup }
-      entry?.let {
-
-        val pos = entryData.indexOf(it)
-        entryData[pos] = KeepassAUtil.instance.convertPwGroup2Item(event.pwGroup)
-        adapter.notifyItemChanged(pos)
-      }
-      return
-    }
-    module.getRootEntry()
+//    if (event.pwGroup.parent != BaseApp.KDB.pm.rootGroup) {
+//      return
+//    }
+//    if (event.isUpdate) {
+//      val entry: SimpleItemEntity? = entryData.find { it.obj == event.pwGroup }
+//      entry?.let {
+//
+//        val pos = entryData.indexOf(it)
+//        entryData[pos] = KeepassAUtil.instance.convertPwGroup2Item(event.pwGroup)
+//        adapter.notifyItemChanged(pos)
+//      }
+//      return
+//    }
+//    module.getRootEntry()
   }
 
   /**
@@ -259,27 +271,27 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
    */
   @Subscribe(threadMode = MAIN)
   fun onDelEvent(delEvent: DelEvent?) {
-    if (delEvent == null) {
-      return
-    }
-    val entry: SimpleItemEntity? = entryData.find { it.obj == delEvent.pwData }
-    if (entry != null) {
-      entryData.remove(entry)
-    }
-    if (BaseApp.isV4 && BaseApp.KDB.pm.recycleBin != null) {
-      val recycleBin = entryData.find { it.obj == BaseApp.KDB.pm.recycleBin }
-      if (recycleBin != null) {
-        recycleBin.subTitle = getString(
-          R.string.hint_group_desc,
-          KdbUtil.getGroupEntryNum(recycleBin.obj as PwGroup)
-            .toString()
-        )
-      }
-    } else {
-      // 如果回收站不存在，重新刷新界面，进行删除操作时会自动添加回收站
-      module.getRootEntry()
-    }
-    adapter.notifyDataSetChanged()
+//    if (delEvent == null) {
+//      return
+//    }
+//    val entry: SimpleItemEntity? = entryData.find { it.obj == delEvent.pwData }
+//    if (entry != null) {
+//      entryData.remove(entry)
+//    }
+//    if (BaseApp.isV4 && BaseApp.KDB.pm.recycleBin != null) {
+//      val recycleBin = entryData.find { it.obj == BaseApp.KDB.pm.recycleBin }
+//      if (recycleBin != null) {
+//        recycleBin.subTitle = getString(
+//          R.string.hint_group_desc,
+//          KdbUtil.getGroupEntryNum(recycleBin.obj as PwGroup)
+//            .toString()
+//        )
+//      }
+//    } else {
+//      // 如果回收站不存在，重新刷新界面，进行删除操作时会自动添加回收站
+//      module.getRootEntry()
+//    }
+//    adapter.notifyDataSetChanged()
   }
 
   /**

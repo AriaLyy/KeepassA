@@ -13,7 +13,6 @@ import com.alibaba.android.arouter.facade.template.IProvider
 import com.arialyy.frame.router.Routerfit
 import com.keepassdroid.database.PwDatabase
 import com.keepassdroid.database.PwDatabaseV4
-import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupV4
@@ -25,13 +24,16 @@ import com.lyy.keepassa.event.CollectionEvent
 import com.lyy.keepassa.event.CollectionEventType
 import com.lyy.keepassa.event.CollectionEventType.COLLECTION_STATE_ADD
 import com.lyy.keepassa.event.CollectionEventType.COLLECTION_STATE_REMOVE
+import com.lyy.keepassa.event.EntryState.CREATE
+import com.lyy.keepassa.event.EntryState.DELETE
+import com.lyy.keepassa.event.EntryState.MODIFY
+import com.lyy.keepassa.event.EntryStateChangeEvent
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.setCollection
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -51,8 +53,13 @@ class KdbHandlerService : IProvider {
 
   private var scope = MainScope()
   private var collectionNum = AtomicInteger(0)
-  val saveStateFlow = MutableSharedFlow<Int>()
+
+  /**
+   * collection state flow
+   */
   val collectionStateFlow = MutableStateFlow(CollectionEvent())
+
+  val entryStateChangeFlow = MutableStateFlow(EntryStateChangeEvent())
   private val collectionEntries = hashSetOf<PwEntryV4>()
 
   private val loadingDialog: LoadingDialog by lazy {
@@ -63,6 +70,7 @@ class KdbHandlerService : IProvider {
   fun getCollectionNum() = collectionNum.get()
 
   internal fun updateCollectionEntries(collectionEntries: Set<PwEntryV4>) {
+    this.collectionEntries.clear()
     this.collectionEntries.addAll(collectionEntries)
   }
 
@@ -142,19 +150,31 @@ class KdbHandlerService : IProvider {
   }
 
   /**
+   * only send status
+   */
+  fun modifyEntry(v4Entry: PwEntryV4) {
+    scope.launch {
+      entryStateChangeFlow.emit(
+        EntryStateChangeEvent(
+          MODIFY,
+          v4Entry
+        )
+      )
+    }
+  }
+
+  /**
    * delete entry
    * @param save true: delete that entry and save it
    */
-  fun deleteEntry(entry: PwEntry, save: Boolean = false) {
-    if (BaseApp.isV4) {
-      val v4Entry = entry as PwEntryV4
-      if (BaseApp.KDB!!.pm.canRecycle(v4Entry)) {
-        BaseApp.KDB!!.pm.recycle(v4Entry)
-      } else {
-        KDBHandlerHelper.getInstance(BaseApp.APP).deleteEntry(BaseApp.KDB, entry, save)
-      }
+  fun deleteEntry(v4Entry: PwEntryV4, save: Boolean = false) {
+    if (BaseApp.KDB!!.pm.canRecycle(v4Entry)) {
+      BaseApp.KDB!!.pm.recycle(v4Entry)
     } else {
-      KDBHandlerHelper.getInstance(BaseApp.APP).deleteEntry(BaseApp.KDB, entry, save)
+      KDBHandlerHelper.getInstance(BaseApp.APP).deleteEntry(BaseApp.KDB, v4Entry, save)
+    }
+    scope.launch {
+      entryStateChangeFlow.emit(EntryStateChangeEvent(DELETE, v4Entry))
     }
   }
 
@@ -193,8 +213,11 @@ class KdbHandlerService : IProvider {
   /**
    * add new entry
    */
-  fun addEntry(entry: PwEntry) {
+  fun createEntry(entry: PwEntryV4) {
     BaseApp.KDB!!.pm.addEntryTo(entry, entry.parent)
+    scope.launch {
+      entryStateChangeFlow.emit(EntryStateChangeEvent(CREATE, entry))
+    }
   }
 
   suspend fun saveOnly(needShowLoading: Boolean = false): Int {
@@ -226,14 +249,12 @@ class KdbHandlerService : IProvider {
         Timber.i(response.msg)
 
         withContext(Dispatchers.Main) {
-          saveStateFlow.emit(response.code)
           callback.invoke(response.code)
         }
         return@launch
       }
       val code = if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
       withContext(Dispatchers.Main) {
-        saveStateFlow.emit(code)
         callback.invoke(code)
       }
     }
@@ -271,12 +292,10 @@ class KdbHandlerService : IProvider {
         if (needShowLoading) {
           dismissLoading(if ((endTime - startTime) < MIN_TIME) 0L else MIN_TIME)
         }
-        saveStateFlow.emit(response.code)
         callback.invoke(response.code)
         return@launch
       }
       val code = if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
-      saveStateFlow.emit(code)
       callback.invoke(code)
     }
   }

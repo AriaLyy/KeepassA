@@ -70,7 +70,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   }
 
   private lateinit var module: EntryDetailModule
-  private lateinit var pwEntry: PwEntry
+  private lateinit var pwEntry: PwEntryV4
   private var isInRecycleBin = false
   private var curTouchX = 0f
   private var curTouchY = 0f
@@ -118,7 +118,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       true
     }
 
-    pwEntry = BaseApp.KDB!!.pm.entries[uuid]!!
+    pwEntry = (BaseApp.KDB!!.pm.entries[uuid] as PwEntryV4?)!!
     module.initEntry(pwEntry)
     if (BaseApp.isV4 && pwEntry.parent == BaseApp.KDB!!.pm.recycleBin) {
       isInRecycleBin = true
@@ -287,7 +287,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     if (event.entry.uuid != pwEntry.uuid || !event.isUpdate) {
       return
     }
-    this.pwEntry = event.entry
+    this.pwEntry = event.entry as PwEntryV4
     if (binding.attrFile.visibility == View.VISIBLE) {
       binding.attrFile.removeAllViews()
     }

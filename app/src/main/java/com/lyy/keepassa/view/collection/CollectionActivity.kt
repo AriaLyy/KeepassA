@@ -42,9 +42,6 @@ import kotlinx.coroutines.launch
 internal class CollectionActivity : BaseActivity<ActivityCollectionBinding>() {
   private lateinit var module: CollectionModule
   private lateinit var adapter: SimpleEntryAdapter
-  private val loadingDialog by lazy {
-    Routerfit.create(DialogRouter::class.java).getLoadingDialog()
-  }
 
   override fun setLayoutId(): Int {
     return R.layout.activity_collection
@@ -54,8 +51,6 @@ internal class CollectionActivity : BaseActivity<ActivityCollectionBinding>() {
     super.initData(savedInstanceState)
     toolbar.title = ResUtil.getString(R.string.my_collection)
     module = ViewModelProvider(this)[CollectionModule::class.java]
-
-    loadingDialog.show()
 
     adapter = SimpleEntryAdapter(this, module.itemDataList)
     binding.rvList.let {
@@ -81,8 +76,7 @@ internal class CollectionActivity : BaseActivity<ActivityCollectionBinding>() {
   private fun listenerGetData() {
     lifecycleScope.launch {
       module.itemDataFlow.collectLatest {
-        loadingDialog.dismiss(2000)
-        if (it == null) {
+        if (it.isNullOrEmpty()) {
           binding.emptyView.visibility = View.VISIBLE
           return@collectLatest
         }

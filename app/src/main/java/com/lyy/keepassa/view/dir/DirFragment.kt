@@ -60,7 +60,7 @@ class DirFragment : BaseFragment<FragmentOnlyListBinding>() {
       item.title = group.name
       item.subTitle =
         requireContext().getString(
-          R.string.hint_group_desc, KdbUtil.getGroupEntryNum(group)
+          R.string.hint_group_desc, KdbUtil.getGroupAllEntryNum(group)
             .toString()
         )
       item.obj = group

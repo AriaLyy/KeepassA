@@ -274,7 +274,7 @@ class EntryDetailModule : BaseModule() {
    * 回收项目
    * @param pwEntry 需要回收的条目
    */
-  fun recycleEntry(ac: FragmentActivity, pwEntry: PwEntry) {
+  fun recycleEntry(ac: FragmentActivity, pwEntry: PwEntryV4) {
     KpaUtil.kdbHandlerService.deleteEntry(pwEntry)
     KpaUtil.kdbHandlerService.saveDbByForeground {
       EventBus.getDefault().post(DelEvent(pwEntry))

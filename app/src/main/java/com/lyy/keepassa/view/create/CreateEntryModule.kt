@@ -211,8 +211,8 @@ class CreateEntryModule : BaseModule() {
    * 添加条目
    * @param pwEntry 需要添加的条目
    */
-  fun addEntry(ac: FragmentActivity, pwEntry: PwEntry) {
-    KpaUtil.kdbHandlerService.addEntry(pwEntry)
+  fun addEntry(ac: FragmentActivity, pwEntry: PwEntryV4) {
+    KpaUtil.kdbHandlerService.createEntry(pwEntry)
     KpaUtil.kdbHandlerService.saveDbByForeground {
       HitUtil.toaskShort(
         "${BaseApp.APP.getString(R.string.create_entry)}${

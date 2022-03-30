@@ -9,13 +9,16 @@ package com.lyy.keepassa.view.main
 
 import androidx.lifecycle.viewModelScope
 import com.arialyy.frame.util.ResUtil
+import com.keepassdroid.database.PwEntryV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.EntryType
 import com.lyy.keepassa.entity.SimpleItemEntity
+import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.view.SimpleEntryAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -27,7 +30,7 @@ import timber.log.Timber
  **/
 internal class HomeModule : BaseModule() {
 
-  private val itemDataList = arrayListOf<SimpleItemEntity>()
+  val itemDataList = arrayListOf<SimpleItemEntity>()
 
   val itemDataFlow = MutableStateFlow<ArrayList<SimpleItemEntity>?>(null)
 
@@ -38,6 +41,50 @@ internal class HomeModule : BaseModule() {
     entity.icon = R.drawable.ic_star
     entity.obj = EntryType.TYPE_COLLECTION
     entity
+  }
+
+  /**
+   * Check whether the entry is in the follow group
+   */
+  private fun checkEntryIsRoot(pwEntryV4: PwEntryV4) = pwEntryV4.parent == BaseApp.KDB.pm.rootGroup
+
+  /**
+   * Check whether the entry is in the home group
+   */
+  private fun checkEntryInMainGroup(pwEntryV4: PwEntryV4): Boolean {
+    BaseApp.KDB.pm.rootGroup.childGroups.forEach {
+      if (pwEntryV4.parent == it) {
+        return true
+      }
+    }
+    return false
+  }
+
+  /**
+   * update root list state
+   */
+  fun createNewEntry(adapter: SimpleEntryAdapter, pwEntryV4: PwEntryV4) {
+    if (checkEntryIsRoot(pwEntryV4)) {
+      val index = itemDataList.size
+      itemDataList.add(KeepassAUtil.instance.convertPwEntry2Item(pwEntryV4))
+      adapter.notifyItemInserted(index)
+      return
+    }
+    if (checkEntryInMainGroup(pwEntryV4)) {
+      itemDataList.forEachIndexed { index, simpleItemEntity ->
+        if (simpleItemEntity.obj == pwEntryV4.parent) {
+          simpleItemEntity.subTitle =
+            ResUtil.getString(R.string.hint_group_desc, KdbUtil.getGroupEntryNum(pwEntryV4.parent))
+          adapter.notifyItemChanged(index)
+          return
+        }
+      }
+    }
+
+    if (!checkEntryIsRoot(pwEntryV4)) {
+      Timber.d("The entry is not from the home page, title = ${pwEntryV4.title}")
+      return
+    }
   }
 
   /**
@@ -64,13 +111,11 @@ internal class HomeModule : BaseModule() {
         return@launch
       }
 
-      if (KpaUtil.kdbHandlerService.getCollectionNum() != 0) {
-        collectionEntry.subTitle = ResUtil.getString(
-          R.string.current_collection_num,
-          KpaUtil.kdbHandlerService.getCollectionNum().toString()
-        )
-        itemDataList.add(collectionEntry)
-      }
+//      collectionEntry.subTitle = ResUtil.getString(
+//        R.string.current_collection_num,
+//        KpaUtil.kdbHandlerService.getCollectionNum().toString()
+//      )
+//      itemDataList.add(collectionEntry)
 
       val rootGroup = pm.rootGroup
       for (group in rootGroup.childGroups) {

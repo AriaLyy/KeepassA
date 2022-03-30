@@ -118,7 +118,7 @@ class GroupDetailModule : BaseModule() {
       item.title = cGroup.name
       item.subTitle =
         context.getString(
-            R.string.hint_group_desc, KdbUtil.getGroupEntryNum(cGroup)
+            R.string.hint_group_desc, KdbUtil.getGroupAllEntryNum(cGroup)
             .toString()
         )
       item.obj = cGroup
