@@ -124,20 +124,21 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
   private fun listenerEntryStateChange() {
     lifecycleScope.launch {
       KpaUtil.kdbHandlerService.entryStateChangeFlow.collectLatest {
-        it.pwEntryV4?.let { entry ->
-          when (it.state) {
-            CREATE -> {
-              module.createNewEntry(adapter, entry)
-            }
-            MODIFY -> {
-              module.updateModifyEntry(adapter, entry)
-            }
-            DELETE -> {
-              module.deleteEntry(adapter, entry)
-            }
-            UNKNOWN -> {
-              Timber.d("un known status")
-            }
+        if (it.pwEntryV4 == null) {
+          return@collectLatest
+        }
+        when (it.state) {
+          CREATE -> {
+            module.createNewEntry(adapter, it.pwEntryV4)
+          }
+          MODIFY -> {
+            module.updateModifyEntry(adapter, it.pwEntryV4)
+          }
+          DELETE -> {
+            module.deleteEntry(adapter, it.pwEntryV4)
+          }
+          UNKNOWN -> {
+            Timber.d("un known status")
           }
         }
       }
@@ -286,13 +287,6 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
 //    adapter.notifyDataSetChanged()
   }
 
-  /**
-   * 多选
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onMultiChoice(mcEvent: MultiChoiceEvent) {
-    adapter.showCheckBox(true)
-  }
 
   override fun onDestroy() {
     super.onDestroy()

@@ -27,5 +27,10 @@ enum class EntryState {
   CREATE,
   DELETE,
   MODIFY,
+
+  /**
+   * resume entry from recycle bin
+   */
+  RESUME,
   UNKNOWN
 }

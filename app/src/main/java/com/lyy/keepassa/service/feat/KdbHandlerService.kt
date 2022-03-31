@@ -152,8 +152,24 @@ class KdbHandlerService : IProvider {
   /**
    * only send status
    */
-  fun updateEntryStatus(v4Entry: PwEntryV4) {
+  fun updateEntryStatus(v4Entry: PwEntryV4, save: Boolean = false) {
     scope.launch {
+      v4Entry.touch(true, true)
+
+      withContext(Dispatchers.IO) {
+        if (!save) {
+          return@withContext
+        }
+        if (KDBHandlerHelper.getInstance(BaseApp.APP).save(BaseApp.KDB)) {
+          val parent = v4Entry.parent
+          // Mark parent dirty
+          if (parent != null) {
+            BaseApp.KDB.dirty.add(parent)
+          }
+          return@withContext
+        }
+      }
+
       entryStateChangeFlow.emit(
         EntryStateChangeEvent(
           MODIFY,
@@ -164,16 +180,45 @@ class KdbHandlerService : IProvider {
   }
 
   /**
+   * resume entry from recycle bin
+   * @param targetParent target parent
+   */
+  fun resumeEntry(v4Entry: PwEntryV4, targetParent: PwGroupV4, save: Boolean = false) {
+    scope.launch {
+      withContext(Dispatchers.IO) {
+        if (v4Entry.parent == BaseApp.KDB.pm.recycleBin) {
+          (BaseApp.KDB.pm as PwDatabaseV4).undoRecycle(v4Entry, targetParent)
+        } else {
+          (BaseApp.KDB.pm as PwDatabaseV4).moveEntry(v4Entry, targetParent)
+        }
+
+        if (!save) {
+          return@withContext
+        }
+
+        if (KDBHandlerHelper.getInstance(BaseApp.APP).save(BaseApp.KDB)) {
+          val parent = v4Entry.parent
+          // Mark parent dirty
+          if (parent != null) {
+            BaseApp.KDB.dirty.add(parent)
+          }
+          return@withContext
+        }
+        BaseApp.KDB.pm.removeEntryFrom(v4Entry, targetParent)
+      }
+
+    }
+  }
+
+  /**
    * delete entry
    * @param save true: delete that entry and save it
    */
   fun deleteEntry(v4Entry: PwEntryV4, save: Boolean = false) {
-    if (BaseApp.KDB!!.pm.canRecycle(v4Entry)) {
-      BaseApp.KDB!!.pm.recycle(v4Entry)
-    } else {
-      KDBHandlerHelper.getInstance(BaseApp.APP).deleteEntry(BaseApp.KDB, v4Entry, save)
-    }
     scope.launch {
+      withContext(Dispatchers.IO) {
+        KDBHandlerHelper.getInstance(BaseApp.APP).deleteEntry(BaseApp.KDB, v4Entry, save)
+      }
       entryStateChangeFlow.emit(EntryStateChangeEvent(DELETE, v4Entry))
     }
   }
@@ -214,10 +259,17 @@ class KdbHandlerService : IProvider {
    * add new entry
    */
   fun createEntry(entry: PwEntryV4) {
-    BaseApp.KDB!!.pm.addEntryTo(entry, entry.parent)
+    KDBHandlerHelper.getInstance(BaseApp.APP).saveEntry(BaseApp.KDB, entry)
     scope.launch {
       entryStateChangeFlow.emit(EntryStateChangeEvent(CREATE, entry))
     }
+  }
+
+  /**
+   * only add entry
+   */
+  fun addEntryTo(entry: PwEntryV4, parent: PwGroup) {
+    BaseApp.KDB!!.pm.addEntryTo(entry, parent)
   }
 
   suspend fun saveOnly(needShowLoading: Boolean = false): Int {
