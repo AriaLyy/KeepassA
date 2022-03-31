@@ -152,7 +152,7 @@ class KdbHandlerService : IProvider {
   /**
    * only send status
    */
-  fun modifyEntry(v4Entry: PwEntryV4) {
+  fun updateEntryStatus(v4Entry: PwEntryV4) {
     scope.launch {
       entryStateChangeFlow.emit(
         EntryStateChangeEvent(

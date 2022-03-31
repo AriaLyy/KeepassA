@@ -51,7 +51,7 @@ interface DialogRouter {
    */
   @RouterPath(path = "/dialog/playDonate")
   @DialogArg(showDialog = true)
-  fun toPlayDonateDialog()
+  fun showPlayDonateDialog()
 
   /**
    * show display dialog
@@ -59,7 +59,7 @@ interface DialogRouter {
    */
   @RouterPath(path = "/dialog/totpDisplay")
   @DialogArg(showDialog = true)
-  fun toTotpDisplayDialog(
+  fun showTotpDisplayDialog(
     @RouterArgName(name = "uuid") uuid: String
   )
 
@@ -68,7 +68,8 @@ interface DialogRouter {
    * @param showCountDownTimer 是否显示倒计时  Pair(true, 5) => 显示倒计时，5s
    */
   @RouterPath(path = "/dialog/msgDialog")
-  fun toMsgDialog(
+  @DialogArg(showDialog = true)
+  fun showMsgDialog(
     @RouterArgName(name = "msgTitle", isObject = true) msgTitle: CharSequence = "",
     @RouterArgName(name = "msgContent", isObject = true) msgContent: CharSequence,
     @RouterArgName(name = "showCancelBt") showCancelBt: Boolean = true,
@@ -91,11 +92,11 @@ interface DialogRouter {
       false,
       5
     )
-  ): MsgDialog
+  )
 
   /**
    * 日期选择对话框
    */
   @RouterPath(path = "/dialog/timeChange")
-  fun toTimeChangeDialog(): TimeChangeDialog
+  fun getTimeChangeDialog(): TimeChangeDialog
 }

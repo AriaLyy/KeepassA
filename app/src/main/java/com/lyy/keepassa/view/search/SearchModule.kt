@@ -9,7 +9,7 @@
 
 package com.lyy.keepassa.view.search
 
-import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
@@ -22,11 +22,15 @@ import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SearchModule : BaseModule() {
+
+  val listData = mutableListOf<SimpleItemEntity>()
+  val searchDataFlow = MutableSharedFlow<MutableList<SimpleItemEntity>?>()
 
   /**
    * 将条目和包名进行关联
@@ -52,11 +56,11 @@ class SearchModule : BaseModule() {
   /**
    * 搜索项目
    */
-  fun searchEntry(query: String, isFromAutoFill: Boolean = false) = liveData {
+  fun searchEntry(query: String, isFromAutoFill: Boolean = false) {
+    listData.clear()
     val sp = SearchParametersV4()
     val entryList = ArrayList<PwEntry>()
     val groupList = ArrayList<PwGroup>()
-    val data = ArrayList<SimpleItemEntity>()
     sp.searchString = query
     BaseApp.KDB!!.pm.rootGroup.searchEntries(sp, entryList)
 
@@ -67,8 +71,10 @@ class SearchModule : BaseModule() {
       searchGroup(query, groupList)
 
       if (entryList.isEmpty() && groupList.isEmpty()) {
-        emit(null)
-        return@liveData
+        viewModelScope.launch {
+          searchDataFlow.emit(null)
+        }
+        return
       }
     }
 
@@ -76,17 +82,19 @@ class SearchModule : BaseModule() {
     for (group in groupList) {
       val item = KeepassAUtil.instance.convertPwGroup2Item(group)
       item.type = SearchAdapter.ITEM_TYPE_GROUP
-      data.add(item)
+      listData.add(item)
     }
 
     // 组合条目信息
     for (entry in entryList) {
       val item = KeepassAUtil.instance.convertPwEntry2Item(entry)
       item.type = SearchAdapter.ITEM_TYPE_ENTRY
-      data.add(item)
+      listData.add(item)
     }
 
-    emit(data)
+    viewModelScope.launch {
+      searchDataFlow.emit(listData)
+    }
   }
 
   /**
@@ -109,17 +117,18 @@ class SearchModule : BaseModule() {
   /**
    * 获取搜索记录
    */
-  fun getSearchRecord() = liveData {
-    val records = withContext(Dispatchers.IO) {
-      val dao = BaseApp.appDatabase.searchRecordDao()
-      val temp = dao.getSearchRecord()
-      val data = ArrayList<SimpleItemEntity>()
-      for (record in temp) {
-        data.add(convertRecord2Item(record))
+  fun getSearchRecord() {
+    listData.clear()
+    viewModelScope.launch {
+      withContext(Dispatchers.IO) {
+        val dao = BaseApp.appDatabase.searchRecordDao()
+        val temp = dao.getSearchRecord()
+        for (record in temp) {
+          listData.add(convertRecord2Item(record))
+        }
       }
-      data
+      searchDataFlow.emit(listData)
     }
-    emit(records)
   }
 
   /**
@@ -138,7 +147,7 @@ class SearchModule : BaseModule() {
    * @param title 搜索的数据
    */
   fun saveSearchRecord(title: String) {
-    GlobalScope.launch(Dispatchers.IO) {
+    KpaUtil.scope.launch(Dispatchers.IO) {
       val dao = BaseApp.appDatabase.searchRecordDao()
       var record = dao.getRecord(title)
       if (record != null) {
@@ -156,15 +165,17 @@ class SearchModule : BaseModule() {
   /**
    * 删除搜索历史
    */
-  fun delHistoryRecord(title: String) = liveData {
-    val b = withContext(Dispatchers.IO) {
-      val dao = BaseApp.appDatabase.searchRecordDao()
-      val record = dao.getRecord(title)
-      if (record != null) {
-        dao.delRecord(record)
+  fun delHistoryRecord(title: String, callback: (Boolean) -> Unit) {
+    viewModelScope.launch {
+      val b = withContext(Dispatchers.IO) {
+        val dao = BaseApp.appDatabase.searchRecordDao()
+        val record = dao.getRecord(title)
+        if (record != null) {
+          dao.delRecord(record)
+        }
+        true
       }
-      true
+      callback.invoke(b)
     }
-    emit(b)
   }
 }

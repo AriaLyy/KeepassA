@@ -68,7 +68,7 @@ class OpenDropBoxDelegate : IOpenDbDelegate {
       showCloudListDialog()
     } else {
       startDropboxAuth = true
-      Routerfit.create(DialogRouter::class.java).toMsgDialog(
+      Routerfit.create(DialogRouter::class.java).showMsgDialog(
         msgContent = Html.fromHtml(delegateRequireActivity().getString(R.string.dropbox_msg)),
         showCancelBt = true,
         interceptBackKey = true,
@@ -85,7 +85,7 @@ class OpenDropBoxDelegate : IOpenDbDelegate {
           }
 
         }
-      ).show()
+      )
     }
   }
 

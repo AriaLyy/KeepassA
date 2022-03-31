@@ -93,7 +93,7 @@ class EntryPopMenu(
           HitUtil.toaskShort(context.getString(R.string.hint_copy_pass))
         }
         R.id.copy_totp -> {
-          Routerfit.create(DialogRouter::class.java).toTotpDisplayDialog(entry.uuid.toString())
+          Routerfit.create(DialogRouter::class.java).showTotpDisplayDialog(entry.uuid.toString())
         }
         R.id.undo, R.id.move -> {
           ChooseGroupActivity.moveEntry(context, entry.uuid)
@@ -128,7 +128,7 @@ class EntryPopMenu(
       Html.fromHtml(context.getString(R.string.hint_del_entry_no_recycle, entry.title))
     }
 
-    Routerfit.create(DialogRouter::class.java).toMsgDialog(
+    Routerfit.create(DialogRouter::class.java).showMsgDialog(
       msgTitle = ResUtil.getString(R.string.del_entry),
       msgContent = msg,
       btnClickListener = object : OnMsgBtClickListener {
@@ -143,7 +143,6 @@ class EntryPopMenu(
         }
       }
     )
-      .show()
   }
 
   /**

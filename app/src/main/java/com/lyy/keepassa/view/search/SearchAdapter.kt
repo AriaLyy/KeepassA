@@ -30,7 +30,7 @@ import com.lyy.keepassa.view.search.SearchAdapter.BaseHolder
  */
 class SearchAdapter(
   context: Context,
-  val data: ArrayList<SimpleItemEntity>,
+  val data: MutableList<SimpleItemEntity>,
   val delListener: OnClickListener
 ) : AbsRVAdapter<SimpleItemEntity, BaseHolder>(context, data) {
   internal var queryString = ""

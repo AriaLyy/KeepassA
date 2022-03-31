@@ -9,30 +9,28 @@
 
 package com.lyy.keepassa.view.search
 
-import android.app.Activity
-import android.content.Context
+import android.annotation.SuppressLint
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arialyy.frame.util.KeyBoardUtils
 import com.arialyy.frame.util.ResUtil
-import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwDataInf
 import com.lyy.keepassa.R
 import com.lyy.keepassa.R.color
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogSearchBinding
-import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.doOnItemClickListener
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 /**
  * 搜索
@@ -41,7 +39,6 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
 
   private lateinit var module: SearchModule
   private lateinit var adapter: SearchAdapter
-  private val date: ArrayList<SimpleItemEntity> = ArrayList()
 
   init {
     setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialog)
@@ -66,6 +63,13 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
     binding.bg.setOnClickListener {
       dismiss()
     }
+    initList()
+    initSearchWidget()
+    listenerGetSearchData()
+    getRecordData()
+  }
+
+  private fun initSearchWidget() {
     binding.search.requestFocusFromTouch()
     binding.search.setIconifiedByDefault(true)
     binding.search.isIconified = false
@@ -74,7 +78,8 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
        * 当点击搜索按钮时触发该方法
        */
       override fun onQueryTextSubmit(query: String?): Boolean {
-        if (query != null) {
+        if (!query.isNullOrBlank()) {
+          adapter.queryString = query
           searchData(query)
         }
 
@@ -85,14 +90,24 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
        * 当搜索内容改变时触发该方法
        */
       override fun onQueryTextChange(newText: String?): Boolean {
-        if (newText != null) {
+        if (!newText.isNullOrBlank()) {
+          adapter.queryString = newText
           searchData(newText)
         }
         return true
       }
-
     })
-    initList()
+  }
+
+  @SuppressLint("NotifyDataSetChanged")
+  private fun listenerGetSearchData() {
+    lifecycleScope.launch {
+      module.searchDataFlow.collectLatest { list ->
+        if (!list.isNullOrEmpty()) {
+          adapter.notifyDataSetChanged()
+        }
+      }
+    }
   }
 
   /**
@@ -104,58 +119,37 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
       return
     }
     module.searchEntry(query)
-        .observe(this, { list ->
-          if (list != null) {
-            date.clear()
-            date.addAll(list)
-            adapter.queryString = query
-            adapter.notifyDataSetChanged()
-          }
-        })
   }
 
   private fun getRecordData() {
     module.getSearchRecord()
-        .observe(this, { list ->
-          date.clear()
-          if (list != null) {
-            date.addAll(list)
-          }
-
-          adapter.notifyDataSetChanged()
-        })
   }
 
   /**
    * 初始化列表
    */
   private fun initList() {
-    adapter = SearchAdapter(requireContext(), date) { v ->
+    adapter = SearchAdapter(requireContext(), module.listData) { v ->
       val position = v.tag as Int
-      val item = date[position]
-      module.delHistoryRecord(item.title.toString())
-          .observe(this, Observer {
-            date.remove(item)
-            adapter.notifyDataSetChanged()
-          })
-
+      val item = module.listData[position]
+      module.delHistoryRecord(item.title.toString()) {
+        module.listData.remove(item)
+        adapter.notifyItemRemoved(position)
+      }
     }
     binding.list.layoutManager = LinearLayoutManager(context)
     binding.list.adapter = adapter
-    RvItemClickSupport.addTo(binding.list)
-        .setOnItemClickListener { _, position, _ ->
-          val item = date[position]
-          if (item.type == SearchAdapter.ITEM_TYPE_RECORD) {
-            // 处理历史记录，直接使用该历史搜索数据，输入框设置该历史记录
-            binding.search.setQuery(item.title, true)
-            return@setOnItemClickListener
-          }
-          // 处理搜索结果
-          module.saveSearchRecord(item.title.toString())
-           KeepassAUtil.instance.turnEntryDetail(context as FragmentActivity, item.obj as PwDataInf)
-          dismiss()
-        }
-    getRecordData()
+    binding.list.doOnItemClickListener { _, position, _ ->
+      val item = module.listData[position]
+      if (item.type == SearchAdapter.ITEM_TYPE_RECORD) {
+        // 处理历史记录，直接使用该历史搜索数据，输入框设置该历史记录
+        binding.search.setQuery(item.title, true)
+        return@doOnItemClickListener
+      }
+      // 处理搜索结果
+      module.saveSearchRecord(item.title.toString())
+      KeepassAUtil.instance.turnEntryDetail(context as FragmentActivity, item.obj as PwDataInf)
+      dismiss()
+    }
   }
-
 }

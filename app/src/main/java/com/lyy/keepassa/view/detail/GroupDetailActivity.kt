@@ -17,14 +17,13 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.transition.addListener
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
-import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupId
@@ -37,21 +36,29 @@ import com.lyy.keepassa.common.SortType.NONE
 import com.lyy.keepassa.common.SortType.TIME_ASC
 import com.lyy.keepassa.common.SortType.TIME_DESC
 import com.lyy.keepassa.databinding.ActivityGroupDetailBinding
-import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.entity.showPopMenu
-import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
 import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.event.DelEvent
+import com.lyy.keepassa.event.EntryState.CREATE
+import com.lyy.keepassa.event.EntryState.DELETE
+import com.lyy.keepassa.event.EntryState.MODIFY
+import com.lyy.keepassa.event.EntryState.UNKNOWN
 import com.lyy.keepassa.event.MoveEvent
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.doOnInterceptTouchEvent
+import com.lyy.keepassa.util.doOnItemClickListener
+import com.lyy.keepassa.util.doOnItemLongClickListener
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import com.lyy.keepassa.widget.MainExpandFloatActionButton
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
+import timber.log.Timber
 
 /**
  * 群组详情、回收站详情
@@ -67,7 +74,6 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
 
   private lateinit var module: GroupDetailModule
   private lateinit var adapter: SimpleEntryAdapter
-  private val entryData = ArrayList<SimpleItemEntity>()
   private var curx = 0
 
   @JvmField
@@ -82,6 +88,25 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
 
   override fun setLayoutId(): Int {
     return R.layout.activity_group_detail
+  }
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+
+    if (window.enterTransition == null || !KeepassAUtil.instance.isDisplayLoadingAnim()) {
+      loadData()
+      return
+    }
+    window.enterTransition?.addListener(onStart = {
+      binding.laAnim.speed = 2.5f
+      binding.laAnim.playAnimation()
+      binding.laAnim.addAnimatorListener(object : AnimatorListenerAdapter() {
+        override fun onAnimationEnd(animation: Animator?) {
+          super.onAnimationEnd(animation)
+          loadData()
+        }
+      })
+    })
   }
 
   override fun initData(savedInstanceState: Bundle?) {
@@ -105,31 +130,60 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
     }
   }
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-
-    if (window.enterTransition == null || !KeepassAUtil.instance.isDisplayLoadingAnim()) {
-      loadData()
-      return
-    }
-    window.enterTransition?.addListener(onStart = {
-      binding.laAnim.speed = 2.5f
-      binding.laAnim.playAnimation()
-      binding.laAnim.addAnimatorListener(object : AnimatorListenerAdapter() {
-        override fun onAnimationEnd(animation: Animator?) {
-          super.onAnimationEnd(animation)
-          loadData()
-        }
-      })
-    })
-  }
-
   private fun loadData() {
     binding.kpaToolbar.inflateMenu(R.menu.menu_group_detail)
     module = ViewModelProvider(this).get(GroupDetailModule::class.java)
     initList()
     initFab()
     initMenu()
+    listenerGetGroupData()
+    listenerEntryStateChange()
+  }
+
+  /**
+   * listener the entry status change, there are three states: create, delete, and modify.
+   */
+  private fun listenerEntryStateChange() {
+    lifecycleScope.launch {
+      KpaUtil.kdbHandlerService.entryStateChangeFlow.collectLatest {
+        it.pwEntryV4?.let { entry ->
+          when (it.state) {
+            CREATE -> {
+              module.createNewEntry(adapter, entry)
+            }
+            MODIFY -> {
+              module.updateModifyEntry(adapter, entry)
+            }
+            DELETE -> {
+              module.deleteEntry(adapter, entry)
+            }
+            UNKNOWN -> {
+              Timber.d("un known status")
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private fun listenerGetGroupData() {
+    lifecycleScope.launch {
+      module.getDataFlow.collectLatest { list ->
+        binding.laAnim.cancelAnimation()
+        binding.laAnim.visibility = View.GONE
+        binding.fab.visibility = View.VISIBLE
+        if (list.isNullOrEmpty()) {
+          // 设置appbar为收缩状态
+          binding.appBar.setExpanded(false, false)
+          getEmptyLayout().visibility = View.VISIBLE
+          binding.list.visibility = View.GONE
+          return@collectLatest
+        }
+        binding.list.visibility = View.VISIBLE
+        getEmptyLayout().visibility = View.GONE
+        adapter.notifyDataSetChanged()
+      }
+    }
   }
 
   private fun initMenu() {
@@ -150,12 +204,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
         else -> NONE
       }
       if (type != NONE) {
-        module.sortData(type, entryData)
-          .observe(this) { sortData ->
-            entryData.clear()
-            entryData.addAll(sortData)
-            adapter.notifyDataSetChanged()
-          }
+        module.sortData(adapter, type)
       }
       return@setOnMenuItemClickListener true
     }
@@ -188,68 +237,44 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
   }
 
   private fun initList() {
-    adapter = SimpleEntryAdapter(this, entryData)
+    adapter = SimpleEntryAdapter(this, module.entryData)
     binding.list.setHasFixedSize(true)
     binding.list.layoutManager = LinearLayoutManager(this)
     binding.list.adapter = adapter
-
-    getData()
-
-    RvItemClickSupport.addTo(binding.list)
-      .setOnItemClickListener { _, position, v ->
-        val item = entryData[position]
-        if (item.obj is PwGroup) {
-          val group = item.obj as PwGroup
-          Routerfit.create(ActivityRouter::class.java, this).toGroupDetailActivity(
-            groupName = group.name,
-            groupId = group.id,
-            isRecycleBin = isRecycleBin,
-            opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
-          )
-          return@setOnItemClickListener
-        }
-
-        if (item.obj is PwEntry) {
-          val icon = v.findViewById<AppCompatImageView>(R.id.icon)
-          KeepassAUtil.instance.turnEntryDetail(this, item.obj as PwEntry, icon)
-          return@setOnItemClickListener
-        }
+    binding.list.doOnItemClickListener { _, position, v ->
+      val item = module.entryData[position]
+      if (item.obj is PwGroup) {
+        val group = item.obj as PwGroup
+        Routerfit.create(ActivityRouter::class.java, this).toGroupDetailActivity(
+          groupName = group.name,
+          groupId = group.id,
+          isRecycleBin = isRecycleBin,
+          opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
+        )
+        return@doOnItemClickListener
       }
 
-    RvItemClickSupport.addTo(binding.list)
-      .setOnItemLongClickListener { _, position, v ->
-        entryData[position].showPopMenu(this, v, curx, isRecycleBin)
-        true
+      if (item.obj is PwEntry) {
+        val icon = v.findViewById<AppCompatImageView>(R.id.icon)
+        KeepassAUtil.instance.turnEntryDetail(this, item.obj as PwEntry, icon)
+        return@doOnItemClickListener
       }
+    }
+
+    binding.list.doOnItemLongClickListener { _, position, v ->
+      module.entryData[position].showPopMenu(this, v, curx, isRecycleBin)
+      return@doOnItemLongClickListener true
+    }
 
     // 获取点击位置
-    binding.list.doOnInterceptTouchEvent { rv, e ->
+    binding.list.doOnInterceptTouchEvent { _, e ->
       if (e.action == MotionEvent.ACTION_DOWN) {
         curx = e.x.toInt()
       }
       return@doOnInterceptTouchEvent false
     }
-  }
 
-  private fun getData() {
     module.getGroupData(this, groupId)
-      .observe(this, Observer { list ->
-        binding.laAnim.cancelAnimation()
-        binding.laAnim.visibility = View.GONE
-        binding.fab.visibility = View.VISIBLE
-        if (list == null || list.size == 0) {
-          // 设置appbar为收缩状态
-          binding.appBar.setExpanded(false, false)
-          getEmptyLayout().visibility = View.VISIBLE
-          binding.list.visibility = View.GONE
-          return@Observer
-        }
-        binding.list.visibility = View.VISIBLE
-        getEmptyLayout().visibility = View.GONE
-        entryData.clear()
-        entryData.addAll(list)
-        adapter.notifyDataSetChanged()
-      })
   }
 
   private fun getEmptyLayout(): View {
@@ -260,33 +285,14 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
   }
 
   /**
-   * 创建条目
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onEntryCreate(event: CreateOrUpdateEntryEvent) {
-    if (event.entry.parent.id == groupId) {
-      if (event.isUpdate) {
-        val entry: SimpleItemEntity? = entryData.find { it.obj == event.entry }
-        entry?.let {
-          val pos = entryData.indexOf(it)
-          entryData[pos] = KeepassAUtil.instance.convertPwEntry2Item(event.entry)
-          adapter.notifyItemChanged(pos)
-        }
-        return
-      }
-      getData()
-    }
-  }
-
-  /**
    * 创建群组
    */
   @Subscribe(threadMode = MAIN)
   fun onGroupCreate(event: CreateOrUpdateGroupEvent) {
-    if (event.pwGroup.parent.id != groupId) {
-      return
-    }
-    getData()
+  //   if (event.pwGroup.parent.id != groupId) {
+  //     return
+  //   }
+  //   getData()
   }
 
   /**
@@ -294,10 +300,10 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
    */
   @Subscribe(threadMode = MAIN)
   fun onDelGroup(delEvent: DelEvent?) {
-    if (delEvent == null) {
-      return
-    }
-    getData()
+    // if (delEvent == null) {
+    //   return
+    // }
+    // getData()
   }
 
   /**
@@ -305,7 +311,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
    */
   @Subscribe(threadMode = MAIN)
   fun onMove(event: MoveEvent) {
-    getData()
+    // getData()
   }
 
   override fun onDestroy() {

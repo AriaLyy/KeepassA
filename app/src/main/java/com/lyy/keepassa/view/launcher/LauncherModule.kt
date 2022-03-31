@@ -14,12 +14,10 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.net.Uri
 import android.os.Build
-import android.text.TextUtils
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.*
 import androidx.core.content.edit
-import androidx.core.net.toFile
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
@@ -29,9 +27,6 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.KeyStoreUtil
 import com.arialyy.frame.util.ResUtil
-import com.keepassdroid.Database
-import com.keepassdroid.database.PwDatabase
-import com.keepassdroid.database.helper.KDBHandlerHelper
 import com.keepassdroid.utils.UriUtil
 import com.lahm.library.EasyProtectorLib
 import com.lyy.keepassa.R
@@ -45,21 +40,12 @@ import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
-import com.lyy.keepassa.util.cloud.DbSynUtil
-import com.lyy.keepassa.util.cloud.OneDriveUtil
-import com.lyy.keepassa.util.cloud.WebDavUtil
 import com.lyy.keepassa.util.isAFS
-import com.lyy.keepassa.view.StorageType.AFS
-import com.lyy.keepassa.view.StorageType.DROPBOX
-import com.lyy.keepassa.view.StorageType.ONE_DRIVE
-import com.lyy.keepassa.view.StorageType.WEBDAV
 import com.tencent.bugly.crashreport.BuglyLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -283,13 +269,12 @@ class LauncherModule : BaseModule() {
       val vector = VectorDrawableCompat.create(resources, R.drawable.ic_eco, context.theme)
       vector?.setTint(ResUtil.getColor(R.color.red))
       Routerfit.create(DialogRouter::class.java)
-        .toMsgDialog(
+        .showMsgDialog(
           msgTitle = ResUtil.getString(R.string.warning),
           msgContent = resources.getString(R.string.warning_rooted),
           showCoverBt = false,
           msgTitleEndIcon = vector
         )
-        .show()
     }
   }
 

@@ -32,10 +32,12 @@ import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentOnlyListBinding
 import com.lyy.keepassa.entity.EntryType
 import com.lyy.keepassa.entity.showPopMenu
-import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
 import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.event.EntryState.CREATE
+import com.lyy.keepassa.event.EntryState.DELETE
+import com.lyy.keepassa.event.EntryState.MODIFY
+import com.lyy.keepassa.event.EntryState.UNKNOWN
 import com.lyy.keepassa.event.MoveEvent
 import com.lyy.keepassa.event.MultiChoiceEvent
 import com.lyy.keepassa.router.ActivityRouter
@@ -65,7 +67,7 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    module = ViewModelProvider(this).get(HomeModule::class.java)
+    module = ViewModelProvider(this)[HomeModule::class.java]
   }
 
   override fun initData() {
@@ -127,10 +129,17 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
             CREATE -> {
               module.createNewEntry(adapter, entry)
             }
-
+            MODIFY -> {
+              module.updateModifyEntry(adapter, entry)
+            }
+            DELETE -> {
+              module.deleteEntry(adapter, entry)
+            }
+            UNKNOWN -> {
+              Timber.d("un known status")
+            }
           }
         }
-
       }
     }
   }
@@ -218,23 +227,6 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
 
   override fun setLayoutId(): Int {
     return R.layout.fragment_only_list
-  }
-
-  /**
-   * 创建或更新条目
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onEntryCreate(event: CreateOrUpdateEntryEvent) {
-//    if (event.isUpdate) {
-//      val entry: SimpleItemEntity? = entryData.find { it.obj == event.entry }
-//      entry?.let {
-//        val pos = entryData.indexOf(it)
-//        entryData[pos] = KeepassAUtil.instance.convertPwEntry2Item(event.entry)
-//        adapter.notifyItemChanged(pos)
-//      }
-//      return
-//    }
-//    module.getRootEntry()
   }
 
   /**

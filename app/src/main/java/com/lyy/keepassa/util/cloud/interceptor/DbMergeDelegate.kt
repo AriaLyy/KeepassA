@@ -160,7 +160,7 @@ object DbMergeDelegate {
     }
 
     val res = BaseApp.APP.resources
-    Routerfit.create(DialogRouter::class.java).toMsgDialog(
+    Routerfit.create(DialogRouter::class.java).showMsgDialog(
       msgTitle = ResUtil.getString(R.string.warning),
       msgContent = res.getString(R.string.file_conflict_msg, sb.toString()),
       showCoverBt = false,
@@ -182,7 +182,7 @@ object DbMergeDelegate {
         override fun onCancel(v: Button) {
         }
       }
-    ).show()
+    )
   }
 
   /**
@@ -205,7 +205,7 @@ object DbMergeDelegate {
     }
     val res = BaseApp.APP.resources
 
-    Routerfit.create(DialogRouter::class.java).toMsgDialog(
+    Routerfit.create(DialogRouter::class.java).showMsgDialog(
       msgTitle = ResUtil.getString(R.string.warning),
       msgContent = res.getString(R.string.file_conflict_msg, sb.toString()),
       showCancelBt = false,
@@ -232,7 +232,7 @@ object DbMergeDelegate {
         override fun onCancel(v: Button) {
         }
       }
-    ).show()
+    )
 
     Timber.d("showUploadCoverDialog endPoint")
   }

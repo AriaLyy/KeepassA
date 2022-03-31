@@ -10,14 +10,17 @@ package com.lyy.keepassa.view.main
 import androidx.lifecycle.viewModelScope
 import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntryV4
+import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.EntryType
 import com.lyy.keepassa.entity.SimpleItemEntity
-import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.createNewEntry
+import com.lyy.keepassa.util.deleteEntry
+import com.lyy.keepassa.util.updateModifyEntry
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -30,9 +33,9 @@ import timber.log.Timber
  **/
 internal class HomeModule : BaseModule() {
 
-  val itemDataList = arrayListOf<SimpleItemEntity>()
+  val itemDataList = mutableListOf<SimpleItemEntity>()
 
-  val itemDataFlow = MutableStateFlow<ArrayList<SimpleItemEntity>?>(null)
+  val itemDataFlow = MutableStateFlow<MutableList<SimpleItemEntity>?>(null)
 
   val collectionEntry by lazy {
     val entity = SimpleItemEntity()
@@ -44,47 +47,24 @@ internal class HomeModule : BaseModule() {
   }
 
   /**
-   * Check whether the entry is in the follow group
+   * update the status of deleted items
    */
-  private fun checkEntryIsRoot(pwEntryV4: PwEntryV4) = pwEntryV4.parent == BaseApp.KDB.pm.rootGroup
+  fun deleteEntry(adapter: SimpleEntryAdapter, pwEntryV4: PwEntryV4) {
+    adapter.deleteEntry(itemDataList, pwEntryV4, BaseApp.KDB.pm.rootGroup as PwGroupV4)
+  }
 
   /**
-   * Check whether the entry is in the home group
+   * update the status of modified items
    */
-  private fun checkEntryInMainGroup(pwEntryV4: PwEntryV4): Boolean {
-    BaseApp.KDB.pm.rootGroup.childGroups.forEach {
-      if (pwEntryV4.parent == it) {
-        return true
-      }
-    }
-    return false
+  fun updateModifyEntry(adapter: SimpleEntryAdapter, pwEntryV4: PwEntryV4) {
+    adapter.updateModifyEntry(itemDataList, pwEntryV4, BaseApp.KDB.pm.rootGroup as PwGroupV4)
   }
 
   /**
    * update root list state
    */
   fun createNewEntry(adapter: SimpleEntryAdapter, pwEntryV4: PwEntryV4) {
-    if (checkEntryIsRoot(pwEntryV4)) {
-      val index = itemDataList.size
-      itemDataList.add(KeepassAUtil.instance.convertPwEntry2Item(pwEntryV4))
-      adapter.notifyItemInserted(index)
-      return
-    }
-    if (checkEntryInMainGroup(pwEntryV4)) {
-      itemDataList.forEachIndexed { index, simpleItemEntity ->
-        if (simpleItemEntity.obj == pwEntryV4.parent) {
-          simpleItemEntity.subTitle =
-            ResUtil.getString(R.string.hint_group_desc, KdbUtil.getGroupEntryNum(pwEntryV4.parent))
-          adapter.notifyItemChanged(index)
-          return
-        }
-      }
-    }
-
-    if (!checkEntryIsRoot(pwEntryV4)) {
-      Timber.d("The entry is not from the home page, title = ${pwEntryV4.title}")
-      return
-    }
+    adapter.createNewEntry(itemDataList, pwEntryV4, BaseApp.KDB.pm.rootGroup as PwGroupV4)
   }
 
   /**

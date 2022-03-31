@@ -200,17 +200,11 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
         msg = getString(R.string.help_pass_key)
       }
     }
-    Routerfit.create(DialogRouter::class.java)
-      .toMsgDialog(
-        msgContent = msg,
-        showCancelBt = false
-      )
-      .show()
+    Routerfit.create(DialogRouter::class.java).showMsgDialog(msgContent = msg, showCancelBt = false)
   }
 
   override fun onDestroy() {
     super.onDestroy()
     EventBusHelper.unReg(this)
   }
-
 }

@@ -33,6 +33,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@+id/icon"
       app:layout_constraintTop_toTopOf="parent"
+      app:flow_verticalGap="4dp"
       app:constraint_referenced_ids="title, des"
       />
 
@@ -50,7 +51,6 @@
       android:id="@+id/des"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="4dp"
       android:text="描述描述描述描述描述描述描述"
       android:textColor="@color/text_gray_color"
       android:textSize="@dimen/text_size_small"

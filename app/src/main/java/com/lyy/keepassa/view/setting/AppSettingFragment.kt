@@ -53,7 +53,6 @@ import com.lyy.keepassa.view.UpgradeLogDialog
 import com.lyy.keepassa.view.fingerprint.FingerprintActivity
 import de.psdev.licensesdialog.LicensesDialog
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -423,12 +422,11 @@ class AppSettingFragment : PreferenceFragmentCompat() {
       )
 
     if (!isShowed) {
-      Routerfit.create(DialogRouter::class.java).toMsgDialog(
+      Routerfit.create(DialogRouter::class.java).showMsgDialog(
         msgContent = Html.fromHtml(BaseApp.APP.getString(R.string.hint_background_start, msg)),
         showCancelBt = false,
         showCountDownTimer = Pair(true, 5)
       )
-        .show()
       SharePreUtil.putBoolean(
         Constance.PRE_FILE_NAME,
         requireContext(),

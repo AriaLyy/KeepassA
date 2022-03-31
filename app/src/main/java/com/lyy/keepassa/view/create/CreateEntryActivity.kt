@@ -10,7 +10,6 @@
 package com.lyy.keepassa.view.create
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -45,7 +44,6 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityEntryEditBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.CreateAttrStrEvent
-import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
 import com.lyy.keepassa.event.DelAttrFileEvent
 import com.lyy.keepassa.event.DelAttrStrEvent
 import com.lyy.keepassa.event.EditorEvent
@@ -54,6 +52,7 @@ import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.getFileInfo
 import com.lyy.keepassa.util.putArgument
 import com.lyy.keepassa.util.takePermission
@@ -74,7 +73,6 @@ import com.lyy.keepassa.widget.expand.ExpandFileAttrView
 import com.lyy.keepassa.widget.expand.ExpandStrAttrView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import org.joda.time.DateTime
@@ -137,7 +135,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   @JvmField
   var isShortcuts: Boolean = false
 
-  private val getFileLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()){
+  private val getFileLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) {
     it.takePermission()
     addAttrFile(it)
   }
@@ -275,7 +273,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
    * time change dialog
    */
   private fun showTimeChangeDialog() {
-    val dialog = Routerfit.create(DialogRouter::class.java).toTimeChangeDialog()
+    val dialog = Routerfit.create(DialogRouter::class.java).getTimeChangeDialog()
     lifecycleScope.launch {
       dialog.timeFlow.collectLatest { event ->
         if (event == null) {
@@ -518,14 +516,14 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       tags = binding.tag.text.toString()
     )
     module.saveDb {
-      EventBus.getDefault().post(CreateOrUpdateEntryEvent(pwEntry, true))
+      KpaUtil.kdbHandlerService.updateEntryStatus(pwEntry)
       finishAfterTransition()
     }
   }
 
   override fun onBackPressed() {
     Routerfit.create(DialogRouter::class.java)
-      .toMsgDialog(
+      .showMsgDialog(
         msgTitle = ResUtil.getString(R.string.warning),
         msgContent = ResUtil.getString(R.string.create_entry_no_save),
         btnClickListener = object : OnMsgBtClickListener {
@@ -540,7 +538,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
           }
         }
       )
-      .show()
   }
 
   /**

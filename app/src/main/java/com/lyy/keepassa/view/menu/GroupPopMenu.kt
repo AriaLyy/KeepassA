@@ -109,7 +109,7 @@ class GroupPopMenu(
       Html.fromHtml(context.getString(R.string.hint_del_group_no_recycle, pwGroup.name))
     }
 
-    Routerfit.create(DialogRouter::class.java).toMsgDialog(
+    Routerfit.create(DialogRouter::class.java).showMsgDialog(
       msgTitle = ResUtil.getString(R.string.del_group),
       msgContent = msg,
       btnClickListener = object : OnMsgBtClickListener {
@@ -124,7 +124,6 @@ class GroupPopMenu(
         }
       }
     )
-      .show()
   }
 
   /**

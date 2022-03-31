@@ -28,7 +28,6 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.SimpleItemEntity
-import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
 import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
@@ -221,8 +220,6 @@ class CreateEntryModule : BaseModule() {
           )
         }"
       )
-      EventBus.getDefault()
-        .post(CreateOrUpdateEntryEvent(pwEntry, false))
       ac.finishAfterTransition()
     }
   }

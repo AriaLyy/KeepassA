@@ -97,7 +97,7 @@ class DropboxAuthFlow : IAuthFlow {
    */
   private fun authDropbox() {
     Routerfit.create(DialogRouter::class.java)
-      .toMsgDialog(
+      .showMsgDialog(
         msgContent = Html.fromHtml(context.getString(R.string.dropbox_msg)),
         showCancelBt = false,
         btnClickListener = object : OnMsgBtClickListener {
@@ -113,7 +113,6 @@ class DropboxAuthFlow : IAuthFlow {
 
         }
       )
-      .show()
   }
 
   @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

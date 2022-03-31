@@ -56,7 +56,7 @@ class OpenOneDriveDelegate : IOpenDbDelegate {
   }
 
   private fun showHitDialog(onClick: () -> Unit) {
-    Routerfit.create(DialogRouter::class.java).toMsgDialog(
+    Routerfit.create(DialogRouter::class.java).showMsgDialog(
       msgContent = Html.fromHtml(activity!!.resources.getString(R.string.one_drive_hint)),
       btnClickListener = object : OnMsgBtClickListener {
         override fun onCover(v: Button) {
@@ -71,7 +71,6 @@ class OpenOneDriveDelegate : IOpenDbDelegate {
 
       }
     )
-      .show()
   }
 
   /**

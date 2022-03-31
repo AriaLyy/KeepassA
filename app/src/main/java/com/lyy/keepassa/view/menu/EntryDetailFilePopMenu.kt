@@ -70,12 +70,11 @@ class EntryDetailFilePopMenu(
           onDownloadClick?.onDownload(key, file)
         }
         R.id.open_whit_text -> {
-          Routerfit.create(DialogRouter::class.java).toMsgDialog(
+          Routerfit.create(DialogRouter::class.java).showMsgDialog(
             msgTitle = ResUtil.getString(R.string.txt_viewer),
             msgContent = String(file.data.readBytes()),
             showCancelBt = false
           )
-            .show()
         }
         R.id.open_whit_img -> {
           val bytes = file.data.readBytes()

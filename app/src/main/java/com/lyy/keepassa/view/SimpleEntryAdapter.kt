@@ -96,3 +96,4 @@ class SimpleEntryAdapter(
     val cb: CheckBox = view.findViewById(R.id.cb)
   }
 }
+

@@ -24,24 +24,21 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.transition.addListener
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
-import com.keepassdroid.database.PwEntry
-import com.keepassdroid.database.PwEntryV3
 import com.keepassdroid.database.PwEntryV4
-import com.keepassdroid.database.security.ProtectedBinary
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityEntryDetailBinding
-import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
+import com.lyy.keepassa.event.EntryState.MODIFY
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.DialogRouter
-import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
@@ -53,8 +50,8 @@ import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
 import com.lyy.keepassa.widget.expand.ExpandAttrStrLayout
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode.MAIN
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Date
 import java.util.UUID
@@ -94,8 +91,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
     ARouter.getInstance().inject(this)
-    EventBusHelper.reg(this)
-    module = ViewModelProvider(this).get(EntryDetailModule::class.java)
+    module = ViewModelProvider(this)[EntryDetailModule::class.java]
     val toolbar = findViewById<Toolbar>(R.id.kpa_toolbar)
     toolbar.title = groupTitle
     toolbar.setNavigationOnClickListener {
@@ -129,6 +125,28 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     }
 
     setData()
+    listenerEntryStateChange()
+  }
+
+  /**
+   * listener the entry status change, there are three states: create, delete, and modify.
+   */
+  private fun listenerEntryStateChange() {
+    lifecycleScope.launch {
+      KpaUtil.kdbHandlerService.entryStateChangeFlow.collectLatest {
+        it.pwEntryV4?.let { entry ->
+          if (entry.uuid == pwEntry.uuid && it.state == MODIFY) {
+            if (binding.attrFile.visibility == View.VISIBLE) {
+              binding.attrFile.removeAllViews()
+            }
+            if (binding.attrStr.visibility == View.VISIBLE) {
+              binding.attrStr.removeAllViews()
+            }
+            setData()
+          }
+        }
+      }
+    }
   }
 
   override fun useAnim(): Boolean {
@@ -137,7 +155,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
 
   override fun finishAfterTransition() {
     showContent(false)
-    if (module.lastCollection != (pwEntry as PwEntryV4).isCollection()) {
+    if (module.lastCollection != pwEntry.isCollection()) {
       KpaUtil.kdbHandlerService.saveDbByBackground()
     }
     if (!KeepassAUtil.instance.isDisplayLoadingAnim()) {
@@ -184,7 +202,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
             showContent(true)
           }
       })
-    (pwEntry as PwEntryV4).isCollection().let {
+    pwEntry.isCollection().let {
       module.lastCollection = it
       binding.ivCollection.isSelected = it
     }
@@ -206,7 +224,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     }
 
     Routerfit.create(DialogRouter::class.java)
-      .toMsgDialog(
+      .showMsgDialog(
         msgTitle = ResUtil.getString(R.string.del_entry),
         msgContent = msg,
         btnClickListener = object : OnMsgBtClickListener {
@@ -221,7 +239,6 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
           }
         }
       )
-      .show()
   }
 
   override fun onClick(v: View?) {
@@ -233,7 +250,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
         EntryDetailStrPopMenu(this, v, ProtectedString(false, pwEntry.url)).show()
       }
       R.id.tag -> {
-        EntryDetailStrPopMenu(this, v, ProtectedString(false, (pwEntry as PwEntryV4).tags)).show()
+        EntryDetailStrPopMenu(this, v, ProtectedString(false, pwEntry.tags)).show()
       }
       R.id.notice, R.id.notice_layout -> {
         val pop = EntryDetailStrPopMenu(this, v, ProtectedString(false, pwEntry.notes))
@@ -265,36 +282,18 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
         pop.show()
       }
       R.id.ivCollection -> {
-        if ((pwEntry as PwEntryV4).isCollection()) {
+        if (pwEntry.isCollection()) {
           Timber.d("取消收藏")
-          KpaUtil.kdbHandlerService.collection(pwEntry as PwEntryV4, false)
+          KpaUtil.kdbHandlerService.collection(pwEntry, false)
           binding.ivCollection.isSelected = false
           return
         }
 
         Timber.d("收藏")
-        KpaUtil.kdbHandlerService.collection(pwEntry as PwEntryV4, true)
+        KpaUtil.kdbHandlerService.collection(pwEntry, true)
         binding.ivCollection.isSelected = true
       }
     }
-  }
-
-  /**
-   * 更新条目事件
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onUpdateEntryEvent(event: CreateOrUpdateEntryEvent) {
-    if (event.entry.uuid != pwEntry.uuid || !event.isUpdate) {
-      return
-    }
-    this.pwEntry = event.entry as PwEntryV4
-    if (binding.attrFile.visibility == View.VISIBLE) {
-      binding.attrFile.removeAllViews()
-    }
-    if (binding.attrStr.visibility == View.VISIBLE) {
-      binding.attrStr.removeAllViews()
-    }
-    setData()
   }
 
   override fun onDestroy() {
@@ -304,7 +303,6 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
         module.saveRecord()
       }
     }
-    EventBusHelper.unReg(this)
     super.onDestroy()
   }
 
@@ -400,14 +398,10 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       }
     }
 
-    if (pwEntry is PwEntryV4) {
-      if ((pwEntry as PwEntryV4).tags.isNotEmpty()) {
-        binding.tag.visibility = View.VISIBLE
-        binding.tag.text = (pwEntry as PwEntryV4).tags
-        binding.tag.setOnClickListener(this)
-      } else {
-        binding.tag.visibility = View.GONE
-      }
+    if (pwEntry.tags.isNotEmpty()) {
+      binding.tag.visibility = View.VISIBLE
+      binding.tag.text = pwEntry.tags
+      binding.tag.setOnClickListener(this)
     } else {
       binding.tag.visibility = View.GONE
     }
@@ -419,46 +413,21 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
    */
   private fun handleAttr() {
     // 处理高级属性，只有v4版本的数据库才有
-    if (pwEntry is PwEntryV4) {
-      binding.attrStr.entryV4 = pwEntry as PwEntryV4
-      val data = module.getV4EntryStr(pwEntry as PwEntryV4)
-      if (data.isEmpty()) {
-        binding.attrStr.visibility = View.GONE
-      } else {
-        binding.attrStr.visibility = View.VISIBLE
-        binding.attrStr.setAttrValue(data)
-        setAttrStrListener()
-      }
+    binding.attrStr.entryV4 = pwEntry
+    val data = module.getV4EntryStr(pwEntry)
+    if (data.isEmpty()) {
+      binding.attrStr.visibility = View.GONE
     } else {
-      if ((pwEntry as PwEntryV3).additional.isNotEmpty()) {
-        binding.attrStr.visibility = View.VISIBLE
-        binding.attrStr.addStrValue(
-          getString(R.string.hint_ex_property),
-          ProtectedString(false, (pwEntry as PwEntryV3).additional)
-        )
-      } else {
-        binding.attrStr.visibility = View.GONE
-      }
+      binding.attrStr.visibility = View.VISIBLE
+      binding.attrStr.setAttrValue(data)
+      setAttrStrListener()
     }
 
     // 处理附件，v3 只支持一个附件，v4才支持多附件
-    if (pwEntry is PwEntryV4) {
-      if ((pwEntry as PwEntryV4).binaries.isNotEmpty()) {
-        binding.attrFile.visibility = View.VISIBLE
-        binding.attrFile.setFileValue((pwEntry as PwEntryV4).binaries)
-        setAttrFileListener()
-      } else {
-        binding.attrFile.visibility = View.GONE
-      }
-    } else if (pwEntry is PwEntryV3) {
-      val temp = pwEntry as PwEntryV3
-      if (temp.binaryDesc.isNotEmpty()) {
-        binding.attrFile.visibility = View.VISIBLE
-        binding.attrFile.addFileValue(temp.binaryDesc, ProtectedBinary(false, temp.binaryData))
-        setAttrFileListener()
-      } else {
-        binding.attrFile.visibility = View.GONE
-      }
+    if (pwEntry.binaries.isNotEmpty()) {
+      binding.attrFile.visibility = View.VISIBLE
+      binding.attrFile.setFileValue(pwEntry.binaries)
+      setAttrFileListener()
     } else {
       binding.attrFile.visibility = View.GONE
     }

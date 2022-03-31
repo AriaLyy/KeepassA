@@ -20,7 +20,6 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogDonateBinding
 import com.lyy.keepassa.router.DialogRouter
-import com.lyy.keepassa.service.play.PlayServiceUtil
 import com.lyy.keepassa.util.PlayUtil
 import com.lyy.keepassa.widget.DrawableTextView
 import com.lyy.keepassa.widget.toPx
@@ -71,7 +70,7 @@ class DonateDialog : BaseDialog<DialogDonateBinding>(), View.OnClickListener {
         })
       }
       R.id.rlPlay ->{
-        Routerfit.create(DialogRouter::class.java).toPlayDonateDialog()
+        Routerfit.create(DialogRouter::class.java).showPlayDonateDialog()
       }
     }
     dismiss()

@@ -68,11 +68,10 @@ class CreateDbFirstFragment : BaseFragment<FragmentCreateDbFirstBinding>() {
       ) {
         if (index == 2) {
           Routerfit.create(DialogRouter::class.java)
-            .toMsgDialog(
+            .showMsgDialog(
               msgContent = ResUtil.getString(R.string.help_create_db_path),
               showCancelBt = false
             )
-            .show()
         }
       }
     })

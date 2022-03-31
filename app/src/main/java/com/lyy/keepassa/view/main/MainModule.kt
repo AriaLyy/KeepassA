@@ -24,11 +24,7 @@ import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.base.Constance
-import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.router.DialogRouter
-import com.lyy.keepassa.util.KdbUtil
-import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.view.UpgradeLogDialog
 import com.lyy.keepassa.view.dialog.DonateDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
@@ -39,7 +35,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.joda.time.DateTime
-import timber.log.Timber
 
 class MainModule : BaseModule() {
 
@@ -83,12 +78,11 @@ class MainModule : BaseModule() {
         index: Int
       ) {
         if (index == 2) {
-          Routerfit.create(DialogRouter::class.java).toMsgDialog(
+          Routerfit.create(DialogRouter::class.java).showMsgDialog(
             msgContent = msg,
             showCancelBt = false,
             msgTitleEndIcon = vector
           )
-            .show()
         }
       }
     })
@@ -171,7 +165,7 @@ class MainModule : BaseModule() {
 
   private fun showDevBirthdayDialog(context: Context) {
     devBirthDayDialogIsShow = true
-    Routerfit.create(DialogRouter::class.java).toMsgDialog(
+    Routerfit.create(DialogRouter::class.java).showMsgDialog(
       msgTitle = ResUtil.getString(R.string.donate),
       msgContent = ResUtil.getString(R.string.dev_birthday),
       cancelText = "NO",
@@ -188,6 +182,5 @@ class MainModule : BaseModule() {
         }
       }
     )
-      .show()
   }
 }
