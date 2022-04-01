@@ -151,7 +151,6 @@ class EntryPopMenu(
   private fun handleDelEntry() {
     KpaUtil.kdbHandlerService.deleteEntry(entry as PwEntryV4)
     KpaUtil.kdbHandlerService.saveDbByForeground {
-      EventBus.getDefault().post(DelEvent(entry))
       if (it == DbSynUtil.STATE_SUCCEED) {
         HitUtil.toaskShort(
           "${context.getString(R.string.del_entry)}${context.getString(R.string.success)}"

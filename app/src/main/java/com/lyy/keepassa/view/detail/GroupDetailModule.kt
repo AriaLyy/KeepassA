@@ -31,21 +31,21 @@ import com.lyy.keepassa.util.deleteEntry
 import com.lyy.keepassa.util.moveEntry
 import com.lyy.keepassa.util.updateModifyEntry
 import com.lyy.keepassa.view.SimpleEntryAdapter
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
 internal class GroupDetailModule : BaseModule() {
 
   val entryData = mutableListOf<SimpleItemEntity>()
-  val getDataFlow = MutableStateFlow<MutableList<SimpleItemEntity>?>(null)
+  val getDataFlow = MutableSharedFlow<MutableList<SimpleItemEntity>?>()
   private var curGroupV4: PwGroupV4? = null
 
   /**
    * update the status of deleted items
    */
-  fun deleteEntry(adapter: SimpleEntryAdapter, pwEntryV4: PwEntryV4) {
+  fun deleteEntry(adapter: SimpleEntryAdapter, pwEntryV4: PwEntryV4, oldParent: PwGroupV4) {
     curGroupV4?.let {
-      adapter.deleteEntry(entryData, pwEntryV4, it)
+      adapter.deleteEntry(entryData, pwEntryV4, oldParent, it)
     }
   }
 

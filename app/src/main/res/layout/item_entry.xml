@@ -7,14 +7,13 @@
     android:clickable="true"
     android:descendantFocusability="blocksDescendants"
     android:focusable="true"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
     >
 
   <androidx.appcompat.widget.AppCompatImageView
       android:id="@+id/icon"
       android:layout_width="36dp"
       android:layout_height="36dp"
+      android:layout_marginStart="16dp"
       android:transitionName="@string/transition_entry_icon"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -52,16 +51,5 @@
       android:textColor="@color/text_gray_color"
       android:textSize="@dimen/text_size_small"
       />
-
-  <androidx.appcompat.widget.AppCompatCheckBox
-      android:id="@+id/cb"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:visibility="gone"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

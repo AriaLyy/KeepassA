@@ -35,7 +35,6 @@ class SimpleEntryAdapter(
   context: Context,
   data: List<SimpleItemEntity>
 ) : AbsRVAdapter<SimpleItemEntity, Holder>(context, data) {
-  private var showCheckBox = false
 
   override fun getViewHolder(
     convertView: View?,
@@ -49,14 +48,14 @@ class SimpleEntryAdapter(
   }
 
   override fun bindData(
-    holder: Holder?,
+    holder: Holder,
     position: Int,
     item: SimpleItemEntity
   ) {
     if (item.obj is PwGroup) {
-      IconUtil.setGroupIcon(context, item.obj as PwGroup, holder!!.icon)
+      IconUtil.setGroupIcon(context, item.obj as PwGroup, holder.icon)
     } else if (item.obj is PwEntry) {
-      IconUtil.setEntryIcon(context, item.obj as PwEntry, holder!!.icon)
+      IconUtil.setEntryIcon(context, item.obj as PwEntry, holder.icon)
       val paint = holder.title.paint
       if ((item.obj as PwEntry).expires()
         && (item.obj as PwEntry).expiryTime != null
@@ -68,27 +67,18 @@ class SimpleEntryAdapter(
         paint.flags = 0
       }
     } else if (item.obj == EntryType.TYPE_COLLECTION) {
-      holder!!.icon.loadImg(mContext, item.icon)
+      holder.icon.loadImg(mContext, item.icon)
     }
 
-    holder!!.title.text = item.title
+    holder.title.text = item.title
     holder.des.text = item.subTitle
     holder.des.visibility = if (item.subTitle.isBlank()) View.GONE else View.VISIBLE
-
-    holder.cb.isVisible = showCheckBox
-    if (showCheckBox) {
-      holder.cb.isChecked = item.isCheck
-      holder.cb.setOnCheckedChangeListener { _, isChecked ->
-        item.isCheck = isChecked
-      }
-    }
   }
 
   class Holder(view: View) : AbsHolder(view) {
     val icon: AppCompatImageView = view.findViewById(R.id.icon)
     val title: TextView = view.findViewById(R.id.title)
     val des: TextView = view.findViewById(R.id.des)
-    val cb: CheckBox = view.findViewById(R.id.cb)
   }
 }
 

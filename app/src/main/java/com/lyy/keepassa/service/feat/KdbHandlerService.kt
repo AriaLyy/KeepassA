@@ -120,6 +120,7 @@ class KdbHandlerService : IProvider {
   }
 
   private fun showLoading() {
+    Timber.d("showLoading, hashCode = ${loadingDialog.hashCode()}")
     scope.launch {
       if (loadingDialog.isVisible) {
         return@launch
@@ -129,6 +130,7 @@ class KdbHandlerService : IProvider {
   }
 
   private fun dismissLoading(delay: Long = 0) {
+    Timber.d("dismissLoading, delay = ${delay}")
     scope.launch {
       loadingDialog.dismiss(delay)
     }
@@ -226,10 +228,11 @@ class KdbHandlerService : IProvider {
    */
   fun deleteEntry(v4Entry: PwEntryV4, save: Boolean = false) {
     scope.launch {
+      val parent = v4Entry.parent
       withContext(Dispatchers.IO) {
         KDBHandlerHelper.getInstance(BaseApp.APP).deleteEntry(BaseApp.KDB, v4Entry, save)
       }
-      entryStateChangeFlow.emit(EntryStateChangeEvent(DELETE, v4Entry))
+      entryStateChangeFlow.emit(EntryStateChangeEvent(DELETE, v4Entry, parent))
     }
   }
 
@@ -335,6 +338,7 @@ class KdbHandlerService : IProvider {
     needShowLoading: Boolean = true,
     callback: (Int) -> Unit = {}
   ) {
+    Timber.d("saveDbByForeground")
     scope.launch(Dispatchers.Main) {
       Timber.d("保存前的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
       val b = withContext(Dispatchers.IO) {
@@ -352,7 +356,7 @@ class KdbHandlerService : IProvider {
         Timber.i(response.msg)
         val endTime = System.currentTimeMillis()
         if (needShowLoading) {
-          dismissLoading(if ((endTime - startTime) < MIN_TIME) 0L else MIN_TIME)
+          dismissLoading(if ((endTime - startTime) < MIN_TIME) MIN_TIME else 0L)
         }
         callback.invoke(response.code)
         return@launch

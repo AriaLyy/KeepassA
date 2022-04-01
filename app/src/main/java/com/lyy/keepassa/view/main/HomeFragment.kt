@@ -73,7 +73,6 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
   override fun initData() {
     EventBusHelper.reg(this)
     adapter = SimpleEntryAdapter(requireContext(), module.itemDataList)
-    binding.list.setHasFixedSize(true)
     binding.list.layoutManager = LinearLayoutManager(context)
     binding.list.adapter = adapter
     binding.list.doOnItemClickListener { _, position, v ->
@@ -138,7 +137,7 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
             module.moveEntry(adapter, it.pwEntryV4, it.oldParent!!)
           }
           DELETE -> {
-            module.deleteEntry(adapter, it.pwEntryV4)
+            module.deleteEntry(adapter, it.pwEntryV4, it.oldParent!!)
           }
           UNKNOWN -> {
             Timber.d("un known status")

@@ -258,7 +258,7 @@ dependencies {
   implementation "androidx.autofill:autofill:1.1.0"
 
   // 下拉刷新控件
-  implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+  implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01"
 
   // 约束布局
   implementation "androidx.constraintlayout:constraintlayout:${rootProject.ext.constraintlayoutVersion}"

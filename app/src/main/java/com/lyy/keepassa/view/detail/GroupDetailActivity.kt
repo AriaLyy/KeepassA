@@ -133,12 +133,13 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
 
   private fun loadData() {
     binding.kpaToolbar.inflateMenu(R.menu.menu_group_detail)
-    module = ViewModelProvider(this).get(GroupDetailModule::class.java)
+    module = ViewModelProvider(this)[GroupDetailModule::class.java]
     initList()
     initFab()
     initMenu()
     listenerGetGroupData()
     listenerEntryStateChange()
+    module.getGroupData(this, groupId)
   }
 
   /**
@@ -159,7 +160,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
               module.moveEntry(adapter, entry, it.oldParent!!)
             }
             DELETE -> {
-              module.deleteEntry(adapter, entry)
+              module.deleteEntry(adapter, entry, it.oldParent!!)
             }
             UNKNOWN -> {
               Timber.d("un known status")
@@ -175,7 +176,6 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       module.getDataFlow.collectLatest { list ->
         binding.laAnim.cancelAnimation()
         binding.laAnim.visibility = View.GONE
-        binding.fab.visibility = View.VISIBLE
         if (list.isNullOrEmpty()) {
           // 设置appbar为收缩状态
           binding.appBar.setExpanded(false, false)
@@ -277,8 +277,6 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       }
       return@doOnInterceptTouchEvent false
     }
-
-    module.getGroupData(this, groupId)
   }
 
   private fun getEmptyLayout(): View {
