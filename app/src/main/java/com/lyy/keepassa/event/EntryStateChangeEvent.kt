@@ -8,6 +8,7 @@
 package com.lyy.keepassa.event
 
 import com.keepassdroid.database.PwEntryV4
+import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.event.EntryState.UNKNOWN
 
 /**
@@ -17,7 +18,8 @@ import com.lyy.keepassa.event.EntryState.UNKNOWN
  **/
 data class EntryStateChangeEvent(
   val state: EntryState = UNKNOWN,
-  val pwEntryV4: PwEntryV4? = null
+  val pwEntryV4: PwEntryV4? = null,
+  val oldParent: PwGroupV4? = null
 )
 
 enum class EntryState {
@@ -29,8 +31,8 @@ enum class EntryState {
   MODIFY,
 
   /**
-   * resume entry from recycle bin
+   * resume entry from recycle bin or move
    */
-  RESUME,
+  MOVE,
   UNKNOWN
 }

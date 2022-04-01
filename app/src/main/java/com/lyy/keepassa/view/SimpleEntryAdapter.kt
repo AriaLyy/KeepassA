@@ -37,11 +37,6 @@ class SimpleEntryAdapter(
 ) : AbsRVAdapter<SimpleItemEntity, Holder>(context, data) {
   private var showCheckBox = false
 
-  fun showCheckBox(showCheckBox: Boolean) {
-    this.showCheckBox = showCheckBox
-    notifyDataSetChanged()
-  }
-
   override fun getViewHolder(
     convertView: View?,
     viewType: Int

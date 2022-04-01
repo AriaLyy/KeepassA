@@ -27,6 +27,7 @@ import com.lyy.keepassa.event.CollectionEventType.COLLECTION_STATE_REMOVE
 import com.lyy.keepassa.event.EntryState.CREATE
 import com.lyy.keepassa.event.EntryState.DELETE
 import com.lyy.keepassa.event.EntryState.MODIFY
+import com.lyy.keepassa.event.EntryState.MOVE
 import com.lyy.keepassa.event.EntryStateChangeEvent
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.cloud.DbSynUtil
@@ -180,12 +181,15 @@ class KdbHandlerService : IProvider {
   }
 
   /**
-   * resume entry from recycle bin
+   * move entry from other group
    * @param targetParent target parent
    */
-  fun resumeEntry(v4Entry: PwEntryV4, targetParent: PwGroupV4, save: Boolean = false) {
+  fun moveEntry(v4Entry: PwEntryV4, targetParent: PwGroupV4, save: Boolean = false) {
     scope.launch {
+      val originParent = v4Entry.parent
       withContext(Dispatchers.IO) {
+        v4Entry.parent.childEntries.remove(v4Entry)
+
         if (v4Entry.parent == BaseApp.KDB.pm.recycleBin) {
           (BaseApp.KDB.pm as PwDatabaseV4).undoRecycle(v4Entry, targetParent)
         } else {
@@ -206,7 +210,13 @@ class KdbHandlerService : IProvider {
         }
         BaseApp.KDB.pm.removeEntryFrom(v4Entry, targetParent)
       }
-
+      entryStateChangeFlow.emit(
+        EntryStateChangeEvent(
+          MOVE,
+          v4Entry,
+          originParent
+        )
+      )
     }
   }
 

@@ -37,9 +37,9 @@ import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.event.EntryState.CREATE
 import com.lyy.keepassa.event.EntryState.DELETE
 import com.lyy.keepassa.event.EntryState.MODIFY
+import com.lyy.keepassa.event.EntryState.MOVE
 import com.lyy.keepassa.event.EntryState.UNKNOWN
 import com.lyy.keepassa.event.MoveEvent
-import com.lyy.keepassa.event.MultiChoiceEvent
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
@@ -134,6 +134,9 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
           MODIFY -> {
             module.updateModifyEntry(adapter, it.pwEntryV4)
           }
+          MOVE -> {
+            module.moveEntry(adapter, it.pwEntryV4, it.oldParent!!)
+          }
           DELETE -> {
             module.deleteEntry(adapter, it.pwEntryV4)
           }
@@ -199,6 +202,7 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
       if (BaseApp.dbRecord!!.isAFS()) {
         isSyncDb = true
         module.getRootEntry()
+        finishRefresh(true)
         return@setOnRefreshListener
       }
 
@@ -286,7 +290,6 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
 //    }
 //    adapter.notifyDataSetChanged()
   }
-
 
   override fun onDestroy() {
     super.onDestroy()

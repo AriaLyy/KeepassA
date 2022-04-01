@@ -20,6 +20,7 @@ import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.createNewEntry
 import com.lyy.keepassa.util.deleteEntry
+import com.lyy.keepassa.util.moveEntry
 import com.lyy.keepassa.util.updateModifyEntry
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -68,6 +69,13 @@ internal class HomeModule : BaseModule() {
   }
 
   /**
+   * move entry from other group
+   */
+  fun moveEntry(adapter: SimpleEntryAdapter, pwEntryV4: PwEntryV4, oldParent: PwGroupV4) {
+    adapter.moveEntry(itemDataList, pwEntryV4, oldParent, BaseApp.KDB.pm.rootGroup as PwGroupV4)
+  }
+
+  /**
    * synchronize database
    */
   fun syncDb(callback: (Int) -> Unit) {
@@ -91,11 +99,11 @@ internal class HomeModule : BaseModule() {
         return@launch
       }
 
-//      collectionEntry.subTitle = ResUtil.getString(
-//        R.string.current_collection_num,
-//        KpaUtil.kdbHandlerService.getCollectionNum().toString()
-//      )
-//      itemDataList.add(collectionEntry)
+      collectionEntry.subTitle = ResUtil.getString(
+        R.string.current_collection_num,
+        KpaUtil.kdbHandlerService.getCollectionNum().toString()
+      )
+      itemDataList.add(collectionEntry)
 
       val rootGroup = pm.rootGroup
       for (group in rootGroup.childGroups) {

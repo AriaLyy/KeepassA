@@ -54,21 +54,12 @@ class ChoseDirModule : BaseModule() {
   fun moveEntry(
     ac: FragmentActivity,
     entryId: UUID,
-    curGroup: PwGroup
+    curGroup: PwGroupV4
   ) {
     val entry = BaseApp.KDB.pm.entries[entryId] ?: return
     val entryV4 = entry as PwEntryV4
-
-    if (entryV4.parent == BaseApp.KDB.pm.recycleBin) {
-      (BaseApp.KDB.pm as PwDatabaseV4).undoRecycle(entryV4, curGroup)
-    } else {
-      (BaseApp.KDB.pm as PwDatabaseV4).moveEntry(entryV4, curGroup)
-    }
-    KpaUtil.kdbHandlerService.saveDbByBackground()
-    EventBus.getDefault()
-      .post(MoveEvent(MoveEvent.MOVE_TYPE_ENTRY, entryV4, null))
+    KpaUtil.kdbHandlerService.moveEntry(entryV4, curGroup, true)
     HitUtil.toaskShort(ac.getString(R.string.undo_entryed))
     ac.finishAfterTransition()
-
   }
 }

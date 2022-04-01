@@ -28,6 +28,7 @@ import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.createNewEntry
 import com.lyy.keepassa.util.deleteEntry
+import com.lyy.keepassa.util.moveEntry
 import com.lyy.keepassa.util.updateModifyEntry
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,6 +55,15 @@ internal class GroupDetailModule : BaseModule() {
   fun updateModifyEntry(adapter: SimpleEntryAdapter, pwEntryV4: PwEntryV4) {
     curGroupV4?.let {
       adapter.updateModifyEntry(entryData, pwEntryV4, it)
+    }
+  }
+
+  /**
+   * move entry from other group
+   */
+  fun moveEntry(adapter: SimpleEntryAdapter, pwEntryV4: PwEntryV4, oldParent: PwGroupV4) {
+    curGroupV4?.let {
+      adapter.moveEntry(entryData, pwEntryV4, oldParent, it)
     }
   }
 

@@ -42,6 +42,7 @@ import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.event.EntryState.CREATE
 import com.lyy.keepassa.event.EntryState.DELETE
 import com.lyy.keepassa.event.EntryState.MODIFY
+import com.lyy.keepassa.event.EntryState.MOVE
 import com.lyy.keepassa.event.EntryState.UNKNOWN
 import com.lyy.keepassa.event.MoveEvent
 import com.lyy.keepassa.router.ActivityRouter
@@ -153,6 +154,9 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
             }
             MODIFY -> {
               module.updateModifyEntry(adapter, entry)
+            }
+            MOVE -> {
+              module.moveEntry(adapter, entry, it.oldParent!!)
             }
             DELETE -> {
               module.deleteEntry(adapter, entry)
@@ -289,10 +293,10 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
    */
   @Subscribe(threadMode = MAIN)
   fun onGroupCreate(event: CreateOrUpdateGroupEvent) {
-  //   if (event.pwGroup.parent.id != groupId) {
-  //     return
-  //   }
-  //   getData()
+    //   if (event.pwGroup.parent.id != groupId) {
+    //     return
+    //   }
+    //   getData()
   }
 
   /**

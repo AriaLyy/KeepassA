@@ -22,6 +22,7 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupId
+import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
@@ -93,7 +94,7 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
     }
   }
 
-  private lateinit var curGroup: PwGroup
+  private lateinit var curGroup: PwGroupV4
   private var lastGroupStack: Stack<PwGroup> = Stack()
   private val fragmentMap: HashMap<PwGroupId, DirFragment> = HashMap()
   private lateinit var module: ChoseDirModule
@@ -117,8 +118,8 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
     ARouter.getInstance().inject(this)
-    module = ViewModelProvider(this).get(ChoseDirModule::class.java)
-    curGroup = BaseApp.KDB.pm.rootGroup
+    module = ViewModelProvider(this)[ChoseDirModule::class.java]
+    curGroup = BaseApp.KDB.pm.rootGroup as PwGroupV4
     if (recycleType == DATA_MOVE_GROUP && recycleGroupId == null) {
       Timber.e("需要恢复的群组id为空")
       finish()
@@ -190,7 +191,7 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
   }
 
   fun startNextFragment(
-    pwGroup: PwGroup,
+    pwGroup: PwGroupV4,
     isFirst: Boolean = false
   ) {
     if (!isFirst) {

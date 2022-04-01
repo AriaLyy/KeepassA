@@ -40,6 +40,10 @@ abstract class BaseDialog<VB : ViewDataBinding>:FrameDialog<VB>() {
   }
 
   override fun dismiss() {
+    if (!isVisible){
+      Timber.d("fragment 还没被加载")
+      return
+    }
     if (childFragmentManager.isStateSaved) {
       Timber.d("状态已经保存，不再dismiss")
       return
