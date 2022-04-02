@@ -22,6 +22,12 @@ data class EntryStateChangeEvent(
   val oldParent: PwGroupV4? = null
 )
 
+data class GroupStateChangeEvent(
+  val state: EntryState = UNKNOWN,
+  val groupV4: PwGroupV4? = null,
+  val oldParent: PwGroupV4? = null
+)
+
 enum class EntryState {
   /**
    * new entry

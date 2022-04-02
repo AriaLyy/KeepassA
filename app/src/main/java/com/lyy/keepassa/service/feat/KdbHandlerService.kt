@@ -29,6 +29,7 @@ import com.lyy.keepassa.event.EntryState.DELETE
 import com.lyy.keepassa.event.EntryState.MODIFY
 import com.lyy.keepassa.event.EntryState.MOVE
 import com.lyy.keepassa.event.EntryStateChangeEvent
+import com.lyy.keepassa.event.GroupStateChangeEvent
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.setCollection
@@ -50,6 +51,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class KdbHandlerService : IProvider {
   companion object {
     const val MIN_TIME = 200L
+    private const val NEED_SAVE_BY_REAL_TIME = false
   }
 
   private var scope = MainScope()
@@ -61,10 +63,15 @@ class KdbHandlerService : IProvider {
   val collectionStateFlow = MutableStateFlow(CollectionEvent())
 
   val entryStateChangeFlow = MutableStateFlow(EntryStateChangeEvent())
+  val groupStateChangeFlow = MutableStateFlow(GroupStateChangeEvent())
   private val collectionEntries = hashSetOf<PwEntryV4>()
 
   private val loadingDialog: LoadingDialog by lazy {
     Routerfit.create(DialogRouter::class.java).getLoadingDialog()
+  }
+
+  private val kdbHelper by lazy {
+    KDBHandlerHelper.getInstance(BaseApp.APP)
   }
 
   fun getCollectionEntries() = collectionEntries
@@ -138,38 +145,36 @@ class KdbHandlerService : IProvider {
 
   /**
    * delete group
-   * @param save true: delete that group and save it
    */
-  fun deleteGroup(pwGroup: PwGroup, save: Boolean = false) {
+  fun deleteGroup(pwGroup: PwGroup) {
     if (BaseApp.isV4) {
       if (BaseApp.KDB!!.pm.canRecycle(pwGroup)) {
         (BaseApp.KDB!!.pm as PwDatabaseV4).recycle(pwGroup as PwGroupV4)
       } else {
-        KDBHandlerHelper.getInstance(BaseApp.APP).deleteGroup(BaseApp.KDB, pwGroup, save)
+        kdbHelper.deleteGroup(BaseApp.KDB, pwGroup, NEED_SAVE_BY_REAL_TIME)
       }
     } else {
-      KDBHandlerHelper.getInstance(BaseApp.APP).deleteGroup(BaseApp.KDB, pwGroup, save)
+      kdbHelper.deleteGroup(BaseApp.KDB, pwGroup, NEED_SAVE_BY_REAL_TIME)
     }
   }
 
   /**
    * only send status
    */
-  fun updateEntryStatus(v4Entry: PwEntryV4, save: Boolean = false) {
+  fun updateEntryStatus(v4Entry: PwEntryV4) {
     scope.launch {
       v4Entry.touch(true, true)
 
-      withContext(Dispatchers.IO) {
-        if (!save) {
-          return@withContext
-        }
-        if (KDBHandlerHelper.getInstance(BaseApp.APP).save(BaseApp.KDB)) {
-          val parent = v4Entry.parent
-          // Mark parent dirty
-          if (parent != null) {
-            BaseApp.KDB.dirty.add(parent)
+      if (NEED_SAVE_BY_REAL_TIME) {
+        withContext(Dispatchers.IO) {
+          if (kdbHelper.save(BaseApp.KDB)) {
+            val parent = v4Entry.parent
+            // Mark parent dirty
+            if (parent != null) {
+              BaseApp.KDB.dirty.add(parent)
+            }
+            return@withContext
           }
-          return@withContext
         }
       }
 
@@ -186,7 +191,7 @@ class KdbHandlerService : IProvider {
    * move entry from other group
    * @param targetParent target parent
    */
-  fun moveEntry(v4Entry: PwEntryV4, targetParent: PwGroupV4, save: Boolean = false) {
+  fun moveEntry(v4Entry: PwEntryV4, targetParent: PwGroupV4) {
     scope.launch {
       val originParent = v4Entry.parent
       withContext(Dispatchers.IO) {
@@ -198,19 +203,17 @@ class KdbHandlerService : IProvider {
           (BaseApp.KDB.pm as PwDatabaseV4).moveEntry(v4Entry, targetParent)
         }
 
-        if (!save) {
-          return@withContext
-        }
-
-        if (KDBHandlerHelper.getInstance(BaseApp.APP).save(BaseApp.KDB)) {
-          val parent = v4Entry.parent
-          // Mark parent dirty
-          if (parent != null) {
-            BaseApp.KDB.dirty.add(parent)
+        if (NEED_SAVE_BY_REAL_TIME) {
+          if (kdbHelper.save(BaseApp.KDB)) {
+            val parent = v4Entry.parent
+            // Mark parent dirty
+            if (parent != null) {
+              BaseApp.KDB.dirty.add(parent)
+            }
+            return@withContext
           }
-          return@withContext
+          BaseApp.KDB.pm.removeEntryFrom(v4Entry, targetParent)
         }
-        BaseApp.KDB.pm.removeEntryFrom(v4Entry, targetParent)
       }
       entryStateChangeFlow.emit(
         EntryStateChangeEvent(
@@ -224,15 +227,40 @@ class KdbHandlerService : IProvider {
 
   /**
    * delete entry
-   * @param save true: delete that entry and save it
    */
-  fun deleteEntry(v4Entry: PwEntryV4, save: Boolean = false) {
+  fun deleteEntry(v4Entry: PwEntryV4) {
     scope.launch {
       val parent = v4Entry.parent
       withContext(Dispatchers.IO) {
-        KDBHandlerHelper.getInstance(BaseApp.APP).deleteEntry(BaseApp.KDB, v4Entry, save)
+        kdbHelper.deleteEntry(BaseApp.KDB, v4Entry, NEED_SAVE_BY_REAL_TIME)
       }
       entryStateChangeFlow.emit(EntryStateChangeEvent(DELETE, v4Entry, parent))
+    }
+  }
+
+  /**
+   * update group info and send new state
+   */
+  fun modifyGroup(
+    groupName: String,
+    icon: PwIconStandard,
+    customIcon: PwIconCustom?,
+    self: PwGroupV4,
+    callback: () -> Unit
+  ) {
+    scope.launch(Dispatchers.IO) {
+      self.customIcon = customIcon
+      self.icon = icon
+      self.name = groupName
+      if (NEED_SAVE_BY_REAL_TIME) {
+        if (kdbHelper.save(BaseApp.KDB)) {
+          BaseApp.KDB.dirty.add(self.parent)
+        }
+      }
+      withContext(Dispatchers.Main) {
+        callback.invoke()
+      }
+      groupStateChangeFlow.emit(GroupStateChangeEvent(MODIFY, self))
     }
   }
 
@@ -241,30 +269,43 @@ class KdbHandlerService : IProvider {
    *
    * @param icon default icon
    * @param customIcon custom icon
-   * @param parent 父组，如果是想添加到跟目录，设置null
    */
   fun createGroup(
     groupName: String,
     icon: PwIconStandard,
     customIcon: PwIconCustom?,
-    parent: PwGroup
-  ): PwGroupV4 {
-    val pm: PwDatabase = BaseApp.KDB.pm
+    parent: PwGroupV4,
+    callback: (PwGroupV4) -> Unit
+  ) {
+    scope.launch(Dispatchers.IO) {
+      val pm: PwDatabase = BaseApp.KDB.pm
 
-    val group = pm.createGroup() as PwGroupV4
-    group.initNewGroup(groupName, pm.newGroupId())
-    group.icon = icon
-    customIcon?.let { group.customIcon = it }
-    pm.addGroupTo(group, parent)
-    saveDbByBackground()
-    return group
+      val group = pm.createGroup() as PwGroupV4
+      group.initNewGroup(groupName, pm.newGroupId())
+      group.icon = icon
+      customIcon?.let { group.customIcon = it }
+      pm.addGroupTo(group, parent)
+
+      if (NEED_SAVE_BY_REAL_TIME) {
+        if (kdbHelper.save(BaseApp.KDB)) {
+          BaseApp.KDB.dirty.add(parent)
+        } else {
+          pm.removeGroupFrom(group, parent)
+        }
+      }
+
+      withContext(Dispatchers.Main) {
+        callback.invoke(group)
+      }
+      groupStateChangeFlow.emit(GroupStateChangeEvent(CREATE, group, null))
+    }
   }
 
   /**
    * add new group
    */
   fun addGroup(group: PwGroup) {
-    KDBHandlerHelper.getInstance(BaseApp.APP)
+    kdbHelper
       .createGroup(BaseApp.KDB, group.name, group.icon, group.parent)
   }
 
@@ -272,7 +313,9 @@ class KdbHandlerService : IProvider {
    * add new entry
    */
   fun createEntry(entry: PwEntryV4) {
-    KDBHandlerHelper.getInstance(BaseApp.APP).saveEntry(BaseApp.KDB, entry)
+    if (NEED_SAVE_BY_REAL_TIME) {
+      kdbHelper.saveEntry(BaseApp.KDB, entry)
+    }
     scope.launch {
       entryStateChangeFlow.emit(EntryStateChangeEvent(CREATE, entry))
     }
@@ -291,7 +334,7 @@ class KdbHandlerService : IProvider {
         showLoading()
       }
 
-      val b = KDBHandlerHelper.getInstance(BaseApp.APP).save(BaseApp.KDB)
+      val b = kdbHelper.save(BaseApp.KDB)
       if (needShowLoading) {
         dismissLoading()
       }
@@ -307,7 +350,7 @@ class KdbHandlerService : IProvider {
   fun saveDbByBackground(uploadDb: Boolean = false, callback: (Int) -> Unit = {}) {
     Timber.d("start save db by background")
     scope.launch(Dispatchers.IO) {
-      val b = KDBHandlerHelper.getInstance(BaseApp.APP).save(BaseApp.KDB)
+      val b = kdbHelper.save(BaseApp.KDB)
       Timber.d("保存后的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
       if (uploadDb) {
         val response = DbSynUtil.uploadSyn(BaseApp.dbRecord!!, false)
@@ -342,7 +385,7 @@ class KdbHandlerService : IProvider {
     scope.launch(Dispatchers.Main) {
       Timber.d("保存前的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
       val b = withContext(Dispatchers.IO) {
-        return@withContext KDBHandlerHelper.getInstance(BaseApp.APP).save(BaseApp.KDB)
+        return@withContext kdbHelper.save(BaseApp.KDB)
       }
       Timber.d("保存后的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
       if (uploadDb) {

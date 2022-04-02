@@ -26,13 +26,13 @@ import com.arialyy.frame.util.DpUtils
 import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwGroup
+import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentOnlyListBinding
 import com.lyy.keepassa.entity.EntryType
 import com.lyy.keepassa.entity.showPopMenu
-import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.event.EntryState.CREATE
 import com.lyy.keepassa.event.EntryState.DELETE
@@ -46,10 +46,12 @@ import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
+import com.lyy.keepassa.util.createGroup
 import com.lyy.keepassa.util.doOnInterceptTouchEvent
 import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.util.doOnItemLongClickListener
 import com.lyy.keepassa.util.isAFS
+import com.lyy.keepassa.util.updateModifyEntry
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -115,10 +117,50 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
     module.getRootEntry()
     listenerCollection()
     listenerEntryStateChange()
+    listenerGroupStateChange()
   }
 
   /**
-   * listener the entry status change, there are three states: create, delete, and modify.
+   * listener the group status change, there are states: create, delete, modify, move
+   */
+  private fun listenerGroupStateChange() {
+    lifecycleScope.launch {
+      KpaUtil.kdbHandlerService.groupStateChangeFlow.collectLatest {
+        if (it.groupV4 == null) {
+          return@collectLatest
+        }
+        when (it.state) {
+          CREATE -> {
+            adapter.createGroup(
+              module.itemDataList,
+              it.groupV4,
+              BaseApp.KDB.pm.rootGroup as PwGroupV4
+            )
+          }
+          MODIFY -> {
+            adapter.updateModifyEntry(
+              module.itemDataList,
+              it.groupV4,
+              BaseApp.KDB.pm.rootGroup as PwGroupV4
+            )
+            // module.updateModifyEntry(adapter, it.pwEntryV4)
+          }
+          MOVE -> {
+            // module.moveEntry(adapter, it.pwEntryV4, it.oldParent!!)
+          }
+          DELETE -> {
+            // module.deleteEntry(adapter, it.pwEntryV4, it.oldParent!!)
+          }
+          UNKNOWN -> {
+            Timber.d("un known status")
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * listener the entry status change, there are states: create, delete, modify, move
    */
   private fun listenerEntryStateChange() {
     lifecycleScope.launch {
@@ -231,27 +273,6 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
 
   override fun setLayoutId(): Int {
     return R.layout.fragment_only_list
-  }
-
-  /**
-   * 创建群组
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onGroupCreate(event: CreateOrUpdateGroupEvent) {
-//    if (event.pwGroup.parent != BaseApp.KDB.pm.rootGroup) {
-//      return
-//    }
-//    if (event.isUpdate) {
-//      val entry: SimpleItemEntity? = entryData.find { it.obj == event.pwGroup }
-//      entry?.let {
-//
-//        val pos = entryData.indexOf(it)
-//        entryData[pos] = KeepassAUtil.instance.convertPwGroup2Item(event.pwGroup)
-//        adapter.notifyItemChanged(pos)
-//      }
-//      return
-//    }
-//    module.getRootEntry()
   }
 
   /**

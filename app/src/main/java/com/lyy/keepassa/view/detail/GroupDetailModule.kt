@@ -38,7 +38,7 @@ internal class GroupDetailModule : BaseModule() {
 
   val entryData = mutableListOf<SimpleItemEntity>()
   val getDataFlow = MutableSharedFlow<MutableList<SimpleItemEntity>?>()
-  private var curGroupV4: PwGroupV4? = null
+  var curGroupV4: PwGroupV4? = null
 
   /**
    * update the status of deleted items

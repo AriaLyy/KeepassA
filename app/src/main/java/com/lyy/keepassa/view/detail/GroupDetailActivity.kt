@@ -37,7 +37,6 @@ import com.lyy.keepassa.common.SortType.TIME_ASC
 import com.lyy.keepassa.common.SortType.TIME_DESC
 import com.lyy.keepassa.databinding.ActivityGroupDetailBinding
 import com.lyy.keepassa.entity.showPopMenu
-import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.event.EntryState.CREATE
 import com.lyy.keepassa.event.EntryState.DELETE
@@ -50,9 +49,11 @@ import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.createGroup
 import com.lyy.keepassa.util.doOnInterceptTouchEvent
 import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.util.doOnItemLongClickListener
+import com.lyy.keepassa.util.updateModifyEntry
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import com.lyy.keepassa.widget.MainExpandFloatActionButton
 import kotlinx.coroutines.flow.collectLatest
@@ -139,7 +140,38 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
     initMenu()
     listenerGetGroupData()
     listenerEntryStateChange()
+    listenerGroupStateChange()
     module.getGroupData(this, groupId)
+  }
+
+  /**
+   * listener the group status change, there are states: create, delete, modify, move
+   */
+  private fun listenerGroupStateChange() {
+    lifecycleScope.launch {
+      KpaUtil.kdbHandlerService.groupStateChangeFlow.collectLatest {
+        if (it.groupV4 == null || module.curGroupV4 == null) {
+          return@collectLatest
+        }
+        when (it.state) {
+          CREATE -> {
+            adapter.createGroup(module.entryData, it.groupV4, module.curGroupV4)
+          }
+          MODIFY -> {
+            adapter.updateModifyEntry(module.entryData, it.groupV4, module.curGroupV4)
+          }
+          MOVE -> {
+            // module.moveEntry(adapter, it.pwEntryV4, it.oldParent!!)
+          }
+          DELETE -> {
+            // module.deleteEntry(adapter, it.pwEntryV4, it.oldParent!!)
+          }
+          UNKNOWN -> {
+            Timber.d("un known status")
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -284,17 +316,6 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       binding.vsEmpty.viewStub?.inflate()
     }
     return binding.vsEmpty.root
-  }
-
-  /**
-   * 创建群组
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onGroupCreate(event: CreateOrUpdateGroupEvent) {
-    //   if (event.pwGroup.parent.id != groupId) {
-    //     return
-    //   }
-    //   getData()
   }
 
   /**

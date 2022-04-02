@@ -10,7 +10,6 @@
 package com.lyy.keepassa.view.dialog
 
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
@@ -20,13 +19,11 @@ import com.keepassdroid.database.PwIconStandard
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogAddGroupBinding
-import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
-import com.lyy.keepassa.view.create.CreateEntryModule
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.view.icon.IconBottomSheetDialog
 import com.lyy.keepassa.view.icon.IconItemCallback
-import org.greenrobot.eventbus.EventBus
 
 /**
  * 编辑群组
@@ -36,7 +33,6 @@ class ModifyGroupDialog : BaseDialog<DialogAddGroupBinding>(), View.OnClickListe
 
   private var icon: PwIconStandard = PwIconStandard(1)
   private var csIcon: PwIconCustom? = null
-  private lateinit var module: CreateEntryModule
 
   @Autowired(name = "pwGroup")
   @JvmField
@@ -53,7 +49,6 @@ class ModifyGroupDialog : BaseDialog<DialogAddGroupBinding>(), View.OnClickListe
       dismiss()
       return
     }
-    module = ViewModelProvider(this).get(CreateEntryModule::class.java)
     binding.groupNameLayout.setEndIconOnClickListener {
       showIconDialog()
     }
@@ -98,15 +93,8 @@ class ModifyGroupDialog : BaseDialog<DialogAddGroupBinding>(), View.OnClickListe
           HitUtil.toaskShort(getString(R.string.error_group_name_null))
           return
         }
-
-        pwGroup?.let {
-          it.customIcon = csIcon
-          it.icon = icon
-          it.name = newTitle
-          module.saveDb {
-            EventBus.getDefault().post(CreateOrUpdateGroupEvent(it, true))
-            dismiss()
-          }
+        KpaUtil.kdbHandlerService.modifyGroup(newTitle, icon, csIcon, pwGroup!!) {
+          dismiss()
         }
       }
       R.id.cancel -> {

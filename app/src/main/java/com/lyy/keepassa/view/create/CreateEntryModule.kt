@@ -18,7 +18,6 @@ import androidx.lifecycle.viewModelScope
 import com.keepassdroid.database.PwDatabaseV4
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
-import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
@@ -28,7 +27,6 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.SimpleItemEntity
-import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
@@ -37,7 +35,6 @@ import com.lyy.keepassa.util.hasNote
 import com.lyy.keepassa.util.hasTOTP
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.util.Date
@@ -190,20 +187,22 @@ class CreateEntryModule : BaseModule() {
    */
   fun createGroup(
     groupName: String,
-    parentGroup: PwGroup,
+    parentGroup: PwGroupV4,
     icon: PwIconStandard,
     customIcon: PwIconCustom?
-  ) = flow<Boolean> {
-    val group = KpaUtil.kdbHandlerService.createGroup(groupName, icon, customIcon, parentGroup)
-    HitUtil.toaskShort(
-      "${BaseApp.APP.getString(R.string.create_group)}${
-        BaseApp.APP.getString(
-          R.string.success
-        )
-      }"
-    )
-    EventBus.getDefault().post(CreateOrUpdateGroupEvent(group))
-    emit(true)
+  ) = flow {
+    KpaUtil.kdbHandlerService.createGroup(groupName, icon, customIcon, parentGroup) {
+      HitUtil.toaskShort(
+        "${BaseApp.APP.getString(R.string.create_group)}${
+          BaseApp.APP.getString(
+            R.string.success
+          )
+        }"
+      )
+      viewModelScope.launch {
+        emit(true)
+      }
+    }
   }
 
   /**
