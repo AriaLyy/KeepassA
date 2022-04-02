@@ -33,7 +33,6 @@ import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentOnlyListBinding
 import com.lyy.keepassa.entity.EntryType
 import com.lyy.keepassa.entity.showPopMenu
-import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.event.EntryState.CREATE
 import com.lyy.keepassa.event.EntryState.DELETE
 import com.lyy.keepassa.event.EntryState.MODIFY
@@ -47,11 +46,12 @@ import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.createGroup
+import com.lyy.keepassa.util.deleteGroup
 import com.lyy.keepassa.util.doOnInterceptTouchEvent
 import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.util.doOnItemLongClickListener
 import com.lyy.keepassa.util.isAFS
-import com.lyy.keepassa.util.updateModifyEntry
+import com.lyy.keepassa.util.updateModifyGroup
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -138,18 +138,22 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
             )
           }
           MODIFY -> {
-            adapter.updateModifyEntry(
+            adapter.updateModifyGroup(
               module.itemDataList,
               it.groupV4,
               BaseApp.KDB.pm.rootGroup as PwGroupV4
             )
-            // module.updateModifyEntry(adapter, it.pwEntryV4)
           }
           MOVE -> {
             // module.moveEntry(adapter, it.pwEntryV4, it.oldParent!!)
           }
           DELETE -> {
-            // module.deleteEntry(adapter, it.pwEntryV4, it.oldParent!!)
+            adapter.deleteGroup(
+              module.itemDataList,
+              it.groupV4,
+              it.oldParent!!,
+              BaseApp.KDB.pm.rootGroup as PwGroupV4
+            )
           }
           UNKNOWN -> {
             Timber.d("un known status")
@@ -281,34 +285,6 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
   @Subscribe(threadMode = MAIN)
   fun onMove(event: MoveEvent) {
     module.getRootEntry()
-  }
-
-  /**
-   * 删除项目
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onDelEvent(delEvent: DelEvent?) {
-//    if (delEvent == null) {
-//      return
-//    }
-//    val entry: SimpleItemEntity? = entryData.find { it.obj == delEvent.pwData }
-//    if (entry != null) {
-//      entryData.remove(entry)
-//    }
-//    if (BaseApp.isV4 && BaseApp.KDB.pm.recycleBin != null) {
-//      val recycleBin = entryData.find { it.obj == BaseApp.KDB.pm.recycleBin }
-//      if (recycleBin != null) {
-//        recycleBin.subTitle = getString(
-//          R.string.hint_group_desc,
-//          KdbUtil.getGroupEntryNum(recycleBin.obj as PwGroup)
-//            .toString()
-//        )
-//      }
-//    } else {
-//      // 如果回收站不存在，重新刷新界面，进行删除操作时会自动添加回收站
-//      module.getRootEntry()
-//    }
-//    adapter.notifyDataSetChanged()
   }
 
   override fun onDestroy() {

@@ -37,7 +37,6 @@ import com.lyy.keepassa.R.color
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.EntryRecord
-import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KeepassAUtil
@@ -275,9 +274,7 @@ class EntryDetailModule : BaseModule() {
    * @param pwEntry 需要回收的条目
    */
   fun recycleEntry(ac: FragmentActivity, pwEntry: PwEntryV4) {
-    KpaUtil.kdbHandlerService.deleteEntry(pwEntry)
-    KpaUtil.kdbHandlerService.saveDbByForeground {
-      EventBus.getDefault().post(DelEvent(pwEntry))
+    KpaUtil.kdbHandlerService.deleteEntry(pwEntry){
       HitUtil.toaskShort(
         "${ac.getString(R.string.del_entry)}${ac.getString(R.string.success)}"
       )

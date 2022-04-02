@@ -37,7 +37,6 @@ import com.lyy.keepassa.common.SortType.TIME_ASC
 import com.lyy.keepassa.common.SortType.TIME_DESC
 import com.lyy.keepassa.databinding.ActivityGroupDetailBinding
 import com.lyy.keepassa.entity.showPopMenu
-import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.event.EntryState.CREATE
 import com.lyy.keepassa.event.EntryState.DELETE
 import com.lyy.keepassa.event.EntryState.MODIFY
@@ -50,10 +49,11 @@ import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.createGroup
+import com.lyy.keepassa.util.deleteGroup
 import com.lyy.keepassa.util.doOnInterceptTouchEvent
 import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.util.doOnItemLongClickListener
-import com.lyy.keepassa.util.updateModifyEntry
+import com.lyy.keepassa.util.updateModifyGroup
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import com.lyy.keepassa.widget.MainExpandFloatActionButton
 import kotlinx.coroutines.flow.collectLatest
@@ -158,13 +158,18 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
             adapter.createGroup(module.entryData, it.groupV4, module.curGroupV4)
           }
           MODIFY -> {
-            adapter.updateModifyEntry(module.entryData, it.groupV4, module.curGroupV4)
+            adapter.updateModifyGroup(module.entryData, it.groupV4, module.curGroupV4)
           }
           MOVE -> {
             // module.moveEntry(adapter, it.pwEntryV4, it.oldParent!!)
           }
           DELETE -> {
-            // module.deleteEntry(adapter, it.pwEntryV4, it.oldParent!!)
+            adapter.deleteGroup(
+              module.entryData,
+              it.groupV4,
+              it.oldParent!!,
+              module.curGroupV4
+            )
           }
           UNKNOWN -> {
             Timber.d("un known status")
@@ -316,17 +321,6 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       binding.vsEmpty.viewStub?.inflate()
     }
     return binding.vsEmpty.root
-  }
-
-  /**
-   * 删除群组
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onDelGroup(delEvent: DelEvent?) {
-    // if (delEvent == null) {
-    //   return
-    // }
-    // getData()
   }
 
   /**

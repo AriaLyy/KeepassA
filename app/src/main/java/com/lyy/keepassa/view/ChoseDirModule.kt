@@ -58,7 +58,7 @@ class ChoseDirModule : BaseModule() {
   ) {
     val entry = BaseApp.KDB.pm.entries[entryId] ?: return
     val entryV4 = entry as PwEntryV4
-    KpaUtil.kdbHandlerService.moveEntry(entryV4, curGroup, true)
+    KpaUtil.kdbHandlerService.moveEntry(entryV4, curGroup)
     HitUtil.toaskShort(ac.getString(R.string.undo_entryed))
     ac.finishAfterTransition()
   }

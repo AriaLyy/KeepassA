@@ -161,26 +161,32 @@ fun SimpleEntryAdapter.moveEntry(
 
   // 检查是否在当前目录的子目录下，不能return 因为有可能是移动到同级目录下
   if (entry.checkInGroupLeve(dirGroup)) {
-    entryList.forEachIndexed { index, simpleItemEntity ->
-      if (simpleItemEntity.obj == entry.parent) {
-        simpleItemEntity.subTitle =
-          ResUtil.getString(R.string.hint_group_desc, KdbUtil.getGroupEntryNum(entry.parent))
-        notifyItemChanged(index)
+    kotlin.run breaking@{
+      entryList.forEachIndexed { index, simpleItemEntity ->
+        if (simpleItemEntity.obj == entry.parent) {
+          simpleItemEntity.subTitle =
+            ResUtil.getString(R.string.hint_group_desc, KdbUtil.getGroupEntryNum(entry.parent))
+          notifyItemChanged(index)
+          return@breaking
+        }
       }
     }
   }
 
   // 检查是否是从当前目录下被移走
   if (oldParentGroup == dirGroup) {
-    var tempIndex = -1
-    entryList.forEachIndexed { index, simpleItemEntity ->
-      if (simpleItemEntity.obj !is PwEntryV4) {
-        return@forEachIndexed
+    val tempIndex = kotlin.run braking@{
+      entryList.forEachIndexed { index, simpleItemEntity ->
+        if (simpleItemEntity.obj !is PwEntryV4) {
+          return@forEachIndexed
+        }
+        if ((simpleItemEntity.obj as PwEntryV4).uuid == entry.uuid) {
+          return@braking index
+        }
       }
-      if ((simpleItemEntity.obj as PwEntryV4).uuid == entry.uuid) {
-        tempIndex = index
-      }
+      return@braking -1
     }
+
     if (tempIndex != -1) {
       entryList.removeAt(tempIndex)
       notifyItemRemoved(tempIndex)
@@ -190,15 +196,17 @@ fun SimpleEntryAdapter.moveEntry(
 
   // 检查是否是从当前目录的子目录下被移走
   if (dirGroup.childGroups.contains(oldParentGroup)) {
-    entryList.forEachIndexed { index, simpleItemEntity ->
-      if (simpleItemEntity.obj !is PwGroupV4) {
-        return@forEachIndexed
-      }
-      if (simpleItemEntity.obj == oldParentGroup) {
-        simpleItemEntity.subTitle =
-          ResUtil.getString(R.string.hint_group_desc, KdbUtil.getGroupEntryNum(oldParentGroup))
-        notifyItemChanged(index)
-        return
+    kotlin.run braking@{
+      entryList.forEachIndexed { index, simpleItemEntity ->
+        if (simpleItemEntity.obj !is PwGroupV4) {
+          return@forEachIndexed
+        }
+        if (simpleItemEntity.obj == oldParentGroup) {
+          simpleItemEntity.subTitle =
+            ResUtil.getString(R.string.hint_group_desc, KdbUtil.getGroupEntryNum(oldParentGroup))
+          notifyItemChanged(index)
+          return@braking
+        }
       }
     }
     return

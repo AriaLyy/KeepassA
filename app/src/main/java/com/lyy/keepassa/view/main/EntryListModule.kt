@@ -17,7 +17,7 @@ import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.hasTOTP
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -26,34 +26,46 @@ import kotlinx.coroutines.withContext
  * @Description
  * @Date 4:02 下午 2021/10/25
  **/
-class EntryListModule : BaseModule() {
+internal class EntryListModule : BaseModule() {
 
-  fun getData(type: String) =
-    if (type == EntryListFragment.TYPE_HISTORY) getEntryHistoryRecord() else getTOTPData()
+  val entryData = mutableListOf<SimpleItemEntity>()
+  val getDataFlow = MutableSharedFlow<MutableList<SimpleItemEntity>?>()
+
+  fun getData(type: String) {
+    if (type == EntryListFragment.TYPE_HISTORY) {
+      getEntryHistoryRecord()
+      return
+    }
+    if (type == EntryListFragment.TYPE_TOTP) {
+      getTOTPData()
+      return
+    }
+  }
 
   /**
    * get totp data
    */
-  private fun getTOTPData() = flow {
-
-    if (BaseApp.KDB == null) {
-      emit(null)
-      return@flow
-    }
-    val pm = BaseApp.KDB!!.pm
-
-    if (pm == null) {
-      emit(null)
-      return@flow
-    }
-    val data = ArrayList<SimpleItemEntity>()
-    for (map in pm.entries) {
-      val entry = map.value
-      if (entry is PwEntryV4 && entry.hasTOTP()) {
-        data.add(KeepassAUtil.instance.convertPwEntry2Item(entry))
+  private fun getTOTPData() {
+    entryData.clear()
+    viewModelScope.launch {
+      if (BaseApp.KDB == null) {
+        getDataFlow.emit(null)
+        return@launch
       }
+      val pm = BaseApp.KDB!!.pm
+
+      if (pm == null) {
+        getDataFlow.emit(null)
+        return@launch
+      }
+      for (map in pm.entries) {
+        val entry = map.value
+        if (entry is PwEntryV4 && entry.hasTOTP()) {
+          entryData.add(KeepassAUtil.instance.convertPwEntry2Item(entry))
+        }
+      }
+      getDataFlow.emit(entryData)
     }
-    emit(data)
   }
 
   /**
@@ -74,27 +86,28 @@ class EntryListModule : BaseModule() {
   /**
    * 获取历史记录
    */
-  private fun getEntryHistoryRecord() = flow {
-    if (BaseApp.dbRecord == null) {
-      emit(null)
-      return@flow
-    }
-    val list = withContext(Dispatchers.IO) {
-      val dao = BaseApp.appDatabase.entryRecordDao()
-      val records = dao.getRecord(BaseApp.dbRecord!!.localDbUri)
-      if (records.isNullOrEmpty()) {
-        null
-      } else {
-        val temp = ArrayList<SimpleItemEntity>()
+  private fun getEntryHistoryRecord() {
+    entryData.clear()
+    viewModelScope.launch {
+      if (BaseApp.dbRecord == null) {
+        getDataFlow.emit(null)
+        return@launch
+      }
+      withContext(Dispatchers.IO) {
+        val dao = BaseApp.appDatabase.entryRecordDao()
+        val records = dao.getRecord(BaseApp.dbRecord!!.localDbUri)
+        if (records.isNullOrEmpty()) {
+          return@withContext
+        }
+
         for (record in records) {
           val entry = BaseApp.KDB!!.pm.entries[Types.bytestoUUID(record.uuid)] ?: continue
           val item = KeepassAUtil.instance.convertPwEntry2Item(entry)
           item.time = record.time
-          temp.add(item)
+          entryData.add(item)
         }
-        temp
       }
+      getDataFlow.emit(entryData)
     }
-    emit(list)
   }
 }

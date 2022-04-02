@@ -27,17 +27,14 @@ import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
-import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.ClipboardUtil
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
-import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.dir.ChooseGroupActivity
-import org.greenrobot.eventbus.EventBus
 
 /**
  * 群组长按菜单
@@ -149,16 +146,10 @@ class EntryPopMenu(
    * 处理删除条目
    */
   private fun handleDelEntry() {
-    KpaUtil.kdbHandlerService.deleteEntry(entry as PwEntryV4)
-    KpaUtil.kdbHandlerService.saveDbByForeground {
-      if (it == DbSynUtil.STATE_SUCCEED) {
-        HitUtil.toaskShort(
-          "${context.getString(R.string.del_entry)}${context.getString(R.string.success)}"
-        )
-      } else {
-        HitUtil.toaskShort(context.getString(R.string.save_db_fail))
-      }
-
+    KpaUtil.kdbHandlerService.deleteEntry(entry as PwEntryV4) {
+      HitUtil.toaskShort(
+        "${context.getString(R.string.del_entry)}${context.getString(R.string.success)}"
+      )
       VibratorUtil.vibrator(300)
     }
   }

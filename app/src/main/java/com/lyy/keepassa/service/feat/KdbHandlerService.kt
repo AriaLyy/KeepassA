@@ -146,15 +146,18 @@ class KdbHandlerService : IProvider {
   /**
    * delete group
    */
-  fun deleteGroup(pwGroup: PwGroup) {
-    if (BaseApp.isV4) {
-      if (BaseApp.KDB!!.pm.canRecycle(pwGroup)) {
-        (BaseApp.KDB!!.pm as PwDatabaseV4).recycle(pwGroup as PwGroupV4)
-      } else {
-        kdbHelper.deleteGroup(BaseApp.KDB, pwGroup, NEED_SAVE_BY_REAL_TIME)
+  fun deleteGroup(pwGroup: PwGroupV4, callback: () -> Unit) {
+    scope.launch {
+      val oldParent = pwGroup.parent
+      withContext(Dispatchers.IO) {
+        if (BaseApp.KDB!!.pm.canRecycle(pwGroup)) {
+          (BaseApp.KDB!!.pm as PwDatabaseV4).recycle(pwGroup)
+        } else {
+          kdbHelper.deleteGroup(BaseApp.KDB, pwGroup, NEED_SAVE_BY_REAL_TIME)
+        }
       }
-    } else {
-      kdbHelper.deleteGroup(BaseApp.KDB, pwGroup, NEED_SAVE_BY_REAL_TIME)
+      callback.invoke()
+      groupStateChangeFlow.emit(GroupStateChangeEvent(DELETE, pwGroup, oldParent))
     }
   }
 
@@ -228,12 +231,13 @@ class KdbHandlerService : IProvider {
   /**
    * delete entry
    */
-  fun deleteEntry(v4Entry: PwEntryV4) {
+  fun deleteEntry(v4Entry: PwEntryV4, callback: () -> Unit) {
     scope.launch {
       val parent = v4Entry.parent
       withContext(Dispatchers.IO) {
         kdbHelper.deleteEntry(BaseApp.KDB, v4Entry, NEED_SAVE_BY_REAL_TIME)
       }
+      callback.invoke()
       entryStateChangeFlow.emit(EntryStateChangeEvent(DELETE, v4Entry, parent))
     }
   }
@@ -248,18 +252,19 @@ class KdbHandlerService : IProvider {
     self: PwGroupV4,
     callback: () -> Unit
   ) {
-    scope.launch(Dispatchers.IO) {
-      self.customIcon = customIcon
-      self.icon = icon
-      self.name = groupName
-      if (NEED_SAVE_BY_REAL_TIME) {
-        if (kdbHelper.save(BaseApp.KDB)) {
-          BaseApp.KDB.dirty.add(self.parent)
+    scope.launch {
+      withContext(Dispatchers.IO) {
+        self.customIcon = customIcon
+        self.icon = icon
+        self.name = groupName
+        if (NEED_SAVE_BY_REAL_TIME) {
+          if (kdbHelper.save(BaseApp.KDB)) {
+            BaseApp.KDB.dirty.add(self.parent)
+          }
         }
       }
-      withContext(Dispatchers.Main) {
-        callback.invoke()
-      }
+
+      callback.invoke()
       groupStateChangeFlow.emit(GroupStateChangeEvent(MODIFY, self))
     }
   }
@@ -277,27 +282,27 @@ class KdbHandlerService : IProvider {
     parent: PwGroupV4,
     callback: (PwGroupV4) -> Unit
   ) {
-    scope.launch(Dispatchers.IO) {
-      val pm: PwDatabase = BaseApp.KDB.pm
+    scope.launch {
+      val tempGroup = withContext(Dispatchers.IO) {
+        val pm: PwDatabase = BaseApp.KDB.pm
 
-      val group = pm.createGroup() as PwGroupV4
-      group.initNewGroup(groupName, pm.newGroupId())
-      group.icon = icon
-      customIcon?.let { group.customIcon = it }
-      pm.addGroupTo(group, parent)
+        val group = pm.createGroup() as PwGroupV4
+        group.initNewGroup(groupName, pm.newGroupId())
+        group.icon = icon
+        customIcon?.let { group.customIcon = it }
+        pm.addGroupTo(group, parent)
 
-      if (NEED_SAVE_BY_REAL_TIME) {
-        if (kdbHelper.save(BaseApp.KDB)) {
-          BaseApp.KDB.dirty.add(parent)
-        } else {
-          pm.removeGroupFrom(group, parent)
+        if (NEED_SAVE_BY_REAL_TIME) {
+          if (kdbHelper.save(BaseApp.KDB)) {
+            BaseApp.KDB.dirty.add(parent)
+          } else {
+            pm.removeGroupFrom(group, parent)
+          }
         }
+        return@withContext group
       }
-
-      withContext(Dispatchers.Main) {
-        callback.invoke(group)
-      }
-      groupStateChangeFlow.emit(GroupStateChangeEvent(CREATE, group, null))
+      callback.invoke(tempGroup)
+      groupStateChangeFlow.emit(GroupStateChangeEvent(CREATE, tempGroup, null))
     }
   }
 

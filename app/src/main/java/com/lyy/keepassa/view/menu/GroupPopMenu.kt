@@ -26,15 +26,12 @@ import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
-import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
-import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.dir.ChooseGroupActivity
-import org.greenrobot.eventbus.EventBus
 
 /**
  * 群组长按菜单
@@ -130,17 +127,10 @@ class GroupPopMenu(
    * 处理删除群组
    */
   private fun handleDelGroup() {
-    KpaUtil.kdbHandlerService.deleteGroup(pwGroup)
-    KpaUtil.kdbHandlerService.saveDbByForeground { code ->
-      EventBus.getDefault().post(DelEvent(pwGroup))
-      if (code == DbSynUtil.STATE_SUCCEED) {
-        HitUtil.toaskShort(
-          "${context.getString(R.string.del_group)}${context.getString(R.string.success)}"
-        )
-      } else {
-        HitUtil.toaskShort(context.getString(R.string.save_db_fail))
-      }
-
+    KpaUtil.kdbHandlerService.deleteGroup(pwGroup) {
+      HitUtil.toaskShort(
+        "${context.getString(R.string.del_group)}${context.getString(R.string.success)}"
+      )
       VibratorUtil.vibrator(300)
     }
   }
