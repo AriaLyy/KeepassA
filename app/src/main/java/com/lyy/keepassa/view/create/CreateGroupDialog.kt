@@ -16,6 +16,7 @@ import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.keepassdroid.database.PwGroup
+import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
 import com.lyy.keepassa.R
@@ -32,7 +33,7 @@ import kotlinx.coroutines.launch
 /**
  * 创建或编辑群组dialog
  */
-@Route(path = "/dialog/createDb")
+@Route(path = "/dialog/createGroup")
 class CreateGroupDialog : BaseDialog<DialogAddGroupBinding>(), View.OnClickListener {
 
   private var icon = PwIconStandard(48)
@@ -41,7 +42,7 @@ class CreateGroupDialog : BaseDialog<DialogAddGroupBinding>(), View.OnClickListe
 
   @Autowired(name = "parentGroup")
   @JvmField
-  var parentGroup: PwGroup = BaseApp.KDB!!.pm.rootGroup
+  var parentGroup: PwGroupV4 = BaseApp.KDB!!.pm.rootGroup as PwGroupV4
 
   override fun setLayoutId(): Int {
     return R.layout.dialog_add_group

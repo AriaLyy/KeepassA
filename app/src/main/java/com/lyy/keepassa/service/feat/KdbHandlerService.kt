@@ -36,6 +36,7 @@ import com.lyy.keepassa.util.setCollection
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -62,7 +63,7 @@ class KdbHandlerService : IProvider {
    */
   val collectionStateFlow = MutableStateFlow(CollectionEvent())
 
-  val entryStateChangeFlow = MutableStateFlow(EntryStateChangeEvent())
+  val entryStateChangeFlow = MutableSharedFlow<EntryStateChangeEvent>()
   val groupStateChangeFlow = MutableStateFlow(GroupStateChangeEvent())
   private val collectionEntries = hashSetOf<PwEntryV4>()
 
@@ -167,7 +168,6 @@ class KdbHandlerService : IProvider {
   fun updateEntryStatus(v4Entry: PwEntryV4) {
     scope.launch {
       v4Entry.touch(true, true)
-
       if (NEED_SAVE_BY_REAL_TIME) {
         withContext(Dispatchers.IO) {
           if (kdbHelper.save(BaseApp.KDB)) {
@@ -184,7 +184,8 @@ class KdbHandlerService : IProvider {
       entryStateChangeFlow.emit(
         EntryStateChangeEvent(
           MODIFY,
-          v4Entry
+          v4Entry,
+          v4Entry.parent
         )
       )
     }

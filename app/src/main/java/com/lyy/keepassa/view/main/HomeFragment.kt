@@ -172,6 +172,7 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
         if (it.pwEntryV4 == null) {
           return@collectLatest
         }
+        Timber.d("entry status = ${it.state}")
         when (it.state) {
           CREATE -> {
             module.createNewEntry(adapter, it.pwEntryV4)

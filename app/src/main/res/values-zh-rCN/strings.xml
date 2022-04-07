@@ -277,7 +277,7 @@
     <string name="sort_time_desc">时间降序</string>
     <string name="ime_label">KeePassA 安全键盘</string>
     <string name="set_open_kpa_ime_title">安全键盘</string>
-    <string name="no_totp_token">该应用没有 TOTP 令牌</string>
+    <string name="no_totp_token">没有 TOTP 令牌</string>
     <string name="ime_entry_other_info">填充其它字段</string>
     <string name="url">网址</string>
     <string name="hint_not_nore_info">没有更多信息</string>

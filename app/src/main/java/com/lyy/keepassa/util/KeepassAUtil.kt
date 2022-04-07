@@ -53,6 +53,7 @@ import com.keepassdroid.database.PwDataInf
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
+import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.security.ProtectedString
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
@@ -257,10 +258,10 @@ class KeepassAUtil private constructor() {
   fun isHomeActivity(ac: Activity): Boolean {
     val clazz = ac.javaClass
     return (clazz == LauncherActivity::class.java
-        || clazz == CreateDbActivity::class.java
-        || clazz == OpenDbHistoryActivity::class.java
-        || clazz == QuickUnlockActivity::class.java
-        )
+      || clazz == CreateDbActivity::class.java
+      || clazz == OpenDbHistoryActivity::class.java
+      || clazz == QuickUnlockActivity::class.java
+      )
   }
 
   /**
@@ -301,12 +302,12 @@ class KeepassAUtil private constructor() {
     }
 
     return (
-        clazz != LauncherActivity::class.java
-            && clazz != QuickUnlockActivity::class.java
-            && clazz != CreateDbActivity::class.java
-            && clazz != AutoFillEntrySearchActivity::class.java
-            && clazz != OpenDbHistoryActivity::class.java
-        )
+      clazz != LauncherActivity::class.java
+        && clazz != QuickUnlockActivity::class.java
+        && clazz != CreateDbActivity::class.java
+        && clazz != AutoFillEntrySearchActivity::class.java
+        && clazz != OpenDbHistoryActivity::class.java
+      )
   }
 
   /**
@@ -380,6 +381,7 @@ class KeepassAUtil private constructor() {
     item.obj = entry
     return item
   }
+
 
   /**
    * 将pwGroup 转换为列表实体
@@ -612,7 +614,7 @@ class KeepassAUtil private constructor() {
 
       // 增加TOP密码字段
       if (!addOTPPass && (str.key.startsWith("TOTP", ignoreCase = true)
-            || str.key.startsWith("OTP", ignoreCase = true))
+          || str.key.startsWith("OTP", ignoreCase = true))
       ) {
         addOTPPass = true
         val totpPass = OtpUtil.getOtpPass(entryV4)
@@ -922,7 +924,7 @@ fun Uri.getFileInfo(
 
 fun PwEntry.isRef(): Boolean {
   return (!username.isNullOrEmpty() && username.startsWith("{REF:", ignoreCase = true))
-      || (!password.isNullOrEmpty() && password.startsWith("{REF:", ignoreCase = true))
+    || (!password.isNullOrEmpty() && password.startsWith("{REF:", ignoreCase = true))
 }
 
 /**

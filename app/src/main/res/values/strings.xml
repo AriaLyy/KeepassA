@@ -272,7 +272,7 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="sort_time_desc">Time latest-earliest</string>
     <string name="ime_label">KeePassA security keyboard</string>
     <string name="set_open_kpa_ime_title">Security keyboard</string>
-    <string name="no_totp_token">The app doesn\'t have a TOTP token</string>
+    <string name="no_totp_token">No TOTP token</string>
     <string name="ime_entry_other_info">Fill in other fields</string>
     <string name="url">URL</string>
     <string name="hint_not_nore_info">No more info</string>

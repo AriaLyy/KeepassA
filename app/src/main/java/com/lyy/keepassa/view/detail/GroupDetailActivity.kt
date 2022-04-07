@@ -27,6 +27,7 @@ import com.arialyy.frame.router.Routerfit
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupId
+import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
@@ -271,7 +272,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
 
       override fun onGroupClick() {
         Routerfit.create(DialogRouter::class.java)
-          .showCreateGroupDialog(BaseApp.KDB!!.pm.groups[groupId] ?: BaseApp.KDB!!.pm.rootGroup)
+          .showCreateGroupDialog((BaseApp.KDB!!.pm.groups[groupId] ?: BaseApp.KDB!!.pm.rootGroup) as PwGroupV4)
         binding.fab.hintMoreOperate()
       }
     })

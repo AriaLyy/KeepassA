@@ -33,6 +33,7 @@ import com.arialyy.frame.core.AbsFrame
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.google.android.material.tabs.TabLayoutMediator
+import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
@@ -126,7 +127,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       }
 
       override fun onGroupClick() {
-        Routerfit.create(DialogRouter::class.java).showCreateGroupDialog(BaseApp.KDB!!.pm.rootGroup)
+        Routerfit.create(DialogRouter::class.java).showCreateGroupDialog(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
         binding.fab.hintMoreOperate()
       }
     })

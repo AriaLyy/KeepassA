@@ -10,12 +10,15 @@ package com.lyy.keepassa.view.main
 import androidx.lifecycle.viewModelScope
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
+import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.utils.Types
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.deleteEntry
 import com.lyy.keepassa.util.hasTOTP
+import com.lyy.keepassa.view.SimpleEntryAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -40,6 +43,16 @@ internal class EntryListModule : BaseModule() {
       getTOTPData()
       return
     }
+  }
+
+  fun deleteEntry(adapter: SimpleEntryAdapter, self: PwEntryV4, oldGroup: PwGroupV4, type: String) {
+    if (type == EntryListFragment.TYPE_HISTORY) {
+      val item = entryData.find { it.obj == self }
+      if (item != null) {
+        delHistoryRecord(self)
+      }
+    }
+    adapter.deleteEntry(entryData, self, oldGroup, null)
   }
 
   /**

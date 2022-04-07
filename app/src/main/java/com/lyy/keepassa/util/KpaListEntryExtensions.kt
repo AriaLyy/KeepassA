@@ -36,6 +36,10 @@ fun PwEntryV4.checkInGroupLeve(group: PwGroupV4): Boolean {
   return false
 }
 
+private fun updateEntryModify(itemEntity: SimpleItemEntity){
+  KpaUtil.updateEntryItemInfo(itemEntity)
+}
+
 /**
  * update the status of deleted items
  */
@@ -43,10 +47,10 @@ fun SimpleEntryAdapter.deleteEntry(
   entryList: MutableList<SimpleItemEntity>,
   entry: PwEntryV4,
   oldParentGroup: PwGroupV4,
-  dirGroup: PwGroupV4
+  dirGroup: PwGroupV4?
 ) {
 
-  if (oldParentGroup == dirGroup) {
+  if (oldParentGroup == dirGroup || dirGroup == null) {
     val entryItem =
       entryList.find { (it.obj is PwEntryV4) && (it.obj as PwEntryV4).uuid == entry.uuid }
     if (entryItem != null) {
@@ -73,7 +77,7 @@ fun SimpleEntryAdapter.deleteEntry(
     }
   }
 
-  if (dirGroup.childGroups.contains(oldParentGroup)) {
+  if (dirGroup?.childGroups?.contains(oldParentGroup) == true) {
     entryList.forEachIndexed { index, it ->
       if (it.obj == oldParentGroup) {
         it.subTitle =
@@ -96,8 +100,12 @@ fun SimpleEntryAdapter.updateModifyEntry(
 ) {
   if (pwEntryV4.checkGroupIsParent(dirGroup)) {
     entryList.forEachIndexed { index, item ->
-      if (item.obj == pwEntryV4) {
-        notifyItemInserted(index)
+      if (item.obj !is PwEntryV4){
+        return@forEachIndexed
+      }
+      if ((item.obj as PwEntryV4).uuid == pwEntryV4.uuid) {
+        updateEntryModify(item)
+        notifyItemChanged(index)
         return
       }
     }

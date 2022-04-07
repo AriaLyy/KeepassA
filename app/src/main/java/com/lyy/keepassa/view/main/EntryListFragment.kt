@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.utils.Types
@@ -30,24 +31,18 @@ import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentEntryRecordBinding
 import com.lyy.keepassa.entity.EntryRecord
 import com.lyy.keepassa.entity.showPopMenu
-import com.lyy.keepassa.event.EntryState.CREATE
 import com.lyy.keepassa.event.EntryState.DELETE
 import com.lyy.keepassa.event.EntryState.MODIFY
-import com.lyy.keepassa.event.EntryState.MOVE
-import com.lyy.keepassa.event.EntryState.UNKNOWN
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.doOnInterceptTouchEvent
+import com.lyy.keepassa.util.updateModifyEntry
 import com.lyy.keepassa.view.SimpleEntryAdapter
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
-import timber.log.Timber
 
 @Route(path = "/main/fragment/entry")
 class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
@@ -103,6 +98,9 @@ class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
       }
       return@doOnInterceptTouchEvent false
     }
+    if (type == TYPE_TOTP) {
+      binding.temp.setText(ResUtil.getString(R.string.no_totp_token))
+    }
     initRefresh()
     listenerGetData()
     listenerEntryStateChange()
@@ -113,7 +111,7 @@ class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
   private fun listenerGetData() {
     lifecycleScope.launch {
       module.getDataFlow.collectLatest { list ->
-        if (list == null) {
+        if (list.isNullOrEmpty()) {
           binding.temp.visibility = View.VISIBLE
           binding.swipe.isRefreshing = false
           return@collectLatest
@@ -135,22 +133,13 @@ class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
         if (it.pwEntryV4 == null) {
           return@collectLatest
         }
-        when (it.state) {
-          CREATE -> {
-            module.createNewEntry(adapter, it.pwEntryV4)
-          }
-          MODIFY -> {
-            module.updateModifyEntry(adapter, it.pwEntryV4)
-          }
-          MOVE -> {
-            module.moveEntry(adapter, it.pwEntryV4, it.oldParent!!)
-          }
-          DELETE -> {
-            module.deleteEntry(adapter, it.pwEntryV4, it.oldParent!!)
-          }
-          UNKNOWN -> {
-            Timber.d("un known status")
-          }
+        if (it.state == MODIFY) {
+          adapter.updateModifyEntry(module.entryData, it.pwEntryV4, it.oldParent!!)
+          return@collectLatest
+        }
+        if (it.state == DELETE) {
+          module.deleteEntry(adapter, it.pwEntryV4, it.oldParent!!, type)
+          return@collectLatest
         }
       }
     }
@@ -196,22 +185,6 @@ class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
       module.entryData.sortByDescending { entry ->
         entry.time
       }
-      adapter.notifyDataSetChanged()
-    }
-  }
-
-  /**
-   * 删除项目
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onDelEvent(delEvent: DelEvent) {
-    val pwData = delEvent.pwData
-    val item = entryData.find { it.obj == pwData }
-    if (item != null) {
-      if (pwData is PwEntry) {
-        module.delHistoryRecord(pwData)
-      }
-      entryData.remove(item)
       adapter.notifyDataSetChanged()
     }
   }

@@ -67,6 +67,7 @@ fun SimpleEntryAdapter.updateModifyGroup(
     }
 
     if ((item.obj as PwGroupV4).uuid == groupV4.uuid) {
+      KpaUtil.updateGroupItemInfo(item)
       notifyItemChanged(index)
       return
     }
@@ -108,21 +109,15 @@ fun SimpleEntryAdapter.deleteGroup(
 
   // update recycling bin
   if (curDirGroup == BaseApp.KDB.pm.rootGroup) {
-    val recycleIndex = kotlin.run breaking@{
-      entryList.forEachIndexed { index, item ->
-        if (item.obj == BaseApp.KDB.pm.recycleBin) {
-          return@breaking index
-        }
-      }
-      return@breaking -1
-    }
 
-    if (recycleIndex != -1) {
-      val recycleItem = entryList[recycleIndex]
-      recycleItem.subTitle = ResUtil.getString(
-        R.string.hint_group_desc, KdbUtil.getGroupEntryNum(BaseApp.KDB.pm.recycleBin)
-      )
-      notifyItemChanged(recycleIndex)
+    entryList.forEachIndexed { index, item ->
+      if (item.obj == BaseApp.KDB.pm.recycleBin) {
+        item.subTitle = ResUtil.getString(
+          R.string.hint_group_desc, KdbUtil.getGroupEntryNum(BaseApp.KDB.pm.recycleBin)
+        )
+        notifyItemChanged(index)
+        return
+      }
     }
   }
 }

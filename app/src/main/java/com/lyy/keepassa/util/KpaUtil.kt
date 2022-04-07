@@ -8,6 +8,13 @@
 package com.lyy.keepassa.util
 
 import com.arialyy.frame.router.Routerfit
+import com.arialyy.frame.util.ResUtil
+import com.arialyy.frame.util.StringUtil
+import com.keepassdroid.database.PwEntryV4
+import com.keepassdroid.database.PwGroupV4
+import com.lyy.keepassa.R
+import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.router.ServiceRouter
 import kotlinx.coroutines.MainScope
 
@@ -24,5 +31,27 @@ object KpaUtil {
 
   val kdbOpenService by lazy {
     Routerfit.create(ServiceRouter::class.java).getDbOpenService()
+  }
+
+  fun updateEntryItemInfo(item: SimpleItemEntity) {
+    val entry = (item.obj as PwEntryV4)
+    item.title = entry.title
+    item.subTitle = if (entry.isRef()) {
+      val refStr = "${BaseApp.APP.resources.getString(R.string.ref_entry)}: "
+      val tempStr = "${refStr}${KdbUtil.getUserName(entry)}"
+      StringUtil.highLightStr(tempStr, refStr, ResUtil.getColor(R.color.colorPrimary), true)
+    } else {
+      entry.username
+    }
+  }
+
+  fun updateGroupItemInfo(item: SimpleItemEntity) {
+    val pwGroup = (item.obj as PwGroupV4)
+    item.title = pwGroup.name
+    item.subTitle = ResUtil.getString(
+      R.string.hint_group_desc, KdbUtil.getGroupEntryNum(pwGroup)
+        .toString()
+    )
+    item.obj = pwGroup
   }
 }
