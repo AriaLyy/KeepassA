@@ -33,7 +33,6 @@ import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.hasNote
 import com.lyy.keepassa.util.hasTOTP
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
@@ -189,20 +188,10 @@ class CreateEntryModule : BaseModule() {
     groupName: String,
     parentGroup: PwGroupV4,
     icon: PwIconStandard,
-    customIcon: PwIconCustom?
-  ) = flow {
-    KpaUtil.kdbHandlerService.createGroup(groupName, icon, customIcon, parentGroup) {
-      HitUtil.toaskShort(
-        "${BaseApp.APP.getString(R.string.create_group)}${
-          BaseApp.APP.getString(
-            R.string.success
-          )
-        }"
-      )
-      viewModelScope.launch {
-        emit(true)
-      }
-    }
+    customIcon: PwIconCustom?,
+    callback: (PwGroupV4) -> Unit
+  ) {
+    KpaUtil.kdbHandlerService.createGroup(groupName, icon, customIcon, parentGroup, callback)
   }
 
   /**

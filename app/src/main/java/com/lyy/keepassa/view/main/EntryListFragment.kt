@@ -43,6 +43,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
+import timber.log.Timber
 
 @Route(path = "/main/fragment/entry")
 class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
@@ -162,6 +163,10 @@ class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
 
   @Subscribe(threadMode = MAIN)
   fun onAddOrUpdateRecord(record: EntryRecord) {
+    if (type == TYPE_TOTP) {
+      Timber.d("Currently is totp module, ignore this event")
+      return
+    }
     if (binding.temp.visibility == View.VISIBLE) {
       binding.temp.visibility = View.GONE
     }

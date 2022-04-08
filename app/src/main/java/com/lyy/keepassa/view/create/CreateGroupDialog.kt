@@ -11,11 +11,9 @@ package com.lyy.keepassa.view.create
 
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
-import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
@@ -27,8 +25,6 @@ import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.view.icon.IconBottomSheetDialog
 import com.lyy.keepassa.view.icon.IconItemCallback
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 /**
  * 创建或编辑群组dialog
@@ -103,15 +99,20 @@ class CreateGroupDialog : BaseDialog<DialogAddGroupBinding>(), View.OnClickListe
    * 创建群组
    */
   private fun createGroup() {
-    lifecycleScope.launch {
-      module.createGroup(
-        binding.groupName.text.toString(),
-        parentGroup,
-        icon,
-        csIcon
-      ).collectLatest {
-        dismiss()
-      }
+    module.createGroup(
+      binding.groupName.text.toString(),
+      parentGroup,
+      icon,
+      csIcon
+    ) {
+      HitUtil.toaskShort(
+        "${BaseApp.APP.getString(R.string.create_group)}${
+          BaseApp.APP.getString(
+            R.string.success
+          )
+        }"
+      )
+      dismiss()
     }
   }
 }

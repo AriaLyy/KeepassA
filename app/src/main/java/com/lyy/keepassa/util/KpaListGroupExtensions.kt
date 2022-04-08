@@ -24,7 +24,10 @@ import timber.log.Timber
 /**
  * Check whether the entry is in the follow group
  */
-fun PwGroupV4.checkGroupIsParent(group: PwGroupV4): Boolean {
+fun PwGroupV4.checkGroupIsParent(group: PwGroupV4?): Boolean {
+  if (group == null) {
+    return false
+  }
   return this.parent == group
 }
 
@@ -38,9 +41,22 @@ fun SimpleEntryAdapter.createGroup(
     return
   }
   if (groupV4.checkGroupIsParent(dirGroup)) {
-    val index = entryList.size
-    entryList.add(KeepassAUtil.instance.convertPwGroup2Item(groupV4))
-    notifyItemInserted(index)
+    var lastGroupIndex = -1
+    entryList.forEachIndexed { index, item ->
+      if (item.obj is PwGroupV4) {
+        lastGroupIndex = index
+      }
+    }
+
+    if (lastGroupIndex == -1) {
+      val lastIndex = entryList.size
+      entryList.add(KeepassAUtil.instance.convertPwGroup2Item(groupV4))
+      notifyItemInserted(lastIndex)
+      return
+    }
+    entryList.add(lastGroupIndex + 1, KeepassAUtil.instance.convertPwGroup2Item(groupV4))
+    notifyItemInserted(lastGroupIndex + 1)
+
     // notifyDataSetChanged()
     return
   }
@@ -86,7 +102,7 @@ fun SimpleEntryAdapter.deleteGroup(
   }
 
   if (!groupV4.checkGroupIsParent(curDirGroup)) {
-    Timber.d("The entry is not from the home page, title = ${groupV4.name}")
+    Timber.d("The entry is not from the home page, title = ${groupV4.name}, curDirGroup = ${curDirGroup.name}")
     return
   }
 

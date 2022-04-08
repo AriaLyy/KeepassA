@@ -20,7 +20,10 @@ import timber.log.Timber
 /**
  * Check whether the entry is in the follow group
  */
-fun PwEntryV4.checkGroupIsParent(group: PwGroupV4): Boolean {
+fun PwEntryV4.checkGroupIsParent(group: PwGroupV4?): Boolean {
+  if (group == null){
+    return false
+  }
   return this.parent == group
 }
 

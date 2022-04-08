@@ -49,6 +49,7 @@ import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.checkGroupIsParent
 import com.lyy.keepassa.util.createGroup
 import com.lyy.keepassa.util.deleteGroup
 import com.lyy.keepassa.util.doOnInterceptTouchEvent
@@ -157,6 +158,9 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
         when (it.state) {
           CREATE -> {
             adapter.createGroup(module.entryData, it.groupV4, module.curGroupV4)
+            if (it.groupV4.checkGroupIsParent(module.curGroupV4)) {
+              showList(true)
+            }
           }
           MODIFY -> {
             adapter.updateModifyGroup(module.entryData, it.groupV4, module.curGroupV4)
@@ -171,6 +175,9 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
               it.oldParent!!,
               module.curGroupV4
             )
+            if (module.entryData.isEmpty()) {
+              showList(false)
+            }
           }
           UNKNOWN -> {
             Timber.d("un known status")
@@ -190,15 +197,24 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
           when (it.state) {
             CREATE -> {
               module.createNewEntry(adapter, entry)
+              if (it.pwEntryV4.checkGroupIsParent(module.curGroupV4)) {
+                showList(true)
+              }
             }
             MODIFY -> {
               module.updateModifyEntry(adapter, entry)
+              if (module.entryData.isEmpty()) {
+                showList(false)
+              }
             }
             MOVE -> {
               module.moveEntry(adapter, entry, it.oldParent!!)
             }
             DELETE -> {
               module.deleteEntry(adapter, entry, it.oldParent!!)
+              if (module.entryData.isEmpty()) {
+                showList(false)
+              }
             }
             UNKNOWN -> {
               Timber.d("un known status")
@@ -217,15 +233,23 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
         if (list.isNullOrEmpty()) {
           // 设置appbar为收缩状态
           binding.appBar.setExpanded(false, false)
-          getEmptyLayout().visibility = View.VISIBLE
-          binding.list.visibility = View.GONE
+          showList(false)
           return@collectLatest
         }
-        binding.list.visibility = View.VISIBLE
-        getEmptyLayout().visibility = View.GONE
+        showList(true)
         adapter.notifyDataSetChanged()
       }
     }
+  }
+
+  private fun showList(showList: Boolean) {
+    if (showList) {
+      binding.list.visibility = View.VISIBLE
+      getEmptyLayout().visibility = View.GONE
+      return
+    }
+    getEmptyLayout().visibility = View.VISIBLE
+    binding.list.visibility = View.GONE
   }
 
   private fun initMenu() {
@@ -272,7 +296,9 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
 
       override fun onGroupClick() {
         Routerfit.create(DialogRouter::class.java)
-          .showCreateGroupDialog((BaseApp.KDB!!.pm.groups[groupId] ?: BaseApp.KDB!!.pm.rootGroup) as PwGroupV4)
+          .showCreateGroupDialog(
+            (BaseApp.KDB!!.pm.groups[groupId] ?: BaseApp.KDB!!.pm.rootGroup) as PwGroupV4
+          )
         binding.fab.hintMoreOperate()
       }
     })
