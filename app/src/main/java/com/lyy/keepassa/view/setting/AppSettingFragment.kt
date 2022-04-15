@@ -127,7 +127,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
         val mList = ReflectUtils.reflect(this).field("mList").get<RecyclerView>()
         val adapter = mList.adapter
         val position =
-          (adapter as PreferencePositionCallback).getPreferenceAdapterPosition(scrollKey)
+          (adapter as PreferencePositionCallback).getPreferenceAdapterPosition(scrollKey!!)
         Timber.d("postiion = $position, key = $scrollKey")
         isHighlighted = true
         lifecycleScope.launch(Dispatchers.IO) {

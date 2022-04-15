@@ -209,9 +209,9 @@ dependencies {
 
   // keepassA组件
   implementation 'me.laoyuyu.keepassa:KeepassIcon:0.2.6'
-  implementation 'me.laoyuyu.keepassa:KeepassLib:0.2.7'
+  implementation 'me.laoyuyu.keepassa:KeepassLib:0.2.8'
 //  implementation project(path: ':KpaLib')
-  implementation 'me.laoyuyu.keepassa:KPAFrame:0.2.11'
+  implementation 'me.laoyuyu.keepassa:KPAFrame:0.2.12'
   implementation 'me.laoyuyu.keepassa:UIWidget:0.2.7'
 
 
@@ -240,7 +240,7 @@ dependencies {
   implementation "androidx.viewpager2:viewpager2:1.0.0"
 
   // android 设置库
-  implementation "androidx.preference:preference-ktx:1.1.1"
+  implementation "androidx.preference:preference-ktx:1.2.0"
   // workmanager
   def work_version = '2.7.1'
 //  implementation "androidx.work:work-runtime:$work_version"

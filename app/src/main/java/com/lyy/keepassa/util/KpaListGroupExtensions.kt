@@ -101,7 +101,7 @@ fun SimpleEntryAdapter.deleteGroup(
     return
   }
 
-  if (!groupV4.checkGroupIsParent(curDirGroup)) {
+  if (oldParentGroup != curDirGroup) {
     Timber.d("The entry is not from the home page, title = ${groupV4.name}, curDirGroup = ${curDirGroup.name}")
     return
   }

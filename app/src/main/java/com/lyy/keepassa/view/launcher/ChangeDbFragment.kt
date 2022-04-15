@@ -37,7 +37,6 @@ import com.lyy.keepassa.view.StorageType.DROPBOX
 import com.lyy.keepassa.view.StorageType.ONE_DRIVE
 import com.lyy.keepassa.view.StorageType.WEBDAV
 import com.lyy.keepassa.view.launcher.ChangeDbFragment.Adataer.Holder
-import java.util.ArrayList
 
 /**
  * 选择数据库
@@ -53,12 +52,12 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
   }
 
   override fun initData() {
-    enterTransition = TransitionInflater.from(context)
-      .inflateTransition(R.transition.slide_enter)
-    exitTransition = TransitionInflater.from(context)
-      .inflateTransition(R.transition.slide_exit)
-    returnTransition = TransitionInflater.from(context)
-      .inflateTransition(R.transition.slide_return)
+    context?.let {
+      enterTransition = TransitionInflater.from(it).inflateTransition(R.transition.slide_enter)
+      exitTransition = TransitionInflater.from(it).inflateTransition(R.transition.slide_exit)
+      returnTransition = TransitionInflater.from(it).inflateTransition(R.transition.slide_return)
+    }
+
     initList()
   }
 

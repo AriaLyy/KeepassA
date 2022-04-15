@@ -215,10 +215,9 @@ class CreateEntryModule : BaseModule() {
   /**
    * 保存条目
    */
-  fun saveDb(callback: () -> Unit) {
+  fun saveDb(callback: (Int) -> Unit) {
     viewModelScope.launch {
-      KpaUtil.kdbHandlerService.saveOnly(true)
-      callback.invoke()
+      KpaUtil.kdbHandlerService.saveOnly(true, callback)
     }
   }
 

@@ -10,6 +10,7 @@ package com.lyy.keepassa.router
 import com.arialyy.frame.router.RouterPath
 import com.lyy.keepassa.service.feat.KdbHandlerService
 import com.lyy.keepassa.service.feat.KdbOpenService
+import com.lyy.keepassa.service.feat.KpaSdkService
 
 /**
  * @Author laoyuyu
@@ -17,6 +18,9 @@ import com.lyy.keepassa.service.feat.KdbOpenService
  * @Date 2:05 下午 2022/3/24
  **/
 interface ServiceRouter {
+
+  @RouterPath(path = "/service/kpaSdk")
+  fun getKpaSdkService(): KpaSdkService
 
   @RouterPath(path = "/service/kdbHandler")
   fun getDbSaveService(): KdbHandlerService

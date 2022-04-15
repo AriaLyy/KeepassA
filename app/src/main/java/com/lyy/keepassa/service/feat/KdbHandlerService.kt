@@ -39,6 +39,8 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.concurrent.atomic.AtomicInteger
@@ -66,6 +68,7 @@ class KdbHandlerService : IProvider {
   val entryStateChangeFlow = MutableSharedFlow<EntryStateChangeEvent>()
   val groupStateChangeFlow = MutableStateFlow(GroupStateChangeEvent())
   private val collectionEntries = hashSetOf<PwEntryV4>()
+  private val mutex = Mutex()
 
   private val loadingDialog: LoadingDialog by lazy {
     Routerfit.create(DialogRouter::class.java).getLoadingDialog()
@@ -334,17 +337,19 @@ class KdbHandlerService : IProvider {
     BaseApp.KDB!!.pm.addEntryTo(entry, parent)
   }
 
-  suspend fun saveOnly(needShowLoading: Boolean = false): Int {
-    return withContext(Dispatchers.IO) {
-      if (needShowLoading) {
-        showLoading()
-      }
+  suspend fun saveOnly(needShowLoading: Boolean = false, callback: (Int) -> Unit) {
+    mutex.withLock {
+      withContext(Dispatchers.IO) {
+        if (needShowLoading) {
+          showLoading()
+        }
 
-      val b = kdbHelper.save(BaseApp.KDB)
-      if (needShowLoading) {
-        dismissLoading()
+        val b = kdbHelper.save(BaseApp.KDB)
+        if (needShowLoading) {
+          dismissLoading()
+        }
+        callback.invoke(if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL)
       }
-      return@withContext if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
     }
   }
 
@@ -355,21 +360,25 @@ class KdbHandlerService : IProvider {
    */
   fun saveDbByBackground(uploadDb: Boolean = false, callback: (Int) -> Unit = {}) {
     Timber.d("start save db by background")
-    scope.launch(Dispatchers.IO) {
-      val b = kdbHelper.save(BaseApp.KDB)
-      Timber.d("保存后的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
-      if (uploadDb) {
-        val response = DbSynUtil.uploadSyn(BaseApp.dbRecord!!, false)
-        Timber.i(response.msg)
+    scope.launch {
+      mutex.withLock {
+        withContext(Dispatchers.IO) {
+          val b = kdbHelper.save(BaseApp.KDB)
+          Timber.d("保存后的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
+          if (uploadDb) {
+            val response = DbSynUtil.uploadSyn(BaseApp.dbRecord!!, false)
+            Timber.i(response.msg)
 
-        withContext(Dispatchers.Main) {
-          callback.invoke(response.code)
+            withContext(Dispatchers.Main) {
+              callback.invoke(response.code)
+            }
+            return@withContext
+          }
+          val code = if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
+          withContext(Dispatchers.Main) {
+            callback.invoke(code)
+          }
         }
-        return@launch
-      }
-      val code = if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
-      withContext(Dispatchers.Main) {
-        callback.invoke(code)
       }
     }
   }
@@ -389,29 +398,31 @@ class KdbHandlerService : IProvider {
   ) {
     Timber.d("saveDbByForeground")
     scope.launch(Dispatchers.Main) {
-      Timber.d("保存前的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
-      val b = withContext(Dispatchers.IO) {
-        return@withContext kdbHelper.save(BaseApp.KDB)
+      mutex.withLock {
+        Timber.d("保存前的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
+        val b = withContext(Dispatchers.IO) {
+          return@withContext kdbHelper.save(BaseApp.KDB)
+        }
+        Timber.d("保存后的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
+        if (uploadDb) {
+          val startTime = System.currentTimeMillis()
+          if (needShowLoading) {
+            showLoading()
+          }
+          val response = withContext(Dispatchers.IO) {
+            return@withContext DbSynUtil.uploadSyn(BaseApp.dbRecord!!, isCreate)
+          }
+          Timber.i(response.msg)
+          val endTime = System.currentTimeMillis()
+          if (needShowLoading) {
+            dismissLoading(if ((endTime - startTime) < MIN_TIME) MIN_TIME else 0L)
+          }
+          callback.invoke(response.code)
+          return@launch
+        }
+        val code = if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
+        callback.invoke(code)
       }
-      Timber.d("保存后的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
-      if (uploadDb) {
-        val startTime = System.currentTimeMillis()
-        if (needShowLoading) {
-          showLoading()
-        }
-        val response = withContext(Dispatchers.IO) {
-          return@withContext DbSynUtil.uploadSyn(BaseApp.dbRecord!!, isCreate)
-        }
-        Timber.i(response.msg)
-        val endTime = System.currentTimeMillis()
-        if (needShowLoading) {
-          dismissLoading(if ((endTime - startTime) < MIN_TIME) MIN_TIME else 0L)
-        }
-        callback.invoke(response.code)
-        return@launch
-      }
-      val code = if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
-      callback.invoke(code)
     }
   }
 

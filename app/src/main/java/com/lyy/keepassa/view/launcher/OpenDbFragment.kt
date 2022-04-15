@@ -88,12 +88,12 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   override fun initData() {
     ARouter.getInstance().inject(this)
     binding.fingerprint.visibility = View.GONE
-    enterTransition = TransitionInflater.from(context)
-      .inflateTransition(R.transition.slide_enter)
-    exitTransition = TransitionInflater.from(context)
-      .inflateTransition(R.transition.slide_exit)
-    returnTransition = TransitionInflater.from(context)
-      .inflateTransition(R.transition.slide_return)
+    context?.let {
+      enterTransition = TransitionInflater.from(it).inflateTransition(R.transition.slide_enter)
+      exitTransition = TransitionInflater.from(it).inflateTransition(R.transition.slide_exit)
+      returnTransition = TransitionInflater.from(it).inflateTransition(R.transition.slide_return)
+    }
+
     modlue = ViewModelProvider(this).get(LauncherModule::class.java)
 
     setDbName(openDbRecord)
