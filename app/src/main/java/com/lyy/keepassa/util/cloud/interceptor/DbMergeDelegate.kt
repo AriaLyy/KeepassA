@@ -7,6 +7,7 @@ import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwDataInf
 import com.keepassdroid.database.PwDatabase
 import com.keepassdroid.database.PwEntry
+import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
@@ -294,7 +295,7 @@ object DbMergeDelegate {
       if (pwData is PwEntry) {
         val newEntry = pwData.clone(true)
         newEntry.parent = getParentByCloudPwData(pwData, localDb)
-        KdbUtil.addEntry(newEntry, save = false, uploadDb = false)
+        KpaUtil.kdbHandlerService.addEntry(newEntry as PwEntryV4)
       }
     }
   }

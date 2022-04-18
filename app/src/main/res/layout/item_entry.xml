@@ -23,7 +23,7 @@
 
   <androidx.constraintlayout.helper.widget.Flow
       android:layout_width="0dp"
-      android:layout_height="0dp"
+      android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
       android:orientation="vertical"
       app:layout_constraintBottom_toBottomOf="parent"

@@ -31,6 +31,7 @@ import com.lyy.keepassa.event.EntryState.MOVE
 import com.lyy.keepassa.event.EntryStateChangeEvent
 import com.lyy.keepassa.event.GroupStateChangeEvent
 import com.lyy.keepassa.router.DialogRouter
+import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.setCollection
 import com.lyy.keepassa.view.dialog.LoadingDialog
@@ -321,9 +322,11 @@ class KdbHandlerService : IProvider {
   /**
    * add new entry
    */
-  fun createEntry(entry: PwEntryV4) {
+  fun addEntry(entry: PwEntryV4) {
     if (NEED_SAVE_BY_REAL_TIME) {
       kdbHelper.saveEntry(BaseApp.KDB, entry)
+    } else {
+      BaseApp.KDB!!.pm.addEntryTo(entry, entry.parent)
     }
     scope.launch {
       entryStateChangeFlow.emit(EntryStateChangeEvent(CREATE, entry))
@@ -360,6 +363,10 @@ class KdbHandlerService : IProvider {
    */
   fun saveDbByBackground(uploadDb: Boolean = false, callback: (Int) -> Unit = {}) {
     Timber.d("start save db by background")
+    if (BaseApp.KDB.isNull()) {
+      Timber.d("db is null")
+      return
+    }
     scope.launch {
       mutex.withLock {
         withContext(Dispatchers.IO) {

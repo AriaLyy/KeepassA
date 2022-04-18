@@ -51,8 +51,7 @@ class SimpleEntryAdapter(
     holder: Holder,
     position: Int,
     item: SimpleItemEntity
-  ) {
-    if (item.obj is PwGroup) {
+  ) {    if (item.obj is PwGroup) {
       IconUtil.setGroupIcon(context, item.obj as PwGroup, holder.icon)
     } else if (item.obj is PwEntry) {
       IconUtil.setEntryIcon(context, item.obj as PwEntry, holder.icon)
