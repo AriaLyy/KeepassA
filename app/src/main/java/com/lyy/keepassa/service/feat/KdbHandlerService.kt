@@ -37,6 +37,7 @@ import com.lyy.keepassa.util.setCollection
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -314,9 +315,13 @@ class KdbHandlerService : IProvider {
   /**
    * add new group
    */
-  fun addGroup(group: PwGroup) {
+  fun createGroup(group: PwGroup) {
     kdbHelper
       .createGroup(BaseApp.KDB, group.name, group.icon, group.parent)
+  }
+
+  fun addGroup(group: PwGroupV4){
+    BaseApp.KDB?.pm?.addGroupTo(group, group.parent)
   }
 
   /**
@@ -367,11 +372,16 @@ class KdbHandlerService : IProvider {
       Timber.d("db is null")
       return
     }
+    if (BaseApp.isLocked){
+      Timber.d("db is locked")
+      return
+    }
     scope.launch {
       mutex.withLock {
         withContext(Dispatchers.IO) {
           val b = kdbHelper.save(BaseApp.KDB)
           Timber.d("保存后的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
+          delay(1000)
           if (uploadDb) {
             val response = DbSynUtil.uploadSyn(BaseApp.dbRecord!!, false)
             Timber.i(response.msg)

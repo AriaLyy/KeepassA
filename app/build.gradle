@@ -300,7 +300,7 @@ dependencies {
   implementation 'com.dropbox.core:dropbox-core-sdk:3.1.5'
 
   // webdav
-  implementation 'com.thegrizzlylabs.sardine-android:sardine-android:0.6'
+  implementation 'com.thegrizzlylabs.sardine-android:sardine-android:0.8'
 
   //wcdb 数据库加密
   implementation 'com.tencent.wcdb:wcdb-android:1.0.8'

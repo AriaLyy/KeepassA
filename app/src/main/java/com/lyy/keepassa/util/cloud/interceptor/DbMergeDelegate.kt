@@ -9,6 +9,7 @@ import com.keepassdroid.database.PwDatabase
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
+import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.DbHistoryRecord
@@ -287,7 +288,7 @@ object DbMergeDelegate {
         newGroup.childGroups?.clear()
         newGroup.childEntries?.clear()
         newGroup.parent = getParentByCloudPwData(pwData, localDb)
-        KdbUtil.addGroup(newGroup)
+        KpaUtil.kdbHandlerService.addGroup(newGroup as PwGroupV4)
       }
     }
     // 再增加条目

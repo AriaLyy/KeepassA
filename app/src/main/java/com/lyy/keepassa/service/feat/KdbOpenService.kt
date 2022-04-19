@@ -314,8 +314,9 @@ class KdbOpenService : IProvider {
 
     val cacheFile = record.getDbUri()
       .toFile()
+    val cloudFileInfo = DbSynUtil.getFileInfo(record)
     if (cacheFile.exists()
-      && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
+      && (cloudFileInfo == null || DbSynUtil.serviceModifyTime == cloudFileInfo.serviceModifyDate)
     ) {
       Timber.i("文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
       return openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)

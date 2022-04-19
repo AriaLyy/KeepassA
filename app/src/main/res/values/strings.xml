@@ -353,4 +353,5 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="my_collection">My collection</string>
     <string name="current_collection_num">%1$s collections</string>
     <string name="no_collection">No collection</string>
+    <string name="error_open_db_webdav">Failed to open database, webdav file does not exist</string>
 </resources>

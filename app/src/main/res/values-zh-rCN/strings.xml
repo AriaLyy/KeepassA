@@ -348,4 +348,5 @@
     <string name="my_collection">我的收藏</string>
     <string name="current_collection_num">%1$s 个收藏</string>
     <string name="no_collection">没有收藏</string>
+    <string name="error_open_db_webdav">打开数据库失败，webdav上的文件不存在</string>
 </resources>

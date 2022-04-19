@@ -31,7 +31,6 @@ class AutoLockDbUtil private constructor() {
   private var requestTag = "LockDbWork"
   private val KEY_NAME = "LockTimer"
   private val KEY_LAST_START_TIME = "LastStartTime"
-  private val TAG = StringUtil.getClassName(this)
   private val sp = BaseApp.APP.getSharedPreferences(Constance.PRE_FILE_NAME, Context.MODE_PRIVATE)
   private val TIMER_TAG = "AutoLockDbTimer"
   private val manager by lazy {

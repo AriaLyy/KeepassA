@@ -16,19 +16,11 @@ import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupIdV3
 import com.keepassdroid.database.PwGroupIdV4
-import com.keepassdroid.database.PwGroupV4
-import com.keepassdroid.database.PwIconCustom
-import com.keepassdroid.database.PwIconStandard
-import com.keepassdroid.database.helper.KDBHandlerHelper
 import com.lyy.keepassa.base.BaseApp
-import com.lyy.keepassa.util.cloud.DbSynUtil
-import com.lyy.keepassa.util.cloud.interceptor.DbSyncResponse
 import timber.log.Timber
 import java.util.UUID
 
 object KdbUtil {
-  private val TAG = javaClass.simpleName
-
   fun Database?.isNull(): Boolean {
     return this == null || this.pm == null
   }
@@ -52,164 +44,6 @@ object KdbUtil {
       entry.getPassword(true, BaseApp.KDB!!.pm)
     else
       pass
-  }
-
-  /**
-   * 删除分组
-   *
-   * @param save 是否需要保存数据库；true 删除后保存数据库，false 删除后不保存数据库
-   */
-  suspend fun deleteGroup(
-    group: PwGroup,
-    save: Boolean,
-    needUpload: Boolean = false
-  ) {
-    KDBHandlerHelper.getInstance(BaseApp.APP)
-      .deleteGroup(BaseApp.KDB, group, save)
-    if (needUpload) {
-      uploadDb()
-    }
-  }
-
-  /**
-   * 保存分组
-   *
-   * @param name 组名
-   * @param icon 分组图标
-   * @param parent 父组，如果是想添加到跟目录，设置null
-   */
-  suspend fun createGroup(
-    groupName: String,
-    icon: PwIconCustom?,
-    parent: PwGroupV4
-  ): PwGroup? {
-    val group = KDBHandlerHelper.getInstance(BaseApp.APP)
-      .createGroup(BaseApp.KDB, groupName, icon, parent)
-    val response = uploadDb()
-    if (response.code != DbSynUtil.STATE_SUCCEED) {
-      Timber.e(response.msg)
-      return null
-    }
-    return group
-  }
-
-  /**
-   * 创建分组
-   *
-   * @param name 组名
-   * @param icon 分组图标
-   * @param parent 父组，如果是想添加到跟目录，设置null
-   */
-  suspend fun createGroup(
-    groupName: String,
-    icon: PwIconStandard,
-    parent: PwGroup
-  ): PwGroup {
-    val group = KDBHandlerHelper.getInstance(BaseApp.APP)
-      .createGroup(BaseApp.KDB, groupName, icon, parent)
-    uploadDb()
-    return group
-  }
-
-  /**
-   * 删除条目
-   * @param save 是否需要保存数据库；true 删除后保存数据库，false 删除后不保存数据库
-   */
-  suspend fun deleteEntry(
-    entry: PwEntry,
-    save: Boolean,
-    needUpload: Boolean = false
-  ): Int {
-    KDBHandlerHelper.getInstance(BaseApp.APP).deleteEntry(BaseApp.KDB, entry, save)
-    if (needUpload) {
-      val response = uploadDb()
-      return response.code
-    }
-    return DbSynUtil.STATE_SUCCEED
-  }
-
-  /**
-   * 只添加群组，不进行保存，不进行上传
-   */
-  fun addGroup(group: PwGroup) {
-    BaseApp.KDB!!.pm.addGroupTo(group, group.parent)
-  }
-
-  /**
-   * 添加条目
-   */
-  suspend fun addEntry(
-    entry: PwEntry,
-    save: Boolean = true,
-    uploadDb: Boolean = false
-  ): Int {
-    if (save) {
-      KDBHandlerHelper.getInstance(BaseApp.APP)
-        .saveEntry(BaseApp.KDB, entry)
-    } else {
-      BaseApp.KDB!!.pm.addEntryTo(entry, entry.parent)
-    }
-    if (uploadDb) {
-      val response = uploadDb()
-      Timber.i(response.msg)
-      return response.code
-    }
-    return DbSynUtil.STATE_SUCCEED
-  }
-
-  /**
-   * 保存数据库，并上传数据库到云端
-   * @return [DbSynUtil.STATE_SUCCEED]
-   */
-//   suspend fun saveDb(
-//     uploadDb: Boolean = true,
-//     isCreate: Boolean = false
-//   ): Int {
-//     Timber.d("保存前的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
-//     val b = KDBHandlerHelper.getInstance(BaseApp.APP)
-//       .save(BaseApp.KDB)
-//     if (uploadDb) {
-//       val response = uploadDb(isCreate = isCreate)
-//       Timber.i(response.msg)
-//       return response.code
-//     }
-//     Timber.d("保存后的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
-// //    // 更新rootGroup条目
-// //    if (b && isSync) {
-// //      updateRootGroup()
-// //    }
-//     return if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
-//   }
-
-  /**
-   * 更新根rootGroup条目，pm.rootGroup是新new的，并不是索引，从云端同步后，该内容不会更新，需要手动更新
-   */
-  private fun updateRootGroup() {
-    val rootGroup = BaseApp.KDB.pm.rootGroup
-    rootGroup.childEntries.clear()
-    rootGroup.childGroups.clear()
-    val rootGroupId = rootGroup.id
-    BaseApp.KDB.pm.entries.forEach {
-      if (it.value.parent.id == rootGroupId) {
-        rootGroup.childEntries.add(it.value)
-      }
-    }
-
-    BaseApp.KDB.pm.groups.forEach {
-      if (it.value == null || it.value.parent == null) {
-        return@forEach
-      }
-      if (it.value.parent.id == rootGroupId) {
-        rootGroup.childGroups.add(it.value)
-      }
-    }
-  }
-
-  /**
-   * 上传数据库到云端
-   */
-  private suspend fun uploadDb(isCreate: Boolean = false): DbSyncResponse {
-    return DbSynUtil.uploadSyn(BaseApp.dbRecord!!, isCreate)
   }
 
   /**

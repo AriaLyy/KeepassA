@@ -118,6 +118,7 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
     listenerCollection()
     listenerEntryStateChange()
     listenerGroupStateChange()
+    KpaUtil.kdbHandlerService.saveDbByBackground (true){  }
   }
 
   /**

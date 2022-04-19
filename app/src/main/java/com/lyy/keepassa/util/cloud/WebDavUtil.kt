@@ -13,7 +13,6 @@ import android.content.Context
 import android.net.Uri
 import androidx.core.net.toFile
 import com.arialyy.frame.util.FileUtil
-import com.arialyy.frame.util.StringUtil
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import timber.log.Timber
@@ -25,7 +24,6 @@ import java.util.Date
  * webdav工具
  */
 object WebDavUtil : ICloudUtil {
-  private val TAG = StringUtil.getClassName(this)
   var sardine: OkHttpSardine? = null
   var fileName: String = ""
 
@@ -72,9 +70,19 @@ object WebDavUtil : ICloudUtil {
   ): OkHttpSardine {
     sardine = OkHttpSardine()
     sardine?.let {
-      it.setCredentials(userName, password)
+      it.setCredentials(userName, password, true)
     }
     return sardine as OkHttpSardine
+  }
+
+  override suspend fun fileExists(fileKey: String): Boolean {
+    sardine ?: return false
+    try {
+      return sardine!!.exists(fileKey)
+    } catch (e: Exception) {
+      Timber.e(e)
+    }
+    return false
   }
 
   override fun getRootPath(): String {
@@ -97,7 +105,7 @@ object WebDavUtil : ICloudUtil {
       }
     } catch (e: Exception) {
       e.printStackTrace()
-      Timber.e(e,"获取文件列表失败")
+      Timber.e(e, "获取文件列表失败")
     }
     return list
   }
@@ -126,7 +134,7 @@ object WebDavUtil : ICloudUtil {
       )
     } catch (e: Exception) {
       e.printStackTrace()
-      Timber.e(e,"获取文件信息失败")
+      Timber.e(e, "获取文件信息失败")
     }
     return null
   }
@@ -137,7 +145,7 @@ object WebDavUtil : ICloudUtil {
       sardine!!.delete(convertUrl(fileKey))
     } catch (e: Exception) {
       e.printStackTrace()
-      Timber.e(e,"删除文件失败")
+      Timber.e(e, "删除文件失败")
       return false
     }
     return true
@@ -154,19 +162,23 @@ object WebDavUtil : ICloudUtil {
     context: Context,
     dbRecord: DbHistoryRecord
   ): Boolean {
+    Timber.d("uploadFile, cloudPath = ${dbRecord.cloudDiskPath}, localPath = ${dbRecord.localDbUri}")
     sardine ?: return false
     try {
-      sardine!!.put(
-        dbRecord.cloudDiskPath, Uri.parse(dbRecord.localDbUri)
-          .toFile(), "*/*"
+      // delFile(dbRecord.cloudDiskPath!!)
+      // sardine?.setCredentials("511455842@qq.com", "aux8q3tnmg9nqnq7")
+      sardine?.put(
+        dbRecord.cloudDiskPath, Uri.parse(dbRecord.localDbUri).toFile(), "*/*"
       )
+      Timber.d("上传完成，重新获取文件信息")
       val info = getFileInfo(dbRecord.cloudDiskPath!!)
       if (info != null) {
         DbSynUtil.serviceModifyTime = info.serviceModifyDate
       }
     } catch (e: Exception) {
       e.printStackTrace()
-      Timber.e(e,"上传文件失败")
+      Timber.e(e, "上传文件失败")
+      return false
     }
 
     return true
@@ -195,7 +207,7 @@ object WebDavUtil : ICloudUtil {
         foc.transferFrom(fic, 0, fileInfo!!.size)
       } catch (e: Exception) {
         e.printStackTrace()
-        Timber.e(e,"下载文件失败")
+        Timber.e(e, "下载文件失败")
         return null
       } finally {
         it.unlock(cloudPath, token)
