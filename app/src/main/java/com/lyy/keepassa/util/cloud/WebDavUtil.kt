@@ -17,7 +17,10 @@ import com.lyy.keepassa.entity.DbHistoryRecord
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import timber.log.Timber
 import java.io.FileOutputStream
+import java.io.InputStream
 import java.nio.channels.Channels
+import java.nio.channels.FileChannel
+import java.nio.channels.ReadableByteChannel
 import java.util.Date
 
 /**
@@ -69,9 +72,7 @@ object WebDavUtil : ICloudUtil {
     password: String
   ): OkHttpSardine {
     sardine = OkHttpSardine()
-    sardine?.let {
-      it.setCredentials(userName, password, true)
-    }
+    sardine?.setCredentials(userName, password, true)
     return sardine as OkHttpSardine
   }
 
@@ -164,11 +165,18 @@ object WebDavUtil : ICloudUtil {
   ): Boolean {
     Timber.d("uploadFile, cloudPath = ${dbRecord.cloudDiskPath}, localPath = ${dbRecord.localDbUri}")
     sardine ?: return false
+    var localToken: String? = null
     try {
       // delFile(dbRecord.cloudDiskPath!!)
-      // sardine?.setCredentials("511455842@qq.com", "aux8q3tnmg9nqnq7")
+      // val exist = fileExists(dbRecord.cloudDiskPath!!)
+      localToken = sardine!!.lock(dbRecord.cloudDiskPath, 5)
+      Timber.d("localToken = $localToken")
       sardine?.put(
-        dbRecord.cloudDiskPath, Uri.parse(dbRecord.localDbUri).toFile(), "*/*"
+        dbRecord.cloudDiskPath,
+        Uri.parse(dbRecord.localDbUri).toFile(),
+        "application/binary",
+        false,
+        localToken
       )
       Timber.d("上传完成，重新获取文件信息")
       val info = getFileInfo(dbRecord.cloudDiskPath!!)
@@ -179,6 +187,10 @@ object WebDavUtil : ICloudUtil {
       e.printStackTrace()
       Timber.e(e, "上传文件失败")
       return false
+    } finally {
+      localToken?.let {
+        sardine?.unlock(dbRecord.cloudDiskPath!!, it)
+      }
     }
 
     return true
@@ -198,18 +210,26 @@ object WebDavUtil : ICloudUtil {
     }
     sardine?.let {
       var token = ""
+      var fic: ReadableByteChannel? = null
+      var foc: FileChannel? = null
       try {
         token = it.lock(cloudPath)
         val ips = it.get(cloudPath)
         val fileInfo = getFileInfo(cloudPath)
-        val fic = Channels.newChannel(ips)
-        val foc = FileOutputStream(fp).channel
+        fic = Channels.newChannel(ips)
+        foc = FileOutputStream(fp).channel
         foc.transferFrom(fic, 0, fileInfo!!.size)
       } catch (e: Exception) {
         e.printStackTrace()
         Timber.e(e, "下载文件失败")
         return null
       } finally {
+        try {
+          fic?.close()
+          foc?.close()
+        } catch (e: Exception) {
+          Timber.e(e)
+        }
         it.unlock(cloudPath, token)
       }
     }

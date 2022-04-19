@@ -23,7 +23,6 @@ import com.lyy.keepassa.util.KeepassAUtil
  * @Date 2021/2/1
  **/
 class ScreenLockReceiver : BroadcastReceiver() {
-  private val TAG = javaClass.simpleName
   override fun onReceive(
     context: Context?,
     intent: Intent?

@@ -49,6 +49,7 @@ import com.arialyy.frame.core.AbsFrame
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.StringUtil
+import com.blankj.utilcode.util.AppUtils
 import com.keepassdroid.database.PwDataInf
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
@@ -166,7 +167,7 @@ class KeepassAUtil private constructor() {
    * @param obj fragment or activity
    */
   fun startLockTimer(obj: Any?) {
-    GlobalScope.launch(Dispatchers.IO) {
+    KpaUtil.scope.launch(Dispatchers.IO) {
       // delay 1s, in order to wait for the configuration file to take effect
       delay(1000)
       if (!isAutoLockDb()) {
@@ -179,9 +180,8 @@ class KeepassAUtil private constructor() {
           return@launch
         }
 
-        if (isRunningForeground(BaseApp.APP)) {
-          AutoLockDbUtil.get()
-            .resetTimer()
+        if (AppUtils.isAppForeground()) {
+          AutoLockDbUtil.get().resetTimer()
           return@launch
         }
       }
@@ -196,7 +196,7 @@ class KeepassAUtil private constructor() {
     BaseApp.isLocked = true
     val isOpenQuickLock = BaseApp.APP.isOpenQuickLock()
     // 只有应用在前台才会跳转到锁屏页面
-    if (isRunningForeground(BaseApp.APP) && BaseApp.KDB != null) {
+    if (AppUtils.isAppForeground() && BaseApp.KDB != null) {
       // 开启快速解锁则跳转到快速解锁页面
       if (isOpenQuickLock) {
         NotificationUtil.startQuickUnlockNotify(BaseApp.APP)
@@ -404,7 +404,7 @@ class KeepassAUtil private constructor() {
     if (record == null) {
       return
     }
-    GlobalScope.launch(Dispatchers.IO) {
+    KpaUtil.scope.launch(Dispatchers.IO) {
       val dao = BaseApp.appDatabase.dbRecordDao()
       val his = dao.findRecord(record.localDbUri)
       if (his == null || his.localDbUri.isEmpty()) {
