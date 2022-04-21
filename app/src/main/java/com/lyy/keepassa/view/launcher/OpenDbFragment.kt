@@ -47,7 +47,6 @@ import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.takePermission
-import com.lyy.keepassa.view.StorageType
 import com.tencent.bugly.crashreport.BuglyLog
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -143,16 +142,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     lifecycleScope.launch {
       KpaUtil.kdbOpenService.openDbFlow.collectLatest { db ->
         if (db == null) {
-
-          val strKey = when(openDbRecord.type){
-            StorageType.WEBDAV.name ->{
-              R.string.error_open_db_webdav
-            }
-            else ->{
-              R.string.error_open_db
-            }
-          }
-          HitUtil.toaskLong(getString(strKey))
+          HitUtil.toaskLong(getString(R.string.error_open_db))
           return@collectLatest
         }
         Timber.d("打开数据库成功")

@@ -73,20 +73,9 @@ class CloudFileListModule : BaseModule() {
         try {
           val util = CloudUtilFactory.getCloudUtil(storageType)
           val list = util.getFileList(path)
-          val dirList = mutableListOf<CloudFileInfo>()
-          val fileList = mutableListOf<CloudFileInfo>()
-          val tempList = mutableListOf<CloudFileInfo>()
-          list?.forEach {
-            if (it.isDir) {
-              dirList.add(it)
-            } else {
-              fileList.add(it)
-            }
-          }
-          tempList.addAll(dirList)
-          tempList.addAll(fileList)
+          val tempList = list?.sortedBy { !it.isDir }
           cache[path] = tempList
-          return@withContext list
+          return@withContext tempList
         } catch (e: Exception) {
           e.printStackTrace()
         }
