@@ -34,7 +34,6 @@ import timber.log.Timber
  * @Date 2021/2/25
  **/
 class WebDavAuthFlow : IAuthFlow {
-  private val TAG = javaClass.simpleName
   private var context: Context? = null
   private lateinit var callback: IAuthCallback
   private var webDavUri: String? = null

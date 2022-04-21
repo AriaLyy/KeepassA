@@ -41,7 +41,7 @@ android {
     release {
       def properties = new Properties()
       def inputStream = project.rootProject.file('local.properties').newDataInputStream()
-      properties.load( inputStream )
+      properties.load(inputStream)
 
       storeFile file(properties.getProperty('storeFile'))
       storePassword properties.getProperty('storePassword')
@@ -74,10 +74,10 @@ android {
     }
   }
 
-  buildFeatures{
+  buildFeatures {
     dataBinding = true
     // for view binding :
-//     viewBinding = true
+//    viewBinding = true
   }
 
   testOptions {
@@ -95,19 +95,19 @@ android {
     checkReleaseBuilds false
     // Or, if you prefer, you can continue to check for errors in release builds,
     // but continue the build even when errors are found:
-//    abortOnError false
+    //    abortOnError false
   }
 
-    flavorDimensions "app"
-//   渠道配置 https://developer.android.google.cn/studio/build/build-variants.html?hl=zh-cn
-    productFlavors {
-      dev {
-        dimension "app"
-      }
-//      fdroid{
-//        dimension "app"
-//      }
+  flavorDimensions "app"
+  //   渠道配置 https://developer.android.google.cn/studio/build/build-variants.html?hl=zh-cn
+  productFlavors {
+    dev {
+      dimension "app"
     }
+    //      fdroid{
+    //        dimension "app"
+    //      }
+  }
   //
 }
 
@@ -116,7 +116,7 @@ kapt {
     arg('room.schemaLocation', "$projectDir/schemas") //指定room.schemaLocation生成的文件路径，用于版本升级
     arg('AROUTER_MODULE_NAME', project.getName() + "_kpa") // arouter
     // 生成的文档路径 : build/generated/source/apt/(debug or release)/com/alibaba/android/arouter/docs/arouter-map-of-${moduleName}.json
-//    arg('AROUTER_GENERATE_DOC', "enable") // arouter,release 不能打开这个
+    //    arg('AROUTER_GENERATE_DOC', "enable") // arouter,release 不能打开这个
     // eventbus索引，https://greenrobot.org/eventbus/documentation/subscriber-index/
     arg('eventBusIndex', 'com.lyy.keepassa.KpaEventBusIndex') // 将会自动创建KpaEventBusIndex
   }
@@ -136,7 +136,7 @@ rebuildChannel {
   channelFile = file("${project.getProjectDir()}/channel")
   //  baseDebugApk = 已有Debug APK
   // 已有Release APK
-//  baseReleaseApk = new File("${project.buildDir}/AndResGuardFinal.apk")
+  //  baseReleaseApk = new File("${project.buildDir}/AndResGuardFinal.apk")
   baseApk = new File("${project.buildDir}/outputs/apk/dev/release/app-dev-release.apk")
   //默认为new File(project.buildDir, "rebuildChannel/debug")
   //  debugOutputDir = Debug渠道包输出目录
@@ -156,12 +156,12 @@ afterEvaluate {
     dependsOn(assembleRelease) // 暂时使用这个
 
     // 不要使用，1.2.21打包出来的apk，消息对话框布局错乱
-//    dependsOn('resguardRelease')
+    //    dependsOn('resguardRelease')
   }
 }
 
-boolean isReleaseBuildType(){
-  for(String s : gradle.startParameter.taskNames) {
+boolean isReleaseBuildType() {
+  for (String s : gradle.startParameter.taskNames) {
     println("builtType: " + s)
     if (s.contains("Release") | s.contains("release") | s.contains("reBuildChannel")) {
       return true
@@ -179,14 +179,15 @@ android.applicationVariants.all { variant ->
       String manifestPath = "${multiApkManifestOutputDirectory.asFile.get()}/AndroidManifest.xml"
       println("版本类型：" + isReleaseBuildType())
       def keyHash = "5qMkIKbIM5Lx7VbajX8mT3rKXpE="
-      if (isReleaseBuildType()){
+      if (isReleaseBuildType()) {
         keyHash = "xv3czaACtp98KvuSqP3GRLCxjrc="
       }
 
       // 替换one drive 配置
       def updatedContent = file(manifestPath).getText('UTF-8')
           .replaceAll("msal_package_name", "com.lyy.keepassa") // 包名
-          .replaceAll("msal_signature_hash", keyHash) // 当前签名hash
+          .replaceAll("msal_signature_hash", keyHash)
+      // 当前签名hash
       file(manifestPath).write(updatedContent, 'UTF-8')
     }
   }
@@ -203,14 +204,14 @@ dependencies {
   androidTestImplementation rootProject.ext.espresso
   androidTestImplementation rootProject.ext.androidXRules
 
-//      debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+  //      debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
   // 数据库如果加密的话使用这个
-//  debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
+  //  debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
 
   // keepassA组件
   implementation 'me.laoyuyu.keepassa:KeepassIcon:0.2.6'
   implementation 'me.laoyuyu.keepassa:KeepassLib:0.2.8'
-//  implementation project(path: ':KpaLib')
+  //  implementation project(path: ':KpaLib')
   implementation 'me.laoyuyu.keepassa:KPAFrame:0.2.12'
   implementation 'me.laoyuyu.keepassa:UIWidget:0.2.7'
 
@@ -243,7 +244,7 @@ dependencies {
   implementation "androidx.preference:preference-ktx:1.2.0"
   // workmanager
   def work_version = '2.7.1'
-//  implementation "androidx.work:work-runtime:$work_version"
+  //  implementation "androidx.work:work-runtime:$work_version"
   implementation "androidx.work:work-runtime-ktx:$work_version"
 
   // room
@@ -319,16 +320,15 @@ dependencies {
   implementation 'com.tencent.bugly:nativecrashreport:3.9.2'
   implementation "com.google.code.gson:gson:${rootProject.ext.gsonVersion}"
 
-//  implementation "androidx.asynclayoutinflater:asynclayoutinflater:${rootProject.ext.asynclayoutinflaterVersion}"
+  //  implementation "androidx.asynclayoutinflater:asynclayoutinflater:${rootProject.ext.asynclayoutinflaterVersion}"
   implementation 'com.github.tiann:FreeReflection:3.1.0'
 
   // onedrive
-//  implementation 'com.microsoft.identity.client:msal:1.6+'
+  //  implementation 'com.microsoft.identity.client:msal:1.6+'
   implementation 'com.microsoft.identity.client:msal:2.+'
-//  implementation 'com.microsoft.graph:microsoft-graph:1.5.+'
+  //  implementation 'com.microsoft.graph:microsoft-graph:1.5.+'
 
   implementation "com.squareup.retrofit2:retrofit:${rootProject.ext.retrofitVersion}"
-
 
   kapt 'com.alibaba:arouter-compiler:1.5.2'
 
@@ -342,7 +342,6 @@ dependencies {
 
   implementation("com.android.billingclient:billing-ktx:$billing_version")
   implementation 'com.google.android.gms:play-services-base:18.0.1'
-
 }
 
 // 不要使用，1.2.21打包出来的apk，消息对话框布局错乱

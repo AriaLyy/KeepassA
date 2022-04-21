@@ -17,9 +17,7 @@ import com.dropbox.core.android.Auth
 import com.lyy.keepassa.R
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.cloud.DropboxUtil
-import com.lyy.keepassa.util.putArgument
 import com.lyy.keepassa.view.StorageType.DROPBOX
-import com.lyy.keepassa.view.dialog.CloudFileListDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 
 /**
@@ -28,7 +26,6 @@ import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
  * @Date 2021/4/25
  **/
 class OpenDropBoxDelegate : IOpenDbDelegate {
-  private val TAG = javaClass.simpleName
   private var startDropboxAuth = false
   private var activity: FragmentActivity? = null
 
@@ -54,10 +51,7 @@ class OpenDropBoxDelegate : IOpenDbDelegate {
    * 显示云端文件列表
    */
   private fun showCloudListDialog() {
-    val dialog = CloudFileListDialog().apply {
-      putArgument("cloudFileDbPathType", DROPBOX)
-    }
-    dialog.show(delegateRequireActivity().supportFragmentManager, "cloud_file_list_dialog")
+    Routerfit.create(DialogRouter::class.java).showCloudFileListDialog(DROPBOX)
   }
 
   /**

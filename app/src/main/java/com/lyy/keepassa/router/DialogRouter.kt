@@ -11,13 +11,13 @@ import android.graphics.drawable.Drawable
 import com.arialyy.frame.router.DialogArg
 import com.arialyy.frame.router.RouterArgName
 import com.arialyy.frame.router.RouterPath
-import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
+import com.lyy.keepassa.view.StorageType
 import com.lyy.keepassa.view.dialog.LoadingDialog
-import com.lyy.keepassa.view.dialog.MsgDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.dialog.TimeChangeDialog
+import com.lyy.keepassa.view.dialog.WebDavLoginDialogNew
 
 /**
  * @Author laoyuyu
@@ -25,6 +25,15 @@ import com.lyy.keepassa.view.dialog.TimeChangeDialog
  * @Date 2021/9/5
  **/
 interface DialogRouter {
+
+  @RouterPath(path = "/dialog/cloudFileList")
+  @DialogArg(showDialog = true)
+  fun showCloudFileListDialog(
+    @RouterArgName(name = "storageType") storageType: StorageType
+  )
+
+  @RouterPath(path = "/dialog/webdavLogin")
+  fun getWebDavLoginDialog(): WebDavLoginDialogNew
 
   @RouterPath(path = "/dialog/modifyGroup")
   @DialogArg(showDialog = true)

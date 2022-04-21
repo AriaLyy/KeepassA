@@ -10,10 +10,8 @@ package com.lyy.keepassa.base
 import android.content.Context
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.lifecycleScope
 import com.arialyy.frame.base.FrameDialog
 import com.lyy.keepassa.util.LanguageUtil
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
@@ -21,7 +19,13 @@ import timber.log.Timber
  * @Description
  * @Date 2021/1/13
  **/
-abstract class BaseDialog<VB : ViewDataBinding>:FrameDialog<VB>() {
+abstract class BaseDialog<VB : ViewDataBinding> : FrameDialog<VB>() {
+
+  private var onDismissListener: OnDialogDismissListener? = null
+
+  fun setOnDismissListener(dismissListener: OnDialogDismissListener) {
+    this.onDismissListener = dismissListener
+  }
 
   override fun onAttach(context: Context) {
     super.onAttach(LanguageUtil.setLanguage(context, BaseApp.currentLang))
@@ -40,7 +44,7 @@ abstract class BaseDialog<VB : ViewDataBinding>:FrameDialog<VB>() {
   }
 
   override fun dismiss() {
-    if (!isVisible){
+    if (!isVisible) {
       Timber.d("fragment 还没被加载")
       return
     }
@@ -48,6 +52,12 @@ abstract class BaseDialog<VB : ViewDataBinding>:FrameDialog<VB>() {
       Timber.d("状态已经保存，不再dismiss")
       return
     }
+    onDismissListener?.onDismiss()
     super.dismiss()
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    onDismissListener = null
   }
 }

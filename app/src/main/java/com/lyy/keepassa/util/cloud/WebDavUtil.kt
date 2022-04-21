@@ -17,7 +17,6 @@ import com.lyy.keepassa.entity.DbHistoryRecord
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import timber.log.Timber
 import java.io.FileOutputStream
-import java.io.InputStream
 import java.nio.channels.Channels
 import java.nio.channels.FileChannel
 import java.nio.channels.ReadableByteChannel
@@ -27,8 +26,18 @@ import java.util.Date
  * webdav工具
  */
 object WebDavUtil : ICloudUtil {
+  val SUPPORTED_WEBDAV_URLS = mutableListOf<String>().apply {
+    add("https://dav.jianguoyun.com")
+    add("https://dav.dropdav.com")
+    add("https://disk.yandex.com")
+    add("other")
+  }
+
   var sardine: OkHttpSardine? = null
   var fileName: String = ""
+  private var hostUri: String = ""
+  var userName: String = ""
+  var pass: String = ""
 
   /**
    * 是否登录
@@ -42,24 +51,34 @@ object WebDavUtil : ICloudUtil {
     sardine?.createDirectory(path)
   }
 
+  fun setHostUri(hostUri: String) {
+    this.hostUri = if (hostUri.endsWith("/")) hostUri.substring(0, hostUri.length - 1) else hostUri
+  }
+
+
+  fun getHostUri() = hostUri
+
   /**
    * 检查登录
    * @return true 登录成功，false 登录失败
    */
   fun checkLogin(
+    uri: String,
     userName: String,
     password: String
   ): Boolean {
+    this.userName = userName
+    this.pass = password
+    setHostUri(uri)
+    sardine = OkHttpSardine()
+    sardine?.setCredentials(userName, password, true)
     try {
-      sardine = OkHttpSardine()
-      sardine?.setCredentials(userName, password)
+      val list = sardine?.list(uri)
+      return !list.isNullOrEmpty()
     } catch (e: Exception) {
-      sardine = null
-      e.printStackTrace()
-      Timber.e(e, "checkLogin")
-      return false
+      Timber.e(e)
     }
-    return true
+    return false
   }
 
   /**
@@ -71,6 +90,9 @@ object WebDavUtil : ICloudUtil {
     userName: String,
     password: String
   ): OkHttpSardine {
+    this.userName = userName
+    this.pass = password
+    setHostUri(uri)
     sardine = OkHttpSardine()
     sardine?.setCredentials(userName, password, true)
     return sardine as OkHttpSardine
@@ -90,11 +112,15 @@ object WebDavUtil : ICloudUtil {
     return "/"
   }
 
-  override suspend fun getFileList(cloudPath: String): List<CloudFileInfo>? {
+  /**
+   *@param dirPath 相对路径，如：/dav/
+   */
+  override suspend fun getFileList(dirPath: String): List<CloudFileInfo>? {
     sardine ?: return null
+    Timber.d("getFileList, host = ${hostUri}, fileKey = $dirPath")
     val list = ArrayList<CloudFileInfo>()
     try {
-      val resources = sardine!!.list(convertUrl(cloudPath))
+      val resources = sardine!!.list(convertUrl("${hostUri}${dirPath}"))
       if (resources == null || resources.isEmpty()) {
         return null
       }
@@ -103,6 +129,10 @@ object WebDavUtil : ICloudUtil {
         list.add(
           CloudFileInfo(file.path, file.name, file.modified, file.contentLength, file.isDirectory)
         )
+      }
+      if (hostUri == SUPPORTED_WEBDAV_URLS[0]) {
+        // 坚果云移除第一个item
+        list.removeAt(0)
       }
     } catch (e: Exception) {
       e.printStackTrace()
@@ -242,5 +272,8 @@ object WebDavUtil : ICloudUtil {
    */
   private fun convertUrl(url: String): String {
     return url
+  }
+
+  private fun getRelativePath() {
   }
 }

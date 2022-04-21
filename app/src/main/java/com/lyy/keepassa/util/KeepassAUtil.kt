@@ -88,7 +88,6 @@ class KeepassAUtil private constructor() {
     val instance: KeepassAUtil by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
       KeepassAUtil()
     }
-    val TAG = "KeepassAUtil"
   }
 
   private var LAST_CLICK_TIME = System.currentTimeMillis()
@@ -530,27 +529,6 @@ class KeepassAUtil private constructor() {
 //    Log.d(TAG, "temp = $temp")
 //    Log.d(TAG, "uriString = $uriString")
     return temp
-  }
-
-  /**
-   * 判断本应用是否已经位于最前端
-   *
-   * @param context
-   * @return 本应用已经位于最前端时，返回 true；否则返回 false
-   */
-  fun isRunningForeground(context: Context): Boolean {
-    val activityManager: ActivityManager =
-      context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager? ?: return false
-    val appProcessInfoList: List<RunningAppProcessInfo> = activityManager.runningAppProcesses
-    /**枚举进程 */
-    for (appProcessInfo in appProcessInfoList) {
-      if (appProcessInfo.importance == RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
-        if (appProcessInfo.processName == context.applicationInfo.processName) {
-          return true
-        }
-      }
-    }
-    return false
   }
 
   fun isFastClick(): Boolean {

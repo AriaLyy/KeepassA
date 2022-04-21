@@ -20,9 +20,22 @@ import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.cloud.WebDavUtil
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 
 class WebDavLoginModule : BaseModule() {
+
+
+  fun checkLogin(
+    uri: String,
+    userName: String,
+    pass: String
+  ) = flow {
+    val b = withContext(Dispatchers.IO) {
+      return@withContext WebDavUtil.checkLogin(uri, userName, pass)
+    }
+    emit(b)
+  }
 
   /**
    * 检查登录状态
@@ -49,9 +62,9 @@ class WebDavLoginModule : BaseModule() {
         var data = dao.queryServiceInfo(uri)
         if (data == null) {
           data = CloudServiceInfo(
-              userName = QuickUnLockUtil.encryptStr(userName),
-              password = QuickUnLockUtil.encryptStr(pass),
-              cloudPath = uri
+            userName = QuickUnLockUtil.encryptStr(userName),
+            password = QuickUnLockUtil.encryptStr(pass),
+            cloudPath = uri
           )
           dao.saveServiceInfo(data)
         } else {
@@ -78,9 +91,9 @@ class WebDavLoginModule : BaseModule() {
     userName: String,
     pass: String
   ) = liveData<Boolean> {
-    val success = withContext(Dispatchers.IO){
-      var b = WebDavUtil.checkLogin(userName, pass)
-      if (!b){
+    val success = withContext(Dispatchers.IO) {
+      var b = WebDavUtil.checkLogin(uri, userName, pass)
+      if (!b) {
         return@withContext false
       }
       // 检查文件夹是否存在，不存在，创建文件夹
@@ -94,5 +107,4 @@ class WebDavLoginModule : BaseModule() {
 
     emit(success)
   }
-
 }

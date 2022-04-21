@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
 
   <RelativeLayout
-      style="@style/KpaDialogLayoutStyle"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:animateLayoutChanges="true"
       android:minWidth="@dimen/dialog_min_width"
-      android:orientation="vertical">
+      android:orientation="vertical"
+      style="@style/KpaDialogLayoutStyle"
+      >
 
     <RelativeLayout
         android:id="@+id/rlTopBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
       <TextView
           android:id="@+id/title"
@@ -24,7 +27,8 @@
           android:gravity="center"
           android:text="@string/choose_file"
           android:textColor="@color/text_blue_color"
-          android:textSize="@dimen/text_size_biggest" />
+          android:textSize="@dimen/text_size_biggest"
+          />
 
       <ImageView
           android:id="@+id/iv_close"
@@ -35,7 +39,8 @@
           android:layout_marginEnd="16dp"
           android:background="@drawable/ripple_white_selector"
           android:clickable="true"
-          android:src="@drawable/ic_close" />
+          android:src="@drawable/ic_close"
+          />
     </RelativeLayout>
 
 
@@ -44,20 +49,22 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/rlTopBar"
-        android:background="@color/line_color" />
+        android:background="@color/line_color"
+        />
 
     <TextView
         android:id="@+id/path"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/vLine"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="4dp"
         android:text="/"
         android:textColor="@color/text_gray_color"
-        android:textSize="@dimen/text_size_small" />
+        android:textSize="@dimen/text_size_small"
+        />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/anim"
@@ -66,21 +73,15 @@
         android:layout_centerInParent="true"
         android:layout_gravity="center"
         app:lottie_autoPlay="true"
-        app:lottie_loop="true" />
+        app:lottie_loop="true"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/path" />
-
-    <com.lyy.keepassa.widget.EmptyDataFillView
-        android:id="@+id/tempView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/path"
-        android:visibility="gone"
-        app:edf_text="@string/no_file" />
+        android:layout_below="@+id/path"
+        />
 
   </RelativeLayout>
 </layout>

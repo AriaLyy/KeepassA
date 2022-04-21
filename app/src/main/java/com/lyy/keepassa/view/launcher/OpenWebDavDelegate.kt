@@ -8,8 +8,14 @@
 package com.lyy.keepassa.view.launcher
 
 import android.content.Intent
-import androidx.fragment.app.FragmentActivity
-import com.lyy.keepassa.view.dialog.WebDavLoginDialog
+import com.arialyy.frame.router.Routerfit
+import com.lyy.keepassa.event.WebDavLoginEvent
+import com.lyy.keepassa.router.DialogRouter
+import com.lyy.keepassa.view.StorageType.WEBDAV
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 /**
  * @Author laoyuyu
@@ -17,13 +23,23 @@ import com.lyy.keepassa.view.dialog.WebDavLoginDialog
  * @Date 2021/4/25
  **/
 class OpenWebDavDelegate : IOpenDbDelegate {
+  private val scope = MainScope()
+  private var loginEvent: WebDavLoginEvent? = null
 
   override fun onResume() {
   }
 
   override fun startFlow(fragment: ChangeDbFragment) {
-    val dialog = WebDavLoginDialog()
+    val dialog = Routerfit.create(DialogRouter::class.java).getWebDavLoginDialog()
     dialog.show(fragment.childFragmentManager, "web_dav_login")
+    scope.launch {
+      dialog.webDavLoginFlow.collectLatest {
+        if (it.loginSuccess) {
+          loginEvent = it
+          Routerfit.create(DialogRouter::class.java).showCloudFileListDialog(WEBDAV)
+        }
+      }
+    }
   }
 
   override fun onActivityResult(
@@ -34,5 +50,6 @@ class OpenWebDavDelegate : IOpenDbDelegate {
   }
 
   override fun destroy() {
+    scope.cancel()
   }
 }
