@@ -28,9 +28,15 @@ import java.util.Date
 object WebDavUtil : ICloudUtil {
   val SUPPORTED_WEBDAV_URLS = mutableListOf<String>().apply {
     add("https://dav.jianguoyun.com")
-    add("https://dav.dropdav.com")
-    add("https://disk.yandex.com")
+    add("https://dav.box.com")
+    // add("https://dav.dropdav.com") 需要注册：https://app.dropdav.com/users/sign_in
+    // add("https://webdav.yandex.com") 需要使用sdk, https://yandex.com/dev/id/
     add("other")
+  }
+
+  val REMOVE_PARENT_URLS = mutableListOf<String>().apply {
+    add("https://dav.jianguoyun.com")
+    add("https://dav.box.com")
   }
 
   var sardine: OkHttpSardine? = null
@@ -130,7 +136,7 @@ object WebDavUtil : ICloudUtil {
           CloudFileInfo(file.path, file.name, file.modified, file.contentLength, file.isDirectory)
         )
       }
-      if (hostUri == SUPPORTED_WEBDAV_URLS[0]) {
+      if (hostUri in REMOVE_PARENT_URLS) {
         // 坚果云移除第一个item
         list.removeAt(0)
       }

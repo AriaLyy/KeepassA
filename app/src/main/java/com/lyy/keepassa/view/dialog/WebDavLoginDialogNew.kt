@@ -14,11 +14,13 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.arialyy.frame.router.Routerfit
 import com.blankj.utilcode.util.KeyboardUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogWebdavLoginNewBinding
 import com.lyy.keepassa.event.WebDavLoginEvent
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.cloud.WebDavUtil
@@ -35,6 +37,9 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
   private lateinit var module: WebDavLoginModule
   private var webDavUri: String? = null
   val webDavLoginFlow = MutableSharedFlow<WebDavLoginEvent>()
+  private val loadingDialog by lazy {
+    Routerfit.create(DialogRouter::class.java).getLoadingDialog()
+  }
 
   override fun setLayoutId(): Int {
     return R.layout.dialog_webdav_login_new
@@ -75,8 +80,6 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
     if (KeepassAUtil.instance.isFastClick()) {
       return
     }
-    binding.userName.setText("511455842@qq.com")
-    binding.password.setText("aux8q3tnmg9nqnq7")
 
     val pass = binding.password.text.toString()
       .trim()
@@ -107,7 +110,7 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
 
     // start login
     this.webDavUri = uri
-
+    loadingDialog.show()
     handleLoginFlow(uri, userName, pass)
   }
 
@@ -121,6 +124,7 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
   ) {
     lifecycleScope.launch {
       module.checkLogin(uri, userName, pass).collectLatest {
+        loadingDialog.dismiss()
         webDavLoginFlow.emit(WebDavLoginEvent(uri, userName, pass, it))
         if (!it) {
           HitUtil.toaskLong("${getString(R.string.login)} ${getString(R.string.fail)}")

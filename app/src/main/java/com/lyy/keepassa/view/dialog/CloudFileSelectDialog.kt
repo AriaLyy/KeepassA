@@ -191,20 +191,11 @@ class CloudFileSelectDialog : BaseDialog<DialogCloudFileListBinding>() {
     binding.list.visibility = View.GONE
     binding.anim.visibility = View.VISIBLE
     binding.path.visibility = View.GONE
-    try {
-      binding.anim.setAnimation(
-        requireContext().assets
-          .open("loadingAnimation.json", AssetManager.ACCESS_STREAMING),
-        "LottieCache"
-      )
-    } catch (e: IOException) {
-      e.printStackTrace()
-    }
   }
 
   private fun hintLoadView() {
     binding.list.visibility = View.VISIBLE
-    binding.anim.cancelAnimation()
+    // binding.anim.cancelAnimation()
     binding.anim.visibility = View.GONE
     binding.path.visibility = View.VISIBLE
   }
