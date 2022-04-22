@@ -10,9 +10,11 @@
 package com.lyy.keepassa.view.dialog
 
 import android.widget.ArrayAdapter
+import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.blankj.utilcode.util.KeyboardUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogWebdavLoginNewBinding
@@ -61,12 +63,20 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
     binding.uriLayout.setEndIconOnClickListener {
       binding.uri.showDropDown()
     }
+    binding.uri.doAfterTextChanged {
+      if (it?.toString() == WebDavUtil.SUPPORTED_WEBDAV_URLS[WebDavUtil.SUPPORTED_WEBDAV_URLS.size - 1]) {
+        binding.uri.setText("")
+        KeyboardUtils.showSoftInput(binding.uri)
+      }
+    }
   }
 
   private fun handleEnterClick() {
     if (KeepassAUtil.instance.isFastClick()) {
       return
     }
+    binding.userName.setText("511455842@qq.com")
+    binding.password.setText("aux8q3tnmg9nqnq7")
 
     val pass = binding.password.text.toString()
       .trim()

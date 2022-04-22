@@ -9,7 +9,7 @@
 
 package com.lyy.keepassa.view.dialog
 
-import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.CloudServiceInfo
@@ -19,6 +19,8 @@ import com.lyy.keepassa.util.cloud.CloudUtilFactory
 import com.lyy.keepassa.util.cloud.WebDavUtil
 import com.lyy.keepassa.view.StorageType
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
 
@@ -29,6 +31,7 @@ class CloudFileListModule : BaseModule() {
   private val cache = HashMap<String, List<CloudFileInfo>?>()
 
   val upEntry = CloudFileInfo("", "..", Date(), 0, true)
+  val fileListFlow = MutableSharedFlow<List<CloudFileInfo>?>()
 
   suspend fun saveWebHistory(uri: String) {
     withContext(Dispatchers.IO) {
@@ -38,14 +41,14 @@ class CloudFileListModule : BaseModule() {
       if (data == null) {
         data = CloudServiceInfo(
           userName = QuickUnLockUtil.encryptStr(WebDavUtil.userName),
-          password = QuickUnLockUtil.encryptStr(WebDavUtil.pass),
+          password = QuickUnLockUtil.encryptStr(WebDavUtil.password),
           cloudPath = uri
         )
         dao.saveServiceInfo(data)
         return@withContext
       }
       data.userName = QuickUnLockUtil.encryptStr(WebDavUtil.userName)
-      data.password = QuickUnLockUtil.encryptStr(WebDavUtil.pass)
+      data.password = QuickUnLockUtil.encryptStr(WebDavUtil.password)
       dao.updateServiceInfo(data)
     }
   }
@@ -63,17 +66,26 @@ class CloudFileListModule : BaseModule() {
    */
   fun getFileList(
     storageType: StorageType,
-    path: String
-  ) = liveData {
-    val temp = cache[path]
-    if (temp != null && temp.isNotEmpty()) {
-      emit(temp)
-    } else {
+    path: String,
+    isOnlyGetDir: Boolean
+  ) {
+    viewModelScope.launch {
+      val temp = cache[path]
+      if (temp != null && temp.isNotEmpty()) {
+        fileListFlow.emit(temp)
+        return@launch
+      }
       val data = withContext(Dispatchers.IO) {
         try {
           val util = CloudUtilFactory.getCloudUtil(storageType)
           val list = util.getFileList(path)
-          val tempList = list?.sortedBy { !it.isDir }
+          val tempList = if (isOnlyGetDir) {
+            list?.filter {
+              it.isDir
+            }
+          } else {
+            list?.sortedBy { !it.isDir }
+          }
           cache[path] = tempList
           return@withContext tempList
         } catch (e: Exception) {
@@ -81,7 +93,7 @@ class CloudFileListModule : BaseModule() {
         }
         null
       }
-      emit(data)
+      fileListFlow.emit(data)
     }
   }
 }

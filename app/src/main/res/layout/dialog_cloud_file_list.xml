@@ -6,7 +6,7 @@
 
   <RelativeLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="wrap_content"
       android:animateLayoutChanges="true"
       android:minWidth="@dimen/dialog_min_width"
       android:orientation="vertical"
@@ -81,6 +81,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/path"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSelect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/list"
+        android:background="@drawable/ripple_white_selector"
+        android:text="@string/select_cur_path"
+        android:textColor="@color/text_blue_color"
+        android:textSize="@dimen/text_size_normal"
         />
 
   </RelativeLayout>

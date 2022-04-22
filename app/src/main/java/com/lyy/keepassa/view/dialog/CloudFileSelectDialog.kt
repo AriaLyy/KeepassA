@@ -18,7 +18,6 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.RelativeLayout.CENTER_VERTICAL
 import android.widget.TextView
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,6 +32,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogCloudFileListBinding
 import com.lyy.keepassa.event.ChangeDbEvent
+import com.lyy.keepassa.event.CloudFileSelectedEvent
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.cloud.CloudFileInfo
 import com.lyy.keepassa.util.cloud.DbSynUtil
@@ -41,7 +41,9 @@ import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.view.StorageType
 import com.lyy.keepassa.view.StorageType.UNKNOWN
 import com.lyy.keepassa.view.StorageType.WEBDAV
-import com.lyy.keepassa.view.dialog.CloudFileListDialog.Adapter.Holder
+import com.lyy.keepassa.view.dialog.CloudFileSelectDialog.Adapter.Holder
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
@@ -52,7 +54,7 @@ import java.util.Stack
  * 云文件列表
  */
 @Route(path = "/dialog/cloudFileList")
-class CloudFileListDialog : BaseDialog<DialogCloudFileListBinding>() {
+class CloudFileSelectDialog : BaseDialog<DialogCloudFileListBinding>() {
 
   private val curDirList = ArrayList<CloudFileInfo>()
   private lateinit var adapter: Adapter
@@ -60,9 +62,15 @@ class CloudFileListDialog : BaseDialog<DialogCloudFileListBinding>() {
   private val pathStack = Stack<String>()
   private var lastPath: String = ""
 
+  val cloudFileSelectFlow = MutableSharedFlow<CloudFileSelectedEvent>()
+
   @Autowired(name = "storageType")
   @JvmField
   var storageType: StorageType = UNKNOWN
+
+  @Autowired(name = "onlyShowDir")
+  @JvmField
+  var onlyGetDir = false
 
   override fun setLayoutId(): Int {
     return R.layout.dialog_cloud_file_list
@@ -76,7 +84,43 @@ class CloudFileListDialog : BaseDialog<DialogCloudFileListBinding>() {
     binding.list.adapter = adapter
     binding.list.setHasFixedSize(true)
     binding.list.layoutManager = LinearLayoutManager(context)
+    if (onlyGetDir){
+      binding.title.text = ResUtil.getString(R.string.select_save_path)
+    }
 
+    handleItemClick()
+    listenerGetFileList()
+
+    BaseApp.handler.postDelayed({
+      val rootPath = module.getCloudRootPath(storageType)
+      getFileList(rootPath)
+    }, 200)
+    binding.btnSelect.visibility = if (onlyGetDir) View.VISIBLE else View.GONE
+    binding.btnSelect.setOnClickListener {
+      lifecycleScope.launch {
+        val cloudPath =
+          if (storageType == WEBDAV) "${WebDavUtil.getHostUri()}${lastPath}" else lastPath
+        cloudFileSelectFlow.emit(CloudFileSelectedEvent(!onlyGetDir, cloudPath, storageType))
+        dismiss()
+      }
+    }
+  }
+
+  private fun listenerGetFileList() {
+    lifecycleScope.launch {
+      module.fileListFlow.collectLatest { list ->
+        hintLoadView()
+        curDirList.clear()
+        curDirList.add(0, module.upEntry)
+        if (!list.isNullOrEmpty()) {
+          curDirList.addAll(list)
+        }
+        adapter.notifyDataSetChanged()
+      }
+    }
+  }
+
+  private fun handleItemClick() {
     binding.list.doOnItemClickListener { _, position, _ ->
       if (position == 0) {
         if (pathStack.isEmpty()) {
@@ -103,6 +147,7 @@ class CloudFileListDialog : BaseDialog<DialogCloudFileListBinding>() {
         if (storageType == WEBDAV) {
           module.saveWebHistory(cloudPath)
         }
+        cloudFileSelectFlow.emit(CloudFileSelectedEvent(!onlyGetDir, cloudPath, storageType))
         // 选择文件
         EventBus.getDefault()
           .post(
@@ -130,10 +175,6 @@ class CloudFileListDialog : BaseDialog<DialogCloudFileListBinding>() {
     binding.ivClose.setOnClickListener {
       dismiss()
     }
-    BaseApp.handler.postDelayed({
-      val rootPath = module.getCloudRootPath(storageType)
-      getFileList(rootPath)
-    }, 200)
   }
 
   /**
@@ -143,16 +184,7 @@ class CloudFileListDialog : BaseDialog<DialogCloudFileListBinding>() {
     showLoadView()
     val realPath = if (TextUtils.isEmpty(path)) module.getCloudRootPath(storageType) else path
     binding.path.text = realPath
-    module.getFileList(storageType, realPath)
-      .observe(this, Observer { list ->
-        hintLoadView()
-        curDirList.clear()
-        curDirList.add(0, module.upEntry)
-        if (!list.isNullOrEmpty()) {
-          curDirList.addAll(list)
-        }
-        adapter.notifyDataSetChanged()
-      })
+    module.getFileList(storageType, realPath, onlyGetDir)
   }
 
   private fun showLoadView() {

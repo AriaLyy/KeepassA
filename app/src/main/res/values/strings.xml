@@ -356,4 +356,7 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="error_open_db_webdav">Failed to open database, webdav file does not exist</string>
     <string name="helper_webdav_service">Select webdav service</string>
     <string name="error_is_root">Is already the root directory</string>
+    <string name="select_cur_path">Select the folder</string>
+    <string name="hint_cloud_file_already_exist">%1$s已存在，是否覆盖该文件？</string>
+    <string name="select_save_path">Select a save path</string>
 </resources>

@@ -16,9 +16,8 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
       style="@style/KpaDialogLayoutStyle"
-      android:layout_width="match_parent"
+      android:layout_width="@dimen/dialog_min_width"
       android:elevation="4dp"
-      android:minWidth="@dimen/dialog_min_width"
       android:layout_height="wrap_content">
 
 

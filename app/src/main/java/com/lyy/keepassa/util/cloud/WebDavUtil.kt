@@ -37,7 +37,7 @@ object WebDavUtil : ICloudUtil {
   var fileName: String = ""
   private var hostUri: String = ""
   var userName: String = ""
-  var pass: String = ""
+  var password: String = ""
 
   /**
    * 是否登录
@@ -55,7 +55,6 @@ object WebDavUtil : ICloudUtil {
     this.hostUri = if (hostUri.endsWith("/")) hostUri.substring(0, hostUri.length - 1) else hostUri
   }
 
-
   fun getHostUri() = hostUri
 
   /**
@@ -68,7 +67,7 @@ object WebDavUtil : ICloudUtil {
     password: String
   ): Boolean {
     this.userName = userName
-    this.pass = password
+    this.password = password
     setHostUri(uri)
     sardine = OkHttpSardine()
     sardine?.setCredentials(userName, password, true)
@@ -91,7 +90,7 @@ object WebDavUtil : ICloudUtil {
     password: String
   ): OkHttpSardine {
     this.userName = userName
-    this.pass = password
+    this.password = password
     setHostUri(uri)
     sardine = OkHttpSardine()
     sardine?.setCredentials(userName, password, true)
@@ -100,6 +99,7 @@ object WebDavUtil : ICloudUtil {
 
   override suspend fun fileExists(fileKey: String): Boolean {
     sardine ?: return false
+    Timber.d("fileExists, fileKey = $fileKey")
     try {
       return sardine!!.exists(fileKey)
     } catch (e: Exception) {

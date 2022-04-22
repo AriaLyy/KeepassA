@@ -15,7 +15,7 @@
   <integer name="anim_duration_600">600</integer>
   <integer name="anim_duration_long">500</integer>
   <integer name="anim_duration_medium">200</integer>
-  <dimen name="dialog_min_width">360dp</dimen>
+  <dimen name="dialog_min_width">380dp</dimen>
 
   <dimen name="entry_detail_item_h">48dp</dimen>
 

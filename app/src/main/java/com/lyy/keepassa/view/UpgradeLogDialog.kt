@@ -24,12 +24,11 @@ import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.databinding.DialogUpgradeBinding
 import com.lyy.keepassa.router.ActivityRouter
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.view.dialog.DonateDialog
-import com.lyy.keepassa.view.dialog.WebDavLoginDialog
 import com.lyy.keepassa.view.fingerprint.FingerprintActivity
-import com.lyy.keepassa.view.setting.SettingActivity
 import com.lyy.keepassa.widget.DrawableTextView
 import com.lyy.keepassa.widget.toPx
 import com.zzhoujay.richtext.RichText
@@ -142,7 +141,7 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
             }
           }
           "WebDavLoginDialog" -> {
-            WebDavLoginDialog().show()
+            Routerfit.create(DialogRouter::class.java).showWebDavLoginDialog()
             return true
           }
           "SettingActivity" -> {
