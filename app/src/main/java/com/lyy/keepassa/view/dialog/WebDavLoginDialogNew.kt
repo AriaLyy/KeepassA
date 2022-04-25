@@ -62,6 +62,7 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
       R.layout.android_simple_dropdown_item_1line,
       WebDavUtil.SUPPORTED_WEBDAV_URLS
     )
+
     binding.uri.setAdapter(adapter)
     binding.uri.threshold = 10000 // 设置输入几个字符后开始出现提示 默认是2
     binding.uri.setText(WebDavUtil.SUPPORTED_WEBDAV_URLS[0])

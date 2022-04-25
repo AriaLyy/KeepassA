@@ -29,7 +29,8 @@ object WebDavUtil : ICloudUtil {
   val SUPPORTED_WEBDAV_URLS = mutableListOf<String>().apply {
     add("https://dav.jianguoyun.com")
     add("https://dav.box.com")
-    // add("https://dav.dropdav.com") 需要注册：https://app.dropdav.com/users/sign_in
+    add("https://webdav.4shared.com")
+    // add("https://dav.dropdav.com") // 需要注册：https://app.dropdav.com/users/sign_in
     // add("https://webdav.yandex.com") 需要使用sdk, https://yandex.com/dev/id/
     add("other")
   }
@@ -37,6 +38,7 @@ object WebDavUtil : ICloudUtil {
   val REMOVE_PARENT_URLS = mutableListOf<String>().apply {
     add("https://dav.jianguoyun.com")
     add("https://dav.box.com")
+    add("https://webdav.4shared.com")
   }
 
   var sardine: OkHttpSardine? = null
