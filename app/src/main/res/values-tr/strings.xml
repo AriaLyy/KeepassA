@@ -342,4 +342,10 @@
     <string name="current_collection_num">%1$s koleksiyon</string>
     <string name="my_collection">Koleksiyonum</string>
     <string name="no_collection">Koleksiyon yok</string>
+    <string name="error_open_db_webdav">Veri tabanı açılamadı, webdav dosyası yok</string>
+    <string name="hint_cloud_file_already_exist">%1$s zaten var, dosyanın üzerine yazmak istiyor musunuz\?</string>
+    <string name="select_save_path">Kaydetme yolu seç</string>
+    <string name="helper_webdav_service">Webdav hizmeti seç</string>
+    <string name="error_is_root">Zaten kök dizini</string>
+    <string name="select_cur_path">Klasör seç</string>
 </resources>
