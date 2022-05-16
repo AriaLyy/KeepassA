@@ -357,6 +357,7 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="helper_webdav_service">Select webdav service</string>
     <string name="error_is_root">Is already the root directory</string>
     <string name="select_cur_path">Select the folder</string>
-    <string name="hint_cloud_file_already_exist">%1$s已存在，是否覆盖该文件？</string>
+    <string name="hint_cloud_file_already_exist">%1$s already exists, whether to overwrite the file?</string>
     <string name="select_save_path">Select a save path</string>
+    <string name="one_drive_load_user_failure">Failed to load user information</string>
 </resources>

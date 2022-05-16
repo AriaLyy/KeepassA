@@ -13,6 +13,7 @@ import android.net.Uri
 import com.arialyy.frame.base.net.NetManager1
 import com.arialyy.frame.core.AbsFrame
 import com.arialyy.frame.util.FileUtil
+import com.blankj.utilcode.util.ToastUtils
 import com.google.gson.Gson
 import com.lyy.keepassa.BuildConfig
 import com.lyy.keepassa.R
@@ -169,6 +170,7 @@ object OneDriveUtil : ICloudUtil {
 
       override fun onError(exception: MsalException) {
         exception.printStackTrace()
+        ToastUtils.showLong(R.string.one_drive_load_user_failure)
       }
     })
   }
@@ -275,7 +277,7 @@ object OneDriveUtil : ICloudUtil {
     }
     val fileList = arrayListOf<CloudFileInfo>()
 
-    response.value.forEach {
+    response.value?.forEach {
       fileList.add(msalItem2CloudItem(it))
     }
 
