@@ -156,4 +156,5 @@
 \nZalecane jest używanie  plików do jedynie odczytu jako kluczy (bez możliwości edytowania)."</string>
     <string name="error_pass_null">Proszę wprowadzić hasło dla bazy danych</string>
     <string name="error_enter_pass_null">Wprowadź hasło jeszcze raz</string>
+    <string name="history_record">Zapis historii</string>
 </resources>
