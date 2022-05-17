@@ -146,4 +146,7 @@
 \n Tylko Twoje hasło jest potrzebne do otwarcia bazy danych;
 \n Hasło + klucz:
 \n Potrzebujesz wprowadzić hasło i wybrać plik z kluczem by otworzyć bazę danych.</string>
+    <string name="choose_file">Wybierz plik</string>
+    <string name="create_file">Stwórz nowy plik</string>
+    <string name="create_pass_key_file_des">Stwórz nowy plik aby użyć go jako Twój klucz</string>
 </resources>
