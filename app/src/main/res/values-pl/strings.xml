@@ -158,4 +158,5 @@
     <string name="error_enter_pass_null">Wprowadź hasło jeszcze raz</string>
     <string name="history_record">Zapis historii</string>
     <string name="error_pass_unfit">Wprowadzone hasła nie są takie same</string>
+    <string name="error_open_db">Nie udało się otworzyć bazy danych. Czy hasło jest niepoprawne, a może wymagany jest klucz\?</string>
 </resources>
