@@ -133,4 +133,11 @@
     <string name="create_pass_key_success">Stworzenie klucza [%s] powiodło się</string>
     <string name="helper_create_pass">Rekomendujemy mieszane hasło (wielkie i małe litery + cyfry + symbole)</string>
     <string name="password">Hasło</string>
+    <string name="hint_input_password">Wpisz hasło o długości 6-16 znaków</string>
+    <string name="help_create_db">Domyślnie utwórz bazę KeepPass v4</string>
+    <string name="done">Gotowe</string>
+    <string name="cancel">Anuluj</string>
+    <string name="hint">Ostrzeżenie</string>
+    <string name="enter">Gotowe</string>
+    <string name="help_create_group">Wybierz nazwę grupy o długości 16 lub więcej znaków</string>
 </resources>
