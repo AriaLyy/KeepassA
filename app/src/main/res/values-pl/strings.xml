@@ -159,4 +159,9 @@
     <string name="history_record">Zapis historii</string>
     <string name="error_pass_unfit">Wprowadzone hasła nie są takie same</string>
     <string name="error_open_db">Nie udało się otworzyć bazy danych. Czy hasło jest niepoprawne, a może wymagany jest klucz\?</string>
+    <string name="setting">Ustawienie</string>
+    <string name="expire">Wygasł w &lt;font color=#FF0000&gt;%s&lt;/font&gt;</string>
+    <string name="hint_query">Nazwa użytkownika, tytuł, URL, zaawansowane atrybuty …</string>
+    <string name="use_full_fingerprint">Pełne odblokowanie odciskiem palca</string>
+    <string name="hint_del_group_no_recycle">Czy na pewno chcesz usunąć grupę【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】 \?</string>
 </resources>
