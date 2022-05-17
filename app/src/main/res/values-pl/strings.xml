@@ -140,4 +140,10 @@
     <string name="hint">Ostrzeżenie</string>
     <string name="enter">Gotowe</string>
     <string name="help_create_group">Wybierz nazwę grupy o długości 16 lub więcej znaków</string>
+    <string name="help_create_db_path">Zaleca się korzystanie ze ścieżek do chmur takich jak Dropbox i WebDAV. Spowoduje to automatyczną synchronizację Twojej bazy danych do chmury, co ułatwi korzystanie z bazy danych na innych urządzeniach.
+\nBaza danych jest zaszyfrowana za pomocą AES-256. Bez Twojego hasła nikt nie może otworzyć Twojej bazy danych.</string>
+    <string name="help_pass_type">Użyj Tylko hasła:
+\n Tylko Twoje hasło jest potrzebne do otwarcia bazy danych;
+\n Hasło + klucz:
+\n Potrzebujesz wprowadzić hasło i wybrać plik z kluczem by otworzyć bazę danych.</string>
 </resources>
