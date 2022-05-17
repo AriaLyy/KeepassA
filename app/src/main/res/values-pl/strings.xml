@@ -148,11 +148,12 @@
 \n Musisz najpierw wprowadzić hasło i wybrać plik z kluczem aby otworzyć bazę danych.</string>
     <string name="choose_file">Wybierz plik</string>
     <string name="create_file">Stwórz nowy plik</string>
-    <string name="create_pass_key_file_des">Stwórz nowy plik aby użyć go jako Twój klucz</string>
+    <string name="create_pass_key_file_des">Stwórz nowy plik przeznaczony do bycia kluczem</string>
     <string name="choose_pass_key_file_des">Wybierz dowolny plik przeznaczony do bycia kluczem</string>
     <string name="help_pass_key">"Plik-klucz jest tym samym co zwyczajny klucz, tym samym będąc o wiele bardziej złożoną i stabliną formą uwierzytelniania niż hasło. Jest on również o wiele trudniejszy do ukrycia. Jeżeli twoja baza danych jest w chmurze, nie trzymaj w niej również swojego klucza.
 \nMożesz wybrać dowolny plik jako klucz, np. zdjęcie czy plik tekstowy.
 \nUwaga: Jeżeli owy plik zostanie edytowany, nie będziesz w stanie otworzyć nim bazy danych!
 \nZalecane jest używanie  plików do jedynie odczytu jako kluczy (bez możliwości edytowania)."</string>
     <string name="error_pass_null">Proszę wprowadzić hasło dla bazy danych</string>
+    <string name="error_enter_pass_null">Wprowadź hasło jeszcze raz</string>
 </resources>
