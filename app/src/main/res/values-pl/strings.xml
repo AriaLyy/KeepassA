@@ -154,4 +154,5 @@
 \nMożesz wybrać dowolny plik jako klucz, np. zdjęcie czy plik tekstowy.
 \nUwaga: Jeżeli owy plik zostanie edytowany, nie będziesz w stanie otworzyć nim bazy danych!
 \nZalecane jest używanie  plików do jedynie odczytu jako kluczy (bez możliwości edytowania)."</string>
+    <string name="error_pass_null">Proszę wprowadzić hasło dla bazy danych</string>
 </resources>
