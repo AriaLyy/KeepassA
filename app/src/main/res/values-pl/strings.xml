@@ -133,4 +133,30 @@
     <string name="create_pass_key_success">Stworzenie klucza [%s] powiodło się</string>
     <string name="helper_create_pass">Rekomendujemy mieszane hasło (wielkie i małe litery + cyfry + symbole)</string>
     <string name="password">Hasło</string>
+    <string name="hint_input_password">Wpisz hasło o długości 6-16 znaków</string>
+    <string name="help_create_db">Domyślnie utwórz bazę KeepPass v4</string>
+    <string name="done">Gotowe</string>
+    <string name="cancel">Anuluj</string>
+    <string name="hint">Ostrzeżenie</string>
+    <string name="enter">Gotowe</string>
+    <string name="help_create_group">Wybierz nazwę grupy o długości 16 lub więcej znaków</string>
+    <string name="help_create_db_path">Zaleca się korzystanie ze ścieżek do chmur takich jak Dropbox i WebDAV. Spowoduje to automatyczną synchronizację Twojej bazy danych do chmury, co ułatwi korzystanie z bazy danych na innych urządzeniach.
+\nBaza danych jest zaszyfrowana za pomocą AES-256. Bez Twojego hasła nikt nie może otworzyć Twojej bazy danych.</string>
+    <string name="help_pass_type">Samo hasło:
+\n Potrzebujesz jedynie swojego hasła aby otworzyć bazę danych;
+\n Hasło + klucz:
+\n Musisz najpierw wprowadzić hasło i wybrać plik z kluczem aby otworzyć bazę danych.</string>
+    <string name="choose_file">Wybierz plik</string>
+    <string name="create_file">Stwórz nowy plik</string>
+    <string name="create_pass_key_file_des">Stwórz nowy plik przeznaczony do bycia kluczem</string>
+    <string name="choose_pass_key_file_des">Wybierz dowolny plik przeznaczony do bycia kluczem</string>
+    <string name="help_pass_key">Plik-klucz jest tym samym co zwyczajny klucz, tym samym będąc o wiele bardziej złożoną i stabliną formą uwierzytelniania niż hasło. Jest on również o wiele trudniejszy do ukrycia. Jeżeli twoja baza danych jest w chmurze, nie trzymaj w niej również swojego klucza.
+\nMożesz wybrać dowolny plik jako klucz, np. zdjęcie czy plik tekstowy.
+\nUwaga: Jeżeli owy plik zostanie edytowany, nie będziesz w stanie otworzyć nim bazy danych!
+\nZalecane jest używanie plików do jedynie odczytu jako kluczy (bez możliwości edytowania).</string>
+    <string name="error_pass_null">Proszę utworzyć hasło do bazy danych</string>
+    <string name="error_enter_pass_null">Wprowadź hasło jeszcze raz</string>
+    <string name="history_record">Zapis historii</string>
+    <string name="error_pass_unfit">Wprowadzone hasła nie są takie same</string>
+    <string name="error_open_db">Nie udało się otworzyć bazy danych. Czy hasło jest niepoprawne, a może wymagany jest klucz\?</string>
 </resources>
