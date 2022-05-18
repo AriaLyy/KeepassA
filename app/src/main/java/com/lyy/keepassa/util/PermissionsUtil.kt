@@ -14,6 +14,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Process
+import android.provider.Settings
 import com.lyy.keepassa.base.BaseApp
 import timber.log.Timber
 
@@ -43,7 +44,7 @@ object PermissionsUtil {
   /**
    * 启动miui权限打开界面
    */
-  fun miuiStartPermissionsUI(context: Context){
+  fun miuiStartPermissionsUI(context: Context) {
     val xiaomiBackGroundIntent = Intent().apply {
       action = "miui.intent.action.APP_PERM_EDITOR"
       addCategory(Intent.CATEGORY_DEFAULT)
@@ -67,9 +68,14 @@ object PermissionsUtil {
         .query(uri2, null, selection, selectionArgs, null);
       if (cursor != null) {
         return if (cursor.moveToFirst()) {
-          val currentmode = cursor.getInt(cursor.getColumnIndex("currentstate"))
-          cursor.close()
-          currentmode == 0
+          val index = cursor.getColumnIndex("currentstate")
+          if (index == -1) {
+            false
+          } else {
+            val currentmode = cursor.getInt(index)
+            cursor.close()
+            currentmode == 0
+          }
         } else {
           cursor.close()
           false
@@ -79,5 +85,14 @@ object PermissionsUtil {
       Timber.d(throwable)
     }
     return false
+  }
+
+  /**
+   * 检查oppo 是否被允许后台启动
+   *
+   * @return true 允许后台启动
+   */
+  fun oppoBackgroundStartAllowed(): Boolean {
+    return Settings.canDrawOverlays(BaseApp.APP)
   }
 }
