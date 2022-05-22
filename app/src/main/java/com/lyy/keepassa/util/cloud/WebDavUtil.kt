@@ -29,14 +29,17 @@ object WebDavUtil : ICloudUtil {
   val SUPPORTED_WEBDAV_URLS = mutableListOf<String>().apply {
     add("https://dav.jianguoyun.com")
     add("https://dav.box.com")
-    // add("https://dav.dropdav.com") 需要注册：https://app.dropdav.com/users/sign_in
-    // add("https://webdav.yandex.com") 需要使用sdk, https://yandex.com/dev/id/
+    add("https://webdav.4shared.com")
+    // add("https://my.powerfolder.com/webdav") // 只能用他家的client登录？电脑qspase可以
+    // add("https://dav.dropdav.com") // 需要注册：https://app.dropdav.com/users/sign_in
+    // add("https://webdav.yandex.com") 需要使用sdk, htts://yandex.com/dev/id/
     add("other")
   }
 
   val REMOVE_PARENT_URLS = mutableListOf<String>().apply {
     add("https://dav.jianguoyun.com")
     add("https://dav.box.com")
+    add("https://webdav.4shared.com")
   }
 
   var sardine: OkHttpSardine? = null

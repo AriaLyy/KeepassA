@@ -348,4 +348,6 @@
     <string name="helper_webdav_service">Webdav hizmeti seç</string>
     <string name="error_is_root">Zaten kök dizini</string>
     <string name="select_cur_path">Klasör seç</string>
+    <string name="one_drive_load_user_failure">Kullanıcı bilgileri yüklenemedi</string>
+    <string name="hint_open_background_start">Lütfen arka plan çıkarma iznini açın, aksi takdirde otomatik doldurmayı kullanamazsınız</string>
 </resources>

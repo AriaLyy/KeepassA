@@ -188,7 +188,7 @@ class CloudFileSelectDialog : BaseDialog<DialogCloudFileListBinding>() {
   }
 
   private fun showLoadView() {
-    binding.list.visibility = View.GONE
+    binding.list.visibility = View.INVISIBLE
     binding.anim.visibility = View.VISIBLE
     binding.path.visibility = View.GONE
   }

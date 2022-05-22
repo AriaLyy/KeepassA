@@ -354,4 +354,6 @@
     <string name="select_cur_path">选择当前文件夹</string>
     <string name="hint_cloud_file_already_exist">%1$s已存在，是否覆盖该文件？</string>
     <string name="select_save_path">选择保存路径</string>
+    <string name="one_drive_load_user_failure">加载用户信息失败</string>
+    <string name="hint_open_background_start">请打开后台弹出权限，否则无法使用自动填充功能</string>
 </resources>
