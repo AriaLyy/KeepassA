@@ -13,6 +13,8 @@ import android.net.Uri
 import com.arialyy.frame.base.net.NetManager1
 import com.arialyy.frame.core.AbsFrame
 import com.arialyy.frame.util.FileUtil
+import com.blankj.utilcode.util.EncodeUtils
+import com.blankj.utilcode.util.EncryptUtils
 import com.google.gson.Gson
 import com.lyy.keepassa.BuildConfig
 import com.lyy.keepassa.R
@@ -23,6 +25,7 @@ import com.lyy.keepassa.ondrive.MsalSourceItem
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.getBytes
 import com.microsoft.identity.client.AuthenticationCallback
 import com.microsoft.identity.client.IAccount
 import com.microsoft.identity.client.IAuthenticationResult
@@ -44,6 +47,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import org.joda.time.format.DateTimeFormat
 import timber.log.Timber
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
 import java.nio.charset.Charset
@@ -283,10 +287,21 @@ object OneDriveUtil : ICloudUtil {
   }
 
   override suspend fun checkContentHash(
-    cloudFileHash: String,
+    cloudFileHash: String?,
     localFileUri: Uri
   ): Boolean {
-    return false
+    if (cloudFileHash == null){
+      return false
+    }
+    Timber.d("localFileUri = $localFileUri")
+    val bytes = localFileUri.getBytes()
+    if (bytes == null){
+      Timber.e("localFileUri get bytes null")
+      return false
+    }
+    val localHash = EncryptUtils.encryptSHA256ToString(bytes)
+    Timber.d("cloudFileHash = $cloudFileHash，localHash = $localHash")
+    return  localHash == cloudFileHash
   }
 
   override suspend fun getFileInfo(fileKey: String): CloudFileInfo? {

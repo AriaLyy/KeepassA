@@ -144,9 +144,12 @@ object DropboxUtil : ICloudUtil {
    *
    */
   override suspend fun checkContentHash(
-    cloudFileHash: String,
+    cloudFileHash: String?,
     localFileUri: Uri
   ): Boolean {
+    if (cloudFileHash == null){
+      return false
+    }
     val hasher = DropboxContentHasher()
     val buf = ByteArray(1024)
     val ips = UriUtil.getUriInputStream(BaseApp.APP, localFileUri)

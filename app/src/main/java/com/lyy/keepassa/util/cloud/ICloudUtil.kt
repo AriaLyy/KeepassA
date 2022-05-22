@@ -44,7 +44,7 @@ interface ICloudUtil {
    * @return true 两端文件一致
    */
   suspend fun checkContentHash(
-    cloudFileHash: String,
+    cloudFileHash: String?,
     localFileUri: Uri
   ): Boolean
 

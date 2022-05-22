@@ -9,13 +9,31 @@
 
 package com.lyy.keepassa.util
 
+import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.fragment.app.Fragment
+import com.keepassdroid.utils.UriUtil
+import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.view.StorageType
 import com.lyy.keepassa.view.StorageType.AFS
+import timber.log.Timber
+import java.io.InputStream
 import java.io.Serializable
+
+fun Uri.getBytes(): ByteArray? {
+  var ips: InputStream? = null
+  return try {
+    ips = UriUtil.getUriInputStream(BaseApp.APP, this)
+    ips.readBytes()
+  } catch (e: Exception) {
+    Timber.d(e)
+    null
+  } finally {
+    ips?.close()
+  }
+}
 
 fun <T> Fragment.putArgument(
   key: String,
@@ -27,27 +45,27 @@ fun <T> Fragment.putArgument(
 
   when (value) {
     is Int -> this.requireArguments()
-        .putInt(key, value)
+      .putInt(key, value)
     is Boolean -> this.requireArguments()
-        .putBoolean(key, value)
+      .putBoolean(key, value)
     is String -> this.requireArguments()
-        .putString(key, value)
+      .putString(key, value)
     is CharSequence -> this.requireArguments()
-        .putCharSequence(key, value)
+      .putCharSequence(key, value)
     is Float -> this.requireArguments()
-        .putFloat(key, value)
+      .putFloat(key, value)
     is Long -> this.requireArguments()
-        .putLong(key, value)
+      .putLong(key, value)
     is Bundle -> this.requireArguments()
-        .putBundle(key, value)
+      .putBundle(key, value)
     is Serializable -> this.requireArguments()
-        .putSerializable(key, value)
+      .putSerializable(key, value)
     is Parcelable -> this.requireArguments()
-        .putParcelable(key, value)
+      .putParcelable(key, value)
     is Char -> this.requireArguments()
-        .putChar(key, value)
+      .putChar(key, value)
     is Byte -> this.requireArguments()
-        .putByte(key, value)
+      .putByte(key, value)
     else -> error("不支持的类型, $value")
   }
 }

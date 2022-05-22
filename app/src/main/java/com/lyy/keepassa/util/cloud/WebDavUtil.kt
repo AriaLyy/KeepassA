@@ -151,7 +151,7 @@ object WebDavUtil : ICloudUtil {
    * 不支持比对
    */
   override suspend fun checkContentHash(
-    cloudFileHash: String,
+    cloudFileHash: String?,
     localFileUri: Uri
   ): Boolean {
     return false

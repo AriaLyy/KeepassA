@@ -268,11 +268,15 @@ class KdbOpenService : IProvider {
             }
             val cacheFile = record.getDbUri()
               .toFile()
+            val cloudFileInfo = OneDriveUtil.getFileInfo(record.cloudDiskPath!!)
             if (cacheFile.exists()
-              && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
+              && cloudFileInfo !=null
+              && OneDriveUtil.checkContentHash(cloudFileInfo.contentHash, record.getDbUri())
             ) {
-              Timber.i("文件存在，并且云端文件时间和本地保存的时间一致，不会重新从云端下载数据库")
+              Timber.i("文件存在，并且hash一致，将使用本地数据库")
               db = openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
+              channel.send(db)
+              return@launch
             }
             val cachePath = DbSynUtil.downloadOnly(context, record, Uri.fromFile(cacheFile))
             db = if (TextUtils.isEmpty(cachePath)) {

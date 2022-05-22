@@ -38,7 +38,6 @@ import com.lyy.keepassa.databinding.ActivityAutoFillEntrySearchBinding
 import com.lyy.keepassa.event.EntryState.CREATE
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.service.autofill.W3cHints
-import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
@@ -146,7 +145,6 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
-    EventBusHelper.reg(this)
     module = ViewModelProvider(this).get(SearchModule::class.java)
     apkPkgName = intent.getStringExtra(KEY_PKG_NAME)
     isFromFill = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL, false)
@@ -358,8 +356,4 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
     setResult(Activity.RESULT_CANCELED)
   }
 
-  override fun onDestroy() {
-    super.onDestroy()
-    EventBusHelper.unReg(this)
-  }
 }
