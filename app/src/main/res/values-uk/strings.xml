@@ -1,2 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="open">Розблокувати</string>
+    <string name="hint_set_password">Указати пароль</string>
+    <string name="hint_input_password">Введіть пароль від 6 до 16 цифр</string>
+    <string name="hint_enter_password">Підтвердити пароль</string>
+    <string name="help_create_db">Усталено створюється база даних KeepPass v4</string>
+    <string name="help_create_group">Виберіть назву групи з 16 або менше символів</string>
+    <string name="encrypt_type">Шифрування</string>
+    <string name="encrypt_type_1">Лише пароль</string>
+    <string name="encrypt_type_2">Пароль + ключ</string>
+    <string name="pass_key">Файл ключа</string>
+    <string name="helper_create_pass">Рекомендується змішаний пароль (великі та малі букви + цифри + символи)</string>
+    <string name="open_db">Відкрити базу даних</string>
+    <string name="db_name">Введіть назву бази даних</string>
+    <string name="hint_select_path_type">Виберіть місце збереження бази даних</string>
+    <string name="error_db_name_null">Введіть назву бази даних</string>
+    <string name="done">Готово</string>
+    <string name="enter">Готово</string>
+    <string name="cancel">Скасувати</string>
+    <string name="hint">Підказка</string>
+    <string name="db">База даних</string>
+    <string name="db1">база даних\t|\t&lt;font color=#757575&gt;%s&lt;/font&gt;</string>
+    <string name="password">Пароль</string>
+    <string name="key">Таємний ключ</string>
+    <string name="key1">Таємний ключ: %s</string>
+    <string name="choose_pass_key">Вибрати ключ</string>
+    <string name="next">Наступний крок</string>
+    <string name="hint_set_pass_key">Виберіть ключ</string>
+    <string name="create_db">Створення бази даних</string>
+    <string name="hint_select_db_path">Клацніть, щоб установити метод збереження даних</string>
+    <string name="up">Попередній</string>
+</resources>
