@@ -344,4 +344,5 @@
     <string name="error_is_root">Est déjà dans le dossier racine</string>
     <string name="select_cur_path">Sélectionner un dossier</string>
     <string name="select_save_path">Sélectionner l\'emplacement d\'enregistrement</string>
+    <string name="one_drive_load_user_failure">Échec le chargement des infos de l\'utilisateur</string>
 </resources>
