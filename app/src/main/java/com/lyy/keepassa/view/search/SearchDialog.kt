@@ -27,6 +27,7 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.R.color
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogSearchBinding
+import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.doOnItemClickListener
 import kotlinx.coroutines.flow.collectLatest
@@ -39,6 +40,7 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
 
   private lateinit var module: SearchModule
   private lateinit var adapter: SearchAdapter
+  private val listData = mutableListOf<SimpleItemEntity>()
 
   init {
     setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialog)
@@ -66,7 +68,7 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
     initList()
     initSearchWidget()
     listenerGetSearchData()
-    getRecordData()
+    module.getSearchRecord()
   }
 
   private fun initSearchWidget() {
@@ -103,9 +105,11 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
   private fun listenerGetSearchData() {
     lifecycleScope.launch {
       module.searchDataFlow.collectLatest { list ->
+        listData.clear()
         if (!list.isNullOrEmpty()) {
-          adapter.notifyDataSetChanged()
+          listData.addAll(list)
         }
+        adapter.notifyDataSetChanged()
       }
     }
   }
@@ -115,32 +119,29 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
    */
   private fun searchData(query: String) {
     if (query.isEmpty()) {
-      getRecordData()
+      module.getSearchRecord()
       return
     }
     module.searchEntry(query)
   }
 
-  private fun getRecordData() {
-    module.getSearchRecord()
-  }
 
   /**
    * 初始化列表
    */
   private fun initList() {
-    adapter = SearchAdapter(requireContext(), module.listData) { v ->
+    adapter = SearchAdapter(requireContext(), listData) { v ->
       val position = v.tag as Int
-      val item = module.listData[position]
+      val item = listData[position]
       module.delHistoryRecord(item.title.toString()) {
-        module.listData.remove(item)
+        listData.remove(item)
         adapter.notifyItemRemoved(position)
       }
     }
     binding.list.layoutManager = LinearLayoutManager(context)
     binding.list.adapter = adapter
     binding.list.doOnItemClickListener { _, position, _ ->
-      val item = module.listData[position]
+      val item = listData[position]
       if (item.type == SearchAdapter.ITEM_TYPE_RECORD) {
         // 处理历史记录，直接使用该历史搜索数据，输入框设置该历史记录
         binding.search.setQuery(item.title, true)
