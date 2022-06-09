@@ -195,7 +195,7 @@
     <string name="set_key_praise_value">Rate KeePassA</string>
     <string name="other_set">Other settings</string>
     <string name="open_quick_unlock">Quick Unlock</string>
-    <string name="quick_pass_type_summary">""</string>
+    <string name="quick_pass_type_summary">résumé du type de passe rapide</string>
     <string name="clean_clip_time">Empty Clipboard</string>
     <string name="clean_clip_time_summary">After copying password, empty clipboard after %s</string>
     <string name="auto_lock_db_time">Auto-lock the database</string>
