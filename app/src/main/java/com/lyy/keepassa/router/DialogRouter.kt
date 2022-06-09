@@ -27,6 +27,12 @@ import com.lyy.keepassa.view.dialog.WebDavLoginDialogNew
  **/
 interface DialogRouter {
 
+  @RouterPath(path = "/dialog/imgViewer")
+  @DialogArg(showDialog = true)
+  fun showImgViewerDialog(
+    @RouterArgName(name = "imgByteArray") imgByteArray: ByteArray
+  )
+
   @RouterPath(path = "/dialog/cloudFileList")
   fun getCloudFileListDialog(
     @RouterArgName(name = "storageType") storageType: StorageType,

@@ -69,7 +69,7 @@ class KpaSdkService : IProvider {
     scope.launch(Dispatchers.IO) {
       initBugly(context)
       RichText.initCacheDir(context)
-      EventBus.builder().addIndex(KpaEventBusIndex()).installDefaultEventBus()
+//      EventBus.builder().addIndex(KpaEventBusIndex()).installDefaultEventBus()
       listenerAppBackground()
     }
   }

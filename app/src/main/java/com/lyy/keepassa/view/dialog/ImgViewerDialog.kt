@@ -11,6 +11,9 @@ package com.lyy.keepassa.view.dialog
 
 import android.graphics.BitmapFactory
 import androidx.fragment.app.DialogFragment
+import com.alibaba.android.arouter.facade.annotation.Autowired
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
@@ -19,12 +22,14 @@ import com.lyy.keepassa.databinding.DialogImgViewerBinding
 /**
  * 图片浏览对话框
  */
-class ImgViewerDialog(
-  val byteArray: ByteArray
-) : BaseDialog<DialogImgViewerBinding>() {
+@Route(path = "/dialog/imgViewer")
+class ImgViewerDialog() : BaseDialog<DialogImgViewerBinding>() {
   init {
     setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialog)
   }
+
+  @Autowired(name = "imgByteArray")
+  lateinit var imgByteArray: ByteArray
 
   override fun setLayoutId(): Int {
     return R.layout.dialog_img_viewer
@@ -32,8 +37,10 @@ class ImgViewerDialog(
 
   override fun initData() {
     super.initData()
+    ARouter.getInstance().inject(this)
+    binding.dialog = this
     binding.imageView.setImage(
-        ImageSource.bitmap(BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size))
+      ImageSource.bitmap(BitmapFactory.decodeByteArray(imgByteArray, 0, imgByteArray.size))
     )
   }
 
