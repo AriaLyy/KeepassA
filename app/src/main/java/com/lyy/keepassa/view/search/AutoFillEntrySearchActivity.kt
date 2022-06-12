@@ -9,6 +9,7 @@
 
 package com.lyy.keepassa.view.search
 
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
 import android.app.ActivityOptions
@@ -24,40 +25,38 @@ import android.view.View
 import android.view.autofill.AutofillManager
 import android.widget.Button
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arialyy.frame.router.Routerfit
-import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.databinding.ActivityAutoFillEntrySearchBinding
-import com.lyy.keepassa.entity.SimpleItemEntity
-import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
+import com.lyy.keepassa.event.EntryState.CREATE
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.service.autofill.W3cHints
-import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
+import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.view.create.CreateEntryActivity
-import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode.MAIN
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /**
  * 自动填充条目找不到时的选择页面
  */
+@SuppressLint("NotifyDataSetChanged")
 class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBinding>() {
 
   private lateinit var module: SearchModule
   private lateinit var adapter: SearchAdapter
-  private val listData: ArrayList<SimpleItemEntity> = ArrayList()
-  private lateinit var loadingDialog: LoadingDialog
   private var curEntry: PwEntry? = null
 
   companion object {
@@ -146,7 +145,6 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
-    EventBusHelper.reg(this)
     module = ViewModelProvider(this).get(SearchModule::class.java)
     apkPkgName = intent.getStringExtra(KEY_PKG_NAME)
     isFromFill = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL, false)
@@ -174,7 +172,6 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
         }
         return true
       }
-
     })
 
     binding.exFab.setOnClickListener {
@@ -188,6 +185,46 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
     }
 
     initList()
+    listenerGetSearchData()
+    listenerEntryStateChange()
+  }
+
+  /**
+   * listener the entry status change, there are three states: create, delete, and modify.
+   */
+  private fun listenerEntryStateChange() {
+    lifecycleScope.launch {
+      KpaUtil.kdbHandlerService.entryStateChangeFlow.collectLatest {
+        if (it.pwEntryV4 == null) {
+          return@collectLatest
+        }
+        when (it.state) {
+          CREATE -> {
+            val lastIndex = module.listData.size
+            module.listData.add(KeepassAUtil.instance.convertPwEntry2Item(it.pwEntryV4))
+            adapter.notifyItemInserted(lastIndex)
+            binding.noEntryLayout.visibility = View.GONE
+          }
+          else -> {
+            Timber.d("ignore other status")
+          }
+        }
+      }
+    }
+  }
+
+  private fun listenerGetSearchData() {
+    lifecycleScope.launch {
+      module.searchDataFlow.collectLatest { list ->
+        if (list != null) {
+          binding.noEntryLayout.visibility = View.GONE
+          adapter.notifyDataSetChanged()
+          return@collectLatest
+        }
+        adapter.notifyDataSetChanged()
+        binding.noEntryLayout.visibility = View.VISIBLE
+      }
+    }
   }
 
   /**
@@ -195,87 +232,69 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
    */
   private fun searchData(query: String) {
     if (query.isEmpty()) {
-      listData.clear()
+      module.listData.clear()
       adapter.notifyDataSetChanged()
       binding.noEntryLayout.visibility = View.VISIBLE
       return
     }
     module.searchEntry(query, isFromFill)
-      .observe(this, Observer { list ->
-        if (list != null) {
-          binding.noEntryLayout.visibility = View.GONE
-          listData.clear()
-          listData.addAll(list)
-          adapter.notifyDataSetChanged()
-          return@Observer
-        }
-        listData.clear()
-        adapter.notifyDataSetChanged()
-        binding.noEntryLayout.visibility = View.VISIBLE
-      })
-
   }
 
   /**
    * 初始化列表
    */
   private fun initList() {
-    adapter =
-      SearchAdapter(this, listData) { v ->
-        val position = v.tag as Int
-        val item = listData[position]
-        module.delHistoryRecord(item.title.toString())
-          .observe(this, Observer {
-            listData.remove(item)
-            adapter.notifyDataSetChanged()
-          })
-
+    adapter = SearchAdapter(this, module.listData) { v ->
+      val position = v.tag as Int
+      val item = module.listData[position]
+      module.delHistoryRecord(item.title.toString()) {
+        module.listData.remove(item)
+        adapter.notifyItemRemoved(position)
       }
+    }
     binding.list.layoutManager = LinearLayoutManager(this)
     binding.list.adapter = adapter
-    RvItemClickSupport.addTo(binding.list)
-      .setOnItemClickListener { _, position, _ ->
-        if (apkPkgName.isNullOrEmpty()) {
-          return@setOnItemClickListener
-        }
-        val item = listData[position]
-        /*
-          if is From autofill and that is group, No operation
-         */
-        if (isFromFill && item.obj is PwGroup) {
-          return@setOnItemClickListener
-        }
-        val entry = item.obj as PwEntry
-        // if is from browser, that entry will be ignore
-        if (W3cHints.isBrowser(apkPkgName!!)) {
-          callbackAutoFillService(false, entry)
-          return@setOnItemClickListener
-        }
 
-        val msg = Html.fromHtml(getString(R.string.hint_save_auto_fill, apkPkgName, entry.title))
-        Routerfit.create(DialogRouter::class.java).toMsgDialog(
-          msgContent = msg,
-          btnClickListener = object : OnMsgBtClickListener {
-            override fun onCover(v: Button) {
-            }
+    binding.list.doOnItemClickListener { _, position, _ ->
+      if (apkPkgName.isNullOrEmpty()) {
+        return@doOnItemClickListener
+      }
+      val item = module.listData[position]
+      /*
+        if is From autofill and that is group, No operation
+       */
+      if (isFromFill && item.obj is PwGroup) {
+        return@doOnItemClickListener
+      }
+      val entry = item.obj as PwEntry
+      // if is from browser, that entry will be ignore
+      if (W3cHints.isBrowser(apkPkgName!!)) {
+        callbackAutoFillService(false, entry)
+        return@doOnItemClickListener
+      }
 
-            override fun onEnter(v: Button) {
-              if (entry is PwEntryV4) {
-                // 保存记录
-                relevanceEntry(entry)
-              } else {
-                callbackAutoFillService(false, entry)
-              }
-            }
+      val msg = Html.fromHtml(getString(R.string.hint_save_auto_fill, apkPkgName, entry.title))
+      Routerfit.create(DialogRouter::class.java).showMsgDialog(
+        msgContent = msg,
+        btnClickListener = object : OnMsgBtClickListener {
+          override fun onCover(v: Button) {
+          }
 
-            override fun onCancel(v: Button) {
+          override fun onEnter(v: Button) {
+            if (entry is PwEntryV4) {
+              // 保存记录
+              relevanceEntry(entry)
+            } else {
               callbackAutoFillService(false, entry)
             }
-
           }
-        )
-          .show()
-      }
+
+          override fun onCancel(v: Button) {
+            callbackAutoFillService(false, entry)
+          }
+        }
+      )
+    }
   }
 
   /**
@@ -283,19 +302,14 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
    */
   private fun relevanceEntry(pwEntry: PwEntryV4) {
     curEntry = pwEntry
-    loadingDialog = LoadingDialog(this)
-    loadingDialog.show()
 
-    module.relevanceEntry(pwEntry, apkPkgName!!)
-      .observe(this, Observer { code ->
-        loadingDialog.dismiss()
-        if (code != DbSynUtil.STATE_SUCCEED) {
-          HitUtil.toaskShort("${getString(R.string.relevance_db)}${getString(R.string.fail)}")
-        }
-        HitUtil.toaskShort("${getString(R.string.relevance_db)}${getString(R.string.success)}")
-        callbackAutoFillService(false, pwEntry)
-      })
-
+    module.relevanceEntry(pwEntry, apkPkgName!!) {
+      if (it != DbSynUtil.STATE_SUCCEED) {
+        HitUtil.toaskShort("${getString(R.string.relevance_db)}${getString(R.string.fail)}")
+      }
+      HitUtil.toaskShort("${getString(R.string.relevance_db)}${getString(R.string.success)}")
+      callbackAutoFillService(false, pwEntry)
+    }
   }
 
   /**
@@ -340,21 +354,6 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
   override fun onBackPressed() {
     super.onBackPressed()
     setResult(Activity.RESULT_CANCELED)
-  }
-
-  @Subscribe(threadMode = MAIN)
-  fun onCreateEntry(event: CreateOrUpdateEntryEvent) {
-    if (!event.isUpdate) {
-      listData.clear()
-      listData.add(KeepassAUtil.instance.convertPwEntry2Item(event.entry))
-      adapter.notifyDataSetChanged()
-      binding.noEntryLayout.visibility = View.GONE
-    }
-  }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    EventBusHelper.unReg(this)
   }
 
 }

@@ -15,7 +15,6 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.widget.RelativeLayout
 import android.widget.TextView
-import com.arialyy.frame.util.StringUtil
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.widget.ProgressBar.RoundProgressBarWidthNumber

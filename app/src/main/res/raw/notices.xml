@@ -18,6 +18,20 @@
 <notices>
 
     <notice>
+        <name>zxing-android-embedded</name>
+        <url>https://github.com/journeyapps/zxing-android-embedded</url>
+        <copyright>Copyright (C) 2012-201 ZXing authors, Journey Mobile</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>Zxing</name>
+        <url>https://github.com/zxing/zxing</url>
+        <copyright/>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
         <name>AndroidUtilCode</name>
         <url>https://github.com/Blankj/AndroidUtilCode</url>
         <copyright/>

@@ -16,15 +16,16 @@ class DbSyncCheckInterceptor : IDbSyncInterceptor {
     if (BaseApp.isAFS()) {
       return normal(DbSynUtil.STATE_SUCCEED, "AFS 不需要上传")
     }
-    val nextInterceptor = request.nextInterceptor() ?: throw IllegalArgumentException("没有上传一个拦截器")
-
+    val nextInterceptor = request.nextInterceptor() ?: throw IllegalArgumentException("没有上传拦截器")
     val util = request.syncUtil
     val record = request.record
+
     val cloudFileInfo = util.getFileInfo(record.cloudDiskPath!!)
     Timber.i("获取文件信息成功：${cloudFileInfo.toString()}")
     if (cloudFileInfo == null) {
       Timber.i("云端文件不存在，开始上传文件")
-      return nextInterceptor.intercept(
+      val uploadInterceptor = request.interceptors[request.index + 2]
+      return uploadInterceptor.intercept(
         DbSyncRequest(
           record = record,
           syncUtil = util,
@@ -33,6 +34,12 @@ class DbSyncCheckInterceptor : IDbSyncInterceptor {
         )
       )
     }
+
+    // val st = util.getFileServiceModifyTime(record.cloudDiskPath!!)
+    // if (st == DbSynUtil.serviceModifyTime) {
+    //   return normal(DbSynUtil.STATE_SUCCEED, "云端文件和本地文件的修改时间一致，忽略该上传")
+    // }
+
     if (cloudFileInfo.contentHash != null
       && util.checkContentHash(cloudFileInfo.contentHash, record.getDbUri())
     ) {

@@ -27,24 +27,14 @@ import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
-import com.lyy.keepassa.event.DelEvent
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.ClipboardUtil
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
-import com.lyy.keepassa.util.OtpUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
-import com.lyy.keepassa.util.cloud.DbSynUtil
-import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.dir.ChooseGroupActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.greenrobot.eventbus.EventBus
-import timber.log.Timber
 
 /**
  * 群组长按菜单
@@ -60,8 +50,6 @@ class EntryPopMenu(
 ) : IPopMenu {
   private val popup: PopupMenu = PopupMenu(context, view, Gravity.START)
   private val help: MenuPopupHelper
-  private lateinit var loadDialog: LoadingDialog
-  private val scope = MainScope()
 
   init {
     val inflater: MenuInflater = popup.menuInflater
@@ -102,17 +90,7 @@ class EntryPopMenu(
           HitUtil.toaskShort(context.getString(R.string.hint_copy_pass))
         }
         R.id.copy_totp -> {
-          val totpPass = OtpUtil.getOtpPass(entry as PwEntryV4)
-          if (totpPass.second == null) {
-            HitUtil.toaskShort(
-              "${context.getString(R.string.create_totp)}${context.getString(R.string.fail)}"
-            )
-          } else {
-            Timber.d("totp = ${totpPass.second}")
-            ClipboardUtil.get()
-              .copyDataToClip(totpPass.second!!)
-            HitUtil.toaskShort(context.getString(R.string.hint_copy_totp))
-          }
+          Routerfit.create(DialogRouter::class.java).showTotpDisplayDialog(entry.uuid.toString())
         }
         R.id.undo, R.id.move -> {
           ChooseGroupActivity.moveEntry(context, entry.uuid)
@@ -133,8 +111,6 @@ class EntryPopMenu(
       .getBoolean(context.getString(R.string.set_key_delete_no_recycle_bin), false)
 
     if (deleteDirectly) {
-      loadDialog = LoadingDialog(context)
-      loadDialog.show()
       handleDelEntry()
       return
     }
@@ -149,7 +125,7 @@ class EntryPopMenu(
       Html.fromHtml(context.getString(R.string.hint_del_entry_no_recycle, entry.title))
     }
 
-    Routerfit.create(DialogRouter::class.java).toMsgDialog(
+    Routerfit.create(DialogRouter::class.java).showMsgDialog(
       msgTitle = ResUtil.getString(R.string.del_entry),
       msgContent = msg,
       btnClickListener = object : OnMsgBtClickListener {
@@ -157,58 +133,24 @@ class EntryPopMenu(
         }
 
         override fun onEnter(v: Button) {
-          loadDialog = LoadingDialog(context)
-          loadDialog.show()
           handleDelEntry()
         }
 
         override fun onCancel(v: Button) {
         }
-
       }
     )
-      .show()
   }
 
   /**
    * 处理删除条目
    */
   private fun handleDelEntry() {
-    scope.launch {
-      val code = withContext(Dispatchers.IO) {
-        try {
-          if (BaseApp.isV4) {
-            val v4Entry = entry as PwEntryV4
-            if (BaseApp.KDB!!.pm.canRecycle(v4Entry)) {
-              BaseApp.KDB!!.pm.recycle(v4Entry)
-            } else {
-              KdbUtil.deleteEntry(entry, false, needUpload = false)
-            }
-          } else {
-            KdbUtil.deleteEntry(entry, false, needUpload = false)
-          }
-          return@withContext KdbUtil.saveDb()
-        } catch (e: Exception) {
-          e.printStackTrace()
-          HitUtil.toaskOpenDbException(e)
-        }
-        return@withContext DbSynUtil.STATE_SAVE_DB_FAIL
-      }
-
-      EventBus.getDefault()
-        .post(DelEvent(entry))
-
-      if (code == DbSynUtil.STATE_SUCCEED) {
-        HitUtil.toaskShort(
-          "${context.getString(R.string.del_entry)}${context.getString(R.string.success)}"
-        )
-      } else {
-        HitUtil.toaskShort(context.getString(R.string.save_db_fail))
-      }
-
+    KpaUtil.kdbHandlerService.deleteEntry(entry as PwEntryV4) {
+      HitUtil.toaskShort(
+        "${context.getString(R.string.del_entry)}${context.getString(R.string.success)}"
+      )
       VibratorUtil.vibrator(300)
-      loadDialog.dismiss()
-      scope.cancel()
     }
   }
 
@@ -223,5 +165,4 @@ class EntryPopMenu(
   fun getPopMenu(): PopupMenu {
     return popup
   }
-
 }

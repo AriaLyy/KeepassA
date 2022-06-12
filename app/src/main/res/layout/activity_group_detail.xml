@@ -76,11 +76,11 @@
 
     <com.lyy.keepassa.widget.MainExpandFloatActionButton
         android:id="@+id/fab"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         app:layout_behavior="com.lyy.keepassa.widget.MainExpandFloatActionButtonBehavior" />
 

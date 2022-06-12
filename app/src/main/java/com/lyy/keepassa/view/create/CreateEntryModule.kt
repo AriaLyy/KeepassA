@@ -12,11 +12,12 @@ package com.lyy.keepassa.view.create
 import KDBAutoFillRepository
 import android.content.Context
 import android.graphics.Bitmap.CompressFormat.PNG
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.keepassdroid.database.PwDatabaseV4
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
-import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
@@ -29,9 +30,10 @@ import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
-import com.lyy.keepassa.util.cloud.DbSynUtil
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.hasNote
+import com.lyy.keepassa.util.hasTOTP
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.util.Date
@@ -49,7 +51,7 @@ class CreateEntryModule : BaseModule() {
   var loseDate: Date? = null // 失效时间
   var userNameCache = arrayListOf<String>()
   var noteStr: CharSequence = ""
-  var expires:Boolean = false
+  var expires: Boolean = false
 
   /**
    * Traverse database and get all userName
@@ -110,8 +112,8 @@ class CreateEntryModule : BaseModule() {
     entry.setPassword(pass, BaseApp.KDB.pm)
     entry.setUrl(url, BaseApp.KDB.pm)
 
-    if (noteStr.isNotEmpty()){
-      Timber.d( "notes = $noteStr")
+    if (noteStr.isNotEmpty()) {
+      Timber.d("notes = $noteStr")
       entry.setNotes(noteStr.toString(), BaseApp.KDB.pm)
     }
     entry.setExpires(expires)
@@ -184,110 +186,64 @@ class CreateEntryModule : BaseModule() {
    */
   fun createGroup(
     groupName: String,
-    parentGroup: PwGroup,
+    parentGroup: PwGroupV4,
     icon: PwIconStandard,
-    customIcon: PwIconCustom?
-  ) = liveData {
-    val b = withContext(Dispatchers.IO) {
-      try {
-        if (customIcon != null && customIcon != PwIconCustom.ZERO && BaseApp.isV4) {
-          return@withContext KdbUtil.createGroup(
-              groupName, customIcon, parentGroup as PwGroupV4
-          )
-        }
-
-        return@withContext KdbUtil.createGroup(groupName, icon, parentGroup)
-      } catch (e: Exception) {
-        e.printStackTrace()
-        HitUtil.toaskOpenDbException(e)
-      }
-      return@withContext null
-    }
-    if (b != null) {
-      HitUtil.toaskShort(
-          "${BaseApp.APP.getString(R.string.create_group)}${
-            BaseApp.APP.getString(
-                R.string.success
-            )
-          }"
-      )
-    }
-    emit(b)
+    customIcon: PwIconCustom?,
+    callback: (PwGroupV4) -> Unit
+  ) {
+    KpaUtil.kdbHandlerService.createGroup(groupName, icon, customIcon, parentGroup, callback)
   }
 
   /**
    * 添加条目
    * @param pwEntry 需要添加的条目
    */
-  fun addEntry(pwEntry: PwEntry) = liveData {
-    val code = withContext(Dispatchers.IO) {
-      try {
-        return@withContext KdbUtil.addEntry(pwEntry, save = true, uploadDb = true)
-      } catch (e: Exception) {
-        e.printStackTrace()
-        HitUtil.toaskOpenDbException(e)
-      }
-      return@withContext DbSynUtil.STATE_FAIL
-    }
-
-    if (code == DbSynUtil.STATE_SUCCEED) {
+  fun addEntry(ac: FragmentActivity, pwEntry: PwEntryV4) {
+    KpaUtil.kdbHandlerService.addEntry(pwEntry)
+    KpaUtil.kdbHandlerService.saveDbByForeground {
       HitUtil.toaskShort(
-          "${BaseApp.APP.getString(R.string.create_entry)}${
-            BaseApp.APP.getString(
-                R.string.success
-            )
-          }"
+        "${BaseApp.APP.getString(R.string.create_entry)}${
+          BaseApp.APP.getString(
+            R.string.success
+          )
+        }"
       )
+      ac.finishAfterTransition()
     }
-    emit(code == DbSynUtil.STATE_SUCCEED)
   }
 
   /**
    * 保存条目
    */
-  fun saveDb() = liveData {
-    val code = withContext(Dispatchers.IO) {
-      try {
-        return@withContext KdbUtil.saveDb()
-      } catch (e: Exception) {
-        e.printStackTrace()
-        HitUtil.toaskOpenDbException(e)
-      }
-      return@withContext DbSynUtil.STATE_FAIL
+  fun saveDb(callback: (Int) -> Unit) {
+    viewModelScope.launch {
+      KpaUtil.kdbHandlerService.saveOnly(true, callback)
     }
-    emit(code == DbSynUtil.STATE_SUCCEED)
-
   }
 
   /**
    * 构建的更多选择项目
    */
-  fun getMoreItem(context: Context): ArrayList<SimpleItemEntity> {
+  fun getMoreItem(context: Context, entry: PwEntryV4): ArrayList<SimpleItemEntity> {
     val list = ArrayList<SimpleItemEntity>()
-    if (!BaseApp.isV4) {
-      val titles = context.resources.getStringArray(R.array.v3_add_mor_item)
-      val icons = context.resources.obtainTypedArray(R.array.v3_add_more_icon)
-      val len = titles.size - 1
-      for (i in 0..len) {
-        val item = SimpleItemEntity()
-        item.title = titles[i]
-        item.icon = icons.getResourceId(i, 0)
-        list.add(item)
+    val titles = context.resources.getStringArray(R.array.v4_add_mor_item)
+    val icons = context.resources.obtainTypedArray(R.array.v4_add_more_icon)
+    val len = titles.size - 1
+    for (i in 0..len) {
+      val item = SimpleItemEntity()
+      item.title = titles[i]
+      item.icon = icons.getResourceId(i, 0)
+      if (item.icon == R.drawable.ic_token_grey && entry.hasTOTP()) {
+        Timber.d("Already used totp")
+        continue
       }
-      icons.recycle()
-    } else {
-      val titles = context.resources.getStringArray(R.array.v4_add_mor_item)
-      val icons = context.resources.obtainTypedArray(R.array.v4_add_more_icon)
-      val len = titles.size - 1
-      for (i in 0..len) {
-        val item = SimpleItemEntity()
-        item.title = titles[i]
-        item.icon = icons.getResourceId(i, 0)
-        list.add(item)
+      if (item.icon == R.drawable.ic_notice && entry.hasNote()) {
+        Timber.d("Already used note")
+        continue
       }
-      icons.recycle()
+      list.add(item)
     }
+    icons.recycle()
     return list
   }
-
 }

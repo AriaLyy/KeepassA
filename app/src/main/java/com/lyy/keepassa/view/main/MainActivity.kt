@@ -31,7 +31,9 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.core.AbsFrame
 import com.arialyy.frame.router.Routerfit
+import com.arialyy.frame.util.ResUtil
 import com.google.android.material.tabs.TabLayoutMediator
+import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
@@ -40,12 +42,12 @@ import com.lyy.keepassa.event.CheckEnvEvent
 import com.lyy.keepassa.event.ModifyDbNameEvent
 import com.lyy.keepassa.event.ShowTOTPEvent
 import com.lyy.keepassa.router.ActivityRouter
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.create.CreateDbActivity
 import com.lyy.keepassa.view.create.CreateEntryActivity
-import com.lyy.keepassa.view.create.CreateGroupDialog
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.search.SearchDialog
 import com.lyy.keepassa.widget.MainExpandFloatActionButton
@@ -125,11 +127,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       }
 
       override fun onGroupClick() {
-        val dialog = CreateGroupDialog.generate {
-          parentGroup = BaseApp.KDB!!.pm.rootGroup
-          build()
-        }
-        dialog.show(supportFragmentManager, "CreateGroupDialog")
+        Routerfit.create(DialogRouter::class.java).showCreateGroupDialog(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
         binding.fab.hintMoreOperate()
       }
     })
@@ -150,7 +148,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       list.add(it)
     }
     module.checkHasHistoryRecord()
-      .observe(this, { hasHistory ->
+      .observe(this) { hasHistory ->
         binding.vp.adapter = VpAdapter(list, this)
         TabLayoutMediator(binding.tab, binding.vp) { tab, position ->
 //      tab.text = "OBJECT ${(position + 1)}"
@@ -174,10 +172,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         val totpTab = binding.tab.getTabAt(2)
         totpTab?.let {
           it.icon = getDrawable(R.drawable.selector_ic_tab_token)
-          it.text = "TOTP"
+          it.text = ResUtil.getString(R.string.kpa_totp)
         }
 
-      })
+      }
   }
 
   private fun initVpAnim() {

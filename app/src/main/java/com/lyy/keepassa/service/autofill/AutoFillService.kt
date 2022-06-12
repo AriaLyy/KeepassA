@@ -22,14 +22,15 @@ import android.service.autofill.FillRequest
 import android.service.autofill.FillResponse
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
-import androidx.annotation.RequiresApi
-import androidx.preference.PreferenceManager
+import com.blankj.utilcode.util.RomUtils
+import com.blankj.utilcode.util.ToastUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.LanguageUtil
+import com.lyy.keepassa.util.PermissionsUtil
 import com.lyy.keepassa.util.isOpenQuickLock
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
@@ -52,7 +53,6 @@ class AutoFillService : AutofillService() {
     cancellationSignal: CancellationSignal,
     callback: FillCallback
   ) {
-    request.inlineSuggestionsRequest?.hostPackageName
     val isManual = request.flags == FillRequest.FLAG_MANUAL_REQUEST
     val structure = request.fillContexts[request.fillContexts.size - 1].structure
     val apkPackageName = structure.activityComponent.packageName
@@ -60,11 +60,13 @@ class AutoFillService : AutofillService() {
       // 本应用内不进行填充
       return
     }
-    if (!PackageVerifier.isValidPackage(applicationContext, apkPackageName)) {
-      Timber.e("invalid package name：$apkPackageName")
-      return
-    }
-    Timber.d("onFillRequest(): flags = ${request.flags}, requestId = ${request.id}, clientState = ${KLog.b(request.clientState)}")
+    Timber.d(
+      "onFillRequest(): flags = ${request.flags}, requestId = ${request.id}, clientState = ${
+        KLog.b(
+          request.clientState
+        )
+      }"
+    )
     cancellationSignal.setOnCancelListener {
       Timber.w("Cancel autofill not implemented in this sample.")
     }
@@ -80,6 +82,8 @@ class AutoFillService : AutofillService() {
       callback.onSuccess(null)
       return
     }
+
+    checkRom()
 
     // 如果数据库没打开，或者数据库已经锁定，打开登录页面
     if (needAuth) {
@@ -116,6 +120,29 @@ class AutoFillService : AutofillService() {
     callback.onSuccess(response)
   }
 
+  private fun checkRom() {
+    if (RomUtils.isXiaomi()) {
+      if (!PermissionsUtil.miuiCanBackgroundStart()) {
+        ToastUtils.showLong(R.string.hint_open_background_start)
+      }
+      return
+    }
+
+    if (RomUtils.isVivo()) {
+      if (!PermissionsUtil.vivoBackgroundStartAllowed()) {
+        ToastUtils.showLong(R.string.hint_open_background_start)
+      }
+      return
+    }
+
+    if (RomUtils.isOppo()) {
+      if (!PermissionsUtil.vivoBackgroundStartAllowed()) {
+        ToastUtils.showLong(R.string.hint_open_background_start)
+      }
+      return
+    }
+  }
+
   /**
    * 启动搜索界面
    */
@@ -125,10 +152,10 @@ class AutoFillService : AutofillService() {
     apkPackageName: String
   ) {
     callback.onSuccess(
-        getAuthResponse(
-            autofillFields,
-            AutoFillEntrySearchActivity.getSearchIntentSender(this, apkPackageName)
-        )
+      getAuthResponse(
+        autofillFields,
+        AutoFillEntrySearchActivity.getSearchIntentSender(this, apkPackageName)
+      )
     )
   }
 
@@ -141,10 +168,10 @@ class AutoFillService : AutofillService() {
     apkPackageName: String
   ) {
     callback.onSuccess(
-        getAuthResponse(
-            autofillFields,
-            QuickUnlockActivity.getQuickUnlockSenderForResponse(this, apkPackageName)
-        )
+      getAuthResponse(
+        autofillFields,
+        QuickUnlockActivity.getQuickUnlockSenderForResponse(this, apkPackageName)
+      )
     )
   }
 
@@ -157,10 +184,10 @@ class AutoFillService : AutofillService() {
     apkPackageName: String
   ) {
     callback.onSuccess(
-        getAuthResponse(
-            autofillFields,
-            LauncherActivity.getAuthDbIntentSender(this, apkPackageName)
-        )
+      getAuthResponse(
+        autofillFields,
+        LauncherActivity.getAuthDbIntentSender(this, apkPackageName)
+      )
     )
   }
 
@@ -184,12 +211,8 @@ class AutoFillService : AutofillService() {
     val context = request.fillContexts
     val structure = context[context.size - 1].structure
     val apkPackageName = structure.activityComponent.packageName
-    if (!PackageVerifier.isValidPackage(applicationContext, apkPackageName)) {
-      Timber.e("无效的包名：$apkPackageName")
-      return
-    }
     val data = request.clientState
-    Timber.d("onSaveRequest(): data=${KLog.b(data)}" )
+    Timber.d("onSaveRequest(): data=${KLog.b(data)}")
 
     val parser = StructureParser(structure)
     parser.parseForFill(true, apkPackageName)
@@ -202,12 +225,12 @@ class AutoFillService : AutofillService() {
         val p = KDBAutoFillRepository.getUserInfo(parser.autoFillFields)
         Timber.d("用户信息：$p")
         callback.onSuccess(
-            LauncherActivity.getAuthDbIntentSenderBySave(
-                context = this,
-                apkPackageName = apkPackageName,
-                userName = p.first ?: "",
-                pass = p.second ?: ""
-            )
+          LauncherActivity.getAuthDbIntentSenderBySave(
+            context = this,
+            apkPackageName = apkPackageName,
+            userName = p.first ?: "",
+            pass = p.second ?: ""
+          )
         )
         return
       }
@@ -235,5 +258,4 @@ class AutoFillService : AutofillService() {
   override fun attachBaseContext(newBase: Context?) {
     super.attachBaseContext(LanguageUtil.setLanguage(newBase!!, BaseApp.currentLang))
   }
-
 }

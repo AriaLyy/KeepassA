@@ -13,18 +13,20 @@ import android.net.Uri
 import com.arialyy.frame.base.net.NetManager1
 import com.arialyy.frame.core.AbsFrame
 import com.arialyy.frame.util.FileUtil
-import com.arialyy.frame.util.StringUtil
+import com.blankj.utilcode.util.EncodeUtils
+import com.blankj.utilcode.util.EncryptUtils
+import com.blankj.utilcode.util.ToastUtils
 import com.google.gson.Gson
 import com.lyy.keepassa.BuildConfig
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.ondrive.MsalApi
-import com.lyy.keepassa.ondrive.MsalResponse
 import com.lyy.keepassa.ondrive.MsalSourceItem
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.getBytes
 import com.microsoft.identity.client.AuthenticationCallback
 import com.microsoft.identity.client.IAccount
 import com.microsoft.identity.client.IAuthenticationResult
@@ -46,6 +48,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import org.joda.time.format.DateTimeFormat
 import timber.log.Timber
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
 import java.nio.charset.Charset
@@ -55,7 +58,6 @@ import java.util.Date
  * Onedrive util
  */
 object OneDriveUtil : ICloudUtil {
-  val TAG = StringUtil.getClassName(this)
 
   /**
    * 应用根目录
@@ -118,24 +120,24 @@ object OneDriveUtil : ICloudUtil {
    */
   fun initOneDrive(callback: (Boolean) -> Unit) {
     PublicClientApplication.createSingleAccountPublicClientApplication(
-        getContext(),
-        if (BuildConfig.DEBUG) R.raw.auth_config_single_account_debug else R.raw.auth_config_single_account_release,
-        object : ISingleAccountApplicationCreatedListener {
-          override fun onCreated(application: ISingleAccountPublicClientApplication) {
-            /**
-             * This test app assumes that the app is only going to support one account.
-             * This requires "account_mode" : "SINGLE" in the config json file.
-             */
-            oneDriveApp = application
-            Timber.d("初始化成功")
-            callback.invoke(true)
-          }
+      getContext(),
+      if (BuildConfig.DEBUG) R.raw.auth_config_single_account_debug else R.raw.auth_config_single_account_release,
+      object : ISingleAccountApplicationCreatedListener {
+        override fun onCreated(application: ISingleAccountPublicClientApplication) {
+          /**
+           * This test app assumes that the app is only going to support one account.
+           * This requires "account_mode" : "SINGLE" in the config json file.
+           */
+          oneDriveApp = application
+          Timber.d("初始化成功")
+          callback.invoke(true)
+        }
 
-          override fun onError(exception: MsalException) {
-            exception.printStackTrace()
-            callback.invoke(false)
-          }
-        })
+        override fun onError(exception: MsalException) {
+          exception.printStackTrace()
+          callback.invoke(false)
+        }
+      })
   }
 
   /**
@@ -172,9 +174,9 @@ object OneDriveUtil : ICloudUtil {
 
       override fun onError(exception: MsalException) {
         exception.printStackTrace()
+        ToastUtils.showLong(R.string.one_drive_load_user_failure)
       }
     })
-
   }
 
   /**
@@ -182,7 +184,7 @@ object OneDriveUtil : ICloudUtil {
    */
   private fun getTokenByAccountInfo(account: IAccount) {
     oneDriveApp.acquireTokenSilentAsync(getScopes(), account.authority, object :
-        SilentAuthenticationCallback {
+      SilentAuthenticationCallback {
       override fun onSuccess(authenticationResult: IAuthenticationResult?) {
         Timber.d("获取token成功")
         authInfo = authenticationResult
@@ -209,10 +211,8 @@ object OneDriveUtil : ICloudUtil {
             exception.printStackTrace()
             loginCallback?.callback(false)
           }
-
         })
       }
-
     })
   }
 
@@ -237,7 +237,6 @@ object OneDriveUtil : ICloudUtil {
         HitUtil.toaskShort("${getContext().getString(R.string.login)}${getContext().getString(R.string.cancel)}")
         loginCallback?.callback(false)
       }
-
     })
   }
 
@@ -247,14 +246,18 @@ object OneDriveUtil : ICloudUtil {
 
   private fun msalItem2CloudItem(item: MsalSourceItem): CloudFileInfo {
     return CloudFileInfo(
-        fileKey = item.id,
-        fileName = item.name,
-        serviceModifyDate = dateFormat.parseDateTime(item.lastModifiedDateTime)
-            .toDate(),
-        size = item.size,
-        isDir = item.isFolder(),
-        contentHash = if (item.isFolder()) null else item.file?.hashes?.sha256Hash
+      fileKey = item.id,
+      fileName = item.name,
+      serviceModifyDate = dateFormat.parseDateTime(item.lastModifiedDateTime)
+        .toDate(),
+      size = item.size,
+      isDir = item.isFolder(),
+      contentHash = if (item.isFolder()) null else item.file?.hashes?.sha256Hash
     )
+  }
+
+  override suspend fun fileExists(fileKey: String): Boolean {
+    return getFileInfo(fileKey) != null
   }
 
   override fun getRootPath(): String {
@@ -268,17 +271,17 @@ object OneDriveUtil : ICloudUtil {
     Timber.d("获取文件列表，path = $path")
     val response = if (path == "/") {
       netManager.request(MsalApi::class.java)
-          .getAppFolderList(getAuthInfo().accessToken, getUserId())
+        .getAppFolderList(getAuthInfo().accessToken, getUserId())
     } else {
       netManager.request(MsalApi::class.java)
-          .getFolderListById(getAuthInfo().accessToken, getUserId(), path)
+        .getFolderListById(getAuthInfo().accessToken, getUserId(), path)
     }
     if (response.value == null) {
       return null
     }
     val fileList = arrayListOf<CloudFileInfo>()
 
-    response.value.forEach {
+    response.value?.forEach {
       fileList.add(msalItem2CloudItem(it))
     }
 
@@ -286,10 +289,21 @@ object OneDriveUtil : ICloudUtil {
   }
 
   override suspend fun checkContentHash(
-    cloudFileHash: String,
+    cloudFileHash: String?,
     localFileUri: Uri
   ): Boolean {
-    return false
+    if (cloudFileHash == null){
+      return false
+    }
+    Timber.d("localFileUri = $localFileUri")
+    val bytes = localFileUri.getBytes()
+    if (bytes == null){
+      Timber.e("localFileUri get bytes null")
+      return false
+    }
+    val localHash = EncryptUtils.encryptSHA256ToString(bytes)
+    Timber.d("cloudFileHash = $cloudFileHash，localHash = $localHash")
+    return  localHash == cloudFileHash
   }
 
   override suspend fun getFileInfo(fileKey: String): CloudFileInfo? {
@@ -299,14 +313,14 @@ object OneDriveUtil : ICloudUtil {
     try {
       val response: MsalSourceItem? = if (fileKey.startsWith("/")) {
         netManager.request(MsalApi::class.java)
-            .getFileInfoByPath(
-                getAuthInfo().accessToken,
-                userId,
-                fileKey.substring(1, fileKey.length)
-            )
+          .getFileInfoByPath(
+            getAuthInfo().accessToken,
+            userId,
+            fileKey.substring(1, fileKey.length)
+          )
       } else {
         netManager.request(MsalApi::class.java)
-            .getFileInfoById(getAuthInfo().accessToken, userId, fileKey)
+          .getFileInfoById(getAuthInfo().accessToken, userId, fileKey)
       }
       if (response == null) {
         Timber.e("获取文件信息失败")
@@ -325,7 +339,7 @@ object OneDriveUtil : ICloudUtil {
   override suspend fun delFile(fileKey: String): Boolean {
     Timber.d("删除文件，fileKey = $fileKey")
     val response = netManager.request(MsalApi::class.java)
-        .deleteFile(getAuthInfo().accessToken, getUserId(), fileKey)
+      .deleteFile(getAuthInfo().accessToken, getUserId(), fileKey)
     return response.code() == HttpURLConnection.HTTP_NO_CONTENT
   }
 
@@ -342,11 +356,11 @@ object OneDriveUtil : ICloudUtil {
     try {
       // 创建上传session
       val uploadSession = netManager.request(MsalApi::class.java)
-          .createUploadSession(
-              authorization = getAuthInfo().accessToken,
-              userId = getUserId(),
-              itemPath = file.name
-          )
+        .createUploadSession(
+          authorization = getAuthInfo().accessToken,
+          userId = getUserId(),
+          itemPath = file.name
+        )
 
       Timber.d("获取session成功，上传地址：${uploadSession.uploadUrl}")
       // 取消上传的临时文件会话
@@ -357,13 +371,13 @@ object OneDriveUtil : ICloudUtil {
       val body = MultipartBody.Part.createFormData("file", file.name, desc)
       val fileSize = file.length()
       val request = Request.Builder()
-          .header("Content-Length", fileSize.toString())
-          .header("Content-Range", "bytes 0-${fileSize - 1}/${fileSize}")
-          .url(uploadSession.uploadUrl)
-          .put(body = body.body)
-          .build()
+        .header("Content-Length", fileSize.toString())
+        .header("Content-Range", "bytes 0-${fileSize - 1}/${fileSize}")
+        .url(uploadSession.uploadUrl)
+        .put(body = body.body)
+        .build()
       val response = okClient.newCall(request)
-          .execute()
+        .execute()
       if (response.code != HttpURLConnection.HTTP_OK && response.code != HttpURLConnection.HTTP_CREATED) {
         Timber.e("上传失败，code = ${response.code}, msg = ${response.message}")
         return false
@@ -375,7 +389,7 @@ object OneDriveUtil : ICloudUtil {
       }
       val responseContent = String(responseBytes, Charset.forName("UTF-8"))
       Timber.d("上传成功，响应内容")
-      KLog.j(TAG, responseContent)
+      KLog.j("TAG", responseContent)
       val obj = Gson().fromJson(responseContent, MsalSourceItem::class.java)
       dbRecord.cloudDiskPath = obj.id
       KeepassAUtil.instance.saveLastOpenDbHistory(dbRecord)
@@ -394,11 +408,11 @@ object OneDriveUtil : ICloudUtil {
     try {
       Timber.d("如果有的话，取消临时文件的上传对话")
       val request = Request.Builder()
-          .url(uploadUrl)
-          .delete()
-          .build()
+        .url(uploadUrl)
+        .delete()
+        .build()
       val response = okClient.newCall(request)
-          .execute()
+        .execute()
       Timber.d("code = ${response.code}, body = ${response.body?.string()}")
     } catch (e: Exception) {
       e.printStackTrace()
@@ -412,14 +426,14 @@ object OneDriveUtil : ICloudUtil {
   ): String? {
     return withContext(Dispatchers.IO) {
       val hb = Headers.Builder()
-          .add(TOKEN_KEY, getAuthInfo().accessToken)
-          .build()
+        .add(TOKEN_KEY, getAuthInfo().accessToken)
+        .build()
       val request: Request = Request.Builder()
-          .url("$BASE_URL/users/${getUserId()}/drive/items/${dbRecord.cloudDiskPath}/content")
-          .headers(hb)
-          .build()
+        .url("$BASE_URL/users/${getUserId()}/drive/items/${dbRecord.cloudDiskPath}/content")
+        .headers(hb)
+        .build()
       val call = netManager.getClient()
-          .newCall(request)
+        .newCall(request)
 
       try {
         val response = call.execute()
@@ -448,6 +462,5 @@ object OneDriveUtil : ICloudUtil {
       }
       return@withContext null
     }
-
   }
 }

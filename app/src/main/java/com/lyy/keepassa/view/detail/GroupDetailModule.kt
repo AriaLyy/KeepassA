@@ -8,12 +8,13 @@
 package com.lyy.keepassa.view.detail
 
 import android.content.Context
-import androidx.lifecycle.liveData
-import com.arialyy.frame.module.SingleLiveEvent
+import androidx.lifecycle.viewModelScope
 import com.arialyy.frame.util.PinyinUtil
 import com.keepassdroid.database.PwDataInf
+import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupId
+import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
@@ -25,41 +26,84 @@ import com.lyy.keepassa.common.SortType.TIME_ASC
 import com.lyy.keepassa.common.SortType.TIME_DESC
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.createNewEntry
+import com.lyy.keepassa.util.deleteEntry
+import com.lyy.keepassa.util.moveEntry
+import com.lyy.keepassa.util.updateModifyEntry
+import com.lyy.keepassa.view.SimpleEntryAdapter
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 
-class GroupDetailModule : BaseModule() {
+internal class GroupDetailModule : BaseModule() {
 
-  private val groupLiveData = SingleLiveEvent<ArrayList<SimpleItemEntity>?>()
+  val entryData = mutableListOf<SimpleItemEntity>()
+  val getDataFlow = MutableSharedFlow<MutableList<SimpleItemEntity>?>()
+  var curGroupV4: PwGroupV4? = null
+
+  /**
+   * update the status of deleted items
+   */
+  fun deleteEntry(adapter: SimpleEntryAdapter, pwEntryV4: PwEntryV4, oldParent: PwGroupV4) {
+    curGroupV4?.let {
+      adapter.deleteEntry(entryData, pwEntryV4, oldParent, it)
+    }
+  }
+
+  /**
+   * update the status of modified items
+   */
+  fun updateModifyEntry(adapter: SimpleEntryAdapter, pwEntryV4: PwEntryV4) {
+    curGroupV4?.let {
+      adapter.updateModifyEntry(entryData, pwEntryV4, it)
+    }
+  }
+
+  /**
+   * move entry from other group
+   */
+  fun moveEntry(adapter: SimpleEntryAdapter, pwEntryV4: PwEntryV4, oldParent: PwGroupV4) {
+    curGroupV4?.let {
+      adapter.moveEntry(entryData, pwEntryV4, oldParent, it)
+    }
+  }
+
+  /**
+   * update root list state
+   */
+  fun createNewEntry(adapter: SimpleEntryAdapter, pwEntryV4: PwEntryV4) {
+    curGroupV4?.let {
+      adapter.createNewEntry(entryData, pwEntryV4, it)
+    }
+  }
 
   /**
    * 获取v3版本的group数据
    */
-  fun getGroupData(
-    context: Context,
-    groupId: PwGroupId
-  ): SingleLiveEvent<ArrayList<SimpleItemEntity>?> {
-
-    val group = BaseApp.KDB.pm.groups[groupId]
-    if (group != null) {
-      groupLiveData.postValue(convertGroup(context, group))
-    } else {
-      groupLiveData.postValue(null)
+  fun getGroupData(context: Context, groupId: PwGroupId) {
+    entryData.clear()
+    viewModelScope.launch {
+      val group = BaseApp.KDB.pm.groups[groupId]
+      curGroupV4 = group as PwGroupV4?
+      if (group == null) {
+        getDataFlow.emit(null)
+        return@launch
+      }
+      entryData.addAll(convertGroup(context, group))
+      getDataFlow.emit(entryData)
+      return@launch
     }
-    return groupLiveData
   }
 
   /**
    * 排序
    * @param sortType
    */
-  fun sortData(
-    sortType: SortType,
-    data: List<SimpleItemEntity>
-  ) = liveData {
+  fun sortData(adapter: SimpleEntryAdapter, sortType: SortType) {
     val entryList = arrayListOf<SimpleItemEntity>()
     val groupList = arrayListOf<SimpleItemEntity>()
     val tempList = arrayListOf<SimpleItemEntity>()
 
-    for (item in data) {
+    for (item in entryData) {
       if (item.obj is PwGroup) {
         groupList.add(item)
         continue
@@ -68,7 +112,9 @@ class GroupDetailModule : BaseModule() {
     }
     tempList.addAll(sortEntry(sortType, groupList))
     tempList.addAll(sortEntry(sortType, entryList))
-    emit(tempList)
+    entryData.clear()
+    entryData.addAll(tempList)
+    adapter.notifyDataSetChanged()
   }
 
   private fun sortEntry(
@@ -82,25 +128,25 @@ class GroupDetailModule : BaseModule() {
     return when (sortType) {
       CHAR_ASC -> {
         map.toList()
-            .sortedBy { it.second }
-            .toMap().keys
+          .sortedBy { it.second }
+          .toMap().keys
       }
       CHAR_DESC -> {
         map.toList()
-            .sortedByDescending { it.second }
-            .toMap().keys
+          .sortedByDescending { it.second }
+          .toMap().keys
       }
       TIME_ASC -> {
         map.toList()
-            .sortedBy {
-              (it.first.obj as PwDataInf).creationTime.time
-            }
-            .toMap().keys
+          .sortedBy {
+            (it.first.obj as PwDataInf).creationTime.time
+          }
+          .toMap().keys
       }
       TIME_DESC -> {
         map.toList()
-            .sortedByDescending { (it.first.obj as PwDataInf).creationTime.time }
-            .toMap().keys
+          .sortedByDescending { (it.first.obj as PwDataInf).creationTime.time }
+          .toMap().keys
       }
       NONE -> {
         emptySet()
@@ -118,7 +164,7 @@ class GroupDetailModule : BaseModule() {
       item.title = cGroup.name
       item.subTitle =
         context.getString(
-            R.string.hint_group_desc, KdbUtil.getGroupEntryNum(cGroup)
+          R.string.hint_group_desc, KdbUtil.getGroupAllEntryNum(cGroup)
             .toString()
         )
       item.obj = cGroup

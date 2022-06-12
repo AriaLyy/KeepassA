@@ -14,10 +14,13 @@ import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import android.view.View
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogDonateBinding
+import com.lyy.keepassa.router.DialogRouter
+import com.lyy.keepassa.util.PlayUtil
 import com.lyy.keepassa.widget.DrawableTextView
 import com.lyy.keepassa.widget.toPx
 import com.zzhoujay.richtext.RichText
@@ -33,6 +36,7 @@ class DonateDialog : BaseDialog<DialogDonateBinding>(), View.OnClickListener {
   override fun initData() {
     super.initData()
     binding.rlAliPay.setOnClickListener(this)
+    binding.rlPayPal.setOnClickListener(this)
     binding.rlPayPal.setOnClickListener(this)
     binding.ivClose.setOnClickListener(this)
     RichText.fromMarkdown(getString(R.string.donate_desc))
@@ -50,6 +54,9 @@ class DonateDialog : BaseDialog<DialogDonateBinding>(), View.OnClickListener {
         24.toPx(),
         24.toPx()
     )
+    if (PlayUtil.playServiceExist(requireActivity())){
+      binding.rlPlay.visibility = View.VISIBLE
+    }
   }
 
   override fun onClick(v: View?) {
@@ -61,6 +68,9 @@ class DonateDialog : BaseDialog<DialogDonateBinding>(), View.OnClickListener {
         startActivity(Intent(Intent.ACTION_VIEW).apply {
           data = Uri.parse("https://www.paypal.com/paypalme/arialyy")
         })
+      }
+      R.id.rlPlay ->{
+        Routerfit.create(DialogRouter::class.java).showPlayDonateDialog()
       }
     }
     dismiss()

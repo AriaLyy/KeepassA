@@ -64,6 +64,14 @@ object DbSynUtil : SynStateCode {
       .getFileServiceModifyTime(record.cloudDiskPath!!)
   }
 
+  suspend fun fileExists(record: DbHistoryRecord): Boolean {
+    return CloudUtilFactory.getCloudUtil(record.getDbPathType()).fileExists(record.cloudDiskPath!!)
+  }
+
+  suspend fun getFileInfo(record: DbHistoryRecord): CloudFileInfo? {
+    return CloudUtilFactory.getCloudUtil(record.getDbPathType()).getFileInfo(record.cloudDiskPath!!)
+  }
+
   /**
    * 更新服务器端文件的修改时间
    */
@@ -99,13 +107,25 @@ object DbSynUtil : SynStateCode {
   /**
    * 上传同步
    */
-  suspend fun uploadSyn(record: DbHistoryRecord): DbSyncResponse {
+  suspend fun uploadSyn(record: DbHistoryRecord, isCreate: Boolean = false): DbSyncResponse {
     val storageType = record.getDbPathType()
     if (storageType == AFS) {
       return DbSyncResponse(STATE_SUCCEED, "")
     }
     val util = CloudUtilFactory.getCloudUtil(storageType)
-    return interceptors[0].intercept(DbSyncRequest(record, util, interceptors))
+    if (isCreate) {
+      val ins = arrayListOf<IDbSyncInterceptor>().apply {
+        add(DbSyncUploadInterceptor())
+      }
+      return ins[0].intercept(DbSyncRequest(record, util, ins))
+    }
+    return interceptors[0].intercept(
+      DbSyncRequest(
+        record,
+        util,
+        interceptors
+      )
+    )
   }
 
   /**

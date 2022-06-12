@@ -7,12 +7,14 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupId
+import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentOnlyListBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.view.SimpleEntryAdapter
 
 @Route(path = "/group/choose/dir")
@@ -60,7 +62,7 @@ class DirFragment : BaseFragment<FragmentOnlyListBinding>() {
       item.title = group.name
       item.subTitle =
         requireContext().getString(
-          R.string.hint_group_desc, KdbUtil.getGroupEntryNum(group)
+          R.string.hint_group_desc, KdbUtil.getGroupAllEntryNum(group)
             .toString()
         )
       item.obj = group
@@ -68,10 +70,9 @@ class DirFragment : BaseFragment<FragmentOnlyListBinding>() {
     }
     adapter.notifyDataSetChanged()
 
-    RvItemClickSupport.addTo(binding.list)
-      .setOnItemClickListener { _, position, _ ->
-        (activity as ChooseGroupActivity).startNextFragment(entryData[position].obj as PwGroup)
-      }
+    binding.list.doOnItemClickListener { _, position, _ ->
+      (activity as ChooseGroupActivity).startNextFragment(entryData[position].obj as PwGroupV4)
+    }
   }
 
   override fun setLayoutId(): Int {

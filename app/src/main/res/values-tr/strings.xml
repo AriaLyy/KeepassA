@@ -76,7 +76,7 @@
     <string name="set_open_kpa_ime_title">Güvenlik klavyesi</string>
     <string name="set_key_title_opr_env_check_turn_on">Açık</string>
     <string name="totp_Arithmetic">Aritmetik:</string>
-    <string name="no_totp_token">Uygulamanın TOTP belirteci yok</string>
+    <string name="no_totp_token">TOTP belirteci yok</string>
     <string name="ime_label">KeePassA güvenlik klavyesi</string>
     <string name="license">Özgür yazılım lisansı</string>
     <string name="set_key_sum_main_show_entries">Veri tabanının kilidini açtıktan sonra tüm ögeleri göster</string>
@@ -329,4 +329,25 @@
     <string name="error_keystore">Anahtar deposu istisnası, lütfen tekrar deneyin</string>
     <string name="set_key_theme_style_title">Tema tarzı</string>
     <string name="set_key_theme_style_summary">Sistemi takip et</string>
+    <string name="kpa_totp">Belirteç</string>
+    <string name="kpa_copy">Kopyala</string>
+    <string name="error_qr_code_str">QR kodu normal değil. Lütfen QR kodunun Google Authenticator tarafından desteklendiğinden emin olun</string>
+    <string name="google_play">Google Play</string>
+    <string name="disposable">Bir kez</string>
+    <string name="monthly">Aylık</string>
+    <string name="year">Yıl</string>
+    <string name="error_donate">Bağış başarısız oldu</string>
+    <string name="error_connect_play">Google hizmetine bağlanılamadı</string>
+    <string name="thank_donate">Bağışınız için teşekkür ederiz.</string>
+    <string name="current_collection_num">%1$s koleksiyon</string>
+    <string name="my_collection">Koleksiyonum</string>
+    <string name="no_collection">Koleksiyon yok</string>
+    <string name="error_open_db_webdav">Veri tabanı açılamadı, webdav dosyası yok</string>
+    <string name="hint_cloud_file_already_exist">%1$s zaten var, dosyanın üzerine yazmak istiyor musunuz\?</string>
+    <string name="select_save_path">Kaydetme yolu seç</string>
+    <string name="helper_webdav_service">Webdav hizmeti seç</string>
+    <string name="error_is_root">Zaten kök dizini</string>
+    <string name="select_cur_path">Klasör seç</string>
+    <string name="one_drive_load_user_failure">Kullanıcı bilgileri yüklenemedi</string>
+    <string name="hint_open_background_start">Lütfen arka plan çıkarma iznini açın, aksi takdirde otomatik doldurmayı kullanamazsınız</string>
 </resources>

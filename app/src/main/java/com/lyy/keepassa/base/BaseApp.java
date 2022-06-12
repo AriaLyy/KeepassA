@@ -12,40 +12,27 @@ package com.lyy.keepassa.base;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.multidex.MultiDexApplication;
 import androidx.preference.PreferenceManager;
-import androidx.room.Room;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.arialyy.frame.core.AbsFrame;
-import com.arialyy.frame.util.KeyStoreUtil;
-import com.blankj.utilcode.util.AppUtils;
+import com.arialyy.frame.router.Routerfit;
 import com.keepassdroid.Database;
-import com.lyy.keepassa.BuildConfig;
-import com.lyy.keepassa.KpaEventBusIndex;
 import com.lyy.keepassa.R;
 import com.lyy.keepassa.common.PassType;
 import com.lyy.keepassa.dao.AppDatabase;
 import com.lyy.keepassa.entity.DbHistoryRecord;
 import com.lyy.keepassa.receiver.ScreenLockReceiver;
+import com.lyy.keepassa.router.ServiceRouter;
 import com.lyy.keepassa.util.KeepassAUtil;
 import com.lyy.keepassa.util.LanguageUtil;
-import com.lyy.keepassa.util.QuickUnLockUtil;
 import com.lyy.keepassa.view.StorageType;
-import com.tencent.bugly.crashreport.CrashReport;
-import com.tencent.vasdolly.helper.ChannelReaderUtil;
-import com.tencent.wcdb.database.SQLiteCipherSpec;
-import com.tencent.wcdb.room.db.WCDBOpenHelperFactory;
-import com.zzhoujay.richtext.RichText;
 import java.util.Locale;
 import me.weishu.reflection.Reflection;
-import org.greenrobot.eventbus.EventBus;
-import timber.log.Timber;
 
 public class BaseApp extends MultiDexApplication {
 
@@ -98,62 +85,16 @@ public class BaseApp extends MultiDexApplication {
     }
   }
 
-  //@Override public Resources getResources() {
-  //  if (resContext == null){
-  //    return super.getResources();
-  //  }
-  //  return resContext.getResources();
-  //}
-
   @Override public void onCreate() {
     super.onCreate();
     AbsFrame.init(this);
     APP = this;
     handler = new Handler(Looper.getMainLooper());
+    ARouter.init(this); // 尽可能早，推荐在Application中初始化
+    Routerfit.INSTANCE.create(ServiceRouter.class).getKpaSdkService().preInitSdk(this);
     // 初始化一下时间
     KeepassAUtil.Companion.getInstance().isFastClick();
-    initDb();
-
-    // 开启kotlin 协程debug
-    if (BuildConfig.DEBUG) {
-      System.setProperty("kotlinx.coroutines.debug", "on");
-      Timber.plant(new Timber.DebugTree());
-      ARouter.openLog();     // 打印日志
-      ARouter.openDebug();   // 开启调试模式(如果在InstantRun模式下运行，必须开启调试模式！线上版本需要关闭,否则有安全风险)
-    }
-    ARouter.init(this); // 尽可能早，推荐在Application中初始化
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      KeyStoreUtil.Companion.setKeyStorePass(QuickUnLockUtil.getDbPass().toCharArray());
-    }
-    RichText.initCacheDir(this);
     initReceiver();
-    boolean showStatusBar = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-        .getBoolean(getString(R.string.set_key_title_show_state_bar), true);
-    BaseActivity.Companion.setShowStatusBar(showStatusBar);
-    initBugly();
-
-    EventBus.builder().addIndex(new KpaEventBusIndex()).installDefaultEventBus();
-
-    //IntentFilter ift = new IntentFilter();
-    //ift.addAction(AutoFillClickReceiver.ACTION_CLICK_OTHER);
-    //registerReceiver(new AutoFillClickReceiver(), ift);
-  }
-
-  private void initBugly() {
-    KeepassAUtil kUtil = KeepassAUtil.Companion.getInstance();
-    // 获取当前包名
-    String packageName = getPackageName();
-
-    // 获取当前进程名
-    String processName = kUtil.getProcessName(android.os.Process.myPid());
-    CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(this);
-    strategy.setUploadProcess(processName == null || processName.equals(packageName));
-    strategy.setAppChannel(getChannel());
-    strategy.setAppVersion(kUtil.getAppVersionName(this));
-    CrashReport.initCrashReport(getApplicationContext(), "59fc0ec759", AppUtils.isAppDebug(),
-        strategy);
-    //CrashReport.testJavaCrash();
   }
 
   /**
@@ -169,45 +110,6 @@ public class BaseApp extends MultiDexApplication {
       inf.addAction(Intent.ACTION_USER_PRESENT);
       registerReceiver(receiver, inf);
     }
-  }
-
-  public String getChannel() {
-    String channel = ChannelReaderUtil.getChannel(getApplicationContext());
-    if (channel == null) {
-      channel = "default";
-    }
-    return channel;
-  }
-
-  /**
-   * 使用spi机制初始化非自由软件
-   */
-  private void initNotFreeLib() {
-    //ServiceLoader<INotFreeLibService> loader = ServiceLoader.load(INotFreeLibService.class);
-    //for (INotFreeLibService iNotFreeLibService : loader) {
-    //  iNotFreeLibService.initLib(this, BuildConfig.DEBUG, getChannel(), null);
-    //}
-  }
-
-  /**
-   * 初始化数据库
-   */
-  private void initDb() {
-    // 初始化数据库
-    SQLiteCipherSpec cipherSpec = new SQLiteCipherSpec()  // 指定加密方式，使用默认加密可以省略
-        .setPageSize(4096)
-        .setKDFIteration(64000);
-
-    WCDBOpenHelperFactory factory = new WCDBOpenHelperFactory()
-        .passphrase(QuickUnLockUtil.getDbPass().getBytes())  // 指定加密DB密钥，非加密DB去掉此行
-        .cipherSpec(cipherSpec)               // 指定加密方式，使用默认加密可以省略
-        .writeAheadLoggingEnabled(true)       // 打开WAL以及读写并发，可以省略让Room决定是否要打开
-        .asyncCheckpointEnabled(true);        // 打开异步Checkpoint优化，不需要可以省略
-
-    appDatabase = Room.databaseBuilder(this, AppDatabase.class, AppDatabase.DB_NAME)
-        .openHelperFactory(factory)
-        .addMigrations(DbMigration.INSTANCE.MIGRATION_2_3(), DbMigration.INSTANCE.MIGRATION_3_4())
-        .build();
   }
 
   /**
@@ -229,6 +131,7 @@ public class BaseApp extends MultiDexApplication {
       } else {
         LanguageUtil.INSTANCE.setLanguage(context, Locale.ENGLISH);
       }
+      LanguageUtil.INSTANCE.saveLanguage(context, lang);
     }
     return lang;
   }

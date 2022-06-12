@@ -13,7 +13,6 @@ import android.content.Context
 import android.graphics.Paint
 import android.view.View
 import android.widget.CheckBox
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.isVisible
@@ -22,8 +21,10 @@ import com.arialyy.frame.util.adapter.AbsRVAdapter
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwGroup
 import com.lyy.keepassa.R
+import com.lyy.keepassa.entity.EntryType
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.IconUtil
+import com.lyy.keepassa.util.loadImg
 import com.lyy.keepassa.view.SimpleEntryAdapter.Holder
 import java.util.Date
 
@@ -34,12 +35,6 @@ class SimpleEntryAdapter(
   context: Context,
   data: List<SimpleItemEntity>
 ) : AbsRVAdapter<SimpleItemEntity, Holder>(context, data) {
-  private var showCheckBox = false
-
-  fun showCheckBox(showCheckBox:Boolean){
-    this.showCheckBox = showCheckBox
-    notifyDataSetChanged()
-  }
 
   override fun getViewHolder(
     convertView: View?,
@@ -53,51 +48,36 @@ class SimpleEntryAdapter(
   }
 
   override fun bindData(
-    holder: Holder?,
+    holder: Holder,
     position: Int,
     item: SimpleItemEntity
-  ) {
-
-    if (item.obj is PwGroup) {
-      IconUtil.setGroupIcon(context, item.obj as PwGroup, holder!!.icon)
+  ) {    if (item.obj is PwGroup) {
+      IconUtil.setGroupIcon(context, item.obj as PwGroup, holder.icon)
     } else if (item.obj is PwEntry) {
-      IconUtil.setEntryIcon(context, item.obj as PwEntry, holder!!.icon)
+      IconUtil.setEntryIcon(context, item.obj as PwEntry, holder.icon)
       val paint = holder.title.paint
       if ((item.obj as PwEntry).expires()
         && (item.obj as PwEntry).expiryTime != null
         && (item.obj as PwEntry).expiryTime.before(Date(System.currentTimeMillis()))
-      ){
+      ) {
         paint.flags = Paint.STRIKE_THRU_TEXT_FLAG
         paint.isAntiAlias = true
-      }else{
+      } else {
         paint.flags = 0
       }
+    } else if (item.obj == EntryType.TYPE_COLLECTION) {
+      holder.icon.loadImg(mContext, item.icon)
     }
 
-    holder!!.title.text = item.title
+    holder.title.text = item.title
     holder.des.text = item.subTitle
-
-    if (item.subTitle.isBlank()){
-      holder.des.visibility = View.GONE
-      (holder.title.layoutParams as RelativeLayout.LayoutParams).addRule(RelativeLayout.CENTER_VERTICAL)
-    }else{
-      holder.des.visibility = View.VISIBLE
-      (holder.title.layoutParams as RelativeLayout.LayoutParams).removeRule(RelativeLayout.CENTER_VERTICAL)
-    }
-
-    holder.cb.isVisible = showCheckBox
-    if (showCheckBox){
-      holder.cb.isChecked = item.isCheck
-      holder.cb.setOnCheckedChangeListener { _, isChecked ->
-        item.isCheck = isChecked
-      }
-    }
+    holder.des.visibility = if (item.subTitle.isBlank()) View.GONE else View.VISIBLE
   }
 
   class Holder(view: View) : AbsHolder(view) {
     val icon: AppCompatImageView = view.findViewById(R.id.icon)
     val title: TextView = view.findViewById(R.id.title)
     val des: TextView = view.findViewById(R.id.des)
-    val cb: CheckBox = view.findViewById(R.id.cb)
   }
 }
+

@@ -10,7 +10,6 @@
 package com.lyy.keepassa.view.create
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -21,6 +20,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -44,7 +44,6 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityEntryEditBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.CreateAttrStrEvent
-import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
 import com.lyy.keepassa.event.DelAttrFileEvent
 import com.lyy.keepassa.event.DelAttrStrEvent
 import com.lyy.keepassa.event.EditorEvent
@@ -53,13 +52,13 @@ import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.getFileInfo
 import com.lyy.keepassa.util.putArgument
 import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.MarkDownEditorActivity
 import com.lyy.keepassa.view.dialog.AddMoreDialog
-import com.lyy.keepassa.view.dialog.CreateTotpDialog
-import com.lyy.keepassa.view.dialog.LoadingDialog
+import com.lyy.keepassa.view.dialog.CreateOtpDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.dir.ChooseGroupActivity
 import com.lyy.keepassa.view.icon.IconBottomSheetDialog
@@ -74,7 +73,6 @@ import com.lyy.keepassa.widget.expand.ExpandFileAttrView
 import com.lyy.keepassa.widget.expand.ExpandStrAttrView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import org.joda.time.DateTime
@@ -110,7 +108,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     const val TYPE_EDIT_ENTRY = 3
   }
 
-  private val getFileRequestCode = 0xA4
   private val editorRequestCode = 0xA5
 
   private var isShowPass = false
@@ -118,7 +115,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   private var addMoreDialog: AddMoreDialog? = null
   private lateinit var addMoreData: ArrayList<SimpleItemEntity>
   private lateinit var pwEntry: PwEntryV4
-  private lateinit var loadDialog: LoadingDialog
 
   @Autowired(name = KEY_IS_AUTH_FORM_FILL_SAVE)
   @JvmField
@@ -138,6 +134,11 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   @Autowired(name = IS_SHORTCUTS)
   @JvmField
   var isShortcuts: Boolean = false
+
+  private val getFileLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) {
+    it.takePermission()
+    addAttrFile(it)
+  }
 
   /**
    * 密码创建器
@@ -250,7 +251,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     }
     // the user name field, can show history
     module.getUserNameCache()
-      .observe(this, {
+      .observe(this) {
         val adapter = ArrayAdapter(this, R.layout.android_simple_dropdown_item_1line, it)
         binding.user.setAdapter(adapter)
         binding.user.threshold = 1 // 设置输入几个字符后开始出现提示 默认是2
@@ -259,7 +260,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
             binding.user.showDropDown()
           }
         }
-      })
+      }
 
     // lose time modify
     binding.ivLoseTimeClick.setOnClickListener {
@@ -272,7 +273,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
    * time change dialog
    */
   private fun showTimeChangeDialog() {
-    val dialog = Routerfit.create(DialogRouter::class.java).toTimeChangeDialog()
+    val dialog = Routerfit.create(DialogRouter::class.java).getTimeChangeDialog()
     lifecycleScope.launch {
       dialog.timeFlow.collectLatest { event ->
         if (event == null) {
@@ -353,7 +354,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
         return@setOnClickListener
       }
       if (addMoreDialog == null) {
-        addMoreData = module.getMoreItem(this)
+        addMoreData = module.getMoreItem(this, pwEntry)
         addMoreDialog = AddMoreDialog(addMoreData)
         addMoreDialog!!.setOnItemClickListener(object : AddMoreDialog.OnItemClickListener {
           override fun onItemClick(
@@ -382,14 +383,10 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
                 CreateCustomStrDialog().show()
               }
               R.drawable.ic_attr_file -> { // 附件
-                KeepassAUtil.instance.openSysFileManager(
-                  this@CreateEntryActivity,
-                  "*/*",
-                  getFileRequestCode
-                )
+                getFileLauncher.launch(arrayOf("*/*"))
               }
-              R.drawable.ic_totp -> { // totp
-                CreateTotpDialog().apply {
+              R.drawable.ic_token_grey -> { // totp
+                CreateOtpDialog().apply {
                   putArgument("isEdit", false)
                   putArgument("entryTitle", pwEntry.title)
                   putArgument("entryUserName", pwEntry.username)
@@ -510,8 +507,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       }
       return
     }
-    loadDialog = LoadingDialog(this)
-    loadDialog.show()
     module.updateEntry(
       entry = pwEntry,
       title = binding.title.text.toString(),
@@ -520,22 +515,15 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       url = binding.url.text.toString(),
       tags = binding.tag.text.toString()
     )
-    module.saveDb()
-      .observe(this, { success ->
-        EventBus.getDefault()
-          .post(CreateOrUpdateEntryEvent(pwEntry, true))
-        loadDialog.dismiss()
-        if (!success) {
-          HitUtil.toaskLong(getString(R.string.save_db_fail))
-        } else {
-          finishAfterTransition()
-        }
-      })
+    module.saveDb {
+      KpaUtil.kdbHandlerService.updateEntryStatus(pwEntry)
+      finishAfterTransition()
+    }
   }
 
   override fun onBackPressed() {
     Routerfit.create(DialogRouter::class.java)
-      .toMsgDialog(
+      .showMsgDialog(
         msgTitle = ResUtil.getString(R.string.warning),
         msgContent = ResUtil.getString(R.string.create_entry_no_save),
         btnClickListener = object : OnMsgBtClickListener {
@@ -550,7 +538,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
           }
         }
       )
-      .show()
   }
 
   /**
@@ -567,19 +554,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       url = binding.url.text.toString(),
       tags = binding.tag.text.toString()
     )
-    loadDialog = LoadingDialog(this)
-    loadDialog.show()
-    module.addEntry(pwEntry)
-      .observe(this, { success ->
-        EventBus.getDefault()
-          .post(CreateOrUpdateEntryEvent(pwEntry, false))
-        loadDialog.dismiss()
-        if (!success) {
-          HitUtil.toaskLong(getString(R.string.save_db_fail))
-        } else {
-          finishAfterTransition()
-        }
-      })
+    module.addEntry(this, pwEntry)
   }
 
   /**
@@ -757,23 +732,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
 
   override fun setLayoutId(): Int {
     return R.layout.activity_entry_edit
-  }
-
-  override fun onActivityResult(
-    requestCode: Int,
-    resultCode: Int,
-    data: Intent?
-  ) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (resultCode == Activity.RESULT_OK && data != null) {
-      when (requestCode) {
-        // 处理附件
-        getFileRequestCode -> {
-          data.data?.takePermission()
-          addAttrFile(data.data)
-        }
-      }
-    }
   }
 
   override fun onDestroy() {

@@ -105,7 +105,7 @@ class FingerprintActivity : BaseActivity<ActivityFingerprintBinding>() {
   override fun finishAfterTransition() {
     // 当前标志不为关闭，并且当前标志和进入的标志不一致，则需要提示用户验证指纹
     if (module.curFlag != FLAG_CLOSE && module.curFlag != module.oldFlag) {
-      Routerfit.create(DialogRouter::class.java).toMsgDialog(
+      Routerfit.create(DialogRouter::class.java).showMsgDialog(
         msgContent = ResUtil.getString(R.string.hint_finger_print_verfiy),
         btnClickListener = object : OnMsgBtClickListener {
           override fun onCover(v: Button) {
@@ -120,7 +120,6 @@ class FingerprintActivity : BaseActivity<ActivityFingerprintBinding>() {
           }
         }
       )
-        .show()
     } else {
       super@FingerprintActivity.finishAfterTransition()
     }

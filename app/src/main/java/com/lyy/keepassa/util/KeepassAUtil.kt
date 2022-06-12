@@ -49,10 +49,12 @@ import com.arialyy.frame.core.AbsFrame
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.StringUtil
+import com.blankj.utilcode.util.AppUtils
 import com.keepassdroid.database.PwDataInf
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
+import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.security.ProtectedString
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
@@ -63,7 +65,6 @@ import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.service.autofill.AutoFillHelper
 import com.lyy.keepassa.service.autofill.StructureParser
 import com.lyy.keepassa.view.create.CreateDbActivity
-import com.lyy.keepassa.view.detail.EntryDetailActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.launcher.OpenDbHistoryActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
@@ -87,7 +88,6 @@ class KeepassAUtil private constructor() {
     val instance: KeepassAUtil by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
       KeepassAUtil()
     }
-    val TAG = "KeepassAUtil"
   }
 
   private var LAST_CLICK_TIME = System.currentTimeMillis()
@@ -166,7 +166,7 @@ class KeepassAUtil private constructor() {
    * @param obj fragment or activity
    */
   fun startLockTimer(obj: Any?) {
-    GlobalScope.launch(Dispatchers.IO) {
+    KpaUtil.scope.launch(Dispatchers.IO) {
       // delay 1s, in order to wait for the configuration file to take effect
       delay(1000)
       if (!isAutoLockDb()) {
@@ -179,9 +179,8 @@ class KeepassAUtil private constructor() {
           return@launch
         }
 
-        if (isRunningForeground(BaseApp.APP)) {
-          AutoLockDbUtil.get()
-            .resetTimer()
+        if (AppUtils.isAppForeground()) {
+          AutoLockDbUtil.get().resetTimer()
           return@launch
         }
       }
@@ -196,7 +195,7 @@ class KeepassAUtil private constructor() {
     BaseApp.isLocked = true
     val isOpenQuickLock = BaseApp.APP.isOpenQuickLock()
     // 只有应用在前台才会跳转到锁屏页面
-    if (isRunningForeground(BaseApp.APP) && BaseApp.KDB != null) {
+    if (AppUtils.isAppForeground() && BaseApp.KDB != null) {
       // 开启快速解锁则跳转到快速解锁页面
       if (isOpenQuickLock) {
         NotificationUtil.startQuickUnlockNotify(BaseApp.APP)
@@ -382,13 +381,14 @@ class KeepassAUtil private constructor() {
     return item
   }
 
+
   /**
    * 将pwGroup 转换为列表实体
    */
   fun convertPwGroup2Item(pwGroup: PwGroup): SimpleItemEntity {
     val item = SimpleItemEntity()
     item.title = pwGroup.name
-    item.subTitle = BaseApp.APP.resources.getString(
+    item.subTitle = ResUtil.getString(
       R.string.hint_group_desc, KdbUtil.getGroupEntryNum(pwGroup)
         .toString()
     )
@@ -403,7 +403,7 @@ class KeepassAUtil private constructor() {
     if (record == null) {
       return
     }
-    GlobalScope.launch(Dispatchers.IO) {
+    KpaUtil.scope.launch(Dispatchers.IO) {
       val dao = BaseApp.appDatabase.dbRecordDao()
       val his = dao.findRecord(record.localDbUri)
       if (his == null || his.localDbUri.isEmpty()) {
@@ -529,27 +529,6 @@ class KeepassAUtil private constructor() {
 //    Log.d(TAG, "temp = $temp")
 //    Log.d(TAG, "uriString = $uriString")
     return temp
-  }
-
-  /**
-   * 判断本应用是否已经位于最前端
-   *
-   * @param context
-   * @return 本应用已经位于最前端时，返回 true；否则返回 false
-   */
-  fun isRunningForeground(context: Context): Boolean {
-    val activityManager: ActivityManager =
-      context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager? ?: return false
-    val appProcessInfoList: List<RunningAppProcessInfo> = activityManager.runningAppProcesses
-    /**枚举进程 */
-    for (appProcessInfo in appProcessInfoList) {
-      if (appProcessInfo.importance == RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
-        if (appProcessInfo.processName == context.applicationInfo.processName) {
-          return true
-        }
-      }
-    }
-    return false
   }
 
   fun isFastClick(): Boolean {
@@ -731,6 +710,7 @@ class KeepassAUtil private constructor() {
    * @param mimeType mime
    * @see <a href="https://developer.android.com/guide/topics/providers/document-provider?hl=zh-cn#create">创建文档</a>
    */
+  @Deprecated("请使用registerForActivityResult(ActivityResultContracts.CreateDocument())")
   fun createFile(
     obj: Any,
     mimeType: String,

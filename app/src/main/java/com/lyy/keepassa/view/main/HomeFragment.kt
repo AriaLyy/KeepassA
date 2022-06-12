@@ -14,74 +14,85 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.view.MotionEvent
-import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.lifecycle.Observer
+import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.DpUtils
-import com.arialyy.frame.util.adapter.RvItemClickSupport
+import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwGroup
+import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentOnlyListBinding
-import com.lyy.keepassa.entity.SimpleItemEntity
-import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
-import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
-import com.lyy.keepassa.event.DelEvent
+import com.lyy.keepassa.entity.EntryType
+import com.lyy.keepassa.entity.showPopMenu
+import com.lyy.keepassa.event.EntryState.CREATE
+import com.lyy.keepassa.event.EntryState.DELETE
+import com.lyy.keepassa.event.EntryState.MODIFY
+import com.lyy.keepassa.event.EntryState.MOVE
+import com.lyy.keepassa.event.EntryState.UNKNOWN
 import com.lyy.keepassa.event.MoveEvent
-import com.lyy.keepassa.event.MultiChoiceEvent
+import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.cloud.DbSynUtil
+import com.lyy.keepassa.util.createGroup
+import com.lyy.keepassa.util.deleteGroup
+import com.lyy.keepassa.util.doOnInterceptTouchEvent
+import com.lyy.keepassa.util.doOnItemClickListener
+import com.lyy.keepassa.util.doOnItemLongClickListener
 import com.lyy.keepassa.util.isAFS
+import com.lyy.keepassa.util.updateModifyGroup
 import com.lyy.keepassa.view.SimpleEntryAdapter
-import com.lyy.keepassa.view.dialog.LoadingDialog
-import com.lyy.keepassa.view.menu.EntryPopMenu
-import com.lyy.keepassa.view.menu.GroupPopMenu
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
+import timber.log.Timber
 
 @Route(path = "/main/fragment/home")
 class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
 
-  private lateinit var module: EntryModule
+  private lateinit var module: HomeModule
   private lateinit var adapter: SimpleEntryAdapter
-  private val entryData = ArrayList<SimpleItemEntity>()
   private var curx = 0
   private var isSyncDb = false
-  private val loadingDialog by lazy {
-    LoadingDialog(requireContext())
-  }
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    module = ViewModelProvider(this).get(EntryModule::class.java)
+    module = ViewModelProvider(this)[HomeModule::class.java]
   }
 
   override fun initData() {
     EventBusHelper.reg(this)
-    adapter = SimpleEntryAdapter(requireContext(), entryData)
-    binding.list.setHasFixedSize(true)
+    adapter = SimpleEntryAdapter(requireContext(), module.itemDataList)
     binding.list.layoutManager = LinearLayoutManager(context)
     binding.list.adapter = adapter
-    RvItemClickSupport.addTo(binding.list)
-      .setOnItemClickListener { _, position, v ->
-        val item = entryData[position]
-        if (item.obj is PwGroup) {
-          KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwGroup)
-        } else if (item.obj is PwEntry) {
-          val icon = v.findViewById<AppCompatImageView>(R.id.icon)
-          KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwEntry, icon)
-        }
+    binding.list.doOnItemClickListener { _, position, v ->
+      val item = module.itemDataList[position]
+      if (item.obj == EntryType.TYPE_COLLECTION) {
+        Routerfit.create(ActivityRouter::class.java, requireActivity()).toMyCollection(
+          ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
+        )
+        return@doOnItemClickListener
       }
+      if (item.obj is PwGroup) {
+        KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwGroup)
+      } else if (item.obj is PwEntry) {
+        val icon = v.findViewById<AppCompatImageView>(R.id.icon)
+        KeepassAUtil.instance.turnEntryDetail(requireActivity(), item.obj as PwEntry, icon)
+      }
+    }
+
     val div = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
     val drawable = ColorDrawable(Color.TRANSPARENT)
     drawable.bounds = Rect(0, 0, 200, DpUtils.dp2px(20))
@@ -89,37 +100,137 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
     binding.list.addItemDecoration(div)
 
     // 长按处理
-    RvItemClickSupport.addTo(binding.list)
-      .setOnItemLongClickListener { _, position, v ->
-        showPopMenu(v, position)
-        true
-      }
+    binding.list.doOnItemLongClickListener { _, position, v ->
+      module.itemDataList[position].showPopMenu(requireActivity(), v, curx)
+      true
+    }
 
     // 获取点击位置
-    binding.list.addOnItemTouchListener(object : OnItemTouchListener {
-      override fun onTouchEvent(
-        rv: RecyclerView,
-        e: MotionEvent
-      ) {
+    binding.list.doOnInterceptTouchEvent { _, e ->
+      if (e.action == MotionEvent.ACTION_DOWN) {
+        curx = e.x.toInt()
       }
-
-      override fun onInterceptTouchEvent(
-        rv: RecyclerView,
-        e: MotionEvent
-      ): Boolean {
-        if (e.action == MotionEvent.ACTION_DOWN) {
-          curx = e.x.toInt()
-        }
-        return false
-      }
-
-      override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
-      }
-    })
-
+      return@doOnInterceptTouchEvent false
+    }
+    listenerDataGet()
     initRefresh()
+    module.getRootEntry()
+    listenerCollection()
+    listenerEntryStateChange()
+    listenerGroupStateChange()
+  }
 
-    getData()
+  /**
+   * listener the group status change, there are states: create, delete, modify, move
+   */
+  private fun listenerGroupStateChange() {
+    lifecycleScope.launch {
+      KpaUtil.kdbHandlerService.groupStateChangeFlow.collectLatest {
+        if (it.groupV4 == null) {
+          return@collectLatest
+        }
+        when (it.state) {
+          CREATE -> {
+            adapter.createGroup(
+              module.itemDataList,
+              it.groupV4,
+              BaseApp.KDB.pm.rootGroup as PwGroupV4
+            )
+          }
+          MODIFY -> {
+            adapter.updateModifyGroup(
+              module.itemDataList,
+              it.groupV4,
+              BaseApp.KDB.pm.rootGroup as PwGroupV4
+            )
+          }
+          MOVE -> {
+            // module.moveEntry(adapter, it.pwEntryV4, it.oldParent!!)
+          }
+          DELETE -> {
+            adapter.deleteGroup(
+              module.itemDataList,
+              it.groupV4,
+              it.oldParent!!,
+              BaseApp.KDB.pm.rootGroup as PwGroupV4
+            )
+          }
+          UNKNOWN -> {
+            Timber.d("un known status")
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * listener the entry status change, there are states: create, delete, modify, move
+   */
+  private fun listenerEntryStateChange() {
+    lifecycleScope.launch {
+      KpaUtil.kdbHandlerService.entryStateChangeFlow.collectLatest {
+        if (it.pwEntryV4 == null) {
+          return@collectLatest
+        }
+        Timber.d("entry status = ${it.state}")
+        when (it.state) {
+          CREATE -> {
+            module.createNewEntry(adapter, it.pwEntryV4)
+          }
+          MODIFY -> {
+            module.updateModifyEntry(adapter, it.pwEntryV4)
+          }
+          MOVE -> {
+            module.moveEntry(adapter, it.pwEntryV4, it.oldParent!!)
+          }
+          DELETE -> {
+            module.deleteEntry(adapter, it.pwEntryV4, it.oldParent!!)
+          }
+          UNKNOWN -> {
+            Timber.d("un known status")
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * listener update root data
+   */
+  private fun listenerDataGet() {
+    lifecycleScope.launch {
+      module.itemDataFlow.collectLatest {
+        adapter.notifyDataSetChanged()
+        if (isSyncDb) {
+          finishRefresh(true)
+        }
+      }
+    }
+  }
+
+  /**
+   * listener collection state
+   */
+  private fun listenerCollection() {
+    lifecycleScope.launch {
+      KpaUtil.kdbHandlerService.collectionStateFlow.collectLatest {
+        if (module.itemDataList.isEmpty()) {
+          Timber.d("current no any data, please wait get root data.")
+          return@collectLatest
+        }
+
+        if (module.itemDataList[0] == module.collectionEntry) {
+          module.itemDataList[0].subTitle =
+            ResUtil.getString(R.string.current_collection_num, it.collectionNum.toString())
+          adapter.notifyItemChanged(0)
+          return@collectLatest
+        }
+        module.collectionEntry.subTitle =
+          ResUtil.getString(R.string.current_collection_num, it.collectionNum.toString())
+        module.itemDataList.add(0, module.collectionEntry)
+        adapter.notifyItemInserted(0)
+      }
+    }
   }
 
   private fun initRefresh() {
@@ -136,39 +247,24 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
 
       if (BaseApp.dbRecord!!.isAFS()) {
         isSyncDb = true
-        getData()
+        module.getRootEntry()
+        finishRefresh(true)
         return@setOnRefreshListener
       }
 
-      loadingDialog.show()
-      module.syncDb()
-        .observe(this@HomeFragment, Observer {
-          if (!it) {
-            finishRefresh(false)
-            return@Observer
-          }
-          isSyncDb = true
-          getData()
-        })
+      module.syncDb {
+        if (it != DbSynUtil.STATE_SUCCEED) {
+          finishRefresh(false)
+          return@syncDb
+        }
+        isSyncDb = true
+        module.getRootEntry()
+        finishRefresh(true)
+      }
     }
   }
 
-  private fun getData() {
-    module.getRootEntry(requireContext())
-      .observe(this, Observer { list ->
-        entryData.clear()
-        entryData.addAll(list)
-        adapter.notifyDataSetChanged()
-        if (isSyncDb) {
-          finishRefresh(true)
-        }
-      })
-  }
-
-  private fun finishRefresh(
-    isSuccess: Boolean,
-    isAfs: Boolean = false
-  ) {
+  private fun finishRefresh(isSuccess: Boolean) {
     binding.swipe.isRefreshing = false
     HitUtil.snackShort(
       mRootView,
@@ -178,9 +274,6 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
         )
       }"
     )
-    if (!isAfs) {
-      loadingDialog.dismiss()
-    }
   }
 
   override fun setLayoutId(): Int {
@@ -188,114 +281,11 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
   }
 
   /**
-   * 长按显示的悬浮菜单
-   */
-  private fun showPopMenu(
-    v: View,
-    position: Int
-  ) {
-    val data = entryData[position]
-    if (data.obj is PwGroup) {
-      val pop = GroupPopMenu(
-        requireActivity(),
-        v,
-        data.obj as PwGroup,
-        curx
-      )
-      pop.show()
-      return
-    }
-    if (data.obj is PwEntry) {
-      val pop = EntryPopMenu(
-        requireActivity(),
-        v,
-        data.obj as PwEntry,
-        curx
-      )
-      pop.show()
-    }
-  }
-
-  /**
-   * 创建或更新条目
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onEntryCreate(event: CreateOrUpdateEntryEvent) {
-    if (event.isUpdate) {
-      val entry: SimpleItemEntity? = entryData.find { it.obj == event.entry }
-      entry?.let {
-        val pos = entryData.indexOf(it)
-        entryData[pos] = KeepassAUtil.instance.convertPwEntry2Item(event.entry)
-        adapter.notifyItemChanged(pos)
-      }
-      return
-    }
-    getData()
-  }
-
-  /**
-   * 创建群组
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onGroupCreate(event: CreateOrUpdateGroupEvent) {
-    if (event.pwGroup.parent != BaseApp.KDB.pm.rootGroup) {
-      return
-    }
-    if (event.isUpdate) {
-      val entry: SimpleItemEntity? = entryData.find { it.obj == event.pwGroup }
-      entry?.let {
-
-        val pos = entryData.indexOf(it)
-        entryData[pos] = KeepassAUtil.instance.convertPwGroup2Item(event.pwGroup)
-        adapter.notifyItemChanged(pos)
-      }
-      return
-    }
-    getData()
-  }
-
-  /**
    * 回收站中恢复数据
    */
   @Subscribe(threadMode = MAIN)
   fun onMove(event: MoveEvent) {
-    getData()
-  }
-
-  /**
-   * 删除项目
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onDelEvent(delEvent: DelEvent?) {
-    if (delEvent == null) {
-      return
-    }
-    val entry: SimpleItemEntity? = entryData.find { it.obj == delEvent.pwData }
-    if (entry != null) {
-      entryData.remove(entry)
-    }
-    if (BaseApp.isV4 && BaseApp.KDB.pm.recycleBin != null) {
-      val recycleBin = entryData.find { it.obj == BaseApp.KDB.pm.recycleBin }
-      if (recycleBin != null) {
-        recycleBin.subTitle = getString(
-          R.string.hint_group_desc,
-          KdbUtil.getGroupEntryNum(recycleBin.obj as PwGroup)
-            .toString()
-        )
-      }
-    } else {
-      // 如果回收站不存在，重新刷新界面，进行删除操作时会自动添加回收站
-      getData()
-    }
-    adapter.notifyDataSetChanged()
-  }
-
-  /**
-   * 多选
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onMultiChoice(mcEvent: MultiChoiceEvent) {
-    adapter.showCheckBox(true)
+    module.getRootEntry()
   }
 
   override fun onDestroy() {

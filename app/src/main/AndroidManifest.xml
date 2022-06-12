@@ -9,11 +9,9 @@
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.VIBRATE" />
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-  <!-- android 11 package-visibility  https://developer.android.com/training/basics/intents/package-visibility#declare-other-apps -->
-  <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
-
 
   <application
+      android:hardwareAccelerated="true"
       android:extractNativeLibs="true"
       android:name=".base.BaseApp"
       android:allowBackup="true"
@@ -206,6 +204,14 @@
             android:host="com.lyy.keepassa" />
       </intent-filter>
     </activity>
+
+    <activity android:name=".view.QrCodeScannerActivity"
+        android:screenOrientation="portrait"
+        />
+
+    <activity android:name=".view.collection.CollectionActivity"
+        android:screenOrientation="portrait"
+        />
 
     <service
         android:name=".service.autofill.AutoFillService"

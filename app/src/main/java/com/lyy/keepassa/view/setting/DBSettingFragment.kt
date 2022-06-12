@@ -10,7 +10,6 @@
 package com.lyy.keepassa.view.setting
 
 import android.os.Bundle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
@@ -18,7 +17,6 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.arialyy.frame.util.StringUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.event.ModifyDbNameEvent
@@ -28,7 +26,7 @@ import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
-import com.lyy.keepassa.view.dialog.LoadingDialog
+import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.view.dialog.ModifyPassDialog
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -40,7 +38,6 @@ import timber.log.Timber
  */
 @Route(path = "/setting/DbFm")
 class DBSettingFragment : PreferenceFragmentCompat() {
-  private lateinit var loadingDialog: LoadingDialog
   private lateinit var module: SettingModule
 
   override fun onCreatePreferences(
@@ -72,10 +69,11 @@ class DBSettingFragment : PreferenceFragmentCompat() {
   /**
    * 是否自动锁定数据库
    */
-  private fun setAutoLockDb(){
-    val enableAutoLockDb = findPreference<SwitchPreference>(getString(R.string.set_key_auto_lock_database))
+  private fun setAutoLockDb() {
+    val enableAutoLockDb =
+      findPreference<SwitchPreference>(getString(R.string.set_key_auto_lock_database))
     enableAutoLockDb?.setOnPreferenceChangeListener { _, newValue ->
-      if (newValue as Boolean){
+      if (newValue as Boolean) {
         KeepassAUtil.instance.startLockTimer(this)
         return@setOnPreferenceChangeListener true
       }
@@ -92,7 +90,7 @@ class DBSettingFragment : PreferenceFragmentCompat() {
     val lockDbTime = findPreference<ListPreference>(getString(R.string.set_key_auto_lock_db_time))!!
     lockDbTime.setOnPreferenceChangeListener { _, _ ->
       AutoLockDbUtil.get()
-          .resetTimer()
+        .resetTimer()
       return@setOnPreferenceChangeListener true
     }
   }
@@ -138,18 +136,15 @@ class DBSettingFragment : PreferenceFragmentCompat() {
           HitUtil.toaskShort(getString(R.string.db_name_no_alter))
           return@setOnPreferenceChangeListener false
         }
-        loadingDialog = LoadingDialog(context)
-        loadingDialog.show()
-        module.modifyDbName(newValue)
-            .observe(this, Observer { success ->
-              loadingDialog.dismiss()
-              if (success) {
-                EventBus.getDefault().post(ModifyDbNameEvent(newValue))
-                HitUtil.toaskShort("${getString(R.string.db_name_modify)}${getString(R.string.success)}")
-              } else {
-                HitUtil.toaskShort("${getString(R.string.db_name_modify)} ${getString(R.string.fail)}")
-              }
-            })
+        module.modifyDbName(newValue) {
+          if (it == DbSynUtil.STATE_SUCCEED) {
+            BaseApp.dbName = newValue
+            EventBus.getDefault().post(ModifyDbNameEvent(newValue))
+            HitUtil.toaskShort("${getString(R.string.db_name_modify)}${getString(R.string.success)}")
+            return@modifyDbName
+          }
+          HitUtil.toaskShort("${getString(R.string.db_name_modify)} ${getString(R.string.fail)}")
+        }
       }
       false
     }
@@ -165,18 +160,13 @@ class DBSettingFragment : PreferenceFragmentCompat() {
         return
       }
 
-      loadingDialog = LoadingDialog(context)
-      loadingDialog.show()
-      module.modifyPass(requireContext(), newValue)
-          .observe(this, Observer { success ->
-
-            loadingDialog.dismiss()
-            if (success) {
-              HitUtil.toaskShort(getString(R.string.hint_db_pass_modify_success))
-            } else {
-              HitUtil.toaskShort("${getString(R.string.hint_db_pass_modify)}${getString(R.string.fail)}")
-            }
-          })
+      module.modifyPass(requireContext(), newValue) {
+        if (it == DbSynUtil.STATE_SUCCEED) {
+          HitUtil.toaskShort(getString(R.string.hint_db_pass_modify_success))
+        } else {
+          HitUtil.toaskShort("${getString(R.string.hint_db_pass_modify)}${getString(R.string.fail)}")
+        }
+      }
     }
   }
 
@@ -189,5 +179,4 @@ class DBSettingFragment : PreferenceFragmentCompat() {
     super.onDestroy()
     EventBusHelper.unReg(this)
   }
-
 }

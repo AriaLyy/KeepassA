@@ -13,7 +13,6 @@ import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
 import com.arialyy.frame.util.SharePreUtil
-import com.arialyy.frame.util.StringUtil
 import com.dropbox.core.DbxRequestConfig
 import com.dropbox.core.android.Auth
 import com.dropbox.core.http.OkHttp3Requestor
@@ -33,7 +32,6 @@ import java.util.Date
  * dropbox 工具
  */
 object DropboxUtil : ICloudUtil {
-  private val TAG = StringUtil.getClassName(this)
   val APP_KEY = "ib45r6jnfz3oakq"
   private val DROPBOX_KEY_TOKEN = "DROPBOX_KEY_TOKEN"
 
@@ -53,8 +51,8 @@ object DropboxUtil : ICloudUtil {
   private fun getRequestConfig(): DbxRequestConfig? {
     if (sDbxRequestConfig == null) {
       sDbxRequestConfig = DbxRequestConfig.newBuilder("keepassA")
-          .withHttpRequestor(OkHttp3Requestor(OkHttp3Requestor.defaultOkHttpClient()))
-          .build()
+        .withHttpRequestor(OkHttp3Requestor(OkHttp3Requestor.defaultOkHttpClient()))
+        .build()
     }
     return sDbxRequestConfig
   }
@@ -66,7 +64,7 @@ object DropboxUtil : ICloudUtil {
   private fun init(accessToken: String) {
     if (sDbxClient == null) {
       sDbxClient = DbxClientV2(
-          getRequestConfig(), accessToken
+        getRequestConfig(), accessToken
       )
     }
   }
@@ -77,11 +75,11 @@ object DropboxUtil : ICloudUtil {
   @Synchronized
   private fun init(credential: DbxCredential) {
     val temp = DbxCredential(
-        credential.accessToken, -1L, credential.refreshToken, credential.appKey
+      credential.accessToken, -1L, credential.refreshToken, credential.appKey
     )
     if (sDbxClient == null) {
       sDbxClient = DbxClientV2(
-          getRequestConfig(), temp
+        getRequestConfig(), temp
       )
     }
   }
@@ -106,6 +104,10 @@ object DropboxUtil : ICloudUtil {
     return sDbxClient
   }
 
+  override suspend fun fileExists(fileKey: String): Boolean {
+    return getFileInfo(fileKey) != null
+  }
+
   /**
    * https://github.com/dropbox/dropbox-sdk-obj-c/issues/32
    * dropbox 的根路径是：""
@@ -115,10 +117,10 @@ object DropboxUtil : ICloudUtil {
   }
 
   override suspend fun getFileList(path: String): List<CloudFileInfo>? {
-    Timber.d( "开始获取文件列表，path = $path")
+    Timber.d("开始获取文件列表，path = $path")
     val client = getClient() ?: return null
     val entries = client.files()
-        .listFolder(path).entries
+      .listFolder(path).entries
     if (entries.isEmpty()) {
       return null
     }
@@ -128,7 +130,7 @@ object DropboxUtil : ICloudUtil {
     for (e in entries) {
       if (e is FileMetadata) {
         list.add(
-            CloudFileInfo("$root/${e.name}", e.name, e.serverModified, e.size, false, e.contentHash)
+          CloudFileInfo("$root/${e.name}", e.name, e.serverModified, e.size, false, e.contentHash)
         )
       } else {
         list.add(CloudFileInfo("$root/${e.name}", e.name, Date(), 0, true))
@@ -142,9 +144,12 @@ object DropboxUtil : ICloudUtil {
    *
    */
   override suspend fun checkContentHash(
-    cloudFileHash: String,
+    cloudFileHash: String?,
     localFileUri: Uri
   ): Boolean {
+    if (cloudFileHash == null){
+      return false
+    }
     val hasher = DropboxContentHasher()
     val buf = ByteArray(1024)
     val ips = UriUtil.getUriInputStream(BaseApp.APP, localFileUri)
@@ -155,7 +160,7 @@ object DropboxUtil : ICloudUtil {
     }
     val localHash = DropboxContentHasher.hex(hasher.digest())
     ips.close()
-    Timber.i( "本地文件hash: $localHash")
+    Timber.i("本地文件hash: $localHash")
     return cloudFileHash.equals(localHash, ignoreCase = true)
   }
 
@@ -163,23 +168,22 @@ object DropboxUtil : ICloudUtil {
     val client = getClient() ?: return null
     try {
       val entries = client.files()
-          .listRevisions(fileKey).entries
+        .listRevisions(fileKey).entries
       val entry = entries[0]
       return CloudFileInfo(
-          fileKey, entry.name, entry.serverModified, entry.size, true, entry.contentHash
+        fileKey, entry.name, entry.serverModified, entry.size, true, entry.contentHash
       )
     } catch (e: Exception) {
       e.printStackTrace()
-
     }
     return null
   }
 
   override suspend fun delFile(fileKey: String): Boolean {
-    Timber.d( "删除云端文件: $fileKey")
+    Timber.d("删除云端文件: $fileKey")
     val d = getClient()
-        ?.files()
-        ?.deleteV2(fileKey)
+      ?.files()
+      ?.deleteV2(fileKey)
     if (d == null || d.metadata == null || d.metadata is DeletedMetadata) {
       return false
     }
@@ -192,7 +196,7 @@ object DropboxUtil : ICloudUtil {
   override suspend fun getFileServiceModifyTime(fileKey: String): Date {
     val client = getClient() ?: return Date(System.currentTimeMillis())
     val entries = client.files()
-        .listRevisions(fileKey).entries
+      .listRevisions(fileKey).entries
     return entries[0].serverModified
   }
 
@@ -209,9 +213,9 @@ object DropboxUtil : ICloudUtil {
 
     val ips = BaseApp.APP.contentResolver.openInputStream(dbUri)
     val fd = getClient()
-        ?.files()
-        ?.uploadBuilder(cloudDiskPath)
-        ?.uploadAndFinish(ips)
+      ?.files()
+      ?.uploadBuilder(cloudDiskPath)
+      ?.uploadAndFinish(ips)
     if (fd != null) {
       DbSynUtil.serviceModifyTime = fd.serverModified
     }
@@ -227,8 +231,8 @@ object DropboxUtil : ICloudUtil {
     val client = getClient() ?: return null
     val os = context.contentResolver.openOutputStream(filePath)
     client.files()
-        .download(dbRecord.cloudDiskPath)
-        .download(os)
+      .download(dbRecord.cloudDiskPath)
+      .download(os)
     os?.let {
       it.flush()
       it.close()
@@ -241,9 +245,9 @@ object DropboxUtil : ICloudUtil {
    */
   fun saveToken(token: String) {
     SharePreUtil.putString(
-        Constance.PRE_FILE_NAME, BaseApp.APP,
-        DROPBOX_KEY_TOKEN,
-        QuickUnLockUtil.encryptStr(token)
+      Constance.PRE_FILE_NAME, BaseApp.APP,
+      DROPBOX_KEY_TOKEN,
+      QuickUnLockUtil.encryptStr(token)
     )
   }
 
@@ -253,8 +257,8 @@ object DropboxUtil : ICloudUtil {
    */
   private fun getLocalToken(): String? {
     val token = SharePreUtil.getString(
-        Constance.PRE_FILE_NAME, BaseApp.APP,
-        DROPBOX_KEY_TOKEN
+      Constance.PRE_FILE_NAME, BaseApp.APP,
+      DROPBOX_KEY_TOKEN
     )
     return if (!TextUtils.isEmpty(token)) {
       QuickUnLockUtil.decryption(token)
@@ -269,8 +273,8 @@ object DropboxUtil : ICloudUtil {
    */
   fun isAuthorized(): Boolean {
     val token = SharePreUtil.getString(
-        Constance.PRE_FILE_NAME, BaseApp.APP,
-        DROPBOX_KEY_TOKEN
+      Constance.PRE_FILE_NAME, BaseApp.APP,
+      DROPBOX_KEY_TOKEN
     )
     return !TextUtils.isEmpty(token)
   }

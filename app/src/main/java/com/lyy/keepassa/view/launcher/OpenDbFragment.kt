@@ -29,12 +29,12 @@ import android.view.inputmethod.EditorInfo
 import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.transition.TransitionInflater
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
-import com.keepassdroid.Database
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
@@ -44,11 +44,12 @@ import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.NotificationUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.takePermission
-import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.tencent.bugly.crashreport.BuglyLog
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.IOException
 
@@ -73,10 +74,6 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
 
   private var showChangeDbBt: Boolean = true
 
-  private val loadingDialog by lazy {
-    LoadingDialog(context)
-  }
-
   /**
    * 快速解锁读取数据库回调
    */
@@ -88,40 +85,15 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     }
   }
 
-  /**
-   * 打开数据库完成的回调
-   */
-  private val openDbFinishedObserver by lazy {
-    Observer<Database?> { db ->
-      loadingDialog.dismiss()
-      if (db == null) {
-        HitUtil.toaskLong(getString(R.string.error_open_db))
-        return@Observer
-      }
-      BaseApp.isLocked = false
-      BaseApp.KDB = db
-      Timber.d("打开数据库成功")
-      loadingDialog.dismiss()
-      if (openIsFromFill) {
-        activity?.finish()
-      } else {
-        NotificationUtil.startDbOpenNotify(requireContext())
-        Routerfit.create(ActivityRouter::class.java, requireActivity()).toMainActivity(
-          opt = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
-        )
-      }
-    }
-  }
-
   override fun initData() {
     ARouter.getInstance().inject(this)
     binding.fingerprint.visibility = View.GONE
-    enterTransition = TransitionInflater.from(context)
-      .inflateTransition(R.transition.slide_enter)
-    exitTransition = TransitionInflater.from(context)
-      .inflateTransition(R.transition.slide_exit)
-    returnTransition = TransitionInflater.from(context)
-      .inflateTransition(R.transition.slide_return)
+    context?.let {
+      enterTransition = TransitionInflater.from(it).inflateTransition(R.transition.slide_enter)
+      exitTransition = TransitionInflater.from(it).inflateTransition(R.transition.slide_exit)
+      returnTransition = TransitionInflater.from(it).inflateTransition(R.transition.slide_return)
+    }
+
     modlue = ViewModelProvider(this).get(LauncherModule::class.java)
 
     setDbName(openDbRecord)
@@ -161,6 +133,27 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         true
       } else {
         false
+      }
+    }
+    listenerOpenDb()
+  }
+
+  private fun listenerOpenDb() {
+    lifecycleScope.launch {
+      KpaUtil.kdbOpenService.openDbFlow.collectLatest { db ->
+        if (db == null) {
+          HitUtil.toaskLong(getString(R.string.error_open_db))
+          return@collectLatest
+        }
+        Timber.d("打开数据库成功")
+        if (openIsFromFill) {
+          activity?.finish()
+          return@collectLatest
+        }
+        Routerfit.create(ActivityRouter::class.java, requireActivity()).toMainActivity(
+          opt = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
+        )
+//        requireActivity().finish()
       }
     }
   }
@@ -257,6 +250,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
       R.id.open -> {
         VibratorUtil.vibrator(300)
         openDb(binding.password.text.toString())
+        // val dialog = Routerfit.create(DialogRouter::class.java).toPlayDonateDialog()
       }
       R.id.change_db -> {
         binding.cbKey.isChecked = false
@@ -278,10 +272,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
       return
     }
     modlue.checkPassType(cache, openDbRecord.keyUri)
-
-    loadingDialog.show()
-    modlue.openDb(requireContext(), openDbRecord, cache)
-      .observe(this, openDbFinishedObserver)
+    KpaUtil.kdbOpenService.openDb(requireContext(), openDbRecord, cache)
   }
 
   /**

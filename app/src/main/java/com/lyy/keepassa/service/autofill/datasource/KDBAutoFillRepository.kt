@@ -23,6 +23,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.KpaUtil
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -35,8 +36,6 @@ import java.util.UUID
  * here only for simplicity and learning purposes.
  */
 object KDBAutoFillRepository {
-  private val TAG = "KDBAutoFillRepository"
-
 
   /**
    * 通过包名获取填充数据
@@ -118,9 +117,7 @@ object KDBAutoFillRepository {
       val appName = getAppName(context, apkPkgName)
       entry.setTitle(appName ?: "newEntry", BaseApp.KDB!!.pm)
       entry.icon = PwIconStandard(0)
-      GlobalScope.launch {
-        KdbUtil.addEntry(entry, save = false)
-      }
+      KpaUtil.kdbHandlerService.addEntry(entry as PwEntryV4)
     } else {
       entry = listStorage[0]
       Timber.w("已存在含有【$apkPkgName】的条目，将更新条目")
@@ -141,9 +138,7 @@ object KDBAutoFillRepository {
         }
       }
     }
-    GlobalScope.launch {
-      KdbUtil.saveDb(uploadDb = false)
-    }
+    KpaUtil.kdbHandlerService.saveDbByBackground()
     Timber.d("密码信息保存成功")
   }
 

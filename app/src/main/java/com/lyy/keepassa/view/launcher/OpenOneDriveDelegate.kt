@@ -16,9 +16,7 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.cloud.OneDriveUtil
-import com.lyy.keepassa.util.putArgument
 import com.lyy.keepassa.view.StorageType.ONE_DRIVE
-import com.lyy.keepassa.view.dialog.CloudFileListDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 
 /**
@@ -56,7 +54,7 @@ class OpenOneDriveDelegate : IOpenDbDelegate {
   }
 
   private fun showHitDialog(onClick: () -> Unit) {
-    Routerfit.create(DialogRouter::class.java).toMsgDialog(
+    Routerfit.create(DialogRouter::class.java).showMsgDialog(
       msgContent = Html.fromHtml(activity!!.resources.getString(R.string.one_drive_hint)),
       btnClickListener = object : OnMsgBtClickListener {
         override fun onCover(v: Button) {
@@ -68,20 +66,15 @@ class OpenOneDriveDelegate : IOpenDbDelegate {
 
         override fun onCancel(v: Button) {
         }
-
       }
     )
-      .show()
   }
 
   /**
    * 显示云端文件列表
    */
   private fun showCloudListDialog() {
-    val dialog = CloudFileListDialog().apply {
-      putArgument("cloudFileDbPathType", ONE_DRIVE)
-    }
-    dialog.show(activity!!.supportFragmentManager, "cloud_file_list_dialog")
+    Routerfit.create(DialogRouter::class.java).showCloudFileListDialog(ONE_DRIVE)
   }
 
   override fun onActivityResult(

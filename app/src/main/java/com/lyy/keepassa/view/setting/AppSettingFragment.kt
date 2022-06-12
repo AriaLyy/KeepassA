@@ -46,13 +46,13 @@ import com.lyy.keepassa.common.PassType
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.PermissionsUtil
 import com.lyy.keepassa.view.UpgradeLogDialog
 import com.lyy.keepassa.view.fingerprint.FingerprintActivity
 import de.psdev.licensesdialog.LicensesDialog
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -127,7 +127,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
         val mList = ReflectUtils.reflect(this).field("mList").get<RecyclerView>()
         val adapter = mList.adapter
         val position =
-          (adapter as PreferencePositionCallback).getPreferenceAdapterPosition(scrollKey)
+          (adapter as PreferencePositionCallback).getPreferenceAdapterPosition(scrollKey!!)
         Timber.d("postiion = $position, key = $scrollKey")
         isHighlighted = true
         lifecycleScope.launch(Dispatchers.IO) {
@@ -246,7 +246,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
    * 截取短密码，需要延时截取，因为Preference的保存是异步的，有可能会比较慢
    */
   private fun subShortPass() {
-    GlobalScope.launch {
+    KpaUtil.scope.launch {
       delay(1000)
       KeepassAUtil.instance.subShortPass()
     }
@@ -379,6 +379,9 @@ class AppSettingFragment : PreferenceFragmentCompat() {
         10 -> {
           lang = Locale("tr")
         }
+        11 -> {
+          lang = Locale("uk", "rUA")
+        }
       }
       BaseApp.currentLang = lang
       LanguageUtil.saveLanguage(requireContext(), lang)
@@ -422,12 +425,11 @@ class AppSettingFragment : PreferenceFragmentCompat() {
       )
 
     if (!isShowed) {
-      Routerfit.create(DialogRouter::class.java).toMsgDialog(
+      Routerfit.create(DialogRouter::class.java).showMsgDialog(
         msgContent = Html.fromHtml(BaseApp.APP.getString(R.string.hint_background_start, msg)),
         showCancelBt = false,
         showCountDownTimer = Pair(true, 5)
       )
-        .show()
       SharePreUtil.putBoolean(
         Constance.PRE_FILE_NAME,
         requireContext(),

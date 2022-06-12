@@ -20,6 +20,13 @@ import java.util.Date
 interface ICloudUtil {
 
   /**
+   * 文件是否存在
+   * @param fileKey webDav/dropbox中为云端路径，onedrive为id
+   * @return false 文件不存在
+   */
+  suspend fun fileExists(fileKey: String): Boolean
+
+  /**
    * 获取云盘根路径
    */
   fun getRootPath(): String
@@ -28,7 +35,7 @@ interface ICloudUtil {
    * 获取文件列表
    * @return 如果获取不到文件列表，返回null
    */
-  suspend fun getFileList(path: String): List<CloudFileInfo>?
+  suspend fun getFileList(dirPath: String): List<CloudFileInfo>?
 
   /**
    * 检查云端文件的hash和本地文件的hash是否一致
@@ -37,7 +44,7 @@ interface ICloudUtil {
    * @return true 两端文件一致
    */
   suspend fun checkContentHash(
-    cloudFileHash: String,
+    cloudFileHash: String?,
     localFileUri: Uri
   ): Boolean
 
@@ -81,5 +88,4 @@ interface ICloudUtil {
     dbRecord: DbHistoryRecord,
     filePath: Uri
   ): String?
-
 }

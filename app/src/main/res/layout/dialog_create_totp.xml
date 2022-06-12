@@ -1,210 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <androidx.constraintlayout.widget.ConstraintLayout
-      style="@style/KpaDialogLayoutStyle"
+  <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:animateLayoutChanges="true"
-      android:minWidth="@dimen/dialog_min_width">
+      android:minWidth="@dimen/dialog_min_width"
+      android:orientation="vertical"
+      style="@style/KpaDialogLayoutStyle"
+      >
 
 
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="48dp"
         android:gravity="center"
         android:text="@string/create_totp"
         android:textColor="@color/text_blue_color"
         android:textSize="@dimen/text_size_biggest"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/str_key_layout"
+    <include
+        layout="@layout/layout_otp_create_menu"
+        android:id="@+id/menuLayout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        />
+
+    <ViewStub
+        android:id="@+id/vsCustom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        app:errorIconDrawable="@drawable/ic_info_filled"
-        app:errorTextAppearance="@style/InputEditTextErrorStyle"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-        app:startIconDrawable="@drawable/ic_title_24px"
-        app:startIconTint="@color/color_icon_grey">
+        android:layout="@layout/layout_otp_create_default"
+        />
 
-      <com.google.android.material.textfield.TextInputEditText
-          android:id="@+id/str_key"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:background="@color/transparent"
-          android:hint="@string/key"
-          android:singleLine="true"
-          android:textColor="@color/text_black_grey_color"
-          android:textColorHint="@color/text_hint_color"
-          android:textSize="@dimen/text_size_normal">
-
-      </com.google.android.material.textfield.TextInputEditText>
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <RadioGroup
-        android:id="@+id/rgTotp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/str_key_layout">
-
-      <RadioButton
-          android:id="@+id/rbDefault"
-          style="@style/KpaRadioButtonStyle"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:paddingStart="8dp"
-          android:tag="default"
-          android:text="@string/totp_defaule" />
-
-      <RadioButton
-          style="@style/KpaRadioButtonStyle"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:paddingStart="8dp"
-          android:tag="steam"
-          android:text="@string/totp_steam" />
-
-      <RadioButton
-          style="@style/KpaRadioButtonStyle"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:paddingStart="8dp"
-          android:tag="custom"
-          android:text="@string/totp_custom" />
-    </RadioGroup>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clConstom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rgTotp">
-
-      <TextView
-          android:id="@+id/tvSettingHint"
-          style="@style/KpaTitleTextStyle"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:paddingBottom="12sp"
-          android:text="@string/totp_custom_hint"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
-
-      <TextView
-          android:id="@+id/textView"
-          style="@style/KpaContentTextStyle"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="24dp"
-          android:text="@string/totp_Arithmetic"
-          app:layout_constraintBottom_toBottomOf="@+id/sp"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="@+id/sp" />
-
-      <Spinner
-          android:id="@+id/sp"
-          android:layout_width="200dp"
-          android:layout_height="40dp"
-          android:entries="@array/totp_arithmetic"
-          app:layout_constraintStart_toEndOf="@+id/textView"
-          app:layout_constraintTop_toBottomOf="@+id/tvSettingHint" />
-
-      <TextView
-          android:id="@+id/textView1"
-          style="@style/KpaContentTextStyle"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/totp_time"
-          app:layout_constraintBottom_toBottomOf="@+id/slTime"
-          app:layout_constraintEnd_toStartOf="@+id/slTime"
-          app:layout_constraintHorizontal_chainStyle="spread"
-          app:layout_constraintTop_toBottomOf="@+id/sp" />
-
-      <com.google.android.material.slider.Slider
-          android:id="@+id/slTime"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:stepSize="1"
-          android:value="30"
-          android:valueFrom="0"
-          android:valueTo="60"
-          android:valueType="intType"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="@+id/sp"
-          app:layout_constraintTop_toBottomOf="@+id/sp" />
-
-
-      <TextView
-          android:id="@+id/textView2"
-          style="@style/KpaContentTextStyle"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/totp_len"
-          app:layout_constraintBottom_toBottomOf="@+id/slLen"
-          app:layout_constraintEnd_toStartOf="@+id/slLen"
-          app:layout_constraintTop_toBottomOf="@+id/slTime" />
-
-      <com.google.android.material.slider.Slider
-          android:id="@+id/slLen"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:stepSize="1"
-          android:value="6"
-          android:valueFrom="6"
-          android:valueTo="10"
-          android:valueType="intType"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="@+id/slTime"
-          app:layout_constraintTop_toBottomOf="@+id/slTime" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/clConstom">
-
-      <Button
-          android:id="@+id/cancel"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:background="@drawable/ripple_white_selector"
-          android:text="@string/cancel"
-          android:textColor="@color/text_gray_color" />
-
-      <Button
-          android:id="@+id/enter"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:background="@drawable/ripple_white_selector"
-          android:text="@string/enter"
-          android:textColor="@color/text_blue_color" />
-
-    </LinearLayout>
-
-
-  </androidx.constraintlayout.widget.ConstraintLayout>
+  </LinearLayout>
 </layout>

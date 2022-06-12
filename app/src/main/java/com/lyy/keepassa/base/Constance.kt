@@ -16,5 +16,6 @@ class Constance {
     const val VERSION_CODE = "VersionCode"
     const val PRE_KEY_START_APP_NUM = "PRE_KEY_START_APP_NUM"
     const val START_DONATE_JUDGMENT_VALUE = 60
+    const val KPA_IS_COLLECTION = "KPA_IS_COLLECTION"
   }
 }

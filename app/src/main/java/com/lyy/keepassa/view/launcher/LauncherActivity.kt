@@ -88,17 +88,9 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     isFromFill = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL, false)
     isFromFillSave = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL_SAVE, false)
     apkPkgName = intent.getStringExtra(KEY_PKG_NAME)
-    module = ViewModelProvider(this)
-      .get(LauncherModule::class.java)
+    module = ViewModelProvider(this).get(LauncherModule::class.java)
     initUI()
     module.securityCheck(this)
-//    MainScope().launch {
-//      withContext(Dispatchers.IO){
-//        delay(2000)
-//        CrashReport.testJavaCrash()
-//      }
-//    }
-//    throw NullPointerException("bugly测试")
   }
 
   override fun useAnim(): Boolean {

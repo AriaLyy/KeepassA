@@ -9,18 +9,19 @@
 
 package com.lyy.keepassa.view
 
-import androidx.lifecycle.liveData
+import androidx.fragment.app.FragmentActivity
 import com.keepassdroid.database.PwDatabaseV4
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupId
 import com.keepassdroid.database.PwGroupV4
+import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
-import com.lyy.keepassa.util.KdbUtil
-import com.lyy.keepassa.util.cloud.DbSynUtil
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.lyy.keepassa.event.MoveEvent
+import com.lyy.keepassa.util.HitUtil
+import com.lyy.keepassa.util.KpaUtil
+import org.greenrobot.eventbus.EventBus
 import java.util.UUID
 
 class ChoseDirModule : BaseModule() {
@@ -31,44 +32,34 @@ class ChoseDirModule : BaseModule() {
    * @param curGroup 当前群组
    */
   fun moveGroup(
+    ac: FragmentActivity,
     groupId: PwGroupId,
     curGroup: PwGroup
-  ) = liveData {
-    val p = withContext(Dispatchers.IO) {
-      val group = BaseApp.KDB.pm.groups[groupId] as PwGroupV4
-
-      if (group.parent == BaseApp.KDB.pm.recycleBin){
-        (BaseApp.KDB.pm as PwDatabaseV4).undoRecycle(group, curGroup)
-      }else{
-        (BaseApp.KDB.pm as PwDatabaseV4).moveGroup(group, curGroup)
-      }
-
-      val b = KdbUtil.saveDb()
-      Pair(b == DbSynUtil.STATE_SUCCEED, group)
+  ) {
+    val group = BaseApp.KDB.pm.groups[groupId] as PwGroupV4
+    if (group.parent == BaseApp.KDB.pm.recycleBin) {
+      (BaseApp.KDB.pm as PwDatabaseV4).undoRecycle(group, curGroup)
+    } else {
+      (BaseApp.KDB.pm as PwDatabaseV4).moveGroup(group, curGroup)
     }
-    emit(p)
+    KpaUtil.kdbHandlerService.saveDbByBackground()
+    EventBus.getDefault().post(MoveEvent(MoveEvent.MOVE_TYPE_GROUP, null, group))
+    HitUtil.toaskShort(ac.getString(R.string.undo_grouped))
+    ac.finishAfterTransition()
   }
 
   /**
    * 恢复条目
    */
   fun moveEntry(
+    ac: FragmentActivity,
     entryId: UUID,
-    curGroup: PwGroup
-  ) = liveData {
-    val p = withContext(Dispatchers.IO) {
-      val entry = BaseApp.KDB.pm.entries[entryId] ?: return@withContext null
-      val entryV4 = entry as PwEntryV4
-
-      if (entryV4.parent == BaseApp.KDB.pm.recycleBin){
-        (BaseApp.KDB.pm as PwDatabaseV4).undoRecycle(entryV4, curGroup)
-      }else{
-        (BaseApp.KDB.pm as PwDatabaseV4).moveEntry(entryV4, curGroup)
-      }
-
-      val b = KdbUtil.saveDb()
-      Pair(b == DbSynUtil.STATE_SUCCEED, entryV4)
-    }
-    emit(p)
+    curGroup: PwGroupV4
+  ) {
+    val entry = BaseApp.KDB.pm.entries[entryId] ?: return
+    val entryV4 = entry as PwEntryV4
+    KpaUtil.kdbHandlerService.moveEntry(entryV4, curGroup)
+    HitUtil.toaskShort(ac.getString(R.string.undo_entryed))
+    ac.finishAfterTransition()
   }
 }

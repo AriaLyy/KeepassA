@@ -36,6 +36,7 @@
   <color name="click_pressed_color">#22000000</color>
 
   <color name="grey600">#757575</color>
+  <color name="color_BB757575">#BB757575</color>
   <color name="color_note_bg">#CBCBCB</color>
   <color name="error_color">#e6162d</color>
   <color name="bg_first_create_db">#84BA55</color>

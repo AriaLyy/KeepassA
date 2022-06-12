@@ -23,7 +23,6 @@ import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.security.ProtectedBinary
 import com.lyy.keepassa.R
 import com.lyy.keepassa.router.DialogRouter
-import com.lyy.keepassa.view.dialog.ImgViewerDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -70,18 +69,16 @@ class EntryDetailFilePopMenu(
           onDownloadClick?.onDownload(key, file)
         }
         R.id.open_whit_text -> {
-          Routerfit.create(DialogRouter::class.java).toMsgDialog(
+          Routerfit.create(DialogRouter::class.java).showMsgDialog(
             msgTitle = ResUtil.getString(R.string.txt_viewer),
             msgContent = String(file.data.readBytes()),
             showCancelBt = false
           )
-            .show()
         }
         R.id.open_whit_img -> {
           val bytes = file.data.readBytes()
           if (bytes.isNotEmpty()) {
-            val imgDialog = ImgViewerDialog(bytes)
-            imgDialog.show(context.supportFragmentManager, "img_dialog")
+            Routerfit.create(DialogRouter::class.java).showImgViewerDialog(bytes)
           }
         }
         R.id.open_whit_other -> {

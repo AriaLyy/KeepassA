@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-  <RelativeLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/rlRoot"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -15,60 +15,79 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@color/background_color"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_up"
         app:subtitleTextAppearance="@style/Toolbar.SubTitleText"
         app:theme="@style/ToolbarMenuTheme"
         app:titleTextAppearance="@style/Toolbar.TitleText" />
 
-    <LinearLayout
-        android:id="@+id/head"
-        android:layout_width="match_parent"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:transitionName="@string/transition_entry_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/kpa_toolbar"
+        app:srcCompat="@drawable/ic_android" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/kpa_toolbar"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="16dp">
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="title"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/text_size_bigger"
+        app:layout_constraintBottom_toBottomOf="@+id/icon"
+        app:layout_constraintEnd_toStartOf="@+id/ivCollection"
+        app:layout_constraintStart_toEndOf="@+id/icon"
+        app:layout_constraintTop_toTopOf="@+id/icon" />
 
-      <androidx.appcompat.widget.AppCompatImageView
-          android:id="@+id/icon"
-          android:layout_width="40dp"
-          android:layout_height="40dp"
-          android:transitionName="@string/transition_entry_icon"
-          app:srcCompat="@drawable/ic_android" />
-
-      <TextView
-          android:id="@+id/title"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_vertical"
-          android:layout_marginStart="16dp"
-          android:ellipsize="end"
-          android:singleLine="true"
-          android:text="title"
-          android:textColor="@color/text_black_color"
-          android:textSize="@dimen/text_size_bigger" />
-
-    </LinearLayout>
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivCollection"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:layout_marginEnd="16dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/kpa_toolbar"
+        app:layout_constraintTop_toTopOf="@+id/icon"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false"
+        app:srcCompat="@drawable/ic_start_selector" />
 
     <View
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/head"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
-        android:background="@color/line_color" />
+        android:background="@color/line_color"
+        app:layout_constraintTop_toBottomOf="@+id/icon" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_above="@+id/bottom_line"
         android:layout_below="@+id/line"
         android:paddingStart="16dp"
-        android:paddingEnd="16dp">
+        android:paddingEnd="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line">
 
       <LinearLayout
           android:layout_width="match_parent"
@@ -221,43 +240,46 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <RelativeLayout
-        android:id="@+id/bottom_bar"
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:text="time"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/text_size_normal" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/del_bt"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:background="@drawable/ripple_white_selector"
+        android:src="@drawable/ic_del" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flowBottom"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/background_color"
-        android:orientation="horizontal">
-
-      <TextView
-          android:id="@+id/time"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_centerVertical="true"
-          android:layout_gravity="center_vertical"
-          android:layout_marginLeft="16dp"
-          android:text="time"
-          android:textColor="@color/text_black_color"
-          android:textSize="@dimen/text_size_normal" />
-
-      <androidx.appcompat.widget.AppCompatImageButton
-          android:id="@+id/del_bt"
-          android:layout_width="30dp"
-          android:layout_height="30dp"
-          android:layout_alignParentRight="true"
-          android:layout_centerVertical="true"
-          android:layout_marginRight="16dp"
-          android:background="@drawable/ripple_white_selector"
-          android:src="@drawable/ic_del" />
-
-    </RelativeLayout>
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:constraint_referenced_ids="time, del_bt"
+        app:flow_firstHorizontalStyle="spread_inside"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <View
         android:id="@+id/bottom_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_above="@+id/bottom_bar"
-        android:background="@color/line_color" />
+        android:background="@color/line_color"
+        app:layout_constraintBottom_toTopOf="@+id/flowBottom" />
 
-  </RelativeLayout>
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="title,kpa_toolbar,line,scrollView,flowBottom,bottom_line,ivCollection" />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

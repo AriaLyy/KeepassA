@@ -17,19 +17,17 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.transition.addListener
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
-import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupId
+import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
@@ -39,21 +37,32 @@ import com.lyy.keepassa.common.SortType.NONE
 import com.lyy.keepassa.common.SortType.TIME_ASC
 import com.lyy.keepassa.common.SortType.TIME_DESC
 import com.lyy.keepassa.databinding.ActivityGroupDetailBinding
-import com.lyy.keepassa.entity.SimpleItemEntity
-import com.lyy.keepassa.event.CreateOrUpdateEntryEvent
-import com.lyy.keepassa.event.CreateOrUpdateGroupEvent
-import com.lyy.keepassa.event.DelEvent
+import com.lyy.keepassa.entity.showPopMenu
+import com.lyy.keepassa.event.EntryState.CREATE
+import com.lyy.keepassa.event.EntryState.DELETE
+import com.lyy.keepassa.event.EntryState.MODIFY
+import com.lyy.keepassa.event.EntryState.MOVE
+import com.lyy.keepassa.event.EntryState.UNKNOWN
 import com.lyy.keepassa.event.MoveEvent
 import com.lyy.keepassa.router.ActivityRouter
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.checkGroupIsParent
+import com.lyy.keepassa.util.createGroup
+import com.lyy.keepassa.util.deleteGroup
+import com.lyy.keepassa.util.doOnInterceptTouchEvent
+import com.lyy.keepassa.util.doOnItemClickListener
+import com.lyy.keepassa.util.doOnItemLongClickListener
+import com.lyy.keepassa.util.updateModifyGroup
 import com.lyy.keepassa.view.SimpleEntryAdapter
-import com.lyy.keepassa.view.create.CreateGroupDialog
-import com.lyy.keepassa.view.menu.EntryPopMenu
-import com.lyy.keepassa.view.menu.GroupPopMenu
 import com.lyy.keepassa.widget.MainExpandFloatActionButton
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
+import timber.log.Timber
 
 /**
  * 群组详情、回收站详情
@@ -69,7 +78,6 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
 
   private lateinit var module: GroupDetailModule
   private lateinit var adapter: SimpleEntryAdapter
-  private val entryData = ArrayList<SimpleItemEntity>()
   private var curx = 0
 
   @JvmField
@@ -84,29 +92,6 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
 
   override fun setLayoutId(): Int {
     return R.layout.activity_group_detail
-  }
-
-  override fun initData(savedInstanceState: Bundle?) {
-    super.initData(savedInstanceState)
-
-
-    ARouter.getInstance().inject(this)
-    EventBusHelper.reg(this)
-
-    // 检查是否是在回收站中
-    if (!isRecycleBin) {
-      isRecycleBin =
-        BaseApp.isV4 && BaseApp.KDB!!.pm.recycleBin != null && BaseApp.KDB!!.pm.recycleBin.id == groupId
-    }
-    if (isRecycleBin) {
-      binding.fab.visibility = View.GONE
-    }
-
-    binding.ctlCollapsingLayout.title = groupTitle
-    binding.kpaToolbar.title = groupTitle
-    binding.kpaToolbar.setNavigationOnClickListener {
-      finishAfterTransition()
-    }
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,12 +113,143 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
     })
   }
 
+  override fun initData(savedInstanceState: Bundle?) {
+    super.initData(savedInstanceState)
+    ARouter.getInstance().inject(this)
+    EventBusHelper.reg(this)
+
+    // 检查是否是在回收站中
+    if (!isRecycleBin) {
+      isRecycleBin =
+        BaseApp.isV4 && BaseApp.KDB!!.pm.recycleBin != null && BaseApp.KDB!!.pm.recycleBin.id == groupId
+    }
+    if (isRecycleBin) {
+      binding.fab.visibility = View.GONE
+    }
+
+    binding.ctlCollapsingLayout.title = groupTitle
+    binding.kpaToolbar.title = groupTitle
+    binding.kpaToolbar.setNavigationOnClickListener {
+      finishAfterTransition()
+    }
+  }
+
   private fun loadData() {
     binding.kpaToolbar.inflateMenu(R.menu.menu_group_detail)
-    module = ViewModelProvider(this).get(GroupDetailModule::class.java)
+    module = ViewModelProvider(this)[GroupDetailModule::class.java]
     initList()
     initFab()
     initMenu()
+    listenerGetGroupData()
+    listenerEntryStateChange()
+    listenerGroupStateChange()
+    module.getGroupData(this, groupId)
+  }
+
+  /**
+   * listener the group status change, there are states: create, delete, modify, move
+   */
+  private fun listenerGroupStateChange() {
+    lifecycleScope.launch {
+      KpaUtil.kdbHandlerService.groupStateChangeFlow.collectLatest {
+        if (it.groupV4 == null || module.curGroupV4 == null) {
+          return@collectLatest
+        }
+        when (it.state) {
+          CREATE -> {
+            adapter.createGroup(module.entryData, it.groupV4, module.curGroupV4)
+            if (it.groupV4.checkGroupIsParent(module.curGroupV4)) {
+              showList(true)
+            }
+          }
+          MODIFY -> {
+            adapter.updateModifyGroup(module.entryData, it.groupV4, module.curGroupV4)
+          }
+          MOVE -> {
+            // module.moveEntry(adapter, it.pwEntryV4, it.oldParent!!)
+          }
+          DELETE -> {
+            adapter.deleteGroup(
+              module.entryData,
+              it.groupV4,
+              it.oldParent!!,
+              module.curGroupV4
+            )
+            if (module.entryData.isEmpty()) {
+              showList(false)
+            }
+          }
+          UNKNOWN -> {
+            Timber.d("un known status")
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * listener the entry status change, there are three states: create, delete, and modify.
+   */
+  private fun listenerEntryStateChange() {
+    lifecycleScope.launch {
+      KpaUtil.kdbHandlerService.entryStateChangeFlow.collectLatest {
+        it.pwEntryV4?.let { entry ->
+          when (it.state) {
+            CREATE -> {
+              module.createNewEntry(adapter, entry)
+              if (it.pwEntryV4.checkGroupIsParent(module.curGroupV4)) {
+                showList(true)
+              }
+            }
+            MODIFY -> {
+              module.updateModifyEntry(adapter, entry)
+              if (module.entryData.isEmpty()) {
+                showList(false)
+              }
+            }
+            MOVE -> {
+              module.moveEntry(adapter, entry, it.oldParent!!)
+            }
+            DELETE -> {
+              module.deleteEntry(adapter, entry, it.oldParent!!)
+              if (module.entryData.isEmpty()) {
+                showList(false)
+              }
+            }
+            UNKNOWN -> {
+              Timber.d("un known status")
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private fun listenerGetGroupData() {
+    lifecycleScope.launch {
+      module.getDataFlow.collectLatest { list ->
+        binding.laAnim.cancelAnimation()
+        binding.laAnim.visibility = View.GONE
+        if (list.isNullOrEmpty()) {
+          // 设置appbar为收缩状态
+          binding.appBar.setExpanded(false, false)
+          showList(false)
+          return@collectLatest
+        }
+        showList(true)
+        adapter.notifyDataSetChanged()
+      }
+    }
+  }
+
+  private fun showList(showList: Boolean) {
+    if (showList) {
+      binding.list.visibility = View.VISIBLE
+      getEmptyLayout().visibility = View.GONE
+      return
+    }
+    getEmptyLayout().visibility = View.VISIBLE
+    binding.list.visibility = View.GONE
   }
 
   private fun initMenu() {
@@ -154,12 +270,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
         else -> NONE
       }
       if (type != NONE) {
-        module.sortData(type, entryData)
-          .observe(this, { sortData ->
-            entryData.clear()
-            entryData.addAll(sortData)
-            adapter.notifyDataSetChanged()
-          })
+        module.sortData(adapter, type)
       }
       return@setOnMenuItemClickListener true
     }
@@ -184,93 +295,52 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       }
 
       override fun onGroupClick() {
-        val dialog = CreateGroupDialog.generate {
-          parentGroup = BaseApp.KDB!!.pm.groups[groupId] ?: BaseApp.KDB!!.pm.rootGroup
-          build()
-        }
-        dialog.show(supportFragmentManager, "CreateGroupDialog")
+        Routerfit.create(DialogRouter::class.java)
+          .showCreateGroupDialog(
+            (BaseApp.KDB!!.pm.groups[groupId] ?: BaseApp.KDB!!.pm.rootGroup) as PwGroupV4
+          )
         binding.fab.hintMoreOperate()
       }
     })
   }
 
   private fun initList() {
-    adapter = SimpleEntryAdapter(this, entryData)
+    adapter = SimpleEntryAdapter(this, module.entryData)
     binding.list.setHasFixedSize(true)
     binding.list.layoutManager = LinearLayoutManager(this)
     binding.list.adapter = adapter
-
-    getData()
-
-    RvItemClickSupport.addTo(binding.list)
-      .setOnItemClickListener { _, position, v ->
-        val item = entryData[position]
-        if (item.obj is PwGroup) {
-          val group = item.obj as PwGroup
-          Routerfit.create(ActivityRouter::class.java, this).toGroupDetailActivity(
-            groupName = group.name,
-            groupId = group.id,
-            isRecycleBin = isRecycleBin,
-            opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
-          )
-          return@setOnItemClickListener
-        }
-
-        if (item.obj is PwEntry) {
-          val icon = v.findViewById<AppCompatImageView>(R.id.icon)
-          KeepassAUtil.instance.turnEntryDetail(this, item.obj as PwEntry, icon)
-          return@setOnItemClickListener
-        }
+    binding.list.doOnItemClickListener { _, position, v ->
+      val item = module.entryData[position]
+      if (item.obj is PwGroup) {
+        val group = item.obj as PwGroup
+        Routerfit.create(ActivityRouter::class.java, this).toGroupDetailActivity(
+          groupName = group.name,
+          groupId = group.id,
+          isRecycleBin = isRecycleBin,
+          opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
+        )
+        return@doOnItemClickListener
       }
 
-    RvItemClickSupport.addTo(binding.list)
-      .setOnItemLongClickListener { _, position, v ->
-        showPopMenu(v, position)
-        true
+      if (item.obj is PwEntry) {
+        val icon = v.findViewById<AppCompatImageView>(R.id.icon)
+        KeepassAUtil.instance.turnEntryDetail(this, item.obj as PwEntry, icon)
+        return@doOnItemClickListener
       }
+    }
+
+    binding.list.doOnItemLongClickListener { _, position, v ->
+      module.entryData[position].showPopMenu(this, v, curx, isRecycleBin)
+      return@doOnItemLongClickListener true
+    }
 
     // 获取点击位置
-    binding.list.addOnItemTouchListener(object : OnItemTouchListener {
-      override fun onTouchEvent(
-        rv: RecyclerView,
-        e: MotionEvent
-      ) {
+    binding.list.doOnInterceptTouchEvent { _, e ->
+      if (e.action == MotionEvent.ACTION_DOWN) {
+        curx = e.x.toInt()
       }
-
-      override fun onInterceptTouchEvent(
-        rv: RecyclerView,
-        e: MotionEvent
-      ): Boolean {
-        if (e.action == MotionEvent.ACTION_DOWN) {
-          curx = e.x.toInt()
-        }
-        return false
-      }
-
-      override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
-      }
-    })
-  }
-
-  private fun getData() {
-    module.getGroupData(this, groupId)
-      .observe(this, Observer { list ->
-        binding.laAnim.cancelAnimation()
-        binding.laAnim.visibility = View.GONE
-        binding.fab.visibility = View.VISIBLE
-        if (list == null || list.size == 0) {
-          // 设置appbar为收缩状态
-          binding.appBar.setExpanded(false, false)
-          getEmptyLayout().visibility = View.VISIBLE
-          binding.list.visibility = View.GONE
-          return@Observer
-        }
-        binding.list.visibility = View.VISIBLE
-        getEmptyLayout().visibility = View.GONE
-        entryData.clear()
-        entryData.addAll(list)
-        adapter.notifyDataSetChanged()
-      })
+      return@doOnInterceptTouchEvent false
+    }
   }
 
   private fun getEmptyLayout(): View {
@@ -281,74 +351,11 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
   }
 
   /**
-   * 创建条目
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onEntryCreate(event: CreateOrUpdateEntryEvent) {
-    if (event.entry.parent.id == groupId) {
-      if (event.isUpdate) {
-        val entry: SimpleItemEntity? = entryData.find { it.obj == event.entry }
-        entry?.let {
-          val pos = entryData.indexOf(it)
-          entryData[pos] = KeepassAUtil.instance.convertPwEntry2Item(event.entry)
-          adapter.notifyItemChanged(pos)
-        }
-        return
-      }
-      getData()
-    }
-  }
-
-  /**
-   * 创建群组
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onGroupCreate(event: CreateOrUpdateGroupEvent) {
-    if (event.pwGroup.parent.id != groupId) {
-      return
-    }
-    getData()
-  }
-
-  /**
-   * 删除群组
-   */
-  @Subscribe(threadMode = MAIN)
-  fun onDelGroup(delEvent: DelEvent?) {
-    if (delEvent == null) {
-      return
-    }
-    getData()
-  }
-
-  /**
    * 有条目移动或有条目从回收站中撤回
    */
   @Subscribe(threadMode = MAIN)
   fun onMove(event: MoveEvent) {
-    getData()
-  }
-
-  /**
-   * 长按悬浮菜单
-   */
-  private fun showPopMenu(
-    v: View,
-    position: Int
-  ) {
-    val data = entryData[position]
-    if (data.obj is PwGroup) {
-      val group = data.obj as PwGroup
-      val pop = GroupPopMenu(this, v, group, curx, isRecycleBin)
-      pop.show()
-      return
-    }
-
-    if (data.obj is PwEntry) {
-      val entry = data.obj as PwEntry
-      val pop = EntryPopMenu(this, v, entry, curx, isRecycleBin)
-      pop.show()
-    }
+    // getData()
   }
 
   override fun onDestroy() {

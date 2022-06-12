@@ -24,6 +24,9 @@ import java.util.UUID
  **/
 interface ActivityRouter {
 
+  @RouterPath(path = "/collection/ac")
+  fun toMyCollection(@RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null)
+
   @RouterPath(path = "/setting/app")
   fun toAppSetting(
     @RouterArgName(name = SettingActivity.KEY_TYPE) type: Int = SettingActivity.TYPE_APP,

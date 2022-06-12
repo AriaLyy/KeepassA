@@ -297,4 +297,13 @@
     <string name="help_create_group">Wähle einen Gruppennamen (max. 16 Zeichen)</string>
     <string name="help_create_db">Erstelle KeePass v4 Datenbank als Voreinstellung</string>
     <string name="db1">Datenbank\t|\t&lt;font color=#757575&gt;%s&lt;/font&gt;</string>
+    <string name="key1">Geheimer Schlüssel: %s</string>
+    <string name="key">Geheimer Schlüssel</string>
+    <string name="help_pass_key">Eine Schlüsseldatei entspricht einem Schlüssel um Daten zu entsperren und ist üblicherweise deutlich komplexer und zuverlässiger als ein Passwort. Aber sie ist auch schwieriger zu verstecken. Wenn die Datenbank in der Cloud gespeichert ist, darf der Schlüssel nicht dort zusammen mit der Datenbank abgelegt werden.
+\nEs kann eine beliebige Datei als Schlüssel für das Öffnen der Datenbank gewählt werden. Ein Foto oder eine Textdatei.
+\n⚠️ Achtung: Wenn das Bild oder die Textdatei verändert wurde, kann die Datenbank nicht mehr entsperrt werden!!!
+\nEs wird daher dringend empfohlen nur Read-Only-Dateien als Schlüssel zu verwenden.</string>
+    <string name="hint_full_fingerprint">Der Fingerabdruck wird verwendet um die Datenbank im Quick-Unlock-Interface und im Datenbank-Unlock-Interface zu entsperren. KeePassA verschlüsselt und speichert das Datenbank-Masterpasswort und die Schlüsselinformation im lokalen Schlüsselspeicher von Android und nutzt die Fingerabdruck-Authorisierung zum Schutz. Nur dein Fingerabdruck kann zum entsperren der Datenbank genutzt werden.</string>
+    <string name="hint_background_start">"Gehe zu &lt;font color=#FF0000&gt;【%s】&lt;/font&gt;und lasse Hintergrund-Popup-Benachrichtigungen zu um die Autovervollständigung zu verbessern.&lt;br&gt; &lt;font color=#FF0000&gt;KeePassA zeigt das entsprechende Interface um die Datenbank zu öffnen, wenn die Autovervollständigung  verwendet wird&lt;/font&gt;"</string>
+    <string name="setting_miui_background_start">Einstellungen &gt; Apps &amp; Benachrichtigungen &gt; Alle Apps &gt; KeePassA &gt; Berechtigungen</string>
 </resources>

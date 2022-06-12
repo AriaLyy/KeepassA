@@ -13,7 +13,6 @@ import android.app.Activity
 import android.os.Bundle
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.Transition
 import androidx.transition.TransitionInflater
@@ -21,7 +20,6 @@ import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
-import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupId
 import com.keepassdroid.database.PwGroupV4
@@ -29,12 +27,8 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityGroupDirBinding
-import com.lyy.keepassa.event.MoveEvent
 import com.lyy.keepassa.router.FragmentRouter
-import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.view.ChoseDirModule
-import com.lyy.keepassa.view.dialog.LoadingDialog
-import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 import java.util.Stack
 import java.util.UUID
@@ -68,7 +62,6 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
     // 路径地址
     const val DATA_PARENT = "DATA_PARENT"
 
-
     /**
      * 移动条目
      * @param entryId 条目id
@@ -101,12 +94,9 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
     }
   }
 
-  private lateinit var curGroup: PwGroup
+  private lateinit var curGroup: PwGroupV4
   private var lastGroupStack: Stack<PwGroup> = Stack()
   private val fragmentMap: HashMap<PwGroupId, DirFragment> = HashMap()
-  private var loadDialog: LoadingDialog? = null
-  private var undoGroup: PwGroupV4? = null
-  private var undoEntry: PwEntryV4? = null
   private lateinit var module: ChoseDirModule
 
   @Autowired(name = KEY_GROUP_ID)
@@ -128,8 +118,8 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
     ARouter.getInstance().inject(this)
-    module = ViewModelProvider(this).get(ChoseDirModule::class.java)
-    curGroup = BaseApp.KDB.pm.rootGroup
+    module = ViewModelProvider(this)[ChoseDirModule::class.java]
+    curGroup = BaseApp.KDB.pm.rootGroup as PwGroupV4
     if (recycleType == DATA_MOVE_GROUP && recycleGroupId == null) {
       Timber.e("需要恢复的群组id为空")
       finish()
@@ -152,41 +142,15 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
     toolbar.title = curGroup.name
 
     binding.bt.setOnClickListener {
-      loadDialog = LoadingDialog(this)
       when (recycleType) {
         // 移动群组
         DATA_MOVE_GROUP -> {
-          loadDialog?.show()
-          module.moveGroup(recycleGroupId!!, curGroup)
-            .observe(this, Observer { t ->
-              undoGroup = t.second
-              if (t.first) {
-                onComplete(t.second)
-                return@Observer
-              }
-              HitUtil.toaskShort(getString(R.string.save_db_fail))
-              loadDialog?.dismiss()
-            })
+          module.moveGroup(this, recycleGroupId!!, curGroup)
         }
 
         // 移动条目
         DATA_MOVE_ENTRY -> {
-          loadDialog!!.show()
-          module.moveEntry(recycleEntryId!!, curGroup)
-            .observe(this, Observer { t ->
-              if (t == null) {
-                HitUtil.toaskShort(getString(R.string.save_db_fail))
-                return@Observer
-              }
-              undoEntry = t.second
-              if (t.first) {
-                onComplete(t.second)
-                return@Observer
-              }
-
-              HitUtil.toaskShort(getString(R.string.save_db_fail))
-              loadDialog?.dismiss()
-            })
+          module.moveEntry(this, recycleEntryId!!, curGroup)
         }
 
         // 选择群组目录
@@ -199,28 +163,6 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
     }
 
     startNextFragment(curGroup, true)
-  }
-
-  private fun onComplete(pwGroup: PwGroupV4) {
-    loadDialog?.dismiss()
-    EventBus.getDefault()
-      .post(MoveEvent(MoveEvent.MOVE_TYPE_GROUP, null, pwGroup))
-    HitUtil.toaskShort(getString(R.string.undo_grouped))
-//    Snackbar.make(binding.root, getString(R.string.undo_grouped), Snackbar.LENGTH_LONG)
-//        .setAction("OK") {}
-//        .show()
-    finishAfterTransition()
-  }
-
-  private fun onComplete(pwEntryV4: PwEntryV4) {
-    loadDialog?.dismiss()
-    EventBus.getDefault()
-      .post(MoveEvent(MoveEvent.MOVE_TYPE_ENTRY, pwEntryV4, null))
-    HitUtil.toaskShort(getString(R.string.undo_entryed))
-//    Snackbar.make(binding.root, getString(R.string.undo_entryed), Snackbar.LENGTH_LONG)
-//        .setAction("OK") {}
-//        .show()
-    finishAfterTransition()
   }
 
   /**
@@ -249,7 +191,7 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
   }
 
   fun startNextFragment(
-    pwGroup: PwGroup,
+    pwGroup: PwGroupV4,
     isFirst: Boolean = false
   ) {
     if (!isFirst) {

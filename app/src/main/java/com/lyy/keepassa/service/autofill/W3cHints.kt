@@ -57,7 +57,9 @@ object W3cHints {
     "org.mozilla.reference.browser",
     "org.mozilla.rocket",
     "org.torproject.torbrowser",
-    "com.vivaldi.browser"
+    "com.vivaldi.browser",
+    "com.mmbox.xbrowser",
+    "info.torapp.uweb"
   )
 
   const val HONORIFIC_PREFIX = "honorific-prefix"
@@ -145,6 +147,9 @@ object W3cHints {
    * 是否是用户名
    */
   fun isW3cUserName(p: android.util.Pair<String, String>): Boolean {
+    if (p.second == null){
+      return false
+    }
     val temp = p.second.uppercase()
     return p.first == "type" && (USER_HINT_LIST.contains(temp))
   }
@@ -153,6 +158,9 @@ object W3cHints {
    * 是否是密码
    */
   fun isW3cPassWord(p: android.util.Pair<String, String>): Boolean {
+    if (p.second == null){
+      return false
+    }
     val temp = p.second.uppercase()
     return (p.first == "type" && (PASSWORD_HINT_LIST.contains(temp))
       // https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion
