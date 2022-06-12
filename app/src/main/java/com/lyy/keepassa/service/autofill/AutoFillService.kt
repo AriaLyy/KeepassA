@@ -60,10 +60,6 @@ class AutoFillService : AutofillService() {
       // 本应用内不进行填充
       return
     }
-    if (!PackageVerifier.isValidPackage(applicationContext, apkPackageName)) {
-      Timber.e("invalid package name：$apkPackageName")
-      return
-    }
     Timber.d(
       "onFillRequest(): flags = ${request.flags}, requestId = ${request.id}, clientState = ${
         KLog.b(
@@ -215,10 +211,6 @@ class AutoFillService : AutofillService() {
     val context = request.fillContexts
     val structure = context[context.size - 1].structure
     val apkPackageName = structure.activityComponent.packageName
-    if (!PackageVerifier.isValidPackage(applicationContext, apkPackageName)) {
-      Timber.e("无效的包名：$apkPackageName")
-      return
-    }
     val data = request.clientState
     Timber.d("onSaveRequest(): data=${KLog.b(data)}")
 

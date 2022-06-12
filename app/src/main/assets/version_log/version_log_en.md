@@ -1,3 +1,9 @@
+### 2.3.0 (2022/06/12)
+- 【Add】Collection function
+- 【Add】Auto save db after entering the background
+- 【Add】Ukrainian，thank for [@IhorHordiichuk](https://github.com/IhorHordiichuk)
+- 【Optimize】Open WebDav Process flow
+
 ### 2.1.10 (2022/01/05)
 - 【Optimize】TOTP display
 
