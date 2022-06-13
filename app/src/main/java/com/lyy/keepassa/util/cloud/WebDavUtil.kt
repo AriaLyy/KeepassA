@@ -57,8 +57,14 @@ object WebDavUtil : ICloudUtil {
     return sardine != null
   }
 
-  fun createDir(path: String) {
-    sardine?.createDirectory(path)
+  fun createDir(path: String): Boolean {
+    return try {
+      sardine?.createDirectory(path)
+      true
+    } catch (e: Exception) {
+      Timber.e(e)
+      false
+    }
   }
 
   fun setHostUri(hostUri: String) {

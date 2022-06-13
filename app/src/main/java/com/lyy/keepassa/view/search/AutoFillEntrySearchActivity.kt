@@ -14,6 +14,7 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.app.ActivityOptions
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.assist.AssistStructure
 import android.content.Context
 import android.content.Intent
@@ -89,7 +90,7 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
           it.putExtra(AutofillManager.EXTRA_ASSIST_STRUCTURE, structure)
         }
       }
-      return PendingIntent.getActivity(context, 0, intent, 0)
+      return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
     }
 
     /**
@@ -124,7 +125,7 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
         it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
         it.putExtra(KEY_PKG_NAME, apkPackageName)
       }
-      return PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+      return PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT or FLAG_IMMUTABLE)
         .intentSender
     }
   }

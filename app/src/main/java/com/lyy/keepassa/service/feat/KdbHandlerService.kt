@@ -356,7 +356,9 @@ class KdbHandlerService : IProvider {
         if (needShowLoading) {
           dismissLoading()
         }
-        callback.invoke(if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL)
+        withContext(Dispatchers.Main){
+          callback.invoke(if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL)
+        }
       }
     }
   }
