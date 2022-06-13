@@ -1,3 +1,6 @@
+### 2.3.1 (2022/06/13)
+- 【Fix】bugs
+
 ### 2.3.0 (2022/06/12)
 - 【Add】Collection function
 - 【Add】Auto save db after entering the background

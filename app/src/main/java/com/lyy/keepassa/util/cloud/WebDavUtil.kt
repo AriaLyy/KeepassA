@@ -82,6 +82,7 @@ object WebDavUtil : ICloudUtil {
     userName: String,
     password: String
   ): Boolean {
+    Timber.d("checkLogin, uri = ${uri}, userName = ${userName}, password = ${password}")
     this.userName = userName
     this.password = password
     setHostUri(uri)
