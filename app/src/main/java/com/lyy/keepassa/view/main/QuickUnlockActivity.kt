@@ -14,6 +14,7 @@ import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
@@ -24,7 +25,10 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.biometric.BiometricPrompt
-import androidx.biometric.BiometricPrompt.*
+import androidx.biometric.BiometricPrompt.AuthenticationCallback
+import androidx.biometric.BiometricPrompt.AuthenticationResult
+import androidx.biometric.BiometricPrompt.CryptoObject
+import androidx.biometric.BiometricPrompt.ERROR_NEGATIVE_BUTTON
 import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -132,10 +136,9 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
   }
 
   private fun initUi() {
-
-    module.getQuickUnlockRecord(BaseApp.dbRecord!!.localDbUri)
-      .observe(this, Observer { record ->
-        if (record != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    BaseApp.dbRecord?.localDbUri?.let {
+      module.getQuickUnlockRecord(it).observe(this, Observer { record ->
+        if (record != null) {
           fingerRecord = record
           binding.fingerprint.visibility = View.VISIBLE
           binding.fingerprint.playAnimation()
@@ -147,6 +150,8 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         }
         binding.fingerprint.visibility = View.GONE
       })
+    }
+
 
     binding.pass.setInputCompleteListener(object : ShortPasswordView.InputCompleteListener {
       override fun inputComplete(text: String) {
@@ -187,7 +192,6 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
    * 显示验证指纹对话框
    */
   @SuppressLint("RestrictedApi")
-  @TargetApi(Build.VERSION_CODES.M)
   private fun showBiometricPrompt() {
     val promptInfo = BiometricPrompt.PromptInfo.Builder()
       .setTitle(getString(R.string.fingerprint_unlock))
@@ -314,7 +318,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
       }
 
       return Intent(context, QuickUnlockActivity::class.java).let { notificationIntent ->
-        PendingIntent.getActivity(context, 0, notificationIntent, 0)
+        PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
       }
     }
 
@@ -348,7 +352,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
         it.putExtra(KEY_PKG_NAME, pkgName)
       }
-      return PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+      return PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT or FLAG_IMMUTABLE)
         .intentSender
     }
   }

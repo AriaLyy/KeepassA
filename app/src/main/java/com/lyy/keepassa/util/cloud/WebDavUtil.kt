@@ -57,8 +57,14 @@ object WebDavUtil : ICloudUtil {
     return sardine != null
   }
 
-  fun createDir(path: String) {
-    sardine?.createDirectory(path)
+  fun createDir(path: String): Boolean {
+    return try {
+      sardine?.createDirectory(path)
+      true
+    } catch (e: Exception) {
+      Timber.e(e)
+      false
+    }
   }
 
   fun setHostUri(hostUri: String) {
@@ -76,6 +82,7 @@ object WebDavUtil : ICloudUtil {
     userName: String,
     password: String
   ): Boolean {
+    Timber.d("checkLogin, uri = ${uri}, userName = ${userName}, password = ${password}")
     this.userName = userName
     this.password = password
     setHostUri(uri)

@@ -307,7 +307,6 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   companion object {
 
     // Unique autofillId for dataset intents.
-    private var datasetPendingIntentId = 0
     const val KEY_IS_AUTH_FORM_FILL = "KEY_IS_AUTH_FORM_FILL"
     const val KEY_IS_AUTH_FORM_FILL_SAVE = "KEY_IS_AUTH_FORM_FILL_SAVE"
     const val KEY_PKG_NAME = "DATA_PKG_NAME"
@@ -333,7 +332,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
      */
     internal fun createLauncherPending(context: Context): PendingIntent {
       return Intent(context, LauncherActivity::class.java).let { notificationIntent ->
-        PendingIntent.getActivity(context, 0, notificationIntent, 0)
+        PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
       }
     }
 
@@ -349,7 +348,12 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
         it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
         it.putExtra(KEY_PKG_NAME, apkPackageName)
       }
-      return PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+      return PendingIntent.getActivity(
+        context,
+        1,
+        intent,
+        PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+      )
         .intentSender
     }
 
@@ -368,7 +372,12 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
         it.putExtra(KEY_SAVE_USER_NAME, userName)
         it.putExtra(KEY_SAVE_PASS, pass)
       }
-      return PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+      return PendingIntent.getActivity(
+        context,
+        1,
+        intent,
+        PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+      )
         .intentSender
     }
   }
