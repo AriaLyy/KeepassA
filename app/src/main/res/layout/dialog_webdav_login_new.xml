@@ -34,13 +34,9 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/uri_layout"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/dialog_ed_layout_width"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         android:clickable="true"
-        app:layout_constraintTop_toBottomOf="@+id/vLine"
         app:helperText="@string/helper_webdav_service"
         app:helperTextTextColor="@color/text_gray_color"
         app:startIconDrawable="@drawable/ic_http"
@@ -64,12 +60,8 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/user_layout"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/dialog_ed_layout_width"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/uri_layout"
         app:startIconDrawable="@drawable/ic_user"
         app:startIconTint="@color/color_icon_grey"
         >
@@ -94,12 +86,8 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/password_layout"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/dialog_ed_layout_width"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/user_layout"
         app:passwordToggleEnabled="true"
         app:startIconDrawable="@drawable/ic_password"
         app:startIconTint="@color/color_icon_grey"
@@ -122,6 +110,20 @@
       </com.google.android.material.textfield.TextInputEditText>
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flowContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vLine"
+        app:flow_verticalGap="8dp"
+        app:constraint_referenced_ids="uri_layout,user_layout,password_layout"
+        />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/cancel"
@@ -146,7 +148,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password_layout"
+        app:layout_constraintTop_toBottomOf="@+id/flowContent"
         app:constraint_referenced_ids="cancel, enter"
         />
 

@@ -30,6 +30,7 @@ object WebDavUtil : ICloudUtil {
     add("https://dav.jianguoyun.com")
     add("https://dav.box.com")
     add("https://webdav.4shared.com")
+    add("http://{host}:{port}/remote.php/dav/files/{userName}/") // https://docs.nextcloud.com/server/24/user_manual/en/files/access_webdav.html
     // add("https://aki.teracloud.jp/dav")   // 需要在https://teracloud.jp/en/modules/mypage/usage/ 中 勾选 Turn on Apps Connection
     // add("https://my.powerfolder.com/webdav") // 只能用他家的client登录？电脑qspase可以
     // add("https://dav.dropdav.com") // 需要注册：https://app.dropdav.com/users/sign_in
