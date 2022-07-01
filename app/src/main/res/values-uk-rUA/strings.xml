@@ -350,4 +350,8 @@
     <string name="error_keystore">Виняток сховища ключів, повторіть спробу</string>
     <string name="error_qr_code_str">QR-код неправильний. Переконайтеся, що QR-код підтримується Google Authenticator</string>
     <string name="select_save_path">Вибрати шлях збереження</string>
+    <string name="hostname">Ім\'я хосту</string>
+    <string name="port">Порт</string>
+    <string name="webdav_port_hint">Порт</string>
+    <string name="webdav_host_name_hint">Введіть своє ім\'я хосту</string>
 </resources>
