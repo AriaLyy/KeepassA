@@ -356,4 +356,8 @@
     <string name="select_save_path">选择保存路径</string>
     <string name="one_drive_load_user_failure">加载用户信息失败</string>
     <string name="hint_open_background_start">请打开后台弹出权限，否则无法使用自动填充功能</string>
+    <string name="hostname">主机名</string>
+    <string name="port">端口</string>
+    <string name="webdav_host_name_hint">请输入你的主机名</string>
+    <string name="webdav_port_hint">端口</string>
 </resources>
