@@ -325,13 +325,13 @@
 \n Puede elegir cualquier archivo como una llave para abrir la BdD, una foto, o un archivo *.txt.
 \n⚠️ Nota: Si esta foto o documento de texto es modificado, no será capaz de abrir la base de datos.
 \n Es altamente recomendado utilizar archivos de solo lectura como llaves.</string>
-    <string name="error_open_db_webdav">Error al abrir la BdD, el archivo de webdav no existe</string>
+    <string name="error_open_db_webdav">Error al abrir la BdD, el archivo de WebDAV no existe</string>
     <string name="hint_open_background_start">Abra permiso de expulsión del fondo, en otro caso no puede utilizar auto-relleno</string>
     <string name="no_collection">Sin colección</string>
     <string name="set_key_theme_style_title">Estilo de tema</string>
     <string name="set_key_theme_style_summary">Siguiendo sistema</string>
     <string name="error_keystore">Excepción de pulsación de tecla, inténtelo de nuevo</string>
-    <string name="helper_webdav_service">Seleccionar servicio webdav</string>
+    <string name="helper_webdav_service">Seleccionar servicio WebDAV</string>
     <string name="error_is_root">Ya está en el directorio raíz</string>
     <string name="select_cur_path">Seleccione la carpeta</string>
     <string name="hint_cloud_file_already_exist">Ya existe %1$s, ¿desea que sobrescriba el archivo\?</string>
