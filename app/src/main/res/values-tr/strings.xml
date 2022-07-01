@@ -342,12 +342,16 @@
     <string name="current_collection_num">%1$s koleksiyon</string>
     <string name="my_collection">Koleksiyonum</string>
     <string name="no_collection">Koleksiyon yok</string>
-    <string name="error_open_db_webdav">Veri tabanı açılamadı, WebDAV dosyası yok</string>
-    <string name="hint_cloud_file_already_exist">%1$s zaten var, dosyanın üzerine yazmak istiyor musunuz\?</string>
+    <string name="error_open_db_webdav">WebDAV dosyası mevcut olmadığı için veri tabanı açılamadı.</string>
+    <string name="hint_cloud_file_already_exist">%1$s zaten var. Bu dosyanın üzerine yazılsın mı\?</string>
     <string name="select_save_path">Kaydetme yolu seç</string>
     <string name="helper_webdav_service">WebDAV hizmeti seç</string>
     <string name="error_is_root">Zaten kök dizini</string>
     <string name="select_cur_path">Klasör seç</string>
-    <string name="one_drive_load_user_failure">Kullanıcı bilgileri yüklenemedi</string>
+    <string name="one_drive_load_user_failure">Kullanıcı bilgileri yüklenemedi.</string>
     <string name="hint_open_background_start">Lütfen arka plan çıkarma iznini açın, aksi takdirde otomatik doldurmayı kullanamazsınız</string>
+    <string name="hostname">Ana makine adı</string>
+    <string name="port">Bağlantı noktası</string>
+    <string name="webdav_host_name_hint">Lütfen ana makine adınızı yazın</string>
+    <string name="webdav_port_hint">Bağlantı noktası</string>
 </resources>
