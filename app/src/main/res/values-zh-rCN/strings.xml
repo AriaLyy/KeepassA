@@ -348,13 +348,13 @@
     <string name="my_collection">我的收藏</string>
     <string name="current_collection_num">%1$s 个收藏</string>
     <string name="no_collection">没有收藏</string>
-    <string name="error_open_db_webdav">打开数据库失败，WebDAV上的文件不存在</string>
-    <string name="helper_webdav_service">选择WebDav服务</string>
+    <string name="error_open_db_webdav">无法打开数据库，因该 WebDAV 文件不存在。</string>
+    <string name="helper_webdav_service">选择 WebDAV 服务</string>
     <string name="error_is_root">已经是根目录</string>
     <string name="select_cur_path">选择当前文件夹</string>
     <string name="hint_cloud_file_already_exist">%1$s已存在，是否覆盖该文件？</string>
     <string name="select_save_path">选择保存路径</string>
-    <string name="one_drive_load_user_failure">加载用户信息失败</string>
+    <string name="one_drive_load_user_failure">无法加载用户信息。</string>
     <string name="hint_open_background_start">请打开后台弹出权限，否则无法使用自动填充功能</string>
     <string name="hostname">主机名</string>
     <string name="port">端口</string>
