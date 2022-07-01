@@ -342,8 +342,8 @@
     <string name="my_collection">Моя колекція</string>
     <string name="current_collection_num">%1$s колекції</string>
     <string name="no_collection">Немає колекції</string>
-    <string name="error_open_db_webdav">Не вдалося відкрити базу даних, файл webdav не існує</string>
-    <string name="helper_webdav_service">Вибрати службу webdav</string>
+    <string name="error_open_db_webdav">Не вдалося відкрити базу даних, файл WebDAV не існує</string>
+    <string name="helper_webdav_service">Вибрати службу WebDAV</string>
     <string name="error_is_root">Це вже кореневий каталог</string>
     <string name="select_cur_path">Вибрати теку</string>
     <string name="miui_permissions">Системі miui потрібен дозвіл на відкриття фонового спливного інтерфейсу, щоб використовувати функцію автозаповнення.</string>
