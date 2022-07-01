@@ -339,8 +339,8 @@
     <string name="current_collection_num">%1$s collections</string>
     <string name="my_collection">Mes collections</string>
     <string name="no_collection">Aucune collection</string>
-    <string name="error_open_db_webdav">Échec d\'ouverture de la base de données, le fichier webdav n\'existe pas</string>
-    <string name="helper_webdav_service">Sélectionner un service webdav</string>
+    <string name="error_open_db_webdav">Échec d\'ouverture de la base de données, le fichier WebDAV n\'existe pas</string>
+    <string name="helper_webdav_service">Sélectionner un service WebDAV</string>
     <string name="error_is_root">Est déjà dans le dossier racine</string>
     <string name="select_cur_path">Sélectionner un dossier</string>
     <string name="select_save_path">Sélectionner l\'emplacement d\'enregistrement</string>
