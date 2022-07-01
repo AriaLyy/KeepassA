@@ -361,4 +361,8 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="select_save_path">Select a save path</string>
     <string name="one_drive_load_user_failure">Failed to load user information</string>
     <string name="hint_open_background_start">Please open background eject permission, otherwise can\'t use auto-fill</string>
+    <string name="hostname">Hostname</string>
+    <string name="port">Port</string>
+    <string name="webdav_host_name_hint">Please input you hostname</string>
+    <string name="webdav_port_hint">Port</string>
 </resources>

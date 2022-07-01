@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     >
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -53,10 +54,66 @@
           android:imeOptions="actionNext"
           android:inputType="textUri"
           android:singleLine="true"
+          android:textColor="@color/text_black_grey_color"
+          android:textSize="@dimen/text_size_normal"
           style="@style/KpaEditTextStyle"
           />
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/hostLayout"
+        android:layout_width="268dp"
+        android:layout_height="wrap_content"
+        app:helperText="@string/webdav_host_name_hint"
+        app:helperTextTextColor="@color/text_gray_color"
+        app:startIconDrawable="@drawable/ic_server"
+        app:endIconMode="custom"
+        app:endIconDrawable="@drawable/ic_baseline_arrow_drop_down_24"
+        app:startIconTint="@color/color_icon_grey"
+        >
+
+      <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/host"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/hostname"
+          android:imeOptions="actionNext"
+          android:inputType="textUri"
+          android:singleLine="true"
+          android:textColor="@color/text_black_grey_color"
+          android:textSize="@dimen/text_size_normal"
+          style="@style/KpaEditTextStyle"
+          />
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/edPort"
+        android:layout_width="88dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:gravity="center"
+        android:hint="@string/port"
+        android:inputType="number"
+        android:maxLength="5"
+        android:textColor="@color/text_black_grey_color"
+        android:textSize="@dimen/text_size_normal"
+        app:layout_constraintBottom_toBottomOf="@+id/hostLayout"
+        app:layout_constraintStart_toEndOf="@+id/hostLayout"
+        app:layout_constraintTop_toTopOf="@+id/hostLayout"
+        tools:text="12345"
+        />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupHost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="hostLayout, edPort"
+        />
+
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/user_layout"
@@ -121,8 +178,9 @@
         android:paddingStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/vLine"
+        app:flow_horizontalAlign="start"
         app:flow_verticalGap="8dp"
-        app:constraint_referenced_ids="uri_layout,user_layout,password_layout"
+        app:constraint_referenced_ids="uri_layout,hostLayout,user_layout,password_layout"
         />
 
     <androidx.appcompat.widget.AppCompatButton

@@ -9,6 +9,7 @@
 
 package com.lyy.keepassa.view.dialog
 
+import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProvider
@@ -24,6 +25,7 @@ import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.cloud.WebDavUtil
+import dalvik.system.DexClassLoader
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -37,6 +39,7 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
   private lateinit var module: WebDavLoginModule
   private var webDavUri: String? = null
   val webDavLoginFlow = MutableSharedFlow<WebDavLoginEvent>()
+  private var curWebDavServer: String? = null
   private val loadingDialog by lazy {
     Routerfit.create(DialogRouter::class.java).getLoadingDialog()
   }
@@ -70,9 +73,17 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
       binding.uri.showDropDown()
     }
     binding.uri.doAfterTextChanged {
+      binding.groupHost.visibility = View.GONE
+      curWebDavServer = it?.toString()
       if (it?.toString() == WebDavUtil.SUPPORTED_WEBDAV_URLS[WebDavUtil.SUPPORTED_WEBDAV_URLS.size - 1]) {
         binding.uri.setText("")
         KeyboardUtils.showSoftInput(binding.uri)
+        return@doAfterTextChanged
+      }
+      if (it?.toString() == WebDavUtil.SUPPORTED_WEBDAV_URLS[2]) {
+        binding.groupHost.visibility = View.VISIBLE
+        KeyboardUtils.showSoftInput(binding.uri)
+        return@doAfterTextChanged
       }
     }
   }
@@ -104,6 +115,9 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
       )
       return
     }
+
+    if (curWebDavServer == )
+
     if (!KeepassAUtil.instance.checkUrlIsValid(uri)) {
       HitUtil.toaskLong("${getString(R.string.hint_webdav_url)} ${getString(R.string.invalid)}")
       return
