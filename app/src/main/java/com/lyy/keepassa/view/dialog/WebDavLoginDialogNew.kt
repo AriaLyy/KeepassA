@@ -25,7 +25,6 @@ import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.cloud.WebDavUtil
-import dalvik.system.DexClassLoader
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -39,7 +38,7 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
   private lateinit var module: WebDavLoginModule
   private var webDavUri: String? = null
   val webDavLoginFlow = MutableSharedFlow<WebDavLoginEvent>()
-  private var curWebDavServer: String? = null
+
   private val loadingDialog by lazy {
     Routerfit.create(DialogRouter::class.java).getLoadingDialog()
   }
@@ -74,13 +73,13 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
     }
     binding.uri.doAfterTextChanged {
       binding.groupHost.visibility = View.GONE
-      curWebDavServer = it?.toString()
-      if (it?.toString() == WebDavUtil.SUPPORTED_WEBDAV_URLS[WebDavUtil.SUPPORTED_WEBDAV_URLS.size - 1]) {
+      module.curWebDavServer = it?.toString()
+      if (module.isOtherServer()) {
         binding.uri.setText("")
         KeyboardUtils.showSoftInput(binding.uri)
         return@doAfterTextChanged
       }
-      if (it?.toString() == WebDavUtil.SUPPORTED_WEBDAV_URLS[2]) {
+      if (module.isNextcloud()) {
         binding.groupHost.visibility = View.VISIBLE
         KeyboardUtils.showSoftInput(binding.uri)
         return@doAfterTextChanged
@@ -92,13 +91,13 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
     if (KeepassAUtil.instance.isFastClick()) {
       return
     }
-
     val pass = binding.password.text.toString()
       .trim()
     val uri = binding.uri.text.toString()
       .trim()
     val userName = binding.userName.text.toString()
       .trim()
+    val hostName = binding.host.text.toString().trim()
     if (pass.isEmpty()) {
       HitUtil.toaskLong(getString(R.string.hint_please_input, getString(R.string.password)))
       return
@@ -116,17 +115,26 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
       return
     }
 
-    if (curWebDavServer == )
+    if (module.isNextcloud()) {
+      if (hostName.isEmpty()) {
+        HitUtil.toaskLong(getString(R.string.webdav_port_name_null))
+        return
+      }
+    }
 
-    if (!KeepassAUtil.instance.checkUrlIsValid(uri)) {
+    if (!KeepassAUtil.instance.checkUrlIsValid(uri) && !module.isNextcloud()) {
       HitUtil.toaskLong("${getString(R.string.hint_webdav_url)} ${getString(R.string.invalid)}")
       return
     }
 
     // start login
-    this.webDavUri = uri
+    this.webDavUri = if (module.isNextcloud()) {
+      module.convertHost(hostName, binding.edPort.text.toString().trim(), userName)
+    } else {
+      uri
+    }
     loadingDialog.show()
-    handleLoginFlow(uri, userName, pass)
+    handleLoginFlow(webDavUri!!, userName, pass)
   }
 
   /**
@@ -142,7 +150,7 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
         loadingDialog.dismiss()
         webDavLoginFlow.emit(WebDavLoginEvent(uri, userName, pass, it))
         if (!it) {
-          HitUtil.toaskLong("${getString(R.string.login)} ${getString(R.string.fail)}")
+          HitUtil.toaskLong("${getString(R.string.login)} ${getString(R.string.fail)}, url【${uri}】")
           return@collectLatest
         }
         HitUtil.toaskLong("${getString(R.string.login)} ${getString(R.string.success)}")

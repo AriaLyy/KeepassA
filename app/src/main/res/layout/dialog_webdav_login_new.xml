@@ -68,8 +68,6 @@
         app:helperText="@string/webdav_host_name_hint"
         app:helperTextTextColor="@color/text_gray_color"
         app:startIconDrawable="@drawable/ic_server"
-        app:endIconMode="custom"
-        app:endIconDrawable="@drawable/ic_baseline_arrow_drop_down_24"
         app:startIconTint="@color/color_icon_grey"
         >
 
@@ -94,6 +92,7 @@
         android:layout_width="88dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
+        android:background="@color/transparent"
         android:gravity="center"
         android:hint="@string/port"
         android:inputType="number"
