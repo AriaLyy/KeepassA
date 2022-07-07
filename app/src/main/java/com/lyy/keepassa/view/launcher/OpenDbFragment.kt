@@ -301,13 +301,13 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   private fun handleKeyUri(keyUri: Uri?) {
     val uriStr = keyUri.toString()
     if (keyUri != null && !TextUtils.isEmpty(uriStr) && uriStr != "null") {
-      binding.keyLayoutWrap.visibility = View.VISIBLE
+      binding.key.visibility = View.VISIBLE
       binding.cbKey.isChecked = true
 
       binding.key.text = getString(R.string.key1, UriUtil.getFileNameFromUri(BaseApp.APP, keyUri))
-    } else {
-      binding.keyLayoutWrap.visibility = View.GONE
+      return
     }
+    binding.key.visibility = View.GONE
   }
 
   override fun setLayoutId(): Int {
@@ -315,7 +315,6 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   }
 
   private fun showKeyLayout() {
-    binding.keyLayoutWrap.visibility = View.VISIBLE
     binding.key.layoutParams.height = 0
     binding.key.visibility = View.VISIBLE
     val h = resources.getDimension(R.dimen.input_pass_key_h)
@@ -331,9 +330,8 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   }
 
   private fun hintKeyLayout() {
-    binding.keyLayoutWrap.visibility = View.VISIBLE
-    val h = resources.getDimension(R.dimen.input_pass_key_h)
-      .toInt()
+    binding.key.visibility = View.VISIBLE
+    val h = resources.getDimension(R.dimen.input_pass_key_h).toInt()
     binding.key.layoutParams.height = h
     val anim = ValueAnimator.ofInt(h, 0)
     anim.addUpdateListener { animation ->
@@ -347,7 +345,6 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     anim.addListener(object : AnimatorListenerAdapter() {
       override fun onAnimationEnd(animation: Animator?) {
         binding.key.visibility = View.GONE
-        binding.keyLayoutWrap.visibility = View.GONE
       }
     })
   }

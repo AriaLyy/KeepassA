@@ -1,3 +1,6 @@
+### 2.3.2
+- 【Add】Nextcloud support
+
 ### 2.3.1 (2022/06/13)
 - 【Fix】bugs
 
