@@ -357,4 +357,5 @@
     <string name="one_drive_load_user_failure">加载用户信息失败</string>
     <string name="hint_open_background_start">请打开后台弹出权限，否则无法使用自动填充功能</string>
     <string name="webdav_port_name_null">Hostname 不能为空</string>
+    <string name="privacy_agreement"><![CDATA[<big>是否同意本协议</big> <br/> * 本应用没有服务端，不收集任何用户信息，只采用Bugly收集崩溃报告和性能报告 <br/> * 本应用网络同步和备份采用WebDav、FTP协议，DropBox、OneDrive网盘，由用户自己提供同步服务 <br/> * 本应用为开源软件，使用中产生任何问题由用户自己承担]]></string>
 </resources>

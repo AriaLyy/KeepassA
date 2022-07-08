@@ -17,7 +17,7 @@ import java.io.Serializable
  */
 interface OnMsgBtClickListener {
 
-  fun onCover(v: Button)
+  fun onCover(v: Button){}
 
   fun onEnter(v: Button)
 

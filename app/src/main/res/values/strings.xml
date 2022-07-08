@@ -366,4 +366,5 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="webdav_host_name_hint">Please input you hostname</string>
     <string name="webdav_port_hint">Port</string>
     <string name="webdav_port_name_null">Hostname cannot be empty</string>
+    <string name="privacy_agreement">Privacy agreement</string>
 </resources>

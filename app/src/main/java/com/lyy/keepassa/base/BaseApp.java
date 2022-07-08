@@ -28,7 +28,8 @@ import com.lyy.keepassa.dao.AppDatabase;
 import com.lyy.keepassa.entity.DbHistoryRecord;
 import com.lyy.keepassa.receiver.ScreenLockReceiver;
 import com.lyy.keepassa.router.ServiceRouter;
-import com.lyy.keepassa.util.KeepassAUtil;
+import com.lyy.keepassa.service.feat.KpaSdkService;
+import com.lyy.keepassa.util.CommonKVStorage;
 import com.lyy.keepassa.util.LanguageUtil;
 import com.lyy.keepassa.view.StorageType;
 import java.util.Locale;
@@ -91,10 +92,12 @@ public class BaseApp extends MultiDexApplication {
     APP = this;
     handler = new Handler(Looper.getMainLooper());
     ARouter.init(this); // 尽可能早，推荐在Application中初始化
-    Routerfit.INSTANCE.create(ServiceRouter.class).getKpaSdkService().preInitSdk(this);
-    // 初始化一下时间
-    KeepassAUtil.Companion.getInstance().isFastClick();
+    KpaSdkService kpaSdkService = Routerfit.INSTANCE.create(ServiceRouter.class).getKpaSdkService();
+    kpaSdkService.preInitSdk(this);
     initReceiver();
+    if (CommonKVStorage.INSTANCE.getBoolean(Constance.IS_AGREE_PRIVACY_AGREEMENT, false)) {
+      kpaSdkService.initThirdSdk(this);
+    }
   }
 
   /**

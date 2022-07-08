@@ -10,13 +10,16 @@
 package com.lyy.keepassa.view.launcher
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.content.Context
 import android.net.Uri
-import android.os.Build
+import android.text.Html
+import android.widget.Button
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.biometric.BiometricPrompt
-import androidx.biometric.BiometricPrompt.*
+import androidx.biometric.BiometricPrompt.AuthenticationCallback
+import androidx.biometric.BiometricPrompt.AuthenticationResult
+import androidx.biometric.BiometricPrompt.CryptoObject
+import androidx.biometric.BiometricPrompt.ERROR_NEGATIVE_BUTTON
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -27,6 +30,7 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.KeyStoreUtil
 import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.AppUtils
 import com.keepassdroid.utils.UriUtil
 import com.lahm.library.EasyProtectorLib
 import com.lyy.keepassa.R
@@ -38,18 +42,22 @@ import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.router.DialogRouter
+import com.lyy.keepassa.router.ServiceRouter
+import com.lyy.keepassa.util.CommonKVStorage
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.HitUtil
+import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.isAFS
+import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.tencent.bugly.crashreport.BuglyLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.Locale
 
 class LauncherModule : BaseModule() {
   private val itemData: MutableLiveData<List<SimpleItemEntity>> = MutableLiveData()
@@ -77,16 +85,46 @@ class LauncherModule : BaseModule() {
     KeyStoreUtil()
   }
 
+  private fun isNeedShowPrPrivacyAgreement(): Boolean {
+    return LanguageUtil.getSysCurrentLan().country == Locale.CHINA.country
+      && !CommonKVStorage.getBoolean(Constance.IS_AGREE_PRIVACY_AGREEMENT, false)
+  }
+
+  fun showPrivacyAgreement(context: Context) {
+    if (!isNeedShowPrPrivacyAgreement()) {
+      return
+    }
+    Routerfit.create(DialogRouter::class.java).showMsgDialog(
+      msgTitle = "隐私协议",
+      msgContent = Html.fromHtml(ResUtil.getString(R.string.privacy_agreement)),
+      enterText = "同意",
+      cancelText = "退出应用",
+      btnClickListener = object : OnMsgBtClickListener {
+
+        override fun onEnter(v: Button) {
+          CommonKVStorage.put(Constance.IS_AGREE_PRIVACY_AGREEMENT, true)
+          Routerfit.create(ServiceRouter::class.java).getKpaSdkService().initThirdSdk(context)
+        }
+
+        override fun onCancel(v: Button) {
+          AppUtils.exitApp()
+        }
+      }
+    )
+  }
+
   /**
    * 处理数据库有密码的指纹解锁配置
    */
   @SuppressLint("RestrictedApi")
-  @TargetApi(Build.VERSION_CODES.M)
   fun showNormalBiometricPrompt(
     fragment: OpenDbFragment,
     record: QuickUnLockRecord?,
     openDbRecord: DbHistoryRecord
   ) {
+    if (isNeedShowPrPrivacyAgreement()) {
+      return
+    }
     if (!fragment.isAdded) {
       return
     }
@@ -129,7 +167,7 @@ class LauncherModule : BaseModule() {
             val auth: CryptoObject? = result.cryptoObject
             val cipher = auth!!.cipher!!
             val pass = QuickUnLockUtil.decryption(
-              keyStoreUtil?.decryptData(cipher, record.dbPass)
+              keyStoreUtil.decryptData(cipher, record.dbPass)
             )
             unlockEvent.postValue(Pair(true, pass))
           } catch (e: Exception) {
@@ -151,7 +189,7 @@ class LauncherModule : BaseModule() {
       })
     try {
       // Displays the "log in" prompt.
-      keyStoreUtil?.let {
+      keyStoreUtil.let {
         biometricPrompt.authenticate(
           promptInfo, CryptoObject(it.getDecryptCipher(record.passIv!!))
         )
@@ -166,7 +204,6 @@ class LauncherModule : BaseModule() {
    * 处理数据库有key的指纹解锁配置
    */
   @SuppressLint("RestrictedApi")
-  @TargetApi(Build.VERSION_CODES.M)
   fun showOnlyKeyBiometricPrompt(
     fragment: OpenDbFragment,
     record: QuickUnLockRecord?
@@ -239,7 +276,6 @@ class LauncherModule : BaseModule() {
     }
   }
 
-  @TargetApi(Build.VERSION_CODES.M)
   private fun deleteBiomKey(
     fragment: OpenDbFragment,
     openDbRecord: DbHistoryRecord
@@ -421,5 +457,4 @@ class LauncherModule : BaseModule() {
     }
     emit(data)
   }
-
 }
