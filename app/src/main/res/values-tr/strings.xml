@@ -354,4 +354,6 @@
     <string name="port">Bağlantı noktası</string>
     <string name="webdav_host_name_hint">Lütfen ana makine adınızı yazın</string>
     <string name="webdav_port_hint">Bağlantı noktası</string>
+    <string name="webdav_port_name_null">Ana makine adı boş olamaz</string>
+    <string name="privacy_agreement">Gizlilik sözleşmesi</string>
 </resources>
