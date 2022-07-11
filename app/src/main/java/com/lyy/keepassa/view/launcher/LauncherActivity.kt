@@ -45,7 +45,6 @@ import org.greenrobot.eventbus.ThreadMode.MAIN
 
 @Route(path = "/launcher/activity")
 class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
-  private val REQUEST_PERMISSION_CODE = 0xa1
   private val REQUEST_SEARCH_ENTRY_CODE = 0xa2
   private val REQUEST_SAVE_ENTRY_CODE = 0xa3
   private lateinit var module: LauncherModule
@@ -83,12 +82,12 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     super.initData(savedInstanceState)
     ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
-
-    // type = intent.getIntExtra(KEY_OPEN_TYPE, OPEN_TYPE_OPEN_DB)
+    module = ViewModelProvider(this)[LauncherModule::class.java]
     isFromFill = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL, false)
     isFromFillSave = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL_SAVE, false)
     apkPkgName = intent.getStringExtra(KEY_PKG_NAME)
-    module = ViewModelProvider(this).get(LauncherModule::class.java)
+
+    module.showPrivacyAgreement(this)
     initUI()
     module.securityCheck(this)
   }

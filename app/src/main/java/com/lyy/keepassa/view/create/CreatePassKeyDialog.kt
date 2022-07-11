@@ -127,7 +127,7 @@ class CreatePassKeyDialog : BaseBottomSheetDialogFragment<DialogPassKeyBinding>(
               )
         }
         else -> {
-          Timber.e("为止请求码：$requestCode")
+          Timber.e("未知请求码：$requestCode")
         }
       }
       dismiss()

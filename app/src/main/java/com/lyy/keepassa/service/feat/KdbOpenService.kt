@@ -50,6 +50,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.io.File
 
 /**
  * @Author laoyuyu
@@ -131,6 +132,15 @@ class KdbOpenService : IProvider {
         cdb.setPass(dbPass, null)
         val db = cdb.build()
 
+        val success = checkCreatedDb(BaseApp.APP, localDbUri!!, dbPass, keyUri)
+        if (!success){
+          scope.launch {
+            openDbFlow.emit(null)
+          }
+          Timber.e("create db fail")
+          return@launch
+        }
+
         // 保存打开记录
         BaseApp.KDB = db
         BaseApp.dbName = db.pm.name
@@ -174,6 +184,19 @@ class KdbOpenService : IProvider {
         }
       }
     }
+  }
+
+  /**
+   * check db
+   */
+  private fun checkCreatedDb(
+    context: Context,
+    dbUri: Uri,
+    dbPass: String,
+    keyUri: Uri?
+  ): Boolean {
+    return KDBHandlerHelper.getInstance(context)
+      .openDb(dbUri, dbPass, keyUri) != null
   }
 
   /**
@@ -270,7 +293,7 @@ class KdbOpenService : IProvider {
               .toFile()
             val cloudFileInfo = OneDriveUtil.getFileInfo(record.cloudDiskPath!!)
             if (cacheFile.exists()
-              && cloudFileInfo !=null
+              && cloudFileInfo != null
               && OneDriveUtil.checkContentHash(cloudFileInfo.contentHash, record.getDbUri())
             ) {
               Timber.i("文件存在，并且hash一致，将使用本地数据库")

@@ -25,6 +25,25 @@ import kotlinx.coroutines.withContext
 
 class WebDavLoginModule : BaseModule() {
 
+  var curWebDavServer: String? = null
+
+  fun isNextcloud() = curWebDavServer == WebDavUtil.SUPPORTED_WEBDAV_URLS[3]
+
+  fun isOtherServer() =
+    curWebDavServer == WebDavUtil.SUPPORTED_WEBDAV_URLS[WebDavUtil.SUPPORTED_WEBDAV_URLS.size - 1]
+
+  fun convertHost(hostName: String, port: String, userName: String): String {
+    val hasHttp = hostName.startsWith("http", true)
+    val isHttps = hostName.startsWith("https", true) || port == "443"
+    var temp = hostName
+    if (hasHttp) {
+      val index = hostName.indexOf("://")
+      if (index != -1) {
+        temp = hostName.substring(index + 2, hostName.length)
+      }
+    }
+    return "http${if (isHttps) "s" else ""}://${temp}${if (port.isEmpty()) "" else ":${port}"}/remote.php/dav/files/${userName}/"
+  }
 
   fun checkLogin(
     uri: String,
