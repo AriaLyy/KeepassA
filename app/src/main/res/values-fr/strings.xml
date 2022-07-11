@@ -339,10 +339,15 @@
     <string name="current_collection_num">%1$s collections</string>
     <string name="my_collection">Mes collections</string>
     <string name="no_collection">Aucune collection</string>
-    <string name="error_open_db_webdav">Échec d\'ouverture de la base de données, le fichier webdav n\'existe pas</string>
-    <string name="helper_webdav_service">Sélectionner un service webdav</string>
+    <string name="error_open_db_webdav">Échec d\'ouverture de la base de données, le fichier WebDAV n\'existe pas</string>
+    <string name="helper_webdav_service">Sélectionner un service WebDAV</string>
     <string name="error_is_root">Est déjà dans le dossier racine</string>
     <string name="select_cur_path">Sélectionner un dossier</string>
     <string name="select_save_path">Sélectionner l\'emplacement d\'enregistrement</string>
     <string name="one_drive_load_user_failure">Échec le chargement des infos de l\'utilisateur</string>
+    <string name="totp_steam">Préférences de jeton de flux</string>
+    <string name="error_open_db_arcfour_error">Algorithme de cryptage de flux invalide</string>
+    <string name="quick_pass_type">Emplacement d\'interception de mots de passes courts</string>
+    <string name="hint_open_background_start">Veuillez ouvrir la permission de retrait en arrière-plan, sinon vous ne pourrez pas utiliser le remplissage automatique</string>
+    <string name="hint_cloud_file_already_exist">%1$s existe déjà, voulez-vous écraser ce fichier \?</string>
 </resources>
