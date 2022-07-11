@@ -320,7 +320,7 @@ class KdbHandlerService : IProvider {
       .createGroup(BaseApp.KDB, group.name, group.icon, group.parent)
   }
 
-  fun addGroup(group: PwGroupV4){
+  fun addGroup(group: PwGroupV4) {
     BaseApp.KDB?.pm?.addGroupTo(group, group.parent)
   }
 
@@ -356,7 +356,7 @@ class KdbHandlerService : IProvider {
         if (needShowLoading) {
           dismissLoading()
         }
-        withContext(Dispatchers.Main){
+        withContext(Dispatchers.Main) {
           callback.invoke(if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL)
         }
       }
@@ -374,30 +374,33 @@ class KdbHandlerService : IProvider {
       Timber.d("db is null")
       return
     }
-    if (BaseApp.isLocked){
+    if (BaseApp.isLocked) {
       Timber.d("db is locked")
       return
     }
     scope.launch {
       mutex.withLock {
-        withContext(Dispatchers.IO) {
-          val b = kdbHelper.save(BaseApp.KDB)
-          Timber.d("保存后的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
-          delay(1000)
-          if (uploadDb) {
-            val response = DbSynUtil.uploadSyn(BaseApp.dbRecord!!, false)
-            Timber.i(response.msg)
+        BaseApp.KDB?.let { kdb ->
+          withContext(Dispatchers.IO) {
+            val b = kdbHelper.save(kdb)
+            Timber.d("保存后的数据库hash：${kdb.hashCode()}，num = ${kdb.pm.entries.size}")
+            delay(1000)
+            if (uploadDb) {
+              val response = DbSynUtil.uploadSyn(BaseApp.dbRecord!!, false)
+              Timber.i(response.msg)
 
-            withContext(Dispatchers.Main) {
-              callback.invoke(response.code)
+              withContext(Dispatchers.Main) {
+                callback.invoke(response.code)
+              }
+              return@withContext
             }
-            return@withContext
-          }
-          val code = if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
-          withContext(Dispatchers.Main) {
-            callback.invoke(code)
+            val code = if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
+            withContext(Dispatchers.Main) {
+              callback.invoke(code)
+            }
           }
         }
+
       }
     }
   }

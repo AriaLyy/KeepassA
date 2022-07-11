@@ -135,9 +135,11 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   @JvmField
   var isShortcuts: Boolean = false
 
-  private val getFileLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) {
-    it.takePermission()
-    addAttrFile(it)
+  private val getFileLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri->
+    uri?.let {
+      it.takePermission()
+      addAttrFile(it)
+    }
   }
 
   /**

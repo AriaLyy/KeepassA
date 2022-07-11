@@ -125,7 +125,12 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
         it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
         it.putExtra(KEY_PKG_NAME, apkPackageName)
       }
-      return PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT or FLAG_IMMUTABLE)
+      return PendingIntent.getActivity(
+        context,
+        1,
+        intent,
+        PendingIntent.FLAG_CANCEL_CURRENT or FLAG_IMMUTABLE
+      )
         .intentSender
     }
   }
@@ -245,14 +250,15 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
    * 初始化列表
    */
   private fun initList() {
-    adapter = SearchAdapter(this, module.listData) { v ->
-      val position = v.tag as Int
-      val item = module.listData[position]
-      module.delHistoryRecord(item.title.toString()) {
-        module.listData.remove(item)
-        adapter.notifyItemRemoved(position)
+    adapter = SearchAdapter(this, module.listData, object : DelListener {
+      override fun onDel(v: View, position: Int) {
+        val item = module.listData[position]
+        module.delHistoryRecord(item.title.toString()) {
+          module.listData.remove(item)
+          adapter.notifyDataSetChanged()
+        }
       }
-    }
+    })
     binding.list.layoutManager = LinearLayoutManager(this)
     binding.list.adapter = adapter
 
@@ -356,5 +362,4 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
     super.onBackPressed()
     setResult(Activity.RESULT_CANCELED)
   }
-
 }

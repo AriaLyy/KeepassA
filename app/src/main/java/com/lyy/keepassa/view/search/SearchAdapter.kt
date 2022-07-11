@@ -12,7 +12,6 @@ package com.lyy.keepassa.view.search
 import android.content.Context
 import android.text.SpannableStringBuilder
 import android.view.View
-import android.view.View.OnClickListener
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import com.arialyy.frame.util.ResUtil
@@ -31,7 +30,7 @@ import com.lyy.keepassa.view.search.SearchAdapter.BaseHolder
 class SearchAdapter(
   context: Context,
   val data: MutableList<SimpleItemEntity>,
-  val delListener: OnClickListener
+  val delListener: DelListener
 ) : AbsRVAdapter<SimpleItemEntity, BaseHolder>(context, data) {
   internal var queryString = ""
 
@@ -70,8 +69,10 @@ class SearchAdapter(
       // 历史记录
       ITEM_TYPE_RECORD -> {
         holder.text.text = item.title
-        (holder as RecordHolder).del.tag = position
-        holder.del.setOnClickListener(delListener)
+        holder as RecordHolder
+        holder.del.setOnClickListener {
+          delListener.onDel(it, position)
+        }
         holder.del.visibility = View.VISIBLE
         holder.icon.setImageResource(R.drawable.ic_history)
       }
@@ -80,10 +81,10 @@ class SearchAdapter(
         highLightText(holder.text, item.title.toString())
         (holder as RecordHolder).del.visibility = View.GONE
         holder.icon.setImageDrawable(
-            ResUtil.getSvgIcon(
-                R.drawable.ic_folder_24px,
-                R.color.colorPrimary
-            )
+          ResUtil.getSvgIcon(
+            R.drawable.ic_folder_24px,
+            R.color.colorPrimary
+          )
         )
       }
 
@@ -102,10 +103,10 @@ class SearchAdapter(
   ) {
     if (queryString.isNotEmpty() && str.contains(queryString, ignoreCase = true)) {
       val temp: SpannableStringBuilder? = StringUtil.highLightStr(
-          str,
-          queryString,
-          ResUtil.getColor(android.R.color.holo_red_light),
-          true
+        str,
+        queryString,
+        ResUtil.getColor(android.R.color.holo_red_light),
+        true
       )
 
       if (temp == null) {
@@ -125,7 +126,6 @@ class SearchAdapter(
   open class BaseHolder(view: View) : AbsHolder(view) {
     val icon: AppCompatImageView = view.findViewById(R.id.icon)
     val text: TextView = view.findViewById(R.id.text)
-
   }
 
   private class RecordHolder(view: View) : BaseHolder(view) {
@@ -135,5 +135,4 @@ class SearchAdapter(
   private class SearchHolder(view: View) : BaseHolder(view) {
     val des: TextView = view.findViewById(R.id.des)
   }
-
 }

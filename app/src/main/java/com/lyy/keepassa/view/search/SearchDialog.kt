@@ -125,19 +125,20 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
     module.searchEntry(query)
   }
 
-
   /**
    * 初始化列表
    */
   private fun initList() {
-    adapter = SearchAdapter(requireContext(), listData) { v ->
-      val position = v.tag as Int
-      val item = listData[position]
-      module.delHistoryRecord(item.title.toString()) {
-        listData.remove(item)
-        adapter.notifyItemRemoved(position)
+    adapter = SearchAdapter(requireContext(), listData, object : DelListener {
+      @SuppressLint("NotifyDataSetChanged")
+      override fun onDel(v: View, position: Int) {
+        val item = listData[position]
+        module.delHistoryRecord(item.title.toString()) {
+          listData.remove(item)
+          adapter.notifyDataSetChanged()
+        }
       }
-    }
+    })
     binding.list.layoutManager = LinearLayoutManager(context)
     binding.list.adapter = adapter
     binding.list.doOnItemClickListener { _, position, _ ->
