@@ -354,4 +354,6 @@
     <string name="port">Порт</string>
     <string name="webdav_port_hint">Порт</string>
     <string name="webdav_host_name_hint">Введіть своє ім\'я хосту</string>
+    <string name="webdav_port_name_null">Ім’я хосту не може бути порожнім</string>
+    <string name="privacy_agreement">Угода про приватність</string>
 </resources>
