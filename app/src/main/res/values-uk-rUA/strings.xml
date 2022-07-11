@@ -176,8 +176,8 @@
     <string name="set_key_main_show_totp_tab_off">Не показувати категорію TOTP</string>
     <string name="set_key_theme_style_summary">Системна</string>
     <string name="kpa_copy">Копіювати</string>
-    <string name="hint_cloud_file_already_exist">%1$s вже існує, чи слід перезаписати файл\?</string>
-    <string name="one_drive_load_user_failure">Не вдалося завантажити відомості про користувача</string>
+    <string name="hint_cloud_file_already_exist">%1$s вже існує. Перезаписати цей файл\?</string>
+    <string name="one_drive_load_user_failure">Не вдалося завантажити відомості про користувача.</string>
     <string name="hint_full_fingerprint">Відбиток пальця використовується для розблокування бази даних в інтерфейсі швидкого розблокування та інтерфейсі розблокування бази даних, KeePassA шифрує та зберігає головний пароль вашої бази та ключову інформацію в локальному сховищі ключів системи Android, а також використовує авторизацію відбитків пальців для захисту. Тільки ваш відбиток пальця може розблокувати базу даних.</string>
     <string name="hint_background_start">Перейдіть до&lt;font color=#FF0000&gt;【%s】&lt;/font&gt;і надайте дозволи на показ фонових спливних вікон для поліпшення взаємодії зі службою автозаповнення.&lt;br&gt; &lt;font color=#FF0000&gt;KeePassA показує відповідний інтерфейс для відкриття бази даних за використання функції автозаповнення&lt;/font&gt;</string>
     <string name="quick_pass_len_summary">Довжина короткого пароля: %s</string>
@@ -342,12 +342,16 @@
     <string name="my_collection">Моя колекція</string>
     <string name="current_collection_num">%1$s колекції</string>
     <string name="no_collection">Немає колекції</string>
-    <string name="error_open_db_webdav">Не вдалося відкрити базу даних, файл webdav не існує</string>
-    <string name="helper_webdav_service">Вибрати службу webdav</string>
+    <string name="error_open_db_webdav">Не вдалося відкрити базу даних, файл WebDAV не існує.</string>
+    <string name="helper_webdav_service">Вибрати службу WebDAV</string>
     <string name="error_is_root">Це вже кореневий каталог</string>
     <string name="select_cur_path">Вибрати теку</string>
     <string name="miui_permissions">Системі miui потрібен дозвіл на відкриття фонового спливного інтерфейсу, щоб використовувати функцію автозаповнення.</string>
     <string name="error_keystore">Виняток сховища ключів, повторіть спробу</string>
     <string name="error_qr_code_str">QR-код неправильний. Переконайтеся, що QR-код підтримується Google Authenticator</string>
     <string name="select_save_path">Вибрати шлях збереження</string>
+    <string name="hostname">Ім\'я хосту</string>
+    <string name="port">Порт</string>
+    <string name="webdav_port_hint">Порт</string>
+    <string name="webdav_host_name_hint">Введіть своє ім\'я хосту</string>
 </resources>

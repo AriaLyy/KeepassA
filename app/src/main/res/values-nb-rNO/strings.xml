@@ -339,4 +339,19 @@
     <string name="error_connect_play">Klarte ikke å koble til Google-tjeneste</string>
     <string name="year">Årlig</string>
     <string name="error_donate">Donasjon mislyktes</string>
+    <string name="my_collection">Min samling</string>
+    <string name="current_collection_num">%1$s samlinger</string>
+    <string name="one_drive_load_user_failure">Klarte ikke å laste inn brukerinfo.</string>
+    <string name="webdav_port_hint">Port</string>
+    <string name="error_is_root">Allerede rot-mappen</string>
+    <string name="helper_webdav_service">Velg WebDAV-tjeneste</string>
+    <string name="select_cur_path">Velg mappen</string>
+    <string name="hint_cloud_file_already_exist">%1$s finnes allerede\? Overskriv\?</string>
+    <string name="no_collection">Ingen samling</string>
+    <string name="hostname">Vertsnavn</string>
+    <string name="error_open_db_webdav">Klarte ikke å åpne databasen. WebDAV filen finnes ikke.</string>
+    <string name="select_save_path">Velg en lagringsti</string>
+    <string name="port">Port</string>
+    <string name="webdav_host_name_hint">Skriv inn vertsnavnet ditt.</string>
+    <string name="hint_open_background_start">Innvilg tilgang til å løse ut i bakgrunnen for å fylle ut automatisk</string>
 </resources>
