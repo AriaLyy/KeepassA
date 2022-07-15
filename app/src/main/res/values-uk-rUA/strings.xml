@@ -356,4 +356,5 @@
     <string name="webdav_host_name_hint">Введіть своє ім\'я хосту</string>
     <string name="webdav_port_name_null">Ім’я хосту не може бути порожнім</string>
     <string name="privacy_agreement">Угода про приватність</string>
+    <string name="ime_hint_open_auto_fill">Увімкніть службу автозаповнення</string>
 </resources>
