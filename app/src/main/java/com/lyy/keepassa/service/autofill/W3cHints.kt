@@ -136,10 +136,13 @@ object W3cHints {
   private val PASSWORD_HINT_LIST = arrayListOf(PASSWORD, NEW_PASSWORD, CURRENT_PASSWORD)
   private val USER_HINT_LIST = arrayListOf(NAME, USERNAME, TEL, GIVEN_NAME, EMAIL, IMPP)
 
+  var curDomainUrl = ""
+
   /**
    * 是否是浏览器
    */
-  fun isBrowser(pkgName: String): Boolean {
+  fun isBrowser(pkgName: String?): Boolean {
+    if (pkgName.isNullOrEmpty()) return false
     return CompatBrowsers.contains(pkgName)
   }
 

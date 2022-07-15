@@ -138,9 +138,10 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
         Timber.i("is browser, start get web info")
         checkW3C(viewNode)
         if (isW3c) {
-          if (domainUrl.isBlank()) {
+          if (domainUrl.isBlank()){
             domainUrl = viewNode.webDomain ?: ""
-            Timber.d("webDomain = $domainUrl")
+            W3cHints.curDomainUrl = domainUrl
+            Timber.d("domainUrl = $domainUrl")
           }
           getW3CInfo(viewNode)
         }

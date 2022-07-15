@@ -24,9 +24,10 @@ import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.arialyy.frame.router.Routerfit
+import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
@@ -34,6 +35,8 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.FillInfoEvent
+import com.lyy.keepassa.router.ActivityRouter
+import com.lyy.keepassa.service.autofill.W3cHints
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
@@ -57,7 +60,6 @@ import timber.log.Timber
  * https://developer.android.com/guide/topics/text/creating-input-method?hl=zh-cn
  */
 class InputIMEService : InputMethodService(), View.OnClickListener {
-  private val TAG = "InputIMEService"
 
   private var appPkgName: String? = ""
   private var ic: InputConnection? = null
@@ -66,6 +68,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
   private val candidatesData = arrayListOf<SimpleItemEntity>()
   private lateinit var candidatesAdapter: CandidatesAdapter
   private var imeOption = EditorInfo.IME_ACTION_GO
+  private var curImeView: View? = null
 
   /**
    * 当 IME 首次显示时，系统会调用 onCreateInputView() 回调。在此方法的实现中，您可以创建要在 IME 窗口中显示的布局，并将布局返回系统。
@@ -84,6 +87,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         child.setOnClickListener(this)
       }
     }
+    curImeView = layout
     initCandidatesLayout()
     return layout
   }
@@ -101,6 +105,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
           position: Int,
           v: View?
         ) {
+          Timber.d("select item, position = $position")
           val lastItemEntity = candidatesData[lastPosition]
           val curItemEntity = candidatesData[position]
           lastItemEntity.isSelected = false
@@ -128,9 +133,53 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     candidatesList.visibility = View.GONE
     curEntry = null
     ic = currentInputConnection
-    Timber.d("pkgName = ${info?.packageName}")
+    Timber.d("pkgName = ${info?.packageName}, inputType = ${info?.inputType}, fieldName = ${info?.fieldName}, fieldId = ${info?.fieldId}")
     appPkgName = info?.packageName
+
+    if (W3cHints.isBrowser(appPkgName) && !checkCanOpenAutoFill()) {
+      if (curImeView == null) {
+        HitUtil.toaskLong(ResUtil.getString(R.string.ime_hint_open_auto_fill))
+        return
+      }
+
+      HitUtil.snackLong(
+        curImeView!!,
+        ResUtil.getString(R.string.ime_hint_open_auto_fill),
+        ResUtil.getString(R.string.setting)
+      ) {
+        Routerfit.create(ActivityRouter::class.java, this).toAppSetting(
+          scrollKey = getString(R.string.set_open_auto_fill)
+        )
+      }
+      return
+    }
+
     showEntryList(searchEntry(appPkgName))
+  }
+
+  private fun checkCanOpenAutoFill(): Boolean {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+      Timber.w("the sdk version ${Build.VERSION.SDK_INT} less than O")
+      return false
+    }
+    val am = getSystemService(AutofillManager::class.java)
+    if (!am.isAutofillSupported) {
+      Timber.w("it not support autofill")
+      return false
+    }
+
+    if (!am.hasEnabledAutofillServices()) {
+      Timber.w("The auto-fill service is not turned on")
+      return false
+    }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+      && (am.autofillServiceComponentName?.packageName?.equals(packageName) == false)
+    ) {
+      Timber.w("The auto-fill service is not turned on")
+      return false
+    }
+    return true
   }
 
   override fun onCreateInlineSuggestionsRequest(uiExtras: Bundle): InlineSuggestionsRequest? {
@@ -176,10 +225,12 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
           return
         }
         showEntryList(searchEntry(appPkgName))
-        if (curEntry == null) {
+        curEntry?.let {
+          val userName = KdbUtil.getUserName(it)
+          Timber.d("fill user name: $userName")
+          fillData(userName)
           return
         }
-        fillData(KdbUtil.getUserName(curEntry!!))
       }
 
       // 密码
@@ -188,10 +239,12 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
           return
         }
         showEntryList(searchEntry(appPkgName))
-        if (curEntry == null) {
+        curEntry?.let {
+          val pass = KdbUtil.getPassword(it)
+          Timber.d("fill password: $pass")
+          fillData(pass)
           return
         }
-        fillData(KdbUtil.getPassword(curEntry!!))
       }
 
       // 关键软键盘
@@ -354,6 +407,12 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       return emptyList()
     }
     val listStorage = ArrayList<PwEntry>()
+    if (W3cHints.isBrowser(pkgName)) {
+      Timber.d("curDomain = ${W3cHints.curDomainUrl}")
+      KdbUtil.searchEntriesByDomain(W3cHints.curDomainUrl, listStorage)
+      return listStorage
+    }
+
     KdbUtil.searchEntriesByPackageName(pkgName, listStorage)
     return listStorage
   }
@@ -361,5 +420,4 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
   override fun attachBaseContext(newBase: Context?) {
     super.attachBaseContext(LanguageUtil.setLanguage(newBase!!, BaseApp.currentLang))
   }
-
 }

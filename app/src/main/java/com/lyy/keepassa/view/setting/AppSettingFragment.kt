@@ -274,12 +274,20 @@ class AppSettingFragment : PreferenceFragmentCompat() {
   private fun setAtoFill() {
     autoFill = findPreference(getString(R.string.set_open_auto_fill))!!
     // 大于8.0 才能使用自带的填充框架，否则只能使用辅助功能来实现
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    if (Build.VERSION.SDK_INT >= VERSION_CODES.O) {
       val am = requireContext().getSystemService(AutofillManager::class.java)
       if (am == null) {
         autoFill.isVisible = false
         return
       }
+
+      if (Build.VERSION.SDK_INT >= VERSION_CODES.P
+        && am.autofillServiceComponentName?.packageName?.equals(requireActivity().packageName) == false
+      ) {
+        autoFill.isVisible = false
+        return
+      }
+
       // miui 检查后台弹出权限
       if (am.isAutofillSupported
         && RomUtils.isXiaomi()

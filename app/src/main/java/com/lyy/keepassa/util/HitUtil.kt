@@ -12,7 +12,6 @@ package com.lyy.keepassa.util
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.StringRes
-import com.arialyy.frame.util.ResUtil
 import com.google.android.material.snackbar.Snackbar
 import com.keepassdroid.database.exception.ArcFourException
 import com.keepassdroid.database.exception.InvalidAlgorithmException
@@ -82,21 +81,21 @@ object HitUtil {
   fun toaskShort(@StringRes strId: Int) {
     BaseApp.handler.post {
       Toast.makeText(BaseApp.APP, BaseApp.APP.resources.getString(strId), Toast.LENGTH_SHORT)
-          .show()
+        .show()
     }
   }
 
   fun toaskShort(text: String) {
     BaseApp.handler.post {
       Toast.makeText(BaseApp.APP, text, Toast.LENGTH_SHORT)
-          .show()
+        .show()
     }
   }
 
   fun toaskLong(text: String) {
     BaseApp.handler.post {
       Toast.makeText(BaseApp.APP, text, Toast.LENGTH_LONG)
-          .show()
+        .show()
     }
   }
 
@@ -105,8 +104,8 @@ object HitUtil {
     text: String
   ) {
     Snackbar.make(view, text, Snackbar.LENGTH_SHORT)
-        .setAction("OK") {}
-        .show()
+      .setAction("OK") {}
+      .show()
   }
 
   fun snackLong(
@@ -114,8 +113,18 @@ object HitUtil {
     text: String
   ) {
     Snackbar.make(view, text, Snackbar.LENGTH_LONG)
-        .setAction("OK") {}
-        .show()
+      .setAction("OK") {}
+      .show()
   }
 
+  fun snackLong(
+    view: View,
+    text: String,
+    actionStr: String,
+    action: View.OnClickListener
+  ) {
+    Snackbar.make(view, text, Snackbar.LENGTH_LONG)
+      .setAction(actionStr, action)
+      .show()
+  }
 }

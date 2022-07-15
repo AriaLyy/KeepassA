@@ -253,6 +253,7 @@ class AutoFillService : AutofillService() {
 
   override fun onDisconnected() {
     Timber.d("onDisconnected")
+    // W3cHints.curDomainUrl = ""
   }
 
   override fun attachBaseContext(newBase: Context?) {
