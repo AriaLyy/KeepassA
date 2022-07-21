@@ -24,6 +24,12 @@ import java.util.UUID
  **/
 interface ActivityRouter {
 
+  @RouterPath(path = "/search/common")
+  fun toCommonSearch(
+    @RouterArgName(name = "apkPkgName") apkPkgName: String? = null,
+    @RouterArgName(name = "onlySearch") onlySearch: Boolean = true
+  )
+
   @RouterPath(path = "/collection/ac")
   fun toMyCollection(@RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null)
 

@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/color_E7EAED"
-    android:paddingBottom="16dp">
+    android:paddingBottom="16dp"
+    >
 
 
   <View
@@ -12,22 +13,37 @@
       android:layout_width="match_parent"
       android:layout_height="1dp"
       android:background="@color/line_color"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toTopOf="parent"
+      />
 
   <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/rvContent"
-      android:layout_width="match_parent"
+      android:layout_width="0dp"
       android:layout_height="50dp"
+      android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
       android:layout_marginTop="16dp"
-      android:layout_marginEnd="8dp"
       android:visibility="gone"
+      app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/line" />
+      app:layout_constraintTop_toBottomOf="@+id/line"
+      />
+
+  <androidx.appcompat.widget.AppCompatImageView
+      android:id="@+id/ivSearch"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:clickable="true"
+      android:focusable="true"
+      android:visibility="gone"
+      app:layout_constraintBottom_toBottomOf="@+id/rvContent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/rvContent"
+      app:srcCompat="@drawable/ic_search"
+      />
 
   <ImageView
       android:id="@+id/btLock"
-      style="@style/KpaImeKeyStyle"
       android:layout_width="60dp"
       android:layout_height="wrap_content"
       android:layout_marginTop="16dp"
@@ -36,11 +52,12 @@
       app:layout_constraintEnd_toStartOf="@+id/btAccount"
       app:layout_constraintHorizontal_bias="0.5"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/rvContent" />
+      app:layout_constraintTop_toBottomOf="@+id/rvContent"
+      style="@style/KpaImeKeyStyle"
+      />
 
   <ImageView
       android:id="@+id/btAccount"
-      style="@style/KpaImeKeyStyle"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:src="@drawable/ic_ime_user"
@@ -48,11 +65,12 @@
       app:layout_constraintEnd_toStartOf="@+id/btPass"
       app:layout_constraintHorizontal_bias="0.5"
       app:layout_constraintStart_toEndOf="@+id/btLock"
-      app:layout_constraintTop_toTopOf="@+id/btLock" />
+      app:layout_constraintTop_toTopOf="@+id/btLock"
+      style="@style/KpaImeKeyStyle"
+      />
 
   <TextView
       android:id="@+id/btPass"
-      style="@style/KpaImeKeyStyle"
       android:layout_width="0dp"
       android:layout_height="40dp"
       android:gravity="center"
@@ -63,11 +81,12 @@
       app:layout_constraintEnd_toStartOf="@+id/btClose"
       app:layout_constraintHorizontal_bias="0.5"
       app:layout_constraintStart_toEndOf="@+id/btAccount"
-      app:layout_constraintTop_toTopOf="@+id/btLock" />
+      app:layout_constraintTop_toTopOf="@+id/btLock"
+      style="@style/KpaImeKeyStyle"
+      />
 
   <ImageView
       android:id="@+id/btClose"
-      style="@style/KpaImeKeyStyle"
       android:layout_width="60dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -76,12 +95,13 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.5"
       app:layout_constraintStart_toEndOf="@+id/btPass"
-      app:layout_constraintTop_toTopOf="@+id/btLock" />
+      app:layout_constraintTop_toTopOf="@+id/btLock"
+      style="@style/KpaImeKeyStyle"
+      />
 
 
   <ImageView
       android:id="@+id/btChangeIme"
-      style="@style/KpaImeKeyStyle"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginTop="16dp"
@@ -90,11 +110,12 @@
       app:layout_constraintEnd_toStartOf="@+id/btTotp"
       app:layout_constraintHorizontal_bias="0.5"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/btLock" />
+      app:layout_constraintTop_toBottomOf="@+id/btLock"
+      style="@style/KpaImeKeyStyle"
+      />
 
   <ImageView
       android:id="@+id/btTotp"
-      style="@style/KpaImeKeyStyle"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:src="@drawable/ic_totp"
@@ -103,11 +124,12 @@
       app:layout_constraintEnd_toStartOf="@+id/btOtherInfo"
       app:layout_constraintHorizontal_bias="0.5"
       app:layout_constraintStart_toEndOf="@+id/btChangeIme"
-      app:layout_constraintTop_toTopOf="@+id/btChangeIme" />
+      app:layout_constraintTop_toTopOf="@+id/btChangeIme"
+      style="@style/KpaImeKeyStyle"
+      />
 
   <ImageView
       android:id="@+id/btOtherInfo"
-      style="@style/KpaImeKeyStyle"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:src="@drawable/ic_ime_other_info"
@@ -115,11 +137,12 @@
       app:layout_constraintEnd_toStartOf="@+id/btBackspace"
       app:layout_constraintHorizontal_bias="0.5"
       app:layout_constraintStart_toEndOf="@+id/btTotp"
-      app:layout_constraintTop_toTopOf="@+id/btChangeIme" />
+      app:layout_constraintTop_toTopOf="@+id/btChangeIme"
+      style="@style/KpaImeKeyStyle"
+      />
 
   <ImageView
       android:id="@+id/btBackspace"
-      style="@style/KpaImeKeyStyle"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:src="@drawable/ic_ime_backspace"
@@ -127,11 +150,12 @@
       app:layout_constraintEnd_toStartOf="@+id/btEnter"
       app:layout_constraintHorizontal_bias="0.5"
       app:layout_constraintStart_toEndOf="@+id/btOtherInfo"
-      app:layout_constraintTop_toTopOf="@+id/btChangeIme" />
+      app:layout_constraintTop_toTopOf="@+id/btChangeIme"
+      style="@style/KpaImeKeyStyle"
+      />
 
   <ImageView
       android:id="@+id/btEnter"
-      style="@style/KpaImeKeyStyle"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -140,7 +164,9 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.5"
       app:layout_constraintStart_toEndOf="@+id/btBackspace"
-      app:layout_constraintTop_toTopOf="@+id/btChangeIme" />
+      app:layout_constraintTop_toTopOf="@+id/btChangeIme"
+      style="@style/KpaImeKeyStyle"
+      />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
