@@ -35,6 +35,8 @@ import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
+import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.ToastUtils
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
@@ -47,6 +49,7 @@ import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.takePermission
+import com.lyy.keepassa.view.StorageType
 import com.tencent.bugly.crashreport.BuglyLog
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -63,6 +66,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   companion object {
     val FM_TAG = "OpenDbFragment"
     val REQ_CODE_FILE = 0xa1
+    private val NEED_PROXY_DB = arrayListOf(StorageType.DROPBOX.name, StorageType.ONE_DRIVE.name)
   }
 
   @Autowired(name = "openDbRecord")
@@ -270,6 +274,10 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     if (cache.isBlank() && openDbRecord.keyUri.isBlank()) {
       HitUtil.toaskShort(getString(R.string.error_input_pass_null))
       return
+    }
+    Timber.d("文件类型：${openDbRecord.type}")
+    if (KpaUtil.isChina() && openDbRecord.type in NEED_PROXY_DB) {
+      ToastUtils.showLong(ResUtil.getString(R.string.please_open_proxy))
     }
     modlue.checkPassType(cache, openDbRecord.keyUri)
     KpaUtil.kdbOpenService.openDb(requireContext(), openDbRecord, cache)

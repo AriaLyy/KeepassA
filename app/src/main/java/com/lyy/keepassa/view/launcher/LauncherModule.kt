@@ -46,6 +46,7 @@ import com.lyy.keepassa.router.ServiceRouter
 import com.lyy.keepassa.util.CommonKVStorage
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.HitUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.isAFS
@@ -86,7 +87,7 @@ class LauncherModule : BaseModule() {
   }
 
   private fun isNeedShowPrPrivacyAgreement(): Boolean {
-    return LanguageUtil.getSysCurrentLan().country == Locale.CHINA.country
+    return KpaUtil.isChina()
       && !CommonKVStorage.getBoolean(Constance.IS_AGREE_PRIVACY_AGREEMENT, false)
   }
 

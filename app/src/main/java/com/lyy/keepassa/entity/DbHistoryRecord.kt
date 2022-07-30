@@ -29,6 +29,9 @@ data class DbHistoryRecord(
 
   @ColumnInfo var time: Long,
     // 打开类型
+  /**
+   * [StorageType]
+   */
   @ColumnInfo(defaultValue = "AFS") var type: String,
     // 本地数据库uri
   @ColumnInfo var localDbUri: String,

@@ -17,6 +17,7 @@ import com.blankj.utilcode.util.ToastUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.HitUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.cloud.OneDriveUtil
 import com.lyy.keepassa.view.StorageType.ONE_DRIVE
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
@@ -35,7 +36,9 @@ class OpenOneDriveDelegate : IOpenDbDelegate {
   override fun startFlow(fragment: ChangeDbFragment) {
     this.activity = fragment.requireActivity()
     showHitDialog {
-      ToastUtils.showLong(ResUtil.getString(R.string.please_open_proxy))
+      if (KpaUtil.isChina()) {
+        ToastUtils.showLong(ResUtil.getString(R.string.please_open_proxy))
+      }
       OneDriveUtil.initOneDrive { success ->
         if (success) {
           OneDriveUtil.loadAccount()

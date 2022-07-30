@@ -17,6 +17,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.router.ServiceRouter
 import kotlinx.coroutines.MainScope
+import java.util.Locale
 
 /**
  * @Author laoyuyu
@@ -31,6 +32,10 @@ object KpaUtil {
 
   val kdbOpenService by lazy {
     Routerfit.create(ServiceRouter::class.java).getDbOpenService()
+  }
+
+  fun isChina():Boolean{
+    return LanguageUtil.getSysCurrentLan().country == Locale.CHINA.country
   }
 
   fun updateEntryItemInfo(item: SimpleItemEntity) {
