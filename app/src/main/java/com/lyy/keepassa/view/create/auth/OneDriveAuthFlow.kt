@@ -16,7 +16,6 @@ import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.cloud.OneDriveUtil
 import com.lyy.keepassa.view.StorageType.ONE_DRIVE
 import com.lyy.keepassa.view.create.CreateDbFirstFragment
-import com.lyy.keepassa.view.dialog.LoadingDialog
 import timber.log.Timber
 
 /**

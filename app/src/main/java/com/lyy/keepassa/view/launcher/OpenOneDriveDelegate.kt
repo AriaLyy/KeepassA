@@ -12,6 +12,8 @@ import android.text.Html
 import android.widget.Button
 import androidx.fragment.app.FragmentActivity
 import com.arialyy.frame.router.Routerfit
+import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.ToastUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.HitUtil
@@ -33,6 +35,7 @@ class OpenOneDriveDelegate : IOpenDbDelegate {
   override fun startFlow(fragment: ChangeDbFragment) {
     this.activity = fragment.requireActivity()
     showHitDialog {
+      ToastUtils.showLong(ResUtil.getString(R.string.please_open_proxy))
       OneDriveUtil.initOneDrive { success ->
         if (success) {
           OneDriveUtil.loadAccount()

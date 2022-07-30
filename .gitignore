@@ -19,3 +19,4 @@ KeepassLib/build
 node_modules
 cp_buglyQqUploadSymbolLib.jar
 /buglybin
+local.properties

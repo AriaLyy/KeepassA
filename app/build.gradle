@@ -178,10 +178,11 @@ android.applicationVariants.all { variant ->
       // Stores the path to the maifest.
       String manifestPath = "${multiApkManifestOutputDirectory.asFile.get()}/AndroidManifest.xml"
       println("版本类型：" + isReleaseBuildType())
-      def keyHash = "5qMkIKbIM5Lx7VbajX8mT3rKXpE="
-      if (isReleaseBuildType()) {
-        keyHash = "xv3czaACtp98KvuSqP3GRLCxjrc="
-      }
+//      def keyHash = "5qMkIKbIM5Lx7VbajX8mT3rKXpE="
+//      if (isReleaseBuildType()) {
+//        keyHash = "xv3czaACtp98KvuSqP3GRLCxjrc="
+//      }
+      def keyHash = "xv3czaACtp98KvuSqP3GRLCxjrc="
 
       // 替换one drive 配置
       def updatedContent = file(manifestPath).getText('UTF-8')
