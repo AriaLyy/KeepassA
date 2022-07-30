@@ -350,4 +350,10 @@
     <string name="quick_pass_type">Emplacement d\'interception de mots de passes courts</string>
     <string name="hint_open_background_start">Veuillez ouvrir la permission de retrait en arrière-plan, sinon vous ne pourrez pas utiliser le remplissage automatique</string>
     <string name="hint_cloud_file_already_exist">%1$s existe déjà, voulez-vous écraser ce fichier \?</string>
+    <string name="webdav_port_name_null">Le nom de l\'hôte ne peut pas être vide</string>
+    <string name="privacy_agreement">Contrat de confidentialité</string>
+    <string name="port">Port</string>
+    <string name="hostname">Nom d\'hôte</string>
+    <string name="webdav_port_hint">Port</string>
+    <string name="webdav_host_name_hint">Veuillez entrer votre nom d\'hôte</string>
 </resources>
