@@ -356,4 +356,5 @@
     <string name="select_save_path">选择保存路径</string>
     <string name="one_drive_load_user_failure">加载用户信息失败</string>
     <string name="hint_open_background_start">请打开后台弹出权限，否则无法使用自动填充功能</string>
+    <string name="please_open_proxy">由于众所周知的网络原因，为了能顺畅使用onedrive服务，请使用合适的网络工具</string>
 </resources>

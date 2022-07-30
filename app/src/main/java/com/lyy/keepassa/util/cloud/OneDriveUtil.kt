@@ -120,8 +120,7 @@ object OneDriveUtil : ICloudUtil {
    */
   fun initOneDrive(callback: (Boolean) -> Unit) {
     PublicClientApplication.createSingleAccountPublicClientApplication(
-      getContext(),
-      if (BuildConfig.DEBUG) R.raw.auth_config_single_account_debug else R.raw.auth_config_single_account_release,
+      getContext(), R.raw.auth_config_single_account_release,
       object : ISingleAccountApplicationCreatedListener {
         override fun onCreated(application: ISingleAccountPublicClientApplication) {
           /**
@@ -292,18 +291,18 @@ object OneDriveUtil : ICloudUtil {
     cloudFileHash: String?,
     localFileUri: Uri
   ): Boolean {
-    if (cloudFileHash == null){
+    if (cloudFileHash == null) {
       return false
     }
     Timber.d("localFileUri = $localFileUri")
     val bytes = localFileUri.getBytes()
-    if (bytes == null){
+    if (bytes == null) {
       Timber.e("localFileUri get bytes null")
       return false
     }
     val localHash = EncryptUtils.encryptSHA256ToString(bytes)
     Timber.d("cloudFileHash = $cloudFileHash，localHash = $localHash")
-    return  localHash == cloudFileHash
+    return localHash == cloudFileHash
   }
 
   override suspend fun getFileInfo(fileKey: String): CloudFileInfo? {

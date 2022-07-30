@@ -178,10 +178,11 @@ android.applicationVariants.all { variant ->
       // Stores the path to the maifest.
       String manifestPath = "${multiApkManifestOutputDirectory.asFile.get()}/AndroidManifest.xml"
       println("版本类型：" + isReleaseBuildType())
-      def keyHash = "5qMkIKbIM5Lx7VbajX8mT3rKXpE="
-      if (isReleaseBuildType()) {
-        keyHash = "xv3czaACtp98KvuSqP3GRLCxjrc="
-      }
+//      def keyHash = "5qMkIKbIM5Lx7VbajX8mT3rKXpE="
+//      if (isReleaseBuildType()) {
+//        keyHash = "xv3czaACtp98KvuSqP3GRLCxjrc="
+//      }
+      def keyHash = "xv3czaACtp98KvuSqP3GRLCxjrc="
 
       // 替换one drive 配置
       def updatedContent = file(manifestPath).getText('UTF-8')
@@ -212,8 +213,8 @@ dependencies {
   implementation 'me.laoyuyu.keepassa:KeepassIcon:0.2.6'
   implementation 'me.laoyuyu.keepassa:KeepassLib:0.2.8'
   //  implementation project(path: ':KpaLib')
-  implementation 'me.laoyuyu.keepassa:KPAFrame:0.2.14'
-  implementation 'me.laoyuyu.keepassa:UIWidget:0.2.7'
+  implementation 'me.laoyuyu.keepassa:KPAFrame:0.2.15'
+  implementation 'me.laoyuyu.keepassa:UIWidget:0.2.8'
 
 
   // kotlin

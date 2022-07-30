@@ -129,7 +129,7 @@ class LauncherModule : BaseModule() {
             val auth: CryptoObject? = result.cryptoObject
             val cipher = auth!!.cipher!!
             val pass = QuickUnLockUtil.decryption(
-              keyStoreUtil?.decryptData(cipher, record.dbPass)
+              keyStoreUtil.decryptData(cipher, record.dbPass)
             )
             unlockEvent.postValue(Pair(true, pass))
           } catch (e: Exception) {
@@ -151,7 +151,7 @@ class LauncherModule : BaseModule() {
       })
     try {
       // Displays the "log in" prompt.
-      keyStoreUtil?.let {
+      keyStoreUtil.let {
         biometricPrompt.authenticate(
           promptInfo, CryptoObject(it.getDecryptCipher(record.passIv!!))
         )
