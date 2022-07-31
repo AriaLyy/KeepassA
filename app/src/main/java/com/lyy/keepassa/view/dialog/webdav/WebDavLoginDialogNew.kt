@@ -7,7 +7,7 @@
  */
 
 
-package com.lyy.keepassa.view.dialog
+package com.lyy.keepassa.view.dialog.webdav
 
 import android.view.View
 import android.widget.ArrayAdapter
@@ -16,7 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.arialyy.frame.router.Routerfit
-import com.blankj.utilcode.util.KeyboardUtils
+import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogWebdavLoginNewBinding
@@ -25,6 +25,7 @@ import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.cloud.WebDavUtil
+import com.lyy.keepassa.view.dialog.WebDavLoginModule
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -35,9 +36,21 @@ import kotlinx.coroutines.launch
 @Route(path = "/dialog/webdavLogin")
 class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
 
-  private lateinit var module: WebDavLoginModule
-  private var webDavUri: String? = null
+  lateinit var module: WebDavLoginModule
   val webDavLoginFlow = MutableSharedFlow<WebDavLoginEvent>()
+  private var loginAdapter: IWebDavLoginAdapter? = null
+
+  private val nextCloudAdapter by lazy {
+    NextcloudLoginAdapter(binding, this)
+  }
+
+  private val defaultAdapter by lazy {
+    DefaultLoginAdapter(binding, this)
+  }
+
+  private val otherAdapter by lazy {
+    OtherLoginAdapter(binding, this)
+  }
 
   private val loadingDialog by lazy {
     Routerfit.create(DialogRouter::class.java).getLoadingDialog()
@@ -52,9 +65,9 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
     module = ViewModelProvider(this)[WebDavLoginModule::class.java]
     binding.enter.setOnClickListener {
       handleEnterClick()
-
     }
     binding.cancel.setOnClickListener { dismiss() }
+    loginAdapter = defaultAdapter
     handleSelectService()
   }
 
@@ -74,16 +87,12 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
     binding.uri.doAfterTextChanged {
       binding.groupHost.visibility = View.GONE
       module.curWebDavServer = it?.toString()
-      if (module.isOtherServer()) {
-        binding.uri.setText("")
-        KeyboardUtils.showSoftInput(binding.uri)
-        return@doAfterTextChanged
+      loginAdapter = when {
+        module.isNextcloud() -> nextCloudAdapter
+        module.isOtherServer() -> otherAdapter
+        else -> defaultAdapter
       }
-      if (module.isNextcloud()) {
-        binding.groupHost.visibility = View.VISIBLE
-        KeyboardUtils.showSoftInput(binding.uri)
-        return@doAfterTextChanged
-      }
+      loginAdapter?.updateState()
     }
   }
 
@@ -93,58 +102,32 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
     }
     val pass = binding.password.text.toString()
       .trim()
-    val uri = binding.uri.text.toString()
-      .trim()
+
     val userName = binding.userName.text.toString()
       .trim()
-    val hostName = binding.host.text.toString().trim()
     if (pass.isEmpty()) {
-      HitUtil.toaskLong(getString(R.string.hint_please_input, getString(R.string.password)))
+      HitUtil.toaskLong(ResUtil.getString(R.string.hint_please_input, getString(R.string.password)))
       return
     }
     if (userName.isEmpty()) {
       HitUtil.toaskLong(
-        getString(R.string.hint_please_input, getString(R.string.hint_input_user_name))
-      )
-      return
-    }
-    if (uri.isEmpty() || uri.equals("null", true)) {
-      HitUtil.toaskLong(
-        getString(R.string.hint_please_input, getString(R.string.hint_webdav_url))
+        ResUtil.getString(R.string.hint_please_input, getString(R.string.hint_input_user_name))
       )
       return
     }
 
-    if (module.isNextcloud()) {
-      if (hostName.isEmpty()) {
-        HitUtil.toaskLong(getString(R.string.webdav_port_name_null))
-        return
-      }
-    }
-
-    if (!KeepassAUtil.instance.checkUrlIsValid(uri) && !module.isNextcloud()) {
-      HitUtil.toaskLong("${getString(R.string.hint_webdav_url)} ${getString(R.string.invalid)}")
-      return
-    }
-
-    // start login
-    this.webDavUri = if (module.isNextcloud()) {
-      module.convertHost(hostName, binding.edPort.text.toString().trim(), userName)
-    } else {
-      uri
-    }
-    loadingDialog.show()
-    handleLoginFlow(webDavUri!!, userName, pass)
+    loginAdapter?.startLogin(userName, pass)
   }
 
   /**
    * 登陆流程
    */
-  private fun handleLoginFlow(
+  fun startLoginFlow(
     uri: String,
     userName: String,
     pass: String
   ) {
+    loadingDialog.show()
     lifecycleScope.launch {
       module.checkLogin(uri, userName, pass).collectLatest {
         loadingDialog.dismiss()

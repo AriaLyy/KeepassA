@@ -24,6 +24,7 @@ import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.arialyy.frame.router.Routerfit
@@ -46,9 +47,12 @@ import com.lyy.keepassa.util.OtpUtil
 import com.lyy.keepassa.util.isOpenQuickLock
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
+import com.lyy.keepassa.view.search.CommonSearchActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
@@ -69,6 +73,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
   private lateinit var candidatesAdapter: CandidatesAdapter
   private var imeOption = EditorInfo.IME_ACTION_GO
   private var curImeView: View? = null
+  private var scope = MainScope()
 
   /**
    * 当 IME 首次显示时，系统会调用 onCreateInputView() 回调。在此方法的实现中，您可以创建要在 IME 窗口中显示的布局，并将布局返回系统。
@@ -89,6 +94,18 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     }
     curImeView = layout
     initCandidatesLayout()
+
+    layout.findViewById<AppCompatImageView>(R.id.ivSearch).setOnClickListener {
+      Routerfit.create(ActivityRouter::class.java).toCommonSearch()
+    }
+    scope = MainScope()
+    scope.launch {
+      CommonSearchActivity.searchFlow.collectLatest {
+        curEntry = it
+        showEntryList(arrayListOf<PwEntry>().apply { add(it) })
+      }
+    }
+
     return layout
   }
 
@@ -342,6 +359,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
   override fun onDestroy() {
     super.onDestroy()
     EventBusHelper.unReg(this)
+    scope.cancel()
   }
 
   /**

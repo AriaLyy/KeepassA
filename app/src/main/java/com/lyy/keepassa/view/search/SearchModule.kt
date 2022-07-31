@@ -53,6 +53,39 @@ class SearchModule : BaseModule() {
   }
 
   /**
+   * @param searchGroup true 仅搜索条目
+   */
+  fun searchEntry1(query: String, searchGroup: Boolean) {
+    listData.clear()
+    val sp = SearchParametersV4()
+    val entryList = ArrayList<PwEntry>()
+    val groupList = ArrayList<PwGroup>()
+    sp.searchString = query
+    BaseApp.KDB!!.pm.rootGroup.searchEntries(sp, entryList)
+
+    if (searchGroup) {
+      searchGroup(query, groupList)
+      // 组合群组信息
+      for (group in groupList) {
+        val item = KeepassAUtil.instance.convertPwGroup2Item(group)
+        item.type = SearchAdapter.ITEM_TYPE_GROUP
+        listData.add(item)
+      }
+    }
+
+    // 组合条目信息
+    for (entry in entryList) {
+      val item = KeepassAUtil.instance.convertPwEntry2Item(entry)
+      item.type = SearchAdapter.ITEM_TYPE_ENTRY
+      listData.add(item)
+    }
+
+    viewModelScope.launch {
+      searchDataFlow.emit(listData)
+    }
+  }
+
+  /**
    * 搜索项目
    */
   fun searchEntry(query: String, isFromAutoFill: Boolean = false) {

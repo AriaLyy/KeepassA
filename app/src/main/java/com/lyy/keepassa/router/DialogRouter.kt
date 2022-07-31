@@ -18,7 +18,7 @@ import com.lyy.keepassa.view.dialog.CloudFileSelectDialog
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.dialog.TimeChangeDialog
-import com.lyy.keepassa.view.dialog.WebDavLoginDialogNew
+import com.lyy.keepassa.view.dialog.webdav.WebDavLoginDialogNew
 
 /**
  * @Author laoyuyu

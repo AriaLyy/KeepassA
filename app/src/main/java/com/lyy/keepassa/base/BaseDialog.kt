@@ -40,7 +40,14 @@ abstract class BaseDialog<VB : ViewDataBinding> : FrameDialog<VB>() {
       Timber.d("fragment 已经被add")
       return
     }
-    super.show(manager, tag)
+    try {
+      //在每个add事务前增加一个remove事务，防止连续的add，需要使用的commit 而非其他方法
+      manager.beginTransaction().remove(this).commit()
+      super.show(manager, tag)
+    } catch (e: Exception) {
+      //同一实例使用不同的tag会异常,这里捕获一下
+      Timber.e(e)
+    }
   }
 
   override fun dismiss() {
