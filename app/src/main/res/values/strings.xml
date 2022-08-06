@@ -369,4 +369,5 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="privacy_agreement">Privacy agreement</string>
     <string name="ime_hint_open_auto_fill">Please turn on the auto-fill service</string>
     <string name="please_open_proxy">please open proxy</string>
+    <string name="invalid_img">Invalid Image</string>
 </resources>

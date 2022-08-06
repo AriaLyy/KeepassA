@@ -20,6 +20,16 @@ import timber.log.Timber
  **/
 
 /**
+ * check bitmap is invalid
+ * @return true is effect
+ */
+fun Bitmap?.isInvalid():Boolean{
+  if (this == null) return true
+  if (this.isRecycled) return true
+  return false
+}
+
+/**
  * @return true 有效
  */
 private fun checkoutContextEffective(context: Context): Boolean {

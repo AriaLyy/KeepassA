@@ -9,6 +9,8 @@
 
 package com.lyy.keepassa
 
+import com.arialyy.frame.util.KeyStoreUtil
+import com.blankj.utilcode.util.EncryptUtils
 import com.lyy.keepassa.view.StorageType
 import org.junit.Test
 
@@ -19,4 +21,14 @@ class UtilTest {
     println(StorageType.AFS.name)
   }
 
+  @Test
+  fun keyStoreUtil(){
+    val keyStoreUtil = KeyStoreUtil()
+
+    val p = keyStoreUtil.encryptData(keyStoreUtil.getEncryptCipher(), "123456")
+    println("密文： ${p.first}")
+    val end = keyStoreUtil.decryptData(keyStoreUtil.getDecryptCipher(p.second), p.first)
+    println("明文：$end")
+
+  }
 }

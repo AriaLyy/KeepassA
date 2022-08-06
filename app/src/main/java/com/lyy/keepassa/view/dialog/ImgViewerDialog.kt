@@ -14,10 +14,13 @@ import androidx.fragment.app.DialogFragment
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.ToastUtils
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogImgViewerBinding
+import com.lyy.keepassa.util.isInvalid
 
 /**
  * 图片浏览对话框
@@ -39,8 +42,14 @@ class ImgViewerDialog() : BaseDialog<DialogImgViewerBinding>() {
     super.initData()
     ARouter.getInstance().inject(this)
     binding.dialog = this
+    val bm = BitmapFactory.decodeByteArray(imgByteArray, 0, imgByteArray.size)
+    if (bm.isInvalid()){
+      ToastUtils.showLong(ResUtil.getString(R.string.invalid_img))
+      dismiss()
+      return
+    }
     binding.imageView.setImage(
-      ImageSource.bitmap(BitmapFactory.decodeByteArray(imgByteArray, 0, imgByteArray.size))
+      ImageSource.bitmap(bm)
     )
   }
 

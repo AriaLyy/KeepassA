@@ -20,12 +20,12 @@ import com.lyy.keepassa.view.StorageType.WEBDAV
 object CloudUtilFactory {
 
   fun getCloudUtil(storageType: StorageType): ICloudUtil {
-    when (storageType) {
-      DROPBOX -> return DropboxUtil
-      WEBDAV -> return WebDavUtil
-      ONE_DRIVE -> return OneDriveUtil
+    return when (storageType) {
+      DROPBOX -> DropboxUtil
+      WEBDAV -> WebDavUtil
+      ONE_DRIVE -> OneDriveUtil
+      else ->  throw IllegalArgumentException("不识别的工具类型：${storageType}")
     }
-    throw IllegalArgumentException("不识别的工具类型：${storageType}")
   }
 
 }

@@ -24,6 +24,7 @@ import androidx.biometric.BiometricPrompt.PromptInfo
 import androidx.lifecycle.ViewModelProvider
 import com.arialyy.frame.util.KeyStoreUtil
 import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.EncryptUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseFragment
@@ -34,6 +35,7 @@ import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.VibratorUtil
 import timber.log.Timber
 import java.security.KeyStoreException
+import javax.crypto.Cipher
 
 /**
  * 指纹解锁描述
@@ -162,8 +164,8 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
               }"
             )
             // val encrypted = cipher.doFinal(BaseApp.dbPass.toByteArray(Charsets.UTF_8))
-
             val passPair = keyStoreUtil.encryptData(cipher, BaseApp.dbPass)
+            // val passPair = keyStoreUtil.encryptData(cipher, "123456")
             val quickInfo = QuickUnLockRecord(
               dbUri = BaseApp.dbRecord!!.localDbUri,
               dbPass = passPair.first,
@@ -192,6 +194,7 @@ class FingerprintDescFragment : BaseFragment<FragmentFingerprintDesxBinding>(),
           } catch (e: Exception) {
             Timber.e(e)
             keyStoreUtil.deleteKeyStore()
+            keyStoreUtil.useUnsafeMode = true
             HitUtil.snackLong(mRootView, ResUtil.getString(R.string.error_keystore))
           }
         }

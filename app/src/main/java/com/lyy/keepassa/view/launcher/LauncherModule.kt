@@ -97,7 +97,7 @@ class LauncherModule : BaseModule() {
     }
     Routerfit.create(DialogRouter::class.java).showMsgDialog(
       msgTitle = "隐私协议",
-      msgContent = Html.fromHtml(ResUtil.getString(R.string.privacy_agreement)),
+      msgContent = Html.fromHtml("<big>是否同意本协议</big> <br/> * 本应用没有服务端，不收集任何用户信息，只采用Bugly收集崩溃报告和性能报告 <br/> * 本应用网络同步和备份采用WebDav、FTP协议，DropBox、OneDrive网盘，由用户自己提供同步服务 <br/> * 本应用为开源软件，使用中产生任何问题由用户自己承担"),
       enterText = "同意",
       cancelText = "退出应用",
       btnClickListener = object : OnMsgBtClickListener {
