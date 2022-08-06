@@ -357,4 +357,5 @@
     <string name="webdav_port_name_null">Ім’я хосту не може бути порожнім</string>
     <string name="privacy_agreement">Угода про приватність</string>
     <string name="ime_hint_open_auto_fill">Увімкніть службу автозаповнення</string>
+    <string name="please_open_proxy">відкрийте проксі</string>
 </resources>
