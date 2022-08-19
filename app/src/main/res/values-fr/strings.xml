@@ -358,4 +358,5 @@
     <string name="webdav_host_name_hint">Veuillez entrer votre nom d\'hôte</string>
     <string name="please_open_proxy">veuillez ouvrir le proxy</string>
     <string name="ime_hint_open_auto_fill">Veuillez activer le service de remplissage auto</string>
+    <string name="invalid_img">Image invalide</string>
 </resources>
