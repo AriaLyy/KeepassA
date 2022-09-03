@@ -354,4 +354,9 @@
     <string name="port">Port</string>
     <string name="webdav_host_name_hint">Skriv inn vertsnavnet ditt.</string>
     <string name="hint_open_background_start">Innvilg tilgang til å løse ut i bakgrunnen for å fylle ut automatisk</string>
+    <string name="webdav_port_name_null">Vertsnavn må fylles ut</string>
+    <string name="privacy_agreement">Personvernssamtykke</string>
+    <string name="ime_hint_open_auto_fill">Skru på autoinnfyllingstjenesten</string>
+    <string name="invalid_img">Ugyldig bilde</string>
+    <string name="please_open_proxy">Åpne mellomtjeneren først</string>
 </resources>
