@@ -247,7 +247,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
         EntryDetailStrPopMenu(this, v, ProtectedString(false, KdbUtil.getUserName(pwEntry))).show()
       }
       R.id.url -> {
-        EntryDetailStrPopMenu(this, v, ProtectedString(false, pwEntry.url)).show()
+        EntryDetailStrPopMenu(this, v, ProtectedString(false, pwEntry.getUrl())).show()
       }
       R.id.tag -> {
         EntryDetailStrPopMenu(this, v, ProtectedString(false, pwEntry.tags)).show()
@@ -370,8 +370,9 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     binding.userName.text = pwEntry.username
 
     binding.userName.setOnClickListener(this)
-    if (pwEntry.url.isNotEmpty()) {
-      binding.url.text = pwEntry.url
+    if (pwEntry.getUrl().isNotEmpty()) {
+      Timber.d("ssss")
+      binding.url.text = pwEntry.getUrl()
       binding.url.setOnClickListener(this)
     } else {
       binding.url.visibility = View.GONE

@@ -1,5 +1,7 @@
-### 2.3.2
+### 2.3.2 (2022/10/07)
 - 【Add】Nextcloud support
+* 【Fix】Fix some known issues
+* 【Fix】The problem of url not being displayed
 
 ### 2.3.1 (2022/06/13)
 - 【Fix】bugs

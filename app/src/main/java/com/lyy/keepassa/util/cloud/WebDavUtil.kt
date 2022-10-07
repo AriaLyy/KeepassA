@@ -27,7 +27,7 @@ import java.util.Date
  */
 object WebDavUtil : ICloudUtil {
   val SUPPORTED_WEBDAV_URLS = mutableListOf<String>().apply {
-    add("https://dav.jianguoyun.com")
+    add("https://dav.jianguoyun.com/")
     add("https://dav.box.com")
     add("https://webdav.4shared.com")
     add("nextcloud") // https://docs.nextcloud.com/server/24/user_manual/en/files/access_webdav.html
