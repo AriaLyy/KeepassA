@@ -306,4 +306,13 @@
     <string name="hint_full_fingerprint">Der Fingerabdruck wird verwendet um die Datenbank im Quick-Unlock-Interface und im Datenbank-Unlock-Interface zu entsperren. KeePassA verschlüsselt und speichert das Datenbank-Masterpasswort und die Schlüsselinformation im lokalen Schlüsselspeicher von Android und nutzt die Fingerabdruck-Authorisierung zum Schutz. Nur dein Fingerabdruck kann zum entsperren der Datenbank genutzt werden.</string>
     <string name="hint_background_start">"Gehe zu &lt;font color=#FF0000&gt;【%s】&lt;/font&gt;und lasse Hintergrund-Popup-Benachrichtigungen zu um die Autovervollständigung zu verbessern.&lt;br&gt; &lt;font color=#FF0000&gt;KeePassA zeigt das entsprechende Interface um die Datenbank zu öffnen, wenn die Autovervollständigung  verwendet wird&lt;/font&gt;"</string>
     <string name="setting_miui_background_start">Einstellungen &gt; Apps &amp; Benachrichtigungen &gt; Alle Apps &gt; KeePassA &gt; Berechtigungen</string>
+    <string name="clean_clip_time_summary">Nach dem Kopieren des Kennworts die Zwischenablage nach %s leeren</string>
+    <string name="hint_fingerprint_modify">Prüfen Sie, ob sich der Fingerabdruck geändert hat, setzen Sie bitte die Funktion zum Entsperren des Fingerabdrucks zurück, um Ihr Passwort zu schützen</string>
+    <string name="hint_finger_print_verfiy">Überprüfen Sie Ihre Fingerabdrücke erneut, um die neuen Einstellungen zu verwenden</string>
+    <string name="setting_vivo_background_start">Einstellungen &gt; Mehr Einstellungen &gt; Berechtigungen Verwalten &gt; KeyPassA &gt; Berechtigungseinstellungen &gt; Hintergrund-Popup</string>
+    <string name="send_email_fail">Installieren Sie zunächst eine App zum Versenden von E-Mails</string>
+    <string name="dev_birthday">Heute hat der Entwickler Geburtstag🎂. Möchten Sie auf die Götter anstoßen\?</string>
+    <string name="feedback_email_msg">Hallo, Ich bin KeyPassA, haben Sie Fragen\?<br/> <br/> <br/> _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/> Marke: %s <br/> Model: %s <br/> Systemversion:%s <br/> Auflösung: %s <br/> App-Version: %s</string>
+    <string name="totp_custom_hint">Benutzerdefinierte Einstellungen</string>
+    <string name="hint_security_yellow">Achtung, wenn Sie im Simulator arbeiten, birgt diese Umgebung einige unvorhersehbare Risiken für die Datenbank</string>
 </resources>
