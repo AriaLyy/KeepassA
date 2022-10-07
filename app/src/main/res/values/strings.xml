@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">KeePassA</string>
+    <string name="app_name" translatable="false">KeepassA</string>
     <string name="db">Database</string>
     <string name="db1"><![CDATA[database\t|\t<font color="#757575">%s</font>]]></string>
     <string name="password">Password</string>
