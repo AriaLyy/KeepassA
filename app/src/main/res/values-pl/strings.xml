@@ -186,4 +186,7 @@
     <string name="closed">Zamknięty</string>
     <string name="helper_webdav_dir">Przykład: https://dav.example.org/dav/[twój folder]/</string>
     <string name="invalid_img">Nieprawidłowy obraz</string>
+    <string name="undo_entry">Wznowiono…</string>
+    <string name="copy_totp">Kopiuj token TOTP</string>
+    <string name="quick_use_fingerprint">Używaj odcisku palca tylko do odblokowania w interfejsie szybkiego odblokowania</string>
 </resources>
