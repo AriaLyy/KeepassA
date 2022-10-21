@@ -170,4 +170,20 @@
     <string name="del_entry">Usuń przedmiot</string>
     <string name="hint_input_url">Wpisz adres</string>
     <string name="notice">Notatki</string>
+    <string name="app_feedback">Sugestie</string>
+    <string name="feedback">Sugestie ^_^</string>
+    <string name="afs">System plików Android</string>
+    <string name="hint_webdav_url">URL pliku</string>
+    <string name="helper_webdav">Przykład: https://dav.example.org/dav/[twój folder]/xxx.kdbx</string>
+    <string name="unlocked">Odblokowany</string>
+    <string name="version_log">Dziennik aktualizacji</string>
+    <string name="hint_finger_print_verfiy">Ponownie zweryfikuj swoje odciski palców, aby użyć nowych ustawień</string>
+    <string name="upload">Prześlij</string>
+    <string name="hint_fingerprint_modify">Sprawdź, czy odcisk palca się zmienił, dla bezpieczeństwa hasła zresetuj funkcję odblokowywania odciskiem palca</string>
+    <string name="set_delete_no_into_recycle_bin_des">Przenieś usunięte elementy do kosza</string>
+    <string name="set_delete_no_into_recycle_bin">Usuń wpisy z bazy danych na stałe</string>
+    <string name="notify_channel_db_open">Powiadomienie o odblokowaniu bazy danych</string>
+    <string name="closed">Zamknięty</string>
+    <string name="helper_webdav_dir">Przykład: https://dav.example.org/dav/[twój folder]/</string>
+    <string name="invalid_img">Nieprawidłowy obraz</string>
 </resources>
