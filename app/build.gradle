@@ -5,8 +5,8 @@ apply plugin: 'com.tencent.vasdolly'
 apply plugin: 'com.alibaba.arouter'
 
 android {
-  compileSdkVersion rootProject.ext.compileSdkVersion
-  buildToolsVersion rootProject.ext.buildToolsVersion
+  compileSdkVersion libs.versions.compilesdk.get().toInteger()
+  buildToolsVersion libs.versions.buildtools.get()
 
   compileOptions {
     // Flag to enable support for the new language APIs
@@ -21,10 +21,10 @@ android {
 
   defaultConfig {
     applicationId "com.lyy.keepassa"
-    minSdkVersion rootProject.ext.minSdkVersion
-    targetSdkVersion rootProject.ext.targetSdkVersion
-    versionCode VERSION_CODE.toInteger()
-    versionName VERSION_NAME
+    minSdkVersion libs.versions.minSdk.get().toInteger()
+    targetSdkVersion libs.versions.targetsdk.get().toInteger()
+    versionCode 54
+    versionName "2.3.3"
     multiDexEnabled true
     vectorDrawables.useSupportLibrary = true
 
@@ -34,7 +34,8 @@ android {
     ndk.abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
 
     // 只保留以下语言包
-    resConfigs "zh-rCN", "zh-rTW", "en", "fr-rCA", "nb-rNO", "ru-rRU", "fr", "de-rDE", "pl", "tr", "uk-rUA"
+    resConfigs "zh-rCN", "zh-rTW", "en", "fr-rCA", "nb-rNO", "ru-rRU", "fr", "de-rDE", "pl", "tr",
+        "uk-rUA"
   }
 
   signingConfigs {
@@ -77,7 +78,7 @@ android {
   buildFeatures {
     dataBinding = true
     // for view binding :
-//    viewBinding = true
+    //    viewBinding = true
   }
 
   testOptions {
@@ -178,10 +179,10 @@ android.applicationVariants.all { variant ->
       // Stores the path to the maifest.
       String manifestPath = "${multiApkManifestOutputDirectory.asFile.get()}/AndroidManifest.xml"
       println("版本类型：" + isReleaseBuildType())
-//      def keyHash = "5qMkIKbIM5Lx7VbajX8mT3rKXpE="
-//      if (isReleaseBuildType()) {
-//        keyHash = "xv3czaACtp98KvuSqP3GRLCxjrc="
-//      }
+      //      def keyHash = "5qMkIKbIM5Lx7VbajX8mT3rKXpE="
+      //      if (isReleaseBuildType()) {
+      //        keyHash = "xv3czaACtp98KvuSqP3GRLCxjrc="
+      //      }
       def keyHash = "xv3czaACtp98KvuSqP3GRLCxjrc="
 
       // 替换one drive 配置
@@ -197,13 +198,9 @@ android.applicationVariants.all { variant ->
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-
   // 测试模块
-  testImplementation rootProject.ext.junit
-  androidTestImplementation rootProject.ext.runner
-  androidTestImplementation rootProject.ext.androidXJunit
-  androidTestImplementation rootProject.ext.espresso
-  androidTestImplementation rootProject.ext.androidXRules
+  testImplementation libs.test.junit
+  androidTestImplementation libs.bundles.android.test
 
   //      debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
   // 数据库如果加密的话使用这个
@@ -218,134 +215,52 @@ dependencies {
 
 
   // kotlin
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${rootProject.ext.kotlin_version}"
-  // kotlin 反射依赖
-  implementation "org.jetbrains.kotlin:kotlin-reflect:${rootProject.ext.kotlin_version}"
-  // Androidx 组件，包括了协程
-  implementation "androidx.core:core-ktx:${rootProject.ext.ktxVersion}"
-  // 协程支持
-  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${rootProject.ext.coroutinesVersion}"
+  implementation(libs.bundles.android.kotlin)
 
   // =========================== android 组件 start =====================================
-  implementation "androidx.appcompat:appcompat:${rootProject.ext.appcompatVersion}"
-  implementation "com.google.android.material:material:${rootProject.ext.materialVersion}"
-  implementation "androidx.recyclerview:recyclerview:${rootProject.ext.recyclerviewVersion}"
-  implementation "androidx.multidex:multidex:${rootProject.ext.multidexVersion}"
-  implementation "androidx.cardview:cardview:${rootProject.ext.cardviewVersion}"
-
-  // lifecycle
-  implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${rootProject.ext.lifecycleVersion}"
-  implementation "androidx.lifecycle:lifecycle-livedata-ktx:${rootProject.ext.lifecycleVersion}"
-  implementation "androidx.lifecycle:lifecycle-common-java8:${rootProject.ext.lifecycleVersion}"
-
-  // viewpager2
-  implementation "androidx.viewpager2:viewpager2:1.0.0"
-
-  // android 设置库
-  implementation "androidx.preference:preference-ktx:1.2.0"
-  // workmanager
-  def work_version = '2.7.1'
-  //  implementation "androidx.work:work-runtime:$work_version"
-  implementation "androidx.work:work-runtime-ktx:$work_version"
-
-  // room
-  def room_version = '2.4.3'
-  //  implementation "androidx.room:room-runtime:$room_version"
-  kapt "androidx.room:room-compiler:$room_version"
-  implementation "androidx.room:room-ktx:$room_version" // ktx 扩展插件
-
-  implementation 'com.google.crypto.tink:tink-android:1.5.0'
-
-  // android 自动填充工具
-  implementation "androidx.autofill:autofill:1.1.0"
-
-  // 下拉刷新控件
-  implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01"
-
-  // 约束布局
-  implementation "androidx.constraintlayout:constraintlayout:${rootProject.ext.constraintlayoutVersion}"
-
-  // 生物特征识别
-  implementation "androidx.biometric:biometric:${rootProject.ext.biometricVersion}"
-
-  // 取色板
-  // https://mvnrepository.com/artifact/androidx.palette/palette
-  implementation 'androidx.palette:palette-ktx:1.0.0'
-
+  implementation(libs.bundles.jetpack.ui) // jetpack-ui
+  implementation(libs.bundles.jetpack.lifecycle) // lifecycle
+  implementation(libs.jetpack.workmanager) // workmanager
+  implementation(libs.bundles.jetpack.room) // room
+  implementation(libs.google.tink)
+  implementation(libs.jetpack.autofill) // 自动填充工具
+  implementation(libs.jetpack.biometric) // 生物识别
+  implementation(libs.jetpack.multidex)
   // =========================== android 组件 end =====================================
 
   // =========================== 三方库 start =====================================
-  implementation "joda-time:joda-time:${rootProject.ext.jodaTimeVersion}"
-  // 富文本
-  implementation "com.zzhoujay.richtext:richtext:${rootProject.ext.richtextVerstion}"
-  // 开源许可对话框
-  implementation 'de.psdev.licensesdialog:licensesdialog:2.1.0'
-
-  // 状态栏
-  implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
-  // 大图浏览
-  implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
-  // eventbus
-  def eventbus_version = '3.2.0'
-  implementation "org.greenrobot:eventbus:$eventbus_version"
-  kapt "org.greenrobot:eventbus-annotation-processor:$eventbus_version"
-
-  // json 动画库
-  implementation 'com.airbnb.android:lottie:4.2.2'
-
-  // glide
-  implementation 'com.github.bumptech.glide:glide:4.12.0'
-  kapt 'com.github.bumptech.glide:compiler:4.12.0'
-  //  debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.1' // 2.1 之后不需要再代码中初始化
-
-  // dropbox
-  implementation 'com.dropbox.core:dropbox-core-sdk:3.1.5'
-
-  // webdav
-  implementation 'com.thegrizzlylabs.sardine-android:sardine-android:0.8'
-
-  //wcdb 数据库加密
-  implementation 'com.tencent.wcdb:wcdb-android:1.0.8'
-  implementation 'com.tencent.wcdb:room:1.0.8' // 代替 room-runtime，同时也不需要再引用 wcdb-android
-
-  // 腾讯多渠道 VasDolly
-  implementation 'com.tencent.vasdolly:helper:3.0.3'
-
-  // XP/调试/多开/模拟器/root 判断
-  implementation 'com.lahm.library:easy-protector-release:1.1.2'
-  // auto-size
-  implementation 'me.jessyan:autosize:1.2.1'
-
-  // bugly
-  implementation 'com.tencent.bugly:crashreport:3.4.4'
-  implementation 'com.tencent.bugly:nativecrashreport:3.9.2'
-  implementation "com.google.code.gson:gson:${rootProject.ext.gsonVersion}"
-
-  //  implementation "androidx.asynclayoutinflater:asynclayoutinflater:${rootProject.ext.asynclayoutinflaterVersion}"
-  implementation 'com.github.tiann:FreeReflection:3.1.0'
-
-  // onedrive
-  //  implementation 'com.microsoft.identity.client:msal:1.6+'
-  implementation 'com.microsoft.identity.client:msal:2.+'
-  //  implementation 'com.microsoft.graph:microsoft-graph:1.5.+'
-
-  implementation "com.squareup.retrofit2:retrofit:${rootProject.ext.retrofitVersion}"
-
-  kapt 'com.alibaba:arouter-compiler:1.5.2'
-
-  implementation('com.journeyapps:zxing-android-embedded:4.3.0') { transitive = false }
-  implementation 'com.google.zxing:core:3.4.1'
+  //  implementation libs.third
+  implementation(libs.third.jodatime)
+  implementation(libs.third.richtext) // 富文本
+  implementation(libs.third.licensesdialog) //开源许可对话框
+  implementation(libs.third.immersionbar) // 状态栏
+  implementation(libs.third.subsampling) // 大图浏览
+  implementation(libs.third.eventbus)
+  kapt(libs.third.eventbus.compiler)
+  implementation(libs.third.lottie) // json 动画库
+  implementation(libs.third.glide)
+  kapt(libs.third.glide.compiler)
+  implementation(libs.third.dropbox)
+  implementation(libs.third.webdav)
+  implementation(libs.bundles.tencent.wcdb)
+  implementation(libs.tencent.vasdolly)
+  implementation(libs.third.protector)   // XP/调试/多开/模拟器/root 判断
+  implementation(libs.third.autosize)
+  implementation(libs.bundles.tencent.bugly)// bugly
+  implementation(libs.google.gson)
+  implementation(libs.third.freereflection)
+  implementation(libs.microsoft.msal)
+  implementation(libs.squareup.retrofit)
+  kapt(libs.ali.third.arouter.compiler)
+  implementation(libs.third.zxing.embedded) { transitive = false }
+  implementation(libs.google.zxing)
   coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
   // mmkv
-  implementation 'com.tencent:mmkv:1.2.13'
-
+  implementation(libs.tencent.mmkv)
   // // =========================== 三方库 end =====================================
-
-  def billing_version = "4.0.0"
-
-  implementation("com.android.billingclient:billing-ktx:$billing_version")
-  implementation 'com.google.android.gms:play-services-base:18.0.1'
+  implementation(libs.google.gms.billing)
+  implementation(libs.google.gms.base)
 }
 
 // 不要使用，1.2.21打包出来的apk，消息对话框布局错乱
