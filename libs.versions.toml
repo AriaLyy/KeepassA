@@ -188,7 +188,7 @@ android-test = ["test-android-runner", "test-android-junit", "test-android-rules
 android-kotlin = ["kotlin-stdlib-jdk8", "kotlin-reflect", "kotlin-core-ktx", "kotlin-coroutines-android"]
 
 third-eventbus = ["third-eventbus", "third-eventbus-compiler"]
-third-spongycastle = ["third-eventbus", "third-eventbus-compiler"]
+third-spongycastle = ["spongycastle-core", "spongycastle-prov"]
 
 tencent-wcdb = ["tencent-wcdb", "tencent-wcdb-room"]
 tencent-bugly = ["tencent-bugly-crashreport", "tencent-bugly-nativecrashreport"]
