@@ -14,7 +14,7 @@ jetpack-constraintlayout = "2.1.4"
 jetpack-compose = "2.4.3"
 jetpack-multidex = "2.0.1"
 jetpack-aterial2 = "1.6.1"
-jetpack-room = "2.2.3"
+jetpack-room = "2.4.3"
 jetpack-lifecycle = "2.5.1"
 jetpack-viewpager2 = "1.0.0"
 jetpack-preference-ktx = "1.2.0"
@@ -88,7 +88,7 @@ third-richtext = { module = "com.zzhoujay.richtext:richtext", version.ref = "thi
 third-licensesdialog = { module = "de.psdev.licensesdialog:licensesdialog", version.ref = "third-licensesdialog" } # 开源许可对话框
 third-immersionbar = { module = "com.gyf.immersionbar:immersionbar", version.ref = "third-immersionbar" } # 状态栏
 third-subsampling = { module = "com.davemorrissey.labs:subsampling-scale-image-view", version.ref = "third-subsampling-scale-image-view" } # 大图浏览
-third-eventbus = { module = "com.davemorrissey.labs:subsampling-scale-image-view", version.ref = "third-eventbus" } # event
+third-eventbus = { module = "org.greenrobot:eventbus", version.ref = "third-eventbus" } # event
 third-eventbus-compiler = { module = "org.greenrobot:eventbus-annotation-processor", version.ref = "third-eventbus" } # event
 third-lottie = { module = "com.airbnb.android:lottie", version.ref = "third-lottie" } # lottie
 third-glide = { module = "com.github.bumptech.glide:glide", version.ref = "third-glide" } # glide
