@@ -23,13 +23,13 @@
     <string name="password">Contraseña</string>
     <string name="hint_input_password">Introduzca una contraseña de 6–16 dígitos</string>
     <string name="open_db">Abrir base de datos</string>
-    <string name="db_name">Introduce el nombre de la base de datos</string>
+    <string name="db_name">Ingrese el nombre de la base de datos</string>
     <string name="hint">Solicitud</string>
-    <string name="help_pass_type">Utilice solamente contraseñas cuando:
-\n Solo su contraseña es necesaria para abrir la base de datos;
-\n Contraseña + llave:
-\n Necesita introducir una contraseña y seleccionar un archivo llave (cerrojo) para abrir la BdD.</string>
-    <string name="help_create_db">Crear BdD KeePass v4 de forma predeterminada</string>
+    <string name="help_pass_type">Usar solo una contraseña:
+\nSolo se necesita su contraseña para abrir la base de datos;
+\nContraseña + clave:
+\nDebe ingresar una contraseña y seleccionar un archivo clave para abrir la base de datos.</string>
+    <string name="help_create_db">Crear una base de datos KeePass v4 por defecto</string>
     <string name="error_pass_null">Fije una contraseña de la base de datos</string>
     <string name="choose_file">Elija un archivo</string>
     <string name="choose_pass_key_file_des">Elija cualquier archivo para utilizar como su llave</string>
@@ -39,7 +39,7 @@
     <string name="error_enter_pass_null">Introduzca la confirmación de la contraseña</string>
     <string name="history">Historial</string>
     <string name="history_record">Registro del historial</string>
-    <string name="change_db">Intercambio de BdD</string>
+    <string name="change_db">Cambiar de base de datos</string>
     <string name="all">Elementos</string>
     <string name="setting">Parámetros</string>
     <string name="db_setting">Parámetros de BdD</string>
@@ -223,7 +223,7 @@
     <string name="error_webdav_end_suffix">Utilice la ruta de carpeta. P.ej.: \"https://example.org/dav/kpa/\"</string>
     <string name="set_key_title_show_state_bar_turn_on">Mostrar</string>
     <string name="set_key_title_show_state_bar_turn_off">Ocultar</string>
-    <string name="s_default">Predet.</string>
+    <string name="s_default">Por defecto</string>
     <string name="customize">Personalizar</string>
     <string name="open_permissions">Abrir permisos</string>
     <string name="miui_permissions">El sistema miui necesita permisos para abrir el interfaz del fondo de aparición con el fin de utilizar la función de auto-relleno.</string>
@@ -286,7 +286,7 @@
     <string name="set_key_title_auto_lock_database">Auto-bloquea la base de datos</string>
     <string name="set_key_title_auto_lock_database_turn_on">Sí</string>
     <string name="translate_language">Traduzca la app a su idioma</string>
-    <string name="help_create_group">Tome un nombre de grupo de 16 caracteres o menos</string>
+    <string name="help_create_group">Elija un nombre para el grupo de hasta 16 caracteres</string>
     <string name="done">Finalizado</string>
     <string name="error_pass_unfit">Pareja de contraseñas inconsistente</string>
     <string name="error_db_name_null">Introduzca un nombre de la BdD</string>
@@ -320,21 +320,21 @@
     <string name="set_title_screen_lock">Bloquear pantalla</string>
     <string name="error_qr_code_str">El código QR es erróneo. Asegure que el código QR está admitido por Google Authentication</string>
     <string name="error_connect_play">No pudo conectar al servicio Google</string>
-    <string name="one_drive_load_user_failure">Error al cargar información del usuario</string>
+    <string name="one_drive_load_user_failure">No se puede cargar la información del usuario.</string>
     <string name="help_pass_key">Un archivo llave es equivalente a una llave para abrir datos, y usualmente es mucho más complejo y seguro que una contraseña. Pero también es más complicado de ocultar. Si conserva de BdD en la nube, no ponga la llave con la base de datos allí.
 \n Puede elegir cualquier archivo como una llave para abrir la BdD, una foto, o un archivo *.txt.
 \n⚠️ Nota: Si esta foto o documento de texto es modificado, no será capaz de abrir la base de datos.
 \n Es altamente recomendado utilizar archivos de solo lectura como llaves.</string>
-    <string name="error_open_db_webdav">Error al abrir la BdD, el archivo de WebDAV no existe</string>
+    <string name="error_open_db_webdav">No se puede abrir la base de datos porque el archivo WebDAV no existe.</string>
     <string name="hint_open_background_start">Abra permiso de expulsión del fondo, en otro caso no puede utilizar auto-relleno</string>
     <string name="no_collection">Sin colección</string>
     <string name="set_key_theme_style_title">Estilo de tema</string>
     <string name="set_key_theme_style_summary">Siguiendo sistema</string>
     <string name="error_keystore">Excepción de pulsación de tecla, inténtelo de nuevo</string>
-    <string name="helper_webdav_service">Seleccionar servicio WebDAV</string>
+    <string name="helper_webdav_service">Seleccione el servicio WebDAV</string>
     <string name="error_is_root">Ya está en el directorio raíz</string>
     <string name="select_cur_path">Seleccione la carpeta</string>
-    <string name="hint_cloud_file_already_exist">Ya existe %1$s, ¿desea que sobrescriba el archivo\?</string>
+    <string name="hint_cloud_file_already_exist">%1$s ya existe, ¿quieres sobrescribir el archivo\?</string>
     <string name="select_save_path">Seleccione una ruta para guardar</string>
     <string name="disposable">Una vez</string>
     <string name="monthly">Mensual</string>
@@ -343,4 +343,20 @@
     <string name="google_play">Google Play</string>
     <string name="kpa_totp">Ticket</string>
     <string name="kpa_copy">Copiar</string>
+    <string name="feedback_email_msg">Hola, soy KeePassA, ¿tienes alguna pregunta\? <br/> <br/> <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/>Marca del teléfono móvil: %s <br/>Modelo del teléfono móvil: %s <br/> Versión del sistema: %s <br/> Resolución: %s <br/> Versión de la aplicación: %s</string>
+    <string name="dropbox_msg">Cumpliendo con el principio de respetar la privacidad del usuario, KeePassA no solicitará permiso para acceder a todos sus archivos de Dropbox, KeePassA&lt;font color=#FF0000&gt;solo accederá a la carpeta [Aplicación/KeePassA]&lt;/font&gt;. &lt;br /&gt; Por lo tanto: &lt;br /&gt; &lt;b&gt;Si ya tiene una base de datos de KeePass, primero debe autorizar a KeePassA para acceder a la carpeta [Aplicación/KeePassA] en KeePassA y guardar la base de datos de KeePass en [Aplicación/KeePassA ] carpeta. &lt;/b&gt;&lt;br/&gt;&lt;br /&gt; Si está creando una nueva base de datos de KeepPass, no necesita las operaciones anteriores. Después de crear la base de datos, KeePassA creará automáticamente la carpeta correspondiente y cargará la base de datos en Dropbox [ Aplicación/KeePassA] directorio.</string>
+    <string name="hint_del_entry_no_recycle">¿Realmente desea eliminar de forma permanente la entrada [&lt;font color=#FF0000&gt;%s&lt;/font&gt;]\?</string>
+    <string name="hint_full_fingerprint">La huella digital se utiliza para desbloquear la base de datos en la interfaz de desbloqueo rápido y la interfaz de desbloqueo de base de datos, KeePassA encripta y almacena su contraseña maestra de base de datos y la información clave en el almacén de claves local del sistema Android, y utiliza la autorización de huellas digitales para la protección. Sólo tu huella digital puede desbloquear la base de datos.</string>
+    <string name="set_key_praise_value">Evalúa KeePassA</string>
+    <string name="hint_del_entry">¿Realmente desea eliminar la entrada [&lt;font color=#FF0000&gt;%s&lt;/font&gt;]\? &lt;br&gt; Esto moverá este elemento a la papelera, donde podrá restaurarlo más tarde.</string>
+    <string name="webdav_port_name_null">El nombre del equipo no puede estar vacío</string>
+    <string name="privacy_agreement">Acuerdo de privacidad</string>
+    <string name="one_drive_hint">Para proteger su privacidad, KeePassA solo accederá al directorio &lt;font color=#FF0000&gt;【Application/KeepassA】&lt;/font&gt;, si desea leer la base de datos Keepass de OneDrive, &lt;font color=#FF0000&gt; almacene la base de datos en bajo este directorio. &lt;/fuente&gt;</string>
+    <string name="please_open_proxy">por favor, abra el proxy</string>
+    <string name="hostname">Nombre del equipo</string>
+    <string name="port">Puerto</string>
+    <string name="webdav_host_name_hint">Por favor, escriba el nombre del equipo</string>
+    <string name="webdav_port_hint">Puerto</string>
+    <string name="ime_hint_open_auto_fill">Activa el servicio de autocompletar</string>
+    <string name="invalid_img">imagen inválida</string>
 </resources>
