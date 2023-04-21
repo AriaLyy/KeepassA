@@ -83,6 +83,8 @@ ali-third-arouter-compiler = {group = "com.github.jadepeakpoet.ARouter", name = 
 ali-third-arouter-register = {group = "com.github.jadepeakpoet.ARouter", name = "arouter-register", version.ref = "ali-third-arouter" }
 apache-commons-io = {group = "org.apache.commons", name = "commons-io", version.ref = "apache-commons" }
 commons-lang3 = {group = "org.apache.commons", name = "commons-lang3", version = { strictly = "[3.8, 4.0[", prefer = "3.9" } }
+didi-drouter = {group = "io.github.didi", name = "drouter-plugin-proxy", version = "1.0.2" }
+didi-drouter-api = {group = "io.github.didi", name = "drouter-api", version = "2.3.0" }
 google-gms-base = {group = "com.google.android.gms", name = "play-services-base", version.ref = "google-play-services-base" }
 google-gms-billing = {group = "com.android.billingclient", name = "billing-ktx", version.ref = "google-billing-ktx" }
 google-gson = {group = "com.google.code.gson", name = "gson", version.ref = "google-gson" }

@@ -5,11 +5,13 @@ buildscript {
   dependencies {
     classpath files(libs.class.superclass.protectionDomain.codeSource.location)
 //    classpath libs.ali.arouter.register
-    classpath libs.ali.third.arouter.register
+//    classpath libs.ali.third.arouter.register
     // 资源文件混淆
     classpath libs.tencent.andresguard
     // 腾讯多渠道打包工具：VasDolly
     classpath libs.tencent.vasdolly.plugin
+    // drouter
+    classpath libs.didi.drouter
   }
 }
 

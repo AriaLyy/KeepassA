@@ -21,6 +21,7 @@ import androidx.preference.PreferenceManager;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.arialyy.frame.core.AbsFrame;
 import com.arialyy.frame.router.Routerfit;
+import com.didi.drouter.api.DRouter;
 import com.keepassdroid.Database;
 import com.lyy.keepassa.R;
 import com.lyy.keepassa.common.PassType;
@@ -91,7 +92,7 @@ public class BaseApp extends MultiDexApplication {
     AbsFrame.init(this);
     APP = this;
     handler = new Handler(Looper.getMainLooper());
-    ARouter.init(this); // 尽可能早，推荐在Application中初始化
+    DRouter.init(this);
     KpaSdkService kpaSdkService = Routerfit.INSTANCE.create(ServiceRouter.class).getKpaSdkService();
     kpaSdkService.preInitSdk(this);
     initReceiver();

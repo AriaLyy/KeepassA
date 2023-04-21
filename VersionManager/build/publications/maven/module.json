@@ -24,11 +24,11 @@
         {
           "name": "catalog-0.0.1.toml",
           "url": "catalog-0.0.1.toml",
-          "size": 12431,
-          "sha512": "0b42b79614e4ad1d723700f74a973ee493858d265e1e60156b15aed647cb57104bdfd91495197a5f118663fbd66ac284efdbdce3412f3b9e877e0ff1dd491891",
-          "sha256": "2c1592469a3d69738b80e6a401c9e78da65d09d51b2b49504f56079701022311",
-          "sha1": "e28901497c8e33815f48b2f91207d3d7f7e1f4c0",
-          "md5": "d23317e89d1ce6db447c04910f59fad8"
+          "size": 12536,
+          "sha512": "2873cbaf9273778d8442a39a32c9f88b59459170b93a67c7a93b12b46e72c1961e746e476b46191d72bca1e0d0ec750f6583143ea10279241d6d49c28cf859cf",
+          "sha256": "530eafe5193d954c72a1660d2bec967c52d83b8426625e5c4f5ff3559a7d0250",
+          "sha1": "25a96aae247cb7032b77fc0623d4f7d9ea8bd589",
+          "md5": "22731587311bb9846626ce6e618b8a08"
         }
       ]
     }
