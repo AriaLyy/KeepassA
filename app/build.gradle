@@ -10,9 +10,9 @@ android {
 
   compileOptions {
     // Flag to enable support for the new language APIs
-    coreLibraryDesugaringEnabled true
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
+//    coreLibraryDesugaringEnabled true
+    sourceCompatibility JavaVersion.VERSION_11
+    targetCompatibility JavaVersion.VERSION_11
   }
 
   kotlinOptions {
@@ -26,7 +26,6 @@ android {
     versionCode 54
     versionName "2.3.3"
     multiDexEnabled true
-    vectorDrawables.useSupportLibrary = true
 
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -78,7 +77,7 @@ android {
   buildFeatures {
     dataBinding = true
     // for view binding :
-    //    viewBinding = true
+    viewBinding = true
   }
 
   testOptions {
@@ -109,7 +108,10 @@ android {
     //        dimension "app"
     //      }
   }
-  //
+
+  configurations{
+    implementation.exclude group: 'com.intellij' , module:'annotations'
+  }
 }
 
 kapt {
@@ -244,9 +246,9 @@ dependencies {
   implementation(libs.third.webdav)
   implementation(libs.bundles.tencent.wcdb)
   implementation(libs.tencent.vasdolly)
-  implementation(libs.third.protector)   // XP/调试/多开/模拟器/root 判断
+  implementation(libs.third.protector) // XP/调试/多开/模拟器/root 判断
   implementation(libs.third.autosize)
-  implementation(libs.bundles.tencent.bugly)// bugly
+  implementation(libs.bundles.tencent.bugly) // bugly
   implementation(libs.google.gson)
   implementation(libs.third.freereflection)
   implementation(libs.microsoft.msal)
@@ -254,7 +256,8 @@ dependencies {
   kapt(libs.ali.third.arouter.compiler)
   implementation(libs.third.zxing.embedded) { transitive = false }
   implementation(libs.google.zxing)
-  coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+  implementation(libs.jetpack.palette.ktx)
+//  coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
 
   // mmkv
   implementation(libs.tencent.mmkv)

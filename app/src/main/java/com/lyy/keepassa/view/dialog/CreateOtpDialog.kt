@@ -101,8 +101,8 @@ class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListe
   }
 
   private fun handleOptionSwitch() {
-    binding.menuLayout.findViewById<View>(R.id.ivNormal).setOnClickListener(this)
-    binding.menuLayout.findViewById<View>(R.id.ivQrCode).setOnClickListener(this)
+    binding.menuLayout.ivNormal.setOnClickListener(this)
+    binding.menuLayout.ivQrCode.setOnClickListener(this)
   }
 
   /**
@@ -198,7 +198,7 @@ class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListe
       }
       R.id.ivNormal -> {
         handleDefaultFlow()
-        binding.menuLayout.visibility = View.GONE
+        binding.menuLayout.root.visibility = View.GONE
         return
       }
       R.id.ivQrCode -> {

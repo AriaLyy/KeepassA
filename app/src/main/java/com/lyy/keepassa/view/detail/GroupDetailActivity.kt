@@ -105,7 +105,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       binding.laAnim.speed = 2.5f
       binding.laAnim.playAnimation()
       binding.laAnim.addAnimatorListener(object : AnimatorListenerAdapter() {
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
           super.onAnimationEnd(animation)
           loadData()
         }

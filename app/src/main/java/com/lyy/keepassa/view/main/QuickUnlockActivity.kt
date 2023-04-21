@@ -70,7 +70,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
    */
   private val searchLauncher =
     registerForActivityResult(object : ActivityResultContract<String, Pair<Boolean, UUID?>?>() {
-      override fun createIntent(context: Context, input: String?): Intent {
+      override fun createIntent(context: Context, input: String): Intent {
         val intent =
           Intent(this@QuickUnlockActivity, AutoFillEntrySearchActivity::class.java).apply {
             putExtra(LauncherActivity.KEY_PKG_NAME, input)

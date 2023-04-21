@@ -149,7 +149,7 @@ class ExpandFileAttrView(
         requestLayout()
       }
       hintAnim!!.addListener(object : AnimatorListenerAdapter() {
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
           super.onAnimationEnd(animation)
           visibility = View.GONE
         }

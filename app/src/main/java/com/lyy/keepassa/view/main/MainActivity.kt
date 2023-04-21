@@ -281,7 +281,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     val anim = ObjectAnimator.ofFloat(binding.arrow, "rotation", 0f, 180f)
     anim.duration = MainSettingActivity.arrowAnimDuration
     anim.addListener(object : AnimatorListenerAdapter() {
-      override fun onAnimationEnd(animation: Animator?) {
+      override fun onAnimationEnd(animation: Animator) {
         super.onAnimationEnd(animation)
         // 为了达到更好的效果，先将动画设置为空
         window.enterTransition = null

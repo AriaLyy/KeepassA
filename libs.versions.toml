@@ -2,8 +2,8 @@
 groovy = "3.0.5"
 checkstyle = "8.37"
 minSdk = "23"
-compilesdk = "32"
-targetsdk = "30"
+compilesdk = "33"
+targetsdk = "32"
 ndk = "21.3.6528147"
 buildtools = "30.0.2"
 
@@ -14,7 +14,7 @@ jetpack-constraintlayout = "2.1.4"
 jetpack-compose = "2.4.3"
 jetpack-multidex = "2.0.1"
 jetpack-aterial2 = "1.6.1"
-jetpack-room = "2.2.3"
+jetpack-room = "2.5.1"
 jetpack-lifecycle = "2.5.1"
 jetpack-viewpager2 = "1.0.0"
 jetpack-preference-ktx = "1.2.0"
@@ -24,7 +24,6 @@ jetpack-recyclerview = "1.2.1"
 jetpack-autofill = "1.1.0"
 jetpack-swiperefreshlayout = "1.2.0-alpha01"
 jetpack-biometric = "1.1.0"
-jetpack-palette-ktx = "1.0.0"
 jetpack-documentfile = "1.0.1"
 
 
@@ -88,7 +87,7 @@ third-richtext = { module = "com.zzhoujay.richtext:richtext", version.ref = "thi
 third-licensesdialog = { module = "de.psdev.licensesdialog:licensesdialog", version.ref = "third-licensesdialog" } # 开源许可对话框
 third-immersionbar = { module = "com.gyf.immersionbar:immersionbar", version.ref = "third-immersionbar" } # 状态栏
 third-subsampling = { module = "com.davemorrissey.labs:subsampling-scale-image-view", version.ref = "third-subsampling-scale-image-view" } # 大图浏览
-third-eventbus = { module = "com.davemorrissey.labs:subsampling-scale-image-view", version.ref = "third-eventbus" } # event
+third-eventbus = { module = "org.greenrobot:eventbus", version.ref = "third-eventbus" } # event
 third-eventbus-compiler = { module = "org.greenrobot:eventbus-annotation-processor", version.ref = "third-eventbus" } # event
 third-lottie = { module = "com.airbnb.android:lottie", version.ref = "third-lottie" } # lottie
 third-glide = { module = "com.github.bumptech.glide:glide", version.ref = "third-glide" } # glide
@@ -150,7 +149,7 @@ jetpack-autofill = { module = "androidx.autofill:autofill", version.ref = "jetpa
 jetpack-swiperefreshlayout = { module = "androidx.autofill:autofill", version.ref = "jetpack-swiperefreshlayout" } # 下拉刷新控件
 jetpack-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "jetpack-constraintlayout" } # 约束布局
 jetpack-biometric = { module = "androidx.biometric:biometric", version.ref = "jetpack-biometric" } # 生物识别
-jetpack-palette-ktx = { module = "androidx.palette:palette-ktx", version.ref = "jetpack-palette-ktx" } # 取色板  https://mvnrepository.com/artifact/androidx.palette/palette
+jetpack-palette-ktx = { module = "androidx.palette:palette-ktx", version = "1.0.0" } # 取色板  https://mvnrepository.com/artifact/androidx.palette/palette
 jetpack-material2 = { module = "com.google.android.material:material", version.ref = "jetpack-material2" }
 jetpack-multidex = { module = "androidx.multidex:multidex", version.ref = "jetpack-multidex" }
 jetpack-documentfile = { module = "androidx.documentfile:documentfile", version.ref = "jetpack-documentfile" }

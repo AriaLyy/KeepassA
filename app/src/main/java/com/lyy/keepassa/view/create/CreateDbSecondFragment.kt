@@ -134,7 +134,7 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
     anim.duration = 400
     anim.start()
     anim.addListener(object : AnimatorListenerAdapter() {
-      override fun onAnimationEnd(animation: Animator?) {
+      override fun onAnimationEnd(animation: Animator) {
         super.onAnimationEnd(animation)
         binding.passKeyLayout.visibility = View.GONE
         binding.passKeyLayoutWrap.visibility = View.GONE

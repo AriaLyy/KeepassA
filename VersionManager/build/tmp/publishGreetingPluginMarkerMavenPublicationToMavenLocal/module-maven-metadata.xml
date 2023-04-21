@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.alg.plugin.version.greeting</groupId>
+  <artifactId>com.alg.plugin.version.greeting.gradle.plugin</artifactId>
+  <versioning>
+    <latest>unspecified</latest>
+    <release>unspecified</release>
+    <versions>
+      <version>unspecified</version>
+    </versions>
+    <lastUpdated>20230411091812</lastUpdated>
+  </versioning>
+</metadata>
