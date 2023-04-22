@@ -141,6 +141,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       null
     }
 
+    Timber.i("initVP")
+
     val list = arrayListOf<Fragment>()
     list.add(historyFm)
     list.add(entryFm)
