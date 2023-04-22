@@ -22,7 +22,6 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -46,6 +45,7 @@ import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.PermissionsUtil
 import com.lyy.keepassa.view.create.CreateDbActivity
 import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity

@@ -11,14 +11,94 @@ package com.lyy.keepassa.util;
 
 import android.app.AppOpsManager
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Process
 import android.provider.Settings
+import android.text.Html
+import android.view.autofill.AutofillManager
+import android.widget.Button
+import com.arialyy.frame.router.Routerfit
+import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.RomUtils
+import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.router.DialogRouter
+import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import timber.log.Timber
 
 object PermissionsUtil {
+
+  /**
+   * 是否需要弹出后台启动提示弹窗
+   */
+  fun needShowBackgroundStartDialog(context: Context): Boolean {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+      return false
+    }
+    val am = context.getSystemService(AutofillManager::class.java)
+    if (!am.isAutofillSupported) {
+      Timber.i("不支持自动填充")
+      return false
+    }
+    if (am.hasEnabledAutofillServices() && !isCanBackgroundStart()) {
+      Timber.i("已经打开了自动填充")
+      return true
+    }
+    return false
+  }
+
+  /**
+   * 显示弹出框提示用户打开后台启动界面的权限
+   */
+  fun showAutoFillMsgDialog(context: Context, msg: String) {
+//    val IS_HOWED_AUTO_FILL_HINT_DIALOG = "IS_HOWED_AUTO_FILL_HINT_DIALOG"
+//    val isShowed =
+//      SharePreUtil.getBoolean(
+//        Constance.PRE_FILE_NAME,
+//        context,
+//        IS_HOWED_AUTO_FILL_HINT_DIALOG
+//      )
+//
+//    if (!isShowed) {
+    Routerfit.create(DialogRouter::class.java).showMsgDialog(
+      msgContent = Html.fromHtml(BaseApp.APP.getString(R.string.hint_background_start, msg)),
+      showCancelBt = true,
+      cancelText = ResUtil.getString(R.string.cancel),
+      enterText = ResUtil.getString(R.string.open_setting),
+      btnClickListener = object : OnMsgBtClickListener {
+        override fun onEnter(v: Button) {
+          PermissionPageManagement.goToSetting(context)
+        }
+
+        override fun onCancel(v: Button) {
+        }
+
+      }
+    )
+//      SharePreUtil.putBoolean(
+//        Constance.PRE_FILE_NAME,
+//        context,
+//        IS_HOWED_AUTO_FILL_HINT_DIALOG,
+//        true
+//      )
+//    } else {
+//      Timber.i("已显示过自动填充对话框，不再重复显示")
+//    }
+  }
+
+  fun isCanBackgroundStart(): Boolean {
+    if (RomUtils.isXiaomi()) {
+      return miuiCanBackgroundStart()
+    }
+    if (RomUtils.isVivo()) {
+      return vivoBackgroundStartAllowed()
+    }
+    if (RomUtils.isOppo()) {
+      return oppoBackgroundStartAllowed()
+    }
+    return true
+  }
 
   /**
    * 检查miui 是否被允许后台启动
@@ -39,18 +119,6 @@ object PermissionsUtil {
       Timber.e(e, "not support")
     }
     return false
-  }
-
-  /**
-   * 启动miui权限打开界面
-   */
-  fun miuiStartPermissionsUI(context: Context) {
-    val xiaomiBackGroundIntent = Intent().apply {
-      action = "miui.intent.action.APP_PERM_EDITOR"
-      addCategory(Intent.CATEGORY_DEFAULT)
-      putExtra("extra_pkgname", BaseApp.APP.packageName)
-    }
-    context.startActivity(xiaomiBackGroundIntent)
   }
 
   /**

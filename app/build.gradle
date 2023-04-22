@@ -34,7 +34,7 @@ android {
 
     // 只保留以下语言包
     resConfigs "zh-rCN", "zh-rTW", "en", "fr-rCA", "nb-rNO", "ru-rRU", "fr", "de-rDE", "pl", "tr",
-        "uk-rUA"
+        "uk-rUA", "es"
   }
 
   signingConfigs {
@@ -110,7 +110,7 @@ android {
   }
 
   configurations{
-    implementation.exclude group: 'com.intellij' , module:'annotations'
+//    implementation.exclude group: 'com.intellij' , module:'annotations'
   }
 }
 
@@ -223,7 +223,9 @@ dependencies {
   implementation(libs.bundles.jetpack.ui) // jetpack-ui
   implementation(libs.bundles.jetpack.lifecycle) // lifecycle
   implementation(libs.jetpack.workmanager) // workmanager
-  implementation(libs.bundles.jetpack.room) // room
+  implementation(libs.jetpack.room.runtime) // room
+  implementation(libs.jetpack.room.ktx) // room
+  kapt(libs.jetpack.room.compiler)
   implementation(libs.google.tink)
   implementation(libs.jetpack.autofill) // 自动填充工具
   implementation(libs.jetpack.biometric) // 生物识别

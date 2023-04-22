@@ -22,8 +22,11 @@ import android.service.autofill.FillRequest
 import android.service.autofill.FillResponse
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
+import android.widget.Toast
+import com.arialyy.frame.util.show.T
 import com.blankj.utilcode.util.RomUtils
 import com.blankj.utilcode.util.ToastUtils
+import com.google.android.material.snackbar.Snackbar
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
@@ -60,6 +63,13 @@ class AutoFillService : AutofillService() {
       // 本应用内不进行填充
       return
     }
+
+    if (!PermissionsUtil.miuiCanBackgroundStart()){
+      Timber.d("没有后台弹出弹窗权限")
+      ToastUtils.showLong("没有后台弹出弹窗权限")
+      return
+    }
+
     Timber.d(
       "onFillRequest(): flags = ${request.flags}, requestId = ${request.id}, clientState = ${
         KLog.b(

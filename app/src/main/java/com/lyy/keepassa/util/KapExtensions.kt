@@ -7,6 +7,7 @@
  */
 package com.lyy.keepassa.util
 
+import android.app.Activity
 import android.view.MotionEvent
 import android.view.View
 import androidx.preference.PreferenceManager
@@ -18,6 +19,8 @@ import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.Constance
+
+fun Activity.isDestroy() = isDestroyed || isFinishing
 
 /**
  * isOpenQuickLock

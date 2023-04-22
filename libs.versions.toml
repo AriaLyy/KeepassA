@@ -148,6 +148,7 @@ jetpack-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "jetpack
 jetpack-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "jetpack-compose" }
 jetpack-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "jetpack-compose" }
 jetpack-room-runtime = { module = "androidx.room:room-runtime", version.ref = "jetpack-room" }
+jetpack-room-ktx = { module = "androidx.room:room-ktx", version.ref = "jetpack-room" }
 jetpack-room-compiler = { module = "androidx.room:room-compiler", version.ref = "jetpack-room" }
 jetpack-autofill = { module = "androidx.autofill:autofill", version.ref = "jetpack-autofill" }
 jetpack-swiperefreshlayout = { module = "androidx.autofill:autofill", version.ref = "jetpack-swiperefreshlayout" } # 下拉刷新控件
@@ -184,7 +185,6 @@ commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version 
 groovy = ["groovy-core", "groovy-json", "groovy-nio"]
 
 jetpack-compose = ["jetpack-compose-ui-tooling", "jetpack-compose-ui-tooling-preview", "jetpack-compose-ui", "jetpack-compose-runtime", "jetpack-compose-material3"]
-jetpack-room = ["jetpack-room-runtime", "jetpack-room-compiler"]
 jetpack-ui = ["jetpack-appcompat", "jetpack-material2", "jetpack-preference-ktx", "jetpack-viewpager2", "jetpack-cardview", "jetpack-recyclerview", "jetpack-constraintlayout", "jetpack-swiperefreshlayout"]
 jetpack-lifecycle = ["jetpack-lifecycle-viewmodel-ktx", "jetpack-lifecycle-livedata-ktx", "jetpack-lifecycle-common-java8"]
 android-test = ["test-android-runner", "test-android-junit", "test-android-rules", "test-espresso"]
