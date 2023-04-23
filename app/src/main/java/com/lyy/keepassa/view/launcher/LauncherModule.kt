@@ -38,6 +38,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.common.PassType
+import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
@@ -64,6 +65,7 @@ class LauncherModule : BaseModule() {
   private val itemData: MutableLiveData<List<SimpleItemEntity>> = MutableLiveData()
   private val unlockEvent = MutableLiveData<Pair<Boolean, String?>>()
   private val scope = MainScope()
+  var autoFillParam: AutoFillParam? = null
 
   companion object {
     val HISTORY_ID = 0xA1

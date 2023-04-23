@@ -31,6 +31,7 @@ import com.lyy.keepassa.R.layout
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityLauncherBinding
+import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.event.DbHistoryEvent
@@ -53,21 +54,6 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   private var isChangeDb = false
 
   /**
-   * 是否由自动填充服务启动
-   */
-  private var isFromFill: Boolean = false
-
-  /**
-   * 是否由自动填充服务的保存启动
-   */
-  private var isFromFillSave: Boolean = false
-
-  /**
-   * 第三方应用包名
-   */
-  private var apkPkgName: String? = null
-
-  /**
    * 启动类型，只有含有历史打开记录时，该记录才有效
    */
   @Autowired(name = KEY_OPEN_TYPE)
@@ -83,9 +69,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
     module = ViewModelProvider(this)[LauncherModule::class.java]
-    isFromFill = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL, false)
-    isFromFillSave = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL_SAVE, false)
-    apkPkgName = intent.getStringExtra(KEY_PKG_NAME)
+    module.autoFillParam = intent.getParcelableExtra(KEY_AUTO_FILL_PARAM)
 
     module.showPrivacyAgreement(this)
     initUI()
@@ -142,38 +126,19 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   override fun finish() {
     // 如果是由自动填充服务启动，并且打开数据库成功，则构建相应的填充数据
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && BaseApp.KDB != null) {
-      /*
-       * 打开搜索界面
-       */
-      if (isFromFill) {
-        val datas = KDBAutoFillRepository.getAutoFillDataByPackageName(apkPkgName!!)
-        // 如果查找不到数据，跳转到搜索页面
-        if (datas == null || datas.isEmpty()) {
-          AutoFillEntrySearchActivity.turnSearchActivity(
-            this, REQUEST_SEARCH_ENTRY_CODE,
-            apkPkgName!!
-          )
-          return
+      module.autoFillParam?.let {
+        /*
+        * 打开搜索界面
+        */
+        if (!it.isSave) {
+          OpenDbFinishDelegate.finish(this, it)
+          return@let
         }
 
-        // 将数据回调给service
-        val data = KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName!!)
-        setResult(Activity.RESULT_OK, data)
-      }
-
-      /*
-       * 打开创建条目界面
-       */
-      if (isFromFillSave) {
-        startActivityForResult(
-          Intent(this, CreateEntryActivity::class.java).apply {
-            putExtra(KEY_IS_AUTH_FORM_FILL_SAVE, true)
-            putExtra(KEY_PKG_NAME, intent.getStringExtra(KEY_PKG_NAME))
-            putExtra(KEY_SAVE_USER_NAME, intent.getStringExtra(KEY_SAVE_USER_NAME))
-            putExtra(KEY_SAVE_PASS, intent.getStringExtra(KEY_SAVE_PASS))
-          }, REQUEST_SAVE_ENTRY_CODE, ActivityOptions.makeSceneTransitionAnimation(this)
-            .toBundle()
-        )
+        /*
+         * 打开创建条目界面
+         */
+        CreateEntityFinishDelegate.finish(this, it)
       }
     }
     super.finish()
@@ -306,10 +271,9 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   companion object {
 
     // Unique autofillId for dataset intents.
-    const val KEY_IS_AUTH_FORM_FILL = "KEY_IS_AUTH_FORM_FILL"
-    const val KEY_IS_AUTH_FORM_FILL_SAVE = "KEY_IS_AUTH_FORM_FILL_SAVE"
-    const val KEY_PKG_NAME = "DATA_PKG_NAME"
+    const val KEY_AUTO_FILL_PARAM = "KEY_AUTO_FILL_PARAM"
     const val KEY_OPEN_TYPE = "KEY_OPEN_TYPE"
+    const val KEY_PKG_NAME = "DATA_PKG_NAME"
     const val OPEN_TYPE_CHANGE_DB = 1
     const val OPEN_TYPE_OPEN_DB = 2
     const val KEY_SAVE_USER_NAME = "KEY_SAVE_USER_NAME"
@@ -344,8 +308,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
       apkPackageName: String
     ): IntentSender {
       val intent = Intent(context, LauncherActivity::class.java).also {
-        it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
-        it.putExtra(KEY_PKG_NAME, apkPackageName)
+        it.putExtra(KEY_AUTO_FILL_PARAM, AutoFillParam(apkPkgName = apkPackageName))
       }
       return PendingIntent.getActivity(
         context,

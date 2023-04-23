@@ -77,6 +77,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   @JvmField
   var shortcutType = 1
 
+  /**
+   * 是否由自动填充服务启动
+   */
+  @Autowired(name = LauncherActivity.KEY_IS_AUTH_FORM_FILL)
+  @JvmField
+  var isFromFill: Boolean = false
+
   private val historyFm by lazy {
     Routerfit.create(FragmentRouter::class.java).toMainHistoryFragment()
   }
@@ -127,7 +134,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       }
 
       override fun onGroupClick() {
-        Routerfit.create(DialogRouter::class.java).showCreateGroupDialog(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
+        Routerfit.create(DialogRouter::class.java)
+          .showCreateGroupDialog(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
         binding.fab.hintMoreOperate()
       }
     })
@@ -351,7 +359,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   private class VpAdapter(
     private val fragments: List<Fragment>,
     fm: FragmentActivity
-  ) :  FragmentStateAdapter(fm) {
+  ) : FragmentStateAdapter(fm) {
 
     override fun getItemCount(): Int {
       return fragments.size
