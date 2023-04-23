@@ -271,14 +271,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     // 大于8.0 才能使用自带的填充框架，否则只能使用辅助功能来实现
     if (Build.VERSION.SDK_INT >= VERSION_CODES.O) {
       val am = requireContext().getSystemService(AutofillManager::class.java)
-      if (am == null) {
-        autoFill.isVisible = false
-        return
-      }
-
-      if (Build.VERSION.SDK_INT >= VERSION_CODES.P
-        && am.autofillServiceComponentName?.packageName?.equals(requireActivity().packageName) == false
-      ) {
+      if (am == null || !am.isAutofillSupported) {
         autoFill.isVisible = false
         return
       }

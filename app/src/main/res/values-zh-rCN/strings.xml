@@ -259,7 +259,7 @@
     <string name="warning_rooted">为了你的数据安全，请不要在已经 root 的手机上打开数据库</string>
     <string name="hint_security_green">"本应用处于安全环境中 "</string>
     <string name="hint_security_red">你的设备已经 root，数据库处于一个非常危险的环境中</string>
-    <string name="hint_security_yellow">警告，运用运行于模拟器中，该环境会给数据库带来一些不可预测的风险</string>
+    <string name="hint_security_yellow">警告，应用运行于模拟器中，该环境会给数据库带来一些不可预测的风险</string>
     <string name="donate">捐赠</string>
     <string name="donate_desc">[KeePassA](https://github.com/AriaLyy/KeepassA)是一款自由软件。请考虑给我们捐赠，以支持我们的工作，非常感谢你。</string>
     <string name="dev_birthday">今天是开发者生日🎂，请开发者喝啤酒？</string>

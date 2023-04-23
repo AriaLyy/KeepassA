@@ -64,9 +64,8 @@ class AutoFillService : AutofillService() {
       return
     }
 
-    if (!PermissionsUtil.miuiCanBackgroundStart()){
-      Timber.d("没有后台弹出弹窗权限")
-      ToastUtils.showLong("没有后台弹出弹窗权限")
+    if (!PermissionsUtil.isCanBackgroundStart()){
+      ToastUtils.showLong(R.string.hint_open_background_start)
       return
     }
 
@@ -93,7 +92,6 @@ class AutoFillService : AutofillService() {
       return
     }
 
-    checkRom()
 
     // 如果数据库没打开，或者数据库已经锁定，打开登录页面
     if (needAuth) {
@@ -128,29 +126,6 @@ class AutoFillService : AutofillService() {
     val response =
       AutoFillHelper.newResponse(this, !needAuth, autoFillFields, datas, apkPackageName, structure)
     callback.onSuccess(response)
-  }
-
-  private fun checkRom() {
-    if (RomUtils.isXiaomi()) {
-      if (!PermissionsUtil.miuiCanBackgroundStart()) {
-        ToastUtils.showLong(R.string.hint_open_background_start)
-      }
-      return
-    }
-
-    if (RomUtils.isVivo()) {
-      if (!PermissionsUtil.vivoBackgroundStartAllowed()) {
-        ToastUtils.showLong(R.string.hint_open_background_start)
-      }
-      return
-    }
-
-    if (RomUtils.isOppo()) {
-      if (!PermissionsUtil.vivoBackgroundStartAllowed()) {
-        ToastUtils.showLong(R.string.hint_open_background_start)
-      }
-      return
-    }
   }
 
   /**

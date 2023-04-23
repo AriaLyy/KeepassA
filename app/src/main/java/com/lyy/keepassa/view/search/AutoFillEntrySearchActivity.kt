@@ -124,6 +124,7 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
       val intent = Intent(context, AutoFillEntrySearchActivity::class.java).also {
         it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
         it.putExtra(KEY_PKG_NAME, apkPackageName)
+        it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
       }
       return PendingIntent.getActivity(
         context,
