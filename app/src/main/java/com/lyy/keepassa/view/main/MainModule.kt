@@ -10,36 +10,30 @@
 package com.lyy.keepassa.view.main
 
 import android.content.Context
-import android.widget.Button
-import androidx.core.content.edit
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.arialyy.frame.router.Routerfit
-import com.arialyy.frame.util.AndroidUtils
 import com.arialyy.frame.util.ResUtil
 import com.lahm.library.EasyProtectorLib
 import com.lyy.keepassa.R
-import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
-import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.router.DialogRouter
-import com.lyy.keepassa.view.UpgradeLogDialog
-import com.lyy.keepassa.view.dialog.DonateDialog
-import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
+import com.lyy.keepassa.view.main.chain.DevBirthdayChain
+import com.lyy.keepassa.view.main.chain.DialogChain
+import com.lyy.keepassa.view.main.chain.DonateChain
+import com.lyy.keepassa.view.main.chain.IMainDialogInterceptor
+import com.lyy.keepassa.view.main.chain.PermissionsChain
+import com.lyy.keepassa.view.main.chain.VersionLogChain
 import com.lyy.keepassa.widget.BubbleTextView
 import com.lyy.keepassa.widget.BubbleTextView.OnIconClickListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.joda.time.DateTime
 
 class MainModule : BaseModule() {
-
-  private var upgradeLogDialogIsShow = false
-  private var devBirthDayDialogIsShow = false
 
   override fun onCleared() {
     super.onCleared()
@@ -88,51 +82,20 @@ class MainModule : BaseModule() {
     })
   }
 
-  fun showInfoDialog(activity: BaseActivity<*>) {
-    showVersionLog(activity)
-    if (!upgradeLogDialogIsShow) {
-      checkDevBirthdayData(activity)
-      return
-    }
-    if (!devBirthDayDialogIsShow) {
-      showDonateDialog(activity)
-      return
-    }
-  }
+  fun showInfoDialog(activity: MainActivity) {
 
-  private fun showDonateDialog(context: Context) {
-    val pre = context.getSharedPreferences(Constance.PRE_FILE_NAME, Context.MODE_PRIVATE)
-    val startNum = pre.getInt(Constance.PRE_KEY_START_APP_NUM, 0)
-    if (startNum >= Constance.START_DONATE_JUDGMENT_VALUE) {
-      val donateDialog = DonateDialog()
-      donateDialog.setOnDismissListener {
-        pre.edit {
-          putInt(Constance.PRE_KEY_START_APP_NUM, 0)
-        }
-      }
-      donateDialog.show()
-    }
-  }
-
-  /**
-   * 显示版本日志对话框，显示逻辑：
-   * 配置文件的版本号不存在，或当前版本号大于配置文件的版本号
-   */
-  private fun showVersionLog(activity: BaseActivity<*>) {
-    upgradeLogDialogIsShow = true
     viewModelScope.launch {
       withContext(Dispatchers.IO) {
         delay(600)
       }
-      if (activity.isDestroyed || activity.isFinishing) {
-        return@launch
+      val list = arrayListOf<IMainDialogInterceptor>().apply {
+        add(VersionLogChain())
+        add(DevBirthdayChain())
+        add(DonateChain())
+        add(PermissionsChain())
       }
-      val sharedPreferences =
-        activity.getSharedPreferences(Constance.PRE_FILE_NAME, Context.MODE_PRIVATE)
-      val versionCode = sharedPreferences.getInt(Constance.VERSION_CODE, -1)
-      if (versionCode < 0 || versionCode < AndroidUtils.getVersionCode(activity)) {
-        UpgradeLogDialog().show()
-      }
+      DialogChain(activity, list, 0).proceed(activity)
+
     }
   }
 
@@ -154,33 +117,4 @@ class MainModule : BaseModule() {
 
   }
 
-
-  private fun checkDevBirthdayData(context: Context) {
-//    val dt = DateTime(2020, 10, 2, 0, 0)
-    val dt = DateTime(System.currentTimeMillis())
-    if (dt.monthOfYear == 10 && dt.dayOfMonth == 2) {
-      showDevBirthdayDialog(context)
-    }
-  }
-
-  private fun showDevBirthdayDialog(context: Context) {
-    devBirthDayDialogIsShow = true
-    Routerfit.create(DialogRouter::class.java).showMsgDialog(
-      msgTitle = ResUtil.getString(R.string.donate),
-      msgContent = ResUtil.getString(R.string.dev_birthday),
-      cancelText = "NO",
-      enterText = "YES",
-      btnClickListener = object : OnMsgBtClickListener {
-        override fun onCover(v: Button) {
-        }
-
-        override fun onEnter(v: Button) {
-          DonateDialog().show()
-        }
-
-        override fun onCancel(v: Button) {
-        }
-      }
-    )
-  }
 }

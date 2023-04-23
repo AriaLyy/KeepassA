@@ -225,20 +225,20 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         }
       }
       binding.anim.addAnimatorListener(object : AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {
+        override fun onAnimationRepeat(animation: Animator) {
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
           binding.head.visibility = View.VISIBLE
           ObjectAnimator.ofFloat(binding.head, "alpha", 0f, 1f)
             .setDuration(1000)
             .start()
         }
 
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
         }
       })
     } catch (e: IOException) {
@@ -351,7 +351,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     anim.start()
 
     anim.addListener(object : AnimatorListenerAdapter() {
-      override fun onAnimationEnd(animation: Animator?) {
+      override fun onAnimationEnd(animation: Animator) {
         binding.key.visibility = View.GONE
       }
     })

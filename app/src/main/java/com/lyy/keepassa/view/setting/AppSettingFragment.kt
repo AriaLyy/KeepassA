@@ -17,7 +17,6 @@ import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.provider.Settings
-import android.text.Html
 import android.view.View
 import android.view.autofill.AutofillManager
 import androidx.activity.result.contract.ActivityResultContract
@@ -34,16 +33,12 @@ import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.core.AbsFrame
-import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
-import com.arialyy.frame.util.SharePreUtil
 import com.blankj.utilcode.util.ReflectUtils
 import com.blankj.utilcode.util.RomUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
-import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.common.PassType
-import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
@@ -276,14 +271,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     // 大于8.0 才能使用自带的填充框架，否则只能使用辅助功能来实现
     if (Build.VERSION.SDK_INT >= VERSION_CODES.O) {
       val am = requireContext().getSystemService(AutofillManager::class.java)
-      if (am == null) {
-        autoFill.isVisible = false
-        return
-      }
-
-      if (Build.VERSION.SDK_INT >= VERSION_CODES.P
-        && am.autofillServiceComponentName?.packageName?.equals(requireActivity().packageName) == false
-      ) {
+      if (am == null || !am.isAutofillSupported) {
         autoFill.isVisible = false
         return
       }
@@ -293,7 +281,10 @@ class AppSettingFragment : PreferenceFragmentCompat() {
         && RomUtils.isXiaomi()
         && !PermissionsUtil.miuiCanBackgroundStart()
       ) {
-        showAutoFillMsgDialog(getString(R.string.setting_miui_background_start))
+        PermissionsUtil.showAutoFillMsgDialog(
+          requireContext(),
+          getString(R.string.hint_open_backgroun_start)
+        )
       }
 
       // vivo 检查后台弹出权限
@@ -301,7 +292,10 @@ class AppSettingFragment : PreferenceFragmentCompat() {
         && RomUtils.isVivo()
         && !PermissionsUtil.vivoBackgroundStartAllowed()
       ) {
-        showAutoFillMsgDialog(getString(R.string.setting_vivo_background_start))
+        PermissionsUtil.showAutoFillMsgDialog(
+          requireContext(),
+          getString(R.string.hint_open_backgroun_start)
+        )
       }
 
 
@@ -390,6 +384,9 @@ class AppSettingFragment : PreferenceFragmentCompat() {
         11 -> {
           lang = Locale("uk", "rUA")
         }
+        12 -> {
+          lang = Locale("es") // 西班牙语
+        }
       }
       BaseApp.currentLang = lang
       LanguageUtil.saveLanguage(requireContext(), lang)
@@ -420,32 +417,4 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     subShortPass()
   }
 
-  /**
-   * 显示弹出框提示用户打开后台启动界面的权限
-   */
-  private fun showAutoFillMsgDialog(msg: String) {
-    val IS_HOWED_AUTO_FILL_HINT_DIALOG = "IS_HOWED_AUTO_FILL_HINT_DIALOG"
-    val isShowed =
-      SharePreUtil.getBoolean(
-        Constance.PRE_FILE_NAME,
-        requireContext(),
-        IS_HOWED_AUTO_FILL_HINT_DIALOG
-      )
-
-    if (!isShowed) {
-      Routerfit.create(DialogRouter::class.java).showMsgDialog(
-        msgContent = Html.fromHtml(BaseApp.APP.getString(R.string.hint_background_start, msg)),
-        showCancelBt = false,
-        showCountDownTimer = Pair(true, 5)
-      )
-      SharePreUtil.putBoolean(
-        Constance.PRE_FILE_NAME,
-        requireContext(),
-        IS_HOWED_AUTO_FILL_HINT_DIALOG,
-        true
-      )
-    } else {
-      Timber.i("已显示过自动填充对话框，不再重复显示")
-    }
-  }
 }

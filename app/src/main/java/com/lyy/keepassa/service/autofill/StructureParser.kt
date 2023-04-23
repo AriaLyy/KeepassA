@@ -98,6 +98,9 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
 
   private fun parseLocked(viewNode: ViewNode) {
     // 处理editText 增加 android:autofillHints 的情况
+    Timber.i(
+      "w3c111, unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused},  idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, isOpaque = ${viewNode.isOpaque}"
+    )
     if (!viewNode.autofillHints.isNullOrEmpty()) {
       if (isW3c) {
         if (W3cHints.isW3CUserByHints(viewNode)) {
@@ -106,12 +109,20 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
         } else if (W3cHints.isW3CPassByHints(viewNode)) {
           Timber.i("addPassword by hints")
           addPassField(viewNode)
+        }else{
+          Timber.d(
+            "w3c, unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused},  idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, isOpaque = ${viewNode.isOpaque}"
+          )
         }
       } else {
         if (isPassword(viewNode)) {
           addPassField(viewNode)
         } else if (isUserName(viewNode)) {
           addUserField(viewNode)
+        }else{
+          Timber.d(
+            "not w3c, unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused},  idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, isOpaque = ${viewNode.isOpaque}"
+          )
         }
       }
       // autoFillFields.add(AutoFillFieldMetadata(viewNode))

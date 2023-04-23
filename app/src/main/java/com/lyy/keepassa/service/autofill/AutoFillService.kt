@@ -22,8 +22,11 @@ import android.service.autofill.FillRequest
 import android.service.autofill.FillResponse
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
+import android.widget.Toast
+import com.arialyy.frame.util.show.T
 import com.blankj.utilcode.util.RomUtils
 import com.blankj.utilcode.util.ToastUtils
+import com.google.android.material.snackbar.Snackbar
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
@@ -60,6 +63,12 @@ class AutoFillService : AutofillService() {
       // 本应用内不进行填充
       return
     }
+
+    if (!PermissionsUtil.isCanBackgroundStart()){
+      ToastUtils.showLong(R.string.hint_open_background_start)
+      return
+    }
+
     Timber.d(
       "onFillRequest(): flags = ${request.flags}, requestId = ${request.id}, clientState = ${
         KLog.b(
@@ -83,7 +92,6 @@ class AutoFillService : AutofillService() {
       return
     }
 
-    checkRom()
 
     // 如果数据库没打开，或者数据库已经锁定，打开登录页面
     if (needAuth) {
@@ -118,29 +126,6 @@ class AutoFillService : AutofillService() {
     val response =
       AutoFillHelper.newResponse(this, !needAuth, autoFillFields, datas, apkPackageName, structure)
     callback.onSuccess(response)
-  }
-
-  private fun checkRom() {
-    if (RomUtils.isXiaomi()) {
-      if (!PermissionsUtil.miuiCanBackgroundStart()) {
-        ToastUtils.showLong(R.string.hint_open_background_start)
-      }
-      return
-    }
-
-    if (RomUtils.isVivo()) {
-      if (!PermissionsUtil.vivoBackgroundStartAllowed()) {
-        ToastUtils.showLong(R.string.hint_open_background_start)
-      }
-      return
-    }
-
-    if (RomUtils.isOppo()) {
-      if (!PermissionsUtil.vivoBackgroundStartAllowed()) {
-        ToastUtils.showLong(R.string.hint_open_background_start)
-      }
-      return
-    }
   }
 
   /**

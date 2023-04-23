@@ -96,7 +96,7 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
     val anim = ObjectAnimator.ofFloat(binding.arrow, "rotation", 180f, 360f)
     anim.duration = arrowAnimDuration
     anim.addListener(object : AnimatorListenerAdapter() {
-      override fun onAnimationEnd(animation: Animator?) {
+      override fun onAnimationEnd(animation: Animator) {
         super.onAnimationEnd(animation)
         binding.kpaToolbar.setBackgroundColor(ResUtil.getColor(R.color.background_color))
         finishAfterTransition()

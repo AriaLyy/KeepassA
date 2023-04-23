@@ -30,6 +30,7 @@
     <string name="done">Done</string>
     <string name="enter">Enter</string>
     <string name="cancel">Cancel</string>
+    <string name="open_setting">Setting</string>
     <string name="hint">Prompt</string>
     <string name="help_create_db_path">It is recommended that you use cloud paths such as Dropbox and WebDAV. This will auto-sync your database to the cloud, making it easy to use the database on other devices. \n The database is encrypted using AES-256. Without your password, no one can open your database.</string>
     <string name="help_pass_type">Use password only: \n Only your password is needed to open the database；\n Password + key: \n You need to enter a password and select a key file to open the database.</string>
@@ -175,6 +176,7 @@
     <string name="app_feedback">Feedback</string>
     <string name="error_db_pass_too_short">Make the database password more than 6 characters or more to protect your data</string>
     <string name="autofill_sign_in_prompt">Auto-fill password with KeePassA</string>
+    <string name="hint_open_backgroun_start">You have set up auto-fill, but KeePassA does not have the appropriate permissions, please authorize the KeePassA backend pop-up screen in the settings page.</string>
     <string name="hint_background_start"><![CDATA[Go to<font color="#FF0000">【%s】</font>and grant the background pop-up permissions to make better use of the auto-fill service.<br> <font color="#FF0000">KeePassA shows the corresponding interface for opening the database when you use the autofill function</font>]]></string>
     <string name="setting_miui_background_start">Settings &gt; Application Settings &gt; Application Management &gt; KeePassA &gt; Permission Management</string>
     <string name="setting_vivo_background_start">Settings &gt; More Settings &gt; Permission Management &gt; KeePassA &gt; Permission Settings &gt; Background Popup</string>
@@ -256,7 +258,7 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="hint_security_yellow">Warning, running in the simulator, this environment will bring some unpredictable risks to the database</string>
     <string name="donate">Donate</string>
     <string name="donate_desc">[KeePassA](https://github.com/AriaLyy/KeepassA) is libre software. Donate to support our work, Thank you very much.</string>
-    <string name="dev_birthday">Today is the developer’s birthday🎂. Would you like to make a toast to the gods?</string>
+    <string name="dev_birthday">Today is the developer’s birthday🎂. Buy the developer a beer?</string>
     <string name="totp_defaule">Default RFC 6238 token settings</string>
     <string name="totp_steam">Steam token settings</string>
     <string name="totp_custom">Use custom settings</string>

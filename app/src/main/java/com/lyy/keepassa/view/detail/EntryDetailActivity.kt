@@ -80,8 +80,10 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
 
   val saveAttachmentResult =
     registerForActivityResult(ActivityResultContracts.CreateDocument()) { resultUri ->
-      resultUri.takePermission()
-      module.saveAttachment(this, resultUri, module.curDLoadFile!!)
+      resultUri?.let {
+        it.takePermission()
+        module.saveAttachment(this, it, module.curDLoadFile!!)
+      }
     }
 
   override fun setLayoutId(): Int {
