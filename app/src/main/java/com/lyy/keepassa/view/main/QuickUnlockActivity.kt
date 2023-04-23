@@ -351,7 +351,6 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
       val intent = Intent(context, QuickUnlockActivity::class.java).also {
         it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
         it.putExtra(KEY_PKG_NAME, pkgName)
-        it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
       }
       return PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT or FLAG_IMMUTABLE)
         .intentSender

@@ -346,7 +346,6 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
       val intent = Intent(context, LauncherActivity::class.java).also {
         it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
         it.putExtra(KEY_PKG_NAME, apkPackageName)
-        it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
       }
       return PendingIntent.getActivity(
         context,
@@ -371,7 +370,6 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
         it.putExtra(KEY_PKG_NAME, apkPackageName)
         it.putExtra(KEY_SAVE_USER_NAME, userName)
         it.putExtra(KEY_SAVE_PASS, pass)
-        it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
       }
       return PendingIntent.getActivity(
         context,
