@@ -11,9 +11,9 @@ import android.content.Intent
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.entity.AutoFillParam
 
-interface IAutoFillFinishDelegate {
+internal interface IAutoFillFinishDelegate {
 
-  fun finish(activity: BaseActivity<*>, autoFillParam: AutoFillParam)
+  fun handleAutoFill(autoFillParam: AutoFillParam)
 
-  fun onActivityResult(activity: BaseActivity<*>, data: Intent?)
+  fun onActivityResult(data: Intent?)
 }

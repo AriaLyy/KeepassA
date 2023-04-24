@@ -15,10 +15,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.os.Build
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.view.autofill.AutofillManager
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -41,6 +39,7 @@ import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
+import timber.log.Timber
 
 @Route(path = "/launcher/activity")
 class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
@@ -66,11 +65,27 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
     module = ViewModelProvider(this)[LauncherModule::class.java]
-    module.autoFillParam = intent.getParcelableExtra(KEY_AUTO_FILL_PARAM)
+    getAutoFillParam()
 
     module.showPrivacyAgreement(this)
     initUI()
     module.securityCheck(this)
+  }
+
+  override fun onNewIntent(intent: Intent?) {
+    super.onNewIntent(intent)
+    getAutoFillParam()
+  }
+
+  private fun getAutoFillParam() {
+    module.autoFillParam = intent.getParcelableExtra(KEY_AUTO_FILL_PARAM)
+    module.autoFillParam?.let {
+      module.autoFillDelegate = if (it.isSave) {
+        SaveEntityDelegate(this)
+      } else {
+        SearchEntityDelegate(this)
+      }
+    }
   }
 
   override fun useAnim(): Boolean {
@@ -115,32 +130,11 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
 
     // 如果数据库已经打开，直接启用到主页，用于快捷方式添加数据后返回的情况
     if (BaseApp.KDB != null && !BaseApp.isLocked && !module.isFormAutoFill()) {
+      Timber.d("数据库已经打开，进入主页")
       Routerfit.create(ActivityRouter::class.java, this).toMainActivity(
         opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
       )
     }
-  }
-
-  override fun finish() {
-    // 如果是由自动填充服务启动，并且打开数据库成功，则构建相应的填充数据
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && BaseApp.KDB != null) {
-      module.autoFillParam?.let {
-        /*
-        * 打开搜索界面
-        */
-        if (!it.isSave) {
-          OpenDbFinishDelegate.finish(this, it)
-          return
-        }
-
-        /*
-         * 打开创建条目界面
-         */
-        CreateEntityFinishDelegate.finish(this, it)
-        return
-      }
-    }
-    super.finish()
   }
 
   fun superFinish() {
@@ -218,8 +212,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   private fun buildOpenDbFragment(record: DbHistoryRecord): Pair<String, OpenDbFragment> {
     var fragment = supportFragmentManager.findFragmentByTag(OpenDbFragment.FM_TAG)
     if (fragment == null || fragment !is OpenDbFragment) {
-      fragment = Routerfit.create(FragmentRouter::class.java)
-        .getOpenDbFragment(module.isFormAutoFill(), record)
+      fragment = Routerfit.create(FragmentRouter::class.java).getOpenDbFragment(record)
     }
     return Pair(OpenDbFragment.FM_TAG, fragment)
   }
@@ -266,13 +259,14 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     internal fun getAuthDbIntentSender(
       context: Context,
       apkPackageName: String,
-      structure: AssistStructure?=null
+      structure: AssistStructure? = null
     ): IntentSender {
       val intent = Intent(context, LauncherActivity::class.java).also {
         it.putExtra(KEY_AUTO_FILL_PARAM, AutoFillParam(apkPkgName = apkPackageName))
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-          structure?.let { stru->
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          structure?.let { stru ->
             it.putExtra(AutofillManager.EXTRA_ASSIST_STRUCTURE, stru)
+            it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
           }
         }
 
@@ -303,6 +297,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
             savePass = pass
           )
         )
+        it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
       }
       return PendingIntent.getActivity(
         context,

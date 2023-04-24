@@ -59,10 +59,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class LauncherModule : BaseModule() {
+internal class LauncherModule : BaseModule() {
   private val itemData: MutableLiveData<List<SimpleItemEntity>> = MutableLiveData()
   private val unlockEvent = MutableLiveData<Pair<Boolean, String?>>()
   private val scope = MainScope()
+  var autoFillDelegate: IAutoFillFinishDelegate? = null
   var autoFillParam: AutoFillParam? = null
 
   companion object {

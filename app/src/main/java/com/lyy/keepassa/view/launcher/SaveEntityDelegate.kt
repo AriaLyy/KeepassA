@@ -12,7 +12,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.app.ActivityOptionsCompat
-import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.util.KeepassAUtil
@@ -20,7 +19,8 @@ import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 import timber.log.Timber
 
-internal object CreateEntityFinishDelegate : IAutoFillFinishDelegate {
+internal class SaveEntityDelegate(val activity: LauncherActivity) :
+  IAutoFillFinishDelegate {
 
   private var autoFillParam: AutoFillParam? = null
 
@@ -40,16 +40,16 @@ internal object CreateEntityFinishDelegate : IAutoFillFinishDelegate {
     }
   }
 
-  override fun finish(activity: BaseActivity<*>, autoFillParam: AutoFillParam) {
-    this.autoFillParam = autoFillParam
+  private val reg = activity.registerForActivityResult(content) {
+    onActivityResult(it)
+  }
 
-    val reg = activity.registerForActivityResult(content) {
-      onActivityResult(activity, it)
-    }
+  override fun handleAutoFill(autoFillParam: AutoFillParam) {
+    this.autoFillParam = autoFillParam
     reg.launch(autoFillParam, ActivityOptionsCompat.makeSceneTransitionAnimation(activity))
   }
 
-  override fun onActivityResult(activity: BaseActivity<*>, data: Intent?) {
+  override fun onActivityResult(data: Intent?) {
     if (autoFillParam == null) {
       Timber.e("autoFillParam is null")
       return

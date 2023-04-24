@@ -13,14 +13,13 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.app.ActivityOptionsCompat
-import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 import timber.log.Timber
 
-internal object OpenDbFinishDelegate : IAutoFillFinishDelegate {
+internal class SearchEntityDelegate(val activity: LauncherActivity) : IAutoFillFinishDelegate {
   private var autoFillParam: AutoFillParam? = null
 
   val content = object : ActivityResultContract<AutoFillParam, Intent?>() {
@@ -39,16 +38,16 @@ internal object OpenDbFinishDelegate : IAutoFillFinishDelegate {
     }
   }
 
-  override fun finish(activity: BaseActivity<*>, autoFillParam: AutoFillParam) {
+  private val reg = activity.registerForActivityResult(content) {
+    onActivityResult(it)
+  }
+
+  override fun handleAutoFill(autoFillParam: AutoFillParam) {
     this.autoFillParam = autoFillParam
     // 打开搜索界面
     val datas = KDBAutoFillRepository.getAutoFillDataByPackageName(autoFillParam.apkPkgName)
     // 如果查找不到数据，跳转到搜索页面
     if (datas == null || datas.isEmpty()) {
-      val reg = activity.registerForActivityResult(content) {
-        onActivityResult(activity, it)
-      }
-
       reg.launch(autoFillParam, ActivityOptionsCompat.makeSceneTransitionAnimation(activity))
       return
     }
@@ -57,9 +56,10 @@ internal object OpenDbFinishDelegate : IAutoFillFinishDelegate {
     val data =
       KeepassAUtil.instance.getFillResponse(activity, activity.intent, autoFillParam.apkPkgName)
     activity.setResult(Activity.RESULT_OK, data)
+    (activity as LauncherActivity).superFinish()
   }
 
-  override fun onActivityResult(activity: BaseActivity<*>, data: Intent?) {
+  override fun onActivityResult(data: Intent?) {
     if (autoFillParam == null) {
       Timber.e("autoFillParam is null")
       return
