@@ -314,7 +314,7 @@
     <string name="start_upload_db">Iniciar subida de la BdD a su disco de red</string>
     <string name="hint_kdbx_name">Sufijo de nombre erróneo, el sufijo de nombre sería .kbdx</string>
     <string name="set_delete_no_into_recycle_bin">Borrar apuntes desde la base de datos permanentemente</string>
-    <string name="dev_birthday">Hoy es el cumpleaños 🎂 del desarrollador. ¿Quieres hacer un brindis por los dioses\?\?</string>
+    <string name="dev_birthday">Hoy es el cumpleaños del desarrollador🎂. ¿Invitas a una cerveza\?</string>
     <string name="error_uri_grant_permission">Autorización URI errónea</string>
     <string name="set_key_sum_main_show_history">Muestra el historial tras desbloquear la BdD</string>
     <string name="set_title_screen_lock">Bloquear pantalla</string>
@@ -359,4 +359,6 @@
     <string name="webdav_port_hint">Puerto</string>
     <string name="ime_hint_open_auto_fill">Activa el servicio de autocompletar</string>
     <string name="invalid_img">imagen inválida</string>
+    <string name="open_setting">Ajustes</string>
+    <string name="hint_open_backgroun_start">Ha configurado el autocompletado, pero KeePassA no tiene los permisos adecuados. Autorice la ventana emergente del servicio en segundo plano de KeePassA en la página de configuración.</string>
 </resources>
