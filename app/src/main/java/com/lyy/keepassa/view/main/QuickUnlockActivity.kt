@@ -307,7 +307,6 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
   companion object {
     const val KEY_IS_AUTH_FORM_FILL = "KEY_IS_AUTH_FORM_FILL"
     const val KEY_PKG_NAME = "KEY_PKG_NAME"
-    const val REQUEST_SEARCH_ENTRY_CODE = 0xa2
 
     /**
      * 从通知进入快速解锁页
@@ -351,6 +350,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
       val intent = Intent(context, QuickUnlockActivity::class.java).also {
         it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
         it.putExtra(KEY_PKG_NAME, pkgName)
+        it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
       }
       return PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT or FLAG_IMMUTABLE)
         .intentSender
