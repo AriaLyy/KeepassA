@@ -95,7 +95,6 @@ interface ActivityRouter {
   fun toMainActivity(
     @RouterArgName(name = "isShortcuts") isShortcuts: Boolean = false,
     @RouterArgName(name = "shortcutType") shortcutType: Int = 1,
-    @RouterArgName(name = LauncherActivity.KEY_IS_AUTH_FORM_FILL) isFromFill: Boolean = false,
     @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null
   )
 

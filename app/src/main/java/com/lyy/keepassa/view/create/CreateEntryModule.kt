@@ -26,6 +26,7 @@ import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
+import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
@@ -52,6 +53,10 @@ class CreateEntryModule : BaseModule() {
   var userNameCache = arrayListOf<String>()
   var noteStr: CharSequence = ""
   var expires: Boolean = false
+  var autoFillParam: AutoFillParam? = null
+
+
+  fun isFormAutoFill() = autoFillParam != null
 
   /**
    * Traverse database and get all userName

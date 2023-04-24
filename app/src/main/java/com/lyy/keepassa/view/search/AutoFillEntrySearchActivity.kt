@@ -36,6 +36,7 @@ import com.keepassdroid.database.PwGroup
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.databinding.ActivityAutoFillEntrySearchBinding
+import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.event.EntryState.CREATE
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.service.autofill.W3cHints
@@ -46,6 +47,7 @@ import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
+import com.lyy.keepassa.view.launcher.LauncherActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -70,9 +72,6 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
      * 条目id
      */
     const val EXTRA_ENTRY_ID = "EXTRA_ENTRY_ID"
-    private const val KEY_PKG_NAME = "KEY_PKG_NAME"
-    private const val KEY_IS_AUTH_FORM_FILL = "KEY_IS_AUTH_FORM_FILL"
-    private const val KEY_AUTO_FILL_FIELD = "KEY_IS_AUTH_FORM_FILL"
 
     /**
      * 从通知进入搜索页
@@ -82,36 +81,14 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
       apkPkgName: String,
       structure: AssistStructure
     ): PendingIntent {
-      val intent = Intent(context, AutoFillEntrySearchActivity::class.java).also { it ->
-        it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
-        it.putExtra(KEY_PKG_NAME, apkPkgName)
+      val intent = Intent(context, AutoFillEntrySearchActivity::class.java).also {
+        it.putExtra(LauncherActivity.KEY_AUTO_FILL_PARAM, AutoFillParam(apkPkgName = apkPkgName))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
           it.putExtra(AutofillManager.EXTRA_ASSIST_STRUCTURE, structure)
         }
       }
       return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-    }
-
-    /**
-     * 启动搜索界面
-     * @param domain
-     */
-    fun turnSearchActivity(
-      context: Activity,
-      requestCode: Int,
-      apkPkgName: String,
-      domain: String? = null
-    ) {
-      val intent = Intent(context, AutoFillEntrySearchActivity::class.java).apply {
-        putExtra(KEY_PKG_NAME, apkPkgName)
-      }
-      context.startActivityForResult(
-        intent,
-        requestCode,
-        ActivityOptions.makeSceneTransitionAnimation(context)
-          .toBundle()
-      )
     }
 
     /**
@@ -122,8 +99,10 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
       apkPackageName: String
     ): IntentSender {
       val intent = Intent(context, AutoFillEntrySearchActivity::class.java).also {
-        it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
-        it.putExtra(KEY_PKG_NAME, apkPackageName)
+        it.putExtra(
+          LauncherActivity.KEY_AUTO_FILL_PARAM,
+          AutoFillParam(apkPkgName = apkPackageName)
+        )
         it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
       }
       return PendingIntent.getActivity(
@@ -136,25 +115,14 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
     }
   }
 
-  /**
-   * 是否由自动填充服务启动
-   */
-  private var isFromFill: Boolean = false
-
-  /**
-   * 第三方应用包名
-   */
-  private var apkPkgName: String? = null
-
   override fun setLayoutId(): Int {
     return R.layout.activity_auto_fill_entry_search
   }
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
-    module = ViewModelProvider(this).get(SearchModule::class.java)
-    apkPkgName = intent.getStringExtra(KEY_PKG_NAME)
-    isFromFill = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL, false)
+    module = ViewModelProvider(this)[SearchModule::class.java]
+    module.autoFillParam = intent.getParcelableExtra(LauncherActivity.KEY_AUTO_FILL_PARAM)
     binding.search.requestFocusFromTouch()
     binding.search.setIconifiedByDefault(true)
     binding.search.isIconified = false
@@ -244,7 +212,7 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
       binding.noEntryLayout.visibility = View.VISIBLE
       return
     }
-    module.searchEntry(query, isFromFill)
+    module.searchEntry(query, module.isFormAutoFill())
   }
 
   /**
@@ -264,24 +232,25 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
     binding.list.adapter = adapter
 
     binding.list.doOnItemClickListener { _, position, _ ->
-      if (apkPkgName.isNullOrEmpty()) {
+      if (module.getApkPkgName().isNullOrEmpty()) {
         return@doOnItemClickListener
       }
       val item = module.listData[position]
       /*
         if is From autofill and that is group, No operation
        */
-      if (isFromFill && item.obj is PwGroup) {
+      if (module.isFormAutoFill() && item.obj is PwGroup) {
         return@doOnItemClickListener
       }
       val entry = item.obj as PwEntry
       // if is from browser, that entry will be ignore
-      if (W3cHints.isBrowser(apkPkgName!!)) {
+      if (W3cHints.isBrowser(module.getApkPkgName()!!)) {
         callbackAutoFillService(false, entry)
         return@doOnItemClickListener
       }
 
-      val msg = Html.fromHtml(getString(R.string.hint_save_auto_fill, apkPkgName, entry.title))
+      val msg =
+        Html.fromHtml(getString(R.string.hint_save_auto_fill, module.getApkPkgName(), entry.title))
       Routerfit.create(DialogRouter::class.java).showMsgDialog(
         msgContent = msg,
         btnClickListener = object : OnMsgBtClickListener {
@@ -311,7 +280,7 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
   private fun relevanceEntry(pwEntry: PwEntryV4) {
     curEntry = pwEntry
 
-    module.relevanceEntry(pwEntry, apkPkgName!!) {
+    module.relevanceEntry(pwEntry, module.getApkPkgName()!!) {
       if (it != DbSynUtil.STATE_SUCCEED) {
         HitUtil.toaskShort("${getString(R.string.relevance_db)}${getString(R.string.fail)}")
       }
@@ -329,7 +298,7 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
     isNotSaveRelevance: Boolean,
     pwEntry: PwEntry
   ) {
-    if (!isFromFill) {
+    if (!module.isFormAutoFill()) {
       val data = Intent().apply {
         putExtra(
           EXTRA_IS_SAVE_RELEVANCE, isNotSaveRelevance
@@ -347,13 +316,13 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
         Activity.RESULT_OK, KeepassAUtil.instance.getFillResponse(
           this,
           intent,
-          apkPkgName!!
+          module.getApkPkgName()!!
         )
       )
     } else {
       setResult(
         Activity.RESULT_OK,
-        KeepassAUtil.instance.getFillResponse(this, intent, pwEntry, apkPkgName!!)
+        KeepassAUtil.instance.getFillResponse(this, intent, pwEntry, module.getApkPkgName()!!)
       )
     }
     finish()

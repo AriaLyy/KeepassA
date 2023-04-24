@@ -58,6 +58,11 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       it.add(HintConstants.AUTOFILL_HINT_NEW_PASSWORD)
       it.add("passwort")
     }
+
+    /**
+     * key: class name, value: isEditText
+     */
+    val editTextMap = HashSet<String>()
   }
 
   private fun clear() {
@@ -132,19 +137,21 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     } else {
       val className = viewNode.className
 
-      // 不能使用className == "android.widget.EditText"，因为有太多的子类了
-      when {
-        isPassword(viewNode) -> {
-          addPassField(viewNode)
+      if (classIsEditText(className)) {
+        when {
+          isPassword(viewNode) -> {
+            addPassField(viewNode)
+          }
+          isUserName(viewNode) -> {
+            addUserField(viewNode)
+          }
+          else -> {
+            Timber.d(
+              "unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused},  idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, isOpaque = ${viewNode.isOpaque}"
+            )
+          }
         }
-        isUserName(viewNode) -> {
-          addUserField(viewNode)
-        }
-        else -> {
-          Timber.d(
-            "unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused},  idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, isOpaque = ${viewNode.isOpaque}"
-          )
-        }
+        return
       }
 
       if (W3cHints.isBrowser(pkgName)) {
@@ -165,6 +172,30 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     for (i in 0 until childrenSize) {
       parseLocked(viewNode.getChildAt(i))
     }
+  }
+
+  private fun checkIsEditText(clazz: Class<*>): Boolean {
+    if (clazz.name.equals("android.widget.EditText")) {
+      return true
+    }
+    val sup = clazz.superclass ?: return false
+    if (sup.name.equals("java.lang.Object")) {
+      return false
+    }
+    if (sup.name.equals("android.widget.EditText")) {
+      return true
+    }
+    return checkIsEditText(sup)
+  }
+
+  private fun classIsEditText(className: String?): Boolean {
+    if (className.isNullOrEmpty()) return false
+    if (editTextMap.contains(className)) return true
+    if (checkIsEditText(Class.forName(className))) {
+      editTextMap.add(className)
+      return true
+    }
+    return false
   }
 
   private fun getW3CInfo(viewNode: ViewNode) {

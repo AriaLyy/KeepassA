@@ -45,9 +45,7 @@ import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.PermissionsUtil
 import com.lyy.keepassa.view.create.CreateDbActivity
-import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.search.SearchDialog
 import com.lyy.keepassa.widget.MainExpandFloatActionButton
@@ -76,13 +74,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   @Autowired(name = "shortcutsType")
   @JvmField
   var shortcutType = 1
-
-  /**
-   * 是否由自动填充服务启动
-   */
-  @Autowired(name = LauncherActivity.KEY_IS_AUTH_FORM_FILL)
-  @JvmField
-  var isFromFill: Boolean = false
 
   private val historyFm by lazy {
     Routerfit.create(FragmentRouter::class.java).toMainHistoryFragment()
@@ -255,7 +246,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
   override fun onBackPressed() {
     // 返回键不退出而是进入后台
-    moveTaskToBack(false)
+    moveTaskToBack(true)
   }
 
   override fun onPostCreate(savedInstanceState: Bundle?) {

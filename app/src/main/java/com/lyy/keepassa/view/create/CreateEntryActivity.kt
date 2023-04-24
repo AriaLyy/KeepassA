@@ -10,6 +10,7 @@
 package com.lyy.keepassa.view.create
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -64,7 +65,6 @@ import com.lyy.keepassa.view.dir.ChooseGroupActivity
 import com.lyy.keepassa.view.icon.IconBottomSheetDialog
 import com.lyy.keepassa.view.icon.IconItemCallback
 import com.lyy.keepassa.view.launcher.LauncherActivity
-import com.lyy.keepassa.view.launcher.LauncherActivity.Companion.KEY_IS_AUTH_FORM_FILL_SAVE
 import com.lyy.keepassa.view.menu.EntryCreateFilePopMenu
 import com.lyy.keepassa.view.menu.EntryCreateStrPopMenu
 import com.lyy.keepassa.widget.expand.AttrFileItemView
@@ -116,10 +116,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   private lateinit var addMoreData: ArrayList<SimpleItemEntity>
   private lateinit var pwEntry: PwEntryV4
 
-  @Autowired(name = KEY_IS_AUTH_FORM_FILL_SAVE)
-  @JvmField
-  var isFromAutoFillSave = false
-
   @Autowired(name = KEY_ENTRY)
   lateinit var entryId: UUID
 
@@ -135,12 +131,13 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   @JvmField
   var isShortcuts: Boolean = false
 
-  private val getFileLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri->
-    uri?.let {
-      it.takePermission()
-      addAttrFile(it)
+  private val getFileLauncher =
+    registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+      uri?.let {
+        it.takePermission()
+        addAttrFile(it)
+      }
     }
-  }
 
   /**
    * 密码创建器
@@ -185,7 +182,8 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     super.initData(savedInstanceState)
     ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
-    module = ViewModelProvider(this).get(CreateEntryModule::class.java)
+    module = ViewModelProvider(this)[CreateEntryModule::class.java]
+    module.autoFillParam = intent.getParcelableExtra(LauncherActivity.KEY_AUTO_FILL_PARAM)
     Timber.i("isShortcuts = $isShortcuts")
 
     // 处理快捷方式进入的情况
@@ -213,14 +211,14 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     }
 
     // 处理从自动填充服务保存的情况
-    if (intent.getBooleanExtra(LauncherActivity.KEY_IS_AUTH_FORM_FILL_SAVE, false)) {
-      val apkPackageName = intent.getStringExtra(LauncherActivity.KEY_PKG_NAME)
-      if (!apkPackageName.isNullOrEmpty()) {
+    module.autoFillParam?.let {
+      val apkPackageName = it.apkPkgName
+      if (apkPackageName.isNotEmpty()) {
         pwEntry = module.getEntryFromAutoFillSave(
           this,
           apkPackageName,
-          intent.getStringExtra(LauncherActivity.KEY_SAVE_USER_NAME),
-          intent.getStringExtra(LauncherActivity.KEY_SAVE_PASS)
+          it.saveUserName,
+          it.savePass
         )
       }
     }
@@ -228,12 +226,21 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     handleToolBar()
     handlePassLayout()
     handleAddMore()
-    if (type == TYPE_EDIT_ENTRY || isFromAutoFillSave) {
+    if (type == TYPE_EDIT_ENTRY || module.isFormAutoFill()) {
       initData(type == TYPE_EDIT_ENTRY)
     } else {
       pwEntry = PwEntryV4(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
     }
     setWidgetListener()
+  }
+
+  override fun finish() {
+    if (module.isFormAutoFill()){
+      setResult(Activity.RESULT_OK, Intent().apply {
+        putExtra(LauncherActivity.EXTRA_ENTRY_ID, pwEntry.uuid)
+      })
+    }
+    super.finish()
   }
 
   /**
@@ -487,6 +494,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       iconDialog.show(supportFragmentManager, IconBottomSheetDialog::class.java.simpleName)
     }
   }
+
 
   /**
    * 保存数据库

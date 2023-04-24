@@ -47,7 +47,7 @@ class OpenDbHistoryActivity : BaseActivity<ActivityOnlyListBinding>() {
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
-    module = ViewModelProvider(this).get(OpenDbHistoryModule::class.java)
+    module = ViewModelProvider(this)[OpenDbHistoryModule::class.java]
     toolbar.title = getString(R.string.history_record)
     adapter = SimpleAdapter(this, data)
     binding.list.layoutManager = LinearLayoutManager(this)

@@ -48,7 +48,6 @@ import com.lyy.keepassa.util.CommonKVStorage
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KpaUtil
-import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.isAFS
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
@@ -59,7 +58,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.util.Locale
 
 class LauncherModule : BaseModule() {
   private val itemData: MutableLiveData<List<SimpleItemEntity>> = MutableLiveData()
@@ -78,6 +76,8 @@ class LauncherModule : BaseModule() {
       putInt(Constance.PRE_KEY_START_APP_NUM, startNum + 1)
     }
   }
+
+  fun isFormAutoFill() = autoFillParam != null
 
   override fun onCleared() {
     super.onCleared()

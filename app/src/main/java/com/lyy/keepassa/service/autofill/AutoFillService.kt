@@ -11,6 +11,7 @@ package com.lyy.keepassa.service.autofill
 
 import KDBAutoFillRepository
 import android.annotation.TargetApi
+import android.app.assist.AssistStructure
 import android.content.Context
 import android.content.IntentSender
 import android.os.Build
@@ -98,7 +99,7 @@ class AutoFillService : AutofillService() {
       val isOpenQuickLock = BaseApp.APP.isOpenQuickLock()
 
       if (BaseApp.KDB == null) {
-        openLoginActivity(callback, autoFillFields, apkPackageName)
+        openLoginActivity(callback, autoFillFields, apkPackageName, structure)
         return
       }
 
@@ -107,7 +108,7 @@ class AutoFillService : AutofillService() {
         return
       }
 
-      openLoginActivity(callback, autoFillFields, apkPackageName)
+      openLoginActivity(callback, autoFillFields, apkPackageName, structure)
       return
     }
     // 获取填充数据
@@ -166,12 +167,13 @@ class AutoFillService : AutofillService() {
   private fun openLoginActivity(
     callback: FillCallback,
     autofillFields: AutoFillFieldMetadataCollection,
-    apkPackageName: String
+    apkPackageName: String,
+    structure: AssistStructure
   ) {
     callback.onSuccess(
       getAuthResponse(
         autofillFields,
-        LauncherActivity.getAuthDbIntentSender(this, apkPackageName)
+        LauncherActivity.getAuthDbIntentSender(this, apkPackageName, structure)
       )
     )
   }
