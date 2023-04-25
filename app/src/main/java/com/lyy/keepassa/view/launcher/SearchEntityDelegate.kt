@@ -67,38 +67,24 @@ internal class SearchEntityDelegate(val activity: LauncherActivity) : IAutoFillF
 
     // 搜索页返回的数据
     if (data != null) {
-      val isSaveRelevance = data.getBooleanExtra(
-        AutoFillEntrySearchActivity.EXTRA_IS_SAVE_RELEVANCE, false
-      )
-      if (isSaveRelevance) {
-        activity.setResult(
-          Activity.RESULT_OK,
+      val id = data.getSerializableExtra(AutoFillEntrySearchActivity.EXTRA_ENTRY_ID)
+      activity.setResult(
+        Activity.RESULT_OK,
+        BaseApp.KDB.pm.entries[id]?.let {
           KeepassAUtil.instance.getFillResponse(
             activity,
             activity.intent,
+            it,
             autoFillParam!!.apkPkgName
           )
-        )
-      } else {
-        val id = data.getSerializableExtra(AutoFillEntrySearchActivity.EXTRA_ENTRY_ID)
-        activity.setResult(
-          Activity.RESULT_OK,
-          BaseApp.KDB.pm.entries[id]?.let {
-            KeepassAUtil.instance.getFillResponse(
-              activity,
-              activity.intent,
-              it,
-              autoFillParam!!.apkPkgName
-            )
-          }
-        )
-      }
+        }
+      )
     } else {
       activity.setResult(
         Activity.RESULT_OK,
         KeepassAUtil.instance.getFillResponse(activity, activity.intent, autoFillParam!!.apkPkgName)
       )
     }
-    (activity as LauncherActivity).superFinish()
+    activity.superFinish()
   }
 }
