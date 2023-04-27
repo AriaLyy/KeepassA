@@ -23,11 +23,7 @@ import android.service.autofill.FillRequest
 import android.service.autofill.FillResponse
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
-import android.widget.Toast
-import com.arialyy.frame.util.show.T
-import com.blankj.utilcode.util.RomUtils
 import com.blankj.utilcode.util.ToastUtils
-import com.google.android.material.snackbar.Snackbar
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
@@ -65,7 +61,7 @@ class AutoFillService : AutofillService() {
       return
     }
 
-    if (!PermissionsUtil.isCanBackgroundStart()){
+    if (!PermissionsUtil.isCanBackgroundStart()) {
       ToastUtils.showLong(R.string.hint_open_background_start)
       return
     }
@@ -93,7 +89,6 @@ class AutoFillService : AutofillService() {
       return
     }
 
-
     // 如果数据库没打开，或者数据库已经锁定，打开登录页面
     if (needAuth) {
       val isOpenQuickLock = BaseApp.APP.isOpenQuickLock()
@@ -104,7 +99,7 @@ class AutoFillService : AutofillService() {
       }
 
       if (isOpenQuickLock) {
-        openQuickUnLockActivity(callback, autoFillFields, apkPackageName)
+        openQuickUnLockActivity(callback, autoFillFields, apkPackageName, structure)
         return
       }
 
@@ -121,7 +116,7 @@ class AutoFillService : AutofillService() {
     Timber.d("entrySize = ${datas?.size}")
     // 没有匹配的数据，进入搜索界面
     if (datas == null) {
-      openSearchActivity(callback, autoFillFields, apkPackageName)
+      openSearchActivity(callback, autoFillFields, apkPackageName, structure)
       return
     }
     val response =
@@ -135,12 +130,13 @@ class AutoFillService : AutofillService() {
   private fun openSearchActivity(
     callback: FillCallback,
     autofillFields: AutoFillFieldMetadataCollection,
-    apkPackageName: String
+    apkPackageName: String,
+    structure: AssistStructure
   ) {
     callback.onSuccess(
       getAuthResponse(
         autofillFields,
-        AutoFillEntrySearchActivity.getSearchIntentSender(this, apkPackageName)
+        AutoFillEntrySearchActivity.getSearchIntentSender(this, apkPackageName, structure)
       )
     )
   }
@@ -151,12 +147,13 @@ class AutoFillService : AutofillService() {
   private fun openQuickUnLockActivity(
     callback: FillCallback,
     autofillFields: AutoFillFieldMetadataCollection,
-    apkPackageName: String
+    apkPackageName: String,
+    structure: AssistStructure
   ) {
     callback.onSuccess(
       getAuthResponse(
         autofillFields,
-        QuickUnlockActivity.getQuickUnlockSenderForResponse(this, apkPackageName)
+        QuickUnlockActivity.getQuickUnlockSenderForResponse(this, apkPackageName, structure)
       )
     )
   }
