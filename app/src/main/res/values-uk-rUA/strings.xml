@@ -362,4 +362,5 @@
     <string name="open_setting">Налаштування</string>
     <string name="hint_open_backgroun_start">Ви налаштували автозаповнення, але KeePassA не має відповідних дозволів. Авторизуйте спливне вікно фонової служби KeePassA на сторінці налаштувань.</string>
     <string name="preemptive">Пріоритетний</string>
+    <string name="fail_unsupported_Systems_O">Підтримка лише системи P або вище</string>
 </resources>
