@@ -47,27 +47,13 @@ internal class SaveEntityDelegate(val activity: LauncherActivity) :
   override fun handleAutoFill(autoFillParam: AutoFillParam) {
     this.autoFillParam = autoFillParam
     reg.launch(autoFillParam, ActivityOptionsCompat.makeSceneTransitionAnimation(activity))
+    activity.superFinish()
   }
 
   override fun onActivityResult(data: Intent?) {
     if (autoFillParam == null) {
       Timber.e("autoFillParam is null")
       return
-    }
-
-    data?.let {
-      val id = data.getSerializableExtra(AutoFillEntrySearchActivity.EXTRA_ENTRY_ID)
-      activity.setResult(
-        Activity.RESULT_OK,
-        BaseApp.KDB.pm.entries[id]?.let {
-          KeepassAUtil.instance.getFillResponse(
-            activity,
-            activity.intent,
-            it,
-            autoFillParam!!.apkPkgName
-          )
-        }
-      )
     }
   }
 }

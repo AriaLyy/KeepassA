@@ -11,8 +11,10 @@ package com.lyy.keepassa.view.create
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
@@ -31,6 +33,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
+import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroupId
 import com.keepassdroid.database.PwGroupV4
@@ -43,6 +46,7 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityEntryEditBinding
+import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.CreateAttrStrEvent
 import com.lyy.keepassa.event.DelAttrFileEvent
@@ -52,6 +56,7 @@ import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
+import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.getFileInfo
@@ -106,6 +111,26 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
 
     // 编辑条目
     const val TYPE_EDIT_ENTRY = 3
+
+    /**
+     * 数据库未解锁，保存数据时打开数据库，并保存
+     */
+    internal fun authAndSaveDb(
+      context: Context,
+      autoFillParam: AutoFillParam,
+    ): IntentSender {
+      val intent = Intent(context, CreateEntryActivity::class.java).also {
+        it.putExtra(LauncherActivity.KEY_AUTO_FILL_PARAM, autoFillParam)
+        it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+      }
+      return PendingIntent.getActivity(
+        context,
+        1,
+        intent,
+        PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+      )
+        .intentSender
+    }
   }
 
   private val editorRequestCode = 0xA5
@@ -178,6 +203,20 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       createEntry(it)
     }
 
+  /**
+   * 检查自动填充的条目是否存在
+   */
+  private fun checkAutoFill() {
+    module.autoFillParam?.let {
+      val entryList = mutableListOf<PwEntry>()
+      KdbUtil.searchEntriesByPackageName(it.apkPkgName, entryList)
+      if (entryList.isNotEmpty()) {
+        type = TYPE_EDIT_ENTRY
+        entryId = entryList[0].uuid
+      }
+    }
+  }
+
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
     ARouter.getInstance().inject(this)
@@ -190,6 +229,8 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     if (isShortcuts) {
       type = TYPE_NEW_ENTRY
     }
+
+    checkAutoFill()
 
     when (type) {
       TYPE_NEW_ENTRY -> {
@@ -235,7 +276,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   }
 
   override fun finish() {
-    if (module.isFormAutoFill()){
+    if (module.isFormAutoFill()) {
       setResult(Activity.RESULT_OK, Intent().apply {
         putExtra(LauncherActivity.EXTRA_ENTRY_ID, pwEntry.uuid)
       })
@@ -309,7 +350,12 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       binding.user.setText(pwEntry.username)
     } else {
 //      binding.user.setText("newEntry")
+
       binding.title.setText(getString(R.string.normal_account))
+      module.autoFillParam?.let {
+        binding.user.setText(it.saveUserName)
+        pwEntry.strings["KP2A_URL_1"] = ProtectedString(false, "androidapp://${it.apkPkgName}")
+      }
     }
     binding.password.setText(pwEntry.password)
     binding.enterPassword.setText(pwEntry.password)
@@ -494,7 +540,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       iconDialog.show(supportFragmentManager, IconBottomSheetDialog::class.java.simpleName)
     }
   }
-
 
   /**
    * 保存数据库

@@ -269,6 +269,12 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         return
       }
 
+      if (module.autoFillParam?.isSave == true){
+        Routerfit.create(ActivityRouter::class.java).toEditEntryActivity(module.autoFillParam!!)
+        Timber.i("save entry")
+        return
+      }
+
       val datas = KDBAutoFillRepository.getAutoFillDataByPackageName(apkPkgName)
       // 如果查找不到数据，跳转到搜索页面
       if (datas == null || datas.isEmpty()) {
@@ -355,4 +361,5 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         .intentSender
     }
   }
+
 }

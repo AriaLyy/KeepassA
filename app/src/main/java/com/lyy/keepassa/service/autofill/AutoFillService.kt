@@ -23,15 +23,19 @@ import android.service.autofill.FillRequest
 import android.service.autofill.FillResponse
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
+import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.ToastUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
+import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.PermissionsUtil
 import com.lyy.keepassa.util.isOpenQuickLock
+import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
@@ -192,6 +196,12 @@ class AutoFillService : AutofillService() {
     request: SaveRequest,
     callback: SaveCallback
   ) {
+    if (Build.VERSION.SDK_INT < VERSION_CODES.P) {
+      val str = ResUtil.getString(R.string.fail_unsupported_Systems_O)
+      callback.onFailure(str)
+      ToastUtils.showLong(str)
+      return
+    }
     val context = request.fillContexts
     val structure = context[context.size - 1].structure
     val apkPackageName = structure.activityComponent.packageName
@@ -200,25 +210,22 @@ class AutoFillService : AutofillService() {
 
     val parser = StructureParser(structure)
     parser.parseForFill(true, apkPackageName)
-    val needAuth = BaseApp.KDB == null
+    val needAuth = BaseApp.KDB.isNull() || BaseApp.isLocked
 
     // 如果数据库没打开，需要打开登录页面
+    val p = KDBAutoFillRepository.getUserInfo(parser.autoFillFields)
+    Timber.d("用户信息：$p")
     if (needAuth) {
       // This api is only at P
-      if (Build.VERSION.SDK_INT >= VERSION_CODES.P) {
-        val p = KDBAutoFillRepository.getUserInfo(parser.autoFillFields)
-        Timber.d("用户信息：$p")
-        callback.onSuccess(
-          LauncherActivity.getAuthDbIntentSenderBySave(
-            context = this,
-            apkPackageName = apkPackageName,
-            userName = p.first ?: "",
-            pass = p.second ?: ""
-          )
+      callback.onSuccess(
+        LauncherActivity.authAndSaveDb(
+          context = this,
+          apkPackageName = apkPackageName,
+          userName = p.first ?: "",
+          pass = p.second ?: "",
+          if (!BaseApp.KDB.isNull() && BaseApp.APP.isOpenQuickLock()) QuickUnlockActivity::class.java else LauncherActivity::class.java
         )
-        return
-      }
-      callback.onSuccess()
+      )
       return
     }
     if (BaseApp.KDB == null) {
@@ -226,9 +233,19 @@ class AutoFillService : AutofillService() {
       callback.onFailure(getString(R.string.hint_please_open_database))
       return
     }
-    KDBAutoFillRepository.saveDataToKdb(this, apkPackageName, parser.autoFillFields)
+
+    // KDBAutoFillRepository.saveDataToKdb(this, apkPackageName, parser.autoFillFields)
+    callback.onSuccess(
+      CreateEntryActivity.authAndSaveDb(
+        this, AutoFillParam(
+          apkPkgName = apkPackageName,
+          saveUserName = p.first ?: "",
+          savePass = p.second ?: "",
+          isSave = true
+        )
+      )
+    )
     HitUtil.toaskLong(getString(R.string.save_db_success))
-    callback.onSuccess()
   }
 
   override fun onConnected() {

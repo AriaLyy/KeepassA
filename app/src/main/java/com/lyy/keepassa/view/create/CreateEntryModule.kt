@@ -55,7 +55,6 @@ class CreateEntryModule : BaseModule() {
   var expires: Boolean = false
   var autoFillParam: AutoFillParam? = null
 
-
   fun isFormAutoFill() = autoFillParam != null
 
   /**

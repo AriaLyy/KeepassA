@@ -368,4 +368,5 @@
     <string name="please_open_proxy">由于众所周知的网络原因，为了能顺畅使用onedrive服务，请使用合适的网络工具</string>
     <string name="invalid_img">无效的图片</string>
     <string name="preemptive">预置模式</string>
+    <string name="fail_unsupported_Systems_O">仅支持P以上的系统</string>
 </resources>

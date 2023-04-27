@@ -9,6 +9,7 @@
 
 package com.lyy.keepassa.view.launcher
 
+import android.app.Activity
 import android.app.PendingIntent
 import android.app.assist.AssistStructure
 import android.content.Context
@@ -283,16 +284,18 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     /**
      * 数据库未解锁，保存数据时打开数据库，并保存
      */
-    internal fun getAuthDbIntentSenderBySave(
+    internal fun <T : Activity> authAndSaveDb(
       context: Context,
       apkPackageName: String,
       userName: String,
-      pass: String
+      pass: String,
+      clazz: Class<T>
     ): IntentSender {
-      val intent = Intent(context, LauncherActivity::class.java).also {
+      val intent = Intent(context, clazz).also {
         it.putExtra(
           KEY_AUTO_FILL_PARAM, AutoFillParam(
             apkPkgName = apkPackageName,
+            isSave = true,
             saveUserName = userName,
             savePass = pass
           )
