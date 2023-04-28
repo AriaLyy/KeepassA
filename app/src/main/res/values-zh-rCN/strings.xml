@@ -367,4 +367,5 @@
     <string name="ime_hint_open_auto_fill">请打开自动填充服务</string>
     <string name="please_open_proxy">由于众所周知的网络原因，为了能顺畅使用onedrive服务，请使用合适的网络工具</string>
     <string name="invalid_img">无效的图片</string>
+    <string name="faile_autofill_no_permissions">自动填充失败，后台弹窗权限被禁止了。</string>
 </resources>

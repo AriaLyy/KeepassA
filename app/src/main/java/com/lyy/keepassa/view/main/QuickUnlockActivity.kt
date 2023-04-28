@@ -42,6 +42,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.DialogQuickUnlockBinding
 import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.router.ActivityRouter
+import com.lyy.keepassa.router.ServiceRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.NotificationUtil
@@ -128,7 +129,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
     if (isAutoFill) {
       apkPkgName = intent.getStringExtra(KEY_PKG_NAME) ?: ""
       if (apkPkgName.isBlank()) {
-        BaseApp.KDB = null
+        Routerfit.create(ServiceRouter::class.java).getDbSaveService().clearDb()
         finish()
         return
       }

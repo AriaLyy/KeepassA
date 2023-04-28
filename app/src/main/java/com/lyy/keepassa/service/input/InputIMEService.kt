@@ -37,6 +37,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.FillInfoEvent
 import com.lyy.keepassa.router.ActivityRouter
+import com.lyy.keepassa.router.ServiceRouter
 import com.lyy.keepassa.service.autofill.W3cHints
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
@@ -229,8 +230,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         }
         curEntry = null
         candidatesData.clear()
-        BaseApp.KDB?.clear(this)
-        BaseApp.KDB = null
+        Routerfit.create(ServiceRouter::class.java).getDbSaveService().clearDb()
         Timber.d("数据库已锁定")
         HitUtil.toaskShort(getString(R.string.notify_db_locked))
         return

@@ -109,7 +109,7 @@ internal class EntryListModule : BaseModule() {
       withContext(Dispatchers.IO) {
         val dao = BaseApp.appDatabase.entryRecordDao()
         val records = dao.getRecord(BaseApp.dbRecord!!.localDbUri)
-        if (records.isNullOrEmpty()) {
+        if (records.isEmpty()) {
           return@withContext
         }
 
