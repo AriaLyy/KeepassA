@@ -10,6 +10,8 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap.CompressFormat.PNG
 import android.view.View
 import com.arialyy.frame.config.CommonConstant
+import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.ToastUtils
 import com.keepassdroid.database.PwDatabaseV4
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV3
@@ -19,13 +21,12 @@ import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
 import com.keepassdroid.database.SearchParametersV4
 import com.keepassdroid.database.security.ProtectedString
+import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.util.UUID
@@ -41,7 +42,7 @@ object KDBAutoFillRepository {
    * 通过包名获取填充数据
    */
   fun getAutoFillDataByPackageName(pkgName: String): MutableList<PwEntry>? {
-    if (BaseApp.KDB?.pm == null){
+    if (BaseApp.KDB?.pm == null) {
       return null
     }
     Timber.d("getFillDataByPkgName, pkgName = $pkgName")
@@ -52,7 +53,7 @@ object KDBAutoFillRepository {
       val strs = pkgName.split(".")
       // 如果没有，则从url检索
       for (s in strs) {
-        if (CommonConstant.domainSuffix.contains(s)){
+        if (CommonConstant.domainSuffix.contains(s)) {
           continue
         }
         sp.setupNone()
@@ -90,7 +91,7 @@ object KDBAutoFillRepository {
     apkPkgName: String,
     autofillFields: AutoFillFieldMetadataCollection
   ) {
-    if (BaseApp.KDB?.pm == null){
+    if (BaseApp.KDB?.pm == null) {
       Timber.e("数据库为空")
       return
     }
@@ -108,8 +109,8 @@ object KDBAutoFillRepository {
           val customIcon = PwIconCustom(UUID.randomUUID(), datas)
           entry.customIcon = customIcon
           (BaseApp.KDB!!.pm as PwDatabaseV4).putCustomIcons(customIcon)
-          entry.strings["KP2A_URL_1"] = ProtectedString(false, "androidapp://$apkPkgName")
         }
+        entry.strings["KP2A_URL_1"] = ProtectedString(false, "androidapp://$apkPkgName")
       } else {
         entry = PwEntryV3()
         entry.setUrl("androidapp://$apkPkgName", BaseApp.KDB!!.pm)
@@ -130,15 +131,16 @@ object KDBAutoFillRepository {
         if (fillField.autoFillType == View.AUTOFILL_TYPE_TEXT) {
           if (fillField.isPassword) {
             entry.setPassword(fillField.autoFillField.textValue, BaseApp.KDB!!.pm)
-//            Log.d(TAG, "pass = ${fillField.textValue}")
+            Timber.d("pass = ${fillField.autoFillField.textValue}")
           } else {
             entry.setUsername(fillField.autoFillField.textValue, BaseApp.KDB!!.pm)
-//            Log.d(TAG, "userName = ${fillField.textValue}")
+            Timber.d("userName = ${fillField.autoFillField.textValue}")
           }
         }
       }
     }
     KpaUtil.kdbHandlerService.saveDbByBackground()
+    ToastUtils.showLong(ResUtil.getString(R.string.save_db_success))
     Timber.d("密码信息保存成功")
   }
 
@@ -154,10 +156,10 @@ object KDBAutoFillRepository {
       for (fillField in fillFields) {
         fillField.autoFillField.textValue ?: continue
         if (fillField.autoFillType == View.AUTOFILL_TYPE_TEXT) {
-          if (fillField.isPassword && pass == null) {
+          if (fillField.isPassword) {
             pass = fillField.autoFillField.textValue
           }
-          if (!fillField.isPassword && user == null) {
+          if (!fillField.isPassword) {
             user = fillField.autoFillField.textValue
           }
         }
@@ -176,16 +178,15 @@ object KDBAutoFillRepository {
     try {
       val packageManager = context.packageManager
       return packageManager.getApplicationLabel(
-          packageManager.getApplicationInfo(
-              apkPkgName,
-              PackageManager.GET_META_DATA
-          )
+        packageManager.getApplicationInfo(
+          apkPkgName,
+          PackageManager.GET_META_DATA
+        )
       )
-          .toString()
+        .toString()
     } catch (e: Exception) {
       e.printStackTrace()
     }
     return null
   }
-
 }

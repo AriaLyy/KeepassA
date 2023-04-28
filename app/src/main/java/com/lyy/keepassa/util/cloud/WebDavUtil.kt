@@ -81,14 +81,15 @@ object WebDavUtil : ICloudUtil {
   fun checkLogin(
     uri: String,
     userName: String,
-    password: String
+    password: String,
+    isPreemptive:Boolean
   ): Boolean {
     Timber.d("checkLogin, uri = ${uri}, userName = ${userName}, password = ${password}")
     this.userName = userName
     this.password = password
     setHostUri(uri)
     sardine = OkHttpSardine()
-    sardine?.setCredentials(userName, password, true)
+    sardine?.setCredentials(userName, password, isPreemptive)
     try {
       val list = sardine?.list(uri)
       return !list.isNullOrEmpty()

@@ -55,7 +55,6 @@ interface FragmentRouter {
 
   @RouterPath(path = "/launcher/opendb")
   fun getOpenDbFragment(
-    @RouterArgName(name = "openIsFromFill") openIsFromFill: Boolean,
     @RouterArgName(name = "openDbRecord") openDbRecord: DbHistoryRecord
   ): OpenDbFragment
 

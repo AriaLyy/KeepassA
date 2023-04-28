@@ -129,7 +129,7 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
   ) {
     loadingDialog.show()
     lifecycleScope.launch {
-      module.checkLogin(uri, userName, pass).collectLatest {
+      module.checkLogin(uri, userName, pass, binding.isPreemptive!!.isChecked).collectLatest {
         loadingDialog.dismiss()
         webDavLoginFlow.emit(WebDavLoginEvent(uri, userName, pass, it))
         if (!it) {

@@ -10,8 +10,11 @@
 package com.lyy.keepassa.view.create
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
@@ -30,6 +33,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
+import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroupId
 import com.keepassdroid.database.PwGroupV4
@@ -42,6 +46,7 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityEntryEditBinding
+import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.CreateAttrStrEvent
 import com.lyy.keepassa.event.DelAttrFileEvent
@@ -51,6 +56,7 @@ import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
+import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.getFileInfo
@@ -64,7 +70,6 @@ import com.lyy.keepassa.view.dir.ChooseGroupActivity
 import com.lyy.keepassa.view.icon.IconBottomSheetDialog
 import com.lyy.keepassa.view.icon.IconItemCallback
 import com.lyy.keepassa.view.launcher.LauncherActivity
-import com.lyy.keepassa.view.launcher.LauncherActivity.Companion.KEY_IS_AUTH_FORM_FILL_SAVE
 import com.lyy.keepassa.view.menu.EntryCreateFilePopMenu
 import com.lyy.keepassa.view.menu.EntryCreateStrPopMenu
 import com.lyy.keepassa.widget.expand.AttrFileItemView
@@ -106,6 +111,26 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
 
     // 编辑条目
     const val TYPE_EDIT_ENTRY = 3
+
+    /**
+     * 数据库未解锁，保存数据时打开数据库，并保存
+     */
+    internal fun authAndSaveDb(
+      context: Context,
+      autoFillParam: AutoFillParam,
+    ): IntentSender {
+      val intent = Intent(context, CreateEntryActivity::class.java).also {
+        it.putExtra(LauncherActivity.KEY_AUTO_FILL_PARAM, autoFillParam)
+        it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+      }
+      return PendingIntent.getActivity(
+        context,
+        1,
+        intent,
+        PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+      )
+        .intentSender
+    }
   }
 
   private val editorRequestCode = 0xA5
@@ -115,10 +140,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   private var addMoreDialog: AddMoreDialog? = null
   private lateinit var addMoreData: ArrayList<SimpleItemEntity>
   private lateinit var pwEntry: PwEntryV4
-
-  @Autowired(name = KEY_IS_AUTH_FORM_FILL_SAVE)
-  @JvmField
-  var isFromAutoFillSave = false
 
   @Autowired(name = KEY_ENTRY)
   lateinit var entryId: UUID
@@ -135,12 +156,13 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
   @JvmField
   var isShortcuts: Boolean = false
 
-  private val getFileLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri->
-    uri?.let {
-      it.takePermission()
-      addAttrFile(it)
+  private val getFileLauncher =
+    registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+      uri?.let {
+        it.takePermission()
+        addAttrFile(it)
+      }
     }
-  }
 
   /**
    * 密码创建器
@@ -181,17 +203,34 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       createEntry(it)
     }
 
+  /**
+   * 检查自动填充的条目是否存在
+   */
+  private fun checkAutoFill() {
+    module.autoFillParam?.let {
+      val entryList = mutableListOf<PwEntry>()
+      KdbUtil.searchEntriesByPackageName(it.apkPkgName, entryList)
+      if (entryList.isNotEmpty()) {
+        type = TYPE_EDIT_ENTRY
+        entryId = entryList[0].uuid
+      }
+    }
+  }
+
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
     ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
-    module = ViewModelProvider(this).get(CreateEntryModule::class.java)
+    module = ViewModelProvider(this)[CreateEntryModule::class.java]
+    module.autoFillParam = intent.getParcelableExtra(LauncherActivity.KEY_AUTO_FILL_PARAM)
     Timber.i("isShortcuts = $isShortcuts")
 
     // 处理快捷方式进入的情况
     if (isShortcuts) {
       type = TYPE_NEW_ENTRY
     }
+
+    checkAutoFill()
 
     when (type) {
       TYPE_NEW_ENTRY -> {
@@ -213,14 +252,14 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     }
 
     // 处理从自动填充服务保存的情况
-    if (intent.getBooleanExtra(LauncherActivity.KEY_IS_AUTH_FORM_FILL_SAVE, false)) {
-      val apkPackageName = intent.getStringExtra(LauncherActivity.KEY_PKG_NAME)
-      if (!apkPackageName.isNullOrEmpty()) {
+    module.autoFillParam?.let {
+      val apkPackageName = it.apkPkgName
+      if (apkPackageName.isNotEmpty()) {
         pwEntry = module.getEntryFromAutoFillSave(
           this,
           apkPackageName,
-          intent.getStringExtra(LauncherActivity.KEY_SAVE_USER_NAME),
-          intent.getStringExtra(LauncherActivity.KEY_SAVE_PASS)
+          it.saveUserName,
+          it.savePass
         )
       }
     }
@@ -228,12 +267,21 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     handleToolBar()
     handlePassLayout()
     handleAddMore()
-    if (type == TYPE_EDIT_ENTRY || isFromAutoFillSave) {
+    if (type == TYPE_EDIT_ENTRY || module.isFormAutoFill()) {
       initData(type == TYPE_EDIT_ENTRY)
     } else {
       pwEntry = PwEntryV4(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
     }
     setWidgetListener()
+  }
+
+  override fun finish() {
+    if (module.isFormAutoFill()) {
+      setResult(Activity.RESULT_OK, Intent().apply {
+        putExtra(LauncherActivity.EXTRA_ENTRY_ID, pwEntry.uuid)
+      })
+    }
+    super.finish()
   }
 
   /**
@@ -302,7 +350,12 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       binding.user.setText(pwEntry.username)
     } else {
 //      binding.user.setText("newEntry")
+
       binding.title.setText(getString(R.string.normal_account))
+      module.autoFillParam?.let {
+        binding.user.setText(it.saveUserName)
+        pwEntry.strings["KP2A_URL_1"] = ProtectedString(false, "androidapp://${it.apkPkgName}")
+      }
     }
     binding.password.setText(pwEntry.password)
     binding.enterPassword.setText(pwEntry.password)

@@ -26,6 +26,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import timber.log.Timber
+import java.lang.reflect.Method
 
 object PermissionsUtil {
 
@@ -73,7 +74,6 @@ object PermissionsUtil {
 
         override fun onCancel(v: Button) {
         }
-
       }
     )
 //      SharePreUtil.putBoolean(
@@ -94,8 +94,8 @@ object PermissionsUtil {
     if (RomUtils.isVivo()) {
       return vivoBackgroundStartAllowed()
     }
-    if (RomUtils.isOppo()) {
-      return oppoBackgroundStartAllowed()
+    if (RomUtils.isHuawei()) {
+      return hwBackgroundStartAllowed(BaseApp.APP)
     }
     return true
   }
@@ -155,6 +155,25 @@ object PermissionsUtil {
     return false
   }
 
+  fun hwBackgroundStartAllowed(context: Context): Boolean {
+    try {
+      val c = Class.forName("com.huawei.android.app.AppOpsManagerEx")
+      val ops = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+      val m: Method = c.getDeclaredMethod(
+        "checkHwOpNoThrow",
+        AppOpsManager::class.java,
+        Int::class.java,
+        Int::class.java,
+        String::class.java
+      )
+      return m.invoke(
+        c.newInstance(), ops, 100000, Process.myUid(), context.packageName
+      ) as Int == AppOpsManager.MODE_ALLOWED
+    } catch (e: Exception) {
+      return false
+    }
+  }
+
   /**
    * 检查oppo 是否被允许后台启动
    *
@@ -163,4 +182,27 @@ object PermissionsUtil {
   fun oppoBackgroundStartAllowed(): Boolean {
     return Settings.canDrawOverlays(BaseApp.APP)
   }
+
+  // fun testCheckHwOp() {
+  //   val c = Class.forName("com.huawei.android.app.AppOpsManagerEx")
+  //   val m: Method = c.getDeclaredMethod(
+  //     "checkHwOpNoThrow",
+  //     AppOpsManager::class.java,
+  //     Int::class.javaPrimitiveType,
+  //     Int::class.javaPrimitiveType,
+  //     String::class.java
+  //   )
+  //   val bundle: Bundle = getNoteParamInt()
+  //   val op = bundle.getInt(KEY_OP_CODES)
+  //   val packageName = bundle.getString(KEY_PKG_NAME)
+  //   val uid = bundle.getInt(KEY_UID)
+  //   val checkResult = m.invoke(
+  //     c.newInstance(), arrayOf<Any?>(
+  //       context.getSystemService(
+  //         Context.APP_OPS_SERVICE
+  //       ) as AppOpsManager, op, uid, packageName
+  //     )
+  //   ) as Int
+  //   com.sun.corba.se.impl.activation.ServerMain.printResult("check result:$checkResult    op:$op uid:$uid packageName:$packageName")
+  // }
 }

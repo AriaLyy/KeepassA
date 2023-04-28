@@ -58,6 +58,11 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       it.add(HintConstants.AUTOFILL_HINT_NEW_PASSWORD)
       it.add("passwort")
     }
+
+    /**
+     * key: class name, value: isEditText
+     */
+    val editTextMap = HashSet<String>()
   }
 
   private fun clear() {
@@ -98,6 +103,12 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
 
   private fun parseLocked(viewNode: ViewNode) {
     // 处理editText 增加 android:autofillHints 的情况
+    // Timber.i(
+    //   "w3c111, unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused},  idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, isOpaque = ${viewNode.isOpaque}"
+    // )
+    // if (viewNode.idEntry == "username") {
+    //   Timber.d("test")
+    // }
     if (!viewNode.autofillHints.isNullOrEmpty()) {
       if (isW3c) {
         if (W3cHints.isW3CUserByHints(viewNode)) {
@@ -106,19 +117,27 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
         } else if (W3cHints.isW3CPassByHints(viewNode)) {
           Timber.i("addPassword by hints")
           addPassField(viewNode)
+        } else {
+          Timber.d(
+            "w3c, unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused},  idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, isOpaque = ${viewNode.isOpaque}"
+          )
         }
       } else {
         if (isPassword(viewNode)) {
           addPassField(viewNode)
         } else if (isUserName(viewNode)) {
           addUserField(viewNode)
+        } else {
+          Timber.d(
+            "not w3c, unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused},  idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, isOpaque = ${viewNode.isOpaque}"
+          )
         }
       }
       // autoFillFields.add(AutoFillFieldMetadata(viewNode))
     } else {
       val className = viewNode.className
 
-      if (className == "android.widget.EditText") {
+      if (classIsEditText(className)) {
         when {
           isPassword(viewNode) -> {
             addPassField(viewNode)
@@ -132,13 +151,14 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
             )
           }
         }
+        return
       }
 
       if (W3cHints.isBrowser(pkgName)) {
         Timber.i("is browser, start get web info")
         checkW3C(viewNode)
         if (isW3c) {
-          if (domainUrl.isBlank()){
+          if (domainUrl.isBlank()) {
             domainUrl = viewNode.webDomain ?: ""
             W3cHints.curDomainUrl = domainUrl
             Timber.d("domainUrl = $domainUrl")
@@ -152,6 +172,30 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     for (i in 0 until childrenSize) {
       parseLocked(viewNode.getChildAt(i))
     }
+  }
+
+  private fun checkIsEditText(clazz: Class<*>): Boolean {
+    if (clazz.name.equals("android.widget.EditText")) {
+      return true
+    }
+    val sup = clazz.superclass ?: return false
+    if (sup.name.equals("java.lang.Object")) {
+      return false
+    }
+    if (sup.name.equals("android.widget.EditText")) {
+      return true
+    }
+    return checkIsEditText(sup)
+  }
+
+  private fun classIsEditText(className: String?): Boolean {
+    if (className.isNullOrEmpty()) return false
+    if (editTextMap.contains(className)) return true
+    if (checkIsEditText(Class.forName(className))) {
+      editTextMap.add(className)
+      return true
+    }
+    return false
   }
 
   private fun getW3CInfo(viewNode: ViewNode) {

@@ -372,5 +372,6 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="ime_hint_open_auto_fill">Please turn on the auto-fill service</string>
     <string name="please_open_proxy">please open proxy</string>
     <string name="invalid_img">Invalid Image</string>
-    <string name="faile_autofill_no_permissions">Autofill failed, background popup permission was disabled.</string>
+    <string name="preemptive">Preemptive</string>
+    <string name="fail_unsupported_Systems_O">Only support P or higher system</string>
 </resources>

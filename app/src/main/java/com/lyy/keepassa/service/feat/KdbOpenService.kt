@@ -61,7 +61,7 @@ import java.io.File
 @Route(path = "/service/kdbOpen")
 class KdbOpenService : IProvider {
   private var scope = MainScope()
-  val openDbFlow = MutableSharedFlow<Database?>()
+  val openDbFlow = MutableSharedFlow<Database?>(0)
 
   private val loadingDialog: LoadingDialog by lazy {
     Routerfit.create(DialogRouter::class.java).getLoadingDialog()

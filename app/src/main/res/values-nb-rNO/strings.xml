@@ -359,4 +359,7 @@
     <string name="ime_hint_open_auto_fill">Skru på autoinnfyllingstjenesten</string>
     <string name="invalid_img">Ugyldig bilde</string>
     <string name="please_open_proxy">Åpne mellomtjeneren først</string>
+    <string name="open_setting">Innstilling</string>
+    <string name="preemptive">Forhåndsutfylling</string>
+    <string name="hint_open_backgroun_start">Du har satt opp forhåndsutfylling, men KeePassA mangler tilstrekkelige tilganger til det. Godkjenn oppsprettsvinduet fra KeePassA-bakenden på innstillingssiden.</string>
 </resources>

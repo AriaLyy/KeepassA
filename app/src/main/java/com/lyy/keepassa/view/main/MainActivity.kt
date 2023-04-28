@@ -45,9 +45,7 @@ import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.PermissionsUtil
 import com.lyy.keepassa.view.create.CreateDbActivity
-import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.search.SearchDialog
 import com.lyy.keepassa.widget.MainExpandFloatActionButton
@@ -127,7 +125,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       }
 
       override fun onGroupClick() {
-        Routerfit.create(DialogRouter::class.java).showCreateGroupDialog(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
+        Routerfit.create(DialogRouter::class.java)
+          .showCreateGroupDialog(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
         binding.fab.hintMoreOperate()
       }
     })
@@ -247,7 +246,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
   override fun onBackPressed() {
     // 返回键不退出而是进入后台
-    moveTaskToBack(false)
+    moveTaskToBack(true)
   }
 
   override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -351,7 +350,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   private class VpAdapter(
     private val fragments: List<Fragment>,
     fm: FragmentActivity
-  ) :  FragmentStateAdapter(fm) {
+  ) : FragmentStateAdapter(fm) {
 
     override fun getItemCount(): Int {
       return fragments.size

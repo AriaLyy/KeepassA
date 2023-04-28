@@ -36,6 +36,7 @@ import com.keepassdroid.database.PwGroup
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.databinding.ActivityAutoFillEntrySearchBinding
+import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.event.EntryState.CREATE
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.service.autofill.W3cHints
@@ -46,6 +47,7 @@ import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
+import com.lyy.keepassa.view.launcher.LauncherActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -61,57 +63,29 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
   private var curEntry: PwEntry? = null
 
   companion object {
-    /**
-     * 是否保存关联
-     */
-    const val EXTRA_IS_SAVE_RELEVANCE = "EXTRA_IS_SAVE_RELEVANCE"
 
     /**
      * 条目id
      */
     const val EXTRA_ENTRY_ID = "EXTRA_ENTRY_ID"
-    private const val KEY_PKG_NAME = "KEY_PKG_NAME"
-    private const val KEY_IS_AUTH_FORM_FILL = "KEY_IS_AUTH_FORM_FILL"
-    private const val KEY_AUTO_FILL_FIELD = "KEY_IS_AUTH_FORM_FILL"
 
     /**
-     * 从通知进入搜索页
+     * 进入搜索页
      */
     internal fun createSearchPending(
       context: Context,
       apkPkgName: String,
       structure: AssistStructure
     ): PendingIntent {
-      val intent = Intent(context, AutoFillEntrySearchActivity::class.java).also { it ->
-        it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
-        it.putExtra(KEY_PKG_NAME, apkPkgName)
+      val intent = Intent(context, AutoFillEntrySearchActivity::class.java).also {
+        it.putExtra(LauncherActivity.KEY_AUTO_FILL_PARAM, AutoFillParam(apkPkgName = apkPkgName))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
           it.putExtra(AutofillManager.EXTRA_ASSIST_STRUCTURE, structure)
         }
+        it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
       }
       return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-    }
-
-    /**
-     * 启动搜索界面
-     * @param domain
-     */
-    fun turnSearchActivity(
-      context: Activity,
-      requestCode: Int,
-      apkPkgName: String,
-      domain: String? = null
-    ) {
-      val intent = Intent(context, AutoFillEntrySearchActivity::class.java).apply {
-        putExtra(KEY_PKG_NAME, apkPkgName)
-      }
-      context.startActivityForResult(
-        intent,
-        requestCode,
-        ActivityOptions.makeSceneTransitionAnimation(context)
-          .toBundle()
-      )
     }
 
     /**
@@ -119,11 +93,18 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
      */
     internal fun getSearchIntentSender(
       context: Context,
-      apkPackageName: String
+      apkPackageName: String,
+      structure: AssistStructure
     ): IntentSender {
       val intent = Intent(context, AutoFillEntrySearchActivity::class.java).also {
-        it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
-        it.putExtra(KEY_PKG_NAME, apkPackageName)
+        it.putExtra(
+          LauncherActivity.KEY_AUTO_FILL_PARAM,
+          AutoFillParam(apkPkgName = apkPackageName)
+        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          it.putExtra(AutofillManager.EXTRA_ASSIST_STRUCTURE, structure)
+        }
+        it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
       }
       return PendingIntent.getActivity(
         context,
@@ -135,25 +116,21 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
     }
   }
 
-  /**
-   * 是否由自动填充服务启动
-   */
-  private var isFromFill: Boolean = false
-
-  /**
-   * 第三方应用包名
-   */
-  private var apkPkgName: String? = null
-
   override fun setLayoutId(): Int {
     return R.layout.activity_auto_fill_entry_search
   }
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
-    module = ViewModelProvider(this).get(SearchModule::class.java)
-    apkPkgName = intent.getStringExtra(KEY_PKG_NAME)
-    isFromFill = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL, false)
+    module = ViewModelProvider(this)[SearchModule::class.java]
+    module.autoFillParam = intent.getParcelableExtra(LauncherActivity.KEY_AUTO_FILL_PARAM)
+    initSearchView()
+    initList()
+    listenerGetSearchData()
+    listenerEntryStateChange()
+  }
+
+  private fun initSearchView() {
     binding.search.requestFocusFromTouch()
     binding.search.setIconifiedByDefault(true)
     binding.search.isIconified = false
@@ -165,7 +142,6 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
         if (query != null) {
           searchData(query)
         }
-
         return true
       }
 
@@ -189,10 +165,6 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
           .toBundle()
       )
     }
-
-    initList()
-    listenerGetSearchData()
-    listenerEntryStateChange()
   }
 
   /**
@@ -210,6 +182,9 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
             module.listData.add(KeepassAUtil.instance.convertPwEntry2Item(it.pwEntryV4))
             adapter.notifyItemInserted(lastIndex)
             binding.noEntryLayout.visibility = View.GONE
+            if (module.isFormAutoFill()) {
+              relevanceEntry(it.pwEntryV4)
+            }
           }
           else -> {
             Timber.d("ignore other status")
@@ -243,7 +218,7 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
       binding.noEntryLayout.visibility = View.VISIBLE
       return
     }
-    module.searchEntry(query, isFromFill)
+    module.searchEntry(query, module.isFormAutoFill())
   }
 
   /**
@@ -263,24 +238,25 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
     binding.list.adapter = adapter
 
     binding.list.doOnItemClickListener { _, position, _ ->
-      if (apkPkgName.isNullOrEmpty()) {
+      if (module.getApkPkgName().isNullOrEmpty()) {
         return@doOnItemClickListener
       }
       val item = module.listData[position]
       /*
         if is From autofill and that is group, No operation
        */
-      if (isFromFill && item.obj is PwGroup) {
+      if (module.isFormAutoFill() && item.obj is PwGroup) {
         return@doOnItemClickListener
       }
       val entry = item.obj as PwEntry
       // if is from browser, that entry will be ignore
-      if (W3cHints.isBrowser(apkPkgName!!)) {
-        callbackAutoFillService(false, entry)
+      if (W3cHints.isBrowser(module.getApkPkgName()!!)) {
+        callbackAutoFillService(entry)
         return@doOnItemClickListener
       }
 
-      val msg = Html.fromHtml(getString(R.string.hint_save_auto_fill, apkPkgName, entry.title))
+      val msg =
+        Html.fromHtml(getString(R.string.hint_save_auto_fill, module.getApkPkgName(), entry.title))
       Routerfit.create(DialogRouter::class.java).showMsgDialog(
         msgContent = msg,
         btnClickListener = object : OnMsgBtClickListener {
@@ -291,13 +267,13 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
             if (entry is PwEntryV4) {
               // 保存记录
               relevanceEntry(entry)
-            } else {
-              callbackAutoFillService(false, entry)
+              return
             }
+            callbackAutoFillService(entry)
           }
 
           override fun onCancel(v: Button) {
-            callbackAutoFillService(false, entry)
+            callbackAutoFillService(entry)
           }
         }
       )
@@ -310,50 +286,28 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
   private fun relevanceEntry(pwEntry: PwEntryV4) {
     curEntry = pwEntry
 
-    module.relevanceEntry(pwEntry, apkPkgName!!) {
+    module.relevanceEntry(pwEntry, module.getApkPkgName()!!) {
       if (it != DbSynUtil.STATE_SUCCEED) {
         HitUtil.toaskShort("${getString(R.string.relevance_db)}${getString(R.string.fail)}")
+      } else {
+        HitUtil.toaskShort("${getString(R.string.relevance_db)}${getString(R.string.success)}")
       }
-      HitUtil.toaskShort("${getString(R.string.relevance_db)}${getString(R.string.success)}")
-      callbackAutoFillService(false, pwEntry)
+      callbackAutoFillService(pwEntry)
     }
   }
 
   /**
    * 填充数据到自动填充服务
-   * @param isNotSaveRelevance 是否保存关联
    */
   @TargetApi(Build.VERSION_CODES.O)
-  private fun callbackAutoFillService(
-    isNotSaveRelevance: Boolean,
-    pwEntry: PwEntry
-  ) {
-    if (!isFromFill) {
-      val data = Intent().apply {
-        putExtra(
-          EXTRA_IS_SAVE_RELEVANCE, isNotSaveRelevance
-        )
-        putExtra(
-          EXTRA_ENTRY_ID, pwEntry.uuid
-        )
-      }
-      setResult(Activity.RESULT_OK, data)
+  private fun callbackAutoFillService(pwEntry: PwEntry) {
+    val data = Intent().apply {
+      putExtra(EXTRA_ENTRY_ID, pwEntry.uuid)
+    }
+    setResult(Activity.RESULT_OK, data)
+    if (!module.isFormAutoFill()) {
       finishAfterTransition()
       return
-    }
-    if (isNotSaveRelevance) {
-      setResult(
-        Activity.RESULT_OK, KeepassAUtil.instance.getFillResponse(
-          this,
-          intent,
-          apkPkgName!!
-        )
-      )
-    } else {
-      setResult(
-        Activity.RESULT_OK,
-        KeepassAUtil.instance.getFillResponse(this, intent, pwEntry, apkPkgName!!)
-      )
     }
     finish()
   }

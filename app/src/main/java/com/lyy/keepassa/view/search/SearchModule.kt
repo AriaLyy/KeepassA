@@ -17,6 +17,7 @@ import com.keepassdroid.database.SearchParametersV4
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
+import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.entity.SearchRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KeepassAUtil
@@ -30,6 +31,12 @@ class SearchModule : BaseModule() {
 
   val listData = mutableListOf<SimpleItemEntity>()
   val searchDataFlow = MutableSharedFlow<MutableList<SimpleItemEntity>?>()
+  var autoFillParam: AutoFillParam? = null
+
+
+  fun isFormAutoFill() = autoFillParam != null
+
+  fun getApkPkgName() = autoFillParam?.apkPkgName
 
   /**
    * 将条目和包名进行关联
