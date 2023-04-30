@@ -92,12 +92,12 @@ class EntryDetailModule : BaseModule() {
       )
       anim.duration = 400
       anim.addListener(object : AnimatorListenerAdapter() {
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
           super.onAnimationStart(animation)
           rootView.background = ColorDrawable(rgb)
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
           super.onAnimationEnd(animation)
           rootView.background = ColorDrawable(ResUtil.getColor(R.color.background_color))
           finishAnimEvent.postValue(true)
@@ -131,12 +131,12 @@ class EntryDetailModule : BaseModule() {
       )
       anim.duration = 400
       anim.addListener(object : AnimatorListenerAdapter() {
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
           super.onAnimationStart(animation)
           rootView.background = ColorDrawable(rgb)
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
           super.onAnimationEnd(animation)
           rootView.background = ColorDrawable(ResUtil.getColor(color.background_color))
           startAnimEvent.postValue(true)

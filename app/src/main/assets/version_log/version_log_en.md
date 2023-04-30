@@ -1,3 +1,11 @@
+### 2.4.0 (2023/04/30)
+* 【Add】Spanish
+* 【Add】Auto-fill permission pop-up alerts
+* 【Add】Pre-set header mode, fix the nut cloud webdav can not log in the problem
+* 【Fix】Fix the issue of no auto-fill option
+* 【Fix】Fix the issue that some apps can't auto-fill
+* 【Fix】Fix the issue of failed auto-fill save
+
 ### 2.3.2 (2022/10/07)
 - 【Add】Nextcloud support
 * 【Fix】Fix some known issues

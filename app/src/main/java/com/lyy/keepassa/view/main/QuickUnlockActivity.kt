@@ -11,10 +11,10 @@ package com.lyy.keepassa.view.main
 
 import KDBAutoFillRepository
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.app.Activity
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
+import android.app.assist.AssistStructure
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
@@ -22,6 +22,7 @@ import android.content.res.AssetManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.autofill.AutofillManager
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.biometric.BiometricPrompt
@@ -40,6 +41,7 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.DialogQuickUnlockBinding
+import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.HitUtil
@@ -59,8 +61,6 @@ import java.util.UUID
  */
 @Route(path = "/launcher/quickLock")
 class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
-  private var isAutoFill = false
-  private var apkPkgName = ""
   private lateinit var module: FingerprintModule
   private var fingerRecord: QuickUnLockRecord? = null
   private lateinit var keyStoreUtil: KeyStoreUtil
@@ -69,70 +69,60 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
    * 搜索启动器
    */
   private val searchLauncher =
-    registerForActivityResult(object : ActivityResultContract<String, Pair<Boolean, UUID?>?>() {
-      override fun createIntent(context: Context, input: String?): Intent {
-        val intent =
+    registerForActivityResult(object : ActivityResultContract<String, UUID?>() {
+      override fun createIntent(context: Context, input: String): Intent {
+        val sIntent =
           Intent(this@QuickUnlockActivity, AutoFillEntrySearchActivity::class.java).apply {
-            putExtra(LauncherActivity.KEY_PKG_NAME, input)
+            val b = Bundle()
+            b.putParcelable(LauncherActivity.KEY_AUTO_FILL_PARAM, AutoFillParam(apkPkgName = input))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+              b.putParcelable(
+                AutofillManager.EXTRA_ASSIST_STRUCTURE,
+                intent.getParcelableExtra(AutofillManager.EXTRA_ASSIST_STRUCTURE)
+              )
+            }
+            putExtras(b)
           }
-        return intent
+        return sIntent
       }
 
-      override fun parseResult(resultCode: Int, data: Intent?): Pair<Boolean, UUID?>? {
+      override fun parseResult(resultCode: Int, data: Intent?): UUID? {
         if (data == null) {
           return null
         }
-        val isSaveRelevance = data.getBooleanExtra(
-          AutoFillEntrySearchActivity.EXTRA_IS_SAVE_RELEVANCE, false
-        )
-        val uid =
-          data.getSerializableExtra(AutoFillEntrySearchActivity.EXTRA_ENTRY_ID) as UUID?
-        return Pair(isSaveRelevance, uid)
+        return data.getSerializableExtra(AutoFillEntrySearchActivity.EXTRA_ENTRY_ID) as? UUID
       }
     }) { it ->
+      val apkPkgName = module.autoFillParam?.apkPkgName
+      if (apkPkgName.isNullOrEmpty()) {
+        Timber.e("apkPkgName is null")
+        finish()
+        return@registerForActivityResult
+      }
       // 搜索返回的数据
       if (it == null) {
         setResult(
           Activity.RESULT_OK,
           KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName)
         )
-        super.finish()
+        finish()
         return@registerForActivityResult
       }
-
-      val isSaveRelevance = it.first
-
-      if (isSaveRelevance) {
-        setResult(
-          Activity.RESULT_OK,
-          KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName)
-        )
-      } else {
-        val id = it.second
-        setResult(
-          Activity.RESULT_OK,
-          BaseApp.KDB.pm.entries[id]?.let {
-            KeepassAUtil.instance.getFillResponse(this, intent, it, apkPkgName)
-          }
-        )
-      }
-      super.finish()
+      setResult(
+        Activity.RESULT_OK,
+        BaseApp.KDB.pm.entries[it]?.let {
+          KeepassAUtil.instance.getFillResponse(this, intent, it, apkPkgName)
+        }
+      )
+      finish()
     }
 
   override fun initData(savedInstanceState: Bundle?) {
-    module = ViewModelProvider(this).get(FingerprintModule::class.java)
+    module = ViewModelProvider(this)[FingerprintModule::class.java]
     NotificationUtil.startQuickUnlockNotify(this)
     BaseApp.isLocked = true
     initUi()
-    isAutoFill = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL, false)
-    if (isAutoFill) {
-      apkPkgName = intent.getStringExtra(KEY_PKG_NAME) ?: ""
-      if (apkPkgName.isBlank()) {
-        BaseApp.KDB = null
-        finish()
-        return
-      }
-    }
+    module.autoFillParam = intent.getParcelableExtra(LauncherActivity.KEY_AUTO_FILL_PARAM)
   }
 
   private fun initUi() {
@@ -158,9 +148,9 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         if (QuickUnLockUtil.encryptStr(text) == BaseApp.shortPass) {
           BaseApp.isLocked = false
           turnActivity()
-        } else {
-          HitUtil.toaskShort(getString(R.string.error_pass))
+          return
         }
+        HitUtil.toaskShort(getString(R.string.error_pass))
       }
 
       override fun invalidContent() {
@@ -206,10 +196,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
     }
     val biometricPrompt = BiometricPrompt(this, ArchTaskExecutor.getMainThreadExecutor(),
       object : AuthenticationCallback() {
-        override fun onAuthenticationError(
-          errorCode: Int,
-          errString: CharSequence
-        ) {
+        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
           val str = if (errorCode == ERROR_NEGATIVE_BUTTON) {
             "${getString(R.string.verify_finger)}${getString(R.string.cancel)}"
           } else {
@@ -272,22 +259,37 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
   private fun turnActivity() {
     BaseApp.isLocked = false
     NotificationUtil.startDbOpenNotify(this@QuickUnlockActivity)
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && BaseApp.KDB != null && isAutoFill) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && BaseApp.KDB != null && module.isAutoFill()) {
+      val apkPkgName = module.autoFillParam?.apkPkgName
+      if (apkPkgName.isNullOrEmpty()){
+        Timber.e("apkpkgName is null")
+        Routerfit.create(ActivityRouter::class.java, this).toMainActivity(
+          opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
+        )
+        return
+      }
+
+      if (module.autoFillParam?.isSave == true){
+        Routerfit.create(ActivityRouter::class.java).toEditEntryActivity(module.autoFillParam!!)
+        Timber.i("save entry")
+        return
+      }
+
       val datas = KDBAutoFillRepository.getAutoFillDataByPackageName(apkPkgName)
       // 如果查找不到数据，跳转到搜索页面
       if (datas == null || datas.isEmpty()) {
-//      if (true) {
         searchLauncher.launch(packageName, ActivityOptionsCompat.makeSceneTransitionAnimation(this))
         return
       }
       val data = KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName)
       setResult(Activity.RESULT_OK, data)
       finish()
-    } else {
-      Routerfit.create(ActivityRouter::class.java, this).toMainActivity(
-        opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
-      )
+      return
     }
+    // 正常跳转
+    Routerfit.create(ActivityRouter::class.java, this).toMainActivity(
+      opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
+    )
   }
 
   override fun onNewIntent(intent: Intent?) {
@@ -305,9 +307,6 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
   }
 
   companion object {
-    const val KEY_IS_AUTH_FORM_FILL = "KEY_IS_AUTH_FORM_FILL"
-    const val KEY_PKG_NAME = "KEY_PKG_NAME"
-    const val REQUEST_SEARCH_ENTRY_CODE = 0xa2
 
     /**
      * 从通知进入快速解锁页
@@ -322,10 +321,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
       }
     }
 
-    internal fun startQuickUnlockActivity(
-      context: Context,
-      flags: Int = -1
-    ) {
+    internal fun startQuickUnlockActivity(context: Context, flags: Int = -1) {
       if (BaseApp.dbRecord == null) {
         LauncherActivity.startLauncherActivity(context, flags)
         return
@@ -343,17 +339,27 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
      */
     internal fun getQuickUnlockSenderForResponse(
       context: Context,
-      pkgName: String
+      pkgName: String,
+      structure: AssistStructure
     ): IntentSender {
       if (BaseApp.dbRecord == null) {
         return LauncherActivity.getAuthDbIntentSender(context, apkPackageName = pkgName)
       }
       val intent = Intent(context, QuickUnlockActivity::class.java).also {
-        it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
-        it.putExtra(KEY_PKG_NAME, pkgName)
+        it.putExtra(LauncherActivity.KEY_AUTO_FILL_PARAM, AutoFillParam(apkPkgName = pkgName))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          it.putExtra(AutofillManager.EXTRA_ASSIST_STRUCTURE, structure)
+        }
+        it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
       }
-      return PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT or FLAG_IMMUTABLE)
+      return PendingIntent.getActivity(
+        context,
+        1,
+        intent,
+        PendingIntent.FLAG_CANCEL_CURRENT or FLAG_IMMUTABLE
+      )
         .intentSender
     }
   }
+
 }

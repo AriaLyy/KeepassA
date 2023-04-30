@@ -27,9 +27,9 @@ android.applicationVariants.all { variant ->
         def appId = localProj.getProperty("buglyAppId")
         def appKey = localProj.getProperty("buglyAppKey")
         def pkgName = 'com.lyy.keepassa'
-        def versionName = VERSION_NAME
+        def versionName = KPA_VERSION_NAME
 
-        println("appId = ${appId}，appKey = ${appKey}")
+        println("appId = ${appId}，appKey = ${appKey}, version = ${versionName}")
         def toolPath = "${getRootDir()}/app/buglyqq-upload-symbol.jar"
         def cmd = "${jdk} -jar ${toolPath} -appid ${appId} -appkey ${appKey} -bundleid ${pkgName} -version ${versionName} -platform Android -inputMapping ${mappingPath}"
         print("开始上传符号表，cmd = ${cmd}")

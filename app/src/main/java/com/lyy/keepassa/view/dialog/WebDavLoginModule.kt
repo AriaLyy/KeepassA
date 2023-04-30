@@ -32,6 +32,8 @@ class WebDavLoginModule : BaseModule() {
   fun isOtherServer() =
     curWebDavServer == WebDavUtil.SUPPORTED_WEBDAV_URLS[WebDavUtil.SUPPORTED_WEBDAV_URLS.size - 1]
 
+  fun isJGY() = curWebDavServer == WebDavUtil.SUPPORTED_WEBDAV_URLS[0]
+
   fun convertHost(hostName: String, port: String, userName: String): String {
     val hasHttp = hostName.startsWith("http", true)
     val isHttps = hostName.startsWith("https", true) || port == "443"
@@ -48,10 +50,11 @@ class WebDavLoginModule : BaseModule() {
   fun checkLogin(
     uri: String,
     userName: String,
-    pass: String
+    pass: String,
+    isPreemptive:Boolean
   ) = flow {
     val b = withContext(Dispatchers.IO) {
-      return@withContext WebDavUtil.checkLogin(uri, userName, pass)
+      return@withContext WebDavUtil.checkLogin(uri, userName, pass, isPreemptive)
     }
     emit(b)
   }
@@ -100,30 +103,4 @@ class WebDavLoginModule : BaseModule() {
     emit(success)
   }
 
-  /**
-   * 1、如果是坚果云，不允许使用 dav/
-   * 2、检查文件夹是否存在，没有文件夹，创建文件夹，创建失败，则认为授权失败
-   */
-  fun handleCreateLoginFlow(
-    context: Context,
-    uri: String,
-    userName: String,
-    pass: String
-  ) = liveData<Boolean> {
-    val success = withContext(Dispatchers.IO) {
-      var b = WebDavUtil.checkLogin(uri, userName, pass)
-      if (!b) {
-        return@withContext false
-      }
-      // 检查文件夹是否存在，不存在，创建文件夹
-      val uriBean = Uri.parse(uri)
-      val path = uriBean.path
-      WebDavUtil.createDir(uri)
-
-
-      return@withContext b
-    }
-
-    emit(success)
-  }
 }

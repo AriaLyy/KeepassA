@@ -11,9 +11,11 @@ import androidx.core.app.ActivityOptionsCompat
 import com.arialyy.frame.router.RouterArgName
 import com.arialyy.frame.router.RouterPath
 import com.keepassdroid.database.PwGroupId
+import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.detail.EntryDetailActivity
 import com.lyy.keepassa.view.detail.GroupDetailActivity
+import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.setting.SettingActivity
 import java.util.UUID
 
@@ -88,6 +90,11 @@ interface ActivityRouter {
     @RouterArgName(name = CreateEntryActivity.KEY_ENTRY) uuid: UUID,
     @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null,
     @RouterArgName(name = CreateEntryActivity.KEY_TYPE) type: Int = CreateEntryActivity.TYPE_EDIT_ENTRY
+  )
+
+  @RouterPath(path = "/entry/create")
+  fun toEditEntryActivity(
+    @RouterArgName(name = LauncherActivity.KEY_AUTO_FILL_PARAM) params: AutoFillParam
   )
 
   @RouterPath(path = "/main/ac")

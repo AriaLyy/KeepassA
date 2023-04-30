@@ -62,6 +62,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.router.ActivityRouter
+import com.lyy.keepassa.router.ServiceRouter
 import com.lyy.keepassa.service.autofill.AutoFillHelper
 import com.lyy.keepassa.service.autofill.StructureParser
 import com.lyy.keepassa.view.create.CreateDbActivity
@@ -225,8 +226,7 @@ class KeepassAUtil private constructor() {
         return
       }
       Timber.d("快速解锁没有启动，进入解锁界面")
-      BaseApp.KDB?.clear(BaseApp.APP)
-      BaseApp.KDB = null
+      Routerfit.create(ServiceRouter::class.java).getDbSaveService().clearDb()
       BaseApp.APP.startActivity(Intent(Intent.ACTION_MAIN).also {
         it.component =
           ComponentName(
@@ -249,8 +249,7 @@ class KeepassAUtil private constructor() {
       NotificationUtil.startQuickUnlockNotify(BaseApp.APP)
       return
     }
-    BaseApp.KDB?.clear(BaseApp.APP)
-    BaseApp.KDB = null
+    Routerfit.create(ServiceRouter::class.java).getDbSaveService().clearDb()
     NotificationUtil.startDbLocked(BaseApp.APP)
   }
 

@@ -181,6 +181,7 @@
     <string name="app_feedback">提意见</string>
     <string name="error_db_pass_too_short">为了保障你的数据安全，数据库密码长度不能小于6位</string>
     <string name="autofill_sign_in_prompt">使用 KeePassA 自动填充密码</string>
+    <string name="hint_open_backgroun_start">您已经设置了自动填充，但是KeePassA没有相应的权限，请在设置页授权KeePassA后台弹出界面。</string>
     <string name="hint_background_start">请转到 &lt;font color=#FF0000&gt;【%s】&lt;/font&gt; 并授予后台弹出窗口权限，以便更好地使用自动填充服务。&lt;br&gt; &lt;font color=#FF0000&gt;当你使用自动填充功能时，KeePassA 会显示相应的打开数据库的界面&lt;/font&gt;</string>
     <string name="setting_miui_background_start">设置 &gt;应用设置 &gt;应用管理 &gt;KeePassA &gt;权限管理</string>
     <string name="setting_vivo_background_start">设置 &gt;更多设置 &gt;权限管理-&gt;KeePassA &gt;权限设置 &gt;后台弹出</string>
@@ -258,10 +259,10 @@
     <string name="warning_rooted">为了你的数据安全，请不要在已经 root 的手机上打开数据库</string>
     <string name="hint_security_green">"本应用处于安全环境中 "</string>
     <string name="hint_security_red">你的设备已经 root，数据库处于一个非常危险的环境中</string>
-    <string name="hint_security_yellow">警告，运用运行于模拟器中，该环境会给数据库带来一些不可预测的风险</string>
+    <string name="hint_security_yellow">警告，应用运行于模拟器中，该环境会给数据库带来一些不可预测的风险</string>
     <string name="donate">捐赠</string>
     <string name="donate_desc">[KeePassA](https://github.com/AriaLyy/KeepassA)是一款自由软件。请考虑给我们捐赠，以支持我们的工作，非常感谢你。</string>
-    <string name="dev_birthday">今天是开发者生日🎂，你想向众神敬酒吗？</string>
+    <string name="dev_birthday">今天是开发者生日🎂，请开发者喝啤酒？</string>
     <string name="totp_defaule">默认 RFC 6238令牌设置</string>
     <string name="totp_steam">Steam令牌设置</string>
     <string name="totp_custom">使用自定义设置</string>
@@ -328,6 +329,7 @@
     <string name="set_key_main_show_totp_tab_off">不显示TOTP分类</string>
     <string name="set_key_theme_style_title">主题风格</string>
     <string name="set_key_theme_style_summary">跟随系统</string>
+    <string name="open_setting">打开设置</string>
     <string-array name="sek_ley_theme_style_entries">
         <item>跟随系统</item>
         <item>深色模式</item>
@@ -365,4 +367,6 @@
     <string name="ime_hint_open_auto_fill">请打开自动填充服务</string>
     <string name="please_open_proxy">由于众所周知的网络原因，为了能顺畅使用onedrive服务，请使用合适的网络工具</string>
     <string name="invalid_img">无效的图片</string>
+    <string name="preemptive">预置模式</string>
+    <string name="fail_unsupported_Systems_O">仅支持P以上的系统</string>
 </resources>

@@ -39,6 +39,7 @@ import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.ToastUtils
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentOpenDbBinding
@@ -72,10 +73,6 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   @Autowired(name = "openDbRecord")
   lateinit var openDbRecord: DbHistoryRecord
 
-  @JvmField
-  @Autowired(name = "openIsFromFill")
-  var openIsFromFill: Boolean = false
-
   private var showChangeDbBt: Boolean = true
 
   /**
@@ -98,8 +95,8 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
       returnTransition = TransitionInflater.from(it).inflateTransition(R.transition.slide_return)
     }
 
-    modlue = ViewModelProvider(this).get(LauncherModule::class.java)
-
+    modlue = ViewModelProvider(requireActivity())[LauncherModule::class.java]
+    listenerOpenDb()
     setDbName(openDbRecord)
     handleKeyUri(openDbRecord.getDbKeyUri())
 
@@ -139,7 +136,6 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         false
       }
     }
-    listenerOpenDb()
   }
 
   private fun listenerOpenDb() {
@@ -150,14 +146,14 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
           return@collectLatest
         }
         Timber.d("打开数据库成功")
-        if (openIsFromFill) {
-          activity?.finish()
+        modlue.autoFillParam?.let {
+          Timber.d("自动填充，不进入首页")
+          modlue.autoFillDelegate?.handleAutoFill(it)
           return@collectLatest
         }
         Routerfit.create(ActivityRouter::class.java, requireActivity()).toMainActivity(
           opt = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
         )
-//        requireActivity().finish()
       }
     }
   }
@@ -225,20 +221,20 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         }
       }
       binding.anim.addAnimatorListener(object : AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {
+        override fun onAnimationRepeat(animation: Animator) {
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
           binding.head.visibility = View.VISIBLE
           ObjectAnimator.ofFloat(binding.head, "alpha", 0f, 1f)
             .setDuration(1000)
             .start()
         }
 
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
         }
       })
     } catch (e: IOException) {
@@ -351,7 +347,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     anim.start()
 
     anim.addListener(object : AnimatorListenerAdapter() {
-      override fun onAnimationEnd(animation: Animator?) {
+      override fun onAnimationEnd(animation: Animator) {
         binding.key.visibility = View.GONE
       }
     })

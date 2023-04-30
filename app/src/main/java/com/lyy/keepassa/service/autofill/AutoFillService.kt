@@ -11,6 +11,7 @@ package com.lyy.keepassa.service.autofill
 
 import KDBAutoFillRepository
 import android.annotation.TargetApi
+import android.app.assist.AssistStructure
 import android.content.Context
 import android.content.IntentSender
 import android.os.Build
@@ -22,16 +23,20 @@ import android.service.autofill.FillRequest
 import android.service.autofill.FillResponse
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
+import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.RomUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
+import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.PermissionsUtil
 import com.lyy.keepassa.util.isOpenQuickLock
+import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
@@ -60,6 +65,12 @@ class AutoFillService : AutofillService() {
       // 本应用内不进行填充
       return
     }
+
+    if (!PermissionsUtil.isCanBackgroundStart()) {
+      ToastUtils.showLong(R.string.hint_open_background_start)
+      return
+    }
+
     Timber.d(
       "onFillRequest(): flags = ${request.flags}, requestId = ${request.id}, clientState = ${
         KLog.b(
@@ -90,16 +101,16 @@ class AutoFillService : AutofillService() {
       val isOpenQuickLock = BaseApp.APP.isOpenQuickLock()
 
       if (BaseApp.KDB == null) {
-        openLoginActivity(callback, autoFillFields, apkPackageName)
+        openLoginActivity(callback, autoFillFields, apkPackageName, structure)
         return
       }
 
       if (isOpenQuickLock) {
-        openQuickUnLockActivity(callback, autoFillFields, apkPackageName)
+        openQuickUnLockActivity(callback, autoFillFields, apkPackageName, structure)
         return
       }
 
-      openLoginActivity(callback, autoFillFields, apkPackageName)
+      openLoginActivity(callback, autoFillFields, apkPackageName, structure)
       return
     }
     // 获取填充数据
@@ -112,35 +123,12 @@ class AutoFillService : AutofillService() {
     Timber.d("entrySize = ${datas?.size}")
     // 没有匹配的数据，进入搜索界面
     if (datas == null) {
-      openSearchActivity(callback, autoFillFields, apkPackageName)
+      openSearchActivity(callback, autoFillFields, apkPackageName, structure)
       return
     }
     val response =
       AutoFillHelper.newResponse(this, !needAuth, autoFillFields, datas, apkPackageName, structure)
     callback.onSuccess(response)
-  }
-
-  private fun checkRom() {
-    if (RomUtils.isXiaomi()) {
-      if (!PermissionsUtil.miuiCanBackgroundStart()) {
-        ToastUtils.showLong(R.string.hint_open_background_start)
-      }
-      return
-    }
-
-    if (RomUtils.isVivo()) {
-      if (!PermissionsUtil.vivoBackgroundStartAllowed()) {
-        ToastUtils.showLong(R.string.hint_open_background_start)
-      }
-      return
-    }
-
-    if (RomUtils.isOppo()) {
-      if (!PermissionsUtil.vivoBackgroundStartAllowed()) {
-        ToastUtils.showLong(R.string.hint_open_background_start)
-      }
-      return
-    }
   }
 
   /**
@@ -149,12 +137,13 @@ class AutoFillService : AutofillService() {
   private fun openSearchActivity(
     callback: FillCallback,
     autofillFields: AutoFillFieldMetadataCollection,
-    apkPackageName: String
+    apkPackageName: String,
+    structure: AssistStructure
   ) {
     callback.onSuccess(
       getAuthResponse(
         autofillFields,
-        AutoFillEntrySearchActivity.getSearchIntentSender(this, apkPackageName)
+        AutoFillEntrySearchActivity.getSearchIntentSender(this, apkPackageName, structure)
       )
     )
   }
@@ -165,12 +154,13 @@ class AutoFillService : AutofillService() {
   private fun openQuickUnLockActivity(
     callback: FillCallback,
     autofillFields: AutoFillFieldMetadataCollection,
-    apkPackageName: String
+    apkPackageName: String,
+    structure: AssistStructure
   ) {
     callback.onSuccess(
       getAuthResponse(
         autofillFields,
-        QuickUnlockActivity.getQuickUnlockSenderForResponse(this, apkPackageName)
+        QuickUnlockActivity.getQuickUnlockSenderForResponse(this, apkPackageName, structure)
       )
     )
   }
@@ -181,12 +171,13 @@ class AutoFillService : AutofillService() {
   private fun openLoginActivity(
     callback: FillCallback,
     autofillFields: AutoFillFieldMetadataCollection,
-    apkPackageName: String
+    apkPackageName: String,
+    structure: AssistStructure
   ) {
     callback.onSuccess(
       getAuthResponse(
         autofillFields,
-        LauncherActivity.getAuthDbIntentSender(this, apkPackageName)
+        LauncherActivity.getAuthDbIntentSender(this, apkPackageName, structure)
       )
     )
   }
@@ -208,6 +199,12 @@ class AutoFillService : AutofillService() {
     request: SaveRequest,
     callback: SaveCallback
   ) {
+    if (Build.VERSION.SDK_INT < VERSION_CODES.P) {
+      val str = ResUtil.getString(R.string.fail_unsupported_Systems_O)
+      callback.onFailure(str)
+      ToastUtils.showLong(str)
+      return
+    }
     val context = request.fillContexts
     val structure = context[context.size - 1].structure
     val apkPackageName = structure.activityComponent.packageName
@@ -216,25 +213,22 @@ class AutoFillService : AutofillService() {
 
     val parser = StructureParser(structure)
     parser.parseForFill(true, apkPackageName)
-    val needAuth = BaseApp.KDB == null
+    val needAuth = BaseApp.KDB.isNull() || BaseApp.isLocked
 
     // 如果数据库没打开，需要打开登录页面
+    val p = KDBAutoFillRepository.getUserInfo(parser.autoFillFields)
+    Timber.d("用户信息：$p")
     if (needAuth) {
       // This api is only at P
-      if (Build.VERSION.SDK_INT >= VERSION_CODES.P) {
-        val p = KDBAutoFillRepository.getUserInfo(parser.autoFillFields)
-        Timber.d("用户信息：$p")
-        callback.onSuccess(
-          LauncherActivity.getAuthDbIntentSenderBySave(
-            context = this,
-            apkPackageName = apkPackageName,
-            userName = p.first ?: "",
-            pass = p.second ?: ""
-          )
+      callback.onSuccess(
+        LauncherActivity.authAndSaveDb(
+          context = this,
+          apkPackageName = apkPackageName,
+          userName = p.first ?: "",
+          pass = p.second ?: "",
+          if (!BaseApp.KDB.isNull() && BaseApp.APP.isOpenQuickLock()) QuickUnlockActivity::class.java else LauncherActivity::class.java
         )
-        return
-      }
-      callback.onSuccess()
+      )
       return
     }
     if (BaseApp.KDB == null) {
@@ -242,9 +236,19 @@ class AutoFillService : AutofillService() {
       callback.onFailure(getString(R.string.hint_please_open_database))
       return
     }
-    KDBAutoFillRepository.saveDataToKdb(this, apkPackageName, parser.autoFillFields)
+
+    // KDBAutoFillRepository.saveDataToKdb(this, apkPackageName, parser.autoFillFields)
+    callback.onSuccess(
+      CreateEntryActivity.authAndSaveDb(
+        this, AutoFillParam(
+          apkPkgName = apkPackageName,
+          saveUserName = p.first ?: "",
+          savePass = p.second ?: "",
+          isSave = true
+        )
+      )
+    )
     HitUtil.toaskLong(getString(R.string.save_db_success))
-    callback.onSuccess()
   }
 
   override fun onConnected() {

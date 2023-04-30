@@ -9,15 +9,15 @@
 
 package com.lyy.keepassa.view.launcher
 
-import KDBAutoFillRepository
 import android.app.Activity
-import android.app.ActivityOptions
 import android.app.PendingIntent
+import android.app.assist.AssistStructure
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.os.Build
 import android.os.Bundle
+import android.view.autofill.AutofillManager
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -28,44 +28,29 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.lyy.keepassa.R
 import com.lyy.keepassa.R.layout
+import com.lyy.keepassa.base.AnimState
+import com.lyy.keepassa.base.AnimState.NOT_ANIM
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityLauncherBinding
+import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.event.ChangeDbEvent
 import com.lyy.keepassa.event.DbHistoryEvent
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
-import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.view.create.CreateEntryActivity
-import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
+import timber.log.Timber
 
 @Route(path = "/launcher/activity")
 class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
-  private val REQUEST_SEARCH_ENTRY_CODE = 0xa2
-  private val REQUEST_SAVE_ENTRY_CODE = 0xa3
+
   private lateinit var module: LauncherModule
   private var changeDbFragment: ChangeDbFragment? = null
   private var openDbFragment: OpenDbFragment? = null
   private var isChangeDb = false
-
-  /**
-   * 是否由自动填充服务启动
-   */
-  private var isFromFill: Boolean = false
-
-  /**
-   * 是否由自动填充服务的保存启动
-   */
-  private var isFromFillSave: Boolean = false
-
-  /**
-   * 第三方应用包名
-   */
-  private var apkPkgName: String? = null
 
   /**
    * 启动类型，只有含有历史打开记录时，该记录才有效
@@ -83,17 +68,31 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
     module = ViewModelProvider(this)[LauncherModule::class.java]
-    isFromFill = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL, false)
-    isFromFillSave = intent.getBooleanExtra(KEY_IS_AUTH_FORM_FILL_SAVE, false)
-    apkPkgName = intent.getStringExtra(KEY_PKG_NAME)
+    getAutoFillParam()
 
     module.showPrivacyAgreement(this)
     initUI()
     module.securityCheck(this)
   }
 
-  override fun useAnim(): Boolean {
-    return false
+  override fun onNewIntent(intent: Intent?) {
+    super.onNewIntent(intent)
+    getAutoFillParam()
+  }
+
+  private fun getAutoFillParam() {
+    module.autoFillParam = intent.getParcelableExtra(KEY_AUTO_FILL_PARAM)
+    module.autoFillParam?.let {
+      module.autoFillDelegate = if (it.isSave) {
+        SaveEntityDelegate(this)
+      } else {
+        SearchEntityDelegate(this)
+      }
+    }
+  }
+
+  override fun useAnim(): AnimState {
+    return NOT_ANIM
   }
 
   /**
@@ -129,53 +128,19 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
       })
   }
 
-  override fun onResume() {
-    super.onResume()
+  override fun onStart() {
+    super.onStart()
+
     // 如果数据库已经打开，直接启用到主页，用于快捷方式添加数据后返回的情况
-    if (BaseApp.KDB != null && !BaseApp.isLocked) {
+    if (BaseApp.KDB != null && !BaseApp.isLocked && !module.isFormAutoFill()) {
+      Timber.d("数据库已经打开，进入主页")
       Routerfit.create(ActivityRouter::class.java, this).toMainActivity(
         opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
       )
     }
   }
 
-  override fun finish() {
-    // 如果是由自动填充服务启动，并且打开数据库成功，则构建相应的填充数据
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && BaseApp.KDB != null) {
-      /*
-       * 打开搜索界面
-       */
-      if (isFromFill) {
-        val datas = KDBAutoFillRepository.getAutoFillDataByPackageName(apkPkgName!!)
-        // 如果查找不到数据，跳转到搜索页面
-        if (datas == null || datas.isEmpty()) {
-          AutoFillEntrySearchActivity.turnSearchActivity(
-            this, REQUEST_SEARCH_ENTRY_CODE,
-            apkPkgName!!
-          )
-          return
-        }
-
-        // 将数据回调给service
-        val data = KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName!!)
-        setResult(Activity.RESULT_OK, data)
-      }
-
-      /*
-       * 打开创建条目界面
-       */
-      if (isFromFillSave) {
-        startActivityForResult(
-          Intent(this, CreateEntryActivity::class.java).apply {
-            putExtra(KEY_IS_AUTH_FORM_FILL_SAVE, true)
-            putExtra(KEY_PKG_NAME, intent.getStringExtra(KEY_PKG_NAME))
-            putExtra(KEY_SAVE_USER_NAME, intent.getStringExtra(KEY_SAVE_USER_NAME))
-            putExtra(KEY_SAVE_PASS, intent.getStringExtra(KEY_SAVE_PASS))
-          }, REQUEST_SAVE_ENTRY_CODE, ActivityOptions.makeSceneTransitionAnimation(this)
-            .toBundle()
-        )
-      }
-    }
+  fun superFinish() {
     super.finish()
   }
 
@@ -199,9 +164,9 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
         .replace(R.id.content, openDbFragment!!)
         .commitNow()
       isChangeDb = false
-    } else {
-      super.onBackPressed()
+      return
     }
+    super.onBackPressed()
   }
 
   /**
@@ -250,52 +215,9 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   private fun buildOpenDbFragment(record: DbHistoryRecord): Pair<String, OpenDbFragment> {
     var fragment = supportFragmentManager.findFragmentByTag(OpenDbFragment.FM_TAG)
     if (fragment == null || fragment !is OpenDbFragment) {
-      fragment = Routerfit.create(FragmentRouter::class.java).getOpenDbFragment(isFromFill, record)
+      fragment = Routerfit.create(FragmentRouter::class.java).getOpenDbFragment(record)
     }
     return Pair(OpenDbFragment.FM_TAG, fragment)
-  }
-
-  override fun onActivityResult(
-    requestCode: Int,
-    resultCode: Int,
-    data: Intent?
-  ) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-      && resultCode == Activity.RESULT_OK
-      && requestCode == REQUEST_SEARCH_ENTRY_CODE
-    ) {
-      // 搜索页返回的数据
-      if (data != null) {
-        val isSaveRelevance = data.getBooleanExtra(
-          AutoFillEntrySearchActivity.EXTRA_IS_SAVE_RELEVANCE, false
-        )
-
-        if (isSaveRelevance) {
-          setResult(
-            Activity.RESULT_OK, KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName!!)
-          )
-        } else {
-          val id = data.getSerializableExtra(AutoFillEntrySearchActivity.EXTRA_ENTRY_ID)
-          setResult(
-            Activity.RESULT_OK,
-            BaseApp.KDB.pm.entries[id]?.let {
-              KeepassAUtil.instance.getFillResponse(
-                this,
-                intent,
-                it,
-                apkPkgName!!
-              )
-            }
-          )
-        }
-      } else {
-        setResult(
-          Activity.RESULT_OK, KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName!!)
-        )
-      }
-      super.finish()
-    }
   }
 
   override fun onDestroy() {
@@ -306,14 +228,12 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   companion object {
 
     // Unique autofillId for dataset intents.
-    const val KEY_IS_AUTH_FORM_FILL = "KEY_IS_AUTH_FORM_FILL"
-    const val KEY_IS_AUTH_FORM_FILL_SAVE = "KEY_IS_AUTH_FORM_FILL_SAVE"
-    const val KEY_PKG_NAME = "DATA_PKG_NAME"
+    const val KEY_AUTO_FILL_PARAM = "KEY_AUTO_FILL_PARAM"
     const val KEY_OPEN_TYPE = "KEY_OPEN_TYPE"
+    const val KEY_PKG_NAME = "DATA_PKG_NAME"
     const val OPEN_TYPE_CHANGE_DB = 1
     const val OPEN_TYPE_OPEN_DB = 2
-    const val KEY_SAVE_USER_NAME = "KEY_SAVE_USER_NAME"
-    const val KEY_SAVE_PASS = "KEY_SAVE_PASS"
+    const val EXTRA_ENTRY_ID = "EXTRA_ENTRY_ID"
 
     internal fun startLauncherActivity(
       context: Context,
@@ -341,11 +261,18 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
      */
     internal fun getAuthDbIntentSender(
       context: Context,
-      apkPackageName: String
+      apkPackageName: String,
+      structure: AssistStructure? = null
     ): IntentSender {
       val intent = Intent(context, LauncherActivity::class.java).also {
-        it.putExtra(KEY_IS_AUTH_FORM_FILL, true)
-        it.putExtra(KEY_PKG_NAME, apkPackageName)
+        it.putExtra(KEY_AUTO_FILL_PARAM, AutoFillParam(apkPkgName = apkPackageName))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          structure?.let { stru ->
+            it.putExtra(AutofillManager.EXTRA_ASSIST_STRUCTURE, stru)
+            it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+          }
+        }
+
       }
       return PendingIntent.getActivity(
         context,
@@ -359,17 +286,23 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     /**
      * 数据库未解锁，保存数据时打开数据库，并保存
      */
-    internal fun getAuthDbIntentSenderBySave(
+    internal fun <T : Activity> authAndSaveDb(
       context: Context,
       apkPackageName: String,
       userName: String,
-      pass: String
+      pass: String,
+      clazz: Class<T>
     ): IntentSender {
-      val intent = Intent(context, LauncherActivity::class.java).also {
-        it.putExtra(KEY_IS_AUTH_FORM_FILL_SAVE, true)
-        it.putExtra(KEY_PKG_NAME, apkPackageName)
-        it.putExtra(KEY_SAVE_USER_NAME, userName)
-        it.putExtra(KEY_SAVE_PASS, pass)
+      val intent = Intent(context, clazz).also {
+        it.putExtra(
+          KEY_AUTO_FILL_PARAM, AutoFillParam(
+            apkPkgName = apkPackageName,
+            isSave = true,
+            saveUserName = userName,
+            savePass = pass
+          )
+        )
+        it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
       }
       return PendingIntent.getActivity(
         context,

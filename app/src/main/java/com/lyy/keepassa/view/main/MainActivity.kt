@@ -22,7 +22,6 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -35,6 +34,8 @@ import com.arialyy.frame.util.ResUtil
 import com.google.android.material.tabs.TabLayoutMediator
 import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.AnimState
+import com.lyy.keepassa.base.AnimState.NOT_ANIM
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityMainBinding
@@ -47,7 +48,6 @@ import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.create.CreateDbActivity
-import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.search.SearchDialog
 import com.lyy.keepassa.widget.MainExpandFloatActionButton
@@ -127,7 +127,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       }
 
       override fun onGroupClick() {
-        Routerfit.create(DialogRouter::class.java).showCreateGroupDialog(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
+        Routerfit.create(DialogRouter::class.java)
+          .showCreateGroupDialog(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
         binding.fab.hintMoreOperate()
       }
     })
@@ -140,6 +141,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     } else {
       null
     }
+
+    Timber.i("initVP")
 
     val list = arrayListOf<Fragment>()
     list.add(historyFm)
@@ -245,7 +248,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
   override fun onBackPressed() {
     // 返回键不退出而是进入后台
-    moveTaskToBack(false)
+    moveTaskToBack(true)
   }
 
   override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -270,8 +273,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     EventBusHelper.unReg(this)
   }
 
-  override fun useAnim(): Boolean {
-    return false
+  override fun useAnim(): AnimState {
+    return NOT_ANIM
   }
 
   /**
@@ -281,7 +284,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     val anim = ObjectAnimator.ofFloat(binding.arrow, "rotation", 0f, 180f)
     anim.duration = MainSettingActivity.arrowAnimDuration
     anim.addListener(object : AnimatorListenerAdapter() {
-      override fun onAnimationEnd(animation: Animator?) {
+      override fun onAnimationEnd(animation: Animator) {
         super.onAnimationEnd(animation)
         // 为了达到更好的效果，先将动画设置为空
         window.enterTransition = null
@@ -349,7 +352,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   private class VpAdapter(
     private val fragments: List<Fragment>,
     fm: FragmentActivity
-  ) :  FragmentStateAdapter(fm) {
+  ) : FragmentStateAdapter(fm) {
 
     override fun getItemCount(): Int {
       return fragments.size

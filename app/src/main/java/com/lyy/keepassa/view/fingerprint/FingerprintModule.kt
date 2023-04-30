@@ -15,6 +15,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
+import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.entity.QuickUnLockRecord
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,6 +27,9 @@ class FingerprintModule : BaseModule() {
   // 旧的类型
   var oldFlag = FingerprintActivity.FLAG_CLOSE
   var curFlag = FingerprintActivity.FLAG_CLOSE
+  var autoFillParam: AutoFillParam? = null
+
+  fun isAutoFill() = autoFillParam != null
 
   /**
    * 获取快速解锁记录
@@ -43,7 +47,7 @@ class FingerprintModule : BaseModule() {
    * 移除快速解锁
    */
   fun deleteQuickInfo() {
-    if (BaseApp.dbRecord == null){
+    if (BaseApp.dbRecord == null) {
       return
     }
     viewModelScope.launch(Dispatchers.IO) {

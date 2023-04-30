@@ -33,6 +33,8 @@ import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.AnimState
+import com.lyy.keepassa.base.AnimState.NOT_ANIM
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityEntryDetailBinding
@@ -80,8 +82,10 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
 
   val saveAttachmentResult =
     registerForActivityResult(ActivityResultContracts.CreateDocument()) { resultUri ->
-      resultUri.takePermission()
-      module.saveAttachment(this, resultUri, module.curDLoadFile!!)
+      resultUri?.let {
+        it.takePermission()
+        module.saveAttachment(this, it, module.curDLoadFile!!)
+      }
     }
 
   override fun setLayoutId(): Int {
@@ -149,8 +153,8 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
     }
   }
 
-  override fun useAnim(): Boolean {
-    return false
+  override fun useAnim(): AnimState {
+    return NOT_ANIM
   }
 
   override fun finishAfterTransition() {

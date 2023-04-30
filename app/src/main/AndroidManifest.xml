@@ -23,9 +23,11 @@
       android:theme="@style/AppTheme.NoActionBar"
       tools:ignore="GoogleAppIndexingWarning">
     <activity
+        android:exported="true"
         android:name=".view.launcher.LauncherActivity"
         android:configChanges="layoutDirection|locale"
         android:screenOrientation="portrait"
+        android:launchMode="singleTask"
         android:windowSoftInputMode="adjustResize|stateVisible">
       <!-- taskAffinity 指定activity栈，可以使用finishAffinity关闭该栈中的activity -->
       <!--        android:windowSoftInputMode="stateVisible|adjustResize"-->
@@ -162,6 +164,7 @@
 
     <!-- dropbox -->
     <activity
+        android:exported="true"
         android:name="com.dropbox.core.android.AuthActivity"
         android:configChanges="orientation|keyboard"
         android:launchMode="singleTask"
@@ -180,6 +183,7 @@
 
     <!--   onedrive -->
     <activity
+        android:exported="true"
         android:name="com.microsoft.identity.client.BrowserTabActivity"
         android:screenOrientation="portrait">
       <intent-filter>
@@ -196,6 +200,7 @@
     </activity>
 
     <activity
+        android:exported="true"
         android:name=".router.DeeplinkActivity"
         android:noHistory="true">
       <intent-filter>
@@ -219,6 +224,7 @@
         android:screenOrientation="portrait" />
 
     <service
+        android:exported="true"
         android:name=".service.autofill.AutoFillService"
         android:permission="android.permission.BIND_AUTOFILL_SERVICE">
       <meta-data
@@ -232,6 +238,7 @@
     <service android:name=".service.DbOpenNotificationService" />
 
     <service
+        android:exported="true"
         android:name=".service.input.InputIMEService"
         android:label="@string/ime_label"
         android:permission="android.permission.BIND_INPUT_METHOD">
