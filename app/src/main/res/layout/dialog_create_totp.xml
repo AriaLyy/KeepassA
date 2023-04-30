@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
   <LinearLayout
-      android:layout_width="match_parent"
+      android:layout_width="@dimen/dialog_min_width"
       android:layout_height="wrap_content"
       android:animateLayoutChanges="true"
       android:minWidth="@dimen/dialog_min_width"

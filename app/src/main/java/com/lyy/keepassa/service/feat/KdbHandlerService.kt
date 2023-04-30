@@ -80,6 +80,13 @@ class KdbHandlerService : IProvider {
     KDBHandlerHelper.getInstance(BaseApp.APP)
   }
 
+  fun clearDb() {
+    BaseApp.KDB?.clear(BaseApp.APP)
+    BaseApp.KDB = null
+    collectionEntries.clear()
+    collectionNum.set(0)
+  }
+
   fun getCollectionEntries() = collectionEntries
   fun getCollectionNum() = collectionNum.get()
 

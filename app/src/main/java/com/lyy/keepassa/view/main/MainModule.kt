@@ -104,7 +104,7 @@ class MainModule : BaseModule() {
    */
   fun checkHasHistoryRecord() = liveData {
     BaseApp.dbRecord?.let {
-      if (BaseApp.dbRecord == null || it.localDbUri.isNullOrEmpty()) {
+      if (BaseApp.dbRecord == null || it.localDbUri.isEmpty()) {
         emit(false)
         return@liveData
       }

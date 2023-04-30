@@ -24,6 +24,7 @@ import android.service.autofill.FillResponse
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
 import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.RomUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
@@ -92,6 +93,8 @@ class AutoFillService : AutofillService() {
       callback.onSuccess(null)
       return
     }
+
+    checkRom()
 
     // 如果数据库没打开，或者数据库已经锁定，打开登录页面
     if (needAuth) {
