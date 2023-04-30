@@ -361,4 +361,6 @@
     <string name="invalid_img">imagen inválida</string>
     <string name="open_setting">Ajustes</string>
     <string name="hint_open_backgroun_start">Ha configurado el autocompletado, pero KeePassA no tiene los permisos adecuados. Autorice la ventana emergente del servicio en segundo plano de KeePassA en la página de configuración.</string>
+    <string name="preemptive">Preventivo</string>
+    <string name="fail_unsupported_Systems_O">Solo admite el sistema P o superior</string>
 </resources>
