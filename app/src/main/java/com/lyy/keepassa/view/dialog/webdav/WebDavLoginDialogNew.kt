@@ -88,7 +88,14 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
       binding.groupHost.visibility = View.GONE
       module.curWebDavServer = it?.toString()
       loginAdapter = when {
-        module.isNextcloud() -> nextCloudAdapter
+        module.isNextcloud() -> {
+          binding.isPreemptive.isChecked = true
+          nextCloudAdapter
+        }
+        module.isJGY() -> {
+          binding.isPreemptive.isChecked = false
+          defaultAdapter
+        }
         module.isOtherServer() -> otherAdapter
         else -> defaultAdapter
       }
@@ -129,7 +136,7 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
   ) {
     loadingDialog.show()
     lifecycleScope.launch {
-      module.checkLogin(uri, userName, pass, binding.isPreemptive!!.isChecked).collectLatest {
+      module.checkLogin(uri, userName, pass, binding.isPreemptive.isChecked).collectLatest {
         loadingDialog.dismiss()
         webDavLoginFlow.emit(WebDavLoginEvent(uri, userName, pass, it))
         if (!it) {

@@ -32,6 +32,8 @@ class WebDavLoginModule : BaseModule() {
   fun isOtherServer() =
     curWebDavServer == WebDavUtil.SUPPORTED_WEBDAV_URLS[WebDavUtil.SUPPORTED_WEBDAV_URLS.size - 1]
 
+  fun isJGY() = curWebDavServer == WebDavUtil.SUPPORTED_WEBDAV_URLS[0]
+
   fun convertHost(hostName: String, port: String, userName: String): String {
     val hasHttp = hostName.startsWith("http", true)
     val isHttps = hostName.startsWith("https", true) || port == "443"
