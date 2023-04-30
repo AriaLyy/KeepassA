@@ -34,6 +34,8 @@ import com.arialyy.frame.util.ResUtil
 import com.google.android.material.tabs.TabLayoutMediator
 import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.AnimState
+import com.lyy.keepassa.base.AnimState.NOT_ANIM
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityMainBinding
@@ -271,8 +273,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     EventBusHelper.unReg(this)
   }
 
-  override fun useAnim(): Boolean {
-    return false
+  override fun useAnim(): AnimState {
+    return NOT_ANIM
   }
 
   /**

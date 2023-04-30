@@ -27,6 +27,8 @@ import com.arialyy.frame.util.AndroidUtils
 import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.R.string
+import com.lyy.keepassa.base.AnimState
+import com.lyy.keepassa.base.AnimState.NOT_ANIM
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityChangeDbBinding
@@ -62,8 +64,8 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
     window.enterTransition.excludeTarget(android.R.id.navigationBarBackground, true)
   }
 
-  override fun useAnim(): Boolean {
-    return false
+  override fun useAnim(): AnimState {
+    return NOT_ANIM
   }
 
   override fun setLayoutId(): Int {

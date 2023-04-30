@@ -29,6 +29,8 @@ import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupId
 import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.AnimState
+import com.lyy.keepassa.base.AnimState.EXIT
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.common.SortType.CHAR_ASC
@@ -111,6 +113,10 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
         }
       })
     })
+  }
+
+  override fun useAnim(): AnimState {
+    return EXIT
   }
 
   override fun initData(savedInstanceState: Bundle?) {

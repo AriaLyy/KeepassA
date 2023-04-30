@@ -28,6 +28,8 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.lyy.keepassa.R
 import com.lyy.keepassa.R.layout
+import com.lyy.keepassa.base.AnimState
+import com.lyy.keepassa.base.AnimState.NOT_ANIM
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityLauncherBinding
@@ -89,8 +91,8 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     }
   }
 
-  override fun useAnim(): Boolean {
-    return false
+  override fun useAnim(): AnimState {
+    return NOT_ANIM
   }
 
   /**
