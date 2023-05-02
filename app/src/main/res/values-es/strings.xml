@@ -363,4 +363,5 @@
     <string name="hint_open_backgroun_start">Ha configurado el autocompletado, pero KeePassA no tiene los permisos adecuados. Autorice la ventana emergente del servicio en segundo plano de KeePassA en la página de configuración.</string>
     <string name="preemptive">Preventivo</string>
     <string name="fail_unsupported_Systems_O">Solo admite el sistema P o superior</string>
+    <string name="hint_webdav_jgy">Utiliza la contraseña en [Cuenta-&gt;Seguridad-&gt;Gestión de aplicaciones de terceros].</string>
 </resources>
