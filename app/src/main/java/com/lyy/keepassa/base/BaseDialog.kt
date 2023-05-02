@@ -31,12 +31,8 @@ abstract class BaseDialog<VB : ViewDataBinding> : FrameDialog<VB>() {
 
   override fun initData() {
     super.initData()
-    dialog?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
     dialog?.window?.decorView?.setOnSystemUiVisibilityChangeListener { _ ->
       val uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or  //布局位于状态栏下方
-        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or  //全屏
-        View.SYSTEM_UI_FLAG_FULLSCREEN or  //隐藏导航栏
-        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
         View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
       dialog?.window?.decorView?.systemUiVisibility = uiOptions
