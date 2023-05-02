@@ -8,8 +8,6 @@
 package com.lyy.keepassa.base
 
 enum class AnimState {
-  ENTER,
-  EXIT,
   ALL,
   NOT_ANIM
 }
