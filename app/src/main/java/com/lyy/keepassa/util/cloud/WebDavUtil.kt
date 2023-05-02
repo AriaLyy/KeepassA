@@ -91,6 +91,10 @@ object WebDavUtil : ICloudUtil {
     sardine = OkHttpSardine()
     sardine?.setCredentials(userName, password, isPreemptive)
     try {
+      if (uri == "https://dav.jianguoyun.com/"){
+        // 坚果云链接单独处理下
+        return !sardine?.list("${uri}/dav").isNullOrEmpty()
+      }
       val list = sardine?.list(uri)
       return !list.isNullOrEmpty()
     } catch (e: Exception) {
