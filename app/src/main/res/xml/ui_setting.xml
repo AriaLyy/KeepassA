@@ -38,7 +38,7 @@
 
 
   <SwitchPreference
-      android:defaultValue="false"
+      android:defaultValue="true"
       android:summaryOff="@string/set_key_main_show_totp_tab_off"
       android:summaryOn="@string/set_key_main_show_totp_tab_on"
       android:title="@string/set_key_main_show_totp_tab_title"
