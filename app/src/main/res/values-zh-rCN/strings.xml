@@ -369,4 +369,5 @@
     <string name="invalid_img">无效的图片</string>
     <string name="preemptive">预置模式</string>
     <string name="fail_unsupported_Systems_O">仅支持P以上的系统</string>
+    <string name="hint_webdav_jgy">请使用【账户信息->安全选项->第三方应用】中的密码</string>
 </resources>
