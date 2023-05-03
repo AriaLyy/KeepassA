@@ -113,6 +113,12 @@ android {
   configurations{
 //    implementation.exclude group: 'com.intellij' , module:'annotations'
   }
+
+  sourceSets{
+    main {
+      jniLibs.srcDirs = ['jniLibs']
+    }
+  }
 }
 
 kapt {
