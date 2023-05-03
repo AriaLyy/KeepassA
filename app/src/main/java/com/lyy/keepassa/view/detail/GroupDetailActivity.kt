@@ -12,6 +12,7 @@ package com.lyy.keepassa.view.detail
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
@@ -24,13 +25,14 @@ import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
+import com.blankj.utilcode.util.ActivityUtils
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupId
 import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.AnimState
-import com.lyy.keepassa.base.AnimState.EXIT
+import com.lyy.keepassa.base.AnimState.NOT_ANIM
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.common.SortType.CHAR_ASC
@@ -98,25 +100,24 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-
     if (window.enterTransition == null || !KeepassAUtil.instance.isDisplayLoadingAnim()) {
       loadData()
       return
     }
-    window.enterTransition?.addListener(onStart = {
-      binding.laAnim.speed = 2.5f
-      binding.laAnim.playAnimation()
-      binding.laAnim.addAnimatorListener(object : AnimatorListenerAdapter() {
-        override fun onAnimationEnd(animation: Animator) {
-          super.onAnimationEnd(animation)
-          loadData()
-        }
-      })
+    window.enterTransition = null
+    window.exitTransition = null
+    binding.laAnim.speed = 2.5f
+    binding.laAnim.playAnimation()
+    binding.laAnim.addAnimatorListener(object : AnimatorListenerAdapter() {
+      override fun onAnimationEnd(animation: Animator) {
+        super.onAnimationEnd(animation)
+        loadData()
+      }
     })
   }
 
   override fun useAnim(): AnimState {
-    return EXIT
+    return NOT_ANIM
   }
 
   override fun initData(savedInstanceState: Bundle?) {
@@ -138,6 +139,12 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
     binding.kpaToolbar.setNavigationOnClickListener {
       finishAfterTransition()
     }
+  }
+
+  override fun finishAfterTransition() {
+    window.returnTransition = TransitionInflater.from(this)
+      .inflateTransition(R.transition.slide_return)
+    super.finishAfterTransition()
   }
 
   private fun loadData() {

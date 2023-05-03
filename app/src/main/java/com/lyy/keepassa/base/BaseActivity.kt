@@ -28,8 +28,6 @@ import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.R
-import com.lyy.keepassa.base.AnimState.ALL
-import com.lyy.keepassa.base.AnimState.EXIT
 import com.lyy.keepassa.base.AnimState.NOT_ANIM
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil.isNull
@@ -61,7 +59,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     }
   }
 
-  open fun useAnim() = AnimState.ENTER
+  open fun useAnim() = AnimState.ALL
 
   override fun onPreInit(): Boolean {
     if (!KeepassAUtil.instance.isHomeActivity(this)
@@ -81,6 +79,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     AutoSizeConfig.getInstance().screenHeight = ScreenUtils.getScreenHeight()
     AutoSizeConfig.getInstance().screenWidth = ScreenUtils.getScreenWidth()
     super.onCreate(savedInstanceState)
+
     // 进入系统多任务，界面变空白，设置无法截图
     if (!AppUtils.isAppDebug()) {
       window.setFlags(
@@ -119,23 +118,18 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   }
 
   private fun setWindowAnim() {
-    if (animState == NOT_ANIM){
+    if (animState == NOT_ANIM) {
       return
     }
 
     // salide 为滑入，其它动画效果参考：https://github.com/lgvalle/Material-Animations
     // A -> B, B的进入动画
-    if (animState == ALL || animState == AnimState.ENTER){
-      window.enterTransition = TransitionInflater.from(this)
-        .inflateTransition(R.transition.slide_enter)
-    }
-
+    window.enterTransition = TransitionInflater.from(this)
+      .inflateTransition(R.transition.slide_enter)
 
     // A -> B, A的退出动画
-    if (animState == ALL || animState == EXIT){
-      window.exitTransition = TransitionInflater.from(this)
-        .inflateTransition(R.transition.slide_exit)
-    }
+    window.exitTransition = TransitionInflater.from(this)
+      .inflateTransition(R.transition.slide_exit)
 
     // // A <- B, B的返回动画
     // window.returnTransition = TransitionInflater.from(this)
@@ -146,9 +140,9 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     //   .inflateTransition(R.transition.slide_reeter)
 
     // A -> B, B的enter动画和A的exit动画是否同时执行，false 禁止
-    window.allowEnterTransitionOverlap = false
+    window.allowEnterTransitionOverlap = true
     // A <- B, A的reenter和B的return动画是否同时执行，false 禁止
-    window.allowReturnTransitionOverlap = false
+    window.allowReturnTransitionOverlap = true
 
     // reenterTransition、returnTransition 是方向动画
 //    EnterTransition <-> ReturnTransition

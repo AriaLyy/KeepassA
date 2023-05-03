@@ -8,6 +8,8 @@
 package com.lyy.keepassa.base
 
 import android.content.Context
+import android.os.Build.VERSION
+import android.view.View
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.FragmentManager
 import com.arialyy.frame.base.FrameDialog
@@ -25,6 +27,16 @@ abstract class BaseDialog<VB : ViewDataBinding> : FrameDialog<VB>() {
 
   fun setOnDismissListener(dismissListener: OnDialogDismissListener) {
     this.onDismissListener = dismissListener
+  }
+
+  override fun initData() {
+    super.initData()
+    dialog?.window?.decorView?.setOnSystemUiVisibilityChangeListener { _ ->
+      val uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or  //布局位于状态栏下方
+        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+      dialog?.window?.decorView?.systemUiVisibility = uiOptions
+    }
   }
 
   override fun onAttach(context: Context) {

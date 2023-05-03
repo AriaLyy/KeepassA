@@ -374,4 +374,5 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="invalid_img">Invalid Image</string>
     <string name="preemptive">Preemptive</string>
     <string name="fail_unsupported_Systems_O">Only support P or higher system</string>
+    <string name="hint_webdav_jgy">Please use the password in [Account->Security->Third-party Applications Management].</string>
 </resources>
