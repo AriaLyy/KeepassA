@@ -12,16 +12,14 @@ package com.lyy.keepassa.view.main
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
-import android.app.ActivityOptions
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.transition.TransitionInflater
 import android.util.Pair
 import android.view.View
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.AndroidUtils
 import com.arialyy.frame.util.ResUtil
@@ -35,16 +33,15 @@ import com.lyy.keepassa.databinding.ActivityChangeDbBinding
 import com.lyy.keepassa.event.CheckEnvEvent
 import com.lyy.keepassa.event.ModifyDbNameEvent
 import com.lyy.keepassa.router.ActivityRouter
+import com.lyy.keepassa.service.feat.XLogFeature
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.view.dialog.DonateDialog
-import com.lyy.keepassa.view.setting.SettingActivity
-import com.zzhoujay.richtext.RichText
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
-import java.util.ArrayList
+import java.io.File
 import java.util.Locale
 
 /**
@@ -87,8 +84,9 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
     binding.appFeedback.setOnClickListener(this)
     binding.appFavorite.setOnClickListener(this)
     binding.tvDonate.setOnClickListener(this)
+    binding.debug.setOnClickListener(this)
     module.setEcoIcon(this, binding.dbName)
-    if (LanguageUtil.getSysCurrentLan() != Locale.CHINA){
+    if (LanguageUtil.getSysCurrentLan() != Locale.CHINA) {
       binding.tvTranslate.visibility = View.VISIBLE
       binding.tvTranslate.setOnClickListener(this)
     }
@@ -113,7 +111,6 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
     startArrowAnim()
   }
 
-
   override fun buildSharedElements(vararg sharedElements: Pair<View, String>): ArrayList<String> {
     val appIcon =
       Pair<View, String>(binding.appIcon, getString(string.transition_app_icon))
@@ -137,7 +134,7 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
   }
 
   override fun onClick(v: View?) {
-    if ( KeepassAUtil.instance.isFastClick()) {
+    if (KeepassAUtil.instance.isFastClick()) {
       return
     }
     when (v!!.id) {
@@ -156,7 +153,7 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
         )
       }
       R.id.change_db -> {
-         KeepassAUtil.instance.turnLauncher()
+        KeepassAUtil.instance.turnLauncher()
       }
       R.id.app_feedback -> {
 //        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
@@ -203,6 +200,21 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
           data = Uri.parse("https://hosted.weblate.org/projects/keepassa/string/")
         })
       }
+      R.id.debug -> {
+        val sendIntent = Intent().apply {
+          action = Intent.ACTION_SEND
+          addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION)
+          addCategory("android.intent.category.DEFAULT")
+          val uri = FileProvider.getUriForFile(
+            this@MainSettingActivity,
+            "${packageName}.provider",
+            File(XLogFeature.getLogPath())
+          )
+          putExtra(Intent.EXTRA_STREAM, uri)
+          type = "*/*"
+        }
+        startActivity(Intent.createChooser(sendIntent, XLogFeature.getLogName()))
+      }
     }
   }
 
@@ -210,5 +222,4 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
     super.onDestroy()
     EventBusHelper.unReg(this)
   }
-
 }

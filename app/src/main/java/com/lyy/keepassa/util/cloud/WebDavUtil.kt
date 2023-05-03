@@ -217,7 +217,7 @@ object WebDavUtil : ICloudUtil {
     sardine ?: return false
     var localToken: String? = null
     try {
-      // delFile(dbRecord.cloudDiskPath!!)
+      delFile(dbRecord.cloudDiskPath!!)
       // val exist = fileExists(dbRecord.cloudDiskPath!!)
       localToken = sardine!!.lock(dbRecord.cloudDiskPath, 5)
       Timber.d("localToken = $localToken")

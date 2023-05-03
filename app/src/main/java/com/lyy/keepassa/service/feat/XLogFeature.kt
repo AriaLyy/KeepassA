@@ -13,6 +13,7 @@ import com.lyy.keepassa.BuildConfig
 import com.tencent.mars.xlog.Log
 import com.tencent.mars.xlog.Xlog
 import com.tencent.mars.xlog.Xlog.XLogConfig
+import org.joda.time.DateTime
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 
@@ -26,18 +27,29 @@ object XLogFeature : IFeature {
   private val rootDir: String = Utils.getApp().filesDir.absolutePath
   private val logDir = "$rootDir/marssample/log"
   private val cacheDir = "$rootDir/marssample/cache"
+  private val logName = "kpa"
 
   override fun init(context: Context) {
     val xlog = Xlog()
     Log.setLogImp(xlog)
     Log.setConsoleLogOpen(false)
-    Log.appenderOpen(Xlog.LEVEL_VERBOSE, Xlog.AppednerModeAsync, cacheDir, logDir, "kpa", 0)
+    Log.appenderOpen(Xlog.LEVEL_VERBOSE, Xlog.AppednerModeAsync, cacheDir, logDir, logName, 0)
     setTimberPlant()
   }
 
   fun flush() {
     Timber.d("写日志到xlog中")
     Log.appenderFlush()
+  }
+
+  fun getLogName(): String {
+    val data = DateTime(System.currentTimeMillis())
+    return "${logName}_${data.toString("yyyyMMdd")}.xlog"
+  }
+
+  fun getLogPath(): String {
+    flush()
+    return "${logDir}/${getLogName()}"
   }
 
   private fun setTimberPlant() {
