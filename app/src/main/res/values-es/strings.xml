@@ -364,4 +364,5 @@
     <string name="preemptive">Preventivo</string>
     <string name="fail_unsupported_Systems_O">Solo admite el sistema P o superior</string>
     <string name="hint_webdav_jgy">Utiliza la contraseña en [Cuenta-&gt;Seguridad-&gt;Gestión de aplicaciones de terceros].</string>
+    <string name="app_debug">Obtener el archivo de registro</string>
 </resources>
