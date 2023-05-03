@@ -42,7 +42,7 @@ public class RealPathUtil {
       try {
         result = FileProvider.getUriForFile(context, authority, file);
       } catch (IllegalArgumentException e) {
-        e.printStackTrace();
+        Timber.e(e);
       }
     }
     return result;
@@ -84,7 +84,7 @@ public class RealPathUtil {
         try {
           return getDataColumn(context, contentUri, null, null);
         } catch (Exception e) {
-          e.printStackTrace();
+          Timber.e(e);
         }
 
         // File couldn't be loaded so we have to create a temporary file and then stream
@@ -98,7 +98,7 @@ public class RealPathUtil {
         try {
           file.createNewFile();
         } catch (Exception e) {
-          e.printStackTrace();
+          Timber.e(e);
         }
         String destinationPath = file.getAbsolutePath();
         Timber.d("Destination path: %s", destinationPath);
@@ -254,13 +254,13 @@ public class RealPathUtil {
         bos.write(buf);
       } while (is.read(buf) != -1);
     } catch (IOException e) {
-      e.printStackTrace();
+      Timber.e(e);
     } finally {
       try {
         if (is != null) is.close();
         if (bos != null) bos.close();
       } catch (IOException e) {
-        e.printStackTrace();
+        Timber.e(e);
       }
     }
   }

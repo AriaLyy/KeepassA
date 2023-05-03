@@ -84,7 +84,7 @@ class CreatePassKeyDialog : BaseBottomSheetDialogFragment<DialogPassKeyBinding>(
       )
       fos.flush()
     } catch (e: IOException) {
-      e.printStackTrace()
+      Timber.e(e)
     } finally {
       fos.close()
     }

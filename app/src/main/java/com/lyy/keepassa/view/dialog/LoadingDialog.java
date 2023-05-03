@@ -18,6 +18,7 @@ import com.lyy.keepassa.base.BaseApp;
 import com.lyy.keepassa.base.BaseDialog;
 import com.lyy.keepassa.databinding.DialogLoadingBinding;
 import java.io.IOException;
+import timber.log.Timber;
 
 /**
  * Created by AriaL on 2017/12/15.
@@ -37,7 +38,7 @@ public class LoadingDialog extends BaseDialog<DialogLoadingBinding> {
           requireContext().getAssets().open("loadingAnimation.json", AssetManager.ACCESS_STREAMING),
           "LottieCache");
     } catch (IOException e) {
-      e.printStackTrace();
+      Timber.e(e);
     }
   }
 

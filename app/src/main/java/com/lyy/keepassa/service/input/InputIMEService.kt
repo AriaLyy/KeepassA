@@ -344,7 +344,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
             InputMethodManager.SHOW_IMPLICIT
           )
         } catch (e: Exception) {
-          e.printStackTrace()
+          Timber.e(e)
         }
       }
 

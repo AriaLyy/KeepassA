@@ -114,11 +114,6 @@ android {
 //    implementation.exclude group: 'com.intellij' , module:'annotations'
   }
 
-  sourceSets{
-    main {
-      jniLibs.srcDirs = ['jniLibs']
-    }
-  }
 }
 
 kapt {
@@ -270,6 +265,9 @@ dependencies {
 
   // mmkv
   implementation(libs.tencent.mmkv)
+
+  // xlog
+  implementation 'com.tencent.mars:mars-xlog:1.2.5'
   // // =========================== 三方库 end =====================================
   implementation(libs.google.gms.billing)
   implementation(libs.google.gms.base)

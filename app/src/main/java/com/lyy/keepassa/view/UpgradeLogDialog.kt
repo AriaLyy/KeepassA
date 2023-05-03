@@ -66,7 +66,7 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
           ins = requireContext().assets.open(fileName)
         } catch (e: Exception) {
           ins = requireContext().assets.open("version_log/version_log_en.md")
-          e.printStackTrace()
+          Timber.e(e)
         }
         ins?.let {
           context = String(it.readBytes())

@@ -300,7 +300,7 @@ object OtpUtil {
       }
     } catch (e: Exception) {
       HitUtil.toaskShort(BaseApp.APP.getString(R.string.totp_key_error))
-      e.printStackTrace()
+      Timber.e(e)
     }
 
     return null
@@ -380,7 +380,7 @@ object OtpUtil {
       return Pair(period.toInt(), pass)
     } catch (e: Exception) {
       HitUtil.toaskShort(BaseApp.APP.getString(R.string.totp_key_error))
-      e.printStackTrace()
+      Timber.e(e)
     }
     return Pair(period.toInt(), null)
   }

@@ -36,7 +36,6 @@ object HitUtil {
    * 打印打开数据库的错误提示
    */
   fun toaskOpenDbException(e: Exception) {
-    e.printStackTrace()
     when (e) {
       is ArcFourException -> {
         toaskShort(R.string.error_open_db_arcfour_error)

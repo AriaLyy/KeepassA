@@ -53,7 +53,6 @@ object PackageVerifier {
       hash = getCertificateHash(context, packageName)
       Timber.d( "Hash for $packageName: $hash")
     } catch (e: Exception) {
-      e.printStackTrace()
       Timber.w("Error getting hash for $packageName: $e")
       return false
     }

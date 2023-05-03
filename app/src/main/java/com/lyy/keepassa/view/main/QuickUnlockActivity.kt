@@ -221,7 +221,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         CryptoObject(keyStoreUtil.getDecryptCipher(fingerRecord!!.passIv!!))
       )
     } catch (e: Exception) {
-      e.printStackTrace()
+      Timber.e(e)
     }
   }
 
@@ -232,7 +232,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         "LottieCacheLock"
       )
     } catch (e: IOException) {
-      e.printStackTrace()
+      Timber.e(e)
     }
   }
 

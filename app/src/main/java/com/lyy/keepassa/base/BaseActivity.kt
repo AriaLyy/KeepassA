@@ -211,7 +211,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
           val b = buildSharedElements()
           mPendingExitNamesField.set(stateObj, b)
         } catch (e: java.lang.Exception) {
-          e.printStackTrace()
+          Timber.e(e)
         }
         return@addIdleHandler false
       }

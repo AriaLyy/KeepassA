@@ -100,7 +100,7 @@ class KeepassAUtil private constructor() {
       val info = manager.getPackageInfo(context.packageName, 0)
       code = info.versionCode
     } catch (e: NameNotFoundException) {
-      e.printStackTrace()
+      Timber.e(e)
     }
     return code
   }
@@ -112,7 +112,7 @@ class KeepassAUtil private constructor() {
       val info = manager.getPackageInfo(context.packageName, 0)
       name = info.versionName
     } catch (e: NameNotFoundException) {
-      e.printStackTrace()
+      Timber.e(e)
     }
     return name!!
   }
@@ -133,12 +133,12 @@ class KeepassAUtil private constructor() {
       }
       return processName
     } catch (throwable: Throwable) {
-      throwable.printStackTrace()
+      Timber.e(throwable)
     } finally {
       try {
         reader?.close()
       } catch (exception: IOException) {
-        exception.printStackTrace()
+        Timber.e(exception)
       }
     }
     return null
@@ -699,7 +699,7 @@ class KeepassAUtil private constructor() {
       }
     } catch (e: Exception) {
       Timber.e("打开文件失败")
-      e.printStackTrace()
+      Timber.e(e)
     }
   }
 
@@ -727,8 +727,7 @@ class KeepassAUtil private constructor() {
         obj.startActivityForResult(intent, requestCode)
       }
     } catch (e: Exception) {
-      Timber.e("创建文件失败")
-      e.printStackTrace()
+      Timber.e(e)
     }
   }
 
@@ -921,6 +920,6 @@ fun Uri.takePermission() {
     BaseApp.APP.contentResolver.takePersistableUriPermission(this, takeFlags)
   } catch (e: Exception) {
     HitUtil.toaskShort(BaseApp.APP.getString(R.string.error_uri_grant_permission))
-    e.printStackTrace()
+    Timber.e(e)
   }
 }

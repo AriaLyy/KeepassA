@@ -177,11 +177,11 @@ class KdbOpenService : IProvider {
           }
         }
       } catch (e: Exception) {
-        e.printStackTrace()
         HitUtil.toaskOpenDbException(e)
         scope.launch {
           openDbFlow.emit(null)
         }
+        Timber.e(e)
       }
     }
   }
@@ -234,7 +234,7 @@ class KdbOpenService : IProvider {
           }
         } catch (e: Exception) {
           HitUtil.toaskOpenDbException(e)
-          e.printStackTrace()
+          Timber.e(e)
         }
         temp
       }
@@ -421,7 +421,7 @@ class KdbOpenService : IProvider {
       return db
     } catch (e: Exception) {
       HitUtil.toaskOpenDbException(e)
-      e.printStackTrace()
+      Timber.e(e)
     }
     return null
   }

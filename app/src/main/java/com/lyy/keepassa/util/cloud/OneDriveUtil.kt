@@ -13,11 +13,9 @@ import android.net.Uri
 import com.arialyy.frame.base.net.NetManager1
 import com.arialyy.frame.core.AbsFrame
 import com.arialyy.frame.util.FileUtil
-import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.EncryptUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.google.gson.Gson
-import com.lyy.keepassa.BuildConfig
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.DbHistoryRecord
@@ -48,7 +46,6 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import org.joda.time.format.DateTimeFormat
 import timber.log.Timber
 import java.io.File
-import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
 import java.nio.charset.Charset
@@ -327,7 +324,7 @@ object OneDriveUtil : ICloudUtil {
       }
       return msalItem2CloudItem(response)
     } catch (e: Exception) {
-      e.printStackTrace()
+      Timber.e(e)
       return null
     }
   }
@@ -395,7 +392,7 @@ object OneDriveUtil : ICloudUtil {
 
       return true
     } catch (e: Exception) {
-      e.printStackTrace()
+      Timber.e(e)
       return false
     }
   }
@@ -414,7 +411,7 @@ object OneDriveUtil : ICloudUtil {
         .execute()
       Timber.d("code = ${response.code}, body = ${response.body?.string()}")
     } catch (e: Exception) {
-      e.printStackTrace()
+      Timber.e(e)
     }
   }
 
@@ -457,7 +454,7 @@ object OneDriveUtil : ICloudUtil {
         } while (len != -1)
         return@withContext filePath.toString()
       } catch (e: Exception) {
-        e.printStackTrace()
+        Timber.e(e)
       }
       return@withContext null
     }

@@ -52,6 +52,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
+import timber.log.Timber
 
 /**
  * 条目详情
@@ -264,7 +265,7 @@ class EntryDetailModule : BaseModule() {
           HitUtil.toaskShort(context.getString(R.string.save_file_success, fileName))
         }
       } catch (e: Exception) {
-        e.printStackTrace()
+        Timber.e(e)
       }
     }
   }

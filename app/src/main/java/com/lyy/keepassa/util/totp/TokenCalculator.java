@@ -16,6 +16,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import timber.log.Timber;
 
 /**
  * 地址：https://github.com/andOTP/andOTP.git
@@ -126,7 +127,7 @@ public class TokenCalculator {
 
       r = binary;
     } catch (Exception e) {
-      e.printStackTrace();
+      Timber.e(e);
     }
 
     return r;

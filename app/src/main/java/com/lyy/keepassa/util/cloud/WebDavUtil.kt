@@ -158,7 +158,6 @@ object WebDavUtil : ICloudUtil {
         list.removeAt(0)
       }
     } catch (e: Exception) {
-      e.printStackTrace()
       Timber.e(e, "获取文件列表失败")
     }
     return list
@@ -187,8 +186,7 @@ object WebDavUtil : ICloudUtil {
         file.path, file.name, file.modified, file.contentLength, file.isDirectory
       )
     } catch (e: Exception) {
-      e.printStackTrace()
-      Timber.e(e, "获取文件信息失败")
+      Timber.e(e)
     }
     return null
   }
@@ -198,7 +196,6 @@ object WebDavUtil : ICloudUtil {
     try {
       sardine!!.delete(convertUrl(fileKey))
     } catch (e: Exception) {
-      e.printStackTrace()
       Timber.e(e, "删除文件失败")
       return false
     }
@@ -237,7 +234,6 @@ object WebDavUtil : ICloudUtil {
         DbSynUtil.serviceModifyTime = info.serviceModifyDate
       }
     } catch (e: Exception) {
-      e.printStackTrace()
       Timber.e(e, "上传文件失败")
       return false
     } finally {
@@ -273,7 +269,6 @@ object WebDavUtil : ICloudUtil {
         foc = FileOutputStream(fp).channel
         foc.transferFrom(fic, 0, fileInfo!!.size)
       } catch (e: Exception) {
-        e.printStackTrace()
         Timber.e(e, "下载文件失败")
         return null
       } finally {
