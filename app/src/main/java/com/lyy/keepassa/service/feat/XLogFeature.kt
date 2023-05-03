@@ -14,6 +14,7 @@ import com.tencent.mars.xlog.Log
 import com.tencent.mars.xlog.Xlog
 import com.tencent.mars.xlog.Xlog.XLogConfig
 import timber.log.Timber
+import timber.log.Timber.DebugTree
 
 object XLogFeature : IFeature {
 
@@ -25,42 +26,26 @@ object XLogFeature : IFeature {
   private val rootDir: String = Utils.getApp().filesDir.absolutePath
   private val logDir = "$rootDir/marssample/log"
   private val cacheDir = "$rootDir/marssample/cache"
-  private var logPrt: Long = -1L
 
   override fun init(context: Context) {
-    val logConfig = XLogConfig()
-    logConfig.mode = Xlog.AppednerModeAsync
-    logConfig.logdir = logDir
-    logConfig.nameprefix = "kpa"
-    logConfig.pubkey = ""
-    logConfig.compressmode = Xlog.ZLIB_MODE
-    logConfig.compresslevel = 0
-    logConfig.cachedir = cacheDir
-    logConfig.cachedays = 0
-    if (BuildConfig.DEBUG) {
-      logConfig.level = Xlog.LEVEL_VERBOSE
-    } else {
-      logConfig.level = Xlog.LEVEL_INFO
-    }
     val xlog = Xlog()
-    logPrt = xlog.newXlogInstance(logConfig)
     Log.setLogImp(xlog)
     Log.setConsoleLogOpen(false)
+    Log.appenderOpen(Xlog.LEVEL_VERBOSE, Xlog.AppednerModeAsync, cacheDir, logDir, "kpa", 0)
     setTimberPlant()
   }
 
   fun flush() {
-    if (logPrt != -1L) {
-      Log.appenderFlush()
-    }
+    Timber.d("写日志到xlog中")
+    Log.appenderFlush()
   }
 
   private fun setTimberPlant() {
-    Timber.plant(object : Timber.Tree() {
+    Timber.plant(object : DebugTree() {
       override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-        // if (BuildConfig.DEBUG) {
-        //   return
-        // }
+        if (BuildConfig.DEBUG) {
+          return
+        }
         when (priority) {
           android.util.Log.DEBUG -> {
             Log.d(tag, message)
