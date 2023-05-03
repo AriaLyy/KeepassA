@@ -113,6 +113,12 @@ android {
   configurations{
 //    implementation.exclude group: 'com.intellij' , module:'annotations'
   }
+
+  sourceSets{
+    main {
+      jniLibs.srcDirs = ['jniLibs']
+    }
+  }
 }
 
 kapt {
@@ -211,7 +217,7 @@ dependencies {
 
   // keepassA组件
   implementation 'me.laoyuyu.keepassa:KeepassIcon:0.4.0'
-  implementation 'me.laoyuyu.keepassa:KeepassLib:0.4.0'
+  implementation 'me.laoyuyu.keepassa:KeepassLib:0.4.1'
   //  implementation project(path: ':KpaLib')
   implementation 'me.laoyuyu.keepassa:KPAFrame:0.4.0'
   implementation 'me.laoyuyu.keepassa:UIWidget:0.4.0'

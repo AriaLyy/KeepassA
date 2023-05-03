@@ -94,8 +94,6 @@ class AutoFillService : AutofillService() {
       return
     }
 
-    checkRom()
-
     // 如果数据库没打开，或者数据库已经锁定，打开登录页面
     if (needAuth) {
       val isOpenQuickLock = BaseApp.APP.isOpenQuickLock()
