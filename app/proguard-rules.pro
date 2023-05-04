@@ -224,7 +224,11 @@
 
 # 如果使用了 单类注入，即不定义接口实现 IProvider，需添加下面规则，保护实现
 # -keep class * implements com.alibaba.android.arouter.facade.template.IProvider
-################# arouter-start ##################
+################# arouter-end ##################
+
+################# xlog-start ##################
+-keep class com.tencent.mars.** { *; }
+################# xlog-end ##################
 
 -keep class com.com.lyy.keepassa.baseapi.*{ *; }
 -dontwarn com.com.lyy.keepassa.baseapi.**
