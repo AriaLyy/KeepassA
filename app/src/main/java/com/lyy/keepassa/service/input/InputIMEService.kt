@@ -45,7 +45,7 @@ import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.util.OtpUtil
-import com.lyy.keepassa.util.isOpenQuickLock
+import com.lyy.keepassa.util.isCanOpenQuickLock
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
 import com.lyy.keepassa.view.search.CommonSearchActivity
@@ -225,7 +225,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         }
         BaseApp.isLocked = true
         NotificationUtil.startDbLocked(this)
-        if (BaseApp.APP.isOpenQuickLock()) {
+        if (BaseApp.APP.isCanOpenQuickLock()) {
           return
         }
         curEntry = null
@@ -408,7 +408,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       }
 
 
-      if (BaseApp.APP.isOpenQuickLock()) {
+      if (BaseApp.APP.isCanOpenQuickLock()) {
         QuickUnlockActivity.startQuickUnlockActivity(this, Intent.FLAG_ACTIVITY_NEW_TASK)
       }
       return false

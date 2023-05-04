@@ -69,6 +69,26 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
      */
     const val EXTRA_ENTRY_ID = "EXTRA_ENTRY_ID"
 
+    internal fun createSearchIntent(
+      context: Context,
+      param: AutoFillParam,
+      structure: AssistStructure?
+    ): Intent {
+      val sIntent =
+        Intent(context, AutoFillEntrySearchActivity::class.java).apply {
+          val b = Bundle()
+          b.putParcelable(LauncherActivity.KEY_AUTO_FILL_PARAM, param)
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            b.putParcelable(
+              AutofillManager.EXTRA_ASSIST_STRUCTURE,
+              structure
+            )
+          }
+          putExtras(b)
+        }
+      return sIntent
+    }
+
     /**
      * 进入搜索页
      */

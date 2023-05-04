@@ -26,14 +26,22 @@ import java.util.Locale
  **/
 object KpaUtil {
 
-
   var scope = MainScope()
+  private var isEmptyPass = false
   val kdbHandlerService by lazy {
     Routerfit.create(ServiceRouter::class.java).getDbSaveService()
   }
 
   val kdbOpenService by lazy {
     Routerfit.create(ServiceRouter::class.java).getDbOpenService()
+  }
+
+  fun isEmptyPass(): Boolean {
+    return isEmptyPass
+  }
+
+  fun setEmptyPass(isEmptyPass: Boolean) {
+    this.isEmptyPass = isEmptyPass
   }
 
   fun isChina(): Boolean {

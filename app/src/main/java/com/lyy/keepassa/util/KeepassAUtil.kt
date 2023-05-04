@@ -13,8 +13,6 @@ import KDBAutoFillRepository
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
-import android.app.ActivityManager
-import android.app.ActivityManager.RunningAppProcessInfo
 import android.app.assist.AssistStructure
 import android.content.ComponentName
 import android.content.ContentUris
@@ -54,7 +52,6 @@ import com.keepassdroid.database.PwDataInf
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
-import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.security.ProtectedString
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
@@ -71,7 +68,6 @@ import com.lyy.keepassa.view.launcher.OpenDbHistoryActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -194,7 +190,7 @@ class KeepassAUtil private constructor() {
   fun lock() {
     Timber.d("锁定数据库")
     BaseApp.isLocked = true
-    val isOpenQuickLock = BaseApp.APP.isOpenQuickLock()
+    val isOpenQuickLock = BaseApp.APP.isCanOpenQuickLock()
     // 只有应用在前台才会跳转到锁屏页面
     if (AppUtils.isAppForeground() && BaseApp.KDB != null) {
       // 开启快速解锁则跳转到快速解锁页面
@@ -314,7 +310,7 @@ class KeepassAUtil private constructor() {
    * 否则跳转到快速启动页
    */
   fun reOpenDb(context: Context) {
-    if (BaseApp.KDB == null || !BaseApp.APP.isOpenQuickLock()) {
+    if (!BaseApp.APP.isCanOpenQuickLock()) {
       ARouter.getInstance()
         .build("/launcher/activity")
         .withInt(LauncherActivity.KEY_OPEN_TYPE, LauncherActivity.OPEN_TYPE_OPEN_DB)
@@ -325,9 +321,9 @@ class KeepassAUtil private constructor() {
         }
         ac.finish()
       }
-    } else {
-      QuickUnlockActivity.startQuickUnlockActivity(context)
+      return
     }
+    QuickUnlockActivity.startQuickUnlockActivity(context)
   }
 
   /**
@@ -379,7 +375,6 @@ class KeepassAUtil private constructor() {
     item.obj = entry
     return item
   }
-
 
   /**
    * 将pwGroup 转换为列表实体

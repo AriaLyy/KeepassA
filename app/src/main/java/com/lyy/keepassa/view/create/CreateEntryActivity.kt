@@ -12,14 +12,18 @@ package com.lyy.keepassa.view.create
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.PendingIntent
+import android.app.assist.AssistStructure
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.net.Uri
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.text.InputType
 import android.text.TextUtils
 import android.view.View
+import android.view.autofill.AutofillManager
 import android.widget.ArrayAdapter
 import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContract
@@ -72,6 +76,7 @@ import com.lyy.keepassa.view.icon.IconItemCallback
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.menu.EntryCreateFilePopMenu
 import com.lyy.keepassa.view.menu.EntryCreateStrPopMenu
+import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 import com.lyy.keepassa.widget.expand.AttrFileItemView
 import com.lyy.keepassa.widget.expand.AttrStrItemView
 import com.lyy.keepassa.widget.expand.ExpandFileAttrView
@@ -204,6 +209,39 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     }
 
   /**
+   * 搜索启动器
+   */
+  private val searchLauncher =
+    registerForActivityResult(object : ActivityResultContract<AutoFillParam, UUID?>() {
+      override fun createIntent(context: Context, input: AutoFillParam): Intent {
+        return AutoFillEntrySearchActivity.createSearchIntent(
+          context,
+          input,
+          if (VERSION.SDK_INT >= VERSION_CODES.O) intent.getParcelableExtra(
+            AutofillManager.EXTRA_ASSIST_STRUCTURE
+          ) as AssistStructure? else null
+        )
+      }
+
+      override fun parseResult(resultCode: Int, intent: Intent?): UUID? {
+        if (resultCode == Activity.RESULT_CANCELED) {
+          return null
+        }
+        if (intent == null) {
+          return null
+        }
+        return intent.getSerializableExtra(AutoFillEntrySearchActivity.EXTRA_ENTRY_ID) as? UUID
+      }
+    }) {
+      if (it == null) {
+        Timber.d("手动返回")
+        return@registerForActivityResult
+      }
+      Timber.i("已关联数据")
+      finish()
+    }
+
+  /**
    * 检查自动填充的条目是否存在
    */
   private fun checkAutoFill() {
@@ -214,6 +252,22 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
         type = TYPE_EDIT_ENTRY
         entryId = entryList[0].uuid
       }
+      // 启动判断对话框
+      Routerfit.create(DialogRouter::class.java).showMsgDialog(
+        msgTitle = ResUtil.getString(R.string.hint),
+        msgContent = ResUtil.getString(R.string.hint_auto_fill_save),
+        btnClickListener = object : OnMsgBtClickListener {
+          override fun onEnter(v: Button) {
+            searchLauncher.launch(
+              it,
+              ActivityOptionsCompat.makeSceneTransitionAnimation(this@CreateEntryActivity)
+            )
+          }
+
+          override fun onCancel(v: Button) {
+          }
+        }
+      )
     }
   }
 

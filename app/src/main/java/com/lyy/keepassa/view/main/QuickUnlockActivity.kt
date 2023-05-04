@@ -20,6 +20,8 @@ import android.content.Intent
 import android.content.IntentSender
 import android.content.res.AssetManager
 import android.os.Build
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.view.View
 import android.view.autofill.AutofillManager
@@ -46,8 +48,10 @@ import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
+import com.lyy.keepassa.util.isCanOpenQuickLock
 import com.lyy.keepassa.view.fingerprint.FingerprintModule
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
@@ -71,19 +75,13 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
   private val searchLauncher =
     registerForActivityResult(object : ActivityResultContract<String, UUID?>() {
       override fun createIntent(context: Context, input: String): Intent {
-        val sIntent =
-          Intent(this@QuickUnlockActivity, AutoFillEntrySearchActivity::class.java).apply {
-            val b = Bundle()
-            b.putParcelable(LauncherActivity.KEY_AUTO_FILL_PARAM, AutoFillParam(apkPkgName = input))
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-              b.putParcelable(
-                AutofillManager.EXTRA_ASSIST_STRUCTURE,
-                intent.getParcelableExtra(AutofillManager.EXTRA_ASSIST_STRUCTURE)
-              )
-            }
-            putExtras(b)
-          }
-        return sIntent
+        return AutoFillEntrySearchActivity.createSearchIntent(
+          context,
+          AutoFillParam(apkPkgName = input),
+          if (VERSION.SDK_INT >= VERSION_CODES.O) intent.getParcelableExtra(
+            AutofillManager.EXTRA_ASSIST_STRUCTURE
+          ) as AssistStructure? else null
+        )
       }
 
       override fun parseResult(resultCode: Int, data: Intent?): UUID? {
@@ -261,7 +259,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
     NotificationUtil.startDbOpenNotify(this@QuickUnlockActivity)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && BaseApp.KDB != null && module.isAutoFill()) {
       val apkPkgName = module.autoFillParam?.apkPkgName
-      if (apkPkgName.isNullOrEmpty()){
+      if (apkPkgName.isNullOrEmpty()) {
         Timber.e("apkpkgName is null")
         Routerfit.create(ActivityRouter::class.java, this).toMainActivity(
           opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
@@ -269,7 +267,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         return
       }
 
-      if (module.autoFillParam?.isSave == true){
+      if (module.autoFillParam?.isSave == true) {
         Routerfit.create(ActivityRouter::class.java).toEditEntryActivity(module.autoFillParam!!)
         Timber.i("save entry")
         return
@@ -312,7 +310,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
      * 从通知进入快速解锁页
      */
     internal fun createQuickUnlockPending(context: Context): PendingIntent {
-      if (BaseApp.dbRecord == null) {
+      if (!BaseApp.APP.isCanOpenQuickLock()) {
         return LauncherActivity.createLauncherPending(context)
       }
 
@@ -322,7 +320,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
     }
 
     internal fun startQuickUnlockActivity(context: Context, flags: Int = -1) {
-      if (BaseApp.dbRecord == null) {
+      if (!BaseApp.APP.isCanOpenQuickLock()) {
         LauncherActivity.startLauncherActivity(context, flags)
         return
       }
@@ -342,7 +340,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
       pkgName: String,
       structure: AssistStructure
     ): IntentSender {
-      if (BaseApp.dbRecord == null) {
+      if (!BaseApp.APP.isCanOpenQuickLock()) {
         return LauncherActivity.getAuthDbIntentSender(context, apkPackageName = pkgName)
       }
       val intent = Intent(context, QuickUnlockActivity::class.java).also {
@@ -361,5 +359,4 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         .intentSender
     }
   }
-
 }

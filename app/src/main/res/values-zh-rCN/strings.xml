@@ -371,4 +371,5 @@
     <string name="fail_unsupported_Systems_O">仅支持P以上的系统</string>
     <string name="hint_webdav_jgy">请使用【账户信息->安全选项->第三方应用】中的密码</string>
     <string name="app_debug">取出日志文件</string>
+    <string name="hint_auto_fill_save">将当前数据关联到已有条目？</string>
 </resources>

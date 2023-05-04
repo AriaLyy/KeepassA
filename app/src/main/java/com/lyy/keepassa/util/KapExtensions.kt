@@ -42,9 +42,11 @@ fun CharSequence.hasSpecialChar(): Boolean {
  * isOpenQuickLock
  * @return true already open quick lock
  */
-fun BaseApp.isOpenQuickLock(): Boolean {
+fun BaseApp.isCanOpenQuickLock(): Boolean {
   return PreferenceManager.getDefaultSharedPreferences(this)
     .getBoolean(applicationContext.getString(R.string.set_quick_unlock), false)
+    && BaseApp.dbRecord != null
+    && !KpaUtil.isEmptyPass()
 }
 
 fun PwEntryV4.hasNote(): Boolean {
