@@ -20,7 +20,23 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.Constance
 
+val charRegex = Regex("[^a-zA-Z0-9]")
+
 fun Activity.isDestroy() = isDestroyed || isFinishing
+
+/**
+ * @return true has special char
+ */
+fun CharSequence.hasSpecialChar(): Boolean {
+  return charRegex.containsMatchIn(this)
+}
+
+// fun CharSequence.specialEncode():CharSequence{
+//   val out: StringBuilder = StringBuilder(length)
+//   forEach {
+//     it.
+//   }
+// }
 
 /**
  * isOpenQuickLock

@@ -25,6 +25,8 @@ import java.util.Locale
  * @Date 2022/3/22
  **/
 object KpaUtil {
+
+
   var scope = MainScope()
   val kdbHandlerService by lazy {
     Routerfit.create(ServiceRouter::class.java).getDbSaveService()
@@ -34,7 +36,7 @@ object KpaUtil {
     Routerfit.create(ServiceRouter::class.java).getDbOpenService()
   }
 
-  fun isChina():Boolean{
+  fun isChina(): Boolean {
     return LanguageUtil.getSysCurrentLan().country == Locale.CHINA.country
   }
 
