@@ -58,12 +58,12 @@ object KdbUtil {
     if (domain.isNullOrEmpty()) {
       return
     }
-    val topDomain = Regex(RegularRule.DOMAIN_TOP, RegexOption.IGNORE_CASE).find(domain)
-    Timber.d("topDomain = ${topDomain?.value}")
+    val topDomain = Regex(RegularRule.DOMAIN_TOP, RegexOption.IGNORE_CASE).find(domain)?.value.toString()
+    Timber.d("topDomain = $topDomain")
     for (entry in BaseApp.KDB.pm.entries.values) {
       val pe4 = entry as PwEntryV4
-      if (pe4.getUrl()
-          .contains(topDomain?.value.toString(), true)
+      if (pe4.url.contains(topDomain, true)
+        || pe4.strings["URL"]?.toString()?.contains(topDomain) ==true
       ) {
         listStorage.add(pe4)
       }

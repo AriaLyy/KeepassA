@@ -106,54 +106,14 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     // Timber.i(
     //   "w3c111, unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused},  idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, isOpaque = ${viewNode.isOpaque}"
     // )
-    // if (viewNode.idEntry == "username") {
-    //   Timber.d("test")
-    // }
     if (!viewNode.autofillHints.isNullOrEmpty()) {
       if (isW3c) {
-        if (W3cHints.isW3CUserByHints(viewNode)) {
-          Timber.i("addUser by hints")
-          addUserField(viewNode)
-        } else if (W3cHints.isW3CPassByHints(viewNode)) {
-          Timber.i("addPassword by hints")
-          addPassField(viewNode)
-        } else {
-          Timber.d(
-            "w3c, unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused},  idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, isOpaque = ${viewNode.isOpaque}"
-          )
-        }
+        getW3CInfo(viewNode)
       } else {
-        if (isPassword(viewNode)) {
-          addPassField(viewNode)
-        } else if (isUserName(viewNode)) {
-          addUserField(viewNode)
-        } else {
-          Timber.d(
-            "not w3c, unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused},  idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, isOpaque = ${viewNode.isOpaque}"
-          )
-        }
+        getAndroidViewInfo(viewNode)
       }
       // autoFillFields.add(AutoFillFieldMetadata(viewNode))
     } else {
-      val className = viewNode.className
-
-      if (classIsEditText(className)) {
-        when {
-          isPassword(viewNode) -> {
-            addPassField(viewNode)
-          }
-          isUserName(viewNode) -> {
-            addUserField(viewNode)
-          }
-          else -> {
-            Timber.d(
-              "unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused},  idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, isOpaque = ${viewNode.isOpaque}"
-            )
-          }
-        }
-        return
-      }
-
       if (W3cHints.isBrowser(pkgName)) {
         Timber.i("is browser, start get web info")
         checkW3C(viewNode)
@@ -164,6 +124,11 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
             Timber.d("domainUrl = $domainUrl")
           }
           getW3CInfo(viewNode)
+        }
+      } else {
+        val className = viewNode.className
+        if (classIsEditText(className)) {
+          getAndroidViewInfo(viewNode)
         }
       }
     }
@@ -198,20 +163,37 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     return false
   }
 
-  private fun getW3CInfo(viewNode: ViewNode) {
-    viewNode.htmlInfo?.let {
-      if (it.attributes != null) {
-        it.attributes!!.forEach { attr ->
-          if (W3cHints.isW3cPassWord(attr)) {
-            addPassField(viewNode)
-            return@forEach
-          }
-          if (W3cHints.isW3cUserName(attr)) {
-            addUserField(viewNode)
-          }
-        }
-      }
+  private fun getAndroidViewInfo(viewNode: ViewNode) {
+    if (isPassword(viewNode)) {
+      addPassField(viewNode)
+      return
     }
+    if (isUserName(viewNode)) {
+      addUserField(viewNode)
+      return
+    }
+    Timber.d(
+      "not w3c, unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused},  idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, isOpaque = ${viewNode.isOpaque}"
+    )
+  }
+
+  private fun getW3CInfo(viewNode: ViewNode) {
+    if (viewNode.htmlInfo == null){
+      return
+    }
+    if (W3cHints.isW3CUserByHints(viewNode)) {
+      Timber.i("addUser by hints")
+      addUserField(viewNode)
+      return
+    }
+    if (W3cHints.isW3CPassByHints(viewNode)) {
+      Timber.i("addPassword by hints")
+      addPassField(viewNode)
+      return
+    }
+    Timber.d(
+      "w3c, unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused},  idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, isOpaque = ${viewNode.isOpaque}"
+    )
   }
 
   /**

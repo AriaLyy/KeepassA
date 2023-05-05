@@ -69,6 +69,7 @@ object W3cHints {
   const val FAMILY_NAME = "family-name"
   const val HONORIFIC_SUFFIX = "honorific-suffix"
   const val USERNAME = "username"
+  const val PWD = "pwd"
   const val PASSWORD = "password"
   const val NEW_PASSWORD = "new-password"
   const val CURRENT_PASSWORD = "current-password"
@@ -135,6 +136,7 @@ object W3cHints {
 
   private val PASSWORD_HINT_LIST = arrayListOf(PASSWORD, NEW_PASSWORD, CURRENT_PASSWORD)
   private val USER_HINT_LIST = arrayListOf(NAME, USERNAME, TEL, GIVEN_NAME, EMAIL, IMPP)
+  private val ATTR_LIST = arrayListOf("name", "type")
 
   var curDomainUrl = ""
 
@@ -150,24 +152,25 @@ object W3cHints {
    * 是否是用户名
    */
   fun isW3cUserName(p: android.util.Pair<String, String>): Boolean {
-    if (p.second == null){
+    if (p.second.isNullOrEmpty()) {
       return false
     }
-    val temp = p.second.uppercase()
-    return p.first == "type" && (USER_HINT_LIST.contains(temp))
+    val temp = p.second.lowercase()
+    return USER_HINT_LIST.contains(temp)
   }
 
   /**
    * 是否是密码
    */
   fun isW3cPassWord(p: android.util.Pair<String, String>): Boolean {
-    if (p.second == null){
+
+    if (p.second.isNullOrEmpty()) {
       return false
     }
-    val temp = p.second.uppercase()
-    return (p.first == "type" && (PASSWORD_HINT_LIST.contains(temp))
+    val temp = p.second.lowercase()
+    return PASSWORD_HINT_LIST.contains(temp)
       // https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion
-      || (p.first == "autocomplete"))
+      || (p.first == "autocomplete")
   }
 
   fun isW3CUserByHints(viewNode: ViewNode): Boolean {
@@ -176,7 +179,7 @@ object W3cHints {
     }
     val hints = viewNode.autofillHints
     hints?.forEach {
-      val temp = it.uppercase()
+      val temp = it.lowercase()
       if (USER_HINT_LIST.contains(temp)) {
         return true
       }
@@ -189,6 +192,20 @@ object W3cHints {
         return true
       }
     }
+
+    val names = viewNode.htmlInfo?.attributes
+    names?.forEach {
+      val name = it.first.lowercase()
+      val value = it.second.lowercase()
+      if (ATTR_LIST.contains(name)) {
+        if (USER_HINT_LIST.contains(value)) {
+          return true
+        }
+      }
+      // if (name == "label" && value.isNotEmpty()) {
+      //   return true
+      // }
+    }
     return false
   }
 
@@ -198,7 +215,7 @@ object W3cHints {
     }
     val hints = viewNode.autofillHints
     hints?.forEach {
-      val temp = it.uppercase()
+      val temp = it.lowercase()
       if (PASSWORD_HINT_LIST.contains(temp)) {
         return true
       }
@@ -211,16 +228,27 @@ object W3cHints {
         return true
       }
     }
+
+    val names = viewNode.htmlInfo?.attributes
+    names?.forEach {
+      if (ATTR_LIST.contains(it.first.lowercase())) {
+        if (PASSWORD_HINT_LIST.contains(it.second.lowercase())) {
+          return true
+        }
+      }
+
+    }
+
     return false
   }
 
   fun isW3cSectionPrefix(hint: String): Boolean {
-    return hint.toUpperCase(Locale.ROOT)
+    return hint.lowercase(Locale.ROOT)
       .startsWith(PREFIX_SECTION);
   }
 
   fun isW3cAddressType(hint: String): Boolean {
-    when (hint.toUpperCase(Locale.ROOT)) {
+    when (hint.lowercase(Locale.ROOT)) {
       SHIPPING, BILLING ->
         return true
     }
@@ -228,7 +256,7 @@ object W3cHints {
   }
 
   fun isW3cTypePrefix(hint: String): Boolean {
-    when (hint.toUpperCase(Locale.ROOT)) {
+    when (hint.lowercase(Locale.ROOT)) {
       PREFIX_WORK, PREFIX_FAX, PREFIX_HOME, PREFIX_PAGER ->
         return true
     }
@@ -236,7 +264,7 @@ object W3cHints {
   }
 
   fun isW3cTypeHint(hint: String): Boolean {
-    when (hint.toUpperCase(Locale.ROOT)) {
+    when (hint.lowercase(Locale.ROOT)) {
       TEL, TEL_COUNTRY_CODE, TEL_NATIONAL, TEL_AREA_CODE, TEL_LOCAL,
       TEL_LOCAL_PREFIX, TEL_LOCAL_SUFFIX, TEL_EXTENSION, EMAIL, IMPP ->
         return true;
