@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="clean_clip_entries">
+        <item>30 second</item>
+        <item>1 minute</item>
+        <item>2 minute</item>
+        <item>5 minute</item>
+    </string-array>
+    <string-array name="v3_add_mor_item">
+        <item>Note</item>
+        <item>Attachment</item>
+        <item>Expiration date</item>
+    </string-array>
+
+    <string-array name="v4_add_mor_item">
+        <item>Note</item>
+        <item>Custom field</item>
+        <item>Attachment</item>
+        <item>TOTP</item>
+        <item>Tag</item>
+        <item>Cover link</item>
+        <item>Expiration date</item>
+    </string-array>
+    <string-array name="create_normal_group">
+        <item>Email box</item>
+        <item>Work</item>
+        <item>Finance</item>
+        <item>Recreation</item>
+        <item>Recycle bin</item>
+    </string-array>
+    <string-array name="auto_fill_hint_label">
+        <item>Email</item>
+        <item>Phone</item>
+        <item>User</item>
+        <item>Account</item>
+    </string-array>
     <string name="app_name" translatable="false">KeepassA</string>
     <string name="db">Database</string>
     <string name="db1"><![CDATA[database\t|\t<font color="#757575">%s</font>]]></string>

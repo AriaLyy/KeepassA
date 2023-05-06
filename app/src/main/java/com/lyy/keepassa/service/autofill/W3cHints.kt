@@ -12,6 +12,9 @@ package com.lyy.keepassa.service.autofill
 import android.annotation.TargetApi
 import android.app.assist.AssistStructure.ViewNode
 import android.os.Build
+import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.ActivityUtils
+import com.lyy.keepassa.R
 import timber.log.Timber
 import java.util.Locale
 
@@ -138,6 +141,14 @@ object W3cHints {
   private val USER_HINT_LIST = arrayListOf(NAME, USERNAME, TEL, GIVEN_NAME, EMAIL, IMPP)
   private val ATTR_LIST = arrayListOf("name", "type")
 
+  private val HINT_USER_LABEL by lazy {
+    ActivityUtils.getTopActivity().resources.getStringArray(R.array.auto_fill_hint_label)
+  }
+
+  private val HINT_PASSWORD_LABEL by lazy {
+    ResUtil.getString(R.string.password)
+  }
+
   var curDomainUrl = ""
 
   /**
@@ -195,16 +206,22 @@ object W3cHints {
 
     val names = viewNode.htmlInfo?.attributes
     names?.forEach {
+      if (it.first.isNullOrEmpty() || it.second.isNullOrEmpty()) {
+        Timber.d("value is null, first = ${it.first}, second = ${it.second}")
+        return@forEach
+      }
       val name = it.first.lowercase()
       val value = it.second.lowercase()
-      if (ATTR_LIST.contains(name)) {
-        if (USER_HINT_LIST.contains(value)) {
-          return true
+      if (ATTR_LIST.contains(name) && USER_HINT_LIST.contains(value)) {
+        return true
+      }
+      if (name == "label") {
+        HINT_USER_LABEL.forEach { label ->
+          if (value.contains(label)) {
+            return true
+          }
         }
       }
-      // if (name == "label" && value.isNotEmpty()) {
-      //   return true
-      // }
     }
     return false
   }
@@ -231,10 +248,17 @@ object W3cHints {
 
     val names = viewNode.htmlInfo?.attributes
     names?.forEach {
-      if (ATTR_LIST.contains(it.first.lowercase())) {
-        if (PASSWORD_HINT_LIST.contains(it.second.lowercase())) {
-          return true
-        }
+      if (it.first.isNullOrEmpty() || it.second.isNullOrEmpty()) {
+        Timber.d("value is null, first = ${it.first}, second = ${it.second}")
+        return@forEach
+      }
+      val name = it.first.lowercase()
+      val value = it.second.lowercase()
+      if (ATTR_LIST.contains(name) && PASSWORD_HINT_LIST.contains(value)) {
+        return true
+      }
+      if (name == "label" && value.contains(HINT_PASSWORD_LABEL)) {
+        return true
       }
 
     }
