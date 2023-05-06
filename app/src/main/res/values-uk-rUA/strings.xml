@@ -363,4 +363,7 @@
     <string name="hint_open_backgroun_start">Ви налаштували автозаповнення, але KeePassA не має відповідних дозволів. Авторизуйте спливне вікно фонової служби KeePassA на сторінці налаштувань.</string>
     <string name="preemptive">Пріоритетний</string>
     <string name="fail_unsupported_Systems_O">Підтримка лише системи P або вище</string>
+    <string name="hint_webdav_jgy">Використовуйте пароль в [Обліковий запис-&gt;Безпека-&gt;Керування сторонніми застосунками].</string>
+    <string name="app_debug">Отримати файл журналу</string>
+    <string name="hint_auto_fill_save">Пов\'язати поточні дані з наявними записами\?</string>
 </resources>
