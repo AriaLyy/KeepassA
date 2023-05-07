@@ -90,14 +90,22 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
       loginAdapter = when {
         module.isNextcloud() -> {
           binding.isPreemptive.isChecked = true
+          binding.passwordLayout.helperText =  null
           nextCloudAdapter
         }
         module.isJGY() -> {
           binding.isPreemptive.isChecked = false
+          binding.passwordLayout.helperText = ResUtil.getString(R.string.hint_webdav_jgy)
           defaultAdapter
         }
-        module.isOtherServer() -> otherAdapter
-        else -> defaultAdapter
+        module.isOtherServer() ->{
+          binding.passwordLayout.helperText =  null
+          otherAdapter
+        }
+        else -> {
+          binding.passwordLayout.helperText =  null
+          defaultAdapter
+        }
       }
       loginAdapter?.updateState()
     }

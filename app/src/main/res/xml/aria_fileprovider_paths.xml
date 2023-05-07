@@ -22,4 +22,6 @@
         name="external_cache_path"
         path="." />
 
+    <files-path path="marssample/log/" name="xlog" />
+
 </paths>

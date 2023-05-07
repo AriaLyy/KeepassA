@@ -38,6 +38,7 @@ data class DbHistoryRecord(
 
     // 云端路径
   @ColumnInfo var cloudDiskPath: String? = null,
+
     //密钥的路径
   @ColumnInfo var keyUri: String,
     // 数据库名

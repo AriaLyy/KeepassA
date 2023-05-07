@@ -185,7 +185,7 @@ object KDBAutoFillRepository {
       )
         .toString()
     } catch (e: Exception) {
-      e.printStackTrace()
+      Timber.e(e)
     }
     return null
   }

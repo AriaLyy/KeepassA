@@ -19,12 +19,6 @@
     <item>2</item>
   </string-array>
 
-  <string-array name="clean_clip_entries">
-    <item>30 second</item>
-    <item>1 minute</item>
-    <item>2 minute</item>
-    <item>5 minute</item>
-  </string-array>
 
   <string-array name="clean_clip_value">
     <item>30</item>
@@ -93,22 +87,6 @@
   </string-array>
 
 
-  <string-array name="v3_add_mor_item">
-    <item>Note</item>
-    <item>Attachment</item>
-    <item>Expiration date</item>
-  </string-array>
-
-  <string-array name="v4_add_mor_item">
-    <item>Note</item>
-    <item>Custom field</item>
-    <item>Attachment</item>
-    <item>TOTP</item>
-    <item>Tag</item>
-    <item>Cover link</item>
-    <item>Expiration date</item>
-  </string-array>
-
   <string-array name="choose_language_entries">
     <item>English</item>
     <item>简体中文</item>
@@ -138,13 +116,6 @@
     <item>12</item>
   </string-array>
 
-  <string-array name="create_normal_group">
-    <item>Email box</item>
-    <item>Work</item>
-    <item>Finance</item>
-    <item>Recreation</item>
-    <item>Recycle bin</item>
-  </string-array>
 
   <string-array name="totp_arithmetic">
     <item>SHA-1</item>

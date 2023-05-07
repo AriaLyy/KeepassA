@@ -174,7 +174,7 @@ object DropboxUtil : ICloudUtil {
         fileKey, entry.name, entry.serverModified, entry.size, true, entry.contentHash
       )
     } catch (e: Exception) {
-      e.printStackTrace()
+      Timber.e(e)
     }
     return null
   }

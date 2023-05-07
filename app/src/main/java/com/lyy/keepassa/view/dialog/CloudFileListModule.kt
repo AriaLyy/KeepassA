@@ -22,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.Date
 
 /**
@@ -89,7 +90,7 @@ class CloudFileListModule : BaseModule() {
           cache[path] = tempList
           return@withContext tempList
         } catch (e: Exception) {
-          e.printStackTrace()
+          Timber.e(e)
         }
         null
       }

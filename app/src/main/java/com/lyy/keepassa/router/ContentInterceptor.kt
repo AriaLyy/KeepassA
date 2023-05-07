@@ -17,7 +17,8 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.util.KdbUtil.isNull
-import com.lyy.keepassa.util.isOpenQuickLock
+import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.isCanOpenQuickLock
 import timber.log.Timber
 
 /**
@@ -56,7 +57,7 @@ class ContentInterceptor : IInterceptor {
         .navigation()
       return
     }
-    if (BaseApp.isLocked && BaseApp.dbRecord != null && BaseApp.APP.isOpenQuickLock()) {
+    if (BaseApp.isLocked && BaseApp.APP.isCanOpenQuickLock()) {
       callback.onInterrupt(Exception("database is locked"))
       Routerfit.create(ActivityRouter::class.java).toQuickUnlockActivity(FLAG_ACTIVITY_NEW_TASK)
       return

@@ -1,3 +1,11 @@
+### 2.4.1 (2023/05/07)
+* new: In-app browser auto-fill
+* new: Fetching log functions
+* opt: Animation effect
+* opt: The flow of auto-fill
+* opt: Auto-fill of web pages
+* fix: The problem of Chinese path synchronization failure in NutCloud
+
 ### 2.4.0 (2023/04/30)
 * 【Add】Spanish
 * 【Add】Auto-fill permission pop-up alerts

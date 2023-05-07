@@ -24,7 +24,6 @@ import android.service.autofill.FillResponse
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
 import com.arialyy.frame.util.ResUtil
-import com.blankj.utilcode.util.RomUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
@@ -35,7 +34,7 @@ import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.PermissionsUtil
-import com.lyy.keepassa.util.isOpenQuickLock
+import com.lyy.keepassa.util.isCanOpenQuickLock
 import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
@@ -94,11 +93,10 @@ class AutoFillService : AutofillService() {
       return
     }
 
-    checkRom()
 
     // 如果数据库没打开，或者数据库已经锁定，打开登录页面
     if (needAuth) {
-      val isOpenQuickLock = BaseApp.APP.isOpenQuickLock()
+      val isOpenQuickLock = BaseApp.APP.isCanOpenQuickLock()
 
       if (BaseApp.KDB == null) {
         openLoginActivity(callback, autoFillFields, apkPackageName, structure)
@@ -226,7 +224,7 @@ class AutoFillService : AutofillService() {
           apkPackageName = apkPackageName,
           userName = p.first ?: "",
           pass = p.second ?: "",
-          if (!BaseApp.KDB.isNull() && BaseApp.APP.isOpenQuickLock()) QuickUnlockActivity::class.java else LauncherActivity::class.java
+          if (!BaseApp.KDB.isNull() && BaseApp.APP.isCanOpenQuickLock()) QuickUnlockActivity::class.java else LauncherActivity::class.java
         )
       )
       return

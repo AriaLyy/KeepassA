@@ -175,7 +175,7 @@ internal class LauncherModule : BaseModule() {
             )
             unlockEvent.postValue(Pair(true, pass))
           } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
             deleteBiomKey(fragment, openDbRecord)
           }
         }
@@ -199,7 +199,7 @@ internal class LauncherModule : BaseModule() {
         )
       }
     } catch (e: Exception) {
-      e.printStackTrace()
+      Timber.e(e)
       deleteBiomKey(fragment, openDbRecord)
     }
   }

@@ -39,7 +39,6 @@ import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.ToastUtils
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
-import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentOpenDbBinding
@@ -238,7 +237,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         }
       })
     } catch (e: IOException) {
-      e.printStackTrace()
+      Timber.e(e)
     }
   }
 

@@ -61,7 +61,7 @@ public class PermissionPageManagement {
       intent.setComponent(comp);
       activity.startActivity(intent);
     } catch (Exception e) {
-      e.printStackTrace();
+      Timber.e(e);
       goIntentSetting(activity);
     }
   }
@@ -73,8 +73,8 @@ public class PermissionPageManagement {
       intent.putExtra("packageName", activity.getPackageName());
       activity.startActivity(intent);
     } catch (Exception e) {
-      e.printStackTrace();
       goIntentSetting(activity);
+      Timber.e(e);
     }
   }
 
@@ -89,8 +89,8 @@ public class PermissionPageManagement {
       intent.addCategory(Intent.CATEGORY_DEFAULT);
       activity.startActivity(intent);
     } catch (Exception e) {
-      e.printStackTrace();
       goIntentSetting(activity);
+      Timber.e(e);
     }
   }
 
@@ -104,8 +104,8 @@ public class PermissionPageManagement {
       intent.setComponent(comp);
       activity.startActivity(intent);
     } catch (Exception e) {
-      e.printStackTrace();
       goIntentSetting(activity);
+      Timber.e(e);
     }
   }
 
@@ -120,8 +120,8 @@ public class PermissionPageManagement {
       intent.setComponent(comp);
       activity.startActivity(intent);
     } catch (Exception e) {
-      e.printStackTrace();
       goIntentSetting(activity);
+      Timber.e(e);
     }
   }
 
@@ -155,8 +155,8 @@ public class PermissionPageManagement {
       intent.setComponent(comp);
       activity.startActivity(intent);
     } catch (Exception e) {
-      e.printStackTrace();
       goIntentSetting(activity);
+      Timber.e(e);
     }
   }
 
@@ -202,7 +202,7 @@ public class PermissionPageManagement {
     try {
       pActivity.startActivity(intent);
     } catch (Exception e) {
-      e.printStackTrace();
+      Timber.e(e);
     }
   }
 }

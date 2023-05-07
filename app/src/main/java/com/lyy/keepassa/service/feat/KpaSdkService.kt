@@ -37,6 +37,9 @@ import com.tencent.vasdolly.helper.ChannelReaderUtil
 import com.tencent.wcdb.database.SQLiteCipherSpec
 import com.tencent.wcdb.room.db.WCDBOpenHelperFactory
 import com.zzhoujay.richtext.RichText
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 
@@ -47,11 +50,12 @@ import timber.log.Timber
  **/
 @Route(path = "/service/kpaSdk")
 class KpaSdkService : IProvider {
+  private val scope = MainScope()
 
   fun preInitSdk(context: Application) {
     MMKV.initialize(context)
     Utils.init(context)
-    initDb(context)
+    RoomFeature.init(context)
     // 开启kotlin 协程debug
     if (AppUtils.isAppDebug()) {
       System.setProperty("kotlinx.coroutines.debug", "on")
@@ -59,19 +63,24 @@ class KpaSdkService : IProvider {
       ARouter.openLog() // 打印日志
       ARouter.openDebug() // 开启调试模式(如果在InstantRun模式下运行，必须开启调试模式！线上版本需要关闭,否则有安全风险)
     }
-    // 初始化一下时间
-    KeepassAUtil.instance.isFastClick()
-    keyStorePass = QuickUnLockUtil.getDbPass().toCharArray()
-    val showStatusBar = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-      .getBoolean(ResUtil.getString(R.string.set_key_title_show_state_bar), true)
-    BaseActivity.showStatusBar = showStatusBar
-    EventBus.builder().addIndex(KpaEventBusIndex()).installDefaultEventBus()
-    listenerAppBackground()
+    scope.launch(Dispatchers.IO) {
+      // 初始化一下时间
+      KeepassAUtil.instance.isFastClick()
+      keyStorePass = QuickUnLockUtil.getDbPass().toCharArray()
+      val showStatusBar = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
+        .getBoolean(ResUtil.getString(R.string.set_key_title_show_state_bar), true)
+      BaseActivity.showStatusBar = showStatusBar
+      EventBus.builder().addIndex(KpaEventBusIndex()).installDefaultEventBus()
+      listenerAppBackground()
+    }
   }
 
-  fun initThirdSdk(context: Context){
-    initBugly(context)
-    RichText.initCacheDir(context)
+  fun initThirdSdk(context: Context) {
+    scope.launch(Dispatchers.IO) {
+      BuglyFeature.init(context)
+      RichText.initCacheDir(context)
+      XLogFeature.init(context)
+    }
   }
 
   private fun listenerAppBackground() {
@@ -81,56 +90,9 @@ class KpaSdkService : IProvider {
 
       override fun onBackground(activity: Activity?) {
         KpaUtil.kdbHandlerService.saveDbByBackground(true)
+        XLogFeature.flush()
       }
     })
-  }
-
-  private fun initBugly(context: Context) {
-    val kUtil = KeepassAUtil.instance
-    // 获取当前包名
-    val packageName: String = context.packageName
-
-    // 获取当前进程名
-    val processName = kUtil.getProcessName(Process.myPid())
-    val strategy = UserStrategy(context)
-    strategy.isUploadProcess = processName == null || processName == packageName
-    strategy.appChannel = getChannel(context)
-    strategy.appVersion = kUtil.getAppVersionName(context)
-    CrashReport.initCrashReport(
-      context.applicationContext, "59fc0ec759", AppUtils.isAppDebug(),
-      strategy
-    )
-    //CrashReport.testJavaCrash();
-  }
-
-  private fun getChannel(context: Context): String {
-    var channel = ChannelReaderUtil.getChannel(context.applicationContext)
-    if (channel == null) {
-      channel = "default"
-    }
-    return channel
-  }
-
-  /**
-   * 初始化数据库
-   */
-  private fun initDb(context: Context) {
-    // 初始化数据库
-    val cipherSpec = SQLiteCipherSpec() // 指定加密方式，使用默认加密可以省略
-      .setPageSize(4096)
-      .setKDFIteration(64000)
-    val factory = WCDBOpenHelperFactory()
-      .passphrase(QuickUnLockUtil.getDbPass().toByteArray()) // 指定加密DB密钥，非加密DB去掉此行
-      .cipherSpec(cipherSpec) // 指定加密方式，使用默认加密可以省略
-      .writeAheadLoggingEnabled(true) // 打开WAL以及读写并发，可以省略让Room决定是否要打开
-      .asyncCheckpointEnabled(true) // 打开异步Checkpoint优化，不需要可以省略
-    BaseApp.appDatabase = Room.databaseBuilder(
-      context,
-      AppDatabase::class.java, AppDatabase.DB_NAME
-    )
-      .openHelperFactory(factory)
-      .addMigrations(MIGRATION_2_3(), MIGRATION_3_4())
-      .build()
   }
 
   override fun init(context: Context?) {

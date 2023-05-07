@@ -14,9 +14,12 @@ import android.net.Uri
 import androidx.core.net.toFile
 import com.arialyy.frame.util.FileUtil
 import com.lyy.keepassa.entity.DbHistoryRecord
+import com.lyy.keepassa.util.hasSpecialChar
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import timber.log.Timber
 import java.io.FileOutputStream
+import java.net.URI
+import java.net.URLEncoder
 import java.nio.channels.Channels
 import java.nio.channels.FileChannel
 import java.nio.channels.ReadableByteChannel
@@ -51,6 +54,11 @@ object WebDavUtil : ICloudUtil {
   var password: String = ""
 
   /**
+   * key: 原始路径，value：转换后的路径
+   */
+  private val urlPathMap = hashMapOf<String, String>()
+
+  /**
    * 是否登录
    * @return false 未登录
    */
@@ -82,7 +90,7 @@ object WebDavUtil : ICloudUtil {
     uri: String,
     userName: String,
     password: String,
-    isPreemptive:Boolean
+    isPreemptive: Boolean
   ): Boolean {
     Timber.d("checkLogin, uri = ${uri}, userName = ${userName}, password = ${password}")
     this.userName = userName
@@ -154,7 +162,6 @@ object WebDavUtil : ICloudUtil {
         list.removeAt(0)
       }
     } catch (e: Exception) {
-      e.printStackTrace()
       Timber.e(e, "获取文件列表失败")
     }
     return list
@@ -183,8 +190,7 @@ object WebDavUtil : ICloudUtil {
         file.path, file.name, file.modified, file.contentLength, file.isDirectory
       )
     } catch (e: Exception) {
-      e.printStackTrace()
-      Timber.e(e, "获取文件信息失败")
+      Timber.e(e)
     }
     return null
   }
@@ -194,7 +200,6 @@ object WebDavUtil : ICloudUtil {
     try {
       sardine!!.delete(convertUrl(fileKey))
     } catch (e: Exception) {
-      e.printStackTrace()
       Timber.e(e, "删除文件失败")
       return false
     }
@@ -216,33 +221,54 @@ object WebDavUtil : ICloudUtil {
     sardine ?: return false
     var localToken: String? = null
     try {
-      // delFile(dbRecord.cloudDiskPath!!)
-      // val exist = fileExists(dbRecord.cloudDiskPath!!)
-      localToken = sardine!!.lock(dbRecord.cloudDiskPath, 5)
+      // delFile(dbRecord.cloudDiskPath!!) // 不能删除，否则如果上传失败，文件就丢失了
+      localToken = sardine!!.lock(getConvertedCloudPath(dbRecord), 5)
       Timber.d("localToken = $localToken")
+
       sardine?.put(
-        dbRecord.cloudDiskPath,
+        getConvertedCloudPath(dbRecord),
         Uri.parse(dbRecord.localDbUri).toFile(),
         "application/binary",
         false,
         localToken
       )
       Timber.d("上传完成，重新获取文件信息")
-      val info = getFileInfo(dbRecord.cloudDiskPath!!)
+      val info = getFileInfo(getConvertedCloudPath(dbRecord))
       if (info != null) {
         DbSynUtil.serviceModifyTime = info.serviceModifyDate
       }
     } catch (e: Exception) {
-      e.printStackTrace()
       Timber.e(e, "上传文件失败")
       return false
     } finally {
       localToken?.let {
-        sardine?.unlock(dbRecord.cloudDiskPath!!, it)
+        sardine?.unlock(getConvertedCloudPath(dbRecord), it)
       }
     }
 
     return true
+  }
+
+  /**
+   * 检查上传路径是否有特殊字符，如果有特殊字符，转换特殊字符
+   */
+  private fun getConvertedCloudPath(dbRecord: DbHistoryRecord): String {
+    val tempUrl = urlPathMap[dbRecord.cloudDiskPath!!]
+    if (tempUrl != null) {
+      return tempUrl
+    }
+
+    val realUrl = if (dbRecord.cloudDiskPath!!.hasSpecialChar()) {
+      Timber.d("url中有特殊，需要对特殊字符进行编码处理")
+      val path = URI.create(dbRecord.cloudDiskPath).path
+      val encodedPath = path.split("/")
+        .joinToString("/") { URLEncoder.encode(it, "UTF-8") }
+      "${dbRecord.cloudDiskPath!!.substringBefore(path)}${encodedPath}"
+    } else {
+      dbRecord.cloudDiskPath!!
+    }
+    urlPathMap[dbRecord.cloudDiskPath!!] = realUrl
+    return realUrl
   }
 
   override suspend fun downloadFile(
@@ -269,7 +295,6 @@ object WebDavUtil : ICloudUtil {
         foc = FileOutputStream(fp).channel
         foc.transferFrom(fic, 0, fileInfo!!.size)
       } catch (e: Exception) {
-        e.printStackTrace()
         Timber.e(e, "下载文件失败")
         return null
       } finally {

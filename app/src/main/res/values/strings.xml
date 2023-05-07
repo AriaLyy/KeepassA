@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="clean_clip_entries">
+        <item>30 second</item>
+        <item>1 minute</item>
+        <item>2 minute</item>
+        <item>5 minute</item>
+    </string-array>
+    <string-array name="v3_add_mor_item">
+        <item>Note</item>
+        <item>Attachment</item>
+        <item>Expiration date</item>
+    </string-array>
+
+    <string-array name="v4_add_mor_item">
+        <item>Note</item>
+        <item>Custom field</item>
+        <item>Attachment</item>
+        <item>TOTP</item>
+        <item>Tag</item>
+        <item>Cover link</item>
+        <item>Expiration date</item>
+    </string-array>
+    <string-array name="create_normal_group">
+        <item>Email box</item>
+        <item>Work</item>
+        <item>Finance</item>
+        <item>Recreation</item>
+        <item>Recycle bin</item>
+    </string-array>
+    <string-array name="auto_fill_hint_label">
+        <item>Email</item>
+        <item>Phone</item>
+        <item>User</item>
+        <item>Account</item>
+    </string-array>
     <string name="app_name" translatable="false">KeepassA</string>
     <string name="db">Database</string>
     <string name="db1"><![CDATA[database\t|\t<font color="#757575">%s</font>]]></string>
@@ -174,6 +208,7 @@
     <string name="hint_db_pass_modify_success">Use the new database password to open the database the next time</string>
     <string name="hint_db_pass_modify">Database password changed</string>
     <string name="app_feedback">Feedback</string>
+    <string name="app_debug">Get log file</string>
     <string name="error_db_pass_too_short">Make the database password more than 6 characters or more to protect your data</string>
     <string name="autofill_sign_in_prompt">Auto-fill password with KeePassA</string>
     <string name="hint_open_backgroun_start">You have set up auto-fill, but KeePassA does not have the appropriate permissions, please authorize the KeePassA backend pop-up screen in the settings page.</string>
@@ -374,4 +409,6 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="invalid_img">Invalid Image</string>
     <string name="preemptive">Preemptive</string>
     <string name="fail_unsupported_Systems_O">Only support P or higher system</string>
+    <string name="hint_webdav_jgy">Please use the password in [Account->Security->Third-party Applications Management].</string>
+    <string name="hint_auto_fill_save">Associate current data to existing entries?</string>
 </resources>

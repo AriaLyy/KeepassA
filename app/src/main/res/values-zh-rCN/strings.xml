@@ -1,5 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="quick_pass_type_entries">
+        <item>数据库密码前面%s位</item>
+        <item>数据库密码末尾%s位</item>
+    </string-array>
+
+
+    <string-array name="clean_clip_entries">
+        <item>30秒</item>
+        <item>1分钟</item>
+        <item>2分钟</item>
+        <item>5分钟</item>
+    </string-array>
+
+
+    <string-array name="quick_lock_entries">
+        <item>2分钟</item>
+        <item>5分钟</item>
+        <item>10分钟</item>
+        <item>20分钟</item>
+    </string-array>
+
+    <string-array name="out_db_entries">
+        <item>Keepass2数据库</item>
+        <item>不加密的XML文件</item>
+        <item>不加密的CSV文件</item>
+    </string-array>
+
+
+    <string-array name="v3_add_mor_item">
+        <item>备注</item>
+        <item>文件附件</item>
+        <item>失效时间</item>
+    </string-array>
+
+    <string-array name="v4_add_mor_item">
+        <item>备注</item>
+        <item>自定义字段</item>
+        <item>文件附件</item>
+        <item>TOTP</item>
+        <item>标签</item>
+        <item>覆盖链接</item>
+        <item>失效时间</item>
+    </string-array>
+
+    <!--  创建数据库时的默认群组 -->
+    <string-array name="create_normal_group">
+        <item>邮箱</item>
+        <item>工作</item>
+        <item>财务</item>
+        <item>娱乐</item>
+        <item>回收站</item>
+    </string-array>
+
+    <string-array name="auto_fill_hint_label">
+        <item>邮箱</item>
+        <item>手机</item>
+        <item>用户</item>
+        <item>账号</item>
+    </string-array>
+
     <string name="db">数据库</string>
     <string name="db1"><![CDATA[数据库\t|\t<font color="#757575">%s</font>]]></string>
     <string name="password">密码</string>
@@ -369,4 +429,7 @@
     <string name="invalid_img">无效的图片</string>
     <string name="preemptive">预置模式</string>
     <string name="fail_unsupported_Systems_O">仅支持P以上的系统</string>
+    <string name="hint_webdav_jgy">请使用【账户信息->安全选项->第三方应用】中的密码</string>
+    <string name="app_debug">取出日志文件</string>
+    <string name="hint_auto_fill_save">将当前数据关联到已有条目？</string>
 </resources>

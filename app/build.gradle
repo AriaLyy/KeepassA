@@ -24,7 +24,7 @@ android {
     applicationId "com.lyy.keepassa"
     minSdkVersion libs.versions.minSdk.get().toInteger()
     targetSdkVersion libs.versions.targetsdk.get().toInteger()
-    versionCode 55
+    versionCode 56
     versionName KPA_VERSION_NAME
     multiDexEnabled true
 
@@ -113,6 +113,7 @@ android {
   configurations{
 //    implementation.exclude group: 'com.intellij' , module:'annotations'
   }
+
 }
 
 kapt {
@@ -211,7 +212,7 @@ dependencies {
 
   // keepassA组件
   implementation 'me.laoyuyu.keepassa:KeepassIcon:0.4.0'
-  implementation 'me.laoyuyu.keepassa:KeepassLib:0.4.0'
+  implementation 'me.laoyuyu.keepassa:KeepassLib:0.4.1'
   //  implementation project(path: ':KpaLib')
   implementation 'me.laoyuyu.keepassa:KPAFrame:0.4.0'
   implementation 'me.laoyuyu.keepassa:UIWidget:0.4.0'
@@ -264,6 +265,9 @@ dependencies {
 
   // mmkv
   implementation(libs.tencent.mmkv)
+
+  // xlog
+  implementation 'com.tencent.mars:mars-xlog:1.2.5'
   // // =========================== 三方库 end =====================================
   implementation(libs.google.gms.billing)
   implementation(libs.google.gms.base)

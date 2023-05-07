@@ -200,6 +200,23 @@
         android:textColor="@color/text_black_color"
         android:textSize="@dimen/text_size_normal" />
 
+    <TextView
+        android:id="@+id/debug"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_white_selector"
+        android:clickable="true"
+        android:drawableStart="@drawable/ic_baseline_bug_report_24"
+        android:drawablePadding="16dp"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:paddingStart="32dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:text="@string/app_debug"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/text_size_normal" />
+
 
   </LinearLayout>
 </layout>

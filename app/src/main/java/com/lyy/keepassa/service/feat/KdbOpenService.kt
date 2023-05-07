@@ -146,6 +146,7 @@ class KdbOpenService : IProvider {
         BaseApp.dbName = db.pm.name
         BaseApp.dbFileName = dbName
         BaseApp.dbPass = QuickUnLockUtil.encryptStr(dbPass)
+        KpaUtil.setEmptyPass(dbPass.isEmpty())
         KeepassAUtil.instance.subShortPass()
 
         // 创建默认群组
@@ -177,11 +178,11 @@ class KdbOpenService : IProvider {
           }
         }
       } catch (e: Exception) {
-        e.printStackTrace()
         HitUtil.toaskOpenDbException(e)
         scope.launch {
           openDbFlow.emit(null)
         }
+        Timber.e(e)
       }
     }
   }
@@ -234,7 +235,7 @@ class KdbOpenService : IProvider {
           }
         } catch (e: Exception) {
           HitUtil.toaskOpenDbException(e)
-          e.printStackTrace()
+          Timber.e(e)
         }
         temp
       }
@@ -396,6 +397,7 @@ class KdbOpenService : IProvider {
         .openDb(dbUri, dbPass, keyUri)
       if (db != null) {
         val dbName = UriUtil.getFileNameFromUri(context, dbUri)
+        KpaUtil.setEmptyPass(dbPass.isEmpty())
         BaseApp.dbPass = QuickUnLockUtil.encryptStr(dbPass)
         KeepassAUtil.instance.subShortPass()
         if (keyUri != null) {
@@ -421,7 +423,7 @@ class KdbOpenService : IProvider {
       return db
     } catch (e: Exception) {
       HitUtil.toaskOpenDbException(e)
-      e.printStackTrace()
+      Timber.e(e)
     }
     return null
   }

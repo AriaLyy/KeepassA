@@ -117,7 +117,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     binding.dbName.text = BaseApp.dbFileName
     binding.dbVersion.text = BaseApp.dbName
     val needShowTotp = PreferenceManager.getDefaultSharedPreferences(this)
-      .getBoolean(getString(R.string.set_key_main_show_totp_tab), false)
+      .getBoolean(getString(R.string.set_key_main_show_totp_tab), true)
     initVP(needShowTotp)
 
     binding.fab.setOnItemClickListener(object : MainExpandFloatActionButton.OnItemClickListener {

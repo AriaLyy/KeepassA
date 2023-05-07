@@ -147,6 +147,8 @@
         app:passwordToggleEnabled="true"
         app:startIconDrawable="@drawable/ic_password"
         app:startIconTint="@color/color_icon_grey"
+        app:helperTextTextColor="@color/color_d3ae5b"
+        app:helperText="@string/hint_webdav_jgy"
         >
 
       <com.google.android.material.textfield.TextInputEditText

@@ -291,7 +291,7 @@ object BarUtil {
           }
         }
       } catch (e: java.lang.Exception) {
-        e.printStackTrace()
+        Timber.e(e)
       }
     }
     return result

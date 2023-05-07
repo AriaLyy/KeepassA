@@ -10,7 +10,6 @@
 package com.lyy.keepassa.view.dialog
 
 import android.content.Context
-import android.net.Uri
 import androidx.lifecycle.liveData
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
@@ -22,6 +21,7 @@ import com.lyy.keepassa.util.cloud.WebDavUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class WebDavLoginModule : BaseModule() {
 
@@ -96,7 +96,7 @@ class WebDavLoginModule : BaseModule() {
         }
         isSuccess = true
       } catch (e: Exception) {
-        e.printStackTrace()
+        Timber.e(e)
       }
       return@withContext isSuccess
     }

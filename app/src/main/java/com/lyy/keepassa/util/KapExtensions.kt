@@ -20,15 +20,33 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.Constance
 
+val charRegex = Regex("[^a-zA-Z0-9]")
+
 fun Activity.isDestroy() = isDestroyed || isFinishing
+
+/**
+ * @return true has special char
+ */
+fun CharSequence.hasSpecialChar(): Boolean {
+  return charRegex.containsMatchIn(this)
+}
+
+// fun CharSequence.specialEncode():CharSequence{
+//   val out: StringBuilder = StringBuilder(length)
+//   forEach {
+//     it.
+//   }
+// }
 
 /**
  * isOpenQuickLock
  * @return true already open quick lock
  */
-fun BaseApp.isOpenQuickLock(): Boolean {
+fun BaseApp.isCanOpenQuickLock(): Boolean {
   return PreferenceManager.getDefaultSharedPreferences(this)
     .getBoolean(applicationContext.getString(R.string.set_quick_unlock), false)
+    && BaseApp.dbRecord != null
+    && !KpaUtil.isEmptyPass()
 }
 
 fun PwEntryV4.hasNote(): Boolean {
