@@ -37,6 +37,8 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
+import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.textfield.TextInputLayout.EndIconMode
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroupId
@@ -414,6 +416,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     binding.password.setText(pwEntry.password)
     binding.enterPassword.setText(pwEntry.password)
     binding.url.setText(pwEntry.url)
+    binding.titleLayout.endIconMode = TextInputLayout.END_ICON_CUSTOM
     binding.titleLayout.endIconDrawable =
       IconUtil.getEntryIconDrawable(this, pwEntry, zoomIcon = true)
 

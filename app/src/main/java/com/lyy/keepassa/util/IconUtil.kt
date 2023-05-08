@@ -232,12 +232,14 @@ object IconUtil {
     context: Context,
     drawable: BitmapDrawable
   ): BitmapDrawable {
-    val iconSize = context.resources.getDimension(R.dimen.icon_size)
+    val iconSize = context.resources.getDimension(R.dimen.icon_size).toInt()
 
     val newbmp =
-      Bitmap.createScaledBitmap(drawable.bitmap, iconSize.toInt(), iconSize.toInt(), true)
+      Bitmap.createScaledBitmap(drawable.bitmap, iconSize, iconSize, true)
     drawable.bitmap.recycle()
-    return BitmapDrawable(context.resources, newbmp)
+    val dr = BitmapDrawable(context.resources, newbmp)
+    dr.setBounds(0, 0, iconSize, iconSize)
+    return dr
   }
 
   /**
