@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+  <data>
+
+    <variable
+        name="msgTitle"
+        type="java.lang.CharSequence"
+        />
+
+    <import type="android.text.TextUtils" />
+
+    <import type="android.view.View" />
+
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      >
+
+    <com.lyy.keepassa.widget.BubbleTextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical"
+        android:text="@{TextUtils.isEmpty(msgTitle) ? @string/hint : msgTitle}"
+        android:textColor="@color/text_blue_color"
+        android:textSize="@dimen/text_size_biggest"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:icon_size="24dp"
+        />
+
+    <View
+        android:id="@+id/vLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
