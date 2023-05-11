@@ -22,10 +22,10 @@ class TipChain : IMainDialogInterceptor {
     val diffDay = abs(Days.daysBetween(DateTime.now(), DateTime(lastStartTime)).days)
     Timber.d("TipChain, dontShowTip = $dontShowTip, lastStartTime = $lastStartTime, diffDay = $diffDay")
 
-    if (!dontShowTip && diffDay >= 1) {
+//    if (!dontShowTip && diffDay >= 1) {
       CommonKVStorage.put(KeyConstance.KEY_LAST_TIP_START_TIME, System.currentTimeMillis())
       Routerfit.create(DialogRouter::class.java).showTipDialog()
-    }
+//    }
 
     return MainDialogResponse(MainDialogResponse.RESPONSE_OK)
   }

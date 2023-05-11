@@ -7,14 +7,17 @@
  */
 package com.lyy.keepassa.view.dialog
 
+import android.text.SpannableStringBuilder
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.SpanUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.base.KeyConstance
 import com.lyy.keepassa.databinding.DialogTipBinding
 import com.lyy.keepassa.util.CommonKVStorage
 import com.lyy.keepassa.util.doClick
+import com.zzhoujay.richtext.RichText
 
 /**
  * @Author laoyuyu
@@ -30,7 +33,8 @@ class TipsDialog : BaseDialog<DialogTipBinding>() {
   override fun initData() {
     super.initData()
     val vector = ResUtil.getSvgIcon(R.drawable.ic_lightbulb_on, R.color.colorPrimary)
-    binding.layoutTitle.tvTitle.setLeftIcon(vector!!)
+    binding.msgTitle = ResUtil.getString(R.string.title_tip_of_day)
+    binding.includeLayout.tvTitle.setLeftIcon(vector!!)
     binding.cancel.doClick {
       dismiss()
     }
@@ -40,8 +44,24 @@ class TipsDialog : BaseDialog<DialogTipBinding>() {
     binding.cbShow.setOnCheckedChangeListener { _, isChecked ->
       CommonKVStorage.put(KeyConstance.KEY_DONT_SHOW_TIP, isChecked)
     }
+    bindingContent()
   }
 
   private fun bindingContent() {
+    getDarkStr()
+  }
+
+  private fun getDarkStr(): SpannableStringBuilder {
+    return SpanUtils.with(binding.tvContent)
+      .append("夜间模式\n")
+      .setBold()
+      .setFontSize(16, true)
+      .append("应用设置->UI设置->主题风格\n")
+      .setFontSize(14, true)
+      .appendImage(R.drawable.tip_1_0)
+      .append("选择夜间模式\n")
+      .setFontSize(14, true)
+      .appendImage(R.drawable.tip_1_1)
+      .create()
   }
 }
