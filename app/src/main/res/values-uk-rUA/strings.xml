@@ -366,4 +366,6 @@
     <string name="hint_webdav_jgy">Використовуйте пароль в [Обліковий запис-&gt;Безпека-&gt;Керування сторонніми застосунками].</string>
     <string name="app_debug">Отримати файл журналу</string>
     <string name="hint_auto_fill_save">Пов\'язати поточні дані з наявними записами\?</string>
+    <string name="title_tip_of_day">Порада дня</string>
+    <string name="hint_dont_show_tips">Не показувати поради</string>
 </resources>
