@@ -368,7 +368,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   /**
    * 设置基础属性
    */
-  @SuppressLint("SetTextI18n")
+  @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
   private fun handleBaseAttr() {
     binding.title.text = pwEntry.title
     binding.userName.text = pwEntry.username
@@ -394,6 +394,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
       binding.noticeLayout.visibility = View.GONE
     } else {
       binding.notice.text = pwEntry.notes.trim()
+      binding.noticeLayout.visibility = View.VISIBLE
 //      binding.notice.setOnClickListener(this)
       binding.noticeLayout.setOnClickListener(this)
       binding.noticeLayout.setOnTouchListener { _, event ->
