@@ -435,7 +435,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
       module.expires = v4Entry.expires()
     }
     if (v4Entry.tags.isNotEmpty()) {
-      binding.tag.visibility = View.VISIBLE
+      binding.tagLayout.visibility = View.VISIBLE
       binding.tag.setText(v4Entry.tags)
     }
     if (v4Entry.binaries.isNotEmpty()) {
