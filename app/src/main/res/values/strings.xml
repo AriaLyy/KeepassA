@@ -411,4 +411,6 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="fail_unsupported_Systems_O">Only support P or higher system</string>
     <string name="hint_webdav_jgy">Please use the password in [Account->Security->Third-party Applications Management].</string>
     <string name="hint_auto_fill_save">Associate current data to existing entries?</string>
+    <string name="hint_dont_show_tips">Don\'t show tips</string>
+    <string name="title_tip_of_day">Tip of the day</string>
 </resources>

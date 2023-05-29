@@ -27,6 +27,10 @@ import com.lyy.keepassa.view.dialog.webdav.WebDavLoginDialogNew
  **/
 interface DialogRouter {
 
+  @RouterPath(path = "/dialog/tipsDialog")
+  @DialogArg(showDialog = true)
+  fun showTipDialog()
+
   @RouterPath(path = "/dialog/imgViewer")
   @DialogArg(showDialog = true)
   fun showImgViewerDialog(

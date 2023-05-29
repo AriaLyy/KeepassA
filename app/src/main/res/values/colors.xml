@@ -3,9 +3,11 @@
   <color name="background_color">#FFFFFF</color>
   <color name="text_black_color">#333333</color>
 
-  <color name="colorPrimary">#4E85DB</color>
-  <color name="colorPrimaryDark">#4E85DB</color>
-  <color name="colorAccent">#4E85DB</color>
+  <!--  https://blog.csdn.net/qq_31001287/article/details/60867484-->
+  <color name="colorPrimary">#4E85DB</color>  <!--状态栏-->
+  <color name="colorPrimaryDark">#4E85DB</color> <!--action bar-->
+  <color name="colorAccent">#4E85DB</color>   <!--checkbox, progress bar 的颜色-->
+  <color name="textColorPrimary">#4E85DB</color> <!--文字颜色-->
 
   <color name="rippleDefaultColor">#4f000000</color>
   <color name="ripple">#18000000</color>
@@ -49,7 +51,7 @@
   <color name="color_524E85DB">#524E85DB</color>
 
 
-<!-- 默迪卡颜色  https://www.bilibili.com/read/cv11988559-->
+  <!-- 默迪卡颜色  https://www.bilibili.com/read/cv11988559-->
   <color name="color_d3ae5b">#d3ae5b</color>
 
 

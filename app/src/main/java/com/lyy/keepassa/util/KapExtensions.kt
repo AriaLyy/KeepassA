@@ -19,8 +19,71 @@ import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.Constance
+import timber.log.Timber
 
 val charRegex = Regex("[^a-zA-Z0-9]")
+
+enum class ClickScope {
+  /**
+   * 仅在该View中有效
+   */
+  VIEW,
+
+  /**
+   * 全局的
+   */
+  SYS
+}
+
+private var lastClickTime = -1L
+
+/**
+ * 时间间隔
+ * @param clickScope  时间间隔，[ClickScope.VIEW]，[ClickScope.SYS]
+ */
+fun View.doClick(
+  intervalTime: Long = 1000,
+  clickScope: ClickScope = ClickScope.VIEW,
+  body: (View) -> Unit
+) {
+  var curTime = -1L
+  fun viewScopeClick(it: View) {
+    if (curTime == -1L || kotlin.math.abs(System.currentTimeMillis() - curTime) > intervalTime) {
+      curTime = System.currentTimeMillis()
+      body.invoke(it)
+      return
+    }
+    Timber.d("间隔太短")
+  }
+
+  fun sysScopeClick(it: View) {
+    if (kotlin.math.abs(System.currentTimeMillis() - lastClickTime) > intervalTime) {
+      lastClickTime = System.currentTimeMillis()
+      body.invoke(it)
+      return
+    }
+    Timber.d("间隔太短")
+  }
+
+  setOnClickListener {
+    if (intervalTime == 0L) {
+      body.invoke(it)
+      return@setOnClickListener
+    }
+
+    if (clickScope == ClickScope.VIEW) {
+      viewScopeClick(it)
+      return@setOnClickListener
+    }
+
+    if (clickScope == ClickScope.SYS) {
+      sysScopeClick(it)
+      return@setOnClickListener
+    }
+
+    Timber.d("间隔太短")
+  }
+}
 
 fun Activity.isDestroy() = isDestroyed || isFinishing
 
