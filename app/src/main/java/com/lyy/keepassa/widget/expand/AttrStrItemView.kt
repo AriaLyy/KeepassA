@@ -25,7 +25,6 @@ class AttrStrItemView(
   var titleStr: String,
   var valueInfo: ProtectedString
 ) : RelativeLayout(context) {
-  private val TAG = javaClass.simpleName
   val titleTx: TextView
   val valueTx: TextView
   val pb: RoundProgressBarWidthNumber

@@ -87,7 +87,7 @@ class ExpandAttrStrLayout(
 
   init {
     LayoutInflater.from(context)
-        .inflate(R.layout.layout_expand_title, this, true)
+      .inflate(R.layout.layout_expand_title, this, true)
     attrImg = findViewById(R.id.attr_img)
     attrTt = findViewById(R.id.attr_tt)
     attrArrow = findViewById(R.id.attr_arrow)
@@ -144,7 +144,6 @@ class ExpandAttrStrLayout(
     mTransitioner.disableTransitionType(LayoutTransition.CHANGE_DISAPPEARING)
     mTransitioner.disableTransitionType(LayoutTransition.CHANGE_APPEARING)
     layoutTransition = mTransitioner
-
   }
 
   override fun onDetachedFromWindow() {
@@ -160,7 +159,7 @@ class ExpandAttrStrLayout(
   }
 
   private fun toggle() {
-    if ( KeepassAUtil.instance.isFastClick()) {
+    if (KeepassAUtil.instance.isFastClick()) {
       return
     }
     if (attrIsExpand) {
@@ -191,8 +190,8 @@ class ExpandAttrStrLayout(
     // 处理icon 和标题
     attrImg.visibility = View.VISIBLE
     ObjectAnimator.ofFloat(attrTt, "translationX", attrTt.translationX, attrTitleX)
-        .setDuration(200)
-        .start()
+      .setDuration(200)
+      .start()
 
     // 处理箭头动画
     if (hintAttrAnim != null && hintAttrAnim!!.isRunning) {
@@ -222,8 +221,8 @@ class ExpandAttrStrLayout(
     attrTitleX = attrTt.translationX
     attrImg.visibility = View.GONE
     ObjectAnimator.ofFloat(attrTt, "translationX", attrTitleX, iconX)
-        .setDuration(200)
-        .start()
+      .setDuration(200)
+      .start()
 
     // 处理箭头动画
     if (showAttrAnim != null && showAttrAnim!!.isRunning) {
@@ -273,7 +272,7 @@ class ExpandAttrStrLayout(
   ) {
     fileData[title] = value
     val child = AttrFileItemView(
-        context, title, value
+      context, title, value
     )
     child.id = itemLayout.childCount
     child.setOnClickListener(this)
@@ -308,25 +307,28 @@ class ExpandAttrStrLayout(
    * 定时自动获取otp密码
    */
   private fun startAutoGetOtp() {
-    if (otpPassItem == null || otpPassItem?.pb == null || entryV4 == null) {
-      Timber.e( "无法自动获取otp密码")
+    if (otpPassItem == null || entryV4 == null) {
+      Timber.e("无法自动获取otp密码")
       return
     }
     val p = OtpUtil.getOtpPass(entryV4!!)
-    if (p.second.isNullOrEmpty()){
-      Timber.e( "无法自动获取otp密码")
+    if (p.second.isNullOrEmpty()) {
+      Timber.e("无法自动获取otp密码")
       return
     }
-
-    otpPassItem!!.pb.visibility = View.VISIBLE
-    otpPassItem!!.pb.setCountdown(true)
+    otpPassItem?.let {
+      it.pb.visibility = View.VISIBLE
+      it.pb.setCountdown(true)
+    }
 
     scope.launch(Dispatchers.Main) {
 
       Timber.d(p.toString())
       val time = p.first
-      otpPassItem!!.pb.max = time
-      otpPassItem!!.valueTx.text = p.second
+      otpPassItem?.let {
+        it.pb.max = time
+        it.updateValue(it.titleStr, ProtectedString(false, p.second))
+      }
       for (i in time downTo 1) {
         otpPassItem!!.pb.progress = i
         withContext(Dispatchers.IO) {
@@ -371,5 +373,4 @@ class ExpandAttrStrLayout(
       strViewListener!!.onClickListener(v!!, v.id)
     }
   }
-
 }
