@@ -315,4 +315,5 @@
     <string name="feedback_email_msg">Hallo, Ich bin KeyPassA, haben Sie Fragen\?<br/> <br/> <br/> _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/> Marke: %s <br/> Model: %s <br/> Systemversion:%s <br/> Auflösung: %s <br/> App-Version: %s</string>
     <string name="totp_custom_hint">Benutzerdefinierte Einstellungen</string>
     <string name="hint_security_yellow">Achtung, wenn Sie im Simulator arbeiten, birgt diese Umgebung einige unvorhersehbare Risiken für die Datenbank</string>
+    <string name="open_setting">Einstellung</string>
 </resources>
