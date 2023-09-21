@@ -19,7 +19,7 @@ import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogTotpDisplayBinding
 import com.lyy.keepassa.util.ClipboardUtil
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.OtpUtil
+import com.lyy.keepassa.util.totp.OtpUtil
 import java.util.UUID
 
 /**

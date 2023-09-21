@@ -114,6 +114,8 @@ android {
 //    implementation.exclude group: 'com.intellij' , module:'annotations'
   }
 
+  ndkVersion '21.4.7075529'
+
 }
 
 kapt {

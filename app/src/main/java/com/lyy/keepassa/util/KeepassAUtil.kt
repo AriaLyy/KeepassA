@@ -62,6 +62,7 @@ import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.ServiceRouter
 import com.lyy.keepassa.service.autofill.AutoFillHelper
 import com.lyy.keepassa.service.autofill.StructureParser
+import com.lyy.keepassa.util.totp.OtpUtil
 import com.lyy.keepassa.view.create.CreateDbActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.launcher.OpenDbHistoryActivity

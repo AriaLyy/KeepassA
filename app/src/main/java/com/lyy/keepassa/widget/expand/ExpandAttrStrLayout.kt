@@ -26,7 +26,7 @@ import com.keepassdroid.database.security.ProtectedBinary
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.OtpUtil
+import com.lyy.keepassa.util.totp.OtpUtil
 import com.lyy.keepassa.widget.toPx
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
