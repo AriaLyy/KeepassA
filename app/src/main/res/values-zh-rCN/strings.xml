@@ -434,4 +434,5 @@
     <string name="hint_auto_fill_save">将当前数据关联到已有条目？</string>
     <string name="hint_dont_show_tips">不再显示</string>
     <string name="title_tip_of_day">每日提示</string>
+    <string name="base_info">基础信息</string>
 </resources>

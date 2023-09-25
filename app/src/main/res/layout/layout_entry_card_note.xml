@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="?attr/materialCardViewFilledStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:checkable="false"
+    android:clickable="false"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/color_444E85DB"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="16dp">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvCardTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/notice"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/text_size_big"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.lyy.keepassa.widget.ExpandableTextView1
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:maxCollapsedLines="6">
+
+      <androidx.appcompat.widget.AppCompatTextView
+          android:id="@id/expandable_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="12dp"
+          android:fontFamily="@font/roboto_thinitalic"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/tvCardTitle"
+          tools:text="提升系统的整体运行状况，因为多个应用可通过提供程序共用同一字体。这样可以帮用户节省移动数据网络流量、手机内存和磁盘空间。在此模型中，系统会在需要时通过网络提取字体。" />
+
+    </com.lyy.keepassa.widget.ExpandableTextView1>
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

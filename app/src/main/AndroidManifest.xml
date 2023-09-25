@@ -284,7 +284,6 @@
     <meta-data
         android:name="host_app"
         android:value="app" />
-
   </application>
 
 </manifest>

@@ -11,6 +11,7 @@
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorAccent</item>
+    <item name="android:fontFamily">@font/roboto_regular</item>
     <!--    <item name="android:windowIsTranslucent">true</item>-->
     <!--    处理状态栏颜色 -->
     <!--    <item name="android:windowTranslucentStatus">false</item>-->
@@ -136,7 +137,7 @@
   </style>
 
   <style name="KpaEntryDetailTextStyle">
-    <item name="android:drawablePadding">26dp</item>
+    <item name="android:drawablePadding">16dp</item>
     <item name="android:paddingStart">6dp</item>
     <item name="android:gravity">center_vertical</item>
     <item name="android:paddingTop">8dp</item>
