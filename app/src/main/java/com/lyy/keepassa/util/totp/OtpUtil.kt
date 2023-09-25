@@ -21,7 +21,7 @@ object OtpUtil {
     val otpCompose = when {
       seed != null -> {
         if (!seed.startsWith("otpauth") && seed.startsWith("key")) {
-          ComposeKeeOtp
+          ComposeKeeOtp2
         } else {
           ComposeKeepassxc
         }
@@ -32,7 +32,7 @@ object OtpUtil {
       }
 
       isKeeOtp(entry) -> {
-        ComposeKeeOtp
+        ComposeKeeOtp2
       }
 
       else -> null

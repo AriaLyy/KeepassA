@@ -21,7 +21,7 @@ import com.lyy.keepassa.util.totp.TokenCalculator.HashAlgorithm.SHA512
  * @Description
  * @Date 4:12 PM 2023/9/20
  **/
-object ComposeKeeOtp : IOtpCompose {
+object ComposeKeeOtp2 : IOtpCompose {
   override fun getOtpPass(entry: PwEntryV4): Pair<Int, String?> {
     return getKeeOtp2Totp(entry)
   }

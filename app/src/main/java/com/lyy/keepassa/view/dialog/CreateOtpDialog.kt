@@ -7,7 +7,6 @@
  */
 package com.lyy.keepassa.view.dialog
 
-import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewStub
@@ -19,6 +18,7 @@ import android.widget.Spinner
 import androidx.constraintlayout.widget.Group
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.ToastUtils
 import com.google.android.material.slider.Slider
@@ -30,16 +30,16 @@ import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogCreateTotpBinding
+import com.lyy.keepassa.entity.KeepassXcBean
+import com.lyy.keepassa.entity.OtpBeans
 import com.lyy.keepassa.entity.TotpType
 import com.lyy.keepassa.entity.TotpType.CUSTOM
 import com.lyy.keepassa.entity.TotpType.DEFAULT
 import com.lyy.keepassa.entity.TotpType.STEAM
-import com.lyy.keepassa.event.CreateAttrStrEvent
 import com.lyy.keepassa.util.getArgument
 import com.lyy.keepassa.view.QrCodeScannerActivity
-import com.lyy.keepassa.widget.expand.AttrStrItemView
 import com.lyy.keepassa.widget.toPx
-import org.greenrobot.eventbus.EventBus
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListener {
@@ -49,10 +49,6 @@ class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListe
   private var totpType = DEFAULT
   private var secret = ""
   private lateinit var module: CreateOtpModule
-
-  private val isEdit by lazy {
-    getArgument<Boolean>("isEdit") ?: false
-  }
 
   private val entryTitle by lazy {
     getArgument<String>("entryTitle") ?: "title"
@@ -75,20 +71,12 @@ class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListe
         return@registerForActivityResult
       }
 
-      EventBus.getDefault()
-        .post(
-          CreateAttrStrEvent(
-            "otp",
-            ProtectedString(true, str),
-            isEdit,
-            itemView
-          )
-        )
+      lifecycleScope.launch {
+        module.otpFlow.emit(OtpBeans(keepassxc = KeepassXcBean(ProtectedString(true, str))))
+      }
 
       dismiss()
     }
-
-  var itemView: AttrStrItemView? = null
 
   override fun setLayoutId(): Int {
     return R.layout.dialog_create_totp
@@ -123,6 +111,7 @@ class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListe
             parent.layoutParams.height = 228.toPx()
             clConstom.visibility = View.GONE
           }
+
           CUSTOM -> {
             parent.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             clConstom.visibility = View.VISIBLE
@@ -196,11 +185,13 @@ class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListe
         dismiss()
         return
       }
+
       R.id.ivNormal -> {
         handleDefaultFlow()
         binding.menuLayout.root.visibility = View.GONE
         return
       }
+
       R.id.ivQrCode -> {
         val options = ScanOptions()
         options.captureActivity = QrCodeScannerActivity::class.java
@@ -217,42 +208,18 @@ class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListe
   }
 
   private fun createTotpStr() {
-    when (totpType) {
-      DEFAULT, STEAM -> {
-        val seed = ProtectedString(true, secret)
-        seed.isOtpPass = true
-        EventBus.getDefault()
-          .post(
-            CreateAttrStrEvent(
-              "TOTP Seed",
-              seed,
-              isEdit,
-              itemView
-            )
-          )
-        EventBus.getDefault()
-          .post(
-            CreateAttrStrEvent(
-              "TOTP Settings",
-              ProtectedString(false, "$time;${if (totpType == STEAM) "S" else "6"}"),
-              isEdit,
-              itemView
-            )
-          )
-      }
-      CUSTOM -> {
-        val seedStr =
-          "otpauth://totp/$entryTitle:$entryUserName?secret=${secret}&period=$time&digits=$len&issuer=$entryTitle&algorithm=$arithmetic"
-        EventBus.getDefault()
-          .post(
-            CreateAttrStrEvent(
-              "otp",
-              ProtectedString(true, seedStr),
-              isEdit,
-              itemView
-            )
-          )
-      }
+    lifecycleScope.launch {
+      module.otpFlow.emit(
+        module.createOtpBeans(
+          totpType,
+          entryTitle,
+          entryUserName,
+          secret,
+          time,
+          len,
+          arithmetic
+        )
+      )
     }
   }
 }
