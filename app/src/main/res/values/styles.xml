@@ -204,5 +204,11 @@
     <item name="android:textSize">@dimen/text_size_normal</item>
   </style>
 
+  <!--ShapeableImageView 圆 -->
+  <style name="CircleStyle">
+    <item name="cornerFamily">rounded</item>
+    <item name="cornerSize">50%</item>
+  </style>
+
 </resources>
 
