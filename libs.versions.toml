@@ -101,6 +101,7 @@ third-zxing-embedded = { module = "com.journeyapps:zxing-android-embedded", vers
 third-jodatime = { module = "joda-time:joda-time", version.ref = "third-jodatime" }
 third-utilcodex = { module = "com.blankj:utilcodex", version.ref = "third-blankj" }
 third-timber = { module = "com.jakewharton.timber:timber", version.ref = "third-timber" }
+third-BaseRecyclerViewAdapterHelper = {module = "io.github.cymchad:BaseRecyclerViewAdapterHelper", version = "3.0.14"}
 
 didi-drouter = { module = "io.github.didi:drouter-plugin-proxy", version = "1.0.2"} # drouter
 didi-drouter-api = { module = "io.github.didi:drouter-api", version = "2.3.0"}

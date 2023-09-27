@@ -44,7 +44,7 @@ class CandidatesAdapter(
     item: SimpleItemEntity
   ) {
     val pwEntryV4 = item.obj as PwEntryV4
-    IconUtil.setEntryIcon(context, pwEntryV4, holder.icon)
+    IconUtil.setEntryIcon(pwEntryV4, holder.icon)
     holder.text.text = pwEntryV4.title
     holder.itemView.isSelected = item.isSelected
   }

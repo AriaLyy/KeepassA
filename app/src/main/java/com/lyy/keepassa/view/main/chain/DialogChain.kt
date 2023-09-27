@@ -21,10 +21,10 @@ class DialogChain(
 ) : IMainDialogInterceptor.IChain {
 
   override fun proceed(context: MainActivity): MainDialogResponse {
-    val interceptor = interceptors[index]
     if (index > interceptors.size - 1) {
       return MainDialogResponse(MainDialogResponse.RESPONSE_FINISH)
     }
+    val interceptor = interceptors[index]
     val next = DialogChain(activity, interceptors, index + 1)
     return interceptor.intercept(next)
   }

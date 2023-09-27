@@ -61,7 +61,7 @@ import java.util.UUID
 /**
  * 项目详情
  */
-@Route(path = "/entry/detail")
+@Route(path = "/entry/detail1")
 class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnClickListener {
   companion object {
     const val KEY_GROUP_TITLE = "KEY_GROUP_TITLE"
@@ -186,7 +186,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
   }
 
   private fun setData() {
-    IconUtil.setEntryIcon(this, pwEntry, binding.icon)
+    IconUtil.setEntryIcon( pwEntry, binding.icon)
     handleBaseAttr()
     handleAttr()
     handleTime()

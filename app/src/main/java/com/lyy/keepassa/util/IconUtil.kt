@@ -160,6 +160,16 @@ object IconUtil {
   }
 
   /**
+   * 获取自定义图片
+   */
+  fun getCustomBitmap(entry: PwEntryV4): Bitmap {
+    return BitmapFactory.decodeByteArray(
+      entry.customIcon.imageData, 0,
+      entry.customIcon.imageData.size
+    )
+  }
+
+  /**
    * 获取entry的drawable
    */
   fun getEntryIconDrawable(
@@ -190,7 +200,6 @@ object IconUtil {
    * 设置项目的icon
    */
   fun setEntryIcon(
-    context: Context,
     entry: PwEntry,
     icon: ImageView
   ) {
@@ -198,22 +207,15 @@ object IconUtil {
       return
     }
     if (entry is PwEntryV3) {
-      Glide.with(context)
-        .load(getIconById(entry.icon.iconId))
-        .into(icon)
+      icon.loadImg(getIconById(entry.icon.iconId))
       return
     }
     if (entry is PwEntryV4) {
       if (!customIconIsNull(entry.customIcon)) {
-        Glide.with(context)
-          .load(entry.customIcon.imageData)
-          .error(R.drawable.ic_image_broken_24px)
-          .into(icon)
+        icon.loadImg(entry.customIcon.imageData)
         return
       }
-      Glide.with(context)
-        .load(getIconById(entry.icon.iconId))
-        .into(icon)
+      icon.loadImg(getIconById(entry.icon.iconId))
     }
   }
 

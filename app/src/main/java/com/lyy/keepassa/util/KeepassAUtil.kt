@@ -50,9 +50,7 @@ import com.arialyy.frame.util.StringUtil
 import com.blankj.utilcode.util.AppUtils
 import com.keepassdroid.database.PwDataInf
 import com.keepassdroid.database.PwEntry
-import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
-import com.keepassdroid.database.security.ProtectedString
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
@@ -62,7 +60,6 @@ import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.ServiceRouter
 import com.lyy.keepassa.service.autofill.AutoFillHelper
 import com.lyy.keepassa.service.autofill.StructureParser
-import com.lyy.keepassa.util.totp.OtpUtil
 import com.lyy.keepassa.view.create.CreateDbActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.launcher.OpenDbHistoryActivity
@@ -565,54 +562,6 @@ class KeepassAUtil private constructor() {
   }
 
   /**
-   * 过滤并排序自定义字段和自定义数据
-   */
-  fun filterCustomStr(
-    entryV4: PwEntryV4,
-    needAddCustomData: Boolean = true
-  ): Map<String, ProtectedString> {
-    val map = HashMap<String, ProtectedString>()
-    var addOTPPass = false
-    for (str in entryV4.strings) {
-      if (str.key.equals(PwEntryV4.STR_NOTES, true)
-        || str.key.equals(PwEntryV4.STR_PASSWORD, true)
-        || str.key.equals(PwEntryV4.STR_TITLE, true)
-        || str.key.equals(PwEntryV4.STR_URL, true)
-        || str.key.equals(PwEntryV4.STR_USERNAME, true)
-      ) {
-        continue
-      }
-
-      map[str.key] = str.value
-
-      // 增加TOP密码字段
-      if (!addOTPPass && (str.key.startsWith("TOTP", ignoreCase = true)
-          || str.key.startsWith("OTP", ignoreCase = true))
-      ) {
-        addOTPPass = true
-        val totpPass = OtpUtil.getOtpPass(entryV4)
-        if (TextUtils.isEmpty(totpPass.second)) {
-          continue
-        }
-        val totpPassStr = ProtectedString(true, totpPass.second)
-        totpPassStr.isOtpPass = true
-        map["TOTP"] = totpPassStr
-      }
-    }
-
-
-    if (needAddCustomData) {
-      for (str in entryV4.customData) {
-        map[str.key] = ProtectedString(false, str.value)
-      }
-    }
-
-    return map.toList()
-      .sortedBy { it.first }
-      .toMap()
-  }
-
-  /**
    * 格式化时间
    */
   @SuppressLint("SimpleDateFormat")
@@ -791,6 +740,7 @@ class KeepassAUtil private constructor() {
           return Environment.getExternalStorageDirectory()
             .toString() + "/" + split[1]
         }
+
         isDownloadsDocument(tempUri) -> {
           val id = DocumentsContract.getDocumentId(tempUri)
           if (id.startsWith("raw", ignoreCase = true)) {
@@ -811,6 +761,7 @@ class KeepassAUtil private constructor() {
             Timber.d("msf Uri = $tempUri")
           }
         }
+
         isMediaDocument(tempUri) -> {
           val docId = DocumentsContract.getDocumentId(tempUri)
           val split = docId.split(":")

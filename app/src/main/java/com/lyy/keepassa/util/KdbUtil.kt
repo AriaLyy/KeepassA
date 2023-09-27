@@ -9,6 +9,7 @@
 
 package com.lyy.keepassa.util
 
+import android.text.TextUtils
 import com.arialyy.frame.util.RegularRule
 import com.keepassdroid.Database
 import com.keepassdroid.database.PwEntry
@@ -16,11 +17,17 @@ import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupIdV3
 import com.keepassdroid.database.PwGroupIdV4
+import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.util.totp.OtpUtil
+import kotlinx.coroutines.MainScope
 import timber.log.Timber
 import java.util.UUID
 
 object KdbUtil {
+
+  val scope = MainScope()
+
   fun Database?.isNull(): Boolean {
     return this == null || this.pm == null
   }
@@ -139,5 +146,53 @@ object KdbUtil {
     val groups = BaseApp.KDB.pm.groups
 
     return groups[PwGroupIdV4(groupId)]
+  }
+
+  /**
+   * 过滤并排序自定义字段和自定义数据
+   */
+  fun filterCustomStr(
+    entryV4: PwEntryV4,
+    needAddCustomData: Boolean = true
+  ): Map<String, ProtectedString> {
+    val map = HashMap<String, ProtectedString>()
+    var addOTPPass = false
+    for (str in entryV4.strings) {
+      if (str.key.equals(PwEntryV4.STR_NOTES, true)
+        || str.key.equals(PwEntryV4.STR_PASSWORD, true)
+        || str.key.equals(PwEntryV4.STR_TITLE, true)
+        || str.key.equals(PwEntryV4.STR_URL, true)
+        || str.key.equals(PwEntryV4.STR_USERNAME, true)
+      ) {
+        continue
+      }
+
+      map[str.key] = str.value
+
+      // 增加TOP密码字段
+      if (!addOTPPass && (str.key.startsWith("TOTP", ignoreCase = true)
+          || str.key.startsWith("OTP", ignoreCase = true))
+      ) {
+        addOTPPass = true
+        val totpPass = OtpUtil.getOtpPass(entryV4)
+        if (TextUtils.isEmpty(totpPass.second)) {
+          continue
+        }
+        val totpPassStr = ProtectedString(true, totpPass.second)
+        totpPassStr.isOtpPass = true
+        map["TOTP"] = totpPassStr
+      }
+    }
+
+
+    if (needAddCustomData) {
+      for (str in entryV4.customData) {
+        map[str.key] = ProtectedString(false, str.value)
+      }
+    }
+
+    return map.toList()
+      .sortedBy { it.first }
+      .toMap()
   }
 }

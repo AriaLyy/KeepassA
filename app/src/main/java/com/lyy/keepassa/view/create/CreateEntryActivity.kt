@@ -448,7 +448,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
     }
 
     val strMap = LinkedHashMap<String, ProtectedString>()
-    strMap.putAll(KeepassAUtil.instance.filterCustomStr(v4Entry, false))
+    strMap.putAll(KdbUtil.filterCustomStr(v4Entry, false))
     if (strMap.isNotEmpty()) {
       showStrLayout()
       binding.attrStrs.setValue(strMap)

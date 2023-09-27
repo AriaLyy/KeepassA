@@ -92,7 +92,7 @@ class SearchAdapter(
       ITEM_TYPE_ENTRY -> {
         highLightText(holder.text, item.title.toString())
         highLightText((holder as SearchHolder).des, item.subTitle.toString())
-        IconUtil.setEntryIcon(context, item.obj as PwEntry, holder.icon)
+        IconUtil.setEntryIcon(item.obj as PwEntry, holder.icon)
       }
     }
   }

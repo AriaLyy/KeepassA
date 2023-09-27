@@ -1,0 +1,129 @@
+package com.lyy.keepassa.view.detail.card
+
+import android.content.Context
+import android.text.InputType
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.TextView
+import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.viewholder.BaseViewHolder
+import com.google.android.material.card.MaterialCardView
+import com.keepassdroid.database.PwEntryV4
+import com.keepassdroid.database.security.ProtectedString
+import com.lyy.keepassa.R
+import com.lyy.keepassa.databinding.LayoutEntryCardListBinding
+import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.totp.OtpUtil
+import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
+import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
+import com.lyy.keepassa.widget.ProgressBar.RoundProgressBarWidthNumber
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import timber.log.Timber
+import kotlin.collections.Map.Entry
+
+/**
+ * @Author laoyuyu
+ * @Description
+ * @Date 11:12 AM 2023/9/26
+ **/
+class EntryStrCard(context: Context, attributeSet: AttributeSet) :
+  MaterialCardView(context, attributeSet) {
+  private val binding = LayoutEntryCardListBinding.inflate(LayoutInflater.from(context), this, true)
+
+  companion object {
+    /**
+     * 处理密码的显示
+     */
+    private fun handleShowPass(tv: TextView, show: Boolean) {
+      tv.inputType = if (show) {
+        InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+      } else {
+        InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+      }
+    }
+  }
+
+  fun bindData(entry: PwEntryV4) {
+    val data = KdbUtil.filterCustomStr(entry).entries.toMutableList()
+    if (data.isEmpty()){
+      visibility = GONE
+      return
+    }
+    visibility = VISIBLE
+    handleList(entry, data)
+  }
+
+  private fun handleList(entryV4: PwEntryV4, data:MutableList<Entry<String, ProtectedString>>) {
+    val adapter = StrAdapter(entryV4)
+
+    binding.rvList.apply {
+      this.adapter = adapter
+      setHasFixedSize(true)
+      layoutManager = LinearLayoutManager(context)
+      adapter.setNewInstance(data)
+    }
+    adapter.setOnItemClickListener { _, view, position ->
+      val entry = data[position]
+      val pop = EntryDetailStrPopMenu(context as FragmentActivity, view, entry.value)
+      pop.setOnShowPassCallback(object : OnShowPassCallback {
+        override fun showPass(showPass: Boolean) {
+          val tvValue = view.findViewById<TextView>(R.id.value)
+          handleShowPass(tvValue, showPass)
+        }
+      })
+      pop.show()
+    }
+  }
+
+  private class StrAdapter(val entryV4: PwEntryV4) :
+    BaseQuickAdapter<Entry<String, ProtectedString>, BaseViewHolder>(R.layout.layout_entry_str) {
+    override fun convert(holder: BaseViewHolder, item: Entry<String, ProtectedString>) {
+      holder.setText(R.id.title, item.key)
+      val tvValue = holder.getView<TextView>(R.id.value)
+      handleShowPass(tvValue, !item.value.isProtected)
+      if (item.value.isOtpPass) {
+        handleOtp(holder, tvValue)
+      } else {
+        holder.getView<View>(R.id.rpbBar).visibility = GONE
+      }
+    }
+
+    private fun handleOtp(holder: BaseViewHolder, tvValue: TextView) {
+      val rPb = holder.getView<RoundProgressBarWidthNumber>(R.id.rpbBar)
+      rPb.visibility = VISIBLE
+      startAutoGetOtp(rPb, tvValue)
+    }
+
+    /**
+     * 定时自动获取otp密码
+     */
+    private fun startAutoGetOtp(rPb: RoundProgressBarWidthNumber, tvValue: TextView) {
+      val p = OtpUtil.getOtpPass(entryV4)
+      if (p.second.isNullOrEmpty()) {
+        Timber.e("无法自动获取otp密码")
+        return
+      }
+      rPb.setCountdown(true)
+
+      KdbUtil.scope.launch(Dispatchers.Main) {
+        Timber.d(p.toString())
+        val time = p.first
+        rPb.max = time
+        tvValue.text = p.second
+        for (i in time downTo 1) {
+          rPb.progress = i
+          withContext(Dispatchers.IO) {
+            delay(1000)
+          }
+        }
+        startAutoGetOtp(rPb, tvValue)
+      }
+    }
+  }
+}

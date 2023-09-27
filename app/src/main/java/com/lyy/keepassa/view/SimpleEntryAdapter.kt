@@ -12,10 +12,8 @@ package com.lyy.keepassa.view
 import android.content.Context
 import android.graphics.Paint
 import android.view.View
-import android.widget.CheckBox
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.view.isVisible
 import com.arialyy.frame.util.adapter.AbsHolder
 import com.arialyy.frame.util.adapter.AbsRVAdapter
 import com.keepassdroid.database.PwEntry
@@ -54,7 +52,7 @@ class SimpleEntryAdapter(
   ) {    if (item.obj is PwGroup) {
       IconUtil.setGroupIcon(context, item.obj as PwGroup, holder.icon)
     } else if (item.obj is PwEntry) {
-      IconUtil.setEntryIcon(context, item.obj as PwEntry, holder.icon)
+      IconUtil.setEntryIcon(item.obj as PwEntry, holder.icon)
       val paint = holder.title.paint
       if ((item.obj as PwEntry).expires()
         && (item.obj as PwEntry).expiryTime != null

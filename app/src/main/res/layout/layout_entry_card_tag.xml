@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:checkable="false"
@@ -23,33 +22,33 @@
         android:id="@+id/tvCardTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/notice"
+        android:text="@string/tag"
         android:textColor="@color/text_black_color"
         android:textSize="@dimen/text_size_big"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <com.lyy.keepassa.widget.ExpandableTextView1
-        android:id="@+id/expandTv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivTag"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginTop="12dp"
-        app:layout_constraintStart_toStartOf="@+id/tvCardTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/chipGroup"
+        app:layout_constraintBottom_toBottomOf="@+id/chipGroup"
+        app:srcCompat="@drawable/ic_tag"
+        />
+
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/chipGroup"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ivTag"
         app:layout_constraintTop_toBottomOf="@+id/tvCardTitle"
-        app:maxCollapsedLines="6"
-        >
-
-      <androidx.appcompat.widget.AppCompatTextView
-          android:id="@id/expandable_text"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="12dp"
-          android:fontFamily="@font/roboto_thinitalic"
-          tools:text="提升系统的整体运行状况，因为多个应用可通过提供程序共用同一字体。这样可以帮用户节省移动数据网络流量、手机内存和磁盘空间。在此模型中，系统会在需要时通过网络提取字体。"
-          />
-
-    </com.lyy.keepassa.widget.ExpandableTextView1>
+        />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -39,6 +39,7 @@ import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.EntryRecord
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
+import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
@@ -151,7 +152,7 @@ class EntryDetailModule : BaseModule() {
   /**
    * get highlight color
    */
-  private fun getColor(
+  fun getColor(
     context: Context,
     icon: Drawable
   ): Int {
@@ -318,6 +319,6 @@ class EntryDetailModule : BaseModule() {
    * 获取项目的属性字段，只有v4版本才有自定义属性字段
    */
   fun getV4EntryStr(entryV4: PwEntryV4): Map<String, ProtectedString> {
-    return KeepassAUtil.instance.filterCustomStr(entryV4)
+    return KdbUtil.filterCustomStr(entryV4)
   }
 }

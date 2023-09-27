@@ -263,6 +263,7 @@ dependencies {
   implementation(libs.third.zxing.embedded) { transitive = false }
   implementation(libs.google.zxing)
   implementation(libs.jetpack.palette.ktx)
+  implementation(libs.third.baseRecyclerViewAdapterHelper)
 //  coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
 
   // mmkv

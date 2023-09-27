@@ -140,6 +140,9 @@
         android:name=".view.detail.EntryDetailActivity"
         android:screenOrientation="portrait" />
     <activity
+        android:name=".view.detail.EntryDetailActivityNew"
+        android:screenOrientation="portrait" />
+    <activity
         android:name=".view.dir.ChooseGroupActivity"
         android:screenOrientation="portrait" />
     <activity

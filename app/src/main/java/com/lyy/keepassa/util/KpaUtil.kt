@@ -7,9 +7,12 @@
  */
 package com.lyy.keepassa.util
 
+import android.content.Intent
+import android.net.Uri
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.StringUtil
+import com.blankj.utilcode.util.ActivityUtils
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
@@ -68,5 +71,14 @@ object KpaUtil {
         .toString()
     )
     item.obj = pwGroup
+  }
+
+  /**
+   * open url with browser
+   */
+  fun openUrlWithBrowser(url: String) {
+    ActivityUtils.getTopActivity().startActivity(Intent(Intent.ACTION_VIEW).apply {
+      data = Uri.parse(url)
+    })
   }
 }
