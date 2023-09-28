@@ -1,9 +1,11 @@
 package com.lyy.keepassa.view.detail.card
 
 import android.content.Context
+import android.text.Html
 import android.text.InputType
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import com.arialyy.frame.util.ResUtil
 import com.google.android.material.card.MaterialCardView
 import com.keepassdroid.database.PwEntryV4
 import com.lyy.keepassa.R
@@ -11,10 +13,12 @@ import com.lyy.keepassa.databinding.LayoutEntryCardBaseInfoBinding
 import com.lyy.keepassa.util.ClipboardUtil
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.doClick
 import com.lyy.keepassa.widget.BubbleTextView
 import com.lyy.keepassa.widget.BubbleTextView.OnIconClickListener
+import java.util.Date
 
 /**
  * @Author laoyuyu
@@ -44,6 +48,29 @@ class EntryBaseInfoCard(context: Context, attributeSet: AttributeSet) :
         KpaUtil.openUrlWithBrowser(entry.url)
       }
     }
+    handleExpires(entry)
+  }
+
+  /**
+   * 处理过期
+   */
+  private fun handleExpires(entry: PwEntryV4) {
+    if (!entry.expires()) {
+      binding.time1.visibility = GONE
+      return
+    }
+    binding.time1.visibility = VISIBLE
+    if (entry.expiryTime.after(Date())) {
+      binding.time1.text =
+        ResUtil.getString(R.string.expire_time, KeepassAUtil.instance.formatTime(entry.expiryTime))
+      return
+    }
+    binding.time1.text = Html.fromHtml(
+      ResUtil.getString(
+        R.string.expire,
+        KeepassAUtil.instance.formatTime(entry.expiryTime, "yyyy/MM/dd")
+      )
+    )
   }
 
   private fun handlePass(entry: PwEntryV4) {

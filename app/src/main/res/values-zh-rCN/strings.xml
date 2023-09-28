@@ -138,7 +138,7 @@
     <string name="hint_attr">高级属性</string>
     <string name="attachment">文件附件</string>
     <string name="hint_ex_property">额外属性</string>
-    <string name="expire">过期于 &lt;font color=#FF0000&gt;%s&lt;/font&gt;</string>
+    <string name="expire">&lt;font color=#FF0000&gt;%s&lt;/font&gt;过期</string>
     <!--  <string name="hint_exit_app">再按一次退出程序</string>-->
     <string name="del_group">删除群组</string>
     <string name="edit_group">编辑群组</string>

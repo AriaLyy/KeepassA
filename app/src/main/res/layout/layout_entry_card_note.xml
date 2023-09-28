@@ -37,19 +37,9 @@
         android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="@+id/tvCardTitle"
         app:layout_constraintTop_toBottomOf="@+id/tvCardTitle"
-        app:maxCollapsedLines="6"
-        >
+        app:maxCollapsedLines="3"
+        />
 
-      <androidx.appcompat.widget.AppCompatTextView
-          android:id="@id/expandable_text"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="12dp"
-          android:fontFamily="@font/roboto_thinitalic"
-          tools:text="提升系统的整体运行状况，因为多个应用可通过提供程序共用同一字体。这样可以帮用户节省移动数据网络流量、手机内存和磁盘空间。在此模型中，系统会在需要时通过网络提取字体。"
-          />
-
-    </com.lyy.keepassa.widget.ExpandableTextView1>
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 

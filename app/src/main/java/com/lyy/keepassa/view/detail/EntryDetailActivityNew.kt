@@ -1,5 +1,6 @@
 package com.lyy.keepassa.view.detail
 
+import android.graphics.Paint
 import android.os.Bundle
 import android.view.View
 import androidx.core.app.ActivityOptionsCompat
@@ -20,6 +21,7 @@ import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.doClick
 import com.lyy.keepassa.util.loadImg
 import timber.log.Timber
+import java.util.Date
 import java.util.UUID
 import kotlin.math.abs
 
@@ -31,7 +33,6 @@ import kotlin.math.abs
 @Route(path = "/entry/detail")
 class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
   companion object {
-    const val KEY_GROUP_TITLE = "KEY_GROUP_TITLE"
     const val KEY_ENTRY_ID = "KEY_ENTRY_ID"
   }
 
@@ -102,6 +103,13 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
       }
     }
     handleMenuBar()
+
+    // 处理过期
+    if (pwEntry.expiryTime.before(Date(System.currentTimeMillis()))) {
+      val paint = binding.tvTitle.paint
+      paint.flags = Paint.STRIKE_THRU_TEXT_FLAG
+      paint.isAntiAlias = true
+    }
   }
 
   private fun handleMenuBar(){
@@ -114,7 +122,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
    * 设置图标
    */
   private fun setIcon() {
-    if (pwEntry.getCustomIcon() != null) {
+    if (pwEntry.getCustomIcon().imageData.isNotEmpty()) {
       binding.ivIcon.loadImg(IconUtil.getCustomBitmap(pwEntry))
       return
     }
