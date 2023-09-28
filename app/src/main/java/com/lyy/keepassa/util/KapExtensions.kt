@@ -13,12 +13,15 @@ import android.view.View
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
+import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.adapter.RvItemClickSupport
+import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.Constance
+import com.lyy.keepassa.util.totp.OtpUtil
 import timber.log.Timber
 
 val charRegex = Regex("[^a-zA-Z0-9]")
@@ -151,6 +154,31 @@ fun PwEntryV4.isCollection(): Boolean {
 
 fun PwEntryV4.setCollection(isCollection: Boolean) {
   this.strings[Constance.KPA_IS_COLLECTION] = ProtectedString(false, isCollection.toString())
+}
+
+fun PwEntry.copyUserName() {
+  val userName = KdbUtil.getUserName(this)
+  ClipboardUtil.get()
+    .copyDataToClip(userName)
+  HitUtil.toaskShort(ResUtil.getString(R.string.hint_copy_user))
+}
+
+fun PwEntry.copyPassword() {
+  val pass = KdbUtil.getPassword(this)
+  ClipboardUtil.get()
+    .copyDataToClip(pass)
+  HitUtil.toaskShort(ResUtil.getString(R.string.hint_copy_pass))
+}
+
+fun PwEntryV4.copyTotp(){
+  val pass = OtpUtil.getOtpPass(this).second
+  if (pass.isNullOrBlank()){
+    HitUtil.toaskShort(ResUtil.getString(R.string.totp_key_error))
+    return
+  }
+  ClipboardUtil.get()
+    .copyDataToClip(pass)
+  HitUtil.toaskShort(ResUtil.getString(R.string.hint_copy_totp))
 }
 
 inline fun RecyclerView.doOnItemClickListener(

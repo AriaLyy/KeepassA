@@ -15,8 +15,6 @@ import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.doClick
-import com.lyy.keepassa.widget.BubbleTextView
-import com.lyy.keepassa.widget.BubbleTextView.OnIconClickListener
 import java.util.Date
 
 /**
@@ -75,16 +73,11 @@ class EntryBaseInfoCard(context: Context, attributeSet: AttributeSet) :
   private fun handlePass(entry: PwEntryV4) {
     val pass = KdbUtil.getPassword(entry)
     binding.tvPass.text = pass
-    binding.tvPass.isSelected = true
-    binding.tvPass.setOnIconClickListener(object : OnIconClickListener {
-      override fun onClick(view: BubbleTextView, index: Int) {
-        if (index != BubbleTextView.LOCATION_RIGHT) {
-          return
-        }
-        binding.tvPass.isSelected = !binding.tvPass.isSelected
-        KpaUtil.handleShowPass(binding.tvPass, binding.tvPass.isSelected)
-      }
-    })
+    binding.ivEye.isSelected = true
+    binding.ivEye.doClick {
+      binding.ivEye.isSelected = !binding.ivEye.isSelected
+      KpaUtil.handleShowPass(binding.tvPass, !binding.ivEye.isSelected)
+    }
     binding.tvPass.doClick {
       ClipboardUtil.get()
         .copyDataToClip(pass)

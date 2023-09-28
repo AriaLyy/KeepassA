@@ -45,14 +45,26 @@
 
     <com.lyy.keepassa.widget.BubbleTextView
         android:id="@+id/tvPass"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="@dimen/entry_detail_item_h"
+        android:layout_marginEnd="12dp"
         android:inputType="textPassword"
         android:longClickable="false"
+        app:layout_constraintEnd_toStartOf="@+id/ivEye"
+        app:layout_constraintStart_toStartOf="parent"
         app:left_icon="@drawable/ic_password"
-        app:right_icon="@drawable/selector_pass_visibility"
         tools:text="name"
         style="@style/KpaEntryDetailTextStyle"
+        />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivEye"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvPass"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvPass"
+        app:srcCompat="@drawable/selector_pass_visibility"
         />
 
     <com.lyy.keepassa.widget.BubbleTextView

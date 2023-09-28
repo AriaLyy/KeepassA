@@ -94,6 +94,7 @@
               android:id="@+id/btnUserName"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
+              android:text="@string/hint_input_user_name"
               app:icon="@drawable/ic_user"
               style="@style/KpaIconButton"
               />
@@ -102,6 +103,7 @@
               android:id="@+id/btnUserPass"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
+              android:text="@string/password"
               app:icon="@drawable/ic_password"
               style="@style/KpaIconButton"
               />
@@ -111,6 +113,7 @@
               android:id="@+id/btnTotp"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
+              android:text="@string/totp"
               app:icon="@drawable/ic_token_blue"
               style="@style/KpaIconButton"
               />

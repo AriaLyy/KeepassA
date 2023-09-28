@@ -1,6 +1,5 @@
 package com.lyy.keepassa.view.detail
 
-import android.graphics.Paint
 import android.os.Bundle
 import android.view.View
 import androidx.core.app.ActivityOptionsCompat
@@ -19,10 +18,12 @@ import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.copyPassword
+import com.lyy.keepassa.util.copyTotp
+import com.lyy.keepassa.util.copyUserName
 import com.lyy.keepassa.util.doClick
+import com.lyy.keepassa.util.hasTOTP
 import com.lyy.keepassa.util.loadImg
-import timber.log.Timber
-import java.util.Date
 import java.util.UUID
 import kotlin.math.abs
 
@@ -69,7 +70,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
   /**
    * 标题栏
    */
-  private fun setTopBar(){
+  private fun setTopBar() {
     binding.topAppBar.title = pwEntry.title
     toolbar = binding.topAppBar
     toolbar.setNavigationOnClickListener {
@@ -80,7 +81,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
       if (KeepassAUtil.instance.isFastClick()) {
         return@setOnMenuItemClickListener true
       }
-      when(item.itemId){
+      when (item.itemId) {
         R.id.edit -> {
           Routerfit.create(ActivityRouter::class.java, this).toEditEntryActivity(
             pwEntry.uuid,
@@ -94,11 +95,11 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     binding.tvTitle.text = pwEntry.title
     binding.appBarLayout.addOnOffsetChangedListener { _, verticalOffset ->
       // Timber.d("offset: $verticalOffset， ${binding.appBarLayout.totalScrollRange}")
-      if (verticalOffset == 0){
+      if (verticalOffset == 0) {
         binding.topAppBar.title = ""
         return@addOnOffsetChangedListener
       }
-      if (abs(verticalOffset) >= binding.appBarLayout.totalScrollRange){
+      if (abs(verticalOffset) >= binding.appBarLayout.totalScrollRange) {
         binding.topAppBar.title = pwEntry.title
         return@addOnOffsetChangedListener
       }
@@ -109,9 +110,16 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     KpaUtil.handleExpire(binding.tvTitle, pwEntry)
   }
 
-  private fun handleMenuBar(){
+  private fun handleMenuBar() {
     binding.btnUserName.doClick {
-      Timber.d("userName")
+      pwEntry.copyUserName()
+    }
+    binding.btnUserPass.doClick {
+      pwEntry.copyPassword()
+    }
+    binding.btnTotp.visibility = if (!pwEntry.hasTOTP()) View.GONE else View.VISIBLE
+    binding.btnTotp.doClick {
+      pwEntry.copyTotp()
     }
   }
 
