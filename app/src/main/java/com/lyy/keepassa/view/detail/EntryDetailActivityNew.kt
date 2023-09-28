@@ -18,6 +18,7 @@ import com.lyy.keepassa.databinding.ActivityEntryDetailNewBinding
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.doClick
 import com.lyy.keepassa.util.loadImg
 import timber.log.Timber
@@ -105,11 +106,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     handleMenuBar()
 
     // 处理过期
-    if (pwEntry.expiryTime.before(Date(System.currentTimeMillis()))) {
-      val paint = binding.tvTitle.paint
-      paint.flags = Paint.STRIKE_THRU_TEXT_FLAG
-      paint.isAntiAlias = true
-    }
+    KpaUtil.handleExpire(binding.tvTitle, pwEntry)
   }
 
   private fun handleMenuBar(){

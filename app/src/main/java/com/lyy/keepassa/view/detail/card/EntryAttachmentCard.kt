@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.arialyy.frame.util.ResUtil
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.google.android.material.card.MaterialCardView
@@ -24,6 +25,7 @@ class EntryAttachmentCard(context: Context, attributeSet: AttributeSet) :
   private val binding = LayoutEntryCardListBinding.inflate(LayoutInflater.from(context), this, true)
 
   fun bindData(entry: PwEntryV4) {
+    binding.tvCardTitle.text = ResUtil.getString(R.string.attachment)
     val data = entry.binaries.entries.toMutableList()
     if (data.isEmpty()) {
       visibility = GONE
@@ -56,7 +58,7 @@ class EntryAttachmentCard(context: Context, attributeSet: AttributeSet) :
       holder: BaseViewHolder,
       item: MutableMap.MutableEntry<String, ProtectedBinary>
     ) {
-      holder.setText(R.id.title, item.key)
+      holder.setText(R.id.value, item.key)
     }
   }
 }

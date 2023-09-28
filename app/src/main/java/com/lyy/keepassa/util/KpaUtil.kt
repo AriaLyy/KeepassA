@@ -8,7 +8,10 @@
 package com.lyy.keepassa.util
 
 import android.content.Intent
+import android.graphics.Paint
 import android.net.Uri
+import android.text.InputType
+import android.widget.TextView
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.StringUtil
@@ -20,6 +23,7 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.router.ServiceRouter
 import kotlinx.coroutines.MainScope
+import java.util.Date
 import java.util.Locale
 
 /**
@@ -80,5 +84,30 @@ object KpaUtil {
     ActivityUtils.getTopActivity().startActivity(Intent(Intent.ACTION_VIEW).apply {
       data = Uri.parse(url)
     })
+  }
+
+  /**
+   * 处理密码的显示
+   */
+  fun handleShowPass(tv: TextView, show: Boolean) {
+    tv.inputType = if (show) {
+      InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+    } else {
+      InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+    }
+  }
+
+  /**
+   * 处理过期的view，并加上中横线
+   */
+  fun handleExpire(tv: TextView, pwEntryV4: PwEntryV4) {
+    if (pwEntryV4.expires()
+      && pwEntryV4.expiryTime != null
+      && pwEntryV4.expiryTime.before(Date(System.currentTimeMillis()))
+    ) {
+      val paint = tv.paint
+      paint.flags = Paint.STRIKE_THRU_TEXT_FLAG
+      paint.isAntiAlias = true
+    }
   }
 }

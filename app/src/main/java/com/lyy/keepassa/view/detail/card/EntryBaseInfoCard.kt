@@ -2,7 +2,6 @@ package com.lyy.keepassa.view.detail.card
 
 import android.content.Context
 import android.text.Html
-import android.text.InputType
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.arialyy.frame.util.ResUtil
@@ -83,11 +82,7 @@ class EntryBaseInfoCard(context: Context, attributeSet: AttributeSet) :
           return
         }
         binding.tvPass.isSelected = !binding.tvPass.isSelected
-        binding.tvPass.inputType = if (binding.tvPass.isSelected) {
-          InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-        } else {
-          InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-        }
+        KpaUtil.handleShowPass(binding.tvPass, binding.tvPass.isSelected)
       }
     })
     binding.tvPass.doClick {
