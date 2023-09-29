@@ -147,7 +147,7 @@ fun PwEntryV4.hasTOTP(): Boolean {
   return false
 }
 
-fun PwEntryV4.isCollection(): Boolean {
+fun PwEntryV4.isCollectioned(): Boolean {
   val value = strings[Constance.KPA_IS_COLLECTION]
   return value != null && value.toString().equals("true", true)
 }

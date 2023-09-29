@@ -35,7 +35,7 @@ import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.cloud.OneDriveUtil
 import com.lyy.keepassa.util.cloud.WebDavUtil
-import com.lyy.keepassa.util.isCollection
+import com.lyy.keepassa.util.isCollectioned
 import com.lyy.keepassa.view.StorageType
 import com.lyy.keepassa.view.StorageType.AFS
 import com.lyy.keepassa.view.StorageType.DROPBOX
@@ -248,7 +248,7 @@ class KdbOpenService : IProvider {
           var collectionNum = 0
           val entrySet = hashSetOf<PwEntryV4>()
           BaseApp.KDB.pm.entries.forEach {
-            if ((it.value as PwEntryV4).isCollection()) {
+            if ((it.value as PwEntryV4).isCollectioned()) {
               entrySet.add(it.value as PwEntryV4)
               collectionNum++
             }

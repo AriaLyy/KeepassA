@@ -23,7 +23,9 @@ import com.lyy.keepassa.util.copyTotp
 import com.lyy.keepassa.util.copyUserName
 import com.lyy.keepassa.util.doClick
 import com.lyy.keepassa.util.hasTOTP
+import com.lyy.keepassa.util.isCollectioned
 import com.lyy.keepassa.util.loadImg
+import com.lyy.keepassa.util.setCollection
 import java.util.UUID
 import kotlin.math.abs
 
@@ -77,6 +79,9 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
       finishAfterTransition()
     }
     toolbar.inflateMenu(R.menu.menu_entry_detail)
+    toolbar.menu.findItem(R.id.collect)
+      .setIcon(if (!pwEntry.isCollectioned()) R.drawable.ic_star_outline else R.drawable.ic_star)
+
     toolbar.setOnMenuItemClickListener { item ->
       if (KeepassAUtil.instance.isFastClick()) {
         return@setOnMenuItemClickListener true
@@ -87,6 +92,10 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
             pwEntry.uuid,
             ActivityOptionsCompat.makeSceneTransitionAnimation(this)
           )
+        }
+        R.id.collect -> {
+          KpaUtil.kdbHandlerService.collection(pwEntry, !pwEntry.isCollectioned())
+          item.setIcon(if (!pwEntry.isCollectioned()) R.drawable.ic_star_outline else R.drawable.ic_star)
         }
       }
 

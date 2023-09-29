@@ -46,7 +46,7 @@ import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
-import com.lyy.keepassa.util.isCollection
+import com.lyy.keepassa.util.isCollectioned
 import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
@@ -159,7 +159,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
 
   override fun finishAfterTransition() {
     showContent(false)
-    if (module.lastCollection != pwEntry.isCollection()) {
+    if (module.lastCollection != pwEntry.isCollectioned()) {
       KpaUtil.kdbHandlerService.saveDbByBackground()
     }
     if (!KeepassAUtil.instance.isDisplayLoadingAnim()) {
@@ -206,7 +206,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
             showContent(true)
           }
       })
-    pwEntry.isCollection().let {
+    pwEntry.isCollectioned().let {
       module.lastCollection = it
       binding.ivCollection.isSelected = it
     }
@@ -286,7 +286,7 @@ class EntryDetailActivity : BaseActivity<ActivityEntryDetailBinding>(), View.OnC
         pop.show()
       }
       R.id.ivCollection -> {
-        if (pwEntry.isCollection()) {
+        if (pwEntry.isCollectioned()) {
           Timber.d("取消收藏")
           KpaUtil.kdbHandlerService.collection(pwEntry, false)
           binding.ivCollection.isSelected = false
