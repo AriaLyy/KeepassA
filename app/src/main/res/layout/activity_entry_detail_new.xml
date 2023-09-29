@@ -12,7 +12,7 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         app:navigationIcon="@drawable/ic_up"
         app:subtitleTextAppearance="@style/Toolbar.SubTitleText"
@@ -137,7 +137,7 @@
       <androidx.core.widget.NestedScrollView
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:layout_gravity="fill_vertical"
+          android:fillViewport="true"
           android:layout_marginTop="12dp"
           app:layout_behavior="@string/appbar_scrolling_view_behavior"
           >

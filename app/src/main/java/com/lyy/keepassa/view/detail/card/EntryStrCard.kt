@@ -1,6 +1,8 @@
 package com.lyy.keepassa.view.detail.card
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.text.InputType
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -61,6 +63,10 @@ class EntryStrCard(context: Context, attributeSet: AttributeSet) :
     adapter.setOnItemClickListener { _, view, position ->
       val tvValue = view.findViewById<TextView>(R.id.value)
       val entry = data[position]
+      if (entry.value.toString().isEmpty()){
+        Timber.e("value is null")
+        return@setOnItemClickListener
+      }
       val pop = EntryDetailStrPopMenu(
         context as FragmentActivity,
         view,
@@ -78,6 +84,7 @@ class EntryStrCard(context: Context, attributeSet: AttributeSet) :
 
   private class StrAdapter(val entryV4: PwEntryV4) :
     BaseQuickAdapter<Entry<String, ProtectedString>, BaseViewHolder>(R.layout.layout_entry_str) {
+    @SuppressLint("SetTextI18n")
     override fun convert(holder: BaseViewHolder, item: Entry<String, ProtectedString>) {
       holder.setText(R.id.title, item.key)
       val tvValue = holder.getView<TextView>(R.id.value)
@@ -87,6 +94,16 @@ class EntryStrCard(context: Context, attributeSet: AttributeSet) :
         return
       }
       holder.getView<View>(R.id.rpbBar).visibility = GONE
+      if (item.value.toString().isEmpty()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          tvValue.typeface = context.resources.getFont(R.font.roboto_thinitalic)
+        }
+        tvValue.text = "null"
+        return
+      }
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        tvValue.typeface = context.resources.getFont(R.font.roboto_regular)
+      }
       tvValue.text = item.value.toString()
     }
 

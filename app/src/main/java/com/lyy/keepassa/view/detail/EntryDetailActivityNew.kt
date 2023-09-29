@@ -1,5 +1,6 @@
 package com.lyy.keepassa.view.detail
 
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
 import androidx.core.app.ActivityOptionsCompat
@@ -25,7 +26,6 @@ import com.lyy.keepassa.util.doClick
 import com.lyy.keepassa.util.hasTOTP
 import com.lyy.keepassa.util.isCollectioned
 import com.lyy.keepassa.util.loadImg
-import com.lyy.keepassa.util.setCollection
 import java.util.UUID
 import kotlin.math.abs
 
