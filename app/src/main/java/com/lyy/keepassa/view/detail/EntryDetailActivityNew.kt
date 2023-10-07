@@ -1,3 +1,10 @@
+/*
+ * Copyright (C) 2020 AriaLyy(https://github.com/AriaLyy/KeepassA)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, you can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 package com.lyy.keepassa.view.detail
 
 import android.graphics.drawable.BitmapDrawable
@@ -10,6 +17,8 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
+import com.google.android.material.color.DynamicColors
+import com.google.android.material.color.DynamicColorsOptions
 import com.keepassdroid.database.PwEntryV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
@@ -136,16 +145,15 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
    * 设置图标
    */
   private fun setIcon() {
-    if (pwEntry.getCustomIcon().imageData.isNotEmpty()) {
-      binding.ivIcon.loadImg(IconUtil.getCustomBitmap(pwEntry))
-      return
+    val color = if (pwEntry.getCustomIcon()?.imageData?.isNotEmpty() == true) {
+      module.getColor(this, BitmapDrawable(IconUtil.getCustomBitmap(pwEntry)))
+    }else{
+      ResUtil.getColor(R.color.color_444E85DB)
     }
-    if (pwEntry.title.isNullOrBlank()) {
-      IconUtil.setEntryIcon(pwEntry, binding.ivIcon)
-      return
-    }
+
     binding.tvChar.visibility = View.VISIBLE
     binding.tvChar.text = pwEntry.title.substring(0, 1)
-    binding.ivIcon.setBackgroundColor(ResUtil.getColor(R.color.color_444E85DB))
+
+    binding.ivIcon.setBackgroundColor(color)
   }
 }
