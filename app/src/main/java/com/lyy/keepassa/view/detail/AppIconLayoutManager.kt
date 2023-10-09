@@ -46,6 +46,7 @@ class AppIconLayoutManager(private val offset: Int) : LayoutManager() {
 
     //设置宽高
     setMeasuredDimension(mItemWidth, mItemHeight)
+
   }
 
   override fun onLayoutChildren(recycler: RecyclerView.Recycler, state: RecyclerView.State) {

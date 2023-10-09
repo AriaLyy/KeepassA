@@ -56,7 +56,7 @@
           <androidx.recyclerview.widget.RecyclerView
               android:id="@+id/rvAppIcon"
               android:layout_width="100dp"
-              android:layout_height="48dp"
+              android:layout_height="36dp"
               app:layout_constraintBottom_toBottomOf="@+id/ivIcon"
               app:layout_constraintEnd_toEndOf="@+id/ivIcon"
               app:layout_constraintStart_toEndOf="@+id/ivIcon"

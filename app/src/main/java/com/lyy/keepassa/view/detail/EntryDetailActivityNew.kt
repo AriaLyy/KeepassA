@@ -17,8 +17,6 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
-import com.google.android.material.color.DynamicColors
-import com.google.android.material.color.DynamicColorsOptions
 import com.keepassdroid.database.PwEntryV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
@@ -34,7 +32,7 @@ import com.lyy.keepassa.util.copyUserName
 import com.lyy.keepassa.util.doClick
 import com.lyy.keepassa.util.hasTOTP
 import com.lyy.keepassa.util.isCollectioned
-import com.lyy.keepassa.util.loadImg
+import com.lyy.keepassa.widget.toPx
 import java.util.UUID
 import kotlin.math.abs
 
@@ -76,6 +74,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     binding.cardStr.bindData(pwEntry)
     binding.cardAtta.bindData(pwEntry)
     binding.cardTag.bindData(pwEntry)
+    // setAppIcon()
   }
 
   /**
@@ -155,5 +154,25 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     binding.tvChar.text = pwEntry.title.substring(0, 1)
 
     binding.ivIcon.setBackgroundColor(color)
+  }
+
+  private fun setAppIcon(){
+    val adapter = AppIconAdapter()
+
+    binding.rvAppIcon.apply {
+      this.adapter = adapter
+      setChildDrawingOrderCallback { childCount, i ->
+        if (childCount <=1){
+          return@setChildDrawingOrderCallback i
+        }
+        return@setChildDrawingOrderCallback childCount - i - 1
+
+      }
+      layoutManager = AppIconLayoutManager(15.toPx())
+    }
+    adapter.setNewInstance(arrayListOf<String>().apply {
+      add("com.jojoread.huiben")
+      add("tv.danmaku.bili")
+    })
   }
 }

@@ -14,6 +14,7 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -22,7 +23,9 @@ import android.graphics.drawable.VectorDrawable
 import android.os.Build
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import androidx.palette.graphics.Palette
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import com.arialyy.frame.util.ResUtil
 import com.bumptech.glide.Glide
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV3
@@ -33,6 +36,9 @@ import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.PwIconCustom
 import com.lyy.keepassa.R
 import com.lyy.keepassa.R.dimen
+import com.lyy.keepassa.widget.toPx
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 object IconUtil {
@@ -288,6 +294,31 @@ object IconUtil {
       return getBitmapFromDrawable(context, layerDrawable, layerDrawable.intrinsicWidth)
     } else {
       throw IllegalArgumentException("unsupported drawable type")
+    }
+  }
+
+  /**
+   * get highlight color
+   */
+  fun getIconMdColor(
+    context: Context,
+    icon: Drawable?
+  ): Int {
+    val temp = getBitmapFromDrawable(context, icon, 40.toPx())
+    if (temp == null || temp.isRecycled) {
+      return Color.WHITE
+    }
+    val sw = Palette.from(temp)
+      .maximumColorCount(12)
+      .generate()
+    return when {
+      sw.mutedSwatch != null -> sw.mutedSwatch!!.rgb
+      sw.darkMutedSwatch != null -> sw.darkMutedSwatch!!.rgb
+      sw.lightMutedSwatch != null -> sw.lightMutedSwatch!!.rgb
+      sw.darkVibrantSwatch != null -> sw.darkVibrantSwatch!!.rgb
+      sw.lightVibrantSwatch != null -> sw.lightVibrantSwatch!!.rgb
+      sw.vibrantSwatch != null -> sw.vibrantSwatch!!.rgb
+      else -> ResUtil.getColor(R.color.colorPrimary)
     }
   }
 }

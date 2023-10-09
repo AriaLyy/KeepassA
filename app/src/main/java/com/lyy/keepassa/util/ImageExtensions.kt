@@ -42,13 +42,7 @@ private fun checkoutContextEffective(context: Context): Boolean {
   return true
 }
 
-fun ImageView.loadImg(context: Context, @DrawableRes resId: Int) {
-  if (checkoutContextEffective(context)) {
-    Glide.with(context).load(resId).into(this)
-  }
-}
-
-fun Button.loadBackground(context: Context, imgUrl: String?) {
+fun Button.loadBackground(imgUrl: String?) {
   if (checkoutContextEffective(context)) {
     Glide.with(context).asDrawable().load(imgUrl).into(object : SimpleTarget<Drawable>() {
       override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
@@ -103,5 +97,11 @@ fun AppCompatImageView.loadImg(imgBm: Bitmap?) {
 fun AppCompatImageView.loadImg(byteArray: ByteArray?) {
   if (checkoutContextEffective(context) && byteArray != null && byteArray.isNotEmpty()) {
     Glide.with(context).load(byteArray).into(this)
+  }
+}
+
+fun AppCompatImageView.loadImg(drawable: Drawable?) {
+  if (checkoutContextEffective(context) && drawable != null) {
+    Glide.with(context).load(drawable).into(this)
   }
 }

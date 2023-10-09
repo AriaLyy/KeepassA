@@ -64,7 +64,7 @@ class SimpleEntryAdapter(
         paint.flags = 0
       }
     } else if (item.obj == EntryType.TYPE_COLLECTION) {
-      holder.icon.loadImg(mContext, item.icon)
+      holder.icon.loadImg(item.icon)
     }
 
     holder.title.text = item.title
