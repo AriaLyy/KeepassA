@@ -44,6 +44,7 @@
     <string name="hint_set_password">Set password</string>
     <string name="hint_input_password">Enter a password of 6–16 digits</string>
     <string name="hint_enter_password">Confirm password</string>
+    <string name="hint_confirm">Confirm password</string>
     <string name="help_create_db">Create v4 KeepPass database by default</string>
     <string name="help_create_group">Pick a group name of 16 or fewer characters</string>
     <string name="encrypt_type">Encryption</string>
