@@ -152,6 +152,10 @@
         android:name=".view.fingerprint.FingerprintActivity"
         android:screenOrientation="portrait" />
     <activity
+        android:name=".view.create.CreateEntryActivityOld"
+        android:screenOrientation="portrait" />
+
+    <activity
         android:name=".view.create.CreateEntryActivity"
         android:screenOrientation="portrait" />
     <activity

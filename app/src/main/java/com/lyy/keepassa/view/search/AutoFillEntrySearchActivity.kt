@@ -45,7 +45,7 @@ import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.doOnItemClickListener
-import com.lyy.keepassa.view.create.CreateEntryActivity
+import com.lyy.keepassa.view.create.CreateEntryActivityOld
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import kotlinx.coroutines.flow.collectLatest
@@ -178,8 +178,8 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
 
     binding.exFab.setOnClickListener {
       startActivity(
-        Intent(this, CreateEntryActivity::class.java).apply {
-          putExtra(CreateEntryActivity.KEY_TYPE, CreateEntryActivity.TYPE_NEW_ENTRY)
+        Intent(this, CreateEntryActivityOld::class.java).apply {
+          putExtra(CreateEntryActivityOld.KEY_TYPE, CreateEntryActivityOld.TYPE_NEW_ENTRY)
         },
         ActivityOptions.makeSceneTransitionAnimation(this)
           .toBundle()
