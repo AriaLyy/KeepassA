@@ -437,4 +437,6 @@
     <string name="base_info">基础信息</string>
     <string name="tag">标签</string>
     <string name="collection">收藏</string>
+    <string name="add_attr_str">增加属性</string>
+    <string name="delete">删除</string>
 </resources>

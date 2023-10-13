@@ -19,5 +19,6 @@ data class CreateAttrStrEvent(
   val key: String,
   val str: ProtectedString,
   val isEdit: Boolean = false,
+  val position: Int = 0,
   val updateView: AttrStrItemView? = null
 )

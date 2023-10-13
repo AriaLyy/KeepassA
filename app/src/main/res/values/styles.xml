@@ -212,6 +212,12 @@
     <item name="android:textSize">@dimen/text_size_normal</item>
   </style>
 
+  <style name="KpaEditTextMultiLineStyleNew" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+    <item name="android:textColor">@color/text_black_grey_color</item>
+    <item name="android:textColorHint">@color/text_hint_color</item>
+    <item name="android:textSize">@dimen/text_size_normal</item>
+  </style>
+
   <!--ShapeableImageView 圆 -->
   <style name="CircleStyle">
     <item name="cornerFamily">rounded</item>

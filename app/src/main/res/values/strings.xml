@@ -417,5 +417,7 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="base_info">Base info</string>
     <string name="tag">Tag</string>
     <string name="collection">Collection</string>
-  <string name="totp">TOTP</string>
+    <string name="totp">TOTP</string>
+    <string name="add_attr_str">Add attribute</string>
+    <string name="delete">Delete</string>
 </resources>

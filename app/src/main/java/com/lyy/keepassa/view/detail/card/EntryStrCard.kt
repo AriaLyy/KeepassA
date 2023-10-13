@@ -57,13 +57,18 @@ class EntryStrCard(context: Context, attributeSet: AttributeSet) :
     binding.rvList.apply {
       this.adapter = adapter
       setHasFixedSize(true)
-      layoutManager = LinearLayoutManager(context)
+      layoutManager = object : LinearLayoutManager(context) {
+        override fun canScrollVertically(): Boolean {
+          return false
+        }
+      }
       adapter.setNewInstance(data)
+      isNestedScrollingEnabled = false
     }
     adapter.setOnItemClickListener { _, view, position ->
       val tvValue = view.findViewById<TextView>(R.id.value)
       val entry = data[position]
-      if (entry.value.toString().isEmpty()){
+      if (entry.value.toString().isEmpty()) {
         Timber.e("value is null")
         return@setOnItemClickListener
       }

@@ -19,7 +19,7 @@ import com.arialyy.frame.util.ReflectionUtil
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.event.DelAttrStrEvent
-import com.lyy.keepassa.view.create.CreateCustomStrDialog
+import com.lyy.keepassa.view.create.CreateCustomStrDialogOld
 import com.lyy.keepassa.widget.expand.AttrStrItemView
 import org.greenrobot.eventbus.EventBus
 
@@ -51,7 +51,7 @@ class EntryCreateStrPopMenu(
           EventBus.getDefault().post(DelAttrStrEvent(key, str))
         }
         R.id.edit -> {
-          val dialog = CreateCustomStrDialog(true, view)
+          val dialog = CreateCustomStrDialogOld(true, view)
           dialog.setData(key, str)
           dialog.show(context.supportFragmentManager, "create_custom_dialog")
         }

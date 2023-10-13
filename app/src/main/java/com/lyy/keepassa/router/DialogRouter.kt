@@ -12,6 +12,7 @@ import com.arialyy.frame.router.DialogArg
 import com.arialyy.frame.router.RouterArgName
 import com.arialyy.frame.router.RouterPath
 import com.keepassdroid.database.PwGroupV4
+import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.view.StorageType
 import com.lyy.keepassa.view.dialog.CloudFileSelectDialog
@@ -26,6 +27,14 @@ import com.lyy.keepassa.view.dialog.webdav.WebDavLoginDialogNew
  * @Date 2021/9/5
  **/
 interface DialogRouter {
+
+  @RouterPath(path = "/dialog/customStrDialog")
+  @DialogArg(showDialog = true)
+  fun showCreateCustomDialog(
+    @RouterArgName(name = "position") position: Int = 0,
+    @RouterArgName(name = "key") key: String? = null,
+    @RouterArgName(name = "value") value: ProtectedString? = null
+  )
 
   @RouterPath(path = "/dialog/tipsDialog")
   @DialogArg(showDialog = true)

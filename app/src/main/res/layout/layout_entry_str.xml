@@ -3,10 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="54dp"
     android:background="@drawable/ripple_white_selector"
-    android:paddingBottom="8dp"
-    android:paddingTop="8dp"
     >
 
   <TextView
@@ -14,6 +12,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerVertical="true"
+      android:layout_marginTop="8dp"
       android:textColor="@color/text_gray_color"
       android:textSize="@dimen/text_size_smallest"
       app:layout_constraintStart_toStartOf="parent"
@@ -50,6 +49,52 @@
       app:layout_constraintStart_toStartOf="@id/title"
       app:layout_constraintTop_toBottomOf="@+id/title"
       tools:text="sss"
+      />
+
+  <androidx.constraintlayout.widget.Group
+      android:id="@+id/groupContent"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:constraint_referenced_ids="title, rpbBar, value"
+      />
+
+  <TextView
+      android:id="@+id/add_more"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="16dp"
+      android:layout_marginStart="16dp"
+      android:layout_marginTop="8dp"
+      android:background="@drawable/ripple_white_selector"
+      android:clickable="true"
+      android:drawablePadding="16dp"
+      android:focusable="true"
+      android:gravity="center_vertical"
+      android:paddingBottom="8dp"
+      android:paddingStart="12dp"
+      android:paddingTop="8dp"
+      android:text="@string/add_attr_str"
+      android:textColor="@color/text_black_color"
+      android:textSize="@dimen/text_size_normal"
+      android:visibility="gone"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:ignore="RtlSymmetry"
+      app:drawableStartCompat="@drawable/ic_add_24px"
+      />
+
+  <androidx.appcompat.widget.AppCompatTextView
+      android:id="@+id/del"
+      android:layout_width="@dimen/dle_btn_width"
+      android:layout_height="54dp"
+      android:background="@color/red"
+      android:gravity="center"
+      android:text="@string/delete"
+      android:textColor="@color/white"
+      android:textSize="@dimen/text_size_normal"
+      android:visibility="gone"
+      app:layout_constraintStart_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
       />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -91,9 +91,9 @@
 
           <com.google.android.material.textfield.TextInputLayout
               android:id="@+id/tlTitle"
-              app:endIconMode="clear_text"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              app:endIconMode="clear_text"
               app:startIconDrawable="@drawable/ic_title_24px"
               >
 
@@ -195,6 +195,97 @@
                 />
           </com.google.android.material.textfield.TextInputLayout>
 
+          <com.google.android.material.textfield.TextInputLayout
+              android:id="@+id/tlUrl"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:visibility="gone"
+              app:startIconDrawable="@drawable/ic_baseline_link_24"
+              app:startIconTint="@color/color_icon_grey"
+              >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_input_url"
+                android:imeOptions="actionNext"
+                style="@style/KpaEditTextStyleNew"
+                />
+
+          </com.google.android.material.textfield.TextInputLayout>
+
+          <com.google.android.material.textfield.TextInputLayout
+              android:id="@+id/tlNote"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:visibility="gone"
+              app:startIconDrawable="@drawable/ic_notice"
+              app:startIconTint="@color/color_icon_grey"
+              >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/notice"
+                android:imeOptions="actionNext"
+                tools:text="Side sheets that are modal on mobile, due to limited screen width, can become standard side sheets on tablet and desktop. The reverse is also true."
+                style="@style/KpaEditTextMultiLineStyleNew"
+                />
+
+          </com.google.android.material.textfield.TextInputLayout>
+
+          <com.google.android.material.textfield.TextInputLayout
+              android:id="@+id/tlTag"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:visibility="gone"
+              app:startIconDrawable="@drawable/ic_tag"
+              app:startIconTint="@color/color_icon_grey"
+              app:endIconDrawable="@drawable/ic_baseline_arrow_drop_down_24"
+              >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edTag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/tag"
+                android:imeOptions="actionNext"
+                android:text=" "
+                style="@style/KpaEditTextStyleNew"
+                />
+
+          </com.google.android.material.textfield.TextInputLayout>
+
+          <com.lyy.keepassa.view.create.CreateStrCard
+              android:id="@+id/cardStr"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              />
+
+
+          <androidx.appcompat.widget.AppCompatTextView
+              android:id="@+id/add_more"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginEnd="16dp"
+              android:layout_marginStart="16dp"
+              android:layout_marginTop="8dp"
+              android:background="@drawable/ripple_white_selector"
+              android:clickable="true"
+              android:drawablePadding="16dp"
+              android:focusable="true"
+              android:gravity="center_vertical"
+              android:paddingBottom="8dp"
+              android:paddingStart="12dp"
+              android:paddingTop="8dp"
+              android:text="@string/add_more"
+              android:textColor="@color/text_blue_color"
+              android:textSize="@dimen/text_size_normal"
+              tools:ignore="RtlSymmetry"
+              />
+
           <androidx.constraintlayout.helper.widget.Flow
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
@@ -202,7 +293,7 @@
               app:layout_constraintStart_toStartOf="parent"
               app:layout_constraintTop_toTopOf="parent"
               app:flow_verticalGap="12dp"
-              app:constraint_referenced_ids="tlTitle, tlUser, tlPass, tlConfirm"
+              app:constraint_referenced_ids="tlTitle, tlUser, tlPass, tlConfirm, tlUrl, tlNote, tlTag, cardStr, add_more"
               />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

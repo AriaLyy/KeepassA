@@ -38,7 +38,6 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.google.android.material.textfield.TextInputLayout
-import com.google.android.material.textfield.TextInputLayout.EndIconMode
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroupId
@@ -492,7 +491,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditBinding>() {
                 )
               }
               R.drawable.ic_attr_str -> { // 自定义字段
-                CreateCustomStrDialog().show()
+                CreateCustomStrDialogOld().show()
               }
               R.drawable.ic_attr_file -> { // 附件
                 getFileLauncher.launch(arrayOf("*/*"))
