@@ -51,19 +51,11 @@
       tools:text="sss"
       />
 
-  <androidx.constraintlayout.widget.Group
-      android:id="@+id/groupContent"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      app:constraint_referenced_ids="title, rpbBar, value"
-      />
-
   <TextView
       android:id="@+id/add_more"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginEnd="16dp"
-      android:layout_marginStart="16dp"
       android:layout_marginTop="8dp"
       android:background="@drawable/ripple_white_selector"
       android:clickable="true"
@@ -71,7 +63,6 @@
       android:focusable="true"
       android:gravity="center_vertical"
       android:paddingBottom="8dp"
-      android:paddingStart="12dp"
       android:paddingTop="8dp"
       android:text="@string/add_attr_str"
       android:textColor="@color/text_black_color"

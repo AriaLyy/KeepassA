@@ -92,7 +92,7 @@ public class BaseApp extends MultiDexApplication {
     APP = this;
     handler = new Handler(Looper.getMainLooper());
     ARouter.init(this); // 尽可能早，推荐在Application中初始化
-    KpaSdkService kpaSdkService = Routerfit.INSTANCE.create(ServiceRouter.class).getKpaSdkService();
+    KpaSdkService kpaSdkService = Routerfit.INSTANCE.create(ServiceRouter.class, null).getKpaSdkService();
     kpaSdkService.preInitSdk(this);
     initReceiver();
     if (CommonKVStorage.INSTANCE.getBoolean(Constance.IS_AGREE_PRIVACY_AGREEMENT, false)) {

@@ -12,9 +12,13 @@ package com.lyy.keepassa.view.create
 import KDBAutoFillRepository
 import android.content.Context
 import android.graphics.Bitmap.CompressFormat.PNG
+import android.net.Uri
+import android.text.TextUtils
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
+import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwDatabaseV4
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
@@ -23,17 +27,21 @@ import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
 import com.keepassdroid.database.security.ProtectedBinary
 import com.keepassdroid.database.security.ProtectedString
+import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.entity.SimpleItemEntity
+import com.lyy.keepassa.entity.TagBean
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.getFileInfo
 import com.lyy.keepassa.util.hasNote
 import com.lyy.keepassa.util.hasTOTP
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
@@ -44,7 +52,14 @@ import java.util.UUID
  * 创建条目、群组的module
  */
 class CreateEntryModule : BaseModule() {
+  companion object {
+    val attrFlow = MutableStateFlow<Pair<String, ProtectedBinary>?>(null)
+  }
 
+  /**
+   * 已经选中的标签
+   */
+  var selectedTagBeanCache = mutableListOf<String>()
   var customIcon: PwIconCustom? = null
   val attrStrMap = LinkedHashMap<String, ProtectedString>()
   val attrFileMap = LinkedHashMap<String, ProtectedBinary>()
@@ -54,6 +69,54 @@ class CreateEntryModule : BaseModule() {
   var noteStr: CharSequence = ""
   var expires: Boolean = false
   var autoFillParam: AutoFillParam? = null
+  lateinit var pwEntry: PwEntryV4
+
+  fun cacheTag(tagList: List<TagBean>) {
+    selectedTagBeanCache.clear()
+    selectedTagBeanCache.addAll(tagList.filter { it.isSet }.map {
+      it.tag
+    })
+  }
+
+  /**
+   * 添加附件
+   */
+  fun addAttrFile(context: CreateEntryActivity, uri: Uri?) {
+    val rootView = context.rootView
+    if (uri == null) {
+      Timber.e("附件uri为空")
+      HitUtil.snackShort(
+        rootView,
+        "${ResUtil.getString(R.string.add_attr_file)}${ResUtil.getString(R.string.fail)}"
+      )
+      return
+    }
+    val fileInfo = uri.getFileInfo(context)
+    if (TextUtils.isEmpty(fileInfo.first) || fileInfo.second == null) {
+      Timber.e("获取文件名失败")
+      HitUtil.snackShort(
+        rootView,
+        "${ResUtil.getString(R.string.add_attr_file)}${ResUtil.getString(R.string.fail)}"
+      )
+      return
+    }
+    val fileName = fileInfo.first!!
+    val fileSize = fileInfo.second!!
+    if (fileSize >= 1024 * 1024 * 10) {
+      HitUtil.snackShort(rootView, ResUtil.getString(R.string.error_attr_file_too_large))
+      return
+    }
+    context.lifecycleScope.launch {
+      attrFlow.emit(
+        Pair(
+          fileName, ProtectedBinary(
+            false, UriUtil.getUriInputStream(context, uri)
+              .readBytes()
+          )
+        )
+      )
+    }
+  }
 
   fun isFormAutoFill() = autoFillParam != null
 
@@ -131,8 +194,8 @@ class CreateEntryModule : BaseModule() {
    * 是否已经存在totp
    * @return false 不存在
    */
-  fun hasTotp(pwEntryV4: PwEntryV4): Boolean {
-    pwEntryV4.strings.forEach {
+  fun hasTotp(): Boolean {
+    pwEntry.strings.forEach {
       if (it.value.isOtpPass) {
         return true
       }
@@ -228,7 +291,7 @@ class CreateEntryModule : BaseModule() {
   /**
    * 构建的更多选择项目
    */
-  fun getMoreItem(context: Context, entry: PwEntryV4): ArrayList<SimpleItemEntity> {
+  fun getMoreItem(context: Context): ArrayList<SimpleItemEntity> {
     val list = ArrayList<SimpleItemEntity>()
     val titles = context.resources.getStringArray(R.array.v4_add_mor_item)
     val icons = context.resources.obtainTypedArray(R.array.v4_add_more_icon)
@@ -237,11 +300,11 @@ class CreateEntryModule : BaseModule() {
       val item = SimpleItemEntity()
       item.title = titles[i]
       item.icon = icons.getResourceId(i, 0)
-      if (item.icon == R.drawable.ic_token_grey && entry.hasTOTP()) {
+      if (item.icon == R.drawable.ic_token_grey && pwEntry.hasTOTP()) {
         Timber.d("Already used totp")
         continue
       }
-      if (item.icon == R.drawable.ic_notice && entry.hasNote()) {
+      if (item.icon == R.drawable.ic_notice && pwEntry.hasNote()) {
         Timber.d("Already used note")
         continue
       }

@@ -161,7 +161,7 @@
               >
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/tvPassword"
+                android:id="@+id/edPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/password"
@@ -200,6 +200,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:visibility="gone"
+              tools:visibility="visible"
               app:startIconDrawable="@drawable/ic_baseline_link_24"
               app:startIconTint="@color/color_icon_grey"
               >
@@ -220,6 +221,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:visibility="gone"
+              tools:visibility="visible"
               app:startIconDrawable="@drawable/ic_notice"
               app:startIconTint="@color/color_icon_grey"
               >
@@ -241,6 +243,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:visibility="gone"
+              tools:visibility="visible"
               app:startIconDrawable="@drawable/ic_tag"
               app:startIconTint="@color/color_icon_grey"
               app:endIconDrawable="@drawable/ic_baseline_arrow_drop_down_24"
@@ -248,6 +251,29 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edTag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/tag"
+                android:imeOptions="actionNext"
+                android:text=" "
+                style="@style/KpaEditTextStyleNew"
+                />
+
+          </com.google.android.material.textfield.TextInputLayout>
+
+          <com.google.android.material.textfield.TextInputLayout
+              android:id="@+id/tlLoseTime"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:visibility="gone"
+              tools:visibility="visible"
+              app:startIconDrawable="@drawable/ic_lose_time"
+              app:startIconTint="@color/color_icon_grey"
+              app:endIconDrawable="@drawable/ic_baseline_arrow_drop_down_24"
+              >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edLoseTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/tag"
@@ -266,26 +292,12 @@
               tools:visibility="visible"
               />
 
-
-          <androidx.appcompat.widget.AppCompatTextView
-              android:id="@+id/add_more"
+          <com.lyy.keepassa.view.create.CreateFileCard
+              android:id="@+id/cardFile"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_marginEnd="16dp"
-              android:layout_marginStart="16dp"
-              android:layout_marginTop="8dp"
-              android:background="@drawable/ripple_white_selector"
-              android:clickable="true"
-              android:drawablePadding="16dp"
-              android:focusable="true"
-              android:gravity="center_vertical"
-              android:paddingBottom="8dp"
-              android:paddingStart="12dp"
-              android:paddingTop="8dp"
-              android:text="@string/add_more"
-              android:textColor="@color/text_blue_color"
-              android:textSize="@dimen/text_size_normal"
-              tools:ignore="RtlSymmetry"
+              android:visibility="gone"
+              tools:visibility="visible"
               />
 
           <androidx.constraintlayout.helper.widget.Flow
@@ -295,13 +307,26 @@
               app:layout_constraintStart_toStartOf="parent"
               app:layout_constraintTop_toTopOf="parent"
               app:flow_verticalGap="12dp"
-              app:constraint_referenced_ids="tlTitle, tlUser, tlPass, tlConfirm, tlUrl, tlNote, tlTag, cardStr, add_more"
+              app:constraint_referenced_ids="tlTitle, tlUser, tlPass, tlConfirm, tlUrl, tlNote, tlTag, tlLoseTime, cardStr, cardFile"
               />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
       </androidx.core.widget.NestedScrollView>
+
+      <com.google.android.material.floatingactionbutton.FloatingActionButton
+          android:id="@+id/btnAddMore"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="end|bottom"
+          android:layout_margin="16dp"
+          android:contentDescription="@string/add_more"
+          app:backgroundTint="@color/colorPrimary"
+          app:srcCompat="@drawable/ic_add_24px"
+          app:rippleColor="@color/colorPrimary"
+          />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
   </LinearLayout>
 </layout>

@@ -13,7 +13,7 @@ import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.app.ActivityOptionsCompat
 import com.lyy.keepassa.entity.AutoFillParam
-import com.lyy.keepassa.view.create.CreateEntryActivityOld
+import com.lyy.keepassa.view.create.CreateEntryActivity
 import timber.log.Timber
 
 internal class SaveEntityDelegate(val activity: LauncherActivity) :
@@ -23,7 +23,7 @@ internal class SaveEntityDelegate(val activity: LauncherActivity) :
 
   val content = object : ActivityResultContract<AutoFillParam, Intent?>() {
     override fun createIntent(context: Context, input: AutoFillParam): Intent {
-      val intent = Intent(context, CreateEntryActivityOld::class.java).apply {
+      val intent = Intent(context, CreateEntryActivity::class.java).apply {
         putExtra(LauncherActivity.KEY_AUTO_FILL_PARAM, input)
       }
       return intent

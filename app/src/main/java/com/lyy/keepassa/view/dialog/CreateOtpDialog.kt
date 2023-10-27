@@ -19,6 +19,8 @@ import androidx.constraintlayout.widget.Group
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.alibaba.android.arouter.facade.annotation.Autowired
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.ToastUtils
 import com.google.android.material.slider.Slider
@@ -36,12 +38,12 @@ import com.lyy.keepassa.entity.TotpType
 import com.lyy.keepassa.entity.TotpType.CUSTOM
 import com.lyy.keepassa.entity.TotpType.DEFAULT
 import com.lyy.keepassa.entity.TotpType.STEAM
-import com.lyy.keepassa.util.getArgument
 import com.lyy.keepassa.view.QrCodeScannerActivity
 import com.lyy.keepassa.widget.toPx
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+@Route(path = "/dialog/createOtp")
 class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListener {
   private var arithmetic = "SHA1"
   private var time = 30
@@ -50,13 +52,13 @@ class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListe
   private var secret = ""
   private lateinit var module: CreateOtpModule
 
-  private val entryTitle by lazy {
-    getArgument<String>("entryTitle") ?: "title"
-  }
+  @Autowired(name = "entryTitle")
+  @JvmField
+  var entryTitle: String = "title"
 
-  private val entryUserName by lazy {
-    getArgument<String>("entryUserName") ?: "name"
-  }
+  @Autowired(name = "entryUserName")
+  @JvmField
+  var entryUserName: String = "name"
 
   private val barcodeLauncher =
     registerForActivityResult(ScanContract()) { result: ScanIntentResult ->

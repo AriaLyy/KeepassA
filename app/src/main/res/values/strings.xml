@@ -420,4 +420,7 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="totp">TOTP</string>
     <string name="add_attr_str">Add attribute</string>
     <string name="delete">Delete</string>
+    <string name="create_tag">New tag</string>
+    <string name="tag_name">Tag name</string>
+    <string name="add_tag">Add tag</string>
 </resources>

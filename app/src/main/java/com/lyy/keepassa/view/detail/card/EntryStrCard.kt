@@ -98,7 +98,7 @@ class EntryStrCard(context: Context, attributeSet: AttributeSet) :
         handleOtp(holder, tvValue)
         return
       }
-      holder.getView<View>(R.id.rpbBar).visibility = GONE
+      holder.setGone(R.id.rpbBar, true)
       if (item.value.toString().isEmpty()) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
           tvValue.typeface = context.resources.getFont(R.font.roboto_thinitalic)

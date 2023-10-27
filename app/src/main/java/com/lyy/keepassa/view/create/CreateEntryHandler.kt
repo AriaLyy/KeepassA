@@ -15,8 +15,11 @@ import com.lyy.keepassa.R
  * @Description
  * @Date 7:34 PM 2023/10/13
  **/
-internal class CreateEntryHandler : ICreateHandler {
-  override fun initData(ac: CreateEntryActivity) {
+internal class CreateEntryHandler(val context:CreateEntryActivity) : ICreateHandler {
+
+
+
+  override fun bindData() {
 
   }
 

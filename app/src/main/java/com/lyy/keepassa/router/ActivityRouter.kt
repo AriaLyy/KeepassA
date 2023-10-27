@@ -12,7 +12,8 @@ import com.arialyy.frame.router.RouterArgName
 import com.arialyy.frame.router.RouterPath
 import com.keepassdroid.database.PwGroupId
 import com.lyy.keepassa.entity.AutoFillParam
-import com.lyy.keepassa.view.create.CreateEntryActivityOld
+import com.lyy.keepassa.view.create.CreateEntryActivity
+import com.lyy.keepassa.view.create.CreateEnum
 import com.lyy.keepassa.view.detail.EntryDetailActivity
 import com.lyy.keepassa.view.detail.GroupDetailActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
@@ -76,10 +77,10 @@ interface ActivityRouter {
    */
   @RouterPath(path = "/entry/create")
   fun toCreateEntryActivity(
-    @RouterArgName(name = CreateEntryActivityOld.PARENT_GROUP_ID) groupId: PwGroupId?,
+    @RouterArgName(name = CreateEntryActivity.PARENT_GROUP_ID) groupId: PwGroupId?,
     @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null,
-    @RouterArgName(name = CreateEntryActivityOld.IS_SHORTCUTS) isFromShortcuts: Boolean = false,
-    @RouterArgName(name = CreateEntryActivityOld.KEY_TYPE) type: Int = CreateEntryActivityOld.TYPE_NEW_ENTRY
+    @RouterArgName(name = CreateEntryActivity.IS_SHORTCUTS) isFromShortcuts: Boolean = false,
+    @RouterArgName(name = CreateEntryActivity.KEY_TYPE) type: CreateEnum = CreateEnum.CREATE
   )
 
   /**
@@ -87,9 +88,9 @@ interface ActivityRouter {
    */
   @RouterPath(path = "/entry/create")
   fun toEditEntryActivity(
-    @RouterArgName(name = CreateEntryActivityOld.KEY_ENTRY) uuid: UUID,
+    @RouterArgName(name = CreateEntryActivity.KEY_ENTRY) uuid: UUID,
     @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null,
-    @RouterArgName(name = CreateEntryActivityOld.KEY_TYPE) type: Int = CreateEntryActivityOld.TYPE_EDIT_ENTRY
+    @RouterArgName(name = CreateEntryActivity.KEY_TYPE) type: CreateEnum = CreateEnum.MODIFY
   )
 
   @RouterPath(path = "/entry/create")

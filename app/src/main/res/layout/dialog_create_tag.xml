@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+  <data>
+    <variable
+        name="msgTitle"
+        type="java.lang.CharSequence"
+        />
+
+    <variable
+        name="clicker"
+        type="com.lyy.keepassa.view.dialog.DialogBtnClicker"
+        />
+
+    <variable
+        name="enableEnterBt"
+        type="Boolean"
+        />
+
+  </data>
+  <androidx.appcompat.widget.LinearLayoutCompat
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      >
+    <include
+        layout="@layout/layout_dialog_title"
+        android:id="@+id/includeLayout"
+        bind:msgTitle="@{msgTitle}"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tlTag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:startIconDrawable="@drawable/ic_user"
+        app:startIconTint="@color/color_icon_grey"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        >
+
+      <com.google.android.material.textfield.MaterialAutoCompleteTextView
+          android:id="@+id/edTag"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/tag_name"
+          android:imeOptions="actionNext"
+          app:backgroundTint="?attr/colorPrimary"
+          tools:text="用户名"
+          style="@style/KpaEditTextStyleNew"
+          />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <include
+        layout="@layout/layout_dialog_button"
+        bind:clicker="@{clicker}"
+        bind:enableEnterBt="@{enableEnterBt}"
+        />
+
+  </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

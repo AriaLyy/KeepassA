@@ -13,14 +13,9 @@ import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.Group
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import androidx.lifecycle.lifecycleScope
 import com.arialyy.frame.router.Routerfit
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -50,31 +45,27 @@ class CreateStrCard(context: Context, attributeSet: AttributeSet) :
     private val ADD_MORE_DATA = Pair("addMore", ProtectedString(false, "addMore"))
   }
 
+  private val helper = CardListHelper(binding)
+
   init {
     listenerModifyStr()
   }
+
+  private val adapter = StrAdapter()
 
   fun bindDate(entry: PwEntryV4) {
     handleList(entry)
   }
 
   private fun handleList(entry: PwEntryV4) {
-    val adapter = StrAdapter()
+    strList.clear()
     KdbUtil.filterCustomStr(entry).entries.forEach {
       strList.add(Pair(it.key, it.value))
     }
     strList.add(ADD_MORE_DATA)
-    binding.rvList.apply {
-      this.adapter = adapter
-      setHasFixedSize(true)
-      layoutManager = object : LinearLayoutManager(context) {
-        override fun canScrollVertically(): Boolean {
-          return false
-        }
-      }
-      adapter.setNewInstance(strList)
-      isNestedScrollingEnabled = false
-    }
+    binding.rvList.adapter = adapter
+    adapter.setNewInstance(strList)
+
     adapter.setOnItemClickListener { _, _, position ->
       val data = strList[position]
       if (data == ADD_MORE_DATA) {
@@ -83,17 +74,24 @@ class CreateStrCard(context: Context, attributeSet: AttributeSet) :
       }
       Routerfit.create(DialogRouter::class.java)
         .showCreateCustomDialog(position, data.first, data.second)
-      adapter.notifyDataSetChanged()
     }
-    moveDrop()
+    helper.handleList {
+      Timber.d("未实现")
+    }
   }
 
   private fun listenerModifyStr() {
-    KpaUtil.scope.launch {
+    if (isInEditMode) {
+      return
+    }
+    (context as CreateEntryActivity).lifecycleScope.launch {
       CreateCustomStrDialog.createCustomStrFlow.collectLatest { str ->
         if (str == null) {
           Timber.d("attr is null")
           return@collectLatest
+        }
+        if (visibility == GONE) {
+          visibility = VISIBLE
         }
         if (str.isEdit) {
           strList[str.position] = Pair(str.key, str.str)
@@ -106,64 +104,19 @@ class CreateStrCard(context: Context, attributeSet: AttributeSet) :
     }
   }
 
-  /**
-   * 滑动删除
-   */
-  private fun moveDrop() {
-    ItemTouchHelper(object : ItemTouchHelper.Callback() {
-      private var swipeThreshold = -1f
-      override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: ViewHolder): Int {
-        val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN //允许上下的拖动
-        val swipeFlags = ItemTouchHelper.LEFT //只允许从右向左侧滑
-        return makeMovementFlags(dragFlags, swipeFlags)
-      }
-
-      override fun isLongPressDragEnabled(): Boolean {
-        // 禁止拖动
-        return false
-      }
-
-      override fun onMove(
-        recyclerView: RecyclerView,
-        viewHolder: ViewHolder,
-        target: ViewHolder
-      ): Boolean {
-        Timber.d("onMove")
-        return true
-      }
-
-      override fun onSwiped(viewHolder: ViewHolder, direction: Int) {
-        val delBtn = viewHolder.itemView.findViewById<TextView>(R.id.del)
-        viewHolder.itemView.translationX = -(delBtn.measuredWidth.toFloat())
-      }
-
-      override fun getSwipeThreshold(viewHolder: ViewHolder): Float {
-        if (swipeThreshold < 0) {
-          val delBtn = viewHolder.itemView.findViewById<TextView>(R.id.del)
-          swipeThreshold = delBtn.measuredWidth.toFloat() / viewHolder.itemView.measuredWidth
-        }
-        return swipeThreshold
-      }
-    }).attachToRecyclerView(binding.rvList)
-  }
-
   private class StrAdapter :
     BaseQuickAdapter<Pair<String, ProtectedString>, BaseViewHolder>(R.layout.layout_entry_str) {
     @SuppressLint("SetTextI18n")
     override fun convert(holder: BaseViewHolder, item: Pair<String, ProtectedString>) {
-      val group = holder.getView<Group>(R.id.groupContent)
-      val addMoreTv = holder.getView<TextView>(R.id.add_more)
       if (item == ADD_MORE_DATA) {
-        group.visibility = GONE
-        addMoreTv.visibility = VISIBLE
+        showContent(holder, false)
         return
       }
-      group.visibility = VISIBLE
-      addMoreTv.visibility = GONE
+      showContent(holder, true)
       holder.setText(R.id.title, item.first)
+      holder.setVisible(R.id.del, true)
       val tvValue = holder.getView<TextView>(R.id.value)
       KpaUtil.handleShowPass(tvValue, !item.second.isProtected)
-      holder.getView<View>(R.id.rpbBar).visibility = GONE
       if (item.second.toString().isEmpty()) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
           tvValue.typeface = context.resources.getFont(R.font.roboto_thinitalic)
@@ -175,6 +128,12 @@ class CreateStrCard(context: Context, attributeSet: AttributeSet) :
         tvValue.typeface = context.resources.getFont(R.font.roboto_regular)
       }
       tvValue.text = item.second.toString()
+    }
+
+    private fun showContent(holder: BaseViewHolder, show: Boolean) {
+      holder.setGone(R.id.title, !show)
+      holder.setGone(R.id.value, !show)
+      holder.setGone(R.id.add_more, show)
     }
   }
 }

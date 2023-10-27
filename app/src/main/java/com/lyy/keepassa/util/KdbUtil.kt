@@ -20,7 +20,9 @@ import com.keepassdroid.database.PwGroupIdV4
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.util.totp.OtpUtil
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.UUID
 
@@ -31,6 +33,30 @@ object KdbUtil {
   fun Database?.isNull(): Boolean {
     return this == null || this.pm == null
   }
+
+  suspend fun getAllTags():Set<String>{
+    val tagList = hashSetOf<String>()
+    withContext(Dispatchers.IO){
+      BaseApp.KDB.pm.entries.forEach {
+        val entry = it.value as PwEntryV4
+        if (entry.tags.isNullOrEmpty()){
+          return@forEach
+        }
+        tagList.addAll(getEntryTag(entry))
+      }
+    }
+    return tagList
+  }
+
+  fun getEntryTag(entryV4: PwEntryV4):Set<String>{
+    val tagSet = hashSetOf<String>()
+    entryV4.tags.split(",").forEach {
+      tagSet.add(it)
+    }
+    return tagSet
+  }
+
+
 
   /**
    * 获取用户名，如果是引用其它条目的，解析其引用
