@@ -12,8 +12,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.lifecycleScope
 import com.arialyy.frame.router.Routerfit
@@ -24,8 +26,11 @@ import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.databinding.LayoutEntryCreateStrCardBinding
 import com.lyy.keepassa.router.DialogRouter
+import com.lyy.keepassa.service.feat.KdbHandlerService
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.doOnItemClickListener
+import com.lyy.keepassa.util.init
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -66,18 +71,29 @@ class CreateStrCard(context: Context, attributeSet: AttributeSet) :
     binding.rvList.adapter = adapter
     adapter.setNewInstance(strList)
 
-    adapter.setOnItemClickListener { _, _, position ->
+    binding.rvList.doOnItemClickListener { _, position, v ->
       val data = strList[position]
       if (data == ADD_MORE_DATA) {
         Routerfit.create(DialogRouter::class.java).showCreateCustomDialog()
-        return@setOnItemClickListener
+        return@doOnItemClickListener
       }
-      Routerfit.create(DialogRouter::class.java)
-        .showCreateCustomDialog(position, data.first, data.second)
+      PopupMenu(context, v, Gravity.END).init(R.menu.entry_modify_str_summary) {
+        when (it.itemId) {
+          R.id.remove_str -> {
+            strList.remove(data)
+            adapter.notifyItemRemoved(position)
+            entry.binaries.remove(data.first)
+            KpaUtil.kdbHandlerService.saveDbByBackground()
+          }
+
+          R.id.modify_text -> {
+            Routerfit.create(DialogRouter::class.java)
+              .showCreateCustomDialog(position, data.first, data.second)
+          }
+        }
+      }.show()
     }
-    helper.handleList {
-      Timber.d("未实现")
-    }
+    helper.handleList()
   }
 
   private fun listenerModifyStr() {
@@ -100,6 +116,7 @@ class CreateStrCard(context: Context, attributeSet: AttributeSet) :
         strList.removeLast()
         strList.add(Pair(str.key, str.str))
         strList.add(ADD_MORE_DATA)
+        adapter.notifyDataSetChanged()
       }
     }
   }

@@ -442,4 +442,6 @@
     <string name="create_tag">创建标签</string>
     <string name="tag_name">标签名称</string>
     <string name="add_tag">添加标签</string>
+    <string name="open_file">打开文件</string>
+    <string name="modify_str_attr">修改属性</string>
 </resources>

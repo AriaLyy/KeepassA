@@ -34,7 +34,7 @@ internal class CardListHelper(val binding: LayoutEntryCreateStrCardBinding) {
 
   private var isExpand = false
 
-  fun handleList(removeCallback: () -> Unit) {
+  fun handleList() {
     binding.rvList.apply {
       setHasFixedSize(true)
       layoutManager = object : LinearLayoutManager(context) {
@@ -45,7 +45,6 @@ internal class CardListHelper(val binding: LayoutEntryCreateStrCardBinding) {
       isNestedScrollingEnabled = false
     }
     handleArrow()
-    moveDrop(removeCallback)
   }
 
   private fun handleArrow() {
@@ -79,47 +78,5 @@ internal class CardListHelper(val binding: LayoutEntryCreateStrCardBinding) {
       binding.rvList.visibility = ConstraintLayout.VISIBLE
     }
     anim.start()
-  }
-
-  /**
-   * 滑动删除
-   */
-  private fun moveDrop(removeCallback: () -> Unit) {
-    ItemTouchHelper(object : Callback() {
-      private var swipeThreshold = -1f
-      override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: ViewHolder): Int {
-        val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN //允许上下的拖动
-        val swipeFlags = ItemTouchHelper.LEFT //只允许从右向左侧滑
-        return makeMovementFlags(dragFlags, swipeFlags)
-      }
-
-      override fun isLongPressDragEnabled(): Boolean {
-        // 禁止拖动
-        return false
-      }
-
-      override fun onMove(
-        recyclerView: RecyclerView,
-        viewHolder: ViewHolder,
-        target: ViewHolder
-      ): Boolean {
-        Timber.d("onMove")
-        return true
-      }
-
-      override fun onSwiped(viewHolder: ViewHolder, direction: Int) {
-        val delBtn = viewHolder.itemView.findViewById<TextView>(id.del)
-        viewHolder.itemView.translationX = -(delBtn.measuredWidth.toFloat())
-      }
-
-      override fun getSwipeThreshold(viewHolder: ViewHolder): Float {
-        if (swipeThreshold < 0) {
-          val delBtn = viewHolder.itemView.findViewById<TextView>(id.del)
-          swipeThreshold = delBtn.measuredWidth.toFloat() / viewHolder.itemView.measuredWidth
-          removeCallback.invoke()
-        }
-        return swipeThreshold
-      }
-    }).attachToRecyclerView(binding.rvList)
   }
 }

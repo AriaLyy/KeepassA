@@ -19,9 +19,7 @@ import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.ToastUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
-import com.lyy.keepassa.view.dialog.LoadingDialog
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -121,28 +119,6 @@ class PlayServiceUtil {
     }
 
     // Process the result.
-  }
-
-  /**
-   * 检查是否已订阅
-   * @return true 已订阅
-   */
-  suspend fun isSubscribed(): Boolean {
-
-    val d = withContext(Dispatchers.IO) {
-      return@withContext billingClient.queryPurchases(SkuType.SUBS)
-    }
-    if (d.responseCode != BillingResponseCode.OK) {
-      Timber.d("get history error")
-      return false
-    }
-
-    d.purchasesList?.forEach {
-      if (it.isAutoRenewing) {
-        return true
-      }
-    }
-    return false
   }
 
   /**

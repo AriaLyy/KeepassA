@@ -9,17 +9,22 @@ package com.lyy.keepassa.view.create
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.LayoutInflater
+import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.lifecycleScope
-import com.arialyy.frame.router.Routerfit
+import com.arialyy.frame.util.ResUtil
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedBinary
 import com.lyy.keepassa.R
 import com.lyy.keepassa.databinding.LayoutEntryCreateStrCardBinding
-import com.lyy.keepassa.router.DialogRouter
+import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.doOnItemClickListener
+import com.lyy.keepassa.util.init
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -43,6 +48,7 @@ class CreateFileCard(context: Context, attributeSet: AttributeSet) :
 
   init {
     listenerAddAttr()
+    binding.tvTitle.text = ResUtil.getString(R.string.attachment)
   }
 
   fun bindData(entry: PwEntryV4) {
@@ -55,18 +61,28 @@ class CreateFileCard(context: Context, attributeSet: AttributeSet) :
       this.adapter = this@CreateFileCard.fileAdapter
       this@CreateFileCard.fileAdapter.setNewInstance(fileList)
     }
-
-    fileAdapter.setOnItemClickListener { _, _, position ->
+    binding.rvList.doOnItemClickListener { _, position, v ->
       val data = fileList[position]
       if (data == ADD_MORE_DATA) {
-        Routerfit.create(DialogRouter::class.java).showCreateCustomDialog()
-        return@setOnItemClickListener
+        (context as CreateEntryActivity).changeFile()
+        return@doOnItemClickListener
       }
-      (context as CreateEntryActivity).changeFile()
+      PopupMenu(context, v, Gravity.END).init(R.menu.entry_modify_file_summary) {
+        when (it.itemId) {
+          R.id.remove_file -> {
+            fileList.remove(data)
+            fileAdapter.notifyItemRemoved(position)
+            entry.binaries.remove(data.first)
+            KpaUtil.kdbHandlerService.saveDbByBackground()
+          }
+
+          R.id.open_file -> {
+            KdbUtil.openFile(data.first, data.second)
+          }
+        }
+      }.show()
     }
-    helper.handleList{
-      TODO("未实现")
-    }
+    helper.handleList()
   }
 
   private fun listenerAddAttr() {
@@ -78,10 +94,10 @@ class CreateFileCard(context: Context, attributeSet: AttributeSet) :
         if (it == null) {
           return@collectLatest
         }
-        if (visibility == GONE){
+        if (visibility == GONE) {
           visibility = VISIBLE
         }
-        fileList.remove(ADD_MORE_DATA)
+        fileList.removeLast()
         fileList.add(it)
         fileList.add(ADD_MORE_DATA)
         fileAdapter.notifyDataSetChanged()
@@ -92,7 +108,17 @@ class CreateFileCard(context: Context, attributeSet: AttributeSet) :
   private class FileAdapter :
     BaseQuickAdapter<Pair<String, ProtectedBinary>, BaseViewHolder>(R.layout.layout_entry_attachment) {
     override fun convert(holder: BaseViewHolder, item: Pair<String, ProtectedBinary>) {
+      if (item == ADD_MORE_DATA) {
+        showContent(holder, false)
+        return
+      }
+      showContent(holder, true)
       holder.setText(R.id.value, item.first)
+    }
+
+    private fun showContent(holder: BaseViewHolder, show: Boolean) {
+      holder.setGone(R.id.value, !show)
+      holder.setGone(R.id.add_more, show)
     }
   }
 }

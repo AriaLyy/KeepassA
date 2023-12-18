@@ -10,36 +10,87 @@
 package com.lyy.keepassa.util
 
 import android.text.TextUtils
+import com.arialyy.frame.router.Routerfit
+import com.arialyy.frame.util.FileUtil
 import com.arialyy.frame.util.RegularRule
+import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.Utils
 import com.keepassdroid.Database
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupIdV3
 import com.keepassdroid.database.PwGroupIdV4
+import com.keepassdroid.database.security.ProtectedBinary
 import com.keepassdroid.database.security.ProtectedString
+import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.totp.OtpUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.io.File
+import java.io.FileOutputStream
+import java.nio.channels.Channels
 import java.util.UUID
 
 object KdbUtil {
 
   val scope = MainScope()
+  val txtArray = arrayListOf<String>("txt", "md")
+  val imgArray = arrayListOf<String>("png", "jpg", "jpeg", "webp")
+
+  fun openFile(fileName: String, file: ProtectedBinary) {
+    txtArray.forEach {
+      if (fileName.endsWith(it, true)) {
+        Routerfit.create(DialogRouter::class.java).showMsgDialog(
+          msgTitle = ResUtil.getString(R.string.txt_viewer),
+          msgContent = String(file.data.readBytes()),
+          showCancelBt = false
+        )
+        return
+      }
+    }
+    imgArray.forEach {
+      if (fileName.endsWith(it, true)) {
+        val bytes = file.data.readBytes()
+        if (bytes.isNotEmpty()) {
+          Routerfit.create(DialogRouter::class.java).showImgViewerDialog(bytes)
+        }
+        return
+      }
+    }
+    openFileBySystem(fileName, file)
+  }
+
+  private fun openFileBySystem(fileName: String, file: ProtectedBinary) {
+    KpaUtil.scope.launch {
+      val context = Utils.getApp()
+      val targetFile = File(context.cacheDir, fileName)
+      withContext(Dispatchers.IO) {
+        val fic = Channels.newChannel(file.data)
+        val foc = FileOutputStream(targetFile).channel
+        foc.transferFrom(fic, 0, Int.MAX_VALUE.toLong())
+        fic.close()
+        foc.close()
+      }
+      FileUtil.openFile(context, targetFile)
+    }
+  }
 
   fun Database?.isNull(): Boolean {
     return this == null || this.pm == null
   }
 
-  suspend fun getAllTags():Set<String>{
+  suspend fun getAllTags(): Set<String> {
     val tagList = hashSetOf<String>()
-    withContext(Dispatchers.IO){
+    withContext(Dispatchers.IO) {
       BaseApp.KDB.pm.entries.forEach {
         val entry = it.value as PwEntryV4
-        if (entry.tags.isNullOrEmpty()){
+        if (entry.tags.isNullOrEmpty()) {
           return@forEach
         }
         tagList.addAll(getEntryTag(entry))
@@ -48,15 +99,13 @@ object KdbUtil {
     return tagList
   }
 
-  fun getEntryTag(entryV4: PwEntryV4):Set<String>{
+  fun getEntryTag(entryV4: PwEntryV4): Set<String> {
     val tagSet = hashSetOf<String>()
     entryV4.tags.split(",").forEach {
       tagSet.add(it)
     }
     return tagSet
   }
-
-
 
   /**
    * 获取用户名，如果是引用其它条目的，解析其引用
@@ -91,12 +140,13 @@ object KdbUtil {
     if (domain.isNullOrEmpty()) {
       return
     }
-    val topDomain = Regex(RegularRule.DOMAIN_TOP, RegexOption.IGNORE_CASE).find(domain)?.value.toString()
+    val topDomain =
+      Regex(RegularRule.DOMAIN_TOP, RegexOption.IGNORE_CASE).find(domain)?.value.toString()
     Timber.d("topDomain = $topDomain")
     for (entry in BaseApp.KDB.pm.entries.values) {
       val pe4 = entry as PwEntryV4
       if (pe4.url.contains(topDomain, true)
-        || pe4.strings["URL"]?.toString()?.contains(topDomain) ==true
+        || pe4.strings["URL"]?.toString()?.contains(topDomain) == true
       ) {
         listStorage.add(pe4)
       }

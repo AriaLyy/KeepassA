@@ -7,12 +7,18 @@
  */
 package com.lyy.keepassa.util
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import androidx.appcompat.view.menu.MenuPopupHelper
+import androidx.appcompat.widget.PopupMenu
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
+import com.arialyy.frame.util.ReflectionUtil
 import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.adapter.RvItemClickSupport
 import com.keepassdroid.database.PwEntry
@@ -86,6 +92,22 @@ fun View.doClick(
 
     Timber.d("间隔太短")
   }
+}
+
+@SuppressLint("RestrictedApi")
+fun PopupMenu.init(menuId: Int, onItemCLick: (MenuItem) -> Unit): PopupMenu {
+  val inflater: MenuInflater = menuInflater
+  inflater.inflate(menuId, this.menu)
+  // 以下代码为强制显示icon
+  val mPopup = ReflectionUtil.getField(PopupMenu::class.java, "mPopup")
+  mPopup.isAccessible = true
+  val help = mPopup.get(this) as MenuPopupHelper
+  help.setForceShowIcon(true)
+  setOnMenuItemClickListener {
+    onItemCLick.invoke(it)
+    return@setOnMenuItemClickListener true
+  }
+  return this
 }
 
 fun Activity.isDestroy() = isDestroyed || isFinishing
@@ -170,9 +192,9 @@ fun PwEntry.copyPassword() {
   HitUtil.toaskShort(ResUtil.getString(R.string.hint_copy_pass))
 }
 
-fun PwEntryV4.copyTotp(){
+fun PwEntryV4.copyTotp() {
   val pass = OtpUtil.getOtpPass(this).second
-  if (pass.isNullOrBlank()){
+  if (pass.isNullOrBlank()) {
     HitUtil.toaskShort(ResUtil.getString(R.string.totp_key_error))
     return
   }

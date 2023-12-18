@@ -171,7 +171,6 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
       layoutManager = AppIconLayoutManager(15.toPx())
     }
     adapter.setNewInstance(arrayListOf<String>().apply {
-      add("com.jojoread.huiben")
       add("tv.danmaku.bili")
     })
   }
