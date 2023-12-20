@@ -12,11 +12,17 @@
         name="clicker"
         type="com.lyy.keepassa.view.dialog.DialogBtnClicker"
         />
+    <variable
+        name="enableEnterBt"
+        type="Boolean"
+        />
+
   </data>
   <androidx.appcompat.widget.LinearLayoutCompat
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
+      style="@style/KpaDialogLayoutStyle"
       >
     <include
         layout="@layout/layout_dialog_title"
@@ -29,12 +35,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxHeight="300dp"
+        android:padding="16dp"
         bind:layout_constraintStart_toStartOf="parent"
         />
 
     <include
         layout="@layout/layout_dialog_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
         bind:clicker="@{clicker}"
+        bind:enableEnterBt="@{enableEnterBt}"
         />
 
   </androidx.appcompat.widget.LinearLayoutCompat>

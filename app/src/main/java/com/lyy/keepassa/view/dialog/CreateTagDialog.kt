@@ -11,6 +11,7 @@ import android.view.View
 import androidx.core.widget.doBeforeTextChanged
 import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
@@ -36,6 +37,7 @@ class CreateTagDialog : BaseDialog<DialogCreateTagBinding>() {
 
   override fun initData() {
     super.initData()
+    ARouter.getInstance().inject(this)
     binding.msgTitle = ResUtil.getString(R.string.create_tag)
     binding.clicker = object : DialogBtnClicker {
       override fun onEnter(v: View) {

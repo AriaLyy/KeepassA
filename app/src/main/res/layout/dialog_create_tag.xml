@@ -25,6 +25,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
+      style="@style/KpaDialogLayoutStyle"
       >
     <include
         layout="@layout/layout_dialog_title"
@@ -36,6 +37,7 @@
         android:id="@+id/tlTag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="16dp"
         app:startIconDrawable="@drawable/ic_user"
         app:startIconTint="@color/color_icon_grey"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -56,6 +58,8 @@
 
     <include
         layout="@layout/layout_dialog_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
         bind:clicker="@{clicker}"
         bind:enableEnterBt="@{enableEnterBt}"
         />

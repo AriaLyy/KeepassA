@@ -14,6 +14,7 @@ import android.content.IntentSender
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
+import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityOptionsCompat
@@ -194,6 +195,27 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
       CreateTagDialog.createTagFlow.collectLatest {
         Routerfit.create(DialogRouter::class.java)
           .showChooseTagDialog(module.pwEntry, if (it.isNullOrEmpty()) null else TagBean(it, true))
+      }
+    }
+    module.getUserNameCache()
+    binding.edUser.threshold = 1 // 设置输入几个字符后开始出现提示 默认是2
+    binding.edUser.setOnFocusChangeListener { _, hasFocus ->
+      if (hasFocus) {
+        binding.edUser.showDropDown()
+      }
+    }
+    lifecycleScope.launch {
+      CreateEntryModule.userNameFlow.collectLatest {
+        if (it.isNullOrEmpty()) {
+          return@collectLatest
+        }
+        binding.edUser.setAdapter(
+          ArrayAdapter(
+            this@CreateEntryActivity,
+            R.layout.android_simple_dropdown_item_1line,
+            it
+          )
+        )
       }
     }
   }

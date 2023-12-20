@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.adapter.RvItemClickSupport
@@ -27,6 +28,7 @@ import com.lyy.keepassa.databinding.DialogChooseTagBinding
 import com.lyy.keepassa.entity.TagBean
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.util.loadImg
 import com.lyy.keepassa.view.create.CreateEntryModule
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -62,9 +64,11 @@ internal class ChooseTagDialog : BaseDialog<DialogChooseTagBinding>() {
 
   override fun initData() {
     super.initData()
+    ARouter.getInstance().inject(this)
     module = ViewModelProvider(requireActivity())[CreateEntryModule::class.java]
     binding.msgTitle = ResUtil.getString(R.string.add_tag)
     val tagAdapter = TagAdapter()
+    binding.enableEnterBt = true
     lifecycleScope.launch {
       binding.rvList.apply {
         setHasFixedSize(true)
@@ -74,13 +78,13 @@ internal class ChooseTagDialog : BaseDialog<DialogChooseTagBinding>() {
       tagList.addAll(getTagData().toMutableList())
       tagAdapter.setNewInstance(tagList)
     }
-    RvItemClickSupport.addTo(binding.rvList).setOnItemClickListener { _, position, _ ->
+    binding.rvList.doOnItemClickListener { _, position, _ ->
       val tagBean = tagList[position]
       if (tagBean == ADD_MORE) {
         module.cacheTag(tagList)
         dismiss()
         Routerfit.create(DialogRouter::class.java).showCreateTagDialog()
-        return@setOnItemClickListener
+        return@doOnItemClickListener
       }
       tagBean.isSet = !tagBean.isSet
       tagAdapter.notifyItemChanged(position, tagBean.isSet)
@@ -89,6 +93,7 @@ internal class ChooseTagDialog : BaseDialog<DialogChooseTagBinding>() {
       override fun onEnter(v: View) {
         lifecycleScope.launch {
           chooseTagFlow.emit(tagList.filter { it.isSet })
+          dismiss()
         }
       }
 

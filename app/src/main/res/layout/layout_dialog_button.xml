@@ -17,12 +17,12 @@
         type="java.lang.CharSequence"
         />
     <variable
-        name="showEnterBt"
+        name="hintEnterBt"
         type="Boolean"
         />
 
     <variable
-        name="showCancelBt"
+        name="hintCancelBt"
         type="Boolean"
         />
     <variable
@@ -32,14 +32,13 @@
     <variable
         name="enableEnterBt"
         type="Boolean"
-
         />
   </data>
 
 
   <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="48dp"
       >
 
     <androidx.appcompat.widget.AppCompatButton
@@ -51,7 +50,7 @@
         android:onClick="@{(v) -> clicker.onCancel(v)}"
         android:text="@{TextUtils.isEmpty(cancelText) ?  @string/cancel : cancelText}"
         android:textColor="@color/selector_blue_gray_text_bg"
-        android:visibility="@{showCancelBt ? View.VISIBLE : View.GONE}"
+        android:visibility="@{hintCancelBt ? View.GONE : View.VISIBLE, default=visible}"
         />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -64,7 +63,7 @@
         android:onClick="@{(v) -> clicker.onEnter(v)}"
         android:text="@{TextUtils.isEmpty(enterText) ? @string/enter : enterText}"
         android:textColor="@color/selector_blue_gray_text_bg"
-        android:visibility="@{showEnterBt ? View.VISIBLE : View.GONE}"
+        android:visibility="@{hintEnterBt ? View.GONE : View.VISIBLE, default=visible}"
         />
 
 

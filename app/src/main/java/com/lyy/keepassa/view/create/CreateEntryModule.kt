@@ -54,6 +54,7 @@ import java.util.UUID
 class CreateEntryModule : BaseModule() {
   companion object {
     val attrFlow = MutableStateFlow<Pair<String, ProtectedBinary>?>(null)
+    val userNameFlow = MutableStateFlow<List<String>?>(null)
   }
 
   /**
@@ -123,10 +124,12 @@ class CreateEntryModule : BaseModule() {
   /**
    * Traverse database and get all userName
    */
-  fun getUserNameCache() = liveData<List<String>> {
+  fun getUserNameCache() {
     if (userNameCache.isNotEmpty()) {
-      emit(userNameCache)
-      return@liveData
+      viewModelScope.launch {
+        userNameFlow.emit(userNameCache)
+      }
+      return
     }
     val temp = hashSetOf<String>()
     for (map in BaseApp.KDB.pm.entries) {
@@ -137,7 +140,9 @@ class CreateEntryModule : BaseModule() {
       temp.add(userName)
     }
     userNameCache.addAll(temp)
-    emit(userNameCache)
+    viewModelScope.launch {
+      userNameFlow.emit(userNameCache)
+    }
   }
 
   /**

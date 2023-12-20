@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.ToastUtils
 import com.google.android.material.slider.Slider
@@ -86,6 +87,7 @@ class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListe
 
   override fun initData() {
     super.initData()
+    ARouter.getInstance().inject(this)
     module = ViewModelProvider(requireActivity())[CreateOtpModule::class.java]
     handleOptionSwitch()
   }
