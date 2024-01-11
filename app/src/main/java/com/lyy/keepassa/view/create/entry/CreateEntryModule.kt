@@ -7,21 +7,20 @@
  */
 
 
-package com.lyy.keepassa.view.create
+package com.lyy.keepassa.view.create.entry
 
 import KDBAutoFillRepository
 import android.content.Context
 import android.graphics.Bitmap.CompressFormat.PNG
 import android.net.Uri
 import android.text.TextUtils
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwDatabaseV4
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
+import com.keepassdroid.database.PwGroupId
 import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
@@ -41,11 +40,11 @@ import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.getFileInfo
 import com.lyy.keepassa.util.hasNote
 import com.lyy.keepassa.util.hasTOTP
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
-import java.util.Date
 import java.util.UUID
 
 /**
@@ -53,7 +52,7 @@ import java.util.UUID
  */
 class CreateEntryModule : BaseModule() {
   companion object {
-    val attrFlow = MutableStateFlow<Pair<String, ProtectedBinary>?>(null)
+    val attrFlow = MutableSharedFlow<Pair<String, ProtectedBinary>?>(0)
     val userNameFlow = MutableStateFlow<List<String>?>(null)
   }
 
@@ -62,15 +61,20 @@ class CreateEntryModule : BaseModule() {
    */
   var selectedTagBeanCache = mutableListOf<String>()
   var customIcon: PwIconCustom? = null
-  val attrStrMap = LinkedHashMap<String, ProtectedString>()
-  val attrFileMap = LinkedHashMap<String, ProtectedBinary>()
   var icon = PwIconStandard(0)
-  var loseDate: Date? = null // 失效时间
-  var userNameCache = arrayListOf<String>()
-  var noteStr: CharSequence = ""
-  var expires: Boolean = false
+  private var userNameCache = arrayListOf<String>()
   var autoFillParam: AutoFillParam? = null
   lateinit var pwEntry: PwEntryV4
+
+  fun updateEntryGroupIdAndSave(context: CreateEntryActivity, groupId: PwGroupId) {
+
+    viewModelScope.launch {
+      KpaUtil.kdbHandlerService.createEntry(pwEntry)
+      KpaUtil.kdbHandlerService.saveOnly(true) {
+        context.finishAfterTransition()
+      }
+    }
+  }
 
   fun cacheTag(tagList: List<TagBean>) {
     selectedTagBeanCache.clear()
@@ -107,19 +111,15 @@ class CreateEntryModule : BaseModule() {
       HitUtil.snackShort(rootView, ResUtil.getString(R.string.error_attr_file_too_large))
       return
     }
+    val pbf = ProtectedBinary(
+      false, UriUtil.getUriInputStream(context, uri)
+        .readBytes()
+    )
+    (BaseApp.KDB.pm as PwDatabaseV4).binPool.poolAdd(pbf)
     context.lifecycleScope.launch {
-      attrFlow.emit(
-        Pair(
-          fileName, ProtectedBinary(
-            false, UriUtil.getUriInputStream(context, uri)
-              .readBytes()
-          )
-        )
-      )
+      attrFlow.emit(Pair(fileName, pbf))
     }
   }
-
-  fun isFormAutoFill() = autoFillParam != null
 
   /**
    * Traverse database and get all userName
@@ -143,56 +143,6 @@ class CreateEntryModule : BaseModule() {
     viewModelScope.launch {
       userNameFlow.emit(userNameCache)
     }
-  }
-
-  /**
-   * 更新实体
-   */
-  fun updateEntry(
-    entry: PwEntryV4,
-    title: String,
-    userName: String?,
-    pass: String?,
-    url: String,
-    tags: String
-  ) {
-    if (customIcon != null) {
-      entry.customIcon = customIcon
-    }
-    entry.tags = tags
-    if (attrStrMap.isNotEmpty()) {
-      entry.strings.clear()
-      entry.strings.putAll(attrStrMap)
-    } else {
-      entry.strings.clear()
-    }
-    if (attrFileMap.isNotEmpty()) {
-      val binPool = (BaseApp.KDB.pm as PwDatabaseV4).binPool
-      entry.binaries.clear()
-      for (d in attrFileMap) {
-        entry.binaries[d.key] = d.value
-        if (binPool.poolFind(d.value) == -1) {
-          binPool.poolAdd(d.value)
-        }
-      }
-    } else {
-      entry.binaries.clear()
-    }
-
-    entry.setTitle(title, BaseApp.KDB.pm)
-    entry.setUsername(userName, BaseApp.KDB.pm)
-    entry.setPassword(pass, BaseApp.KDB.pm)
-    entry.setUrl(url, BaseApp.KDB.pm)
-
-    if (noteStr.isNotEmpty()) {
-      Timber.d("notes = $noteStr")
-      entry.setNotes(noteStr.toString(), BaseApp.KDB.pm)
-    }
-    entry.setExpires(expires)
-    if (loseDate != null) {
-      entry.expiryTime = loseDate
-    }
-    entry.icon = icon
   }
 
   /**
@@ -264,33 +214,6 @@ class CreateEntryModule : BaseModule() {
     callback: (PwGroupV4) -> Unit
   ) {
     KpaUtil.kdbHandlerService.createGroup(groupName, icon, customIcon, parentGroup, callback)
-  }
-
-  /**
-   * 添加条目
-   * @param pwEntry 需要添加的条目
-   */
-  fun addEntry(ac: FragmentActivity, pwEntry: PwEntryV4) {
-    KpaUtil.kdbHandlerService.addEntry(pwEntry)
-    KpaUtil.kdbHandlerService.saveDbByForeground {
-      HitUtil.toaskShort(
-        "${BaseApp.APP.getString(R.string.create_entry)}${
-          BaseApp.APP.getString(
-            R.string.success
-          )
-        }"
-      )
-      ac.finishAfterTransition()
-    }
-  }
-
-  /**
-   * 保存条目
-   */
-  fun saveDb(callback: (Int) -> Unit) {
-    viewModelScope.launch {
-      KpaUtil.kdbHandlerService.saveOnly(true, callback)
-    }
   }
 
   /**

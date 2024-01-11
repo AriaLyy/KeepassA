@@ -5,14 +5,21 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package com.lyy.keepassa.view.create
+package com.lyy.keepassa.view.create.entry
 
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntryV4
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.util.IconUtil
+import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.loadImg
+import kotlinx.coroutines.launch
+import org.joda.time.DateTime
+import java.util.UUID
 
 /**
  * @Author laoyuyu
@@ -22,6 +29,8 @@ import com.lyy.keepassa.util.loadImg
 internal class ModifyEntryHandler(val context: CreateEntryActivity) : ICreateHandler {
 
   override fun bindData() {
+    val entryId = context.intent.getSerializableExtra(CreateEntryActivity.KEY_ENTRY) as UUID
+    context.module.pwEntry = BaseApp.KDB!!.pm.entries[entryId] as PwEntryV4
     val entry = context.module.pwEntry
     val binding = context.binding
     binding.title.setText(entry.title)
@@ -44,6 +53,15 @@ internal class ModifyEntryHandler(val context: CreateEntryActivity) : ICreateHan
       visibility = if (entry.binaries.isNotEmpty()) View.VISIBLE else View.GONE
       bindData(entry)
     }
+    binding.tlTag.apply {
+      visibility = if (entry.title.isNotEmpty()) View.VISIBLE else View.GONE
+      binding.edTag.setText(entry.tags)
+    }
+
+    if (entry.expiryTime != null) {
+      binding.edLoseTime.setText(DateTime(entry.expiryTime).toString(KdbUtil.DATE_FORMAT))
+      binding.tlLoseTime.visibility = View.VISIBLE
+    }
   }
 
   private fun handleIcon(ac: CreateEntryActivity, pwEntry: PwEntryV4) {
@@ -53,5 +71,14 @@ internal class ModifyEntryHandler(val context: CreateEntryActivity) : ICreateHan
 
   override fun getTitle(): String {
     return ResUtil.getString(R.string.edit)
+  }
+
+  override fun saveDb(pwEntryV4: PwEntryV4) {
+    checkAttr(context, pwEntryV4)
+    context.lifecycleScope.launch {
+      KpaUtil.kdbHandlerService.saveOnly(true) {
+        context.finishAfterTransition()
+      }
+    }
   }
 }

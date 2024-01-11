@@ -444,4 +444,5 @@
     <string name="add_tag">添加标签</string>
     <string name="open_file">打开文件</string>
     <string name="modify_str_attr">修改属性</string>
+    <string name="error_file">文件异常，请删除：&lt;font color=#FF0000&gt;%s&lt;/font&gt;</string>
 </resources>

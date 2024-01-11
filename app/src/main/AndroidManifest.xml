@@ -156,7 +156,7 @@
         android:screenOrientation="portrait" />
 
     <activity
-        android:name=".view.create.CreateEntryActivity"
+        android:name=".view.create.entry.CreateEntryActivity"
         android:screenOrientation="portrait" />
     <activity
         android:name=".view.create.GeneratePassActivity"

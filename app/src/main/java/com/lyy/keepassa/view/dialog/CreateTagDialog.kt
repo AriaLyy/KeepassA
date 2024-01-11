@@ -41,6 +41,7 @@ class CreateTagDialog : BaseDialog<DialogCreateTagBinding>() {
     binding.msgTitle = ResUtil.getString(R.string.create_tag)
     binding.clicker = object : DialogBtnClicker {
       override fun onEnter(v: View) {
+        dismiss()
         lifecycleScope.launch {
           createTagFlow.emit(binding.edTag.text.toString().trim())
         }

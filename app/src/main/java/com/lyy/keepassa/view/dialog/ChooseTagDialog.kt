@@ -8,8 +8,7 @@
 package com.lyy.keepassa.view.dialog
 
 import android.view.View
-import android.widget.CheckBox
-import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,19 +17,18 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
-import com.arialyy.frame.util.adapter.RvItemClickSupport
-import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.keepassdroid.database.PwEntryV4
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.AbsViewBindingAdapter
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogChooseTagBinding
+import com.lyy.keepassa.databinding.ItemChooseTagBinding
 import com.lyy.keepassa.entity.TagBean
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.util.loadImg
-import com.lyy.keepassa.view.create.CreateEntryModule
+import com.lyy.keepassa.view.create.entry.CreateEntryModule
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
@@ -76,7 +74,7 @@ internal class ChooseTagDialog : BaseDialog<DialogChooseTagBinding>() {
         adapter = tagAdapter
       }
       tagList.addAll(getTagData().toMutableList())
-      tagAdapter.setNewInstance(tagList)
+      tagAdapter.setData(tagList)
     }
     binding.rvList.doOnItemClickListener { _, position, _ ->
       val tagBean = tagList[position]
@@ -117,18 +115,21 @@ internal class ChooseTagDialog : BaseDialog<DialogChooseTagBinding>() {
     return tagList
   }
 
-  private class TagAdapter : BaseQuickAdapter<TagBean, BaseViewHolder>(R.layout.item_choose_tag) {
-    override fun convert(holder: BaseViewHolder, item: TagBean, payloads: List<Any>) {
-      super.convert(holder, item, payloads)
-      holder.getView<CheckBox>(R.id.cb).isChecked = item.isSet
+  private class TagAdapter : AbsViewBindingAdapter<TagBean, ItemChooseTagBinding>() {
+    override fun bindData(
+      binding: ItemChooseTagBinding,
+      item: TagBean,
+      payloads: MutableList<Any>
+    ) {
+      super.bindData(binding, item, payloads)
+      binding.cb.isChecked = item.isSet
     }
 
-    override fun convert(holder: BaseViewHolder, item: TagBean) {
-      holder.setVisible(R.id.cb, item != ADD_MORE)
-      holder.setText(R.id.tvTitle, item.tag)
-      holder.getView<AppCompatImageView>(R.id.ivIcon)
-        .loadImg(if (item == ADD_MORE) R.drawable.ic_add_24px else R.drawable.ic_baseline_label_24)
-      holder.getView<CheckBox>(R.id.cb).isChecked = item.isSet
+    override fun bindData(binding: ItemChooseTagBinding, item: TagBean) {
+      binding.cb.isVisible = item != ADD_MORE
+      binding.tvTitle.text = item.tag
+      binding.ivIcon.loadImg(if (item == ADD_MORE) R.drawable.ic_add_24px else R.drawable.ic_baseline_label_24)
+      binding.cb.isChecked = item.isSet
     }
   }
 }

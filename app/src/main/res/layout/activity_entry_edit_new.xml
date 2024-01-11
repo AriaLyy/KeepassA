@@ -253,6 +253,9 @@
                 android:id="@+id/edTag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:hint="@string/tag"
                 android:imeOptions="actionNext"
                 android:text=" "
@@ -276,7 +279,10 @@
                 android:id="@+id/edLoseTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/tag"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/lose_time"
                 android:imeOptions="actionNext"
                 android:text=" "
                 style="@style/KpaEditTextStyleNew"
@@ -284,7 +290,7 @@
 
           </com.google.android.material.textfield.TextInputLayout>
 
-          <com.lyy.keepassa.view.create.CreateStrCard
+          <com.lyy.keepassa.view.create.entry.CreateStrCard
               android:id="@+id/cardStr"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
@@ -292,7 +298,7 @@
               tools:visibility="visible"
               />
 
-          <com.lyy.keepassa.view.create.CreateFileCard
+          <com.lyy.keepassa.view.create.entry.CreateFileCard
               android:id="@+id/cardFile"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"

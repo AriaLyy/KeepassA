@@ -40,8 +40,9 @@ import java.util.UUID
 object KdbUtil {
 
   val scope = MainScope()
-  val txtArray = arrayListOf<String>("txt", "md")
-  val imgArray = arrayListOf<String>("png", "jpg", "jpeg", "webp")
+  val txtArray = arrayListOf("txt", "md")
+  val imgArray = arrayListOf("png", "jpg", "jpeg", "webp")
+  val DATE_FORMAT = "yyyy/MM/dd HH:mm"
 
   fun openFile(fileName: String, file: ProtectedBinary) {
     txtArray.forEach {

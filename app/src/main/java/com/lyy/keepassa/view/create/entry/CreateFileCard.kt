@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package com.lyy.keepassa.view.create
+package com.lyy.keepassa.view.create.entry
 
 import android.content.Context
 import android.util.AttributeSet
@@ -13,13 +13,14 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.arialyy.frame.util.ResUtil
-import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedBinary
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.AbsViewBindingAdapter
+import com.lyy.keepassa.databinding.LayoutEntryAttachmentBinding
 import com.lyy.keepassa.databinding.LayoutEntryCreateStrCardBinding
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
@@ -42,7 +43,7 @@ class CreateFileCard(context: Context, attributeSet: AttributeSet) :
   private val binding =
     LayoutEntryCreateStrCardBinding.inflate(LayoutInflater.from(context), this, true)
 
-  private val fileList = mutableListOf<Pair<String, ProtectedBinary>>()
+  val fileList = mutableListOf<Pair<String, ProtectedBinary>>()
   private val fileAdapter = FileAdapter()
   private val helper = CardListHelper(binding)
 
@@ -59,7 +60,7 @@ class CreateFileCard(context: Context, attributeSet: AttributeSet) :
     fileList.add(ADD_MORE_DATA)
     binding.rvList.apply {
       this.adapter = this@CreateFileCard.fileAdapter
-      this@CreateFileCard.fileAdapter.setNewInstance(fileList)
+      this@CreateFileCard.fileAdapter.setData(fileList)
     }
     binding.rvList.doOnItemClickListener { _, position, v ->
       val data = fileList[position]
@@ -97,7 +98,9 @@ class CreateFileCard(context: Context, attributeSet: AttributeSet) :
         if (visibility == GONE) {
           visibility = VISIBLE
         }
-        fileList.removeLast()
+        if (fileList.isNotEmpty()) {
+          fileList.removeLast()
+        }
         fileList.add(it)
         fileList.add(ADD_MORE_DATA)
         fileAdapter.notifyDataSetChanged()
@@ -106,19 +109,21 @@ class CreateFileCard(context: Context, attributeSet: AttributeSet) :
   }
 
   private class FileAdapter :
-    BaseQuickAdapter<Pair<String, ProtectedBinary>, BaseViewHolder>(R.layout.layout_entry_attachment) {
-    override fun convert(holder: BaseViewHolder, item: Pair<String, ProtectedBinary>) {
+    AbsViewBindingAdapter<Pair<String, ProtectedBinary>, LayoutEntryAttachmentBinding>() {
+
+    override fun bindData(
+      binding: LayoutEntryAttachmentBinding,
+      item: Pair<String, ProtectedBinary>
+    ) {
       if (item == ADD_MORE_DATA) {
-        showContent(holder, false)
+        binding.value.isVisible = false
+        binding.addMore.isVisible = true
+        binding.addMore.text = ResUtil.getString(R.string.add_attr_file)
         return
       }
-      showContent(holder, true)
-      holder.setText(R.id.value, item.first)
-    }
-
-    private fun showContent(holder: BaseViewHolder, show: Boolean) {
-      holder.setGone(R.id.value, !show)
-      holder.setGone(R.id.add_more, show)
+      binding.value.isVisible = true
+      binding.addMore.isVisible = false
+      binding.value.text = item.first
     }
   }
 }

@@ -23,6 +23,7 @@ import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogAddGroupBinding
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
+import com.lyy.keepassa.view.create.entry.CreateEntryModule
 import com.lyy.keepassa.view.icon.IconBottomSheetDialog
 import com.lyy.keepassa.view.icon.IconItemCallback
 

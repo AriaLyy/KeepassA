@@ -158,5 +158,12 @@ interface DialogRouter {
    * 日期选择对话框
    */
   @RouterPath(path = "/dialog/timeChange")
+  @DialogArg(showDialog = true)
+  fun showTimeChangeDialog(): TimeChangeDialog
+
+  /**
+   * 日期选择对话框
+   */
+  @RouterPath(path = "/dialog/timeChange")
   fun getTimeChangeDialog(): TimeChangeDialog
 }

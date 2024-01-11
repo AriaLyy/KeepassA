@@ -25,8 +25,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
  **/
 class CreateOtpModule : BaseModule() {
   // lateinit var entry: PwEntryV4
-
-  val otpFlow = MutableStateFlow<OtpBeans?>(null)
+  companion object{
+    val otpFlow = MutableStateFlow<OtpBeans?>(null)
+  }
 
   fun createOtpBeans(
     totpType: TotpType,

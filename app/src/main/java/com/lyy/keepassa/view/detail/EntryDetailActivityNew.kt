@@ -67,6 +67,14 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     if (BaseApp.isV4 && pwEntry.parent == BaseApp.KDB!!.pm.recycleBin) {
       isInRecycleBin = true
     }
+  }
+
+  override fun onStart() {
+    super.onStart()
+    bindData()
+  }
+
+  private fun bindData() {
     setTopBar()
     setIcon()
     binding.cardBaseInfo.bindData(pwEntry)
@@ -74,7 +82,6 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     binding.cardStr.bindData(pwEntry)
     binding.cardAtta.bindData(pwEntry)
     binding.cardTag.bindData(pwEntry)
-    // setAppIcon()
   }
 
   /**
@@ -101,6 +108,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
             ActivityOptionsCompat.makeSceneTransitionAnimation(this)
           )
         }
+
         R.id.collect -> {
           KpaUtil.kdbHandlerService.collection(pwEntry, !pwEntry.isCollectioned())
           item.setIcon(if (!pwEntry.isCollectioned()) R.drawable.ic_star_outline else R.drawable.ic_star)
@@ -146,7 +154,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
   private fun setIcon() {
     val color = if (pwEntry.getCustomIcon()?.imageData?.isNotEmpty() == true) {
       module.getColor(this, BitmapDrawable(IconUtil.getCustomBitmap(pwEntry)))
-    }else{
+    } else {
       ResUtil.getColor(R.color.color_444E85DB)
     }
 
@@ -156,13 +164,13 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     binding.ivIcon.setBackgroundColor(color)
   }
 
-  private fun setAppIcon(){
+  private fun setAppIcon() {
     val adapter = AppIconAdapter()
 
     binding.rvAppIcon.apply {
       this.adapter = adapter
       setChildDrawingOrderCallback { childCount, i ->
-        if (childCount <=1){
+        if (childCount <= 1) {
           return@setChildDrawingOrderCallback i
         }
         return@setChildDrawingOrderCallback childCount - i - 1

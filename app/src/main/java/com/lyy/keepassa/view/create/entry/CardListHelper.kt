@@ -5,21 +5,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package com.lyy.keepassa.view.create
+package com.lyy.keepassa.view.create.entry
 
 import android.animation.ObjectAnimator
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.ItemTouchHelper.Callback
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.lyy.keepassa.R.id
 import com.lyy.keepassa.databinding.LayoutEntryCreateStrCardBinding
 import com.lyy.keepassa.util.doClick
-import timber.log.Timber
 
 /**
  * @Author laoyuyu

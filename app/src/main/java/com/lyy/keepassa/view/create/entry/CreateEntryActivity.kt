@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package com.lyy.keepassa.view.create
+package com.lyy.keepassa.view.create.entry
 
 import android.app.PendingIntent
 import android.content.Context
@@ -26,13 +26,11 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
-import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroupId
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
-import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityEntryEditNewBinding
 import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.entity.SimpleItemEntity
@@ -43,12 +41,15 @@ import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.doClick
 import com.lyy.keepassa.util.loadImg
 import com.lyy.keepassa.util.takePermission
-import com.lyy.keepassa.view.create.CreateEnum.CREATE
-import com.lyy.keepassa.view.create.CreateEnum.MODIFY
+import com.lyy.keepassa.view.create.entry.CreateEnum.CREATE
+import com.lyy.keepassa.view.create.entry.CreateEnum.MODIFY
+import com.lyy.keepassa.view.create.GeneratePassActivity
 import com.lyy.keepassa.view.dialog.AddMoreDialog
 import com.lyy.keepassa.view.dialog.ChooseTagDialog
+import com.lyy.keepassa.view.dialog.CreateOtpModule
 import com.lyy.keepassa.view.dialog.CreateTagDialog
 import com.lyy.keepassa.view.dialog.TimeChangeDialog
+import com.lyy.keepassa.view.dir.ChooseGroupActivity
 import com.lyy.keepassa.view.icon.IconBottomSheetDialog
 import com.lyy.keepassa.view.icon.IconItemCallback
 import com.lyy.keepassa.view.launcher.LauncherActivity
@@ -56,7 +57,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
-import java.util.UUID
+import timber.log.Timber
 import kotlin.math.abs
 
 /**
@@ -97,9 +98,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
     }
   }
 
-  @Autowired(name = KEY_ENTRY)
-  lateinit var entryId: UUID
-
   @Autowired(name = IS_SHORTCUTS)
   @JvmField
   var isShortcuts: Boolean = false
@@ -107,10 +105,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
   @Autowired(name = KEY_TYPE)
   @JvmField
   var createEnum: CreateEnum = CREATE
-
-  @Autowired(name = PARENT_GROUP_ID)
-  @JvmField
-  var groupId: PwGroupId? = null
 
   internal lateinit var module: CreateEntryModule
   private lateinit var createHandler: ICreateHandler
@@ -144,11 +138,37 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
       binding.tvConfirm.setText(it)
     }
 
+  /**
+   * 选择群组
+   */
+  private val chooseGroupLauncher =
+    registerForActivityResult(object : ActivityResultContract<String?, PwGroupId?>() {
+      override fun createIntent(context: Context, input: String?): Intent {
+        return Intent(context, ChooseGroupActivity::class.java).apply {
+          putExtra(ChooseGroupActivity.KEY_TYPE, ChooseGroupActivity.DATA_SELECT_GROUP)
+        }
+      }
+
+      override fun parseResult(resultCode: Int, intent: Intent?): PwGroupId? {
+        return intent?.getSerializableExtra(ChooseGroupActivity.DATA_PARENT) as PwGroupId?
+      }
+    }) {
+      if (it == null) {
+        Timber.d("pwGroupId is null")
+        return@registerForActivityResult
+      }
+      module.updateEntryGroupIdAndSave(this, it)
+    }
+
+  fun launchGroupChoose() {
+    chooseGroupLauncher.launch(null, ActivityOptionsCompat.makeSceneTransitionAnimation(this))
+  }
+
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
     ARouter.getInstance().inject(this)
     module = ViewModelProvider(this)[CreateEntryModule::class.java]
-    module.pwEntry = BaseApp.KDB!!.pm.entries[entryId] as PwEntryV4
+
     createHandler = when (createEnum) {
       CREATE -> CreateEntryHandler(this)
       MODIFY -> ModifyEntryHandler(this)
@@ -159,44 +179,21 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
     handlePassLayout()
     handleIconClick()
     handlerAddMore()
-    listenerTag()
-    listenerTimeChange()
+    handlerUserLayout()
+    handleTimeLayout()
+    handleTagLayout()
+    handleTotp()
   }
 
-  /**
-   * time change dialog
-   */
-  private fun listenerTimeChange() {
+  private fun handleTotp(){
     lifecycleScope.launch {
-      TimeChangeDialog.timeFlow.collectLatest { event ->
-        if (event == null) {
-          return@collectLatest
-        }
-        val time = "${event.year}/${event.month}/${event.dayOfMonth} ${event.hour}:${event.minute}"
-        val dateTime = DateTime(
-          event.year, event.month, event.dayOfMonth, event.hour, event.minute, DateTimeZone.UTC
-        )
-        module.loseDate = dateTime.toDate()
-        binding.edLoseTime.setText(time)
+      CreateOtpModule.otpFlow.collectLatest {
+
       }
     }
   }
 
-  private fun listenerTag() {
-    lifecycleScope.launch {
-      ChooseTagDialog.chooseTagFlow.collectLatest {
-        val tags = it.joinToString(separator = ",")
-        module.pwEntry.tags = tags
-        binding.edTag.setText(tags)
-      }
-    }
-
-    lifecycleScope.launch {
-      CreateTagDialog.createTagFlow.collectLatest {
-        Routerfit.create(DialogRouter::class.java)
-          .showChooseTagDialog(module.pwEntry, if (it.isNullOrEmpty()) null else TagBean(it, true))
-      }
-    }
+  private fun handlerUserLayout(){
     module.getUserNameCache()
     binding.edUser.threshold = 1 // 设置输入几个字符后开始出现提示 默认是2
     binding.edUser.setOnFocusChangeListener { _, hasFocus ->
@@ -204,6 +201,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
         binding.edUser.showDropDown()
       }
     }
+
     lifecycleScope.launch {
       CreateEntryModule.userNameFlow.collectLatest {
         if (it.isNullOrEmpty()) {
@@ -216,6 +214,48 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
             it
           )
         )
+      }
+    }
+  }
+
+  private fun handleTimeLayout(){
+    binding.edLoseTime.doClick {
+      Routerfit.create(DialogRouter::class.java).showTimeChangeDialog()
+    }
+
+    lifecycleScope.launch {
+      TimeChangeDialog.timeFlow.collectLatest { event ->
+        if (event == null) {
+          return@collectLatest
+        }
+        val time = "${event.year}/${event.month}/${event.dayOfMonth} ${event.hour}:${event.minute}"
+        binding.edLoseTime.setText(time)
+        binding.tlLoseTime.visibility = View.VISIBLE
+      }
+    }
+  }
+
+  private fun handleTagLayout() {
+    binding.edTag.doClick {
+      Routerfit.create(DialogRouter::class.java).showChooseTagDialog(module.pwEntry)
+    }
+
+    lifecycleScope.launch {
+      ChooseTagDialog.chooseTagFlow.collectLatest { tagBeanList ->
+        val tagStrList = arrayListOf<String>()
+        tagBeanList.forEach {
+          tagStrList.add(it.tag)
+        }
+        val tags = tagStrList.joinToString(separator = ",")
+        binding.edTag.setText(tags)
+        binding.tlTag.visibility = View.VISIBLE
+      }
+    }
+
+    lifecycleScope.launch {
+      CreateTagDialog.createTagFlow.collectLatest {
+        Routerfit.create(DialogRouter::class.java)
+          .showChooseTagDialog(module.pwEntry, if (it.isNullOrEmpty()) null else TagBean(it, true))
       }
     }
   }
@@ -260,7 +300,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
               }
 
               R.drawable.ic_lose_time -> {
-                Routerfit.create(DialogRouter::class.java).getTimeChangeDialog().show()
+                Routerfit.create(DialogRouter::class.java).showTimeChangeDialog()
               }
 
             }
@@ -278,7 +318,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
         addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_attr_file })
       }
       if (module.hasTotp()) {
-        addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_totp })
+        addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_token_grey })
       }
       if (binding.tlTag.isVisible) {
         addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_tag })
@@ -315,7 +355,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
       }
       when (item.itemId) {
         R.id.save -> {
-          TODO("Not yet implemented")
+          createHandler.saveDb(module.pwEntry)
         }
 
         R.id.cancel -> {

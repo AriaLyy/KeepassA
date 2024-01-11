@@ -13,7 +13,7 @@ import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.app.ActivityOptionsCompat
 import com.lyy.keepassa.entity.AutoFillParam
-import com.lyy.keepassa.view.create.CreateEntryActivity
+import com.lyy.keepassa.view.create.entry.CreateEntryActivity
 import timber.log.Timber
 
 internal class SaveEntityDelegate(val activity: LauncherActivity) :

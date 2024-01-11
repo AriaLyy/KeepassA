@@ -71,18 +71,4 @@
       app:drawableStartCompat="@drawable/ic_add_24px"
       />
 
-  <androidx.appcompat.widget.AppCompatTextView
-      android:id="@+id/del"
-      android:layout_width="@dimen/dle_btn_width"
-      android:layout_height="54dp"
-      android:background="@color/red"
-      android:gravity="center"
-      android:text="@string/delete"
-      android:textColor="@color/white"
-      android:textSize="@dimen/text_size_normal"
-      android:visibility="gone"
-      app:layout_constraintStart_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

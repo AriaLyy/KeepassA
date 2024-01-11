@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.arialyy.frame.util.ReflectionUtil
 import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.adapter.RvItemClickSupport
+import com.dropbox.core.v2.fileproperties.PropertyField
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedString
@@ -279,4 +280,12 @@ inline fun RecyclerView.addOnItemTouchListener(
 
   addOnItemTouchListener(touchListener)
   return touchListener
+}
+
+fun PwEntryV4.removeAttrFile(key: String){
+  binaries.remove(key)
+}
+
+fun PwEntryV4.removeAttrStr(str:String){
+  strings.remove(str)
 }

@@ -10,9 +10,7 @@ package com.lyy.keepassa.service.feat
 import android.app.Activity
 import android.app.Application
 import android.content.Context
-import android.os.Process
 import androidx.preference.PreferenceManager
-import androidx.room.Room
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.facade.template.IProvider
 import com.alibaba.android.arouter.launcher.ARouter
@@ -24,18 +22,11 @@ import com.lyy.keepassa.KpaEventBusIndex
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
-import com.lyy.keepassa.base.DbMigration.MIGRATION_2_3
-import com.lyy.keepassa.base.DbMigration.MIGRATION_3_4
-import com.lyy.keepassa.dao.AppDatabase
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
-import com.tencent.bugly.crashreport.CrashReport
-import com.tencent.bugly.crashreport.CrashReport.UserStrategy
+import com.lyy.keepassa.view.create.entry.CreateEntryActivity
 import com.tencent.mmkv.MMKV
-import com.tencent.vasdolly.helper.ChannelReaderUtil
-import com.tencent.wcdb.database.SQLiteCipherSpec
-import com.tencent.wcdb.room.db.WCDBOpenHelperFactory
 import com.zzhoujay.richtext.RichText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -88,7 +79,11 @@ class KpaSdkService : IProvider {
       override fun onForeground(activity: Activity?) {
       }
 
-      override fun onBackground(activity: Activity?) {
+      override fun onBackground(activity: Activity) {
+        if (activity::class.java.name == CreateEntryActivity::class.java.name){
+          Timber.w("in CreateEntryActivity, not save")
+          return
+        }
         KpaUtil.kdbHandlerService.saveDbByBackground(true)
         XLogFeature.flush()
       }

@@ -124,12 +124,12 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
 
     // salide 为滑入，其它动画效果参考：https://github.com/lgvalle/Material-Animations
     // A -> B, B的进入动画
-    window.enterTransition = TransitionInflater.from(this)
-      .inflateTransition(R.transition.slide_enter)
+    // window.enterTransition = TransitionInflater.from(this)
+    //   .inflateTransition(R.transition.slide_enter)
 
     // A -> B, A的退出动画
-    window.exitTransition = TransitionInflater.from(this)
-      .inflateTransition(R.transition.slide_exit)
+    // window.exitTransition = TransitionInflater.from(this)
+    //   .inflateTransition(R.transition.slide_exit)
 
     // // A <- B, B的返回动画
     // window.returnTransition = TransitionInflater.from(this)
@@ -140,9 +140,9 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     //   .inflateTransition(R.transition.slide_reeter)
 
     // A -> B, B的enter动画和A的exit动画是否同时执行，false 禁止
-    window.allowEnterTransitionOverlap = true
+    // window.allowEnterTransitionOverlap = true
     // A <- B, A的reenter和B的return动画是否同时执行，false 禁止
-    window.allowReturnTransitionOverlap = true
+    // window.allowReturnTransitionOverlap = true
 
     // reenterTransition、returnTransition 是方向动画
 //    EnterTransition <-> ReturnTransition

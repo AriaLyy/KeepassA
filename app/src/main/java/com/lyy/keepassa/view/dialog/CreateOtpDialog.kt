@@ -75,7 +75,7 @@ class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListe
       }
 
       lifecycleScope.launch {
-        module.otpFlow.emit(OtpBeans(keepassxc = KeepassXcBean(ProtectedString(true, str))))
+        CreateOtpModule.otpFlow.emit(OtpBeans(keepassxc = KeepassXcBean(ProtectedString(true, str))))
       }
 
       dismiss()
@@ -213,7 +213,7 @@ class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListe
 
   private fun createTotpStr() {
     lifecycleScope.launch {
-      module.otpFlow.emit(
+      CreateOtpModule.otpFlow.emit(
         module.createOtpBeans(
           totpType,
           entryTitle,

@@ -26,6 +26,9 @@ class EntryTagCard(context: Context, attributeSet: AttributeSet) :
     }
     visibility = VISIBLE
     val tagList = pwEntryV4.tags.split(";")
+    if (binding.chipGroup.childCount > 0){
+      binding.chipGroup.removeAllViews()
+    }
     tagList.forEachIndexed { index, s ->
       buildChip(index, s)
     }
