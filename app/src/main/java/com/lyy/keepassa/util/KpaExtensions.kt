@@ -9,6 +9,7 @@ package com.lyy.keepassa.util
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.net.Uri
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.MotionEvent
@@ -21,14 +22,27 @@ import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.arialyy.frame.util.ReflectionUtil
 import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.adapter.RvItemClickSupport
-import com.dropbox.core.v2.fileproperties.PropertyField
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.Constance
+import com.lyy.keepassa.entity.HmacOtpBean
+import com.lyy.keepassa.entity.KeepassBean
+import com.lyy.keepassa.entity.KeepassXcBean
+import com.lyy.keepassa.entity.TimeOtp2Bean
+import com.lyy.keepassa.entity.TrayTotpBean
+import com.lyy.keepassa.util.totp.ComposeKeeTrayTotp
+import com.lyy.keepassa.util.totp.ComposeKeepass
+import com.lyy.keepassa.util.totp.ComposeKeepass.HmacOtp_Secret
+import com.lyy.keepassa.util.totp.ComposeKeepass.TimeOtp_Secret
+import com.lyy.keepassa.util.totp.ComposeKeepassxc
+import com.lyy.keepassa.util.totp.ComposeKeepassxc.KEY_STEAM
 import com.lyy.keepassa.util.totp.OtpUtil
+import com.lyy.keepassa.util.totp.SecretHexType
+import com.lyy.keepassa.util.totp.TokenCalculator
+import com.lyy.keepassa.util.totp.TokenCalculator.HashAlgorithm
 import timber.log.Timber
 
 val charRegex = Regex("[^a-zA-Z0-9]")
@@ -282,10 +296,218 @@ inline fun RecyclerView.addOnItemTouchListener(
   return touchListener
 }
 
-fun PwEntryV4.removeAttrFile(key: String){
+fun PwEntryV4.removeAttrFile(key: String) {
   binaries.remove(key)
 }
 
-fun PwEntryV4.removeAttrStr(str:String){
+fun PwEntryV4.removeAttrStr(str: String) {
   strings.remove(str)
+}
+
+fun PwEntryV4.otpIsKeeTrayTotp(): Boolean {
+  return strings[ComposeKeeTrayTotp.KEY_SETTING] != null
+}
+
+fun PwEntryV4.otpIsKeeTraySteam(): Boolean {
+  val otpSettings = strings[ComposeKeeTrayTotp.KEY_SETTING]
+  if (otpSettings != null) {
+    val tempArray = otpSettings.toString()
+      .split(";")
+    return tempArray[1] == "S"
+  }
+
+  return false
+}
+
+fun PwEntryV4.getKeeTrayBean(): TrayTotpBean {
+  if (!otpIsKeeTrayTotp()) {
+    throw IllegalAccessException("not kray otp")
+  }
+  val totpSetting = strings[ComposeKeeTrayTotp.KEY_SETTING]
+  val array = totpSetting.toString()
+    .split(";")
+  return TrayTotpBean(
+    seed = strings[ComposeKeeTrayTotp.KEY_SEED].toString(),
+    period = array[0].toInt(),
+    isSteam = array[1] == "s"
+  )
+}
+
+fun PwEntryV4.otpIsKeepassXcSteam(): Boolean {
+  val seed = strings[ComposeKeepassxc.KEY_SEED]?.toString()
+  val uri = Uri.parse(seed)
+  val encoder = uri.getQueryParameter(ComposeKeepassxc.KEY_ENCODER)
+
+  if (encoder != null && encoder.equals(KEY_STEAM, ignoreCase = true)) {
+    return true
+  }
+  return false
+}
+
+fun PwEntryV4.otpKeepassXC(): Boolean {
+  return strings[ComposeKeepassxc.KEY_SEED]?.toString()
+    ?.startsWith("otpauth", ignoreCase = true) == true
+}
+
+fun PwEntryV4.getKeepassXcBean(): KeepassXcBean {
+  if (!otpKeepassXC()) {
+    throw IllegalAccessException("not keepassxc otp")
+  }
+  val seed = strings[ComposeKeepassxc.KEY_SEED]?.toString()
+  val uri = Uri.parse(seed)
+  val algorithm = uri.getQueryParameter(ComposeKeepassxc.KEY_ALGORITHM)
+
+  return KeepassXcBean(
+    host = uri.host ?: "totp",
+    title = getRealTitle(),
+    userName = getRealUserName(),
+    isSteam = otpIsKeepassXcSteam(),
+    encoder = uri.getQueryParameter(ComposeKeepassxc.KEY_ENCODER) ?: "",
+    secret = uri.getQueryParameter(ComposeKeepassxc.KEY_SECRET) ?: "",
+    issuer = uri.getQueryParameter(ComposeKeepassxc.KEY_ISSUER) ?: "",
+    period = uri.getQueryParameter(ComposeKeepassxc.KEY_PERIOD)?.toInt()
+      ?: TokenCalculator.TOTP_DEFAULT_PERIOD,
+    digits = uri.getQueryParameter(ComposeKeepassxc.KEY_DIGITS)?.toInt()
+      ?: TokenCalculator.TOTP_DEFAULT_DIGITS,
+    algorithm = when (algorithm) {
+      "SHA256" -> HashAlgorithm.SHA256
+      "SHA512" -> HashAlgorithm.SHA512
+      else -> HashAlgorithm.SHA1
+    },
+    counter = uri.getQueryParameter(ComposeKeepassxc.KEY_COUNTER) ?: "",
+  )
+}
+
+fun PwEntryV4.otpKeepass(): Boolean {
+  for (str in strings) {
+    val key = str.toString()
+    if (key.startsWith(TimeOtp_Secret) || key.startsWith(HmacOtp_Secret)) {
+      return true
+    }
+  }
+  return false
+}
+
+fun PwEntryV4.getKeepassBean(): KeepassBean {
+  var otpBean: TimeOtp2Bean? = null
+  var hmacBean: HmacOtpBean? = null
+
+  if (strings[HmacOtp_Secret] != null) {
+    val secretType: SecretHexType
+    val secret = when {
+      strings[ComposeKeepass.HmacOtp_Secret_Base32] != null -> {
+        secretType = SecretHexType.BASE_32
+        strings[ComposeKeepass.HmacOtp_Secret_Base32].toString()
+      }
+
+      strings[ComposeKeepass.HmacOtp_Secret_Base64] != null -> {
+        secretType = SecretHexType.BASE_64
+        strings[ComposeKeepass.HmacOtp_Secret_Base64].toString()
+      }
+
+      strings[ComposeKeepass.HmacOtp_Secret_Hex] != null -> {
+        secretType = SecretHexType.HEX
+        strings[ComposeKeepass.HmacOtp_Secret_Hex].toString()
+      }
+
+      else -> {
+        secretType = SecretHexType.UTF_8
+        strings[HmacOtp_Secret].toString()
+      }
+    }
+
+    hmacBean = HmacOtpBean(
+      secretType = secretType,
+      secret = secret,
+      algorithm = HashAlgorithm.SHA1,
+      counter = strings[ComposeKeepass.HmacOtp_Counter]?.toString()?.toInt()
+        ?: TokenCalculator.HOTP_INITIAL_COUNTER,
+      len = TokenCalculator.TOTP_DEFAULT_DIGITS
+    )
+  }
+
+  if (strings[TimeOtp_Secret] != null) {
+    val secretType: SecretHexType
+    val secret = when {
+      strings[ComposeKeepass.TimeOtp_Secret_Base32] != null -> {
+        secretType = SecretHexType.BASE_32
+        strings[ComposeKeepass.TimeOtp_Secret_Base32].toString()
+      }
+
+      strings[ComposeKeepass.TimeOtp_Secret_Base64] != null -> {
+        secretType = SecretHexType.BASE_64
+        strings[ComposeKeepass.TimeOtp_Secret_Base64].toString()
+      }
+
+      strings[ComposeKeepass.TimeOtp_Secret_Hex] != null -> {
+        secretType = SecretHexType.HEX
+        strings[ComposeKeepass.TimeOtp_Secret_Hex].toString()
+      }
+
+      else -> {
+        secretType = SecretHexType.UTF_8
+        strings[TimeOtp_Secret].toString()
+      }
+    }
+
+    val algorithm = when (strings[ComposeKeepass.TimeOtp_Algorithm].toString()) {
+      ComposeKeepass.HMAC_SHA_256 -> HashAlgorithm.SHA256
+      ComposeKeepass.HMAC_SHA_512 -> HashAlgorithm.SHA512
+      else -> HashAlgorithm.SHA1
+    }
+
+    otpBean = TimeOtp2Bean(
+      secretType = secretType,
+      secret = secret,
+      digits = strings[ComposeKeepass.TimeOtp_Length]?.toString()?.toInt()
+        ?: TokenCalculator.TOTP_DEFAULT_DIGITS,
+      algorithm = algorithm,
+      period = strings[ComposeKeepass.TimeOtp_Period]?.toString()?.toInt()
+        ?: TokenCalculator.TOTP_DEFAULT_PERIOD
+    )
+  }
+
+  return KeepassBean(
+    otpBean,
+    hmacBean
+  )
+}
+
+fun PwEntryV4.otpIsKeepOtp(): Boolean {
+  val seed = strings["otp"]?.toString()
+  if (seed?.startsWith("key") == true) {
+    return true
+  }
+  return false
+}
+
+/**
+ * 判断是否是KeeOtp2插件
+ */
+fun PwEntryV4.otpIsKeeOtp2(): Boolean {
+  for (str in strings) {
+    val key = str.toString()
+    if (key.startsWith("TimeOtp") || key.startsWith("HmacOtp")) {
+      return true
+    }
+  }
+  return false
+}
+
+fun PwEntry.getRealTitle(): String {
+  return if (isRef()) getTitle(true, BaseApp.KDB!!.pm) else title
+}
+
+fun PwEntry.getRealUserName(): String {
+  return if (isRef())
+    getUsername(true, BaseApp.KDB!!.pm)
+  else
+    username
+}
+
+fun PwEntry.getRealPass(): String {
+  return if (isRef())
+    getPassword(true, BaseApp.KDB!!.pm)
+  else
+    password
 }

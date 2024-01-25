@@ -7,7 +7,7 @@
 
     <variable
         name="dialog"
-        type="com.lyy.keepassa.view.dialog.TotpDisplayDialog"
+        type="com.lyy.keepassa.view.dialog.otp.TotpDisplayDialog"
         />
 
   </data>

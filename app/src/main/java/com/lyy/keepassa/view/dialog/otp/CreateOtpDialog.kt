@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package com.lyy.keepassa.view.dialog
+package com.lyy.keepassa.view.dialog.otp
 
 import android.view.View
 import android.view.ViewGroup
@@ -29,24 +29,28 @@ import com.google.android.material.textfield.TextInputEditText
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
-import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogCreateTotpBinding
+import com.lyy.keepassa.entity.GoogleOtpBean
 import com.lyy.keepassa.entity.KeepassXcBean
-import com.lyy.keepassa.entity.OtpBeans
 import com.lyy.keepassa.entity.TotpType
 import com.lyy.keepassa.entity.TotpType.CUSTOM
 import com.lyy.keepassa.entity.TotpType.DEFAULT
 import com.lyy.keepassa.entity.TotpType.STEAM
+import com.lyy.keepassa.entity.TrayTotpBean
+import com.lyy.keepassa.util.totp.OtpEnum
+import com.lyy.keepassa.util.totp.OtpEnum.GOOGLE_OTP
+import com.lyy.keepassa.util.totp.OtpEnum.KEEPASSXC
+import com.lyy.keepassa.util.totp.TokenCalculator.HashAlgorithm
 import com.lyy.keepassa.view.QrCodeScannerActivity
 import com.lyy.keepassa.widget.toPx
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Route(path = "/dialog/createOtp")
-class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListener {
-  private var arithmetic = "SHA1"
+internal class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListener {
+  private var arithmetic = HashAlgorithm.SHA1
   private var time = 30
   private var len = 6
   private var totpType = DEFAULT
@@ -75,7 +79,9 @@ class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListe
       }
 
       lifecycleScope.launch {
-        CreateOtpModule.otpFlow.emit(OtpBeans(keepassxc = KeepassXcBean(ProtectedString(true, str))))
+        CreateOtpModule.otpFlow.emit(
+          Pair(GOOGLE_OTP, GoogleOtpBean(str))
+        )
       }
 
       dismiss()
@@ -137,10 +143,9 @@ class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListe
             id: Long
           ) {
             arithmetic = when (position) {
-              0 -> "SHA1"
-              1 -> "SHA256"
-              2 -> "SHA512"
-              else -> "SHA1"
+              1 -> HashAlgorithm.SHA256
+              2 -> HashAlgorithm.SHA512
+              else -> HashAlgorithm.SHA1
             }
           }
         })
@@ -212,18 +217,35 @@ class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnClickListe
   }
 
   private fun createTotpStr() {
-    lifecycleScope.launch {
-      CreateOtpModule.otpFlow.emit(
-        module.createOtpBeans(
-          totpType,
-          entryTitle,
-          entryUserName,
-          secret,
-          time,
-          len,
-          arithmetic
+    var otpEnum = OtpEnum.KEEP_OTP
+    val otpBean = when (totpType) {
+      CUSTOM -> {
+        otpEnum = KEEPASSXC
+        KeepassXcBean(
+          title = entryTitle,
+          userName = entryUserName,
+          isSteam = false,
+          secret = secret,
+          issuer = entryTitle,
+          period = time,
+          digits = len,
+          algorithm = arithmetic
         )
-      )
+      }
+
+      DEFAULT -> {
+        otpEnum = OtpEnum.TRAY_TOTP
+        TrayTotpBean(seed = secret, period = time, isSteam = false)
+      }
+
+      STEAM -> {
+        otpEnum = OtpEnum.TRAY_TOTP
+        TrayTotpBean(seed = secret, period = time, isSteam = true)
+      }
+    }
+
+    lifecycleScope.launch {
+      CreateOtpModule.otpFlow.emit(Pair(otpEnum, otpBean))
     }
   }
 }

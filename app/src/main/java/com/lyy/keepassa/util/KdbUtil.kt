@@ -10,6 +10,7 @@
 package com.lyy.keepassa.util
 
 import android.text.TextUtils
+import android.widget.TextView
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.FileUtil
 import com.arialyy.frame.util.RegularRule
@@ -27,8 +28,10 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.totp.OtpUtil
+import com.lyy.keepassa.widget.ProgressBar.RoundProgressBarWidthNumber
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -43,6 +46,32 @@ object KdbUtil {
   val txtArray = arrayListOf("txt", "md")
   val imgArray = arrayListOf("png", "jpg", "jpeg", "webp")
   val DATE_FORMAT = "yyyy/MM/dd HH:mm"
+
+  /**
+   * 定时自动获取otp密码
+   */
+  fun startAutoGetOtp(entryV4: PwEntryV4, rPb: RoundProgressBarWidthNumber, tvValue: TextView) {
+    val p = OtpUtil.getOtpPass(entryV4)
+    if (p.second.isNullOrEmpty()) {
+      Timber.e("无法自动获取otp密码")
+      return
+    }
+    rPb.setCountdown(true)
+
+    scope.launch(Dispatchers.Main) {
+      Timber.d(p.toString())
+      val time = p.first
+      rPb.max = time
+      tvValue.text = p.second
+      for (i in time downTo 1) {
+        rPb.progress = i
+        withContext(Dispatchers.IO) {
+          delay(1000)
+        }
+      }
+      startAutoGetOtp(entryV4, rPb, tvValue)
+    }
+  }
 
   fun openFile(fileName: String, file: ProtectedBinary) {
     txtArray.forEach {
@@ -111,22 +140,23 @@ object KdbUtil {
   /**
    * 获取用户名，如果是引用其它条目的，解析其引用
    */
+  @Deprecated(
+    message = "please use pwEntry.getRealUserName()",
+    ReplaceWith("getRealUserName()", "com.lyy.keepassa.util.getRealUserName")
+  )
   fun getUserName(entry: PwEntry): String {
-    return if (entry.isRef())
-      entry.getUsername(true, BaseApp.KDB!!.pm)
-    else
-      entry.username
+    return entry.getRealUserName()
   }
 
   /**
    * 获取密码，如果是引用其它条目的，解析其引用
    */
+  @Deprecated(
+    message = "please use pwEntry.getRealPass()",
+    ReplaceWith("getRealPass()", "com.lyy.keepassa.util.getRealPass")
+  )
   fun getPassword(entry: PwEntry): String {
-    val pass = entry.password
-    return if (entry.isRef())
-      entry.getPassword(true, BaseApp.KDB!!.pm)
-    else
-      pass
+    return entry.getRealPass()
   }
 
   /**

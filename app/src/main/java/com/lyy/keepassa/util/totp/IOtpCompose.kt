@@ -51,4 +51,8 @@ interface IOtpCompose {
    * @return first period， second 密码
    */
   fun getOtpPass(entry: PwEntryV4): Pair<Int, String?>
+
+  // fun toOtpStringMap(bean: OtpBean): Map<String, ProtectedString> {
+  //   return hashMapOf()
+  // }
 }

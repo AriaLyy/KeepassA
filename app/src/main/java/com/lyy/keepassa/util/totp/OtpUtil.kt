@@ -9,6 +9,11 @@ package com.lyy.keepassa.util.totp
 
 import android.annotation.SuppressLint
 import com.keepassdroid.database.PwEntryV4
+import com.lyy.keepassa.util.otpIsKeeOtp2
+import com.lyy.keepassa.util.otpIsKeeTrayTotp
+import com.lyy.keepassa.util.otpIsKeepOtp
+import com.lyy.keepassa.util.otpKeepass
+import com.lyy.keepassa.util.otpKeepassXC
 
 object OtpUtil {
 
@@ -17,39 +22,30 @@ object OtpUtil {
    * @return first period， second 密码
    */
   @SuppressLint("DefaultLocale") fun getOtpPass(entry: PwEntryV4): Pair<Int, String?> {
-    val seed = entry.strings["otp"]?.toString()
     val otpCompose = when {
-      seed != null -> {
-        if (!seed.startsWith("otpauth") && seed.startsWith("key")) {
-          ComposeKeeOtp2
-        } else {
-          ComposeKeepassxc
-        }
-      }
 
-      entry.strings["TOTP Settings"] != null -> {
+      entry.otpIsKeeTrayTotp() -> {
         ComposeKeeTrayTotp
       }
 
-      isKeeOtp(entry) -> {
+      entry.otpIsKeepOtp() -> {
+        ComposeKeeOtp
+      }
+
+      entry.otpKeepassXC() -> {
+        ComposeKeepassxc
+      }
+
+      entry.otpKeepass() -> {
+        ComposeKeepass
+      }
+
+      entry.otpIsKeeOtp2() -> {
         ComposeKeeOtp2
       }
 
       else -> null
     }
     return otpCompose?.getOtpPass(entry) ?: Pair(-1, null)
-  }
-
-  /**
-   * 判断是否是KeeOtp2插件
-   */
-  private fun isKeeOtp(entry: PwEntryV4): Boolean {
-    for (str in entry.strings) {
-      val key = str.toString()
-      if (key.startsWith("TimeOtp") || key.startsWith("HmacOtp")) {
-        return true
-      }
-    }
-    return false
   }
 }

@@ -10,12 +10,18 @@ package com.lyy.keepassa.util.totp
 import com.arialyy.frame.router.Routerfit
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedString
+import com.lyy.keepassa.entity.TrayTotpBean
 import com.lyy.keepassa.router.ServiceRouter
+import com.lyy.keepassa.util.otpIsKeeTraySteam
 
 /**
  * 兼容KeeTrayTOTP插件的totp获取
  */
 object ComposeKeeTrayTotp : IOtpCompose {
+
+  const val KEY_SETTING = "TOTP Settings"
+  const val KEY_SEED = "TOTP Seed"
+
   private val kdbService by lazy {
     Routerfit.create(ServiceRouter::class.java).getDbSaveService()
   }
@@ -33,7 +39,7 @@ object ComposeKeeTrayTotp : IOtpCompose {
    * 判断是否是steam的条目，1.7之前的版本创建totp时，会将 TOTP Settings 字段设置为 30;S，而S表示的是Steam
    */
   private fun isSteamEntry(entry: PwEntryV4): Boolean {
-    return entry.getUrl()
+    return entry.url
       .contains("steampowered", ignoreCase = true) ||
       entry.customData.any {
         it.value.equals(
@@ -58,24 +64,12 @@ object ComposeKeeTrayTotp : IOtpCompose {
     }
   }
 
-  private fun isSteam(entry: PwEntryV4): Boolean {
-    val otpSettings = entry.strings["TOTP Settings"]
-    if (otpSettings != null) {
-      val tempArray = otpSettings.toString()
-        .split(";")
-      return tempArray[1] == "S"
-    }
-
-    return false
-  }
-
   /**
    * 兼容KeeTrayTOTP插件的totp获取
    */
   private fun getKeeTrayTotp(entry: PwEntryV4): Pair<Int, String?> {
-
-    val totpSetting = entry.strings["TOTP Settings"]
-    val isSteam = isSteam(entry)
+    val totpSetting = entry.strings[KEY_SETTING]
+    val isSteam = entry.otpIsKeeTraySteam()
     var period = TokenCalculator.TOTP_DEFAULT_PERIOD
     var digits = TokenCalculator.TOTP_DEFAULT_DIGITS
     val s = totpSetting.toString()
@@ -86,7 +80,8 @@ object ComposeKeeTrayTotp : IOtpCompose {
     }
     return Pair(
       period,
-      getTotpPass(entry.strings["TOTP Seed"].toString(), period, digits, isSteam)
+      getTotpPass(entry.strings[KEY_SEED].toString(), period, digits, isSteam)
     )
   }
+
 }

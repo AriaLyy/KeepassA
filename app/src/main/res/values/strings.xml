@@ -426,4 +426,5 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="open_file">Open File</string>
     <string name="modify_str_attr">Modify properties</string>
     <string name="error_file">The file is abnormal, please delete &lt;font color=#FF0000&gt;%s&lt;/font&gt;</string>
+    <string name="not_souper_otp">Unsupported totp</string>
 </resources>

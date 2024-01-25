@@ -6,7 +6,6 @@ import android.os.Build
 import android.text.InputType
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,14 +19,9 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.databinding.LayoutEntryCardListBinding
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
-import com.lyy.keepassa.util.totp.OtpUtil
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
 import com.lyy.keepassa.widget.ProgressBar.RoundProgressBarWidthNumber
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import kotlin.collections.Map.Entry
 
@@ -115,33 +109,7 @@ class EntryStrCard(context: Context, attributeSet: AttributeSet) :
     private fun handleOtp(holder: BaseViewHolder, tvValue: TextView) {
       val rPb = holder.getView<RoundProgressBarWidthNumber>(R.id.rpbBar)
       rPb.visibility = VISIBLE
-      startAutoGetOtp(rPb, tvValue)
-    }
-
-    /**
-     * 定时自动获取otp密码
-     */
-    private fun startAutoGetOtp(rPb: RoundProgressBarWidthNumber, tvValue: TextView) {
-      val p = OtpUtil.getOtpPass(entryV4)
-      if (p.second.isNullOrEmpty()) {
-        Timber.e("无法自动获取otp密码")
-        return
-      }
-      rPb.setCountdown(true)
-
-      KdbUtil.scope.launch(Dispatchers.Main) {
-        Timber.d(p.toString())
-        val time = p.first
-        rPb.max = time
-        tvValue.text = p.second
-        for (i in time downTo 1) {
-          rPb.progress = i
-          withContext(Dispatchers.IO) {
-            delay(1000)
-          }
-        }
-        startAutoGetOtp(rPb, tvValue)
-      }
+      KdbUtil.startAutoGetOtp(entryV4, rPb, tvValue)
     }
   }
 }

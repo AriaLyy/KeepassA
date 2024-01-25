@@ -37,26 +37,26 @@ import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.entity.TagBean
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.IconUtil
+import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.doClick
+import com.lyy.keepassa.util.hasTOTP
 import com.lyy.keepassa.util.loadImg
 import com.lyy.keepassa.util.takePermission
+import com.lyy.keepassa.view.create.GeneratePassActivity
 import com.lyy.keepassa.view.create.entry.CreateEnum.CREATE
 import com.lyy.keepassa.view.create.entry.CreateEnum.MODIFY
-import com.lyy.keepassa.view.create.GeneratePassActivity
 import com.lyy.keepassa.view.dialog.AddMoreDialog
 import com.lyy.keepassa.view.dialog.ChooseTagDialog
-import com.lyy.keepassa.view.dialog.CreateOtpModule
 import com.lyy.keepassa.view.dialog.CreateTagDialog
 import com.lyy.keepassa.view.dialog.TimeChangeDialog
+import com.lyy.keepassa.view.dialog.otp.CreateOtpModule
 import com.lyy.keepassa.view.dir.ChooseGroupActivity
 import com.lyy.keepassa.view.icon.IconBottomSheetDialog
 import com.lyy.keepassa.view.icon.IconItemCallback
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
 import timber.log.Timber
 import kotlin.math.abs
 
@@ -175,25 +175,40 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
     }
     createHandler.bindData()
 
-    setTopBar()
+    handleTopBarLayout()
     handlePassLayout()
     handleIconClick()
     handlerAddMore()
     handlerUserLayout()
     handleTimeLayout()
     handleTagLayout()
-    handleTotp()
+    handleTotpLayout()
   }
 
-  private fun handleTotp(){
+  private fun handleTotpLayout() {
     lifecycleScope.launch {
       CreateOtpModule.otpFlow.collectLatest {
+        module.pwEntry.apply {
 
+        }
+        startOtp()
       }
+    }
+    if (module.pwEntry.hasTOTP()) {
+      startOtp()
+    }
+    binding.edOtp.doClick {
+      Routerfit.create(DialogRouter::class.java)
+        .showCreateOtpDialog(module.pwEntry.title, module.pwEntry.username)
     }
   }
 
-  private fun handlerUserLayout(){
+  private fun startOtp() {
+    binding.groupOtp.isVisible = true
+    KdbUtil.startAutoGetOtp(module.pwEntry, binding.pbRound, binding.edOtp)
+  }
+
+  private fun handlerUserLayout() {
     module.getUserNameCache()
     binding.edUser.threshold = 1 // 设置输入几个字符后开始出现提示 默认是2
     binding.edUser.setOnFocusChangeListener { _, hasFocus ->
@@ -218,7 +233,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
     }
   }
 
-  private fun handleTimeLayout(){
+  private fun handleTimeLayout() {
     binding.edLoseTime.doClick {
       Routerfit.create(DialogRouter::class.java).showTimeChangeDialog()
     }
@@ -341,7 +356,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
   /**
    * 标题栏
    */
-  private fun setTopBar() {
+  private fun handleTopBarLayout() {
     binding.topAppBar.title = createHandler.getTitle()
     toolbar = binding.topAppBar
     toolbar.setNavigationOnClickListener {

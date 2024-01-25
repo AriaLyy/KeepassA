@@ -8,6 +8,7 @@
 package com.lyy.keepassa.view.create.entry
 
 import android.view.View
+import androidx.core.view.isVisible
 import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroupId
@@ -36,6 +37,7 @@ internal class CreateEntryHandler(val context: CreateEntryActivity) : ICreateHan
     binding.tlUrl.visibility = View.GONE
     binding.tlNote.visibility = View.GONE
     binding.tlTag.visibility = View.GONE
+    binding.groupOtp.isVisible = false
   }
 
   override fun getTitle(): String {
