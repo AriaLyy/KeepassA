@@ -184,7 +184,7 @@
             android:layout_marginTop="12dp"
             android:background="@color/line_color" />
 
-        <com.lyy.keepassa.widget.expand.ExpandAttrStrLayout
+        <com.lyy.keepassa.widgets.expand.ExpandAttrStrLayout
             android:id="@+id/attr_str"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -194,7 +194,7 @@
             app:expand_tt_icon="@drawable/ic_attr_str"
             app:expand_tt_title="@string/hint_attr" />
 
-        <com.lyy.keepassa.widget.expand.ExpandAttrStrLayout
+        <com.lyy.keepassa.widgets.expand.ExpandAttrStrLayout
             android:id="@+id/attr_file"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

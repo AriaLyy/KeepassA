@@ -46,8 +46,8 @@ import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.view.menu.EntryDetailFilePopMenu
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
-import com.lyy.keepassa.widget.expand.AttrFileItemView
-import com.lyy.keepassa.widget.expand.AttrStrItemView
+import com.lyy.keepassa.widgets.expand.AttrFileItemView
+import com.lyy.keepassa.widgets.expand.AttrStrItemView
 import com.lyy.keepassa.widget.toPx
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

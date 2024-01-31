@@ -16,8 +16,13 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.getRealPass
+import com.lyy.keepassa.util.getRealTitle
+import com.lyy.keepassa.util.getRealUserName
 import com.lyy.keepassa.util.loadImg
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.joda.time.DateTime
 import java.util.UUID
 
@@ -33,9 +38,19 @@ internal class ModifyEntryHandler(val context: CreateEntryActivity) : ICreateHan
     context.module.pwEntry = BaseApp.KDB!!.pm.entries[entryId] as PwEntryV4
     val entry = context.module.pwEntry
     val binding = context.binding
-    binding.title.setText(entry.title)
-    binding.edUser.setText(entry.username)
-    binding.edPassword.setText(entry.password)
+
+    context.lifecycleScope.launch(Dispatchers.IO) {
+      val name = entry.getRealUserName()
+      val pass = entry.getRealPass()
+      val title = entry.getRealTitle()
+      withContext(Dispatchers.Main){
+        binding.title.setText(title)
+        binding.edUser.setText(name)
+        binding.edPassword.setText(pass)
+        binding.tvConfirm.setText(pass)
+      }
+    }
+
     if (entry.notes.isNotEmpty()) {
       binding.tlNote.visibility = View.VISIBLE
       binding.edNote.setText(entry.notes.toString())
@@ -54,7 +69,7 @@ internal class ModifyEntryHandler(val context: CreateEntryActivity) : ICreateHan
       bindData(entry)
     }
     binding.tlTag.apply {
-      visibility = if (entry.title.isNotEmpty()) View.VISIBLE else View.GONE
+      visibility = if (entry.tags.isNotEmpty()) View.VISIBLE else View.GONE
       binding.edTag.setText(entry.tags)
     }
 

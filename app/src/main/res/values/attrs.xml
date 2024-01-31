@@ -1,27 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <declare-styleable name="HorizontalProgressBarWithNumber">
-    <attr name="progress_unreached_color" format="color" />
-    <attr name="progress_reached_color" format="color" />
-    <attr name="progress_reached_bar_height" format="dimension" />
-    <attr name="progress_unreached_bar_height" format="dimension" />
-    <attr name="progress_text_size" format="dimension" />
-    <attr name="progress_text_color" format="color" />
-    <attr name="progress_text_offset" format="dimension" />
-    <attr name="progress_text_visibility" format="enum">
-      <enum name="visible" value="0" />
-      <enum name="invisible" value="1" />
-    </attr>
-    <attr name="progress_show_percent" format="boolean" />
-  </declare-styleable>
-
-  <declare-styleable name="RoundProgressBarWidthNumber">
-    <attr name="radius" format="dimension" />
-    <!--    是否是倒计时-->
-    <attr name="progress_countdown" format="boolean" />
-  </declare-styleable>
-
   <declare-styleable name="EmptyDataFillView">
     <attr name="edf_text" format="string" />
     <attr name="edf_icon" format="reference" />

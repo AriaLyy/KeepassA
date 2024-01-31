@@ -7,7 +7,7 @@
  */
 
 
-package com.lyy.keepassa.widget.expand
+package com.lyy.keepassa.widgets.expand
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -17,7 +17,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
-import com.lyy.keepassa.widget.ProgressBar.RoundProgressBarWidthNumber
+import com.lyy.keepassa.widget.pb.RoundProgressBarWidthNumber
 
 @SuppressLint("ViewConstructor")
 class AttrStrItemView(

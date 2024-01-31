@@ -28,6 +28,7 @@ import com.lyy.keepassa.event.EntryState.CREATE
 import com.lyy.keepassa.event.EntryState.DELETE
 import com.lyy.keepassa.event.EntryState.MODIFY
 import com.lyy.keepassa.event.EntryState.MOVE
+import com.lyy.keepassa.event.EntryState.SAVE
 import com.lyy.keepassa.event.EntryStateChangeEvent
 import com.lyy.keepassa.event.GroupStateChangeEvent
 import com.lyy.keepassa.router.DialogRouter
@@ -326,6 +327,7 @@ class KdbHandlerService : IProvider {
         }
         withContext(Dispatchers.Main) {
           callback.invoke(if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL)
+          entryStateChangeFlow.emit(EntryStateChangeEvent(SAVE))
         }
       }
     }
@@ -360,12 +362,14 @@ class KdbHandlerService : IProvider {
               withContext(Dispatchers.Main) {
                 callback.invoke(response.code)
               }
+              entryStateChangeFlow.emit(EntryStateChangeEvent(SAVE))
               return@withContext
             }
             val code = if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
             withContext(Dispatchers.Main) {
               callback.invoke(code)
             }
+            entryStateChangeFlow.emit(EntryStateChangeEvent(SAVE))
           }
         }
 
@@ -408,10 +412,12 @@ class KdbHandlerService : IProvider {
             dismissLoading(if ((endTime - startTime) < MIN_TIME) MIN_TIME else 0L)
           }
           callback.invoke(response.code)
+          entryStateChangeFlow.emit(EntryStateChangeEvent(SAVE))
           return@launch
         }
         val code = if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
         callback.invoke(code)
+        entryStateChangeFlow.emit(EntryStateChangeEvent(SAVE))
       }
     }
   }

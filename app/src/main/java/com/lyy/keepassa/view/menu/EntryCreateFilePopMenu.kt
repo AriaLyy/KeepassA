@@ -18,7 +18,7 @@ import androidx.fragment.app.FragmentActivity
 import com.arialyy.frame.util.ReflectionUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.event.DelAttrFileEvent
-import com.lyy.keepassa.widget.expand.AttrFileItemView
+import com.lyy.keepassa.widgets.expand.AttrFileItemView
 import org.greenrobot.eventbus.EventBus
 
 /**

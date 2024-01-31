@@ -7,7 +7,7 @@
  */
 
 
-package com.lyy.keepassa.widget.expand
+package com.lyy.keepassa.widgets.expand
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -28,7 +28,6 @@ class ExpandFileAttrView(
   attr: AttributeSet
 ) : LinearLayout(context, attr), View.OnClickListener {
 
-  private val TAG = javaClass.simpleName
   private val data = LinkedHashMap<String, ProtectedBinary?>()
   private val childMap = LinkedHashMap<String, AttrFileItemView>()
   private var expandAnim: ValueAnimator? = null

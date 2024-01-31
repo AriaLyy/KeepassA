@@ -20,7 +20,7 @@ import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.event.DelAttrStrEvent
 import com.lyy.keepassa.view.create.CreateCustomStrDialogOld
-import com.lyy.keepassa.widget.expand.AttrStrItemView
+import com.lyy.keepassa.widgets.expand.AttrStrItemView
 import org.greenrobot.eventbus.EventBus
 
 /**

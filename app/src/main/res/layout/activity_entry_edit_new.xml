@@ -238,14 +238,6 @@
 
           </com.google.android.material.textfield.TextInputLayout>
 
-          <com.lyy.keepassa.widget.ProgressBar.RoundProgressBarWidthNumber
-              android:id="@+id/pbRound"
-              android:layout_width="36dp"
-              android:layout_height="36dp"
-              android:layout_marginTop="14dp"
-              app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintTop_toTopOf="@+id/tlOTP"
-              />
 
           <com.google.android.material.textfield.TextInputLayout
               android:id="@+id/tlOTP"
@@ -254,8 +246,6 @@
               app:layout_constraintStart_toStartOf="parent"
               app:counterOverflowTextAppearance="@style/InputEditTextErrorStyle"
               app:counterTextAppearance="@style/InputEditTextOverAppearance"
-              app:errorEnabled="true"
-              app:errorTextAppearance="@style/InputEditTextErrorStyle"
               app:helperTextTextColor="@color/text_gray_color"
               app:passwordToggleEnabled="true"
               app:endIconTintMode="multiply"
@@ -279,6 +269,20 @@
                 />
 
           </com.google.android.material.textfield.TextInputLayout>
+
+          <com.lyy.keepassa.widget.pb.RoundProgressBarWidthNumber
+              android:id="@+id/pbRound"
+              android:layout_width="36dp"
+              android:layout_height="36dp"
+              app:layout_constraintBottom_toBottomOf="@+id/tlOTP"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintTop_toTopOf="@+id/tlOTP"
+              app:radius="8dp"
+              app:progress_text_color="@color/text_blue_color"
+              app:progress_text_size="12sp"
+              app:progress_show_percent="false"
+              app:progress_unreached_bar_height="1dp"
+              />
 
           <androidx.constraintlayout.widget.Group
               android:id="@+id/groupOtp"
@@ -364,7 +368,7 @@
               app:layout_constraintStart_toStartOf="parent"
               app:layout_constraintTop_toTopOf="parent"
               app:flow_verticalGap="12dp"
-              app:constraint_referenced_ids="tlTitle, tlUser, tlPass, tlConfirm, tlUrl, tlNote, groupOtp, tlTag, tlLoseTime, cardStr, cardFile"
+              app:constraint_referenced_ids="tlTitle, tlUser, tlPass, tlConfirm, tlUrl, tlNote, tlOTP, tlTag, tlLoseTime, cardStr, cardFile"
               />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

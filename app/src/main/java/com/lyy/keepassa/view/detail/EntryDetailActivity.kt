@@ -51,7 +51,7 @@ import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
-import com.lyy.keepassa.widget.expand.ExpandAttrStrLayout
+import com.lyy.keepassa.widgets.expand.ExpandAttrStrLayout
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber

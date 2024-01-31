@@ -38,11 +38,14 @@ import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.getFileInfo
+import com.lyy.keepassa.util.getRealUserName
 import com.lyy.keepassa.util.hasNote
 import com.lyy.keepassa.util.hasTOTP
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.util.UUID
@@ -54,6 +57,7 @@ class CreateEntryModule : BaseModule() {
   companion object {
     val attrFlow = MutableSharedFlow<Pair<String, ProtectedBinary>?>(0)
     val userNameFlow = MutableStateFlow<List<String>?>(null)
+    private val userNameCache = arrayListOf<String>()
   }
 
   /**
@@ -62,7 +66,6 @@ class CreateEntryModule : BaseModule() {
   var selectedTagBeanCache = mutableListOf<String>()
   var customIcon: PwIconCustom? = null
   var icon = PwIconStandard(0)
-  private var userNameCache = arrayListOf<String>()
   var autoFillParam: AutoFillParam? = null
   lateinit var pwEntry: PwEntryV4
 
@@ -124,25 +127,25 @@ class CreateEntryModule : BaseModule() {
   /**
    * Traverse database and get all userName
    */
-  fun getUserNameCache() {
+  suspend fun getUserNameCache() {
     if (userNameCache.isNotEmpty()) {
-      viewModelScope.launch {
-        userNameFlow.emit(userNameCache)
-      }
+      userNameFlow.emit(userNameCache)
       return
     }
+
     val temp = hashSetOf<String>()
-    for (map in BaseApp.KDB.pm.entries) {
-      if (map.value.username.isNullOrEmpty()) {
-        continue
+
+    withContext(Dispatchers.IO) {
+      for (map in BaseApp.KDB.pm.entries) {
+        if (map.value.username.isNullOrEmpty()) {
+          continue
+        }
+        temp.add(map.value.getRealUserName())
       }
-      val userName = KdbUtil.getUserName(map.value)
-      temp.add(userName)
     }
+
     userNameCache.addAll(temp)
-    viewModelScope.launch {
-      userNameFlow.emit(userNameCache)
-    }
+    userNameFlow.emit(userNameCache)
   }
 
   /**

@@ -212,7 +212,7 @@
               android:layout_marginStart="12dp"
               android:src="@drawable/ic_attr_str" />
 
-          <com.lyy.keepassa.widget.expand.ExpandStrAttrView
+          <com.lyy.keepassa.widgets.expand.ExpandStrAttrView
               android:id="@+id/attr_strs"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
@@ -236,7 +236,7 @@
               android:layout_marginStart="12dp"
               android:src="@drawable/ic_attr_file" />
 
-          <com.lyy.keepassa.widget.expand.ExpandFileAttrView
+          <com.lyy.keepassa.widgets.expand.ExpandFileAttrView
               android:id="@+id/attr_files"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"

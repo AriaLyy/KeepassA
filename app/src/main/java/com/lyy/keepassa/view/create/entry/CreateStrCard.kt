@@ -46,7 +46,7 @@ class CreateStrCard(context: Context, attributeSet: AttributeSet) :
   val strList = mutableListOf<Pair<String, ProtectedString>>()
 
   companion object {
-    private val ADD_MORE_DATA = Pair("addMore", ProtectedString(false, "addMore"))
+    val ADD_MORE_DATA = Pair("addMore", ProtectedString(false, "addMore"))
   }
 
   private val helper = CardListHelper(binding)

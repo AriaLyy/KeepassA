@@ -16,7 +16,7 @@ import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogAddAttrStrBinding
 import com.lyy.keepassa.event.CreateAttrStrEvent
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.widget.expand.AttrStrItemView
+import com.lyy.keepassa.widgets.expand.AttrStrItemView
 import org.greenrobot.eventbus.EventBus
 
 /**

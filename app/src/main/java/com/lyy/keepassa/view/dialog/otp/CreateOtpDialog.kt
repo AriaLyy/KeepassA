@@ -217,7 +217,7 @@ internal class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnC
   }
 
   private fun createTotpStr() {
-    var otpEnum = OtpEnum.KEEP_OTP
+    var otpEnum = OtpEnum.TRAY_TOTP
     val otpBean = when (totpType) {
       CUSTOM -> {
         otpEnum = KEEPASSXC
@@ -235,12 +235,12 @@ internal class CreateOtpDialog : BaseDialog<DialogCreateTotpBinding>(), View.OnC
 
       DEFAULT -> {
         otpEnum = OtpEnum.TRAY_TOTP
-        TrayTotpBean(seed = secret, period = time, isSteam = false)
+        TrayTotpBean(secret = secret, period = time, isSteam = false)
       }
 
       STEAM -> {
         otpEnum = OtpEnum.TRAY_TOTP
-        TrayTotpBean(seed = secret, period = time, isSteam = true)
+        TrayTotpBean(secret = secret, period = time, isSteam = true)
       }
     }
 

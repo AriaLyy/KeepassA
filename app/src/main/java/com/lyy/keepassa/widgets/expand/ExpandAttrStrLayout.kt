@@ -7,7 +7,7 @@
  */
 
 
-package com.lyy.keepassa.widget.expand
+package com.lyy.keepassa.widgets.expand
 
 import android.animation.LayoutTransition
 import android.animation.ObjectAnimator

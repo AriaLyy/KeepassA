@@ -217,7 +217,7 @@ dependencies {
   implementation 'me.laoyuyu.keepassa:KeepassLib:0.4.1'
   //  implementation project(path: ':KpaLib')
   implementation 'me.laoyuyu.keepassa:KPAFrame:0.4.1'
-  implementation 'me.laoyuyu.keepassa:UIWidget:0.4.0'
+  implementation 'me.laoyuyu.keepassa:UIWidget:0.4.1'
 
 
   // kotlin

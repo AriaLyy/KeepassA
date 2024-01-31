@@ -46,6 +46,7 @@ import com.lyy.keepassa.event.EntryState.CREATE
 import com.lyy.keepassa.event.EntryState.DELETE
 import com.lyy.keepassa.event.EntryState.MODIFY
 import com.lyy.keepassa.event.EntryState.MOVE
+import com.lyy.keepassa.event.EntryState.SAVE
 import com.lyy.keepassa.event.EntryState.UNKNOWN
 import com.lyy.keepassa.event.MoveEvent
 import com.lyy.keepassa.router.ActivityRouter
@@ -192,6 +193,10 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
               showList(false)
             }
           }
+          SAVE -> {
+            showList(true)
+            adapter.notifyDataSetChanged()
+          }
           UNKNOWN -> {
             Timber.d("un known status")
           }
@@ -228,6 +233,10 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
               if (module.entryData.isEmpty()) {
                 showList(false)
               }
+            }
+            SAVE -> {
+              showList(true)
+              adapter.notifyDataSetChanged()
             }
             UNKNOWN -> {
               Timber.d("un known status")

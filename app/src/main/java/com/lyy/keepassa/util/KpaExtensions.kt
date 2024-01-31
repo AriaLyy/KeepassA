@@ -134,13 +134,6 @@ fun CharSequence.hasSpecialChar(): Boolean {
   return charRegex.containsMatchIn(this)
 }
 
-// fun CharSequence.specialEncode():CharSequence{
-//   val out: StringBuilder = StringBuilder(length)
-//   forEach {
-//     it.
-//   }
-// }
-
 /**
  * isOpenQuickLock
  * @return true already open quick lock
@@ -327,7 +320,7 @@ fun PwEntryV4.getKeeTrayBean(): TrayTotpBean {
   val array = totpSetting.toString()
     .split(";")
   return TrayTotpBean(
-    seed = strings[ComposeKeeTrayTotp.KEY_SEED].toString(),
+    secret = strings[ComposeKeeTrayTotp.KEY_SEED].toString(),
     period = array[0].toInt(),
     isSteam = array[1] == "s"
   )

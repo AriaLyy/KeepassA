@@ -33,11 +33,8 @@ data class OtpBeans(
  */
 @Parcelize
 data class TrayTotpBean(
-  /**
-   * TOTP Seed
-   */
-  val seed: String,
-  val period: Int,
+  var secret: String,
+  var period: Int,
   val isSteam: Boolean
 ) : Parcelable, IOtpBean
 
@@ -78,12 +75,12 @@ data class KeepassXcBean(
   val title: String,
   val userName: String,
   val isSteam: Boolean,
-  val encoder: String = "",
-  val secret: String,
+  var encoder: String = "",
+  var secret: String,
   val issuer: String,
-  val period: Int,
-  val digits: Int,
-  val algorithm: HashAlgorithm,
+  var period: Int,
+  var digits: Int,
+  var algorithm: HashAlgorithm,
   val counter: String? = ""
 ) : Parcelable, IOtpBean
 
@@ -91,6 +88,12 @@ data class KeepassXcBean(
 data class GoogleOtpBean(
   val secret: String
 ) : Parcelable, IOtpBean
+
+fun GoogleOtpBean.toOtpStringMap(): Map<String, ProtectedString> {
+  return hashMapOf<String, ProtectedString>().apply {
+    put(ComposeKeepassxc.KEY_SEED, ProtectedString(true, secret))
+  }
+}
 
 /**
  * KeeOtp2 插件的otpHmac
@@ -125,21 +128,21 @@ data class TimeOtp2Bean(
    * TimeOtp-Secret-Base32
    * TimeOtp-Secret-Base64
    */
-  val secret: String,
+  var secret: String,
   /**
    * [6-8]
    */
-  val digits: Int,
+  var digits: Int,
   /**
    * HMAC-SHA-1
    * HMAC-SHA-256
    * HMAC-SHA-512
    */
-  val algorithm: HashAlgorithm,
+  var algorithm: HashAlgorithm,
   /**
    * 更新时间，默认30s
    */
-  val period: Int,
+  var period: Int,
 
   ) : Parcelable
 
@@ -184,15 +187,10 @@ fun KeepassXcBean.toOtpStringMap(): Map<String, ProtectedString> {
   }
 }
 
-fun KeepassXcBean.toOtpStringMap2(): Map<String, ProtectedString> {
-  return hashMapOf<String, ProtectedString>().apply {
-    put(ComposeKeepassxc.KEY_SEED, ProtectedString(true, secret))
-  }
-}
 
 fun TrayTotpBean.toOtpStringMap(): Map<String, ProtectedString> {
   return hashMapOf<String, ProtectedString>().apply {
-    put(ComposeKeeTrayTotp.KEY_SEED, ProtectedString(true, seed))
+    put(ComposeKeeTrayTotp.KEY_SEED, ProtectedString(true, secret))
     put(
       ComposeKeeTrayTotp.KEY_SETTING,
       ProtectedString(false, "${period};${if (isSteam) "S" else "6"}")

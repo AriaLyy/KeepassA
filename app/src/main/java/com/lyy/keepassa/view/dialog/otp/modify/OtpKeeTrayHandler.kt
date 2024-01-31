@@ -1,9 +1,14 @@
 package com.lyy.keepassa.view.dialog.otp.modify
 
 import androidx.core.view.isVisible
-import com.lyy.keepassa.entity.TotpType.DEFAULT
+import androidx.lifecycle.lifecycleScope
+import com.lyy.keepassa.entity.TrayTotpBean
+import com.lyy.keepassa.entity.toOtpStringMap
 import com.lyy.keepassa.util.getKeeTrayBean
 import com.lyy.keepassa.util.totp.OtpEnum
+import com.lyy.keepassa.util.totp.TokenCalculator.HashAlgorithm
+import com.lyy.keepassa.view.dialog.otp.CreateOtpModule
+import kotlinx.coroutines.launch
 
 /**
  * @Author laoyuyu
@@ -11,20 +16,35 @@ import com.lyy.keepassa.util.totp.OtpEnum
  * @Date 5:41 PM 2024/1/25
  **/
 internal class OtpKeeTrayHandler : IOtpModifyHandler {
+  private lateinit var bean: TrayTotpBean
   override fun initView(context: ModifyOtpDialog) {
-    val binding = context.getB
+    val binding = context.binding
     binding.contentLayout.group.isVisible = false
     binding.contentLayout.rbDefault.isChecked = true
-    handleTrayOtp()
+    binding.contentLayout.rbCustom.isVisible = false
+    binding.contentLayout.rbSteam.isVisible = false
+    bean = context.pwEntryV4.getKeeTrayBean()
+    binding.contentLayout.strKey.setText(bean.secret)
   }
 
-  override fun save(context: ModifyOtpDialog) {
-  }
+  override fun save(
+    context: ModifyOtpDialog,
+    secret: String,
+    arithmetic: HashAlgorithm,
+    digits: Int,
+    period: Int,
+    isSteam: Boolean
+  ) {
+    bean.period = period
+    bean.secret = secret
 
-  private fun handleTrayOtp() {
-    val bean = pwEntryV4.getKeeTrayBean()
-    entryType = OtpEnum.TRAY_TOTP
-    otpBean = bean
-    binding.contentLayout.strKey.setText(bean.seed)
+    val beanMap = bean.toOtpStringMap()
+    beanMap.forEach {
+      context.pwEntryV4.strings[it.key] = it.value
+    }
+    context.lifecycleScope.launch {
+      CreateOtpModule.otpFlow.emit(Pair(OtpEnum.TRAY_TOTP, bean))
+      context.dismiss()
+    }
   }
 }

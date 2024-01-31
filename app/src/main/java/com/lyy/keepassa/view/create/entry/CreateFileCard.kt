@@ -37,7 +37,7 @@ import kotlinx.coroutines.launch
 class CreateFileCard(context: Context, attributeSet: AttributeSet) :
   ConstraintLayout(context, attributeSet) {
   companion object {
-    private val ADD_MORE_DATA = Pair("addMore", ProtectedBinary(false, null))
+    val ADD_MORE_DATA = Pair("addMore", ProtectedBinary(false, null))
   }
 
   private val binding =

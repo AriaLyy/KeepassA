@@ -22,6 +22,7 @@ import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.dialog.TimeChangeDialog
 import com.lyy.keepassa.view.dialog.webdav.WebDavLoginDialogNew
+import java.util.UUID
 
 /**
  * @Author laoyuyu
@@ -46,6 +47,12 @@ interface DialogRouter {
   fun showCreateOtpDialog(
     @RouterArgName(name = "entryTitle") entryTitle: String,
     @RouterArgName(name = "entryUserName") entryUserName: String
+  )
+
+  @RouterPath(path = "/dialog/otpModify")
+  @DialogArg(showDialog = true)
+  fun showModifyOtpDialog(
+    @RouterArgName(name = "uid") uid: UUID
   )
 
   @RouterPath(path = "/dialog/customStrDialog")

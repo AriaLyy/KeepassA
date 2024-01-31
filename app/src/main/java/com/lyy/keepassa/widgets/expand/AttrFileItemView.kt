@@ -7,7 +7,7 @@
  */
 
 
-package com.lyy.keepassa.widget.expand
+package com.lyy.keepassa.widgets.expand
 
 import android.annotation.SuppressLint
 import android.content.Context

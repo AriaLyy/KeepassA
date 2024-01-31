@@ -21,7 +21,7 @@ import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
-import com.lyy.keepassa.widget.ProgressBar.RoundProgressBarWidthNumber
+import com.lyy.keepassa.widget.pb.RoundProgressBarWidthNumber
 import timber.log.Timber
 import kotlin.collections.Map.Entry
 

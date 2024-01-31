@@ -20,7 +20,7 @@
       tools:text="标题"
       />
 
-  <com.lyy.keepassa.widget.ProgressBar.RoundProgressBarWidthNumber
+  <com.lyy.keepassa.widget.pb.RoundProgressBarWidthNumber
       android:id="@+id/rpbBar"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

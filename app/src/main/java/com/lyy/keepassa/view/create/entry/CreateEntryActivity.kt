@@ -33,8 +33,13 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.databinding.ActivityEntryEditNewBinding
 import com.lyy.keepassa.entity.AutoFillParam
+import com.lyy.keepassa.entity.GoogleOtpBean
+import com.lyy.keepassa.entity.KeepassBean
+import com.lyy.keepassa.entity.KeepassXcBean
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.entity.TagBean
+import com.lyy.keepassa.entity.TrayTotpBean
+import com.lyy.keepassa.entity.toOtpStringMap
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
@@ -43,6 +48,7 @@ import com.lyy.keepassa.util.doClick
 import com.lyy.keepassa.util.hasTOTP
 import com.lyy.keepassa.util.loadImg
 import com.lyy.keepassa.util.takePermission
+import com.lyy.keepassa.util.totp.OtpEnum
 import com.lyy.keepassa.view.create.GeneratePassActivity
 import com.lyy.keepassa.view.create.entry.CreateEnum.CREATE
 import com.lyy.keepassa.view.create.entry.CreateEnum.MODIFY
@@ -188,16 +194,29 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
   private fun handleTotpLayout() {
     lifecycleScope.launch {
       CreateOtpModule.otpFlow.collectLatest {
-        module.pwEntry.apply {
-
+        val map = when (it.first) {
+          OtpEnum.TRAY_TOTP -> (it.second as? TrayTotpBean)?.toOtpStringMap()
+          OtpEnum.KEEPASSXC -> (it.second as? KeepassXcBean)?.toOtpStringMap()
+          OtpEnum.GOOGLE_OTP -> (it.second as? GoogleOtpBean)?.toOtpStringMap()
+          OtpEnum.KEEPASS -> (it.second as? KeepassBean)?.toOtpStringMap()
         }
-        startOtp()
+        map?.let { strs ->
+          strs.forEach { kv ->
+            module.pwEntry.strings[kv.key] = kv.value
+          }
+          startOtp()
+          binding.cardStr.bindDate(module.pwEntry)
+        }
       }
     }
     if (module.pwEntry.hasTOTP()) {
       startOtp()
     }
     binding.edOtp.doClick {
+      if (module.pwEntry.hasTOTP()) {
+        Routerfit.create(DialogRouter::class.java).showModifyOtpDialog(module.pwEntry.uuid)
+        return@doClick
+      }
       Routerfit.create(DialogRouter::class.java)
         .showCreateOtpDialog(module.pwEntry.title, module.pwEntry.username)
     }
@@ -209,7 +228,6 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
   }
 
   private fun handlerUserLayout() {
-    module.getUserNameCache()
     binding.edUser.threshold = 1 // 设置输入几个字符后开始出现提示 默认是2
     binding.edUser.setOnFocusChangeListener { _, hasFocus ->
       if (hasFocus) {
@@ -230,6 +248,10 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
           )
         )
       }
+    }
+
+    lifecycleScope.launch {
+      module.getUserNameCache()
     }
   }
 

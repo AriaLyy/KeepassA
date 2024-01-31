@@ -51,13 +51,13 @@ interface ICreateHandler {
     }
 
     if (binding.cardStr.isVisible) {
-      binding.cardStr.strList.forEach {
+      binding.cardStr.strList.filter { it != CreateStrCard.ADD_MORE_DATA }.forEach {
         pwEntryV4.strings[it.first] = it.second
       }
     }
 
     if (binding.cardFile.isVisible && checkEntry(pwEntryV4)) {
-      binding.cardFile.fileList.forEach {
+      binding.cardFile.fileList.filter { it != CreateFileCard.ADD_MORE_DATA }.forEach {
         pwEntryV4.binaries[it.first] = it.second
       }
     }

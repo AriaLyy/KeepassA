@@ -10,7 +10,7 @@
 package com.lyy.keepassa.event
 
 import com.keepassdroid.database.security.ProtectedString
-import com.lyy.keepassa.widget.expand.AttrStrItemView
+import com.lyy.keepassa.widgets.expand.AttrStrItemView
 
 /**
  * 创建自定义字段事件
