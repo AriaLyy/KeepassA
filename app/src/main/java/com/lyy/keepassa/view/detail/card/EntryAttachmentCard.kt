@@ -6,14 +6,16 @@ import android.view.LayoutInflater
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arialyy.frame.util.ResUtil
-import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.google.android.material.card.MaterialCardView
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedBinary
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.AbsViewBindingAdapter
+import com.lyy.keepassa.databinding.LayoutEntryAttachmentBinding
 import com.lyy.keepassa.databinding.LayoutEntryCardListBinding
+import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.view.menu.EntryDetailFilePopMenu
+import kotlin.collections.MutableMap.MutableEntry
 
 /**
  * @Author laoyuyu
@@ -35,30 +37,31 @@ class EntryAttachmentCard(context: Context, attributeSet: AttributeSet) :
     handleList(data)
   }
 
-  private fun handleList(data: MutableList<MutableMap.MutableEntry<String, ProtectedBinary>>) {
+  private fun handleList(data: MutableList<MutableEntry<String, ProtectedBinary>>) {
     val adapter = AttachmentAdapter()
 
     binding.rvList.apply {
       this.adapter = adapter
       setHasFixedSize(true)
       layoutManager = LinearLayoutManager(context)
-      adapter.setNewInstance(data)
+      adapter.setData(data)
     }
-    adapter.setOnItemClickListener { _, view, position ->
+    binding.rvList.doOnItemClickListener { _, position, v ->
       val entry = data[position]
-      val pop = EntryDetailFilePopMenu(context as FragmentActivity, view, entry.key, entry.value)
+      val pop = EntryDetailFilePopMenu(context as FragmentActivity, v, entry.key, entry.value)
 
       pop.show()
     }
   }
 
   private class AttachmentAdapter :
-    BaseQuickAdapter<MutableMap.MutableEntry<String, ProtectedBinary>, BaseViewHolder>(R.layout.layout_entry_attachment) {
-    override fun convert(
-      holder: BaseViewHolder,
-      item: MutableMap.MutableEntry<String, ProtectedBinary>
+    AbsViewBindingAdapter<MutableEntry<String, ProtectedBinary>, LayoutEntryAttachmentBinding>() {
+
+    override fun bindData(
+      binding: LayoutEntryAttachmentBinding,
+      item: MutableEntry<String, ProtectedBinary>
     ) {
-      holder.setText(R.id.value, item.key)
+      binding.value.text = item.key
     }
   }
 }

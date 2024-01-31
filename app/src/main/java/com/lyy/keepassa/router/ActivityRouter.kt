@@ -14,7 +14,7 @@ import com.keepassdroid.database.PwGroupId
 import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.view.create.entry.CreateEntryActivity
 import com.lyy.keepassa.view.create.entry.CreateEnum
-import com.lyy.keepassa.view.detail.EntryDetailActivity
+import com.lyy.keepassa.view.detail.EntryDetailActivityNew
 import com.lyy.keepassa.view.detail.GroupDetailActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.setting.SettingActivity
@@ -56,8 +56,7 @@ interface ActivityRouter {
 
   @RouterPath(path = "/entry/detail")
   fun toEntryDetailActivity(
-    @RouterArgName(name = EntryDetailActivity.KEY_ENTRY_ID) entryId: UUID,
-    @RouterArgName(name = EntryDetailActivity.KEY_GROUP_TITLE) groupName: String,
+    @RouterArgName(name = EntryDetailActivityNew.KEY_ENTRY_ID) entryId: UUID,
     @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null
   )
 

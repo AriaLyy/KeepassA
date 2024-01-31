@@ -610,7 +610,6 @@ class KeepassAUtil private constructor() {
       }
       Routerfit.create(ActivityRouter::class.java, activity).toEntryDetailActivity(
         entryId = entry.uuid,
-        groupName = entry.parent.name,
         opt = opt
       )
     }

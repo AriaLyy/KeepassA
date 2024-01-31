@@ -67,6 +67,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     if (BaseApp.isV4 && pwEntry.parent == BaseApp.KDB!!.pm.recycleBin) {
       isInRecycleBin = true
     }
+    setTopBar()
   }
 
   override fun onStart() {
@@ -75,8 +76,11 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
   }
 
   private fun bindData() {
-    setTopBar()
     setIcon()
+    // 处理过期
+    KpaUtil.handleExpire(binding.tvTitle, pwEntry)
+    binding.tvTitle.text = pwEntry.title
+    binding.topAppBar.title = pwEntry.title
     binding.cardBaseInfo.bindData(pwEntry)
     binding.cardNote.bindData(pwEntry)
     binding.cardStr.bindData(pwEntry)
@@ -88,7 +92,6 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
    * 标题栏
    */
   private fun setTopBar() {
-    binding.topAppBar.title = pwEntry.title
     toolbar = binding.topAppBar
     toolbar.setNavigationOnClickListener {
       finishAfterTransition()
@@ -117,7 +120,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
 
       true
     }
-    binding.tvTitle.text = pwEntry.title
+
     binding.appBarLayout.addOnOffsetChangedListener { _, verticalOffset ->
       // Timber.d("offset: $verticalOffset， ${binding.appBarLayout.totalScrollRange}")
       if (verticalOffset == 0) {
@@ -130,9 +133,6 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
       }
     }
     handleMenuBar()
-
-    // 处理过期
-    KpaUtil.handleExpire(binding.tvTitle, pwEntry)
   }
 
   private fun handleMenuBar() {
@@ -178,7 +178,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
       }
       layoutManager = AppIconLayoutManager(15.toPx())
     }
-    adapter.setNewInstance(arrayListOf<String>().apply {
+    adapter.setData(arrayListOf<String>().apply {
       add("tv.danmaku.bili")
     })
   }

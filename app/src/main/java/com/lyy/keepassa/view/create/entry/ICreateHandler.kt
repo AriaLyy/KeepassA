@@ -61,6 +61,8 @@ interface ICreateHandler {
         pwEntryV4.binaries[it.first] = it.second
       }
     }
+    pwEntryV4.customIcon = context.module.customIcon
+    pwEntryV4.icon = context.module.icon
   }
 
   private fun checkEntry(pwEntry: PwEntryV4): Boolean {

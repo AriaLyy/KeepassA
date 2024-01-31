@@ -1,9 +1,13 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'com.tencent.vasdolly'
-apply plugin: 'com.alibaba.arouter'
-apply plugin: 'kotlin-parcelize'
+plugins {
+  id 'com.android.application'
+  id 'kotlin-android'
+  id 'kotlin-kapt'
+  id 'com.tencent.vasdolly'
+  id 'com.alibaba.arouter'
+  id 'kotlin-parcelize'
+  id 'com.google.gms.google-services'
+  id 'com.google.firebase.crashlytics'
+}
 
 android {
   compileSdkVersion libs.versions.compilesdk.get().toInteger()
@@ -254,7 +258,6 @@ dependencies {
   implementation(libs.tencent.vasdolly)
   implementation(libs.third.protector) // XP/调试/多开/模拟器/root 判断
   implementation(libs.third.autosize)
-  implementation(libs.bundles.tencent.bugly) // bugly
   implementation(libs.google.gson)
   implementation(libs.third.freereflection)
   implementation(libs.microsoft.msal)
@@ -263,9 +266,6 @@ dependencies {
   implementation(libs.third.zxing.embedded) { transitive = false }
   implementation(libs.google.zxing)
   implementation(libs.jetpack.palette.ktx)
-  implementation(libs.third.baseRecyclerViewAdapterHelper)
-//  coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
-
   // mmkv
   implementation(libs.tencent.mmkv)
 
@@ -274,8 +274,12 @@ dependencies {
   // // =========================== 三方库 end =====================================
   implementation(libs.google.gms.billing)
   implementation(libs.google.gms.base)
+
+  //firebase
+  implementation platform('com.google.firebase:firebase-bom:32.7.1')
+  implementation 'com.google.firebase:firebase-crashlytics-ktx'
+  implementation 'com.google.firebase:firebase-analytics-ktx'
 }
 
 // 不要使用，1.2.21打包出来的apk，消息对话框布局错乱
 //apply from: 'AndResGuard.gradle'
-apply from: 'bugly.gradle'

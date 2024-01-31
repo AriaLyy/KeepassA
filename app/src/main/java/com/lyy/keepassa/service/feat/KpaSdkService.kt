@@ -68,7 +68,6 @@ class KpaSdkService : IProvider {
 
   fun initThirdSdk(context: Context) {
     scope.launch(Dispatchers.IO) {
-      BuglyFeature.init(context)
       RichText.initCacheDir(context)
       XLogFeature.init(context)
     }

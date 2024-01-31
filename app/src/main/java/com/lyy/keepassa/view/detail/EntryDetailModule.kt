@@ -43,12 +43,10 @@ import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
-import com.lyy.keepassa.view.menu.EntryDetailFilePopMenu
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
-import com.lyy.keepassa.widgets.expand.AttrFileItemView
-import com.lyy.keepassa.widgets.expand.AttrStrItemView
 import com.lyy.keepassa.widget.toPx
+import com.lyy.keepassa.widgets.expand.AttrStrItemView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -59,15 +57,9 @@ import timber.log.Timber
  * 条目详情
  */
 class EntryDetailModule : BaseModule() {
-  var curDLoadFile: ProtectedBinary? = null
-  var lastCollection: Boolean = false
   private lateinit var pwEntry: PwEntry
   private val finishAnimEvent = SingleLiveEvent<Boolean>()
   private val startAnimEvent = SingleLiveEvent<Boolean>()
-
-  override fun onCleared() {
-    super.onCleared()
-  }
 
   fun initEntry(pwEntry: PwEntry) {
     this.pwEntry = pwEntry
@@ -178,31 +170,6 @@ class EntryDetailModule : BaseModule() {
   }
 
   /**
-   * 展示附件的菜单
-   */
-  fun showAttrFilePopMenu(
-    context: EntryDetailActivity,
-    v: View
-  ) {
-    if (KeepassAUtil.instance.isFastClick()) {
-      return
-    }
-    val key = (v as AttrFileItemView).titleStr
-    val value = v.file
-    val menu = EntryDetailFilePopMenu(context, v, key, value!!)
-    menu.setOnDownloadClick(object : EntryDetailFilePopMenu.OnDownloadClick {
-      override fun onDownload(
-        key: String,
-        file: ProtectedBinary
-      ) {
-        curDLoadFile = file
-        context.saveAttachmentResult.launch("*/*")
-      }
-    })
-    menu.show()
-  }
-
-  /**
    * 展示属性字段的菜单
    */
   fun showAttrStrPopMenu(
@@ -276,7 +243,7 @@ class EntryDetailModule : BaseModule() {
    * @param pwEntry 需要回收的条目
    */
   fun recycleEntry(ac: FragmentActivity, pwEntry: PwEntryV4) {
-    KpaUtil.kdbHandlerService.deleteEntry(pwEntry){
+    KpaUtil.kdbHandlerService.deleteEntry(pwEntry) {
       HitUtil.toaskShort(
         "${ac.getString(R.string.del_entry)}${ac.getString(R.string.success)}"
       )

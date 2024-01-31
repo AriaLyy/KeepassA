@@ -141,6 +141,11 @@
             />
       </com.google.android.material.tabs.TabLayout>
 
+      <View
+          android:layout_width="match_parent"
+          android:background="@color/color_33666666"
+          android:layout_height="1dp"/>
+
 
     </com.google.android.material.appbar.AppBarLayout>
 

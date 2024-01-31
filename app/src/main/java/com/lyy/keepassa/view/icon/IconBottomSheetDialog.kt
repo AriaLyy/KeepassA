@@ -25,12 +25,8 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseBottomSheetDialogFragment
 import com.lyy.keepassa.databinding.DialogEntryIconBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * @Author laoyuyu
@@ -57,7 +53,7 @@ class IconBottomSheetDialog : BaseBottomSheetDialogFragment<DialogEntryIconBindi
   override fun init(savedInstanceState: Bundle?) {
     super.init(savedInstanceState)
     behavior = BottomSheetBehavior.from(binding.llContent)
-    module = ViewModelProvider(requireActivity()).get(IconModule::class.java)
+    module = ViewModelProvider(requireActivity())[IconModule::class.java]
     if (!BaseApp.isV4 || (BaseApp.KDB.pm as PwDatabaseV4).customIcons.isNullOrEmpty()) {
       binding.rg.visibility = View.GONE
     }
@@ -84,32 +80,32 @@ class IconBottomSheetDialog : BaseBottomSheetDialogFragment<DialogEntryIconBindi
 
     showLoadingAnim()
     module.getDefaultIconList()
-        .observe(this, observer)
+      .observe(this, observer)
 
     binding.rg.setOnCheckedChangeListener { _, checkedId ->
       showLoadingAnim()
       if (checkedId == R.id.mrbDefault) {
         curType = ICON_TYPE_DEFAULT
         module.getDefaultIconList()
-            .observe(this, observer)
+          .observe(this, observer)
         return@setOnCheckedChangeListener
       }
       curType = ICON_TYPE_CUSTOM
       module.getCustomIconList()
-          .observe(this, observer)
+        .observe(this, observer)
     }
 
     RvItemClickSupport.addTo(binding.rvList)
-        .setOnItemClickListener { _, position, _ ->
-          val item = data[position]
-          if (curType == ICON_TYPE_DEFAULT) {
-            callback?.onDefaultIcon(PwIconStandard(item.icon))
-            dismiss()
-            return@setOnItemClickListener
-          }
-          callback?.onCustomIcon(item.obj as PwIconCustom)
+      .setOnItemClickListener { _, position, _ ->
+        val item = data[position]
+        if (curType == ICON_TYPE_DEFAULT) {
+          callback?.onDefaultIcon(PwIconStandard(item.icon))
           dismiss()
+          return@setOnItemClickListener
         }
+        callback?.onCustomIcon(item.obj as PwIconCustom)
+        dismiss()
+      }
   }
 
   override fun onDestroy() {
@@ -124,14 +120,9 @@ class IconBottomSheetDialog : BaseBottomSheetDialogFragment<DialogEntryIconBindi
   }
 
   private fun hideLoadingAnim() {
-    scope.launch {
-      withContext(Dispatchers.IO) {
-        delay(1000)
-      }
-      val animationView = getLadingView()
-      animationView.cancelAnimation()
-      animationView.visibility = View.GONE
-    }
+    val animationView = getLadingView()
+    animationView.cancelAnimation()
+    animationView.visibility = View.GONE
   }
 
   private fun getLadingView(): LottieAnimationView {
@@ -142,7 +133,6 @@ class IconBottomSheetDialog : BaseBottomSheetDialogFragment<DialogEntryIconBindi
     anim.repeatCount = 10
     return anim
   }
-
 }
 
 interface IconItemCallback {

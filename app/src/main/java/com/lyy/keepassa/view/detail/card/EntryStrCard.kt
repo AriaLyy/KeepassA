@@ -7,21 +7,22 @@ import android.text.InputType
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arialyy.frame.util.ResUtil
-import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.google.android.material.card.MaterialCardView
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.AbsViewBindingAdapter
 import com.lyy.keepassa.databinding.LayoutEntryCardListBinding
+import com.lyy.keepassa.databinding.LayoutEntryStrBinding
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
-import com.lyy.keepassa.widget.pb.RoundProgressBarWidthNumber
 import timber.log.Timber
 import kotlin.collections.Map.Entry
 
@@ -56,15 +57,15 @@ class EntryStrCard(context: Context, attributeSet: AttributeSet) :
           return false
         }
       }
-      adapter.setNewInstance(data)
+      adapter.setData(data)
       isNestedScrollingEnabled = false
     }
-    adapter.setOnItemClickListener { _, view, position ->
+    binding.rvList.doOnItemClickListener { _, position, view ->
       val tvValue = view.findViewById<TextView>(R.id.value)
       val entry = data[position]
       if (entry.value.toString().isEmpty()) {
         Timber.e("value is null")
-        return@setOnItemClickListener
+        return@doOnItemClickListener
       }
       val pop = EntryDetailStrPopMenu(
         context as FragmentActivity,
@@ -82,17 +83,23 @@ class EntryStrCard(context: Context, attributeSet: AttributeSet) :
   }
 
   private class StrAdapter(val entryV4: PwEntryV4) :
-    BaseQuickAdapter<Entry<String, ProtectedString>, BaseViewHolder>(R.layout.layout_entry_str) {
+    AbsViewBindingAdapter<Entry<String, ProtectedString>, LayoutEntryStrBinding>() {
+
+    private fun handleOtp(binding: LayoutEntryStrBinding, tvValue: TextView) {
+      binding.rpbBar.visibility = VISIBLE
+      KdbUtil.startAutoGetOtp(entryV4, binding.rpbBar, tvValue)
+    }
+
     @SuppressLint("SetTextI18n")
-    override fun convert(holder: BaseViewHolder, item: Entry<String, ProtectedString>) {
-      holder.setText(R.id.title, item.key)
-      val tvValue = holder.getView<TextView>(R.id.value)
+    override fun bindData(binding: LayoutEntryStrBinding, item: Entry<String, ProtectedString>) {
+      binding.title.text = item.key
+      val tvValue = binding.value
       KpaUtil.handleShowPass(tvValue, !item.value.isProtected)
       if (item.value.isOtpPass) {
-        handleOtp(holder, tvValue)
+        handleOtp(binding, tvValue)
         return
       }
-      holder.setGone(R.id.rpbBar, true)
+      binding.rpbBar.isVisible = false
       if (item.value.toString().isEmpty()) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
           tvValue.typeface = context.resources.getFont(R.font.roboto_thinitalic)
@@ -104,12 +111,6 @@ class EntryStrCard(context: Context, attributeSet: AttributeSet) :
         tvValue.typeface = context.resources.getFont(R.font.roboto_regular)
       }
       tvValue.text = item.value.toString()
-    }
-
-    private fun handleOtp(holder: BaseViewHolder, tvValue: TextView) {
-      val rPb = holder.getView<RoundProgressBarWidthNumber>(R.id.rpbBar)
-      rPb.visibility = VISIBLE
-      KdbUtil.startAutoGetOtp(entryV4, rPb, tvValue)
     }
   }
 }

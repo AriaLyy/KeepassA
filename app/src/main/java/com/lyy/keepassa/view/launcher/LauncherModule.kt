@@ -51,7 +51,6 @@ import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.isAFS
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
-import com.tencent.bugly.crashreport.BuglyLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -285,7 +284,7 @@ internal class LauncherModule : BaseModule() {
     openDbRecord: DbHistoryRecord
   ) {
     if (!fragment.isAdded) {
-      BuglyLog.d(TAG, "deleteBiomKey fragment isAdded = false")
+      Timber.d("deleteBiomKey fragment isAdded = false")
       return
     }
     val resource = fragment.requireContext().resources

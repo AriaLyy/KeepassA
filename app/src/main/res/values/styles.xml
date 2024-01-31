@@ -134,6 +134,7 @@
     <item name="tabIndicatorColor">@color/colorPrimary</item>
     <item name="tabSelectedTextColor">@color/colorPrimary</item>
     <item name="tabTextColor">@color/text_gray_color</item>
+    <item name="tabBackground">@color/background_color</item>
   </style>
 
   <style name="KpaEntryDetailTextStyle">
