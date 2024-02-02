@@ -1,35 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
 
   <androidx.coordinatorlayout.widget.CoordinatorLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@color/background_color">
+      android:background="@color/background_color"
+      >
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:minHeight="@dimen/bar_height">
+        android:background="@color/background_color"
+        android:minHeight="@dimen/bar_height"
+        >
 
       <com.google.android.material.appbar.CollapsingToolbarLayout
           android:id="@+id/ctlCollapsingLayout"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:elevation="4dp"
+          app:layout_scrollFlags="scroll|exitUntilCollapsed|snap|snapMargins"
           app:collapsedTitleGravity="left"
           app:collapsedTitleTextAppearance="@style/CollapsingToolbarLayout.CollapsedTitleText"
           app:contentScrim="@color/background_color"
           app:expandedTitleGravity="left|bottom"
           app:expandedTitleTextAppearance="@style/CollapsingToolbarLayout.ExpandedTitleText"
-          app:layout_scrollFlags="scroll|exitUntilCollapsed|snap|snapMargins"
           app:scrimAnimationDuration="1200"
           app:scrimVisibleHeightTrigger="150dp"
           app:statusBarScrim="@color/background_color"
           app:title="Group"
-          app:titleEnabled="true">
+          app:titleEnabled="true"
+          >
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/kpa_toolbar"
@@ -40,7 +45,8 @@
             app:navigationIcon="@drawable/ic_up"
             app:subtitleTextAppearance="@style/Toolbar.SubTitleText"
             app:theme="@style/ToolbarMenuTheme"
-            app:titleTextAppearance="@style/Toolbar.TitleText" />
+            app:titleTextAppearance="@style/Toolbar.TitleText"
+            />
       </com.google.android.material.appbar.CollapsingToolbarLayout>
 
 
@@ -50,23 +56,26 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        />
 
     <ViewStub
         android:id="@+id/vsEmpty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/bar_height"
-        android:layout="@layout/layout_empty_fill" />
+        android:layout="@layout/layout_empty_fill"
+        />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/laAnim"
-        android:background="@color/background_color"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background_color"
         app:lottie_autoPlay="false"
         app:lottie_fileName="loadingAnimation.json"
-        app:lottie_loop="false" />
+        app:lottie_loop="false"
+        />
 
     <!--    <com.lyy.keepassa.widget.EmptyDataFillView-->
     <!--        android:id="@+id/empty_layout"-->
@@ -76,13 +85,14 @@
 
     <com.lyy.keepassa.widget.MainExpandFloatActionButton
         android:id="@+id/fab"
-        android:visibility="visible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        app:layout_behavior="com.lyy.keepassa.widget.MainExpandFloatActionButtonBehavior" />
+        android:layout_marginEnd="16dp"
+        android:visibility="visible"
+        app:layout_behavior="com.lyy.keepassa.widget.MainExpandFloatActionButtonBehavior"
+        />
 
 
   </androidx.coordinatorlayout.widget.CoordinatorLayout>

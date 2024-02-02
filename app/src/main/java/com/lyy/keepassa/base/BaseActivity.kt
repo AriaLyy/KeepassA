@@ -161,11 +161,6 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     }
   }
 
-  override fun finish() {
-    super.finish()
-    overridePendingTransition(R.anim.translate_right_in, R.anim.translate_left_out)
-  }
-
   var isStartOtherActivity = false
   override fun startActivity(
     intent: Intent?,
@@ -173,7 +168,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   ) {
     super.startActivity(intent, options)
     isStartOtherActivity = true
-    overridePendingTransition(R.anim.translate_right_in, R.anim.translate_left_out)
+    // overridePendingTransition(R.anim.translate_right_in, R.anim.translate_left_out)
   }
 
   /**
@@ -233,6 +228,6 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     super.onResume()
     // 启动定时器
     KeepassAUtil.instance.startLockTimer(this)
-    updateResume(this)
+    // updateResume(this)
   }
 }
