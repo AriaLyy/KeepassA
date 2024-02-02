@@ -31,6 +31,7 @@ internal class CreateEntryHandler(val context: CreateEntryActivity) : ICreateHan
       (if (groupId != null) BaseApp.KDB.pm.groups[groupId] else BaseApp.KDB.pm.rootGroup) as PwGroupV4
     val entry = PwEntryV4(group, true, true)
     context.module.pwEntry = entry
+    context.module.initCache()
     binding.cardStr.visibility = View.GONE
     binding.cardFile.visibility = View.GONE
     binding.tlLoseTime.visibility = View.GONE

@@ -9,7 +9,6 @@
 
 package com.lyy.keepassa.util
 
-import android.text.TextUtils
 import android.widget.TextView
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.FileUtil
@@ -255,16 +254,10 @@ object KdbUtil {
     return groups[PwGroupIdV4(groupId)]
   }
 
-  /**
-   * 过滤并排序自定义字段和自定义数据
-   */
-  fun filterCustomStr(
-    entryV4: PwEntryV4,
-    needAddCustomData: Boolean = true
-  ): Map<String, ProtectedString> {
-    val map = HashMap<String, ProtectedString>()
-    var addOTPPass = false
-    for (str in entryV4.strings) {
+  fun filterCustomStr(map: Map<String, ProtectedString>): Map<String, ProtectedString> {
+    val remap = HashMap<String, ProtectedString>()
+    // var addOTPPass = false
+    for (str in map) {
       if (str.key.equals(PwEntryV4.STR_NOTES, true)
         || str.key.equals(PwEntryV4.STR_PASSWORD, true)
         || str.key.equals(PwEntryV4.STR_TITLE, true)
@@ -274,32 +267,34 @@ object KdbUtil {
         continue
       }
 
-      map[str.key] = str.value
+      remap[str.key] = str.value
 
-      // 增加TOP密码字段
-      if (!addOTPPass && (str.key.startsWith("TOTP", ignoreCase = true)
-          || str.key.startsWith("OTP", ignoreCase = true))
-      ) {
-        addOTPPass = true
-        val totpPass = OtpUtil.getOtpPass(entryV4)
-        if (TextUtils.isEmpty(totpPass.second)) {
-          continue
-        }
-        val totpPassStr = ProtectedString(true, totpPass.second)
-        totpPassStr.isOtpPass = true
-        map["TOTP"] = totpPassStr
-      }
+      // // 增加TOP密码字段
+      // if (!addOTPPass && (str.key.startsWith("TOTP", ignoreCase = true)
+      //     || str.key.startsWith("OTP", ignoreCase = true))
+      // ) {
+      //   addOTPPass = true
+      //   val totpPass = OtpUtil.getOtpPass(entryV4)
+      //   if (TextUtils.isEmpty(totpPass.second)) {
+      //     continue
+      //   }
+      //   val totpPassStr = ProtectedString(true, totpPass.second)
+      //   totpPassStr.isOtpPass = true
+      //   map["TOTP"] = totpPassStr
+      // }
     }
 
-
-    if (needAddCustomData) {
-      for (str in entryV4.customData) {
-        map[str.key] = ProtectedString(false, str.value)
-      }
-    }
-
-    return map.toList()
+    return remap.toList()
       .sortedBy { it.first }
       .toMap()
+  }
+
+  /**
+   * 过滤并排序自定义字段和自定义数据
+   */
+  fun filterCustomStr(
+    entryV4: PwEntryV4,
+  ): Map<String, ProtectedString> {
+    return filterCustomStr(entryV4.strings)
   }
 }

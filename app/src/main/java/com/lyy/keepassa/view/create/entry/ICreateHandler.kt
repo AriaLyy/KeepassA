@@ -51,14 +51,16 @@ interface ICreateHandler {
     }
 
     if (binding.cardStr.isVisible) {
-      binding.cardStr.strList.filter { it != CreateStrCard.ADD_MORE_DATA }.forEach {
-        pwEntryV4.strings[it.first] = it.second
+      pwEntryV4.strings.clear()
+      context.module.strCacheMap.forEach {
+        pwEntryV4.strings[it.key] = it.value
       }
     }
 
     if (binding.cardFile.isVisible && checkEntry(pwEntryV4)) {
-      binding.cardFile.fileList.filter { it != CreateFileCard.ADD_MORE_DATA }.forEach {
-        pwEntryV4.binaries[it.first] = it.second
+      pwEntryV4.binaries.clear()
+      context.module.fileCacheMap.forEach {
+        pwEntryV4.binaries[it.key] = it.value
       }
     }
     pwEntryV4.customIcon = context.module.customIcon

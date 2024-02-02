@@ -18,9 +18,10 @@ import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogAddAttrStrBinding
-import com.lyy.keepassa.event.CreateAttrStrEvent
+import com.lyy.keepassa.entity.CommonState
+import com.lyy.keepassa.event.AttrStrEvent
 import com.lyy.keepassa.util.HitUtil
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -30,7 +31,7 @@ import kotlinx.coroutines.launch
 class CreateCustomStrDialog : BaseDialog<DialogAddAttrStrBinding>(),
   View.OnClickListener {
   companion object {
-    val createCustomStrFlow = MutableStateFlow<CreateAttrStrEvent?>(null)
+    val CustomStrFlow = MutableSharedFlow<AttrStrEvent?>(0)
   }
 
   @Autowired(name = "key")
@@ -70,11 +71,11 @@ class CreateCustomStrDialog : BaseDialog<DialogAddAttrStrBinding>(),
         return
       }
       lifecycleScope.launch {
-        createCustomStrFlow.emit(
-          CreateAttrStrEvent(
+        CustomStrFlow.emit(
+          AttrStrEvent(
+            if (key != null) CommonState.MODIFY else CommonState.CREATE,
             binding.strKey.text.toString(),
             ProtectedString(binding.cb.isChecked, binding.strValue.text.toString()),
-            key != null,
             position
           )
         )

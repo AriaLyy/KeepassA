@@ -10,15 +10,14 @@
 package com.lyy.keepassa.event
 
 import com.keepassdroid.database.security.ProtectedString
-import com.lyy.keepassa.widgets.expand.AttrStrItemView
+import com.lyy.keepassa.entity.CommonState
 
 /**
  * 创建自定义字段事件
  */
-data class CreateAttrStrEvent(
+data class AttrStrEvent(
+  val state: CommonState,
   val key: String,
   val str: ProtectedString,
-  val isEdit: Boolean = false,
-  val position: Int = 0,
-  val updateView: AttrStrItemView? = null
+  val position: Int = 0
 )

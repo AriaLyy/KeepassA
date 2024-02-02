@@ -154,8 +154,8 @@ fun PwEntryV4.hasNote(): Boolean {
   return false
 }
 
-fun PwEntryV4.hasTOTP(): Boolean {
-  for (str in this.strings) {
+fun Map<String, ProtectedString>.hasTOTP(): Boolean {
+  for (str in this) {
     if (str.key.equals(PwEntryV4.STR_NOTES, true)
       || str.key.equals(PwEntryV4.STR_PASSWORD, true)
       || str.key.equals(PwEntryV4.STR_TITLE, true)
@@ -167,7 +167,7 @@ fun PwEntryV4.hasTOTP(): Boolean {
 
     // 增加TOP密码字段
     if (str.key.startsWith("TOTP", ignoreCase = true)
-      || str.key.startsWith("OTP", ignoreCase = true)
+      // || str.key.startsWith("OTP", ignoreCase = true)
       || str.key.startsWith("HmacOtp", ignoreCase = true)
       || str.key.startsWith("TimeOtp", ignoreCase = true)
     ) {
@@ -175,6 +175,10 @@ fun PwEntryV4.hasTOTP(): Boolean {
     }
   }
   return false
+}
+
+fun PwEntryV4.hasTOTP(): Boolean {
+  return strings.hasTOTP()
 }
 
 fun PwEntryV4.isCollectioned(): Boolean {

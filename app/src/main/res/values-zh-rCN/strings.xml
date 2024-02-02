@@ -447,4 +447,5 @@
     <string name="error_file">文件异常，请删除：&lt;font color=#FF0000&gt;%s&lt;/font&gt;</string>
     <string name="not_souper_otp">不支持的TOTP</string>
     <string name="modify_totp">修改令牌</string>
+    <string name="error_totp">错误的totp</string>
 </resources>

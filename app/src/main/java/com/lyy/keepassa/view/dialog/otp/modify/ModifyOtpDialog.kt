@@ -7,6 +7,8 @@ import androidx.core.widget.doAfterTextChanged
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.ToastUtils
 import com.google.android.material.slider.Slider
 import com.keepassdroid.database.PwEntryV4
 import com.lyy.keepassa.R
@@ -41,7 +43,7 @@ class ModifyOtpDialog : BaseDialog<DialogOtpModifyBinding>() {
   @Autowired(name = "uid")
   lateinit var uid: UUID
   lateinit var pwEntryV4: PwEntryV4
-  private lateinit var handler: IOtpModifyHandler
+  private var handler: IOtpModifyHandler? = null
 
   override fun initData() {
     super.initData()
@@ -90,10 +92,11 @@ class ModifyOtpDialog : BaseDialog<DialogOtpModifyBinding>() {
       }
 
       else -> {
-        throw IllegalAccessException("not support otp")
+        ToastUtils.showLong(ResUtil.getString(R.string.error_totp))
+        null
       }
     }
-    handler.initView(this)
+    handler?.initView(this)
   }
 
   private fun handleSp() {
@@ -145,7 +148,7 @@ class ModifyOtpDialog : BaseDialog<DialogOtpModifyBinding>() {
 
   private fun handleBtn() {
     binding.contentLayout.enter.doClick {
-      handler.save(this, secret, arithmetic, len, time, otpType == STEAM)
+      handler?.save(this, secret, arithmetic, len, time, otpType == STEAM)
     }
 
     binding.contentLayout.cancel.doClick {

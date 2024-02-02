@@ -16,23 +16,21 @@ import android.view.LayoutInflater
 import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isGone
-import androidx.lifecycle.lifecycleScope
 import com.arialyy.frame.router.Routerfit
-import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.AbsViewBindingAdapter
 import com.lyy.keepassa.databinding.LayoutEntryCreateStrCardBinding
 import com.lyy.keepassa.databinding.LayoutEntryStrBinding
+import com.lyy.keepassa.entity.CommonState.DELETE
+import com.lyy.keepassa.event.AttrStrEvent
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.util.init
 import com.lyy.keepassa.view.create.CreateCustomStrDialog
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 /**
  * @Author laoyuyu
@@ -43,7 +41,7 @@ class CreateStrCard(context: Context, attributeSet: AttributeSet) :
   ConstraintLayout(context, attributeSet) {
   private val binding =
     LayoutEntryCreateStrCardBinding.inflate(LayoutInflater.from(context), this, true)
-  val strList = mutableListOf<Pair<String, ProtectedString>>()
+  private val strList = mutableListOf<Pair<String, ProtectedString>>()
 
   companion object {
     val ADD_MORE_DATA = Pair("addMore", ProtectedString(false, "addMore"))
@@ -51,19 +49,16 @@ class CreateStrCard(context: Context, attributeSet: AttributeSet) :
 
   private val helper = CardListHelper(binding)
 
-  init {
-    listenerModifyStr()
-  }
-
   private val adapter = StrAdapter()
 
-  fun bindDate(entry: PwEntryV4) {
-    handleList(entry)
+  fun bindDate(strMap: Map<String, ProtectedString>) {
+    handleList(strMap)
   }
 
-  private fun handleList(entry: PwEntryV4) {
+  private fun handleList(strMap: Map<String, ProtectedString>) {
     strList.clear()
-    KdbUtil.filterCustomStr(entry).entries.forEach {
+    visibility = VISIBLE
+    KdbUtil.filterCustomStr(strMap).entries.forEach {
       strList.add(Pair(it.key, it.value))
     }
     strList.add(ADD_MORE_DATA)
@@ -79,10 +74,15 @@ class CreateStrCard(context: Context, attributeSet: AttributeSet) :
       PopupMenu(context, v, Gravity.END).init(R.menu.entry_modify_str_summary) {
         when (it.itemId) {
           R.id.remove_str -> {
-            strList.remove(data)
-            adapter.notifyItemRemoved(position)
-            entry.binaries.remove(data.first)
-            KpaUtil.kdbHandlerService.saveDbByBackground()
+            KpaUtil.scope.launch {
+              CreateCustomStrDialog.CustomStrFlow.emit(
+                AttrStrEvent(
+                  DELETE,
+                  data.first,
+                  data.second
+                )
+              )
+            }
           }
 
           R.id.modify_text -> {
@@ -95,30 +95,16 @@ class CreateStrCard(context: Context, attributeSet: AttributeSet) :
     helper.handleList()
   }
 
-  private fun listenerModifyStr() {
-    if (isInEditMode) {
-      return
-    }
-    (context as CreateEntryActivity).lifecycleScope.launch {
-      CreateCustomStrDialog.createCustomStrFlow.collectLatest { str ->
-        if (str == null) {
-          Timber.d("attr is null")
-          return@collectLatest
-        }
-        if (visibility == GONE) {
-          visibility = VISIBLE
-        }
-        if (str.isEdit) {
-          strList[str.position] = Pair(str.key, str.str)
-          return@collectLatest
-        }
-        if (strList.isNotEmpty()) {
-          strList.removeLast()
-        }
-        strList.add(Pair(str.key, str.str))
-        strList.add(ADD_MORE_DATA)
-        adapter.notifyDataSetChanged()
+  fun removeItem(key: String) {
+    strList.find { it.first == key }?.let {
+      val pos = strList.indexOf(it)
+      if (pos >= 0) {
+        strList.removeAt(pos)
+        adapter.notifyItemRemoved(pos)
       }
+    }
+    if (strList.size == 1) {
+      visibility = GONE
     }
   }
 

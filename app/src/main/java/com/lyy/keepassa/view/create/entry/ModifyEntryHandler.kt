@@ -36,6 +36,7 @@ internal class ModifyEntryHandler(val context: CreateEntryActivity) : ICreateHan
   override fun bindData() {
     val entryId = context.intent.getSerializableExtra(CreateEntryActivity.KEY_ENTRY) as UUID
     context.module.pwEntry = BaseApp.KDB!!.pm.entries[entryId] as PwEntryV4
+    context.module.initCache()
     val entry = context.module.pwEntry
     val binding = context.binding
 
@@ -43,7 +44,7 @@ internal class ModifyEntryHandler(val context: CreateEntryActivity) : ICreateHan
       val name = entry.getRealUserName()
       val pass = entry.getRealPass()
       val title = entry.getRealTitle()
-      withContext(Dispatchers.Main){
+      withContext(Dispatchers.Main) {
         binding.title.setText(title)
         binding.edUser.setText(name)
         binding.edPassword.setText(pass)
@@ -62,12 +63,14 @@ internal class ModifyEntryHandler(val context: CreateEntryActivity) : ICreateHan
     handleIcon(context, entry)
     binding.cardStr.apply {
       visibility = if (entry.strings.isNotEmpty()) View.VISIBLE else View.GONE
-      bindDate(entry)
     }
+    binding.cardStr.bindDate(context.module.strCacheMap)
+
     binding.cardFile.apply {
       visibility = if (entry.binaries.isNotEmpty()) View.VISIBLE else View.GONE
-      bindData(entry)
+
     }
+    binding.cardFile.bindData(context.module.fileCacheMap)
     binding.tlTag.apply {
       visibility = if (entry.tags.isNotEmpty()) View.VISIBLE else View.GONE
       binding.edTag.setText(entry.tags)

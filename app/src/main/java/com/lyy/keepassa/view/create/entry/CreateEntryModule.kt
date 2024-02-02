@@ -31,8 +31,10 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.AutoFillParam
+import com.lyy.keepassa.entity.CommonState.CREATE
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.entity.TagBean
+import com.lyy.keepassa.event.AttrFileEvent
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
@@ -55,7 +57,7 @@ import java.util.UUID
  */
 class CreateEntryModule : BaseModule() {
   companion object {
-    val attrFlow = MutableSharedFlow<Pair<String, ProtectedBinary>?>(0)
+    val attrFlow = MutableSharedFlow<AttrFileEvent>(0)
     val userNameFlow = MutableStateFlow<List<String>?>(null)
     private val userNameCache = arrayListOf<String>()
   }
@@ -67,6 +69,8 @@ class CreateEntryModule : BaseModule() {
   var customIcon: PwIconCustom? = null
   var icon = PwIconStandard(0)
   var autoFillParam: AutoFillParam? = null
+  var strCacheMap = hashMapOf<String, ProtectedString>()
+  var fileCacheMap = hashMapOf<String, ProtectedBinary>()
   lateinit var pwEntry: PwEntryV4
 
   fun updateEntryGroupIdAndSave(context: CreateEntryActivity, groupId: PwGroupId) {
@@ -77,6 +81,17 @@ class CreateEntryModule : BaseModule() {
         context.finishAfterTransition()
       }
     }
+  }
+
+  fun initCache() {
+    pwEntry.strings.forEach {
+      strCacheMap[it.key] = it.value
+    }
+    pwEntry.binaries.forEach {
+      fileCacheMap[it.key] = it.value
+    }
+    customIcon = pwEntry.customIcon ?: PwIconCustom.ZERO
+    icon = pwEntry.icon
   }
 
   fun cacheTag(tagList: List<TagBean>) {
@@ -120,7 +135,7 @@ class CreateEntryModule : BaseModule() {
     )
     (BaseApp.KDB.pm as PwDatabaseV4).binPool.poolAdd(pbf)
     context.lifecycleScope.launch {
-      attrFlow.emit(Pair(fileName, pbf))
+      attrFlow.emit(AttrFileEvent(CREATE, fileName, pbf))
     }
   }
 

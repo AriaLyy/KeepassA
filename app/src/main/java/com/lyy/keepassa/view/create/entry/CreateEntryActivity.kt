@@ -33,6 +33,7 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.databinding.ActivityEntryEditNewBinding
 import com.lyy.keepassa.entity.AutoFillParam
+import com.lyy.keepassa.entity.CommonState.DELETE
 import com.lyy.keepassa.entity.GoogleOtpBean
 import com.lyy.keepassa.entity.KeepassBean
 import com.lyy.keepassa.entity.KeepassXcBean
@@ -49,6 +50,8 @@ import com.lyy.keepassa.util.hasTOTP
 import com.lyy.keepassa.util.loadImg
 import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.util.totp.OtpEnum
+import com.lyy.keepassa.util.totp.OtpUtil
+import com.lyy.keepassa.view.create.CreateCustomStrDialog
 import com.lyy.keepassa.view.create.GeneratePassActivity
 import com.lyy.keepassa.view.create.entry.CreateEnum.CREATE
 import com.lyy.keepassa.view.create.entry.CreateEnum.MODIFY
@@ -189,9 +192,60 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
     handleTimeLayout()
     handleTagLayout()
     handleTotpLayout()
+    handleStr()
+    handleAttrFile()
+  }
+
+  private fun handleAttrFile() {
+    lifecycleScope.launch {
+      CreateEntryModule.attrFlow.collectLatest { bean ->
+
+        if (bean.state != DELETE) {
+          module.fileCacheMap[bean.key] = bean.file
+          binding.cardFile.isVisible = true
+          binding.cardFile.bindData(module.fileCacheMap)
+          return@collectLatest
+        }
+
+        module.fileCacheMap.remove(bean.key)
+
+        binding.cardFile.removeItem(bean.key)
+      }
+    }
+  }
+
+  private fun handleStr() {
+    lifecycleScope.launch {
+      CreateCustomStrDialog.CustomStrFlow.collectLatest { bean ->
+        if (bean == null) {
+          Timber.d("attr is null")
+          return@collectLatest
+        }
+        if (bean.state != DELETE) {
+          module.strCacheMap[bean.key] = bean.str
+          binding.cardStr.isVisible = true
+          binding.cardStr.bindDate(module.strCacheMap)
+          return@collectLatest
+        }
+
+
+        module.strCacheMap.remove(bean.key)
+
+        if (!module.strCacheMap.hasTOTP()) {
+          binding.groupOtp.isVisible = false
+        }
+
+        binding.cardStr.removeItem(bean.key)
+      }
+    }
   }
 
   private fun handleTotpLayout() {
+    fun startOtp() {
+      binding.groupOtp.isVisible = true
+      KdbUtil.startAutoGetOtp(module.pwEntry, binding.pbRound, binding.edOtp)
+    }
+
     lifecycleScope.launch {
       CreateOtpModule.otpFlow.collectLatest {
         val map = when (it.first) {
@@ -202,29 +256,24 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
         }
         map?.let { strs ->
           strs.forEach { kv ->
-            module.pwEntry.strings[kv.key] = kv.value
+            module.strCacheMap[kv.key] = kv.value
           }
           startOtp()
-          binding.cardStr.bindDate(module.pwEntry)
+          binding.cardStr.bindDate(module.strCacheMap)
         }
       }
     }
-    if (module.pwEntry.hasTOTP()) {
+    if (module.strCacheMap.hasTOTP()) {
       startOtp()
     }
     binding.edOtp.doClick {
-      if (module.pwEntry.hasTOTP()) {
+      if (module.strCacheMap.hasTOTP()) {
         Routerfit.create(DialogRouter::class.java).showModifyOtpDialog(module.pwEntry.uuid)
         return@doClick
       }
       Routerfit.create(DialogRouter::class.java)
         .showCreateOtpDialog(module.pwEntry.title, module.pwEntry.username)
     }
-  }
-
-  private fun startOtp() {
-    binding.groupOtp.isVisible = true
-    KdbUtil.startAutoGetOtp(module.pwEntry, binding.pbRound, binding.edOtp)
   }
 
   private fun handlerUserLayout() {
