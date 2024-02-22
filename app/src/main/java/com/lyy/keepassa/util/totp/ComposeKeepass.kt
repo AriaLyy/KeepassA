@@ -2,14 +2,13 @@ package com.lyy.keepassa.util.totp
 
 import com.blankj.utilcode.util.ConvertUtils
 import com.keepassdroid.database.PwEntryV4
-import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.entity.HmacOtpBean
-import com.lyy.keepassa.entity.KeepassBean
 import com.lyy.keepassa.entity.TimeOtp2Bean
 import com.lyy.keepassa.util.getKeepassBean
-import com.lyy.keepassa.util.totp.TokenCalculator.HashAlgorithm
 
 object ComposeKeepass : IOtpCompose {
+  const val HmacOtp = "HmacOtp"
+  const val TimeOtp = "TimeOtp"
 
   const val TimeOtp_Secret = "TimeOtp-Secret"
   const val TimeOtp_Length = "TimeOtp-Length"
@@ -59,7 +58,7 @@ object ComposeKeepass : IOtpCompose {
     }
 
     return Pair(
-      hmacBean.len,
+      TokenCalculator.TOTP_DEFAULT_PERIOD,
       TokenCalculator.HOTP(secret, hmacBean.counter.toLong(), hmacBean.len, hmacBean.algorithm)
     )
   }
@@ -89,7 +88,7 @@ object ComposeKeepass : IOtpCompose {
       otpBean.digits,
       otpBean.algorithm
     )
-    return Pair(otpBean.digits, token)
+    return Pair(otpBean.period, token)
   }
 
   fun getSecretType(secretType: SecretHexType): String {
@@ -100,6 +99,4 @@ object ComposeKeepass : IOtpCompose {
       SecretHexType.BASE_64 -> TimeOtp_Secret_Base64
     }
   }
-
-
 }

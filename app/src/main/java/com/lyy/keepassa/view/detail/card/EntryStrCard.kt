@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.text.InputType
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.TextView
@@ -16,11 +17,14 @@ import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.AbsViewBindingAdapter
+import com.lyy.keepassa.base.KeyConstance
 import com.lyy.keepassa.databinding.LayoutEntryCardListBinding
 import com.lyy.keepassa.databinding.LayoutEntryStrBinding
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.doOnItemClickListener
+import com.lyy.keepassa.util.hasTOTP
+import com.lyy.keepassa.util.totp.OtpUtil
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
 import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
 import timber.log.Timber
@@ -37,11 +41,27 @@ class EntryStrCard(context: Context, attributeSet: AttributeSet) :
 
   fun bindData(entry: PwEntryV4) {
     binding.tvCardTitle.text = ResUtil.getString(R.string.hint_attr)
-    val data = KdbUtil.filterCustomStr(entry).entries.toMutableList()
+    val data =  KdbUtil.filterCustomStr(entry).entries.toMutableList()
     if (data.isEmpty()) {
       visibility = GONE
       return
     }
+
+    if (entry.hasTOTP()){
+      val totpPass = OtpUtil.getOtpPass(entry)
+      if (!TextUtils.isEmpty(totpPass.second)) {
+        val totpPassStr = ProtectedString(true, totpPass.second)
+        totpPassStr.isOtpPass = true
+        data.add(object : Entry<String, ProtectedString>{
+          override val key: String
+            get() = KeyConstance.TOTP
+          override val value: ProtectedString
+            get() = totpPassStr
+        })
+      }
+    }
+    data.sortBy { it.key  }
+
     visibility = VISIBLE
     handleList(entry, data)
   }

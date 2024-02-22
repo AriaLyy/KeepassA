@@ -170,46 +170,6 @@ class EntryDetailModule : BaseModule() {
   }
 
   /**
-   * 展示属性字段的菜单
-   */
-  fun showAttrStrPopMenu(
-    context: FragmentActivity,
-    v: View
-  ) {
-    if (KeepassAUtil.instance.isFastClick()) {
-      return
-    }
-    val value = v.findViewById<TextView>(R.id.value)
-    val key = (v as AttrStrItemView).titleStr
-    val str = v.valueInfo
-    val pop = EntryDetailStrPopMenu(context, v, str)
-    // totp 密码，seed都需要显示密码
-    if (key == "TOTP"
-      || key.equals("otp", ignoreCase = true)
-      || key.equals("TOTP Seed", ignoreCase = true)
-      || str.isProtected
-    ) {
-      pop.setOnShowPassCallback(object : OnShowPassCallback {
-        override fun showPass(showPass: Boolean) {
-          if (showPass) {
-            value.inputType =
-              (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)
-            return
-          }
-          value.inputType =
-            (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
-        }
-      })
-
-      if (value.inputType == (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)) {
-        pop.setHidePass()
-      }
-    }
-
-    pop.show()
-  }
-
-  /**
    * 保存附件到sd卡
    * @param saveUri 保存路径
    * @param source 需要保存的文件

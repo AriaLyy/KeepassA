@@ -10,6 +10,7 @@ package com.lyy.keepassa.router
 import androidx.core.app.ActivityOptionsCompat
 import com.arialyy.frame.router.RouterArgName
 import com.arialyy.frame.router.RouterPath
+import com.blankj.utilcode.util.ActivityUtils
 import com.keepassdroid.database.PwGroupId
 import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.view.create.entry.CreateEntryActivity
@@ -88,7 +89,7 @@ interface ActivityRouter {
   @RouterPath(path = "/entry/create")
   fun toEditEntryActivity(
     @RouterArgName(name = CreateEntryActivity.KEY_ENTRY) uuid: UUID,
-    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null,
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = ActivityOptionsCompat.makeSceneTransitionAnimation(ActivityUtils.getTopActivity()),
     @RouterArgName(name = CreateEntryActivity.KEY_TYPE) type: CreateEnum = CreateEnum.MODIFY
   )
 

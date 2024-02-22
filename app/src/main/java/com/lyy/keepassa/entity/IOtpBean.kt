@@ -8,6 +8,7 @@
 package com.lyy.keepassa.entity
 
 import android.os.Parcelable
+import androidx.annotation.VisibleForTesting
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.util.totp.ComposeKeeTrayTotp
 import com.lyy.keepassa.util.totp.ComposeKeepass
@@ -144,7 +145,9 @@ data class TimeOtp2Bean(
    */
   var period: Int,
 
-  ) : Parcelable
+  ) : Parcelable{
+
+  }
 
 fun KeepassBean.toOtpStringMap(): Map<String, ProtectedString> {
   val map = linkedMapOf<String, ProtectedString>()

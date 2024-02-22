@@ -167,9 +167,9 @@ fun Map<String, ProtectedString>.hasTOTP(): Boolean {
 
     // 增加TOP密码字段
     if (str.key.startsWith("TOTP", ignoreCase = true)
-      // || str.key.startsWith("OTP", ignoreCase = true)
-      || str.key.startsWith("HmacOtp", ignoreCase = true)
-      || str.key.startsWith("TimeOtp", ignoreCase = true)
+      || str.key.startsWith("OTP", ignoreCase = true)
+      || str.key.startsWith(ComposeKeepass.HmacOtp, ignoreCase = true)
+      || str.key.startsWith(ComposeKeepass.TimeOtp, ignoreCase = true)
     ) {
       return true
     }
@@ -389,7 +389,25 @@ fun PwEntryV4.getKeepassBean(): KeepassBean {
   var otpBean: TimeOtp2Bean? = null
   var hmacBean: HmacOtpBean? = null
 
-  if (strings[HmacOtp_Secret] != null) {
+  fun isHmacOtp(): Boolean {
+    strings.forEach {
+      if (it.toString().startsWith(ComposeKeepass.HmacOtp)) {
+        return true
+      }
+    }
+    return false
+  }
+
+  fun isTotp(): Boolean {
+    strings.forEach {
+      if (it.toString().startsWith(ComposeKeepass.TimeOtp)) {
+        return true
+      }
+    }
+    return false
+  }
+
+  if (isHmacOtp()) {
     val secretType: SecretHexType
     val secret = when {
       strings[ComposeKeepass.HmacOtp_Secret_Base32] != null -> {
@@ -423,7 +441,7 @@ fun PwEntryV4.getKeepassBean(): KeepassBean {
     )
   }
 
-  if (strings[TimeOtp_Secret] != null) {
+  if (isTotp()) {
     val secretType: SecretHexType
     val secret = when {
       strings[ComposeKeepass.TimeOtp_Secret_Base32] != null -> {

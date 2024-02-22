@@ -14,6 +14,7 @@ import com.blankj.utilcode.util.ToastUtils
 import com.keepassdroid.database.PwEntryV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.base.KeyConstance
 import com.lyy.keepassa.util.KdbUtil
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
@@ -52,7 +53,7 @@ interface ICreateHandler {
 
     if (binding.cardStr.isVisible) {
       pwEntryV4.strings.clear()
-      context.module.strCacheMap.forEach {
+      context.module.strCacheMap.filter { it.key != KeyConstance.TOTP }.forEach {
         pwEntryV4.strings[it.key] = it.value
       }
     }

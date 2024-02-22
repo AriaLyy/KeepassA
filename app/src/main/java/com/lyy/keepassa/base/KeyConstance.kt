@@ -10,4 +10,5 @@ package com.lyy.keepassa.base
 object KeyConstance {
   const val KEY_DONT_SHOW_TIP = "KEY_DONT_SHOW_TIP"
   const val KEY_LAST_TIP_START_TIME = "KEY_LAST_TIP_START_TIME"
+  const val TOTP = "TOTP"
 }

@@ -3,7 +3,7 @@
 buildscript {
   ext.kotlin_version = '1.9.0'
   dependencies {
-    classpath files(libs.class.superclass.protectionDomain.codeSource.location)
+//    classpath files(libs.class.superclass.protectionDomain.codeSource.location)
 //    classpath libs.ali.arouter.register
 //    classpath libs.ali.third.arouter.register
     classpath 'com.alibaba:arouter-register-asm7:1.0.2'

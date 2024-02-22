@@ -23,8 +23,8 @@
   </style>
 
   <style name="windowAnimatorDemo">
-    <item name="android:activityOpenEnterAnimation">@anim/translate_left_in</item>
-    <item name="android:activityOpenExitAnimation">@anim/translate_right_out</item>
+    <item name="android:activityOpenEnterAnimation">@anim/translate_right_in</item>
+    <item name="android:activityOpenExitAnimation">@anim/translate_left_out</item>
     <item name="android:activityCloseEnterAnimation">@anim/translate_left_in</item>
     <item name="android:activityCloseExitAnimation">@anim/translate_right_out</item>
   </style>

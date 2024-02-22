@@ -66,6 +66,7 @@ test-runner = '1.5.2'
 test-junut-ext = '1.1.5'
 test-espresso = '3.5.1'
 test-rules = '1.5.0'
+test-mockk = '1.13.9'
 
 tencent-wcdb = "1.0.8"
 tencent-vasdolly = "3.0.3"
@@ -170,6 +171,8 @@ test-android-runner = { module = "androidx.test:runner", version.ref = "test-run
 test-android-junit = { module = "androidx.test.ext:junit", version.ref = "test-junut-ext" }
 test-android-rules = { module = "androidx.test:rules", version.ref = "test-rules" }
 test-espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "test-espresso" }
+test-mockk = { module = "io.mockk:mockk", version.ref = "test-mockk" }
+test-mockk-android = { module = "io.mockk:mockk-android", version.ref = "test-mockk" }
 
 
 squareup-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "squareup-retrofit" }
@@ -188,7 +191,7 @@ groovy = ["groovy-core", "groovy-json", "groovy-nio"]
 jetpack-compose = ["jetpack-compose-ui-tooling", "jetpack-compose-ui-tooling-preview", "jetpack-compose-ui", "jetpack-compose-runtime", "jetpack-compose-material3"]
 jetpack-ui = ["jetpack-appcompat", "jetpack-material2", "jetpack-preference-ktx", "jetpack-viewpager2", "jetpack-cardview", "jetpack-recyclerview", "jetpack-constraintlayout", "jetpack-swiperefreshlayout"]
 jetpack-lifecycle = ["jetpack-lifecycle-viewmodel-ktx", "jetpack-lifecycle-livedata-ktx", "jetpack-lifecycle-common-java8"]
-android-test = ["test-android-runner", "test-android-junit", "test-android-rules", "test-espresso"]
+android-test = ["test-android-runner", "test-android-junit", "test-android-rules", "test-espresso", "test-mockk-android"]
 android-kotlin = ["kotlin-stdlib-jdk8", "kotlin-reflect", "kotlin-core-ktx", "kotlin-coroutines-android"]
 
 third-eventbus = ["third-eventbus", "third-eventbus-compiler"]

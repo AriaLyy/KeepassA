@@ -109,17 +109,10 @@ android {
     dev {
       dimension "app"
     }
-    //      fdroid{
-    //        dimension "app"
-    //      }
   }
 
-  configurations{
-//    implementation.exclude group: 'com.intellij' , module:'annotations'
-  }
 
   ndkVersion '21.4.7075529'
-
 }
 
 kapt {
@@ -221,7 +214,7 @@ dependencies {
   implementation 'me.laoyuyu.keepassa:KeepassLib:0.4.1'
   //  implementation project(path: ':KpaLib')
   implementation 'me.laoyuyu.keepassa:KPAFrame:0.4.1'
-  implementation 'me.laoyuyu.keepassa:UIWidget:0.4.1'
+  implementation 'me.laoyuyu.keepassa:UIWidget:0.4.2'
 
 
   // kotlin
@@ -281,5 +274,9 @@ dependencies {
   implementation 'com.google.firebase:firebase-analytics-ktx'
 }
 
-// 不要使用，1.2.21打包出来的apk，消息对话框布局错乱
-//apply from: 'AndResGuard.gradle'
+
+gradle.startParameter.taskNames.forEach {
+  if (it.contains("Test")){
+    apply from: "${rootDir.path}/gradle/testConfig.gradle"
+  }
+}

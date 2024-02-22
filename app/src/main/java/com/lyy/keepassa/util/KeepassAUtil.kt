@@ -850,13 +850,6 @@ fun PwEntry.isRef(): Boolean {
 }
 
 /**
- * 是否是Otp字段
- */
-fun String.isOtp(): Boolean {
-  return this.equals("totp", ignoreCase = true) || this.equals("otp", ignoreCase = true)
-}
-
-/**
  * uri 授权
  */
 fun Uri.takePermission() {
