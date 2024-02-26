@@ -27,6 +27,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceGroup.PreferencePositionCallback
+import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreference
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.arouter.facade.annotation.Autowired
@@ -34,6 +35,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.core.AbsFrame
 import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.LanguageUtils
 import com.blankj.utilcode.util.ReflectUtils
 import com.blankj.utilcode.util.RomUtils
 import com.lyy.keepassa.R
@@ -62,6 +64,23 @@ class AppSettingFragment : PreferenceFragmentCompat() {
   private lateinit var passTypeList: ListPreference
   private var passLen = 3
   private lateinit var autoFill: SwitchPreference
+
+  companion object {
+    private val LANGUAGE_MAP = hashMapOf<Int, Locale>().apply {
+      put(1, Locale.ENGLISH)
+      put(2, Locale.SIMPLIFIED_CHINESE)
+      put(3, Locale.TRADITIONAL_CHINESE)
+      put(4, Locale.CANADA_FRENCH)
+      put(5, Locale("nb", "rNO"))
+      put(6, Locale("ru", "rRU"))
+      put(7, Locale.FRENCH)
+      put(8, Locale.GERMANY)
+      put(9, Locale("pl"))
+      put(10, Locale("tr"))
+      put(11, Locale("uk", "rUA"))
+      put(12, Locale("es")) // 西班牙语)
+    }
+  }
 
   @Autowired(name = "scrollKey")
   @JvmField
@@ -347,47 +366,17 @@ class AppSettingFragment : PreferenceFragmentCompat() {
    */
   private fun setLanguage() {
     val langPre = findPreference<ListPreference>(getString(R.string.set_key_language))
-    langPre!!.setOnPreferenceChangeListener { _, newValue ->
-      var lang = Locale.ENGLISH
-      when (newValue.toString()
-        .toInt()) {
-        1 -> {
-          lang = Locale.ENGLISH
-        }
-        2 -> {
-          lang = Locale.SIMPLIFIED_CHINESE
-        }
-        3 -> {
-          lang = Locale.TRADITIONAL_CHINESE
-        }
-        4 -> {
-          lang = Locale.CANADA_FRENCH
-        }
-        5 -> {
-          lang = Locale("nb", "rNO")
-        }
-        6 -> {
-          lang = Locale("ru", "rRU")
-        }
-        7 -> {
-          lang = Locale.FRENCH
-        }
-        8 -> {
-          lang = Locale.GERMANY
-        }
-        9 -> {
-          lang = Locale("pl")
-        }
-        10 -> {
-          lang = Locale("tr")
-        }
-        11 -> {
-          lang = Locale("uk", "rUA")
-        }
-        12 -> {
-          lang = Locale("es") // 西班牙语
-        }
-      }
+    val spm = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
+    if (spm.getString(getString(R.string.set_key_language), null) == null
+    ) {
+      val sysLan = LanguageUtils.getSystemLanguage()
+      val temp = LANGUAGE_MAP.entries.find { it.value.language == sysLan.language }
+      val index = LANGUAGE_MAP.entries.indexOf(temp)
+      langPre?.setValueIndex(index)
+    }
+    langPre?.setOnPreferenceChangeListener { _, newValue ->
+      val lang = LANGUAGE_MAP[newValue.toString()
+        .toInt()] ?: Locale.ENGLISH
       BaseApp.currentLang = lang
       LanguageUtil.saveLanguage(requireContext(), lang)
       for (ac in AbsFrame.getInstance().activityStack) {
@@ -416,5 +405,4 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     // 截取短密码
     subShortPass()
   }
-
 }
