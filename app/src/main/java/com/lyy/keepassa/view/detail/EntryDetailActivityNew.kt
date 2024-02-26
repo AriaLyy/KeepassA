@@ -10,14 +10,17 @@ package com.lyy.keepassa.view.detail
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
-import androidx.core.app.ActivityOptionsCompat
+import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.ToastUtils
 import com.keepassdroid.database.PwEntryV4
+import com.keepassdroid.database.security.ProtectedBinary
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
@@ -32,7 +35,16 @@ import com.lyy.keepassa.util.copyUserName
 import com.lyy.keepassa.util.doClick
 import com.lyy.keepassa.util.hasTOTP
 import com.lyy.keepassa.util.isCollectioned
+import com.lyy.keepassa.util.takePermission
+import com.lyy.keepassa.view.detail.card.EntryFileCard
 import com.lyy.keepassa.widget.toPx
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.nio.ByteBuffer
+import java.nio.channels.Channels
+import java.util.Locale
 import java.util.UUID
 import kotlin.math.abs
 
@@ -50,6 +62,38 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
   private lateinit var module: EntryDetailModule
   private lateinit var pwEntry: PwEntryV4
   private var isInRecycleBin = false
+  private var fileSaveCache: ProtectedBinary? = null
+
+  private val saveFile = registerForActivityResult(CreateDocument("*/*")) {
+    if (it == null) {
+      Timber.e("uri为空")
+      return@registerForActivityResult
+    }
+    if (fileSaveCache == null) {
+      Timber.e("文件为空")
+      return@registerForActivityResult
+    }
+    it.takePermission()
+    lifecycleScope.launch(Dispatchers.IO) {
+      contentResolver.openOutputStream(it).use { out ->
+        val iChannel = Channels.newChannel(fileSaveCache!!.data)
+        val oChannel = Channels.newChannel(out)
+        val buffer = ByteBuffer.allocateDirect(16 * 1024)
+        while (iChannel.read(buffer) != -1) {
+          // 切换为读状态
+          buffer.flip()
+          // 保证缓冲区的数据全部写入
+          while (buffer.hasRemaining()) {
+            oChannel.write(buffer)
+          }
+          buffer.clear()
+        }
+        iChannel.close()
+        oChannel.close()
+        ToastUtils.showLong(ResUtil.getString(R.string.file_save_success))
+      }
+    }
+  }
 
   @Autowired(name = KEY_ENTRY_ID)
   lateinit var uuid: UUID
@@ -68,6 +112,16 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
       isInRecycleBin = true
     }
     setTopBar()
+    listenerSaveFile()
+  }
+
+  private fun listenerSaveFile() {
+    lifecycleScope.launch {
+      EntryFileCard.SAVE_FILE_FLOW.collectLatest {
+        saveFile.launch(it.first)
+        fileSaveCache = it.second
+      }
+    }
   }
 
   override fun onStart() {
@@ -156,7 +210,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     }
 
     binding.tvChar.visibility = View.VISIBLE
-    binding.tvChar.text = pwEntry.title.substring(0, 1)
+    binding.tvChar.text = pwEntry.title.substring(0, 1).toUpperCase(Locale.getDefault())
 
     binding.ivIcon.setBackgroundColor(color)
   }

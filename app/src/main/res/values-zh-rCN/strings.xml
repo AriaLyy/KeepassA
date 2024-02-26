@@ -40,7 +40,7 @@
         <item>文件附件</item>
         <item>TOTP</item>
         <item>标签</item>
-        <item>覆盖链接</item>
+        <item>链接</item>
         <item>失效时间</item>
     </string-array>
 
@@ -448,4 +448,5 @@
     <string name="not_souper_otp">不支持的TOTP</string>
     <string name="modify_totp">修改令牌</string>
     <string name="error_totp">错误的totp</string>
+    <string name="file_save_success">附件保存成功</string>
 </resources>

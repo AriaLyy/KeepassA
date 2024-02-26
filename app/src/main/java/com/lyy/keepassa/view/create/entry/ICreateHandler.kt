@@ -26,6 +26,16 @@ import org.joda.time.format.DateTimeFormat
  **/
 interface ICreateHandler {
 
+  companion object {
+    private val PROTECTED_KEY = arrayListOf<String>().apply {
+      add(PwEntryV4.STR_TITLE)
+      add(PwEntryV4.STR_USERNAME)
+      add(PwEntryV4.STR_PASSWORD)
+      add(PwEntryV4.STR_URL)
+      add(PwEntryV4.STR_NOTES)
+    }
+  }
+
   fun bindData()
 
   fun getTitle(): String
@@ -52,10 +62,21 @@ interface ICreateHandler {
     }
 
     if (binding.cardStr.isVisible) {
-      pwEntryV4.strings.clear()
-      context.module.strCacheMap.filter { it.key != KeyConstance.TOTP }.forEach {
-        pwEntryV4.strings[it.key] = it.value
+      val temp = arrayListOf<String>()
+      pwEntryV4.strings.forEach {
+        if (it.key in PROTECTED_KEY) {
+          return@forEach
+        }
+        temp.add(it.key)
       }
+      temp.forEach {
+        pwEntryV4.strings.remove(it)
+      }
+
+      context.module.strCacheMap.filter { it.key != KeyConstance.TOTP && it.key !in PROTECTED_KEY }
+        .forEach {
+          pwEntryV4.strings[it.key] = it.value
+        }
     }
 
     if (binding.cardFile.isVisible && checkEntry(pwEntryV4)) {

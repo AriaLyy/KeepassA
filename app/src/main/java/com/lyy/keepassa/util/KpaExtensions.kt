@@ -10,6 +10,7 @@ package com.lyy.keepassa.util
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.net.Uri
+import android.text.TextUtils
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.MotionEvent
@@ -147,7 +148,7 @@ fun BaseApp.isCanOpenQuickLock(): Boolean {
 
 fun PwEntryV4.hasNote(): Boolean {
   for (str in this.strings) {
-    if (str.key.equals(PwEntryV4.STR_NOTES, true)) {
+    if (str.key.equals(PwEntryV4.STR_NOTES, true) && !TextUtils.isEmpty(str.value.toString())) {
       return true
     }
   }
@@ -510,10 +511,17 @@ fun PwEntryV4.otpIsKeeOtp2(): Boolean {
 }
 
 fun PwEntry.getRealTitle(): String {
+  if (BaseApp.KDB?.pm == null) {
+    return ""
+  }
   return if (isRef()) getTitle(true, BaseApp.KDB!!.pm) else title
 }
 
 fun PwEntry.getRealUserName(): String {
+  if (BaseApp.KDB?.pm == null) {
+    return ""
+  }
+
   return if (isRef())
     getUsername(true, BaseApp.KDB!!.pm)
   else
@@ -521,6 +529,10 @@ fun PwEntry.getRealUserName(): String {
 }
 
 fun PwEntry.getRealPass(): String {
+  if (BaseApp.KDB?.pm == null) {
+    return ""
+  }
+
   return if (isRef())
     getPassword(true, BaseApp.KDB!!.pm)
   else

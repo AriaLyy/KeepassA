@@ -194,7 +194,7 @@
               style="?attr/materialCardViewElevatedStyle"
               />
 
-          <com.lyy.keepassa.view.detail.card.EntryAttachmentCard
+          <com.lyy.keepassa.view.detail.card.EntryFileCard
               android:id="@+id/cardAtta"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"

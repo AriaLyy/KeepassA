@@ -18,7 +18,7 @@
         <item>Attachment</item>
         <item>TOTP</item>
         <item>Tag</item>
-        <item>Cover link</item>
+        <item>URL</item>
         <item>Expiration date</item>
     </string-array>
     <string-array name="create_normal_group">
@@ -429,4 +429,5 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="not_souper_otp">Unsupported totp</string>
     <string name="modify_totp">Modify OTP token</string>
     <string name="error_totp">Error OTP</string>
+    <string name="file_save_success">Attachment saved successfully</string>
 </resources>

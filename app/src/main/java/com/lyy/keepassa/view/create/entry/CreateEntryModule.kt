@@ -164,19 +164,6 @@ class CreateEntryModule : BaseModule() {
   }
 
   /**
-   * 是否已经存在totp
-   * @return false 不存在
-   */
-  fun hasTotp(): Boolean {
-    pwEntry.strings.forEach {
-      if (it.value.isOtpPass) {
-        return true
-      }
-    }
-    return false
-  }
-
-  /**
    * 自动填充进行保存数据时，搜索条目信息，如果条目不存在，新建条目
    */
   fun getEntryFromAutoFillSave(

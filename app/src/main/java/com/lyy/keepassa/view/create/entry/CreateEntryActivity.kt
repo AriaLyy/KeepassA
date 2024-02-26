@@ -50,7 +50,6 @@ import com.lyy.keepassa.util.hasTOTP
 import com.lyy.keepassa.util.loadImg
 import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.util.totp.OtpEnum
-import com.lyy.keepassa.util.totp.OtpUtil
 import com.lyy.keepassa.view.create.CreateCustomStrDialog
 import com.lyy.keepassa.view.create.GeneratePassActivity
 import com.lyy.keepassa.view.create.entry.CreateEnum.CREATE
@@ -221,13 +220,13 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
           Timber.d("attr is null")
           return@collectLatest
         }
+        checkAddMoreBtn()
         if (bean.state != DELETE) {
           module.strCacheMap[bean.key] = bean.str
           binding.cardStr.isVisible = true
           binding.cardStr.bindDate(module.strCacheMap)
           return@collectLatest
         }
-
 
         module.strCacheMap.remove(bean.key)
 
@@ -261,6 +260,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
           startOtp()
           binding.cardStr.bindDate(module.strCacheMap)
         }
+        checkAddMoreBtn()
       }
     }
     if (module.strCacheMap.hasTOTP()) {
@@ -317,6 +317,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
         val time = "${event.year}/${event.month}/${event.dayOfMonth} ${event.hour}:${event.minute}"
         binding.edLoseTime.setText(time)
         binding.tlLoseTime.visibility = View.VISIBLE
+        checkAddMoreBtn()
       }
     }
   }
@@ -335,6 +336,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
         val tags = tagStrList.joinToString(separator = ",")
         binding.edTag.setText(tags)
         binding.tlTag.visibility = View.VISIBLE
+        checkAddMoreBtn()
       }
     }
 
@@ -390,6 +392,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
               }
 
             }
+            checkAddMoreBtn()
             addMoreDialog!!.dismiss()
           }
         })
@@ -403,7 +406,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
       if (binding.cardFile.isVisible) {
         addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_attr_file })
       }
-      if (module.hasTotp()) {
+      if (module.pwEntry.hasTOTP()) {
         addMoreData.remove(addMoreData.find { it.icon == R.drawable.ic_token_grey })
       }
       if (binding.tlTag.isVisible) {
@@ -417,6 +420,23 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
       }
       addMoreDialog!!.notifyData()
       addMoreDialog!!.show(supportFragmentManager, "add_more_dialog")
+    }
+
+    checkAddMoreBtn()
+  }
+
+  private fun checkAddMoreBtn(){
+    if (binding.tlLoseTime.isVisible
+      && binding.cardStr.isVisible
+      && binding.cardFile.isVisible
+      && module.pwEntry.hasTOTP()
+      && binding.tlTag.isVisible
+      && binding.tlNote.isVisible
+      && binding.tlUrl.isVisible
+    ) {
+      binding.btnAddMore.visibility = View.GONE
+    } else {
+      binding.btnAddMore.visibility = View.VISIBLE
     }
   }
 

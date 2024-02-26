@@ -29,8 +29,10 @@ import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.util.loadImg
 import com.lyy.keepassa.view.create.entry.CreateEntryModule
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * @Author laoyuyu
@@ -73,7 +75,9 @@ internal class ChooseTagDialog : BaseDialog<DialogChooseTagBinding>() {
         layoutManager = LinearLayoutManager(context)
         adapter = tagAdapter
       }
-      tagList.addAll(getTagData().toMutableList())
+      withContext(Dispatchers.IO){
+        tagList.addAll(getTagData().toMutableList())
+      }
       tagAdapter.setData(tagList)
     }
     binding.rvList.doOnItemClickListener { _, position, _ ->
@@ -103,14 +107,18 @@ internal class ChooseTagDialog : BaseDialog<DialogChooseTagBinding>() {
 
   private suspend fun getTagData(): List<TagBean> {
     val tagList = arrayListOf<TagBean>()
+    val allTagList = KdbUtil.getAllTags()
     entry?.let {
       val curTagList = KdbUtil.getEntryTag(it)
-      val allTagList = KdbUtil.getAllTags()
       allTagList.forEach { tag ->
         tagList.add(TagBean(tag, tag in curTagList || tag in module.selectedTagBeanCache))
       }
     }
-    newTag?.let { tagList.add(it) }
+    newTag?.let {
+      if (!allTagList.contains(it.tag)){
+        tagList.add(it)
+      }
+    }
     tagList.add(ADD_MORE)
     return tagList
   }

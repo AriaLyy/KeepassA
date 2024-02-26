@@ -22,6 +22,7 @@ import com.lyy.keepassa.databinding.LayoutEntryCardListBinding
 import com.lyy.keepassa.databinding.LayoutEntryStrBinding
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.doClick
 import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.util.hasTOTP
 import com.lyy.keepassa.util.totp.OtpUtil
@@ -41,18 +42,18 @@ class EntryStrCard(context: Context, attributeSet: AttributeSet) :
 
   fun bindData(entry: PwEntryV4) {
     binding.tvCardTitle.text = ResUtil.getString(R.string.hint_attr)
-    val data =  KdbUtil.filterCustomStr(entry).entries.toMutableList()
+    val data = KdbUtil.filterCustomStr(entry).entries.toMutableList()
     if (data.isEmpty()) {
       visibility = GONE
       return
     }
 
-    if (entry.hasTOTP()){
+    if (entry.hasTOTP()) {
       val totpPass = OtpUtil.getOtpPass(entry)
       if (!TextUtils.isEmpty(totpPass.second)) {
         val totpPassStr = ProtectedString(true, totpPass.second)
         totpPassStr.isOtpPass = true
-        data.add(object : Entry<String, ProtectedString>{
+        data.add(object : Entry<String, ProtectedString> {
           override val key: String
             get() = KeyConstance.TOTP
           override val value: ProtectedString
@@ -60,7 +61,7 @@ class EntryStrCard(context: Context, attributeSet: AttributeSet) :
         })
       }
     }
-    data.sortBy { it.key  }
+    data.sortBy { it.key }
 
     visibility = VISIBLE
     handleList(entry, data)
@@ -108,6 +109,12 @@ class EntryStrCard(context: Context, attributeSet: AttributeSet) :
     private fun handleOtp(binding: LayoutEntryStrBinding, tvValue: TextView) {
       binding.rpbBar.visibility = VISIBLE
       KdbUtil.startAutoGetOtp(entryV4, binding.rpbBar, tvValue)
+      binding.ivEye.isVisible = true
+      binding.ivEye.isSelected = true
+      binding.ivEye.doClick {
+        binding.ivEye.isSelected = !binding.ivEye.isSelected
+        KpaUtil.handleShowPass(binding.value, !binding.ivEye.isSelected)
+      }
     }
 
     @SuppressLint("SetTextI18n")
@@ -119,6 +126,7 @@ class EntryStrCard(context: Context, attributeSet: AttributeSet) :
         handleOtp(binding, tvValue)
         return
       }
+      binding.ivEye.isVisible = false
       binding.rpbBar.isVisible = false
       if (item.value.toString().isEmpty()) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
