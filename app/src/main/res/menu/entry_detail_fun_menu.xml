@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item
+      android:id="@+id/item_user"
+      android:enabled="true"
+      android:icon="@drawable/ic_add"
+      android:title="@string/copy_user_name"/>
+  <item
+      android:id="@+id/item_pass"
+      android:enabled="true"
+      android:icon="@drawable/ic_add"
+      android:title="@string/copy_password"/>
+
+  <item
+      android:id="@+id/item_totp"
+      android:enabled="true"
+      android:icon="@drawable/ic_add"
+      android:title="@string/copy_totp"/>
+
+  <item
+      android:id="@+id/item_open"
+      android:enabled="true"
+      android:icon="@drawable/ic_add"
+      android:title="@string/transition_entry_icon"/>
+</menu>

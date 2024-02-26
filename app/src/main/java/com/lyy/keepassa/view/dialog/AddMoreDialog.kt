@@ -18,17 +18,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.arialyy.frame.util.adapter.AbsHolder
 import com.arialyy.frame.util.adapter.AbsRVAdapter
 import com.arialyy.frame.util.adapter.RvItemClickSupport
-import com.bumptech.glide.Glide
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseBottomSheetDialogFragment
 import com.lyy.keepassa.databinding.DialogAddMoreBinding
 import com.lyy.keepassa.entity.SimpleItemEntity
+import com.lyy.keepassa.util.loadImg
 import com.lyy.keepassa.view.dialog.AddMoreDialog.Adapter.Holder
 
 /**
  * 添加更多
  */
-class AddMoreDialog(val data: List<SimpleItemEntity>) : BaseBottomSheetDialogFragment<DialogAddMoreBinding>() {
+class AddMoreDialog(val data: List<SimpleItemEntity>) :
+  BaseBottomSheetDialogFragment<DialogAddMoreBinding>() {
 
   private lateinit var adapter: Adapter
   private var listener: OnItemClickListener? = null
@@ -52,9 +53,9 @@ class AddMoreDialog(val data: List<SimpleItemEntity>) : BaseBottomSheetDialogFra
     binding.list.setHasFixedSize(true)
     binding.list.layoutManager = LinearLayoutManager(context)
     RvItemClickSupport.addTo(binding.list)
-        .setOnItemClickListener { _, position, v ->
-          listener?.onItemClick(position, data[position], v)
-        }
+      .setOnItemClickListener { _, position, v ->
+        listener?.onItemClick(position, data[position], v)
+      }
   }
 
   fun setOnItemClickListener(listener: OnItemClickListener) {
@@ -62,7 +63,7 @@ class AddMoreDialog(val data: List<SimpleItemEntity>) : BaseBottomSheetDialogFra
   }
 
   fun notifyData() {
-    if (this::adapter.isInitialized){
+    if (this::adapter.isInitialized) {
       adapter.notifyDataSetChanged()
     }
   }
@@ -97,9 +98,7 @@ class AddMoreDialog(val data: List<SimpleItemEntity>) : BaseBottomSheetDialogFra
       item: SimpleItemEntity?
     ) {
       holder!!.text.text = item!!.title
-      Glide.with(context)
-          .load(item.icon)
-          .into(holder.img)
+      holder.img.loadImg(item.icon)
     }
   }
 }

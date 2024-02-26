@@ -16,11 +16,9 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.text.InputType
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.viewModelScope
 import androidx.palette.graphics.Palette
@@ -39,34 +37,22 @@ import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.EntryRecord
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
-import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
-import com.lyy.keepassa.view.menu.EntryDetailFilePopMenu
-import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
-import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
-import com.lyy.keepassa.widget.expand.AttrFileItemView
-import com.lyy.keepassa.widget.expand.AttrStrItemView
 import com.lyy.keepassa.widget.toPx
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 
 /**
  * 条目详情
  */
 class EntryDetailModule : BaseModule() {
-  var curDLoadFile: ProtectedBinary? = null
-  var lastCollection: Boolean = false
   private lateinit var pwEntry: PwEntry
   private val finishAnimEvent = SingleLiveEvent<Boolean>()
   private val startAnimEvent = SingleLiveEvent<Boolean>()
-
-  override fun onCleared() {
-    super.onCleared()
-  }
 
   fun initEntry(pwEntry: PwEntry) {
     this.pwEntry = pwEntry
@@ -151,7 +137,7 @@ class EntryDetailModule : BaseModule() {
   /**
    * get highlight color
    */
-  private fun getColor(
+  fun getColor(
     context: Context,
     icon: Drawable
   ): Int {
@@ -174,71 +160,6 @@ class EntryDetailModule : BaseModule() {
         else -> ResUtil.getColor(R.color.colorPrimary)
       }
     }
-  }
-
-  /**
-   * 展示附件的菜单
-   */
-  fun showAttrFilePopMenu(
-    context: EntryDetailActivity,
-    v: View
-  ) {
-    if (KeepassAUtil.instance.isFastClick()) {
-      return
-    }
-    val key = (v as AttrFileItemView).titleStr
-    val value = v.file
-    val menu = EntryDetailFilePopMenu(context, v, key, value!!)
-    menu.setOnDownloadClick(object : EntryDetailFilePopMenu.OnDownloadClick {
-      override fun onDownload(
-        key: String,
-        file: ProtectedBinary
-      ) {
-        curDLoadFile = file
-        context.saveAttachmentResult.launch("*/*")
-      }
-    })
-    menu.show()
-  }
-
-  /**
-   * 展示属性字段的菜单
-   */
-  fun showAttrStrPopMenu(
-    context: FragmentActivity,
-    v: View
-  ) {
-    if (KeepassAUtil.instance.isFastClick()) {
-      return
-    }
-    val value = v.findViewById<TextView>(R.id.value)
-    val key = (v as AttrStrItemView).titleStr
-    val str = v.valueInfo
-    val pop = EntryDetailStrPopMenu(context, v, str)
-    // totp 密码，seed都需要显示密码
-    if (key == "TOTP"
-      || key.equals("otp", ignoreCase = true)
-      || key.equals("TOTP Seed", ignoreCase = true)
-      || str.isProtected
-    ) {
-      pop.setOnShowPassCallback(object : OnShowPassCallback {
-        override fun showPass(showPass: Boolean) {
-          if (showPass) {
-            value.inputType =
-              (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)
-            return
-          }
-          value.inputType =
-            (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
-        }
-      })
-
-      if (value.inputType == (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)) {
-        pop.setHidePass()
-      }
-    }
-
-    pop.show()
   }
 
   /**
@@ -275,7 +196,7 @@ class EntryDetailModule : BaseModule() {
    * @param pwEntry 需要回收的条目
    */
   fun recycleEntry(ac: FragmentActivity, pwEntry: PwEntryV4) {
-    KpaUtil.kdbHandlerService.deleteEntry(pwEntry){
+    KpaUtil.kdbHandlerService.deleteEntry(pwEntry) {
       HitUtil.toaskShort(
         "${ac.getString(R.string.del_entry)}${ac.getString(R.string.success)}"
       )
@@ -309,8 +230,7 @@ class EntryDetailModule : BaseModule() {
         record.time = System.currentTimeMillis()
         dao.updateRecord(record)
       }
-      EventBus.getDefault()
-        .post(record)
+      KpaUtil.openEntryRecordFlow.emit(record)
     }
   }
 
@@ -318,6 +238,6 @@ class EntryDetailModule : BaseModule() {
    * 获取项目的属性字段，只有v4版本才有自定义属性字段
    */
   fun getV4EntryStr(entryV4: PwEntryV4): Map<String, ProtectedString> {
-    return KeepassAUtil.instance.filterCustomStr(entryV4)
+    return KdbUtil.filterCustomStr(entryV4)
   }
 }

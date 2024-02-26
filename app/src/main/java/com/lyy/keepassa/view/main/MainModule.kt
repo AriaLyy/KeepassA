@@ -94,7 +94,7 @@ class MainModule : BaseModule() {
         add(DevBirthdayChain())
         add(DonateChain())
         add(PermissionsChain())
-        add(TipChain())
+        // add(TipChain())
       }
       DialogChain(activity, list, 0).proceed(activity)
 

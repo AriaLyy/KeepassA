@@ -140,6 +140,9 @@
         android:name=".view.detail.EntryDetailActivity"
         android:screenOrientation="portrait" />
     <activity
+        android:name=".view.detail.EntryDetailActivityNew"
+        android:screenOrientation="portrait" />
+    <activity
         android:name=".view.dir.ChooseGroupActivity"
         android:screenOrientation="portrait" />
     <activity
@@ -149,7 +152,11 @@
         android:name=".view.fingerprint.FingerprintActivity"
         android:screenOrientation="portrait" />
     <activity
-        android:name=".view.create.CreateEntryActivity"
+        android:name=".view.create.CreateEntryActivityOld"
+        android:screenOrientation="portrait" />
+
+    <activity
+        android:name=".view.create.entry.CreateEntryActivity"
         android:screenOrientation="portrait" />
     <activity
         android:name=".view.create.GeneratePassActivity"
@@ -284,7 +291,6 @@
     <meta-data
         android:name="host_app"
         android:value="app" />
-
   </application>
 
 </manifest>

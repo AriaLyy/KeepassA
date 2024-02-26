@@ -20,6 +20,7 @@ import android.text.Html
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
+import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,6 +33,7 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.databinding.ActivityAutoFillEntrySearchBinding
 import com.lyy.keepassa.event.EntryState.CREATE
+import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.service.autofill.W3cHints
 import com.lyy.keepassa.util.HitUtil
@@ -39,7 +41,6 @@ import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.doOnItemClickListener
-import com.lyy.keepassa.view.create.CreateEntryActivity
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -109,13 +110,8 @@ internal class CommonSearchActivity : BaseActivity<ActivityAutoFillEntrySearchBi
     })
 
     binding.exFab.setOnClickListener {
-      startActivity(
-        Intent(this, CreateEntryActivity::class.java).apply {
-          putExtra(CreateEntryActivity.KEY_TYPE, CreateEntryActivity.TYPE_NEW_ENTRY)
-        },
-        ActivityOptions.makeSceneTransitionAnimation(this)
-          .toBundle()
-      )
+      val op =  ActivityOptionsCompat.makeSceneTransitionAnimation(this)
+      Routerfit.create(ActivityRouter::class.java).toCreateEntryActivity(null, op)
     }
 
     initList()

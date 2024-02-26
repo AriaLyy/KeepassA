@@ -11,14 +11,18 @@ import android.graphics.drawable.Drawable
 import com.arialyy.frame.router.DialogArg
 import com.arialyy.frame.router.RouterArgName
 import com.arialyy.frame.router.RouterPath
+import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroupV4
+import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
+import com.lyy.keepassa.entity.TagBean
 import com.lyy.keepassa.view.StorageType
 import com.lyy.keepassa.view.dialog.CloudFileSelectDialog
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.dialog.TimeChangeDialog
 import com.lyy.keepassa.view.dialog.webdav.WebDavLoginDialogNew
+import java.util.UUID
 
 /**
  * @Author laoyuyu
@@ -26,6 +30,38 @@ import com.lyy.keepassa.view.dialog.webdav.WebDavLoginDialogNew
  * @Date 2021/9/5
  **/
 interface DialogRouter {
+
+  @RouterPath(path = "/dialog/chooseTag")
+  @DialogArg(showDialog = true)
+  fun showChooseTagDialog(
+    @RouterArgName(name = "entry") entry: PwEntryV4,
+    @RouterArgName(name = "newTag") newTag: TagBean? = null
+  )
+
+  @RouterPath(path = "/dialog/createTag")
+  @DialogArg(showDialog = true)
+  fun showCreateTagDialog()
+
+  @RouterPath(path = "/dialog/createOtp")
+  @DialogArg(showDialog = true)
+  fun showCreateOtpDialog(
+    @RouterArgName(name = "entryTitle") entryTitle: String,
+    @RouterArgName(name = "entryUserName") entryUserName: String
+  )
+
+  @RouterPath(path = "/dialog/otpModify")
+  @DialogArg(showDialog = true)
+  fun showModifyOtpDialog(
+    @RouterArgName(name = "uid") uid: UUID
+  )
+
+  @RouterPath(path = "/dialog/customStrDialog")
+  @DialogArg(showDialog = true)
+  fun showCreateCustomDialog(
+    @RouterArgName(name = "position") position: Int = 0,
+    @RouterArgName(name = "key") key: String? = null,
+    @RouterArgName(name = "value") value: ProtectedString? = null
+  )
 
   @RouterPath(path = "/dialog/tipsDialog")
   @DialogArg(showDialog = true)
@@ -124,6 +160,13 @@ interface DialogRouter {
       5
     )
   )
+
+  /**
+   * 日期选择对话框
+   */
+  @RouterPath(path = "/dialog/timeChange")
+  @DialogArg(showDialog = true)
+  fun showTimeChangeDialog(): TimeChangeDialog
 
   /**
    * 日期选择对话框

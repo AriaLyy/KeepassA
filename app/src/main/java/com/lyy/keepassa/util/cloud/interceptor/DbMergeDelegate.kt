@@ -14,7 +14,6 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.router.DialogRouter
-import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.cloud.PwDataMap
@@ -296,7 +295,7 @@ object DbMergeDelegate {
       if (pwData is PwEntry) {
         val newEntry = pwData.clone(true)
         newEntry.parent = getParentByCloudPwData(pwData, localDb)
-        KpaUtil.kdbHandlerService.addEntry(newEntry as PwEntryV4)
+        KpaUtil.kdbHandlerService.createEntry(newEntry as PwEntryV4)
       }
     }
   }

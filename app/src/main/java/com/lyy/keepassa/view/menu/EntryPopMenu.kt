@@ -33,6 +33,8 @@ import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
+import com.lyy.keepassa.util.copyPassword
+import com.lyy.keepassa.util.copyUserName
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.dir.ChooseGroupActivity
 
@@ -78,16 +80,10 @@ class EntryPopMenu(
           delEntry()
         }
         R.id.copy_user -> {
-          val userName = KdbUtil.getUserName(entry)
-          ClipboardUtil.get()
-            .copyDataToClip(userName)
-          HitUtil.toaskShort(context.getString(R.string.hint_copy_user))
+          entry.copyUserName()
         }
         R.id.copy_pw -> {
-          val pass = KdbUtil.getPassword(entry)
-          ClipboardUtil.get()
-            .copyDataToClip(pass)
-          HitUtil.toaskShort(context.getString(R.string.hint_copy_pass))
+          entry.copyPassword()
         }
         R.id.copy_totp -> {
           Routerfit.create(DialogRouter::class.java).showTotpDisplayDialog(entry.uuid.toString())

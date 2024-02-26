@@ -21,3 +21,4 @@ cp_buglyQqUploadSymbolLib.jar
 /buglybin
 local.properties
 /VersionManager/build/
+app/google-services.json

@@ -10,27 +10,41 @@
 package com.lyy.keepassa.view.create
 
 import android.view.View
-import com.arialyy.frame.base.FrameDialog
+import androidx.lifecycle.lifecycleScope
+import com.alibaba.android.arouter.facade.annotation.Autowired
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseDialog
 import com.lyy.keepassa.databinding.DialogAddAttrStrBinding
-import com.lyy.keepassa.event.CreateAttrStrEvent
+import com.lyy.keepassa.entity.CommonState
+import com.lyy.keepassa.event.AttrStrEvent
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.widget.expand.AttrStrItemView
-import org.greenrobot.eventbus.EventBus
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 
 /**
  * 创建自定义字段的对话框
  */
-class CreateCustomStrDialog(
-  val isEdit: Boolean = false,
-  val itemView: AttrStrItemView? = null
-) : BaseDialog<DialogAddAttrStrBinding>(),
-    View.OnClickListener {
+@Route(path = "/dialog/customStrDialog")
+class CreateCustomStrDialog : BaseDialog<DialogAddAttrStrBinding>(),
+  View.OnClickListener {
+  companion object {
+    val CustomStrFlow = MutableSharedFlow<AttrStrEvent?>(0)
+  }
 
-  private var key: String? = null
-  private var value: ProtectedString? = null
+  @Autowired(name = "key")
+  @JvmField
+  var key: String? = null
+
+  @Autowired(name = "value")
+  @JvmField
+  var value: ProtectedString? = null
+
+  @Autowired(name = "position")
+  @JvmField
+  var position: Int = 0
 
   override fun setLayoutId(): Int {
     return R.layout.dialog_add_attr_str
@@ -38,6 +52,7 @@ class CreateCustomStrDialog(
 
   override fun initData() {
     super.initData()
+    ARouter.getInstance().inject(this)
     binding.cancel.setOnClickListener(this)
     binding.enter.setOnClickListener(this)
     if (key != null) {
@@ -49,42 +64,23 @@ class CreateCustomStrDialog(
     }
   }
 
-  fun setData(
-    key: String,
-    str: ProtectedString
-  ) {
-    this.key = key
-    this.value = str
-  }
-
   override fun onClick(v: View?) {
     if (v!!.id == R.id.enter) {
       if (binding.strKey.text.toString().trim().isEmpty()) {
         HitUtil.toaskShort(getString(R.string.error_attr_str_null))
         return
       }
-      if (isEdit) {
-        EventBus.getDefault()
-            .post(
-                CreateAttrStrEvent(
-                    binding.strKey.text.toString(),
-                    ProtectedString(binding.cb.isChecked, binding.strValue.text.toString()),
-                    isEdit,
-                    itemView
-                )
-            )
-      } else {
-        EventBus.getDefault()
-            .post(
-                CreateAttrStrEvent(
-                    binding.strKey.text.toString(),
-                    ProtectedString(binding.cb.isChecked, binding.strValue.text.toString()),
-                    isEdit
-                )
-            )
+      lifecycleScope.launch {
+        CustomStrFlow.emit(
+          AttrStrEvent(
+            if (key != null) CommonState.MODIFY else CommonState.CREATE,
+            binding.strKey.text.toString(),
+            ProtectedString(binding.cb.isChecked, binding.strValue.text.toString()),
+            position
+          )
+        )
       }
     }
     dismiss()
   }
-
 }

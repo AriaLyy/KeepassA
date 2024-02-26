@@ -23,6 +23,7 @@ import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.security.ProtectedBinary
 import com.lyy.keepassa.R
 import com.lyy.keepassa.router.DialogRouter
+import com.lyy.keepassa.util.KpaUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -96,7 +97,7 @@ class EntryDetailFilePopMenu(
    * 将附件保存到缓存中，并打开
    */
   private fun openFile() {
-    MainScope().launch {
+    KpaUtil.scope.launch {
       val targetFile = File(context.cacheDir, key)
       withContext(Dispatchers.IO) {
         val fic = Channels.newChannel(file.data)

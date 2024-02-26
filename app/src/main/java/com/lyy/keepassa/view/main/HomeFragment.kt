@@ -37,6 +37,7 @@ import com.lyy.keepassa.event.EntryState.CREATE
 import com.lyy.keepassa.event.EntryState.DELETE
 import com.lyy.keepassa.event.EntryState.MODIFY
 import com.lyy.keepassa.event.EntryState.MOVE
+import com.lyy.keepassa.event.EntryState.SAVE
 import com.lyy.keepassa.event.EntryState.UNKNOWN
 import com.lyy.keepassa.event.MoveEvent
 import com.lyy.keepassa.router.ActivityRouter
@@ -155,6 +156,9 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
               BaseApp.KDB.pm.rootGroup as PwGroupV4
             )
           }
+          SAVE -> {
+            adapter.notifyDataSetChanged()
+          }
           UNKNOWN -> {
             Timber.d("un known status")
           }
@@ -185,6 +189,9 @@ class HomeFragment : BaseFragment<FragmentOnlyListBinding>() {
           }
           DELETE -> {
             module.deleteEntry(adapter, it.pwEntryV4, it.oldParent!!)
+          }
+          SAVE -> {
+            adapter.notifyDataSetChanged()
           }
           UNKNOWN -> {
             Timber.d("un known status")

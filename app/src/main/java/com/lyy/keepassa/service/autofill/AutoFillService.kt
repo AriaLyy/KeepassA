@@ -35,7 +35,7 @@ import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.PermissionsUtil
 import com.lyy.keepassa.util.isCanOpenQuickLock
-import com.lyy.keepassa.view.create.CreateEntryActivity
+import com.lyy.keepassa.view.create.entry.CreateEntryActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity

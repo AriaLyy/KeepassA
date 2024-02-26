@@ -16,7 +16,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Looper
-import android.transition.TransitionInflater
 import android.util.Pair
 import android.view.View
 import android.view.WindowManager
@@ -36,7 +35,6 @@ import com.lyy.keepassa.util.LanguageUtil
 import me.jessyan.autosize.AutoSizeConfig
 import timber.log.Timber
 import java.lang.reflect.Field
-import java.util.ArrayList
 
 /**
  * Created by Lyy on 2016/9/27.
@@ -55,7 +53,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
       toolbar = findViewById(R.id.kpa_toolbar)
       toolbar.setNavigationOnClickListener { finishAfterTransition() }
     } catch (e: Exception) {
-//      e.printStackTrace()
+      Timber.w(e)
     }
   }
 
@@ -94,8 +92,6 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   }
 
   private fun handleStatusBar() {
-//    BarUtil.showStatusBar(this, showStatusBar)
-//    if (showStatusBar) {
     ImmersionBar.with(this)
       .statusBarColor(R.color.background_color)
       .autoDarkModeEnable(true)
@@ -110,7 +106,6 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
       )  //原理：如果当前设备支持状态栏字体变色，会设置状态栏字体为黑色，如果当前设备不支持状态栏字体变色，会使当前状态栏加上透明度，否则不执行透明度
       .init()
     return
-//    }
   }
 
   override fun attachBaseContext(newBase: Context?) {
@@ -124,12 +119,12 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
 
     // salide 为滑入，其它动画效果参考：https://github.com/lgvalle/Material-Animations
     // A -> B, B的进入动画
-    window.enterTransition = TransitionInflater.from(this)
-      .inflateTransition(R.transition.slide_enter)
+    // window.enterTransition = TransitionInflater.from(this)
+    //   .inflateTransition(R.transition.slide_enter)
 
     // A -> B, A的退出动画
-    window.exitTransition = TransitionInflater.from(this)
-      .inflateTransition(R.transition.slide_exit)
+    // window.exitTransition = TransitionInflater.from(this)
+    //   .inflateTransition(R.transition.slide_exit)
 
     // // A <- B, B的返回动画
     // window.returnTransition = TransitionInflater.from(this)
@@ -140,9 +135,9 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     //   .inflateTransition(R.transition.slide_reeter)
 
     // A -> B, B的enter动画和A的exit动画是否同时执行，false 禁止
-    window.allowEnterTransitionOverlap = true
+    // window.allowEnterTransitionOverlap = true
     // A <- B, A的reenter和B的return动画是否同时执行，false 禁止
-    window.allowReturnTransitionOverlap = true
+    // window.allowReturnTransitionOverlap = true
 
     // reenterTransition、returnTransition 是方向动画
 //    EnterTransition <-> ReturnTransition
@@ -166,11 +161,6 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     }
   }
 
-  override fun finish() {
-    super.finish()
-    overridePendingTransition(R.anim.translate_right_in, R.anim.translate_left_out)
-  }
-
   var isStartOtherActivity = false
   override fun startActivity(
     intent: Intent?,
@@ -178,7 +168,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   ) {
     super.startActivity(intent, options)
     isStartOtherActivity = true
-    overridePendingTransition(R.anim.translate_right_in, R.anim.translate_left_out)
+    // overridePendingTransition(R.anim.translate_right_in, R.anim.translate_left_out)
   }
 
   /**
@@ -234,18 +224,10 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     return names
   }
 
-  override fun onStop() {
-    super.onStop()
-  }
-
   override fun onResume() {
     super.onResume()
     // 启动定时器
     KeepassAUtil.instance.startLockTimer(this)
-    updateResume(this)
-  }
-
-  override fun onPause() {
-    super.onPause()
+    // updateResume(this)
   }
 }

@@ -56,7 +56,7 @@ class OpenDbHistoryActivity : BaseActivity<ActivityOnlyListBinding>() {
 
     module.getDbOpenRecordList(this)
       .observe(this, Observer { list ->
-        if (list != null && list.isNotEmpty()) {
+        if (!list.isNullOrEmpty()) {
           data.addAll(list)
           adapter.notifyDataSetChanged()
         }

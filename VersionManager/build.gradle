@@ -81,7 +81,7 @@ publishing {
     maven(MavenPublication) {
       groupId = 'com.lyy.kpa.version'
       artifactId = 'catalog'
-      version = '0.0.1'
+      version = '0.0.3'
       from components.versionCatalog
     }
   }

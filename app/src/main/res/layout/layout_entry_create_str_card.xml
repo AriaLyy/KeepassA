@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_str_attr"
+    >
+
+  <View
+      android:id="@+id/vClick"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:background="@drawable/ripple_white_selector"
+      app:layout_constraintBottom_toBottomOf="@+id/flowTitle"
+      app:layout_constraintEnd_toEndOf="@+id/flowTitle"
+      app:layout_constraintStart_toStartOf="@+id/flowTitle"
+      app:layout_constraintTop_toTopOf="@+id/flowTitle"
+      />
+
+  <androidx.appcompat.widget.AppCompatImageView
+      android:id="@+id/ivIcon"
+      android:layout_width="24dp"
+      android:layout_height="24dp"
+      android:layout_marginStart="12dp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:srcCompat="@drawable/ic_attr_str"
+      />
+
+  <androidx.appcompat.widget.AppCompatTextView
+      android:id="@+id/tvTitle"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:text="@string/hint_attr"
+      app:layout_constraintStart_toEndOf="@+id/ivIcon"
+      style="@style/KpaTitleTextStyle"
+      />
+
+  <androidx.appcompat.widget.AppCompatImageView
+      android:id="@+id/ivArrow"
+      android:layout_width="24dp"
+      android:layout_height="24dp"
+      android:layout_marginEnd="16dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:srcCompat="@drawable/ic_arrow_down"
+      />
+
+  <androidx.constraintlayout.helper.widget.Flow
+      android:id="@+id/flowTitle"
+      android:layout_width="match_parent"
+      android:layout_height="48dp"
+      app:constraint_referenced_ids="ivIcon, tvTitle, ivArrow"
+      />
+
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rvList"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:visibility="gone"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/ivIcon"
+      app:layout_constraintTop_toBottomOf="@+id/flowTitle"
+      tools:visibility="visible"
+      />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

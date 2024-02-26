@@ -46,7 +46,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
     Routerfit.create(FragmentRouter::class.java).getAppSettingFragment(scrollKey = scrollKey)
   }
 
-  private val dbFm :PreferenceFragmentCompat by lazy {
+  private val dbFm: PreferenceFragmentCompat by lazy {
     Routerfit.create(FragmentRouter::class.java).getDbSettingFragment()
   }
 

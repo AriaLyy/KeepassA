@@ -20,9 +20,7 @@ import android.widget.TimePicker
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.util.DpUtils
 import com.google.android.material.tabs.TabLayoutMediator
 import com.lyy.keepassa.R
@@ -31,7 +29,6 @@ import com.lyy.keepassa.databinding.DialogTimerBinding
 import com.lyy.keepassa.event.TimeEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.greenrobot.eventbus.EventBus
 
 /**
  * 时间选择器
@@ -41,7 +38,9 @@ class TimeChangeDialog : BaseDialog<DialogTimerBinding>(), View.OnClickListener 
   private lateinit var vpAdapter: VpAdapter
   private val fragments = arrayListOf<Fragment>()
 
-  var timeFlow =  MutableStateFlow<TimeEvent?>(null)
+  companion object {
+    val timeFlow = MutableStateFlow<TimeEvent?>(null)
+  }
 
   override fun setLayoutId(): Int {
     return R.layout.dialog_timer
@@ -60,7 +59,6 @@ class TimeChangeDialog : BaseDialog<DialogTimerBinding>(), View.OnClickListener 
     }.attach()
     binding.cancel.setOnClickListener(this)
     binding.save.setOnClickListener(this)
-
   }
 
   override fun onClick(v: View?) {
@@ -140,7 +138,5 @@ class TimeChangeDialog : BaseDialog<DialogTimerBinding>(), View.OnClickListener 
 
       return timerPicker
     }
-
   }
-
 }

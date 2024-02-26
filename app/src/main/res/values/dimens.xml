@@ -21,6 +21,7 @@
 
 
   <dimen name="entry_detail_item_h">48dp</dimen>
+  <dimen name="dle_btn_width">80dp</dimen>
 
 
 
