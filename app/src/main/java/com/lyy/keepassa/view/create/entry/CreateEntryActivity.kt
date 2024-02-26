@@ -142,6 +142,9 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
         return intent?.getStringExtra(GeneratePassActivity.DATA_PASS_WORD) ?: ""
       }
     }) {
+      if (it.isEmpty()) {
+        return@registerForActivityResult
+      }
       binding.edPassword.setText(it)
       binding.tvConfirm.setText(it)
     }
@@ -425,7 +428,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
     checkAddMoreBtn()
   }
 
-  private fun checkAddMoreBtn(){
+  private fun checkAddMoreBtn() {
     if (binding.tlLoseTime.isVisible
       && binding.cardStr.isVisible
       && binding.cardFile.isVisible
