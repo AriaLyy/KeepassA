@@ -63,7 +63,7 @@
     <string name="hint_please_open_database">Lütfen veri tabanını açın</string>
     <string name="set_delete_no_into_recycle_bin_des">Silinen ögeleri çöp kutusuna taşı</string>
     <string name="donate_desc">[KeePassA](https://github.com/AriaLyy/KeepassA) özgür yazılımdır. Çalışmalarımızı desteklemek için bağış yapın, teşekkürler.</string>
-    <string name="dev_birthday">Bugün geliştiricinin doğum günü🎂. Tanrılara kadeh kaldırmak ister misiniz\?</string>
+    <string name="dev_birthday">Bugün geliştiricinin doğum günü🎂. Geliştiriciye bir bira ısmarlamak ister misiniz?</string>
     <string name="totp_defaule">Öntanımlı RFC 6238 belirteç ayarları</string>
     <string name="totp_steam">Steam belirteci ayarları</string>
     <string name="hint_security_yellow">Uyarı! Simülatörde çalışmasına göre bu ortam, veri tabanına bazı öngörülemeyen riskler getirecektir</string>
@@ -359,4 +359,13 @@
     <string name="ime_hint_open_auto_fill">Lütfen otomatik doldurma hizmetini açın</string>
     <string name="please_open_proxy">Lütfen vekili açın</string>
     <string name="invalid_img">Geçersiz Resim</string>
+    <string name="hint_open_backgroun_start">Otomatik doldurmayı ayarladınız, ancak KeePassA uygun izinlere sahip değil, lütfen ayarlar sayfasındaki KeePassA açılır ekranını yetkilendirin.</string>
+    <string name="app_debug">Günlük dosyasını al</string>
+    <string name="open_setting">Ayarlar</string>
+    <string name="hint_auto_fill_save">Geçerli veriler var olan girdilerle ilişkilendirilsin mi?</string>
+    <string name="title_tip_of_day">Günün ipucu</string>
+    <string name="hint_dont_show_tips">İpuçlarını gösterme</string>
+    <string name="preemptive">Önceden</string>
+    <string name="fail_unsupported_Systems_O">Yalnızca P veya daha yüksek sistemi destekler</string>
+    <string name="hint_webdav_jgy">Lütfen [Hesap-&gt;Güvenlik-&gt;Üçüncü Taraf Uygulama Yönetimi] bölümündeki parolayı kullanın.</string>
 </resources>
