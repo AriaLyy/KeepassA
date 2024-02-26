@@ -16,11 +16,9 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.text.InputType
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.viewModelScope
 import androidx.palette.graphics.Palette
@@ -40,17 +38,12 @@ import com.lyy.keepassa.entity.EntryRecord
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
-import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
-import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu
-import com.lyy.keepassa.view.menu.EntryDetailStrPopMenu.OnShowPassCallback
 import com.lyy.keepassa.widget.toPx
-import com.lyy.keepassa.widgets.expand.AttrStrItemView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 
 /**
@@ -237,8 +230,7 @@ class EntryDetailModule : BaseModule() {
         record.time = System.currentTimeMillis()
         dao.updateRecord(record)
       }
-      EventBus.getDefault()
-        .post(record)
+      KpaUtil.openEntryRecordFlow.emit(record)
     }
   }
 

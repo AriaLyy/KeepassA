@@ -113,6 +113,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     }
     setTopBar()
     listenerSaveFile()
+    module.saveRecord()
   }
 
   private fun listenerSaveFile() {

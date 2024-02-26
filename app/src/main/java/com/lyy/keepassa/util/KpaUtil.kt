@@ -21,9 +21,11 @@ import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.entity.EntryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.router.ServiceRouter
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import timber.log.Timber
 import java.util.Date
 import java.util.Locale
@@ -44,6 +46,8 @@ object KpaUtil {
   val kdbOpenService by lazy {
     Routerfit.create(ServiceRouter::class.java).getDbOpenService()
   }
+
+  val openEntryRecordFlow = MutableSharedFlow<EntryRecord>()
 
   fun isEmptyPass(): Boolean {
     return isEmptyPass

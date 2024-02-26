@@ -68,7 +68,6 @@ class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
 
   override fun initData() {
     ARouter.getInstance().inject(this)
-    EventBusHelper.reg(this)
     adapter = SimpleEntryAdapter(requireContext(), module.entryData)
     binding.list.setHasFixedSize(true)
     binding.list.layoutManager = LinearLayoutManager(context)
@@ -105,6 +104,7 @@ class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
     initRefresh()
     listenerGetData()
     listenerEntryStateChange()
+    listenerUpdateRecord()
     setData()
   }
 
@@ -161,8 +161,15 @@ class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
     module.getData(type)
   }
 
-  @Subscribe(threadMode = MAIN)
-  fun onAddOrUpdateRecord(record: EntryRecord) {
+  private fun listenerUpdateRecord(){
+    lifecycleScope.launch {
+      KpaUtil.openEntryRecordFlow.collectLatest {
+        onAddOrUpdateRecord(it)
+      }
+    }
+  }
+
+  private fun onAddOrUpdateRecord(record: EntryRecord) {
     if (type == TYPE_TOTP) {
       Timber.d("Currently is totp module, ignore this event")
       return
@@ -194,10 +201,6 @@ class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
     }
   }
 
-  override fun onDestroy() {
-    super.onDestroy()
-    EventBusHelper.unReg(this)
-  }
 
   override fun setLayoutId(): Int {
     return R.layout.fragment_entry_record
