@@ -28,7 +28,7 @@ android {
     applicationId "com.lyy.keepassa"
     minSdkVersion libs.versions.minSdk.get().toInteger()
     targetSdkVersion libs.versions.targetsdk.get().toInteger()
-    versionCode 59
+    versionCode 60
     versionName KPA_VERSION_NAME
     multiDexEnabled true
 
@@ -70,6 +70,7 @@ android {
     release {
       //zipAlignEnabled true //开启Zipalign优化
       debuggable false
+//      debuggable true
       minifyEnabled true
       shrinkResources true // 移除无用资源
       //      multiDexKeepFile file('multidex-config.txt')
@@ -271,7 +272,6 @@ dependencies {
   //firebase
   implementation platform('com.google.firebase:firebase-bom:32.7.1')
   implementation 'com.google.firebase:firebase-crashlytics-ktx'
-  implementation 'com.google.firebase:firebase-analytics-ktx'
 }
 
 
