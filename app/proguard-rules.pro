@@ -232,7 +232,7 @@
 
 ################# viewbinding-start ##################
 -keep class * implements androidx.viewbinding.ViewBinding {
-  *;
+  public * inflate(android.view.LayoutInflater, android.view.ViewGroup, boolean);
 }
 ################# viewbinding-end ##################
 

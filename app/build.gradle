@@ -280,3 +280,5 @@ gradle.startParameter.taskNames.forEach {
     apply from: "${rootDir.path}/gradle/testConfig.gradle"
   }
 }
+
+apply from: 'firebase.gradle'

@@ -1,0 +1,16 @@
+apply {
+  plugin "com.android.application"
+}
+
+android.applicationVariants.configureEach { variant ->
+  tasks.configureEach {
+    if (it.name.contains("assemble") && it.name.contains("Release")) {
+      println("开始上传符号表")
+      it.doLast {
+        def cmd = "./../gradlew uploadCrashlyticsMappingFileDevRelease"
+        def p = cmd.execute()
+        p.waitForProcessOutput(System.out, System.err)
+      }
+    }
+  }
+}
