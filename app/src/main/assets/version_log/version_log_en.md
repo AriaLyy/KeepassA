@@ -1,3 +1,6 @@
+### 2.4.5 (2024/03/07)
+* fix: fix bug
+
 ### 2.4.2（2024/02/26）
 * new: New details page
 * new: Support Keepass TOTP
