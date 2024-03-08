@@ -26,8 +26,9 @@ class PermissionsChain : IMainDialogInterceptor {
         ac,
         ResUtil.getString(R.string.hint_open_backgroun_start)
       )
+      return MainDialogResponse(MainDialogResponse.RESPONSE_OK)
     }
 
-    return MainDialogResponse(MainDialogResponse.RESPONSE_OK)
+    return chain.proceed(ac)
   }
 }

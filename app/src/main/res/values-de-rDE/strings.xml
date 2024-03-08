@@ -60,7 +60,7 @@
     <string name="hint_not_nore_info">Keine weiteren Infos</string>
     <string name="url">URL</string>
     <string name="ime_entry_other_info">Fülle andere Felder aus</string>
-    <string name="no_totp_token">Diese App hat kein TOTP-Token</string>
+    <string name="no_totp_token">Kein TOTP-Token</string>
     <string name="set_open_kpa_ime_title">Sicherheits-Keyboard</string>
     <string name="ime_label">KeePassA Sicherheits-Keyboard</string>
     <string name="sort_time_desc">Zeit absteigend</string>
@@ -126,7 +126,7 @@
     <string name="auto_lock_db_time_summary">Sperre die Datenbank nach %s automatisch, wenn keine Aktion erfolgt</string>
     <string name="auto_lock_db_time">Datenbank automatisch sperren</string>
     <string name="clean_clip_time">Leere Clipboard</string>
-    <string name="open_quick_unlock">Quick Unlock</string>
+    <string name="open_quick_unlock">Schnell entsperren</string>
     <string name="other_set">Andere Einstellungen</string>
     <string name="set_key_praise_value">Beurteile KeePassA</string>
     <string name="set_open_auto_fill_title">Auto-fill Dienst</string>
@@ -311,8 +311,10 @@
     <string name="hint_finger_print_verfiy">Überprüfen Sie Ihre Fingerabdrücke erneut, um die neuen Einstellungen zu verwenden</string>
     <string name="setting_vivo_background_start">Einstellungen &gt; Mehr Einstellungen &gt; Berechtigungen Verwalten &gt; KeyPassA &gt; Berechtigungseinstellungen &gt; Hintergrund-Popup</string>
     <string name="send_email_fail">Installieren Sie zunächst eine App zum Versenden von E-Mails</string>
-    <string name="dev_birthday">Heute hat der Entwickler Geburtstag🎂. Möchten Sie auf die Götter anstoßen\?</string>
+    <string name="dev_birthday">Heute hat der Entwickler Geburtstag🎂. Möchten Sie dem Entwickler ein Bier kaufen?</string>
     <string name="feedback_email_msg">Hallo, Ich bin KeyPassA, haben Sie Fragen\?<br/> <br/> <br/> _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/> Marke: %s <br/> Model: %s <br/> Systemversion:%s <br/> Auflösung: %s <br/> App-Version: %s</string>
     <string name="totp_custom_hint">Benutzerdefinierte Einstellungen</string>
     <string name="hint_security_yellow">Achtung, wenn Sie im Simulator arbeiten, birgt diese Umgebung einige unvorhersehbare Risiken für die Datenbank</string>
+    <string name="open_setting">Einstellung</string>
+    <string name="open_permissions">Berechtigungen öffnen</string>
 </resources>

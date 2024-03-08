@@ -1,3 +1,15 @@
+### 2.4.5 (2024/03/07)
+* fix: fix bug
+
+### 2.4.2（2024/02/26）
+* new: New details page
+* new: Support Keepass TOTP
+* opt: Night mode color optimization
+* fix: Fixed edit page icon being gray instead of image
+* fix: Fixed display issue on edit entry page
+* fix: Fixed the problem that the copied token is invalid after totp is automatically refreshed
+* fix: Fix experience issues
+
 ### 2.4.1 (2023/05/07)
 * new: In-app browser auto-fill
 * new: Fetching log functions

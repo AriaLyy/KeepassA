@@ -37,6 +37,7 @@ import com.lyy.keepassa.service.feat.XLogFeature
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.view.dialog.DonateDialog
 import org.greenrobot.eventbus.Subscribe
@@ -196,9 +197,7 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
         donateDialog.show()
       }
       R.id.tvTranslate -> {
-        startActivity(Intent(Intent.ACTION_VIEW).apply {
-          data = Uri.parse("https://hosted.weblate.org/projects/keepassa/string/")
-        })
+        KpaUtil.openUrlWithBrowser("https://hosted.weblate.org/projects/keepassa/string/")
       }
       R.id.debug -> {
         val sendIntent = Intent().apply {

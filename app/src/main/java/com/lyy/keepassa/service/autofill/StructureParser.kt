@@ -178,9 +178,13 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
   private fun classIsWebView(className: String?): Boolean {
     if (className.isNullOrEmpty()) return false
     if (webViewMap.contains(className)) return true
-    if (checkIsWebView(Class.forName(className))) {
-      webViewMap.add(className)
-      return true
+    try {
+      if (checkIsWebView(Class.forName(className))) {
+        webViewMap.add(className)
+        return true
+      }
+    } catch (e: ClassNotFoundException) {
+      Timber.e(e)
     }
     return false
   }
@@ -202,10 +206,15 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
   private fun classIsEditText(className: String?): Boolean {
     if (className.isNullOrEmpty()) return false
     if (editTextMap.contains(className)) return true
-    if (checkIsEditText(Class.forName(className))) {
-      editTextMap.add(className)
-      return true
+    try {
+      if (checkIsEditText(Class.forName(className))) {
+        editTextMap.add(className)
+        return true
+      }
+    } catch (e: ClassNotFoundException) {
+      Timber.e(e)
     }
+
     return false
   }
 

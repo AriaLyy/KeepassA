@@ -10,10 +10,12 @@ package com.lyy.keepassa.router
 import androidx.core.app.ActivityOptionsCompat
 import com.arialyy.frame.router.RouterArgName
 import com.arialyy.frame.router.RouterPath
+import com.blankj.utilcode.util.ActivityUtils
 import com.keepassdroid.database.PwGroupId
 import com.lyy.keepassa.entity.AutoFillParam
-import com.lyy.keepassa.view.create.CreateEntryActivity
-import com.lyy.keepassa.view.detail.EntryDetailActivity
+import com.lyy.keepassa.view.create.entry.CreateEntryActivity
+import com.lyy.keepassa.view.create.entry.CreateEnum
+import com.lyy.keepassa.view.detail.EntryDetailActivityNew
 import com.lyy.keepassa.view.detail.GroupDetailActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.setting.SettingActivity
@@ -55,8 +57,7 @@ interface ActivityRouter {
 
   @RouterPath(path = "/entry/detail")
   fun toEntryDetailActivity(
-    @RouterArgName(name = EntryDetailActivity.KEY_ENTRY_ID) entryId: UUID,
-    @RouterArgName(name = EntryDetailActivity.KEY_GROUP_TITLE) groupName: String,
+    @RouterArgName(name = EntryDetailActivityNew.KEY_ENTRY_ID) entryId: UUID,
     @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null
   )
 
@@ -79,7 +80,7 @@ interface ActivityRouter {
     @RouterArgName(name = CreateEntryActivity.PARENT_GROUP_ID) groupId: PwGroupId?,
     @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null,
     @RouterArgName(name = CreateEntryActivity.IS_SHORTCUTS) isFromShortcuts: Boolean = false,
-    @RouterArgName(name = CreateEntryActivity.KEY_TYPE) type: Int = CreateEntryActivity.TYPE_NEW_ENTRY
+    @RouterArgName(name = CreateEntryActivity.KEY_TYPE) type: CreateEnum = CreateEnum.CREATE
   )
 
   /**
@@ -88,8 +89,8 @@ interface ActivityRouter {
   @RouterPath(path = "/entry/create")
   fun toEditEntryActivity(
     @RouterArgName(name = CreateEntryActivity.KEY_ENTRY) uuid: UUID,
-    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null,
-    @RouterArgName(name = CreateEntryActivity.KEY_TYPE) type: Int = CreateEntryActivity.TYPE_EDIT_ENTRY
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = ActivityOptionsCompat.makeSceneTransitionAnimation(ActivityUtils.getTopActivity()),
+    @RouterArgName(name = CreateEntryActivity.KEY_TYPE) type: CreateEnum = CreateEnum.MODIFY
   )
 
   @RouterPath(path = "/entry/create")

@@ -15,6 +15,7 @@ import android.os.Build
 import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.ActivityUtils
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.BaseApp
 import timber.log.Timber
 import java.util.Locale
 
@@ -142,7 +143,11 @@ object W3cHints {
   private val ATTR_LIST = arrayListOf("name", "type")
 
   private val HINT_USER_LABEL by lazy {
-    ActivityUtils.getTopActivity().resources.getStringArray(R.array.auto_fill_hint_label)
+    if (ActivityUtils.getTopActivity() != null){
+      ActivityUtils.getTopActivity().resources.getStringArray(R.array.auto_fill_hint_label)
+    }else{
+      BaseApp.APP.resources.getStringArray(R.array.auto_fill_hint_label)
+    }
   }
 
   private val HINT_PASSWORD_LABEL by lazy {

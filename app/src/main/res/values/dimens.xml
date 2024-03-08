@@ -4,6 +4,7 @@
   <dimen name="activity_vertical_margin">16dp</dimen>
   <dimen name="fab_margin">16dp</dimen>
   <dimen name="item_h">60dp</dimen>
+  <dimen name="toolbar_h">48dp</dimen>
 
 
 
@@ -20,6 +21,7 @@
 
 
   <dimen name="entry_detail_item_h">48dp</dimen>
+  <dimen name="dle_btn_width">80dp</dimen>
 
 
 

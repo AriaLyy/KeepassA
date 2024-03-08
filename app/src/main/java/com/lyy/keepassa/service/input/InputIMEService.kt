@@ -44,7 +44,7 @@ import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.NotificationUtil
-import com.lyy.keepassa.util.OtpUtil
+import com.lyy.keepassa.util.totp.OtpUtil
 import com.lyy.keepassa.util.isCanOpenQuickLock
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity

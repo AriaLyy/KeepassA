@@ -5,12 +5,14 @@
 
   </style>
 
-  <style name="BaseTheme" parent="Theme.MaterialComponents.DayNight.Bridge">
+  <style name="BaseTheme" parent="Theme.Material3.DayNight">
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorAccent</item>
+    <item name="android:fontFamily">@font/roboto_regular</item>
+    <item name="android:windowAnimationStyle">@style/windowAnimatorDemo</item>
     <!--    <item name="android:windowIsTranslucent">true</item>-->
     <!--    处理状态栏颜色 -->
     <!--    <item name="android:windowTranslucentStatus">false</item>-->
@@ -20,8 +22,16 @@
 
   </style>
 
+  <style name="windowAnimatorDemo">
+    <item name="android:activityOpenEnterAnimation">@anim/translate_right_in</item>
+    <item name="android:activityOpenExitAnimation">@anim/translate_left_out</item>
+    <item name="android:activityCloseEnterAnimation">@anim/translate_left_in</item>
+    <item name="android:activityCloseExitAnimation">@anim/translate_right_out</item>
+  </style>
 
-  <style name="DialogActivityStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
+
+
+  <style name="DialogActivityStyle" parent="Theme.Material3.DayNight.Dialog">
     <!--设置dialog的背景-->
     <item name="android:windowBackground">@android:color/transparent</item>
     <!--设置无标题-->
@@ -133,10 +143,11 @@
     <item name="tabIndicatorColor">@color/colorPrimary</item>
     <item name="tabSelectedTextColor">@color/colorPrimary</item>
     <item name="tabTextColor">@color/text_gray_color</item>
+    <item name="tabBackground">@color/background_color</item>
   </style>
 
   <style name="KpaEntryDetailTextStyle">
-    <item name="android:drawablePadding">26dp</item>
+    <item name="android:drawablePadding">16dp</item>
     <item name="android:paddingStart">6dp</item>
     <item name="android:gravity">center_vertical</item>
     <item name="android:paddingTop">8dp</item>
@@ -202,6 +213,39 @@
     <item name="android:textColor">@color/text_black_grey_color</item>
     <item name="android:textColorHint">@color/text_hint_color</item>
     <item name="android:textSize">@dimen/text_size_normal</item>
+  </style>
+
+  <style name="KpaTextInputLayoutStyle">
+    <item name="android:height">50dp</item>
+  </style>
+
+  <style name="KpaEditTextStyleNew" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+    <item name="android:singleLine">true</item>
+    <item name="android:textColor">@color/text_black_grey_color</item>
+    <item name="android:textColorHint">@color/text_hint_color</item>
+    <item name="android:textSize">@dimen/text_size_normal</item>
+  </style>
+
+  <style name="KpaEditTextMultiLineStyleNew" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+    <item name="android:textColor">@color/text_black_grey_color</item>
+    <item name="android:textColorHint">@color/text_hint_color</item>
+    <item name="android:textSize">@dimen/text_size_normal</item>
+  </style>
+
+  <!--ShapeableImageView 圆 -->
+  <style name="CircleStyle">
+    <item name="cornerFamily">rounded</item>
+    <item name="cornerSize">50%</item>
+  </style>
+
+
+  <style name="KpaIconButton" parent="Widget.Material3.Button.ElevatedButton.Icon">
+    <item name="android:background">@drawable/ripple_white_selector</item>
+    <item name="android:textColor">@color/text_black_color</item>
+    <item name="android:textSize">@dimen/text_size_normal</item>
+    <item name="iconSize">30dp</item>
+    <item name="iconGravity">top</item>
+    <item name="iconTint">@color/color_icon_grey</item>
   </style>
 
 </resources>

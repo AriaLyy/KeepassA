@@ -230,6 +230,12 @@
 -keep class com.tencent.mars.** { *; }
 ################# xlog-end ##################
 
+################# viewbinding-start ##################
+-keep class * implements androidx.viewbinding.ViewBinding {
+  public * inflate(android.view.LayoutInflater, android.view.ViewGroup, boolean);
+}
+################# viewbinding-end ##################
+
 -keep class com.com.lyy.keepassa.baseapi.*{ *; }
 -dontwarn com.com.lyy.keepassa.baseapi.**
 -keep class * implements com.lyy.keepassa.baseapi.INotFreeLibService{ *; }

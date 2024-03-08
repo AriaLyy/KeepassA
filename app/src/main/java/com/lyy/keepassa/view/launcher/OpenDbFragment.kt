@@ -50,7 +50,6 @@ import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.StorageType
-import com.tencent.bugly.crashreport.BuglyLog
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -189,17 +188,8 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   /**
    * 显示验证指纹对话框
    */
-  @SuppressLint("RestrictedApi") @TargetApi(Build.VERSION_CODES.M)
+  @SuppressLint("RestrictedApi")
   private fun showBiometricPrompt() {
-    if (!isAdded) {
-      BuglyLog.w(TAG, "isAdd = false")
-      return
-    }
-    if (BaseApp.KDB != null && !BaseApp.isLocked) {
-      BuglyLog.d(TAG, "数据库已打开")
-      return
-    }
-
     modlue.getQuickUnlockRecord(openDbRecord, this)
       .observe(this, quickUnlockObserver)
   }

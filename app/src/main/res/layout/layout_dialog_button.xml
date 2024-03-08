@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+  <data>
+    <import type="android.text.TextUtils" />
+
+    <import type="android.view.View" />
+
+    <variable
+        name="enterText"
+        type="java.lang.CharSequence"
+        />
+    <variable
+        name="cancelText"
+        type="java.lang.CharSequence"
+        />
+    <variable
+        name="hintEnterBt"
+        type="Boolean"
+        />
+
+    <variable
+        name="hintCancelBt"
+        type="Boolean"
+        />
+    <variable
+        name="clicker"
+        type="com.lyy.keepassa.view.dialog.DialogBtnClicker"
+        />
+    <variable
+        name="enableEnterBt"
+        type="Boolean"
+        />
+  </data>
+
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="48dp"
+      >
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/ripple_white_selector"
+        android:onClick="@{(v) -> clicker.onCancel(v)}"
+        android:text="@{TextUtils.isEmpty(cancelText) ?  @string/cancel : cancelText}"
+        android:textColor="@color/selector_blue_gray_text_bg"
+        android:visibility="@{hintCancelBt ? View.GONE : View.VISIBLE, default=visible}"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/enter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/ripple_white_selector"
+        android:enabled="@{enableEnterBt, default=true}"
+        android:onClick="@{(v) -> clicker.onEnter(v)}"
+        android:text="@{TextUtils.isEmpty(enterText) ? @string/enter : enterText}"
+        android:textColor="@color/selector_blue_gray_text_bg"
+        android:visibility="@{hintEnterBt ? View.GONE : View.VISIBLE, default=visible}"
+        />
+
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:constraint_referenced_ids="cancel, enter"
+        app:flow_horizontalStyle="packed"
+        />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

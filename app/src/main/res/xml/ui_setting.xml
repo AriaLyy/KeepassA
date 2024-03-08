@@ -55,6 +55,12 @@
       app:key="@string/set_key_theme_style"
       app:title="@string/set_key_theme_style_title" />
 
+  <Preference
+      android:icon="@drawable/ic_lightbulb_on"
+      app:key="@string/set_key_tip_of_day"
+      app:title="@string/title_tip_of_day" />
+
+
   <!--  <SwitchPreference-->
   <!--      android:defaultValue="true"-->
   <!--      android:summaryOff="@string/set_key_title_fillet_bg_icon_turn_off"-->

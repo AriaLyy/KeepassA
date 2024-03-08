@@ -25,6 +25,7 @@ import com.lyy.keepassa.view.main.chain.DialogChain
 import com.lyy.keepassa.view.main.chain.DonateChain
 import com.lyy.keepassa.view.main.chain.IMainDialogInterceptor
 import com.lyy.keepassa.view.main.chain.PermissionsChain
+import com.lyy.keepassa.view.main.chain.TipChain
 import com.lyy.keepassa.view.main.chain.VersionLogChain
 import com.lyy.keepassa.widget.BubbleTextView
 import com.lyy.keepassa.widget.BubbleTextView.OnIconClickListener
@@ -93,6 +94,7 @@ class MainModule : BaseModule() {
         add(DevBirthdayChain())
         add(DonateChain())
         add(PermissionsChain())
+        // add(TipChain())
       }
       DialogChain(activity, list, 0).proceed(activity)
 

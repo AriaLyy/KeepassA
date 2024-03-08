@@ -42,13 +42,7 @@ private fun checkoutContextEffective(context: Context): Boolean {
   return true
 }
 
-fun ImageView.loadImg(context: Context, @DrawableRes resId: Int) {
-  if (checkoutContextEffective(context)) {
-    Glide.with(context).load(resId).into(this)
-  }
-}
-
-fun Button.loadBackground(context: Context, imgUrl: String?) {
+fun Button.loadBackground(imgUrl: String?) {
   if (checkoutContextEffective(context)) {
     Glide.with(context).asDrawable().load(imgUrl).into(object : SimpleTarget<Drawable>() {
       override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
@@ -58,44 +52,56 @@ fun Button.loadBackground(context: Context, imgUrl: String?) {
   }
 }
 
-fun ImageView.loadImg(context: Context, imgUrl: String?) {
-  if (checkoutContextEffective(context)) {
-    Glide.with(context).load(imgUrl).into(this)
-  }
-}
-
-fun ImageView.loadImg(context: Context, imgBm: Bitmap?) {
-  if (checkoutContextEffective(context) && imgBm != null && !imgBm.isRecycled) {
-    Glide.with(context).load(imgBm).into(this)
-  }
-}
-
-fun ImageView.loadImg(context: Context, byteArray: ByteArray?) {
-  if (checkoutContextEffective(context) && byteArray != null && byteArray.isNotEmpty()) {
-    Glide.with(context).load(byteArray).into(this)
-  }
-}
-
-fun AppCompatImageView.loadImg(context: Context, @DrawableRes resId: Int) {
+fun ImageView.loadImg(@DrawableRes resId: Int) {
   if (checkoutContextEffective(context)) {
     Glide.with(context).load(resId).into(this)
   }
 }
 
-fun AppCompatImageView.loadImg(context: Context, imgUrl: String?) {
+fun ImageView.loadImg(imgUrl: String?) {
   if (checkoutContextEffective(context)) {
     Glide.with(context).load(imgUrl).into(this)
   }
 }
 
-fun AppCompatImageView.loadImg(context: Context, imgBm: Bitmap?) {
+fun ImageView.loadImg(imgBm: Bitmap?) {
   if (checkoutContextEffective(context) && imgBm != null && !imgBm.isRecycled) {
     Glide.with(context).load(imgBm).into(this)
   }
 }
 
-fun AppCompatImageView.loadImg(context: Context, byteArray: ByteArray?) {
+fun ImageView.loadImg(byteArray: ByteArray?) {
   if (checkoutContextEffective(context) && byteArray != null && byteArray.isNotEmpty()) {
     Glide.with(context).load(byteArray).into(this)
+  }
+}
+
+fun AppCompatImageView.loadImg(@DrawableRes resId: Int) {
+  if (checkoutContextEffective(context)) {
+    Glide.with(context).load(resId).into(this)
+  }
+}
+
+fun AppCompatImageView.loadImg(imgUrl: String?) {
+  if (checkoutContextEffective(context)) {
+    Glide.with(context).load(imgUrl).into(this)
+  }
+}
+
+fun AppCompatImageView.loadImg(imgBm: Bitmap?) {
+  if (checkoutContextEffective(context) && imgBm != null && !imgBm.isRecycled) {
+    Glide.with(context).load(imgBm).into(this)
+  }
+}
+
+fun AppCompatImageView.loadImg(byteArray: ByteArray?) {
+  if (checkoutContextEffective(context) && byteArray != null && byteArray.isNotEmpty()) {
+    Glide.with(context).load(byteArray).into(this)
+  }
+}
+
+fun AppCompatImageView.loadImg(drawable: Drawable?) {
+  if (checkoutContextEffective(context) && drawable != null) {
+    Glide.with(context).load(drawable).into(this)
   }
 }

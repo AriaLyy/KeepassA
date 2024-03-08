@@ -1,37 +1,37 @@
 [versions]
-groovy = "3.0.5"
+groovy = "3.0.10"
 checkstyle = "8.37"
 minSdk = "23"
-compilesdk = "33"
-targetsdk = "32"
+compilesdk = "34"
+targetsdk = "33"
 ndk = "21.3.6528147"
-buildtools = "30.0.2"
+buildtools = "33.0.2"
 
-jetpack-appcompat = "1.5.1"
+jetpack-appcompat = "1.6.1"
 jetpack-material3 = "1.0.1"
-jetpack-material2 = "1.6.1"
+jetpack-material2 = "1.10.0"
 jetpack-constraintlayout = "2.1.4"
 jetpack-compose = "2.4.3"
 jetpack-multidex = "2.0.1"
 jetpack-aterial2 = "1.6.1"
-jetpack-room = "2.5.1"
-jetpack-lifecycle = "2.5.1"
+jetpack-room = "2.6.1"
+jetpack-lifecycle = "2.6.2"
 jetpack-viewpager2 = "1.0.0"
-jetpack-preference-ktx = "1.2.0"
-jetpack-workmanager = "2.7.1"
+jetpack-preference-ktx = "1.2.1"
+jetpack-workmanager = "2.8.1"
 jetpack-cardview = "1.0.0"
-jetpack-recyclerview = "1.2.1"
+jetpack-recyclerview = "1.3.2"
 jetpack-autofill = "1.1.0"
-jetpack-swiperefreshlayout = "1.2.0-alpha01"
+jetpack-swiperefreshlayout = "1.3.0-alpha01"
 jetpack-biometric = "1.1.0"
 jetpack-documentfile = "1.0.1"
 
 
-google-gson = "2.8.7"
+google-gson = "2.9.0"
 google-tink-android = "1.5.0"
 google-zxing = "3.4.1"
-google-billing-ktx = "4.0.0"
-google-play-services-base = "18.0.1"
+google-billing-ktx = "6.1.0"
+google-play-services-base = "18.2.0"
 
 squareup-retrofit = "2.9.0"
 squareup-okhttp3 = "4.10.0"
@@ -43,7 +43,7 @@ third-richtext = "3.0.8"
 third-licensesdialog = "2.1.0"
 third-immersionbar = "3.0.0"
 third-subsampling-scale-image-view = "3.10.0"
-third-eventbus = "3.2.0"
+third-eventbus = "3.3.1"
 third-lottie = "4.2.2"
 third-glide = "4.12.0"
 third-dropbox = "3.1.5"
@@ -52,26 +52,27 @@ third-easy-protector-release = "1.1.2"
 third-auto-size = "1.2.1"
 third-freereflection = "3.1.0"
 third-zxing-android-embedded = "4.3.0"
-third-blankj = "1.31.0"
+third-blankj = "1.31.1"
 third-timber = "5.0.1"
 third-spongycastle = "1.58.0.0"
 
 
-kotlin-coroutines = "1.5.1"
-kotlin-android-core = "1.7.0"
-kotlin = "1.7.10"
+kotlin-coroutines = "1.6.4"
+kotlin-android-core = "1.12.0"
+kotlin = "1.9.0"
 
-test-junit = '4.13.1'
-test-runner = '1.3.0'
-test-junut-ext = '1.1.2'
-test-espresso = '3.3.0'
-test-rules = '1.3.0'
+test-junit = '4.13.2'
+test-runner = '1.5.2'
+test-junut-ext = '1.1.5'
+test-espresso = '3.5.1'
+test-rules = '1.5.0'
+test-mockk = '1.13.9'
 
 tencent-wcdb = "1.0.8"
 tencent-vasdolly = "3.0.3"
 tencent-bugly-crashreport = "4.1.9"
 tencent-bugly-nativecrashreport = "3.9.2"
-tencent-mmkv = "1.2.13"
+tencent-mmkv = "1.2.15"
 tencent-andresguard-gradle-plugin = "1.2.21"
 
 ali-arouter-compiler = "1.5.2"
@@ -101,6 +102,7 @@ third-zxing-embedded = { module = "com.journeyapps:zxing-android-embedded", vers
 third-jodatime = { module = "joda-time:joda-time", version.ref = "third-jodatime" }
 third-utilcodex = { module = "com.blankj:utilcodex", version.ref = "third-blankj" }
 third-timber = { module = "com.jakewharton.timber:timber", version.ref = "third-timber" }
+third-BaseRecyclerViewAdapterHelper = {module = "io.github.cymchad:BaseRecyclerViewAdapterHelper", version = "3.0.14"}
 
 didi-drouter = { module = "io.github.didi:drouter-plugin-proxy", version = "1.0.2"} # drouter
 didi-drouter-api = { module = "io.github.didi:drouter-api", version = "2.3.0"}
@@ -169,6 +171,8 @@ test-android-runner = { module = "androidx.test:runner", version.ref = "test-run
 test-android-junit = { module = "androidx.test.ext:junit", version.ref = "test-junut-ext" }
 test-android-rules = { module = "androidx.test:rules", version.ref = "test-rules" }
 test-espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "test-espresso" }
+test-mockk = { module = "io.mockk:mockk", version.ref = "test-mockk" }
+test-mockk-android = { module = "io.mockk:mockk-android", version.ref = "test-mockk" }
 
 
 squareup-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "squareup-retrofit" }
@@ -187,7 +191,7 @@ groovy = ["groovy-core", "groovy-json", "groovy-nio"]
 jetpack-compose = ["jetpack-compose-ui-tooling", "jetpack-compose-ui-tooling-preview", "jetpack-compose-ui", "jetpack-compose-runtime", "jetpack-compose-material3"]
 jetpack-ui = ["jetpack-appcompat", "jetpack-material2", "jetpack-preference-ktx", "jetpack-viewpager2", "jetpack-cardview", "jetpack-recyclerview", "jetpack-constraintlayout", "jetpack-swiperefreshlayout"]
 jetpack-lifecycle = ["jetpack-lifecycle-viewmodel-ktx", "jetpack-lifecycle-livedata-ktx", "jetpack-lifecycle-common-java8"]
-android-test = ["test-android-runner", "test-android-junit", "test-android-rules", "test-espresso"]
+android-test = ["test-android-runner", "test-android-junit", "test-android-rules", "test-espresso", "test-mockk-android"]
 android-kotlin = ["kotlin-stdlib-jdk8", "kotlin-reflect", "kotlin-core-ktx", "kotlin-coroutines-android"]
 
 third-eventbus = ["third-eventbus", "third-eventbus-compiler"]

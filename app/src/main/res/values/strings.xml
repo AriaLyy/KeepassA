@@ -18,7 +18,7 @@
         <item>Attachment</item>
         <item>TOTP</item>
         <item>Tag</item>
-        <item>Cover link</item>
+        <item>URL</item>
         <item>Expiration date</item>
     </string-array>
     <string-array name="create_normal_group">
@@ -44,6 +44,7 @@
     <string name="hint_set_password">Set password</string>
     <string name="hint_input_password">Enter a password of 6–16 digits</string>
     <string name="hint_enter_password">Confirm password</string>
+    <string name="hint_confirm">Confirm password</string>
     <string name="help_create_db">Create v4 KeepPass database by default</string>
     <string name="help_create_group">Pick a group name of 16 or fewer characters</string>
     <string name="encrypt_type">Encryption</string>
@@ -411,4 +412,22 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="fail_unsupported_Systems_O">Only support P or higher system</string>
     <string name="hint_webdav_jgy">Please use the password in [Account->Security->Third-party Applications Management].</string>
     <string name="hint_auto_fill_save">Associate current data to existing entries?</string>
+    <string name="hint_dont_show_tips">Don\'t show tips</string>
+    <string name="title_tip_of_day">Tip of the day</string>
+    <string name="base_info">Base info</string>
+    <string name="tag">Tag</string>
+    <string name="collection">Collection</string>
+    <string name="totp">TOTP</string>
+    <string name="add_attr_str">Add attribute</string>
+    <string name="delete">Delete</string>
+    <string name="create_tag">New tag</string>
+    <string name="tag_name">Tag name</string>
+    <string name="add_tag">Add tag</string>
+    <string name="open_file">Open File</string>
+    <string name="modify_str_attr">Modify properties</string>
+    <string name="error_file">The file is abnormal, please delete &lt;font color=#FF0000&gt;%s&lt;/font&gt;</string>
+    <string name="not_souper_otp">Unsupported totp</string>
+    <string name="modify_totp">Modify OTP token</string>
+    <string name="error_totp">Error OTP</string>
+    <string name="file_save_success">Attachment saved successfully</string>
 </resources>

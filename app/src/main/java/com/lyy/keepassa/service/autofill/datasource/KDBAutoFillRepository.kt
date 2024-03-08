@@ -118,7 +118,7 @@ object KDBAutoFillRepository {
       val appName = getAppName(context, apkPkgName)
       entry.setTitle(appName ?: "newEntry", BaseApp.KDB!!.pm)
       entry.icon = PwIconStandard(0)
-      KpaUtil.kdbHandlerService.addEntry(entry as PwEntryV4)
+      KpaUtil.kdbHandlerService.createEntry(entry as PwEntryV4)
     } else {
       entry = listStorage[0]
       Timber.w("已存在含有【$apkPkgName】的条目，将更新条目")

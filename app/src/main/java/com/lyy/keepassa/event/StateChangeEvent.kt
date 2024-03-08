@@ -40,5 +40,6 @@ enum class EntryState {
    * resume entry from recycle bin or move
    */
   MOVE,
+  SAVE,
   UNKNOWN
 }

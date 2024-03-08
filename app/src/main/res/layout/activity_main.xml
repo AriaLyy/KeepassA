@@ -141,6 +141,11 @@
             />
       </com.google.android.material.tabs.TabLayout>
 
+      <View
+          android:layout_width="match_parent"
+          android:background="@color/color_33666666"
+          android:layout_height="1dp"/>
+
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -157,10 +162,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginRight="24dp"
         app:layout_behavior="com.lyy.keepassa.widget.MainExpandFloatActionButtonBehavior"
         />
+
 
     <FrameLayout
         android:id="@+id/container"

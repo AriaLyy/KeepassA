@@ -32,12 +32,12 @@ import com.lyy.keepassa.util.HitUtil
 class EntryDetailStrPopMenu(
   private val context: FragmentActivity,
   view: View,
-  private val str: ProtectedString
+  private val str: ProtectedString,
+  private var showPass: Boolean = true // true：菜单（显示密码），false：菜单(隐藏密码)
 ) : IPopMenu {
   private val popup: PopupMenu = PopupMenu(context, view, Gravity.END)
   private val help: MenuPopupHelper
   private var showPassCallback: OnShowPassCallback? = null
-  private var showPass = true
 
   interface OnShowPassCallback {
     fun showPass(showPass: Boolean)
@@ -52,7 +52,11 @@ class EntryDetailStrPopMenu(
     // 是否显示打开url
     popup.menu.findItem(R.id.open_url).isVisible =
       str.toString()
-          .startsWith("http", ignoreCase = true)
+        .startsWith("http", ignoreCase = true)
+
+    if (!showPass) {
+      setHidePass()
+    }
 
     // 以下代码为强制显示icon
     val mPopup = ReflectionUtil.getField(PopupMenu::class.java, "mPopup")
@@ -63,14 +67,16 @@ class EntryDetailStrPopMenu(
       when (item.itemId) {
         R.id.copy_clip -> {
           ClipboardUtil.get()
-              .copyDataToClip(str.toString())
+            .copyDataToClip(str.toString())
           HitUtil.toaskShort(context.getString(R.string.hint_copy_to_clip))
         }
+
         R.id.open_url -> {
           val uri: Uri = Uri.parse(str.toString())
           val intent = Intent(Intent.ACTION_VIEW, uri)
           context.startActivity(intent)
         }
+
         R.id.show_pass -> {
           if (showPassCallback != null) {
             showPassCallback!!.showPass(showPass)
@@ -111,5 +117,4 @@ class EntryDetailStrPopMenu(
   fun getPopMenu(): PopupMenu {
     return popup
   }
-
 }

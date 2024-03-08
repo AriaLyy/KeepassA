@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="54dp"
+    android:background="@drawable/ripple_white_selector"
+    >
+
+  <TextView
+      android:id="@+id/title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      android:layout_marginTop="8dp"
+      android:textColor="@color/text_gray_color"
+      android:textSize="@dimen/text_size_smallest"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:text="标题"
+      />
+
+  <com.lyy.keepassa.widget.pb.RoundProgressBarWidthNumber
+      android:id="@+id/rpbBar"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:progress="60"
+      android:visibility="gone"
+      app:layout_constraintBottom_toBottomOf="@+id/title"
+      app:layout_constraintStart_toEndOf="@+id/title"
+      app:layout_constraintTop_toTopOf="@+id/title"
+      app:radius="8dp"
+      app:progress_text_color="@color/text_blue_color"
+      app:progress_text_size="8sp"
+      app:progress_show_percent="false"
+      app:progress_unreached_bar_height="1dp"
+      />
+
+
+  <TextView
+      android:id="@+id/value"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentStart="true"
+      android:layout_marginTop="4dp"
+      android:textColor="@color/text_black_grey_color"
+      android:textSize="@dimen/text_size_smaller"
+      app:layout_constraintStart_toStartOf="@id/title"
+      app:layout_constraintTop_toBottomOf="@+id/title"
+      tools:text="sss"
+      />
+
+  <TextView
+      android:id="@+id/add_more"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="16dp"
+      android:layout_marginTop="8dp"
+      android:drawablePadding="16dp"
+      android:gravity="center_vertical"
+      android:paddingBottom="8dp"
+      android:paddingTop="8dp"
+      android:text="@string/add_attr_str"
+      android:textColor="@color/text_black_color"
+      android:textSize="@dimen/text_size_normal"
+      android:visibility="gone"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:ignore="RtlSymmetry"
+      app:drawableStartCompat="@drawable/ic_add_24px"
+      />
+
+  <androidx.appcompat.widget.AppCompatImageView
+      android:id="@+id/ivEye"
+      android:layout_width="24dp"
+      android:layout_height="24dp"
+      android:visibility="gone"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:srcCompat="@drawable/selector_pass_visibility"
+      tools:visibility="visible"
+      />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
