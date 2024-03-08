@@ -430,4 +430,5 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="modify_totp">Modify OTP token</string>
     <string name="error_totp">Error OTP</string>
     <string name="file_save_success">Attachment saved successfully</string>
+    <string name="options">Options</string>
 </resources>
