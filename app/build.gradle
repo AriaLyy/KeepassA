@@ -29,7 +29,7 @@ android {
     minSdkVersion libs.versions.minSdk.get().toInteger()
     targetSdkVersion libs.versions.targetsdk.get().toInteger()
     versionCode 61
-    versionName 2.4.5
+    versionName "2.4.5"
     multiDexEnabled true
 
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
