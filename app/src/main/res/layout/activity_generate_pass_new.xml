@@ -40,6 +40,8 @@
               android:layout_marginEnd="12dp"
               android:hint="@string/hint_pass_null"
               android:imeOptions="actionNext"
+              android:textColor="@color/text_black_color"
+              android:textSize="@dimen/text_size_normal"
               style="@style/KpaEditTextStyleNew"
               />
         </com.google.android.material.textfield.TextInputLayout>
@@ -85,7 +87,6 @@
             android:layout_marginTop="12dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvOptions"
-            app:startIconDrawable="copy"
             >
 
           <com.google.android.material.textfield.TextInputEditText
@@ -104,9 +105,9 @@
             android:id="@+id/slider"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:value="16.0"
-            android:valueFrom="0.0"
-            android:valueTo="128.0"
+            android:value="16"
+            android:valueFrom="0"
+            android:valueTo="128"
             app:layout_constraintBottom_toBottomOf="@+id/tlPassLen"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tlPassLen"
@@ -206,7 +207,7 @@
             android:id="@+id/tvBracketChar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="()<>{}[]"
+            android:text="@string/hint_bracket_char"
             android:textColor="@color/text_black_color"
             android:textSize="@dimen/text_size_biggest"
             app:layout_constraintBottom_toBottomOf="@+id/scBracketChar"

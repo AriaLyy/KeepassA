@@ -16,21 +16,24 @@ import android.text.TextUtils
 import android.widget.CompoundButton
 import android.widget.CompoundButton.OnCheckedChangeListener
 import androidx.core.widget.doAfterTextChanged
+import com.google.android.material.slider.Slider
+import com.google.android.material.slider.Slider.OnSliderTouchListener
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
-import com.lyy.keepassa.databinding.ActivityGeneratePassBinding
+import com.lyy.keepassa.databinding.ActivityGeneratePassNewBinding
+import com.lyy.keepassa.util.ClipboardUtil
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.PasswordBuildUtil
-import com.lyy.keepassa.widget.discreteSeekBar.DiscreteSeekBar
-import com.lyy.keepassa.widget.discreteSeekBar.DiscreteSeekBar.OnProgressChangeListener
+import com.lyy.keepassa.util.doClick
 
 /**
  * 密码生成器
  */
-class GeneratePassActivity : BaseActivity<ActivityGeneratePassBinding>(), OnCheckedChangeListener {
+class GeneratePassActivity : BaseActivity<ActivityGeneratePassNewBinding>(),
+  OnCheckedChangeListener {
 
   private lateinit var generater: PasswordBuildUtil
-  private var passLen = 6
+  private var passLen = 16
   private var isUserInputPass = false
 
   companion object {
@@ -38,66 +41,78 @@ class GeneratePassActivity : BaseActivity<ActivityGeneratePassBinding>(), OnChec
   }
 
   override fun setLayoutId(): Int {
-    return R.layout.activity_generate_pass
+    return R.layout.activity_generate_pass_new
   }
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
     toolbar.title = getString(R.string.pass_generater)
-    binding.cancel.setOnClickListener {
-      finishAfterTransition()
-    }
-    binding.passLen.setText("$passLen")
-    binding.passLenProgress.setOnProgressChangeListener(object : OnProgressChangeListener {
-      override fun onProgressChanged(
-        seekBar: DiscreteSeekBar?,
-        value: Int,
-        fromUser: Boolean
-      ) {
+    // binding.cancel.setOnClickListener {
+    //   finishAfterTransition()
+    // }
+    binding.edPassLen.setText("$passLen")
+
+    binding.slider.addOnSliderTouchListener(object : OnSliderTouchListener {
+      override fun onStartTrackingTouch(slider: Slider) {
+      }
+
+      override fun onStopTrackingTouch(slider: Slider) {
         isUserInputPass = false
-        passLen = value
-        binding.passLen.setText("$value")
+        passLen = slider.value.toInt()
+        binding.edPassLen.setText("$passLen")
       }
-
-      override fun onStartTrackingTouch(seekBar: DiscreteSeekBar?) {
-      }
-
-      override fun onStopTrackingTouch(seekBar: DiscreteSeekBar?) {
-      }
-
     })
-    generater = PasswordBuildUtil.getInstance()
-    binding.upper.setOnCheckedChangeListener(this)
-    binding.lower.setOnCheckedChangeListener(this)
-    binding.numer.setOnCheckedChangeListener(this)
-    binding.minus.setOnCheckedChangeListener(this)
-    binding.underline.setOnCheckedChangeListener(this)
-    binding.space.setOnCheckedChangeListener(this)
-    binding.special.setOnCheckedChangeListener(this)
-    binding.bracket.setOnCheckedChangeListener(this)
 
-    binding.upper.isChecked = true
-    binding.lower.isChecked = true
-    binding.numer.isChecked = true
+    generater = PasswordBuildUtil.getInstance()
+    binding.scUAZ.setOnCheckedChangeListener(this)
+    binding.scLAZ.setOnCheckedChangeListener(this)
+    binding.scNum.setOnCheckedChangeListener(this)
+    binding.scCh.setOnCheckedChangeListener(this)
+    binding.scBracketChar.setOnCheckedChangeListener(this)
+    binding.scSpace.setOnCheckedChangeListener(this)
+
+    binding.scUAZ.isChecked = true
+    binding.scLAZ.isChecked = true
+    binding.scNum.isChecked = true
+    binding.scCh.isChecked = true
     generatePass(passLen)
 
-    binding.enter.setOnClickListener {
+    binding.ivRefresh.doClick {
       if (checkParamsIsInvalid()) {
         HitUtil.toaskShort(getString(R.string.error_genera_params))
-        return@setOnClickListener
+        return@doClick
       }
-      val intent = Intent()
-      intent.putExtra(DATA_PASS_WORD, binding.passEdit.text.toString().trim())
-      setResult(Activity.RESULT_OK, intent)
-      finishAfterTransition()
+      generatePass(passLen)
     }
-    binding.passLen.doAfterTextChanged { text ->
+
+    binding.ivCopy.doClick {
+      if (checkParamsIsInvalid()) {
+        HitUtil.toaskShort(getString(R.string.error_genera_params))
+        return@doClick
+      }
+      ClipboardUtil.get()
+        .copyDataToClip(binding.edPass.text.toString())
+    }
+
+
+    binding.edPassLen.doAfterTextChanged { text ->
       if (!TextUtils.isEmpty(text)) {
         passLen = text.toString()
-            .toInt()
+          .toInt()
         generatePass(passLen)
       }
     }
+
+    binding.slider.setLabelFormatter {
+      "${it.toInt()}"
+    }
+  }
+
+  override fun finishAfterTransition() {
+    val intent = Intent()
+    intent.putExtra(DATA_PASS_WORD, binding.edPass.text.toString().trim())
+    setResult(Activity.RESULT_OK, intent)
+    super.finishAfterTransition()
   }
 
   /**
@@ -105,14 +120,12 @@ class GeneratePassActivity : BaseActivity<ActivityGeneratePassBinding>(), OnChec
    * @return true: 条件无效
    */
   private fun checkParamsIsInvalid(): Boolean {
-    return !binding.upper.isChecked
-        && !binding.lower.isChecked
-        && !binding.numer.isChecked
-        && !binding.minus.isChecked
-        && !binding.underline.isChecked
-        && !binding.space.isChecked
-        && !binding.special.isChecked
-        && !binding.bracket.isChecked
+    return !binding.scUAZ.isChecked
+      && !binding.scLAZ.isChecked
+      && !binding.scNum.isChecked
+      && !binding.scCh.isChecked
+      && !binding.scBracketChar.isChecked
+      && !binding.scSpace.isChecked
   }
 
   /**
@@ -121,37 +134,33 @@ class GeneratePassActivity : BaseActivity<ActivityGeneratePassBinding>(), OnChec
    */
   private fun generatePass(len: Int): String {
     if (checkParamsIsInvalid()) {
-      binding.passEdit.setText("")
+      binding.edPass.setText("")
       return ""
     }
     generater.clear()
-    if (binding.upper.isChecked) {
+    if (binding.scUAZ.isChecked) {
       generater.addUpChar()
     }
-    if (binding.lower.isChecked) {
+    if (binding.scLAZ.isChecked) {
       generater.addLowerChar()
     }
-    if (binding.numer.isChecked) {
+    if (binding.scNum.isChecked) {
       generater.addNumChar()
     }
-    if (binding.minus.isChecked) {
+    if (binding.scCh.isChecked) {
       generater.addMinus()
-    }
-    if (binding.underline.isChecked) {
       generater.addUnderline()
-    }
-    if (binding.space.isChecked) {
-      generater.addSpaceChar()
-    }
-    if (binding.special.isChecked) {
       generater.addSymbolChar()
     }
-    if (binding.bracket.isChecked) {
+    if (binding.scSpace.isChecked) {
+      generater.addSpaceChar()
+    }
+    if (binding.scBracketChar.isChecked) {
       generater.addBracketChar()
     }
 
     val pass = generater.builder(len)
-    binding.passEdit.setText(pass)
+    binding.edPass.setText(pass)
     return pass
   }
 
