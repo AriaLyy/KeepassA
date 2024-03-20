@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/background_color"
+      android:orientation="vertical"
+      >
+
+    <include layout="@layout/layout_action_bar" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        >
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          >
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlPass"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toStartOf="@+id/ivCopy"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+          <com.google.android.material.textfield.TextInputEditText
+              android:id="@+id/edPass"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginEnd="12dp"
+              android:hint="@string/hint_pass_null"
+              android:imeOptions="actionNext"
+              android:textColor="@color/text_black_color"
+              android:textSize="@dimen/text_size_normal"
+              style="@style/KpaEditTextStyleNew"
+              />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivCopy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/ripple_white_selector"
+            app:layout_constraintBottom_toBottomOf="@+id/tlPass"
+            app:layout_constraintEnd_toStartOf="@+id/ivRefresh"
+            app:layout_constraintTop_toTopOf="@+id/tlPass"
+            app:srcCompat="@drawable/ic_baseline_content_copy_24"
+            />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ripple_white_selector"
+            app:layout_constraintBottom_toBottomOf="@+id/tlPass"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tlPass"
+            app:srcCompat="@drawable/ic_refresh_black_24dp"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvOptions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/options"
+            android:textColor="@color/text_black_color"
+            android:textSize="@dimen/text_size_normal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tlPass"
+            />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlPassLen"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvOptions"
+            >
+
+          <com.google.android.material.textfield.TextInputEditText
+              android:id="@+id/edPassLen"
+              android:layout_width="60dp"
+              android:layout_height="match_parent"
+              android:layout_gravity="center_vertical"
+              android:gravity="center_horizontal"
+              android:inputType="number"
+              android:text="16"
+              />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/slider"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:value="16"
+            android:valueFrom="0"
+            android:valueTo="128"
+            app:layout_constraintBottom_toBottomOf="@+id/tlPassLen"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tlPassLen"
+            app:layout_constraintTop_toBottomOf="@+id/tvOptions"
+            app:layout_constraintTop_toTopOf="@+id/tlPassLen"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvUAZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="A-Z"
+            android:textColor="@color/text_black_color"
+            android:textSize="@dimen/text_size_biggest"
+            app:layout_constraintBottom_toBottomOf="@+id/scUAZ"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/scUAZ"
+            />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/scUAZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:checked="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/slider"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvLAZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="a-z"
+            android:textColor="@color/text_black_color"
+            android:textSize="@dimen/text_size_biggest"
+            app:layout_constraintBottom_toBottomOf="@+id/scLAZ"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/scLAZ"
+            />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/scLAZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:checked="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/scUAZ"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0-9"
+            android:textColor="@color/text_black_color"
+            android:textSize="@dimen/text_size_biggest"
+            app:layout_constraintBottom_toBottomOf="@+id/scNum"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/scNum"
+            />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/scNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:checked="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/scLAZ"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvCh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="`~!@#$%^*-_+..."
+            android:textColor="@color/text_black_color"
+            android:textSize="@dimen/text_size_biggest"
+            app:layout_constraintBottom_toBottomOf="@+id/scCh"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/scCh"
+            />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/scCh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:checked="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/scNum"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvBracketChar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hint_bracket_char"
+            android:textColor="@color/text_black_color"
+            android:textSize="@dimen/text_size_biggest"
+            app:layout_constraintBottom_toBottomOf="@+id/scBracketChar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/scBracketChar"
+            />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/scBracketChar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/scCh"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvscSpace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/space"
+            android:textColor="@color/text_black_color"
+            android:textSize="@dimen/text_size_biggest"
+            app:layout_constraintBottom_toBottomOf="@+id/scSpace"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/scSpace"
+            />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/scSpace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/scBracketChar"
+            />
+
+      </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+  </LinearLayout>
+
+</layout>

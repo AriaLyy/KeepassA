@@ -1,5 +1,9 @@
+### 2.4.6 (2024/03/20)
+* new: New password generation ui
+* fix: Fix bug
+
 ### 2.4.5 (2024/03/07)
-* fix: fix bug
+* fix: Fix bug
 
 ### 2.4.2（2024/02/26）
 * new: New details page

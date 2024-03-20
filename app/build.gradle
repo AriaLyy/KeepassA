@@ -28,8 +28,8 @@ android {
     applicationId "com.lyy.keepassa"
     minSdkVersion libs.versions.minSdk.get().toInteger()
     targetSdkVersion libs.versions.targetsdk.get().toInteger()
-    versionCode 61
-    versionName "2.4.5"
+    versionCode 62
+    versionName "2.4.6"
     multiDexEnabled true
 
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -65,6 +65,10 @@ android {
       resValue("string", "PORT_NUMBER", "10086") // 端口
       resValue("string", "DB_PASSWORD_keepassA.db", "stVz7QxFgzA7yMnH") // sqlcipher 加密密码
       signingConfig signingConfigs.release
+
+      firebaseCrashlytics {
+        mappingFileUploadEnabled false
+      }
     }
 
     release {
@@ -77,6 +81,10 @@ android {
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
       // wcdb 需要增加这个混淆
       signingConfig signingConfigs.release
+
+      firebaseCrashlytics {
+        mappingFileUploadEnabled true
+      }
     }
   }
 
@@ -281,4 +289,4 @@ gradle.startParameter.taskNames.forEach {
   }
 }
 
-apply from: 'firebase.gradle'
+//apply from: 'firebase.gradle'

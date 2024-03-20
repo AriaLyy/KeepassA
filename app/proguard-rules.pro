@@ -38,6 +38,8 @@
 #-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 #忽略警告
 #-ignorewarning
+-keepattributes SourceFile,LineNumberTable   # Keep file names and line numbers.
+-keep public class * extends java.lang.Exception  # Optional: Keep custom exceptions.
 ################################### 混淆配置 end ############################################
 
 

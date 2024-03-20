@@ -211,7 +211,11 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     }
 
     binding.tvChar.visibility = View.VISIBLE
-    binding.tvChar.text = pwEntry.title.substring(0, 1).toUpperCase(Locale.getDefault())
+    if (pwEntry.title.isEmpty()){
+      binding.tvChar.text = "#"
+    }else{
+      binding.tvChar.text = pwEntry.title.substring(0, 1).uppercase(Locale.getDefault())
+    }
 
     binding.ivIcon.setBackgroundColor(color)
   }
