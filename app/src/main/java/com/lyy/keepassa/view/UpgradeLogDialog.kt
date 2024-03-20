@@ -26,6 +26,7 @@ import com.lyy.keepassa.databinding.DialogUpgradeBinding
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.FingerprintUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.view.dialog.DonateDialog
 import com.lyy.keepassa.view.fingerprint.FingerprintActivity
@@ -54,7 +55,8 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
     super.initData()
     scope.launch {
       var context = ""
-      val fileName = "version_log/version_log_${getVersionSuffix()}.md"
+      // val fileName = "version_log/version_log_${getVersionSuffix()}.md"
+      val fileName = "version_log/version_log_${if (KpaUtil.isChina()) "zh_CN" else "en"}.md"
       withContext(Dispatchers.IO) {
 
 //        val ins  = requireContext().assets.open(fileName)
