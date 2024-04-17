@@ -180,10 +180,12 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
     ARouter.getInstance().inject(this)
     module = ViewModelProvider(this)[CreateEntryModule::class.java]
 
-    createHandler = when (createEnum) {
-      CREATE -> CreateEntryHandler(this)
-      MODIFY -> ModifyEntryHandler(this)
+    createHandler = if (createEnum == MODIFY) {
+      ModifyEntryHandler(this)
+    } else {
+      CreateEntryHandler(this)
     }
+
     createHandler.bindData()
 
     handleTopBarLayout()

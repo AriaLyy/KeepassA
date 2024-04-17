@@ -348,29 +348,27 @@ class KdbHandlerService : IProvider {
       Timber.d("db is locked")
       return
     }
-    scope.launch {
+    scope.launch(Dispatchers.IO) {
       mutex.withLock {
         BaseApp.KDB?.let { kdb ->
-          withContext(Dispatchers.IO) {
-            val b = kdbHelper.save(kdb)
-            Timber.d("保存后的数据库hash：${kdb.hashCode()}，num = ${kdb.pm.entries.size}")
-            delay(1000)
-            if (uploadDb) {
-              val response = DbSynUtil.uploadSyn(BaseApp.dbRecord!!, false)
-              Timber.i(response.msg)
+          val b = kdbHelper.save(kdb)
+          Timber.d("保存后的数据库hash：${kdb.hashCode()}，num = ${kdb.pm.entries.size}")
+          delay(1000)
+          if (uploadDb) {
+            val response = DbSynUtil.uploadSyn(BaseApp.dbRecord!!, false)
+            Timber.i(response.msg)
 
-              withContext(Dispatchers.Main) {
-                callback.invoke(response.code)
-              }
-              entryStateChangeFlow.emit(EntryStateChangeEvent(SAVE))
-              return@withContext
-            }
-            val code = if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
             withContext(Dispatchers.Main) {
-              callback.invoke(code)
+              callback.invoke(response.code)
             }
             entryStateChangeFlow.emit(EntryStateChangeEvent(SAVE))
+            return@withLock
           }
+          val code = if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
+          withContext(Dispatchers.Main) {
+            callback.invoke(code)
+          }
+          entryStateChangeFlow.emit(EntryStateChangeEvent(SAVE))
         }
 
       }

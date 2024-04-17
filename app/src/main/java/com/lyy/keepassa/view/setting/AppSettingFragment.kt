@@ -372,7 +372,9 @@ class AppSettingFragment : PreferenceFragmentCompat() {
       val sysLan = LanguageUtils.getSystemLanguage()
       val temp = LANGUAGE_MAP.entries.find { it.value.language == sysLan.language }
       val index = LANGUAGE_MAP.entries.indexOf(temp)
-      langPre?.setValueIndex(index)
+      if (index in LANGUAGE_MAP.entries.indices){
+        langPre?.setValueIndex(index)
+      }
     }
     langPre?.setOnPreferenceChangeListener { _, newValue ->
       val lang = LANGUAGE_MAP[newValue.toString()
