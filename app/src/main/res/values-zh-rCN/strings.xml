@@ -449,4 +449,5 @@
     <string name="modify_totp">修改令牌</string>
     <string name="error_totp">错误的totp</string>
     <string name="file_save_success">附件保存成功</string>
+    <string name="options">选项</string>
 </resources>

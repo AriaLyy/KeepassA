@@ -9,7 +9,7 @@ buildtools = "33.0.2"
 
 jetpack-appcompat = "1.6.1"
 jetpack-material3 = "1.0.1"
-jetpack-material2 = "1.10.0"
+jetpack-material2 = "1.11.0"
 jetpack-constraintlayout = "2.1.4"
 jetpack-compose = "2.4.3"
 jetpack-multidex = "2.0.1"
