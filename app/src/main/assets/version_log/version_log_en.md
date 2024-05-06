@@ -1,3 +1,6 @@
+### 2.4.7 (2024/04/30)
+* fix: Fix bug
+
 ### 2.4.6 (2024/03/20)
 * new: New password generation ui
 * fix: Fix bug

@@ -229,4 +229,11 @@
     <string name="ban_fingerprint">Нет разблокировки отпечатком пальца</string>
     <string name="quick_use_fingerprint">Использовать отпечаток пальца для быстрой разблокировки</string>
     <string name="error_genera_params">Выберите хотя бы 1 тип</string>
+    <string name="copy_totp">Копировать TOTP токен</string>
+    <string name="autofill_sign_in_prompt">Автозаполнение пароля с помощью KeePassA</string>
+    <string name="title">Название</string>
+    <string name="hint_confirm">Подтвердить пароль</string>
+    <string name="set_open_auto_fill_title">Сервис автозаполнения</string>
+    <string name="clean_clip_time">Очищать буфер обмена</string>
+    <string name="clean_clip_time_summary">После копирования пароля, очищать буфер обмена через %s</string>
 </resources>
