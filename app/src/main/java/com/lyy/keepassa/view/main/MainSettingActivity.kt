@@ -33,12 +33,14 @@ import com.lyy.keepassa.databinding.ActivityChangeDbBinding
 import com.lyy.keepassa.event.CheckEnvEvent
 import com.lyy.keepassa.event.ModifyDbNameEvent
 import com.lyy.keepassa.router.ActivityRouter
+import com.lyy.keepassa.router.ServiceRouter
 import com.lyy.keepassa.service.feat.XLogFeature
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.LanguageUtil
+import com.lyy.keepassa.util.hasGms
 import com.lyy.keepassa.view.dialog.DonateDialog
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
@@ -143,19 +145,23 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
         startArrowAnim()
 //        finishAfterTransition()
       }
+
       R.id.change_setting -> {
         Routerfit.create(ActivityRouter::class.java, this).toDbSetting(
           opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
         )
       }
+
       R.id.app_setting -> {
         Routerfit.create(ActivityRouter::class.java, this).toAppSetting(
           opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
         )
       }
+
       R.id.change_db -> {
         KeepassAUtil.instance.turnLauncher()
       }
+
       R.id.app_feedback -> {
 //        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
 //          data = Uri.parse("mailto:") // 确保只有邮件应用能接收
@@ -181,6 +187,7 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
           data = Uri.parse("https://github.com/AriaLyy/KeepassA/issues")
         })
       }
+
       R.id.app_favorite -> {
         if (AndroidUtils.hasAnyMarket(this)) {
           val markIntent = Intent(Intent.ACTION_VIEW).apply {
@@ -188,17 +195,20 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
           }
           startActivity(markIntent)
-        } else {
-          HitUtil.toaskShort(getString(R.string.mark_not_exit))
+          return
         }
+        HitUtil.toaskShort(getString(R.string.mark_not_exit))
       }
+
       R.id.tvDonate -> {
         val donateDialog = DonateDialog()
         donateDialog.show()
       }
+
       R.id.tvTranslate -> {
         KpaUtil.openUrlWithBrowser("https://hosted.weblate.org/projects/keepassa/string/")
       }
+
       R.id.debug -> {
         val sendIntent = Intent().apply {
           action = Intent.ACTION_SEND

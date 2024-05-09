@@ -450,4 +450,10 @@
     <string name="error_totp">错误的totp</string>
     <string name="file_save_success">附件保存成功</string>
     <string name="options">选项</string>
+    <string name="review_title">评论</string>
+    <string name="review_enter">开始评论</string>
+    <string name="review_cancel">这次不行</string>
+    <string name="review_fail">提交失败，请检查网络</string>
+    <string name="review_not_hint">不再提示</string>
+    <string name="review_like_app">喜欢我们的应用吗？请给我们评分吧！</string>
 </resources>

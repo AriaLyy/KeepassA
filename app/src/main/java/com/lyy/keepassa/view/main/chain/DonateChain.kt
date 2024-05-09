@@ -8,7 +8,6 @@
 package com.lyy.keepassa.view.main.chain
 
 import android.content.Context
-import androidx.core.content.edit
 import com.lyy.keepassa.base.Constance
 import com.lyy.keepassa.view.dialog.DonateDialog
 
@@ -22,13 +21,8 @@ class DonateChain : IMainDialogInterceptor {
     val ac = chain.activity
     val pre = ac.getSharedPreferences(Constance.PRE_FILE_NAME, Context.MODE_PRIVATE)
     val startNum = pre.getInt(Constance.PRE_KEY_START_APP_NUM, 0)
-    if (startNum >= Constance.START_DONATE_JUDGMENT_VALUE) {
+    if (startNum % Constance.START_DONATE_JUDGMENT_VALUE == 0) {
       val donateDialog = DonateDialog()
-      donateDialog.setOnDismissListener {
-        pre.edit {
-          putInt(Constance.PRE_KEY_START_APP_NUM, 0)
-        }
-      }
       donateDialog.show()
       return MainDialogResponse(MainDialogResponse.RESPONSE_OK)
     }

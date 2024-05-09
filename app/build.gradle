@@ -28,8 +28,8 @@ android {
     applicationId "com.lyy.keepassa"
     minSdkVersion libs.versions.minSdk.get().toInteger()
     targetSdkVersion libs.versions.targetsdk.get().toInteger()
-    versionCode 71
-    versionName "2.4.7"
+    versionCode 72
+    versionName "2.5.0"
     multiDexEnabled true
 
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -276,6 +276,8 @@ dependencies {
   // // =========================== 三方库 end =====================================
   implementation(libs.google.gms.billing)
   implementation(libs.google.gms.base)
+  implementation(libs.google.review)
+  implementation(libs.google.review.ktx)
 
   //firebase
   implementation platform('com.google.firebase:firebase-bom:32.7.1')

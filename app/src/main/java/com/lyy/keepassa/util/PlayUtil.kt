@@ -13,7 +13,7 @@ import com.google.android.gms.common.GoogleApiAvailability
 
 object PlayUtil {
 
-  fun playServiceExist(context: Activity):Boolean {
+  fun playServiceExist(context: Activity): Boolean {
     // 验证是否已在此设备上安装并启用Google Play服务，以及此设备上安装的旧版本是否为此客户端所需的版本
     val code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context)
     if (code == ConnectionResult.SUCCESS) {
@@ -47,3 +47,5 @@ object PlayUtil {
     return false
   }
 }
+
+fun Activity.hasGms() = PlayUtil.playServiceExist(this)

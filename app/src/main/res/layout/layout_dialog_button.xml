@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     >
 
   <data>
     <import type="android.text.TextUtils" />
 
     <import type="android.view.View" />
+    <import type="android.content.res.ColorStateList"/>
 
     <variable
         name="enterText"
@@ -33,6 +35,14 @@
         name="enableEnterBt"
         type="Boolean"
         />
+    <variable
+        name="cancelTextColor"
+        type="java.lang.Integer"
+        />
+    <variable
+        name="enterTextColor"
+        type="java.lang.Integer"
+        />
   </data>
 
 
@@ -49,8 +59,9 @@
         android:background="@drawable/ripple_white_selector"
         android:onClick="@{(v) -> clicker.onCancel(v)}"
         android:text="@{TextUtils.isEmpty(cancelText) ?  @string/cancel : cancelText}"
-        android:textColor="@color/selector_blue_gray_text_bg"
+        android:textColor="@{cancelTextColor == 0 ? @colorStateList/selector_blue_gray_text_bg : cancelTextColor instanceof Integer? ColorStateList.valueOf(cancelTextColor) : cancelTextColor}"
         android:visibility="@{hintCancelBt ? View.GONE : View.VISIBLE, default=visible}"
+        tools:text="cancel"
         />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -64,6 +75,7 @@
         android:text="@{TextUtils.isEmpty(enterText) ? @string/enter : enterText}"
         android:textColor="@color/selector_blue_gray_text_bg"
         android:visibility="@{hintEnterBt ? View.GONE : View.VISIBLE, default=visible}"
+        tools:text="enter"
         />
 
 

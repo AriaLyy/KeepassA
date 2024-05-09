@@ -11,6 +11,7 @@ import com.arialyy.frame.router.RouterPath
 import com.lyy.keepassa.service.feat.KdbHandlerService
 import com.lyy.keepassa.service.feat.KdbOpenService
 import com.lyy.keepassa.service.feat.KpaSdkService
+import com.lyy.keepassa.service.play.PlayerService
 
 /**
  * @Author laoyuyu
@@ -27,4 +28,7 @@ interface ServiceRouter {
 
   @RouterPath(path = "/service/kdbOpen")
   fun getDbOpenService(): KdbOpenService
+
+  @RouterPath(path = "/service/play")
+  fun getPlayService(): PlayerService
 }

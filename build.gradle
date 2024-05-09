@@ -11,7 +11,7 @@ buildscript {
     classpath libs.tencent.andresguard
     // 腾讯多渠道打包工具：VasDolly
     classpath libs.tencent.vasdolly.plugin
-    classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
+    classpath libs.google.firebase.gradle
   }
 }
 

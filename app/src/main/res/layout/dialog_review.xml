@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+  <data>
+    <import type="android.content.res.ColorStateList"/>
+    <variable
+        name="clicker"
+        type="com.lyy.keepassa.view.dialog.DialogBtnClicker"
+        />
+  </data>
+
+  <androidx.appcompat.widget.LinearLayoutCompat
+      android:layout_width="@dimen/dialog_min_width"
+      android:layout_height="wrap_content"
+      android:elevation="4dp"
+      android:orientation="vertical"
+      style="@style/KpaDialogLayoutStyle"
+      >
+
+    <include
+        layout="@layout/layout_dialog_title"
+        app:msgTitle="@{@string/review_title}"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:maxHeight="400dp"
+        android:text="@string/review_like_app"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/text_size_normal"
+        />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/cbNotHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="@string/review_not_hint"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/text_size_normal"
+        />
+
+    <include
+        layout="@layout/layout_dialog_button"
+        app:enterText="@{@string/review_enter}"
+        app:cancelText="@{@string/review_cancel}"
+        app:clicker="@{clicker}"
+        app:enableEnterBt="@{true}"
+        app:hintEnterBt="@{false}"
+        app:cancelTextColor="@{@color/text_gray_color}"
+        />
+
+  </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>
