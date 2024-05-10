@@ -28,14 +28,13 @@ class ReviewChain : IMainDialogInterceptor {
     Timber.d("review")
     val ac = chain.activity
     val pre = ac.getSharedPreferences(Constance.PRE_FILE_NAME, Context.MODE_PRIVATE)
-    val startNum = 100
-    // val startNum = pre.getInt(Constance.PRE_KEY_START_APP_NUM, 0)
+    val startNum = pre.getInt(Constance.PRE_KEY_START_APP_NUM, 0)
 
     val reviewBean =
       CommonKVStorage.get(Constance.KEY_REVIEW, ReviewBean::class.java, null) ?: ReviewBean(false)
 
     if (startNum % START_REVIEW_NUM == 0
-      // && !reviewBean.isAlreadyReview
+      && !reviewBean.isAlreadyReview
       && ActivityUtils.getTopActivity().hasGms()
     ) {
       ReviewDialog().show()

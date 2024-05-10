@@ -2,18 +2,8 @@
 <resources>
 
   <style name="AppTheme.NoActionBar" parent="BaseTheme">
-    <item name="windowActionBar">false</item>
-    <item name="windowNoTitle">true</item>
-    <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-    <item name="colorAccent">@color/colorAccent</item>
-    <item name="android:forceDarkAllowed">true</item>
-    <!--    <item name="android:windowIsTranslucent">true</item>-->
-    <!--    处理状态栏颜色 -->
-    <!--    <item name="android:windowTranslucentStatus">false</item>-->
-    <!--    <item name="android:windowTranslucentNavigation">false</item>-->
-    <item name="android:statusBarColor">@color/colorPrimary</item>
     <item name="android:windowActivityTransitions">true</item>
-
+    <item name="android:windowLightStatusBar">?isLightTheme</item>
+<!--    <item name="android:windowLightNavigationBar">?isLightTheme</item>-->
   </style>
 </resources>
