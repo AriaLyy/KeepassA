@@ -1,3 +1,7 @@
+### 2.5.0
+* new: Entry Detail Dynamic colors
+* fix: Fix bug
+
 ### 2.4.7 (2024/04/30)
 * fix: Fix bug
 
