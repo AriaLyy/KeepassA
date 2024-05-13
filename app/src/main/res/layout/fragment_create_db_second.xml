@@ -12,57 +12,63 @@
       android:padding="16dp"
       >
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="16dp"
         >
 
-      <LinearLayout
+
+      <TextView
+          android:id="@+id/db_hint"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:drawablePadding="8dp"
+          android:gravity="center_vertical"
+          android:text="@string/db"
+          android:textColor="@color/text_black_color"
+          android:textSize="@dimen/text_size_big"
+          />
+
+      <View
+          android:id="@+id/vLine2"
+          android:layout_width="1dp"
+          android:layout_height="26dp"
+          android:layout_gravity="center_vertical"
+          android:layout_marginStart="8dp"
+          android:background="@color/line_color"
+          />
+
+      <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/db_name"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="8dp"
+          android:background="@color/transparent"
+          android:enabled="false"
+          android:focusable="false"
+          android:gravity="center_vertical"
+          android:hint="@string/db_name"
+          android:imeOptions="actionDone"
+          android:paddingLeft="4dp"
+          android:paddingRight="4dp"
+          android:singleLine="true"
+          android:textColor="@color/text_black_color"
+          android:textColorHint="@color/text_hint_color"
+          android:textSize="@dimen/text_size_normal"
+          android:transitionName="@string/transition_db_name"
+          />
+
+      <androidx.constraintlayout.helper.widget.Flow
+          android:id="@+id/flowTop"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="horizontal"
-          >
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:constraint_referenced_ids="db_hint, vLine2, db_name"
+          />
 
-        <TextView
-            android:gravity="center_vertical"
-            android:id="@+id/db_hint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawablePadding="8dp"
-            android:text="@string/db"
-            android:textColor="@color/text_black_color"
-            android:textSize="@dimen/text_size_big"
-            />
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="26dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="8dp"
-            android:background="@color/line_color"
-            />
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/db_name"
-            android:gravity="center_vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:background="@color/transparent"
-            android:enabled="false"
-            android:focusable="false"
-            android:hint="@string/db_name"
-            android:imeOptions="actionDone"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:singleLine="true"
-            android:textColor="@color/text_black_color"
-            android:textColorHint="@color/text_hint_color"
-            android:textSize="@dimen/text_size_normal"
-            android:transitionName="@string/transition_db_name"
-            />
-      </LinearLayout>
 
       <com.lyy.keepassa.widget.BubbleTextView
           android:id="@+id/encrypt_type"
@@ -74,6 +80,8 @@
           android:text="@string/encrypt_type"
           android:textColor="@color/text_black_color"
           android:textSize="@dimen/text_size_big"
+          app:layout_constraintStart_toStartOf="@+id/flowTop"
+          app:layout_constraintTop_toBottomOf="@+id/flowTop"
           app:icon_size="20dp"
           app:right_icon="@drawable/ic_help_filled"
           />
@@ -84,6 +92,8 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="8dp"
           android:orientation="horizontal"
+          app:layout_constraintStart_toStartOf="@+id/flowTop"
+          app:layout_constraintTop_toBottomOf="@+id/encrypt_type"
           >
         <RadioButton
             android:layout_width="wrap_content"
@@ -98,7 +108,7 @@
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_weight="1"
             android:tag="2"
             android:text="@string/encrypt_type_2"
@@ -108,12 +118,15 @@
       </RadioGroup>
 
       <TextView
+          android:id="@+id/tvPassHint"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="16dp"
           android:text="@string/password"
           android:textColor="@color/text_black_color"
           android:textSize="@dimen/text_size_big"
+          app:layout_constraintStart_toStartOf="@+id/flowTop"
+          app:layout_constraintTop_toBottomOf="@+id/encrypt_group"
           />
 
       <com.google.android.material.textfield.TextInputLayout
@@ -121,6 +134,8 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="8dp"
+          app:layout_constraintStart_toStartOf="@+id/flowTop"
+          app:layout_constraintTop_toBottomOf="@+id/tvPassHint"
           app:counterEnabled="true"
           app:counterMaxLength="16"
           app:counterOverflowTextAppearance="@style/InputEditTextErrorStyle"
@@ -137,7 +152,6 @@
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/transparent"
             android:hint="@string/hint_input_password"
             android:imeOptions="actionNext"
             android:inputType="textPassword"
@@ -145,6 +159,7 @@
             android:textColor="@color/text_black_grey_color"
             android:textColorHint="@color/text_hint_color"
             android:textSize="@dimen/text_size_normal"
+            style="@style/KpaEditTextStyleNew"
             >
 
         </com.google.android.material.textfield.TextInputEditText>
@@ -156,6 +171,8 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="8dp"
+          app:layout_constraintStart_toStartOf="@+id/flowTop"
+          app:layout_constraintTop_toBottomOf="@+id/password_layout"
           app:errorEnabled="true"
           app:errorTextAppearance="@style/InputEditTextErrorStyle"
           app:helperTextTextColor="@color/text_gray_color"
@@ -167,7 +184,6 @@
             android:id="@+id/enter_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/transparent"
             android:hint="@string/hint_enter_password"
             android:imeOptions="actionDone"
             android:inputType="textPassword"
@@ -175,72 +191,79 @@
             android:textColor="@color/text_black_grey_color"
             android:textColorHint="@color/text_hint_color"
             android:textSize="@dimen/text_size_normal"
+            style="@style/KpaEditTextStyleNew"
             >
 
         </com.google.android.material.textfield.TextInputEditText>
 
       </com.google.android.material.textfield.TextInputLayout>
 
-      <FrameLayout
-          android:id="@+id/pass_key_layout_wrap"
-          android:layout_width="match_parent"
-          android:layout_height="@dimen/create_pass_key_h"
+      <com.lyy.keepassa.widget.BubbleTextView
+          android:id="@+id/pass_key"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:drawablePadding="4dp"
+          android:gravity="center_vertical"
+          android:text="@string/pass_key"
+          android:textColor="@color/text_black_color"
+          android:textSize="@dimen/text_size_big"
+          app:layout_constraintStart_toStartOf="@+id/flowTop"
+          app:layout_constraintTop_toBottomOf="@+id/enter_password_layout"
+          app:icon_size="20dp"
+          app:right_icon="@drawable/ic_help_filled"
+          />
+
+      <com.google.android.material.textfield.TextInputLayout
+          android:id="@+id/txLayoutKey"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          style="?attr/textInputFilledStyle"
           >
-
-        <RelativeLayout
-            android:id="@+id/pass_key_layout"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/pass_key_name"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/create_pass_key_h"
-            android:layout_gravity="center_vertical"
-            >
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:gravity="center_vertical"
+            android:hint="@string/hint_set_pass_key"
+            android:singleLine="true"
+            android:textColor="@color/text_black_grey_color"
+            android:textColorHint="@color/text_hint_color"
+            android:textSize="@dimen/text_size_normal"
 
-          <com.lyy.keepassa.widget.BubbleTextView
-              android:id="@+id/pass_key"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:drawablePadding="4dp"
-              android:gravity="center_vertical"
-              android:text="@string/pass_key"
-              android:textColor="@color/text_black_color"
-              android:textSize="@dimen/text_size_big"
-              app:icon_size="20dp"
-              app:right_icon="@drawable/ic_help_filled"
-              />
+            />
+      </com.google.android.material.textfield.TextInputLayout>
 
-          <EditText
-              android:id="@+id/pass_key_name"
-              android:layout_width="match_parent"
-              android:layout_height="48dp"
-              android:layout_below="@+id/pass_key"
-              android:layout_marginTop="4dp"
-              android:layout_marginRight="8dp"
-              android:layout_toLeftOf="@+id/choose_bt"
-              android:background="@color/transparent"
-              android:enabled="false"
-              android:gravity="center_vertical"
-              android:hint="@string/hint_set_pass_key"
-              android:singleLine="true"
-              android:textColor="@color/text_black_grey_color"
-              android:textColorHint="@color/text_hint_color"
-              android:textSize="@dimen/text_size_normal"
-              />
 
-          <Button
-              android:id="@+id/choose_bt"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_alignTop="@+id/pass_key_name"
-              android:layout_alignParentRight="true"
-              android:background="@drawable/ripple_white_selector"
-              android:text="@string/choose_pass_key"
-              android:textColor="@color/text_orange_color"
-              android:textSize="@dimen/text_size_normal"
-              />
+      <Button
+          android:id="@+id/choose_bt"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/ripple_white_selector"
+          android:text="@string/choose_pass_key"
+          android:textColor="@color/text_orange_color"
+          android:textSize="@dimen/text_size_normal"
+          />
 
-        </RelativeLayout>
+      <androidx.constraintlayout.helper.widget.Flow
+          android:id="@+id/flowKey"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          app:layout_constraintStart_toStartOf="@id/flowTop"
+          app:layout_constraintTop_toBottomOf="@+id/pass_key"
+          app:constraint_referenced_ids="txLayoutKey, choose_bt"
+          />
 
-      </FrameLayout>
-    </LinearLayout>
+      <androidx.constraintlayout.widget.Group
+          android:id="@+id/pass_key_layout_wrap"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          app:constraint_referenced_ids="pass_key, flowKey"
+          />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
   </androidx.core.widget.NestedScrollView>

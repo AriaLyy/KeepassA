@@ -43,22 +43,21 @@
           app:helperText="@string/help_create_db"
           app:helperTextTextColor="@color/text_gray_color"
           app:hintTextAppearance="@style/InputEditTextHintStyle"
+          style="?attr/textInputFilledStyle"
           >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/db_name"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@color/transparent"
+            android:layout_height="wrap_content"
             android:hint="@string/db_name"
             android:imeOptions="actionDone"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
             android:singleLine="true"
             android:textColor="@color/text_black_grey_color"
             android:textColorHint="@color/text_hint_color"
             android:textSize="@dimen/text_size_normal"
             android:transitionName="@string/transition_db_name"
+            tools:text="xxxxxx"
             />
 
       </com.google.android.material.textfield.TextInputLayout>
