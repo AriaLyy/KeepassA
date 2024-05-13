@@ -76,7 +76,7 @@
         android:id="@+id/cover"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/ripple_white_selector"
+        android:background="@drawable/bg_ripple_white_selector"
         android:onClick="@{(v) -> dialog.onClick(v)}"
         android:text="@string/kpa_copy"
         android:textColor="@color/text_blue_color"

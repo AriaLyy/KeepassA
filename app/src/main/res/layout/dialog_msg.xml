@@ -66,7 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:onClick="@{(v) -> dialog.onClick(v)}"
-        android:background="@drawable/ripple_white_selector"
+        android:background="@drawable/bg_ripple_white_selector"
         android:text="@{TextUtils.isEmpty(dialog.cancelText) ?  @string/cancel : dialog.cancelText}"
         android:visibility="@{dialog.showCancelBt ? View.VISIBLE : View.GONE}"
         android:textColor="@{dialog.resources.getColor(dialog.cancelBtTextColor)}" />
@@ -77,7 +77,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:visibility="@{dialog.showEnterBt ? View.VISIBLE : View.GONE}"
-        android:background="@drawable/ripple_white_selector"
+        android:background="@drawable/bg_ripple_white_selector"
         android:onClick="@{(v) -> dialog.onClick(v)}"
         android:text="@{TextUtils.isEmpty(dialog.enterText) ? @string/enter : dialog.enterText}"
         android:textColor="@{dialog.resources.getColor(dialog.enterBtTextColor)}" />
@@ -88,7 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:visibility="@{dialog.showCoverBt ? View.VISIBLE : View.GONE}"
-        android:background="@drawable/ripple_white_selector"
+        android:background="@drawable/bg_ripple_white_selector"
         android:onClick="@{(v) -> dialog.onClick(v)}"
         android:text="@{TextUtils.isEmpty(dialog.coverText) ? @string/cover : dialog.coverText}"
         android:textColor="@{dialog.resources.getColor(dialog.coverBtTextColor)}" />

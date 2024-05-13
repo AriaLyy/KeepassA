@@ -33,7 +33,7 @@
           android:layout_width="48dp"
           android:layout_height="48dp"
           android:layout_alignParentRight="true"
-          android:background="@drawable/ripple_primary_selector"
+          android:background="@drawable/bg_ripple_primary_selector"
           app:srcCompat="@drawable/ic_close"
 
           />

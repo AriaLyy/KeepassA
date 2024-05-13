@@ -67,7 +67,7 @@
           android:layout_width="match_parent"
           android:layout_height="40dp"
           android:layout_marginTop="16dp"
-          android:background="@drawable/ripple_primary_selector"
+          android:background="@drawable/bg_ripple_primary_selector"
           android:drawablePadding="4dp"
           android:gravity="left|center_vertical"
           android:text="@string/hint_select_db_path"

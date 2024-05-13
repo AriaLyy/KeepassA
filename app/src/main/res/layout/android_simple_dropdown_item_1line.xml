@@ -5,7 +5,7 @@
     style="@style/KpaTitleTextStyle"
     android:layout_width="match_parent"
     android:layout_height="@dimen/bar_height"
-    android:background="@drawable/ripple_white_selector"
+    android:background="@drawable/bg_ripple_white_selector"
     android:gravity="center_vertical"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"

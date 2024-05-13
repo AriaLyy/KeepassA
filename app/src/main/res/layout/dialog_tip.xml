@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:background="@drawable/ripple_white_selector"
+        android:background="@drawable/bg_ripple_white_selector"
         android:text="@string/close"
         android:textColor="@color/colorPrimary"
         />

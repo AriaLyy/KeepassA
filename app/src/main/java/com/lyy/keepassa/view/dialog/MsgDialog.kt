@@ -169,7 +169,7 @@ class MsgDialog : BaseDialog<DialogMsgBinding>(), View.OnClickListener {
       if (enable) {
         btn.isEnabled = true
         btn.setTextColor(ResUtil.getColor(R.color.text_blue_color))
-        btn.background = ResUtil.getDrawable(R.drawable.ripple_white_selector)
+        btn.background = ResUtil.getDrawable(R.drawable.bg_ripple_white_selector)
       } else {
         btn.isEnabled = false
         btn.setTextColor(ResUtil.getColor(R.color.text_gray_color))

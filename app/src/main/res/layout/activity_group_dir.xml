@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/ripple_white_selector"
+        android:background="@drawable/bg_ripple_white_selector"
         android:text="@string/undo_to"
         android:textColor="@color/blue"
         android:textSize="@dimen/text_size_normal"

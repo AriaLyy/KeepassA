@@ -239,7 +239,7 @@
           android:id="@+id/choose_bt"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:background="@drawable/ripple_white_selector"
+          android:background="@drawable/bg_ripple_white_selector"
           android:text="@string/choose_pass_key"
           android:textColor="@color/text_orange_color"
           android:textSize="@dimen/text_size_normal"

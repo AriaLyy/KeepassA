@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     >
-
 
   <androidx.coordinatorlayout.widget.CoordinatorLayout
       android:layout_width="match_parent"
@@ -18,27 +18,33 @@
         android:minHeight="48dp"
         >
 
-      <RelativeLayout
+      <androidx.constraintlayout.widget.ConstraintLayout
           android:id="@+id/head_toolbar"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:background="@drawable/ripple_white_selector"
+          android:layout_height="52dp"
+          android:background="@color/background_color"
           android:clickable="true"
           android:descendantFocusability="blocksDescendants"
           android:focusable="true"
-          android:paddingBottom="8dp"
-          android:paddingLeft="16dp"
-          android:paddingRight="16dp"
-          android:paddingTop="8dp"
           app:layout_scrollFlags="scroll|enterAlways|snap|snapMargins"
           >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_ripple_white_selector"
+            />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/app_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
             android:transitionName="@string/transition_app_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@mipmap/ic_launcher"
             />
 
@@ -46,17 +52,16 @@
             android:id="@+id/db_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_toRightOf="@+id/app_icon"
             android:ellipsize="middle"
             android:gravity="center_vertical"
             android:maxLength="20"
             android:singleLine="true"
-            android:text="dbname"
             android:textColor="@color/text_black_color"
+            android:textFontWeight="600"
             android:textSize="@dimen/text_size_normal"
             android:textStyle="bold"
             android:transitionName="@string/transition_db_name"
+            tools:text="dbname"
             app:icon_size="24dp"
             app:right_icon="@drawable/ic_eco"
             />
@@ -65,20 +70,34 @@
             android:id="@+id/db_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/app_icon"
-            android:layout_alignLeft="@+id/db_name"
-            android:text="des"
             android:textColor="@color/text_gray_color"
             android:textSize="@dimen/text_size_small"
             android:transitionName="@string/transition_db_version"
+            tools:text="des"
+            />
+
+        <androidx.constraintlayout.helper.widget.Flow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical"
+            app:flow_horizontalAlign="start"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/app_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:constraint_referenced_ids="db_name, db_version"
+            app:flow_verticalGap="2dp"
             />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/arrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/db_name"
+            android:layout_toEndOf="@+id/db_name"
             android:transitionName="@string/transition_db_little"
+            app:layout_constraintBottom_toBottomOf="@+id/db_name"
+            app:layout_constraintStart_toEndOf="@+id/db_name"
+            app:layout_constraintTop_toTopOf="@+id/db_name"
             app:srcCompat="@drawable/ic_arrow_down"
             />
 
@@ -87,10 +106,14 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_centerVertical="true"
-            android:layout_marginRight="8dp"
-            android:layout_toLeftOf="@+id/search"
-            android:background="@drawable/ripple_white_selector"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_ripple_white_selector"
             android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/search"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_lock_24px"
             />
 
@@ -98,14 +121,17 @@
             android:id="@+id/search"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/ripple_white_selector"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/bg_ripple_white_selector"
             android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_search"
             />
 
-      </RelativeLayout>
+      </androidx.constraintlayout.widget.ConstraintLayout>
 
       <com.google.android.material.tabs.TabLayout
           android:id="@+id/tab"
@@ -143,8 +169,9 @@
 
       <View
           android:layout_width="match_parent"
+          android:layout_height="1dp"
           android:background="@color/color_33666666"
-          android:layout_height="1dp"/>
+          />
 
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -163,10 +190,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_marginBottom="24dp"
-        android:layout_marginRight="24dp"
+        android:layout_marginEnd="24dp"
         app:layout_behavior="com.lyy.keepassa.widget.MainExpandFloatActionButtonBehavior"
         />
-
 
     <FrameLayout
         android:id="@+id/container"
