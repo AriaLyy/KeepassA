@@ -252,8 +252,12 @@ dependencies {
   implementation(libs.third.eventbus)
   kapt(libs.third.eventbus.compiler)
   implementation(libs.third.lottie) // json 动画库
+
+  // glide
   implementation(libs.third.glide)
   kapt(libs.third.glide.compiler)
+  implementation(libs.third.glide.transformations)
+
   implementation(libs.third.dropbox)
   implementation(libs.third.webdav)
   implementation(libs.bundles.tencent.wcdb)

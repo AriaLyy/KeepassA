@@ -48,6 +48,10 @@ class EntryBaseInfoCard(context: Context, attributeSet: AttributeSet) :
     handleExpires(entry)
   }
 
+  override fun setBackgroundColor(color: Int) {
+    setCardBackgroundColor(color)
+  }
+
   /**
    * 处理过期
    */

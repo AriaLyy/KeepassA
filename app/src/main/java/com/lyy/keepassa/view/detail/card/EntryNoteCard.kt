@@ -25,4 +25,8 @@ class EntryNoteCard(context: Context, attributeSet: AttributeSet) :
     binding.expandTv.findViewById<TextView>(R.id.expandable_text).typeface =
       ResourcesCompat.getFont(context, R.font.roboto_thinitalic)
   }
+
+  override fun setBackgroundColor(color: Int) {
+    setCardBackgroundColor(color)
+  }
 }

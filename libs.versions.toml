@@ -94,6 +94,7 @@ third-eventbus-compiler = { module = "org.greenrobot:eventbus-annotation-process
 third-lottie = { module = "com.airbnb.android:lottie", version.ref = "third-lottie" } # lottie
 third-glide = { module = "com.github.bumptech.glide:glide", version.ref = "third-glide" } # glide
 third-glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "third-glide" } # glide
+third-glide-transformations= {module = "jp.wasabeef:glide-transformations", version = "4.3.0"}
 third-dropbox = { module = "com.dropbox.core:dropbox-core-sdk", version.ref = "third-dropbox" } # dropbox
 third-webdav = { module = "com.thegrizzlylabs.sardine-android:sardine-android", version.ref = "third-webdav" }
 third-protector = { module = "com.lahm.library:easy-protector-release", version.ref = "third-easy-protector-release" } # XP/调试/多开/模拟器/root 判断

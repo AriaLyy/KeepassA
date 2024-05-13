@@ -7,10 +7,16 @@
  */
 package com.lyy.keepassa.view.detail
 
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.annotation.Autowired
@@ -18,7 +24,10 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ToastUtils
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedBinary
 import com.lyy.keepassa.R
@@ -38,6 +47,7 @@ import com.lyy.keepassa.util.isCollectioned
 import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.detail.card.EntryFileCard
 import com.lyy.keepassa.widget.toPx
+import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -100,6 +110,17 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
 
   override fun setLayoutId(): Int {
     return R.layout.activity_entry_detail_new
+  }
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
+    super.onCreate(savedInstanceState)
+  }
+
+  override fun handleStatusBar() {
+    Glide.with(this).load(IconUtil.getEntryIconDrawable(this, pwEntry))
+      .apply(RequestOptions.bitmapTransform(BlurTransformation(10, 3)))
+      .into(binding.ivBlur)
   }
 
   override fun initData(savedInstanceState: Bundle?) {
@@ -181,9 +202,24 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
       }
       if (abs(verticalOffset) >= binding.appBarLayout.totalScrollRange) {
         binding.topAppBar.title = pwEntry.title
+        binding.clFun.setBackgroundColor(Color.TRANSPARENT)
+        binding.clContent.setBackgroundColor(Color.TRANSPARENT)
+        binding.appBarLayout.setBackgroundColor(Color.TRANSPARENT)
         return@addOnOffsetChangedListener
       }
     }
+
+    ViewCompat.setOnApplyWindowInsetsListener(binding.topAppBar) { v, windowInsets ->
+      val insets = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
+      v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+        topMargin = insets.top
+      }
+
+      WindowInsetsCompat.CONSUMED
+    }
+
+    binding.topAppBar.bringToFront()
+
     handleMenuBar()
   }
 
@@ -207,17 +243,29 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     val color = if (pwEntry.getCustomIcon()?.imageData?.isNotEmpty() == true) {
       module.getColor(this, BitmapDrawable(IconUtil.getCustomBitmap(pwEntry)))
     } else {
-      ResUtil.getColor(R.color.color_444E85DB)
+      val defColor = ResUtil.getColor(R.color.color_444E85DB)
+      Pair(defColor, defColor)
     }
 
     binding.tvChar.visibility = View.VISIBLE
-    if (pwEntry.title.isEmpty()){
+    if (pwEntry.title.isEmpty()) {
       binding.tvChar.text = "#"
-    }else{
+    } else {
       binding.tvChar.text = pwEntry.title.substring(0, 1).uppercase(Locale.getDefault())
     }
 
-    binding.ivIcon.setBackgroundColor(color)
+    val cards = arrayOf(
+      binding.cardStr,
+      binding.cardBaseInfo,
+      binding.cardTag,
+      binding.cardAtta,
+      binding.cardNote
+    )
+    binding.ivIcon.setBackgroundColor(color.first)
+
+    cards.forEach {
+      it.setBackgroundColor(ColorUtils.setAlphaComponent(color.second, 0.6f))
+    }
   }
 
   private fun setAppIcon() {

@@ -9,16 +9,10 @@
 
 package com.lyy.keepassa.view.detail
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.view.View
-import android.view.ViewAnimationUtils
-import android.widget.ImageView
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.viewModelScope
 import androidx.palette.graphics.Palette
@@ -31,13 +25,13 @@ import com.keepassdroid.database.security.ProtectedString
 import com.keepassdroid.utils.Types
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
-import com.lyy.keepassa.R.color
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.entity.EntryRecord
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.widget.toPx
@@ -58,81 +52,81 @@ class EntryDetailModule : BaseModule() {
     this.pwEntry = pwEntry
   }
 
-  /**
-   * 结束动画
-   */
-  fun finishAnim(
-    context: Context,
-    rootView: View,
-    icon: ImageView
-  ): SingleLiveEvent<Boolean> {
-    viewModelScope.launch {
-      val rgb = getColor(context, icon.drawable)
-      val x = icon.x + 20.toPx()
-      val y = icon.y + 60.toPx()
-      val anim = ViewAnimationUtils.createCircularReveal(
-        rootView,
-        x.toInt(),
-        y.toInt(),
-        rootView.height.toFloat(),
-        0f,
-      )
-      anim.duration = 400
-      anim.addListener(object : AnimatorListenerAdapter() {
-        override fun onAnimationStart(animation: Animator) {
-          super.onAnimationStart(animation)
-          rootView.background = ColorDrawable(rgb)
-        }
+  // /**
+  //  * 结束动画
+  //  */
+  // fun finishAnim(
+  //   context: Context,
+  //   rootView: View,
+  //   icon: ImageView
+  // ): SingleLiveEvent<Boolean> {
+  //   viewModelScope.launch {
+  //     val rgb = getColor(context, icon.drawable)
+  //     val x = icon.x + 20.toPx()
+  //     val y = icon.y + 60.toPx()
+  //     val anim = ViewAnimationUtils.createCircularReveal(
+  //       rootView,
+  //       x.toInt(),
+  //       y.toInt(),
+  //       rootView.height.toFloat(),
+  //       0f,
+  //     )
+  //     anim.duration = 400
+  //     anim.addListener(object : AnimatorListenerAdapter() {
+  //       override fun onAnimationStart(animation: Animator) {
+  //         super.onAnimationStart(animation)
+  //         rootView.background = ColorDrawable(rgb)
+  //       }
+  //
+  //       override fun onAnimationEnd(animation: Animator) {
+  //         super.onAnimationEnd(animation)
+  //         rootView.background = ColorDrawable(ResUtil.getColor(R.color.background_color))
+  //         finishAnimEvent.postValue(true)
+  //       }
+  //     })
+  //     anim.start()
+  //   }
+  //
+  //   return finishAnimEvent
+  // }
 
-        override fun onAnimationEnd(animation: Animator) {
-          super.onAnimationEnd(animation)
-          rootView.background = ColorDrawable(ResUtil.getColor(R.color.background_color))
-          finishAnimEvent.postValue(true)
-        }
-      })
-      anim.start()
-    }
-
-    return finishAnimEvent
-  }
-
-  /**
-   * 启动动画
-   */
-  fun startAnim(
-    context: Context,
-    rootView: View,
-    icon: ImageView
-  ): SingleLiveEvent<Boolean> {
-    viewModelScope.launch {
-      val rgb = getColor(context, icon.drawable)
-      val x = icon.x + 20.toPx()
-      val y = icon.y + 60.toPx()
-      val anim = ViewAnimationUtils.createCircularReveal(
-        rootView,
-        x.toInt(),
-        y.toInt(),
-        40.toPx()
-          .toFloat(),
-        rootView.height.toFloat()
-      )
-      anim.duration = 400
-      anim.addListener(object : AnimatorListenerAdapter() {
-        override fun onAnimationStart(animation: Animator) {
-          super.onAnimationStart(animation)
-          rootView.background = ColorDrawable(rgb)
-        }
-
-        override fun onAnimationEnd(animation: Animator) {
-          super.onAnimationEnd(animation)
-          rootView.background = ColorDrawable(ResUtil.getColor(color.background_color))
-          startAnimEvent.postValue(true)
-        }
-      })
-      anim.start()
-    }
-    return startAnimEvent
-  }
+  // /**
+  //  * 启动动画
+  //  */
+  // fun startAnim(
+  //   context: Context,
+  //   rootView: View,
+  //   icon: ImageView
+  // ): SingleLiveEvent<Boolean> {
+  //   viewModelScope.launch {
+  //     val rgb = getColor(context, icon.drawable)
+  //     val x = icon.x + 20.toPx()
+  //     val y = icon.y + 60.toPx()
+  //     val anim = ViewAnimationUtils.createCircularReveal(
+  //       rootView,
+  //       x.toInt(),
+  //       y.toInt(),
+  //       40.toPx()
+  //         .toFloat(),
+  //       rootView.height.toFloat()
+  //     )
+  //     anim.duration = 400
+  //     anim.addListener(object : AnimatorListenerAdapter() {
+  //       override fun onAnimationStart(animation: Animator) {
+  //         super.onAnimationStart(animation)
+  //         rootView.background = ColorDrawable(rgb)
+  //       }
+  //
+  //       override fun onAnimationEnd(animation: Animator) {
+  //         super.onAnimationEnd(animation)
+  //         rootView.background = ColorDrawable(ResUtil.getColor(color.background_color))
+  //         startAnimEvent.postValue(true)
+  //       }
+  //     })
+  //     anim.start()
+  //   }
+  //   return startAnimEvent
+  // }
 
   /**
    * get highlight color
@@ -140,25 +134,33 @@ class EntryDetailModule : BaseModule() {
   fun getColor(
     context: Context,
     icon: Drawable
-  ): Int {
+  ): Pair<Int, Int> {
     return with(Dispatchers.IO) {
       val temp =
         IconUtil.getBitmapFromDrawable(context, icon, 40.toPx())
       if (temp == null || temp.isRecycled) {
-        return@with Color.WHITE
+        return@with Pair(Color.WHITE, ResUtil.getColor(R.color.color_444E85DB))
       }
       val sw = Palette.from(temp)
-        .maximumColorCount(12)
+        .maximumColorCount(16)
         .generate()
-      return@with when {
+
+      val iconColor = when {
         sw.mutedSwatch != null -> sw.mutedSwatch!!.rgb
         sw.darkMutedSwatch != null -> sw.darkMutedSwatch!!.rgb
         sw.lightMutedSwatch != null -> sw.lightMutedSwatch!!.rgb
         sw.darkVibrantSwatch != null -> sw.darkVibrantSwatch!!.rgb
         sw.lightVibrantSwatch != null -> sw.lightVibrantSwatch!!.rgb
         sw.vibrantSwatch != null -> sw.vibrantSwatch!!.rgb
-        else -> ResUtil.getColor(R.color.colorPrimary)
+        else -> ResUtil.getColor(R.color.color_444E85DB)
       }
+
+      val bgColor =
+        if (KeepassAUtil.instance.isNightMode()) sw.getDarkMutedColor(iconColor) else sw.getLightMutedColor(
+          iconColor
+        )
+
+      return@with Pair(iconColor, bgColor)
     }
   }
 

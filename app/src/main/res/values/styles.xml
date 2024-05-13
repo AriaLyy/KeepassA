@@ -19,7 +19,7 @@
     <!--    <item name="android:windowTranslucentNavigation">false</item>-->
     <item name="android:statusBarColor">@color/colorPrimary</item>
     <item name="android:windowActivityTransitions">true</item>
-<!--    <item name="android:navigationBarColor">@android:color/transparent</item>-->
+    <!--    <item name="android:navigationBarColor">@android:color/transparent</item>-->
     <item name="android:windowLightStatusBar">?isLightTheme</item>
 
   </style>
@@ -30,7 +30,6 @@
     <item name="android:activityCloseEnterAnimation">@anim/translate_left_in</item>
     <item name="android:activityCloseExitAnimation">@anim/translate_right_out</item>
   </style>
-
 
 
   <style name="DialogActivityStyle" parent="Theme.Material3.DayNight.Dialog">
@@ -238,6 +237,14 @@
   <style name="CircleStyle">
     <item name="cornerFamily">rounded</item>
     <item name="cornerSize">50%</item>
+  </style>
+
+  <!-- ShapeableImageView底部圆角 -->
+  <style name="BottomImageRoundStyle">
+    <item name="cornerFamilyBottomRight">rounded</item>
+    <item name="cornerFamilyBottomLeft">rounded</item>
+    <item name="cornerSizeBottomRight">16dp</item>
+    <item name="cornerSizeBottomLeft">16dp</item>
   </style>
 
 

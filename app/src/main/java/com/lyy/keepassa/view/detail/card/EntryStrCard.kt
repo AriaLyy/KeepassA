@@ -67,6 +67,10 @@ class EntryStrCard(context: Context, attributeSet: AttributeSet) :
     handleList(entry, data)
   }
 
+  override fun setBackgroundColor(color: Int) {
+    setCardBackgroundColor(color)
+  }
+
   private fun handleList(entryV4: PwEntryV4, data: MutableList<Entry<String, ProtectedString>>) {
     val adapter = StrAdapter(entryV4)
 
