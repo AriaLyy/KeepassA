@@ -25,7 +25,7 @@
           android:gravity="center"
           android:text="@string/choose_pass_key"
           android:textColor="@color/text_black_color"
-          android:textSize="@dimen/text_size_biggest"
+          style="@style/DialogTitleStyle"
           />
 
       <androidx.appcompat.widget.AppCompatImageButton

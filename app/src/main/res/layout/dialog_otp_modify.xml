@@ -15,7 +15,7 @@
         android:gravity="center"
         android:text="@string/modify_totp"
         android:textColor="@color/text_blue_color"
-        android:textSize="@dimen/text_size_biggest"
+        style="@style/DialogTitleStyle"
         />
 
     <include

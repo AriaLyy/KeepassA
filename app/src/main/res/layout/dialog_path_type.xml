@@ -29,7 +29,7 @@
           android:gravity="center"
           android:text="@string/hint_select_path_type"
           android:textColor="@color/text_black_color"
-          android:textSize="@dimen/text_size_biggest"
+          style="@style/DialogTitleStyle"
           />
 
       <androidx.appcompat.widget.AppCompatImageButton

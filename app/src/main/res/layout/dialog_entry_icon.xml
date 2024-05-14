@@ -20,7 +20,7 @@
           android:layout_height="48dp">
 
         <TextView
-            style="@style/KpaTitleTextStyle"
+            style="@style/KpaBigTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"

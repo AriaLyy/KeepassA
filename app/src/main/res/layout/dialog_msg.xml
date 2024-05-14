@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
   <data>
 
     <variable
         name="dialog"
-        type="com.lyy.keepassa.view.dialog.MsgDialog" />
+        type="com.lyy.keepassa.view.dialog.MsgDialog"
+        />
 
     <import type="android.text.TextUtils" />
 
@@ -15,38 +18,41 @@
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
-      style="@style/KpaDialogLayoutStyle"
       android:layout_width="@dimen/dialog_min_width"
-      android:elevation="4dp"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      style="@style/KpaDialogLayoutStyle"
+      >
 
 
     <com.lyy.keepassa.widget.BubbleTextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_gravity="center_horizontal"
         android:gravity="center_vertical"
         android:text="@{TextUtils.isEmpty(dialog.msgTitle) ? @string/hint : dialog.msgTitle}"
         android:textColor="@color/text_blue_color"
-        android:textSize="@dimen/text_size_biggest"
-        app:icon_size="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:icon_size="24dp"
+        tools:text="title"
+        style="@style/DialogTitleStyle"
+        />
 
     <View
         android:id="@+id/vLine"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/line_color"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/msgScroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/vLine">
+        app:layout_constraintTop_toBottomOf="@+id/vLine"
+        >
 
       <TextView
           android:layout_width="match_parent"
@@ -55,7 +61,8 @@
           android:maxHeight="400dp"
           android:text="@{dialog.msgContent}"
           android:textColor="@color/text_black_color"
-          android:textSize="@dimen/text_size_normal" />
+          android:textSize="@dimen/text_size_normal"
+          />
 
     </androidx.core.widget.NestedScrollView>
 
@@ -65,42 +72,46 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:onClick="@{(v) -> dialog.onClick(v)}"
         android:background="@drawable/bg_ripple_white_selector"
+        android:onClick="@{(v) -> dialog.onClick(v)}"
         android:text="@{TextUtils.isEmpty(dialog.cancelText) ?  @string/cancel : dialog.cancelText}"
+        android:textColor="@{dialog.resources.getColor(dialog.cancelBtTextColor)}"
         android:visibility="@{dialog.showCancelBt ? View.VISIBLE : View.GONE}"
-        android:textColor="@{dialog.resources.getColor(dialog.cancelBtTextColor)}" />
+        />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/enter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:visibility="@{dialog.showEnterBt ? View.VISIBLE : View.GONE}"
         android:background="@drawable/bg_ripple_white_selector"
         android:onClick="@{(v) -> dialog.onClick(v)}"
         android:text="@{TextUtils.isEmpty(dialog.enterText) ? @string/enter : dialog.enterText}"
-        android:textColor="@{dialog.resources.getColor(dialog.enterBtTextColor)}" />
+        android:textColor="@{dialog.resources.getColor(dialog.enterBtTextColor)}"
+        android:visibility="@{dialog.showEnterBt ? View.VISIBLE : View.GONE}"
+        />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/cover"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:visibility="@{dialog.showCoverBt ? View.VISIBLE : View.GONE}"
         android:background="@drawable/bg_ripple_white_selector"
         android:onClick="@{(v) -> dialog.onClick(v)}"
         android:text="@{TextUtils.isEmpty(dialog.coverText) ? @string/cover : dialog.coverText}"
-        android:textColor="@{dialog.resources.getColor(dialog.coverBtTextColor)}" />
+        android:textColor="@{dialog.resources.getColor(dialog.coverBtTextColor)}"
+        android:visibility="@{dialog.showCoverBt ? View.VISIBLE : View.GONE}"
+        />
 
 
     <androidx.constraintlayout.helper.widget.Flow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/msgScroll"
         app:constraint_referenced_ids="cover,enter,cancel"
         app:flow_horizontalStyle="packed"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/msgScroll" />
+        />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

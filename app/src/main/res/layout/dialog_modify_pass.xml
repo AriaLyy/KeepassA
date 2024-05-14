@@ -18,7 +18,8 @@
         android:gravity="center"
         android:text="@string/modify_db_pass"
         android:textColor="@color/text_blue_color"
-        android:textSize="@dimen/text_size_biggest" />
+        style="@style/DialogTitleStyle"
+        />
 
 
     <com.google.android.material.textfield.TextInputLayout

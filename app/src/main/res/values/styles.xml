@@ -13,15 +13,9 @@
     <item name="colorAccent">@color/colorAccent</item>
     <item name="android:fontFamily">@font/roboto_regular</item>
     <item name="android:windowAnimationStyle">@style/windowAnimatorDemo</item>
-    <!--    <item name="android:windowIsTranslucent">true</item>-->
-    <!--    处理状态栏颜色 -->
-    <!--    <item name="android:windowTranslucentStatus">false</item>-->
-    <!--    <item name="android:windowTranslucentNavigation">false</item>-->
     <item name="android:statusBarColor">@color/colorPrimary</item>
     <item name="android:windowActivityTransitions">true</item>
-    <!--    <item name="android:navigationBarColor">@android:color/transparent</item>-->
     <item name="android:windowLightStatusBar">?isLightTheme</item>
-
   </style>
 
   <style name="windowAnimatorDemo">
@@ -168,7 +162,7 @@
   </style>
 
   <!-- 标题字体 -->
-  <style name="KpaTitleTextStyle">
+  <style name="KpaBigTextStyle">
     <item name="android:textSize">@dimen/text_size_big</item>
     <item name="android:textColor">@color/text_black_color</item>
   </style>
@@ -195,8 +189,8 @@
   </style>
 
   <style name="KpaDialogLayoutStyle">
-    <item name="android:background">@drawable/bg_white_radius_4</item>
-    <item name="android:elevation">4dp</item>
+    <item name="android:background">@drawable/bg_white_radius_8</item>
+    <item name="android:elevation">2dp</item>
   </style>
 
   <!-- 可展开的textView样式  -->
@@ -255,6 +249,12 @@
     <item name="iconSize">30dp</item>
     <item name="iconGravity">top</item>
     <item name="iconTint">@color/color_icon_grey</item>
+  </style>
+
+  <style name="DialogTitleStyle">
+    <item name="android:textStyle">bold</item>
+    <item name="android:fontFamily">@font/roboto_bold</item>
+    <item name="android:textSize">@dimen/text_size_biggest</item>
   </style>
 
 </resources>

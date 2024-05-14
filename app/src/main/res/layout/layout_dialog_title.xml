@@ -26,15 +26,14 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="47dp"
-        android:layout_gravity="center_horizontal"
         android:gravity="center_vertical"
         android:text="@{TextUtils.isEmpty(msgTitle) ? @string/hint : msgTitle}"
         android:textColor="@color/text_blue_color"
-        android:textSize="@dimen/text_size_biggest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:icon_size="24dp"
+        style="@style/DialogTitleStyle"
         />
 
     <View

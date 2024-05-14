@@ -100,7 +100,7 @@
       android:text="@string/totp_custom_hint"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/rgTotp"
-      style="@style/KpaTitleTextStyle"
+      style="@style/KpaBigTextStyle"
       />
 
   <TextView

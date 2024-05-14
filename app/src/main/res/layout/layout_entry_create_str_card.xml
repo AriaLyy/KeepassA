@@ -34,7 +34,7 @@
       android:layout_marginStart="16dp"
       android:text="@string/hint_attr"
       app:layout_constraintStart_toEndOf="@+id/ivIcon"
-      style="@style/KpaTitleTextStyle"
+      style="@style/KpaBigTextStyle"
       />
 
   <androidx.appcompat.widget.AppCompatImageView
