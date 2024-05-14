@@ -14,6 +14,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.app.ActivityOptions
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.transition.Transition
 import android.transition.Transition.TransitionListener
@@ -261,6 +262,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     // 需要关闭 LauncherActivity\ InputPassActivity \ CreateActivity 三个界面
     for (ac in AbsFrame.getInstance().activityStack) {
       if (ac is LauncherActivity || ac is CreateDbActivity) {
+        ac.rootView.setBackgroundColor(Color.TRANSPARENT)
         ac.rootView.visibility = View.GONE
         ac.finish()
         ac.overridePendingTransition(0, 0)

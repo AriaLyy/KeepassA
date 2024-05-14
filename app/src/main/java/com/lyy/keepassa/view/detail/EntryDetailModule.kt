@@ -12,6 +12,7 @@ package com.lyy.keepassa.view.detail
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -63,9 +64,9 @@ class EntryDetailModule : BaseModule() {
     val binding = ac.binding
     val vAnim = AnimatorSet()
     val revealAnimal = ViewAnimationUtils.createCircularReveal(
-      binding.ivBlur,
-      ScreenUtils.getAppScreenWidth(),
-      ScreenUtils.getAppScreenHeight(),
+      binding.root,
+      ScreenUtils.getScreenWidth(),
+      ScreenUtils.getScreenHeight(),
       max(ScreenUtils.getScreenWidth().toFloat(), ScreenUtils.getScreenHeight().toFloat()),
       0.toFloat()
     )
@@ -86,9 +87,9 @@ class EntryDetailModule : BaseModule() {
   fun startRevealAnim(binding: ActivityEntryDetailNewBinding, resource: Drawable?) {
     val vAnim = AnimatorSet()
     val revealAnimal = ViewAnimationUtils.createCircularReveal(
-      binding.ivBlur,
-      ScreenUtils.getAppScreenWidth(),
-      ScreenUtils.getAppScreenHeight(),
+      binding.root,
+      ScreenUtils.getScreenWidth(),
+      ScreenUtils.getScreenHeight(),
       0.toFloat(),
       max(ScreenUtils.getScreenWidth().toFloat(), ScreenUtils.getScreenHeight().toFloat())
     )
@@ -96,26 +97,12 @@ class EntryDetailModule : BaseModule() {
     val contentAnim1 = ObjectAnimator.ofFloat(binding.topAppBar, View.ALPHA, 0f, 1f)
     val contentAnim2 = ObjectAnimator.ofFloat(binding.clContentRoot, View.ALPHA, 0f, 1f)
 
-    // val bgAnim = ObjectAnimator.ofObject(
-    //   binding.root,
-    //   "color",
-    //   ColorEvaluator(),
-    //   Color.TRANSPARENT,
-    //   ResUtil.getColor(R.color.background_color)
-    // )
-
-    revealAnimal.duration = 300
-    contentAnim1.duration = 900
-    contentAnim2.duration = 900
-    // bgAnim.duration = 900
+    vAnim.duration = 400
     vAnim.doOnStart {
       binding.topAppBar.alpha = 0f
       binding.clContentRoot.alpha = 0f
       binding.groupContent.isVisible = true
       binding.ivBlur.setImageDrawable(resource)
-    }
-    vAnim.doOnEnd {
-      binding.root.setBackgroundColor(ResUtil.getColor(R.color.background_color))
     }
     vAnim.playTogether(revealAnimal, contentAnim1, contentAnim2)
     vAnim.interpolator = revealAnimal.interpolator

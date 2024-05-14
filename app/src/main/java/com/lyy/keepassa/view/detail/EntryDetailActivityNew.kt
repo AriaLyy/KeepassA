@@ -47,9 +47,9 @@ import com.lyy.keepassa.util.doClick
 import com.lyy.keepassa.util.hasTOTP
 import com.lyy.keepassa.util.isCollectioned
 import com.lyy.keepassa.util.takePermission
+import com.lyy.keepassa.util.transformation.WhiteBgBlurTransformation
 import com.lyy.keepassa.view.detail.card.EntryFileCard
 import com.lyy.keepassa.widget.toPx
-import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -139,10 +139,12 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
   }
 
   private fun handleBg() {
-    Glide.with(this).load(IconUtil.getEntryIconDrawable(this, pwEntry))
-      .apply(RequestOptions.bitmapTransform(BlurTransformation(10, 3)))
-      .into(object : DrawableImageViewTarget(binding.ivBlur) {
+    Glide.with(this)
+      .load(IconUtil.getEntryIconDrawable(this, pwEntry))
+      .apply(RequestOptions.bitmapTransform(WhiteBgBlurTransformation(10, 3)))
+      .into(object :DrawableImageViewTarget(binding.ivBlur){
         override fun setResource(resource: Drawable?) {
+          super.setResource(resource)
           lifecycleScope.launch {
             binding.ivBlur.post {
               module.startRevealAnim(binding, resource)
