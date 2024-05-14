@@ -137,6 +137,7 @@
         android:name=".view.detail.GroupDetailActivity"
         android:screenOrientation="portrait" />
     <activity
+        android:theme="@style/Theme.notAnimation"
         android:name=".view.detail.EntryDetailActivityNew"
         android:screenOrientation="portrait" />
     <activity

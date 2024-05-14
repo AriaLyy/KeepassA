@@ -9,6 +9,7 @@ package com.lyy.keepassa.view.detail
 
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedBinary
 import com.lyy.keepassa.R
@@ -139,7 +141,26 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
   private fun handleBg() {
     Glide.with(this).load(IconUtil.getEntryIconDrawable(this, pwEntry))
       .apply(RequestOptions.bitmapTransform(BlurTransformation(10, 3)))
-      .into(binding.ivBlur)
+      .into(object : DrawableImageViewTarget(binding.ivBlur) {
+        override fun setResource(resource: Drawable?) {
+          lifecycleScope.launch {
+            binding.ivBlur.post {
+              module.startRevealAnim(binding, resource)
+            }
+          }
+        }
+      })
+  }
+
+  fun superFinish() {
+    super.finishAfterTransition()
+    overridePendingTransition(0, 0)
+  }
+
+
+  override fun finishAfterTransition() {
+    rootView.setBackgroundColor(Color.TRANSPARENT)
+    module.finishRevealAnim(this)
   }
 
   private fun listenerSaveFile() {

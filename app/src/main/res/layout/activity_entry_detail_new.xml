@@ -7,17 +7,20 @@
   <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:background="@color/background_color"
       >
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:alpha="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_up"
         app:subtitleTextAppearance="@style/Toolbar.SubTitleText"
         app:theme="@style/ToolbarMenuTheme"
+        tools:alpha="1"
         app:titleTextAppearance="@style/Toolbar.TitleText"
         />
 
@@ -31,10 +34,13 @@
         />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/clContentRoot"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:alpha="0"
         android:background="@color/transparent"
         app:layout_constraintTop_toBottomOf="@+id/topAppBar"
+        tools:alpha="1"
         >
 
       <com.google.android.material.appbar.AppBarLayout
@@ -142,10 +148,10 @@
 
 
           <androidx.constraintlayout.helper.widget.Flow
-              android:background="@color/transparent"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_marginTop="20dp"
+              android:background="@color/transparent"
               app:layout_constraintTop_toTopOf="parent"
               app:constraint_referenced_ids="btnUserName, btnUserPass, btnTotp"
               />
@@ -222,5 +228,14 @@
       </androidx.core.widget.NestedScrollView>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:constraint_referenced_ids="topAppBar, clContentRoot"
+        />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -161,7 +161,7 @@ class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
     module.getData(type)
   }
 
-  private fun listenerUpdateRecord(){
+  private fun listenerUpdateRecord() {
     lifecycleScope.launch {
       KpaUtil.openEntryRecordFlow.collectLatest {
         onAddOrUpdateRecord(it)
@@ -187,20 +187,23 @@ class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
         val itemData = KeepassAUtil.instance.convertPwEntry2Item(it)
         itemData.time = record.time
         module.entryData.add(itemData)
-      } else {
-        val itemData = KeepassAUtil.instance.convertPwEntry2Item(it)
-        oldRecord.title = record.title
-        oldRecord.subTitle = itemData.subTitle
-        oldRecord.time = record.time
+        adapter.notifyItemInserted(module.entryData.size - 1)
+        return@let
       }
+      val itemData = KeepassAUtil.instance.convertPwEntry2Item(it)
+      oldRecord.title = record.title
+      oldRecord.subTitle = itemData.subTitle
+      oldRecord.time = record.time
 
-      module.entryData.sortByDescending { entry ->
-        entry.time
+      val index = module.entryData.indexOfFirst { oldRecord.id == it.id }
+
+      if (index in module.entryData.indices){
+        adapter.notifyItemChanged(index)
+        return@let
       }
       adapter.notifyDataSetChanged()
     }
   }
-
 
   override fun setLayoutId(): Int {
     return R.layout.fragment_entry_record

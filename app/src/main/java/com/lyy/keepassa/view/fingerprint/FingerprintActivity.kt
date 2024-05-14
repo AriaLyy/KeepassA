@@ -22,6 +22,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.arialyy.frame.core.AbsFrame
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
@@ -103,6 +104,7 @@ class FingerprintActivity : BaseActivity<ActivityFingerprintBinding>() {
   }
 
   override fun finishAfterTransition() {
+    AbsFrame.getInstance().removeActivity(this);
     // 当前标志不为关闭，并且当前标志和进入的标志不一致，则需要提示用户验证指纹
     if (module.curFlag != FLAG_CLOSE && module.curFlag != module.oldFlag) {
       Routerfit.create(DialogRouter::class.java).showMsgDialog(

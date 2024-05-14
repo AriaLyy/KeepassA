@@ -600,17 +600,17 @@ class KeepassAUtil private constructor() {
     }
 
     if (entry is PwEntry) {
-      val opt = if (showElement != null) {
-        val pair = androidx.core.util.Pair(
-          showElement, activity.getString(R.string.transition_entry_icon)
-        )
-        ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pair)
-      } else {
-        ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
-      }
+      // val opt = if (showElement != null) {
+      //   val pair = androidx.core.util.Pair(
+      //     showElement, activity.getString(R.string.transition_entry_icon)
+      //   )
+      //   ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pair)
+      // } else {
+      //   ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
+      // }
       Routerfit.create(ActivityRouter::class.java, activity).toEntryDetailActivity(
         entryId = entry.uuid,
-        opt = opt
+        opt = ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
       )
     }
   }

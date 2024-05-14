@@ -18,6 +18,28 @@
     <item name="android:windowLightStatusBar">?isLightTheme</item>
   </style>
 
+  <style name="Theme.notAnimation" parent="BaseTheme">
+    <item name="android:windowAnimationStyle">@null</item>
+    <item name="android:windowBackground">@android:color/transparent</item>
+    <item name="android:colorBackgroundCacheHint">@null</item>
+    <item name="android:windowIsTranslucent">true</item>
+  </style>
+
+  <style name="notAnimation">
+    <item name="android:activityOpenEnterAnimation">@null</item>
+    <item name="android:activityOpenExitAnimation">@null</item>
+    <item name="android:activityCloseEnterAnimation">@null</item>
+    <item name="android:activityCloseExitAnimation">@null</item>
+    <item name="android:taskOpenEnterAnimation">@null</item>
+    <item name="android:taskOpenExitAnimation">@null</item>
+    <item name="android:taskCloseEnterAnimation">@null</item>
+    <item name="android:taskCloseExitAnimation">@null</item>
+    <item name="android:taskToFrontEnterAnimation">@null</item>
+    <item name="android:taskToFrontExitAnimation">@null</item>
+    <item name="android:taskToBackEnterAnimation">@null</item>
+    <item name="android:taskToBackExitAnimation">@null</item>
+  </style>
+
   <style name="windowAnimatorDemo">
     <item name="android:activityOpenEnterAnimation">@anim/translate_right_in</item>
     <item name="android:activityOpenExitAnimation">@anim/translate_left_out</item>

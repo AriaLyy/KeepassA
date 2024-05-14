@@ -1,5 +1,6 @@
 ### 2.5.0
 * new: Entry Detail Dynamic colors
+* new: More elegant animations
 * fix: Fix bug
 
 ### 2.4.7 (2024/04/30)
