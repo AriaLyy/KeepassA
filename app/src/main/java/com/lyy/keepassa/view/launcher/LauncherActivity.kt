@@ -59,6 +59,9 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   @JvmField
   var type = OPEN_TYPE_OPEN_DB
 
+  private val saveEntityDelegate = SaveEntityDelegate(this)
+  private val searchEntityDelegate = SearchEntityDelegate(this)
+
   override fun setLayoutId(): Int {
     return layout.activity_launcher
   }
@@ -84,9 +87,9 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     module.autoFillParam = intent.getParcelableExtra(KEY_AUTO_FILL_PARAM)
     module.autoFillParam?.let {
       module.autoFillDelegate = if (it.isSave) {
-        SaveEntityDelegate(this)
+        saveEntityDelegate
       } else {
-        SearchEntityDelegate(this)
+        searchEntityDelegate
       }
     }
   }

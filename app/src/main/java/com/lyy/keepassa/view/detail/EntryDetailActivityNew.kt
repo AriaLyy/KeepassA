@@ -118,9 +118,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
   }
 
   override fun handleStatusBar() {
-    Glide.with(this).load(IconUtil.getEntryIconDrawable(this, pwEntry))
-      .apply(RequestOptions.bitmapTransform(BlurTransformation(10, 3)))
-      .into(binding.ivBlur)
+    // 这个不使用父类的状态栏
   }
 
   override fun initData(savedInstanceState: Bundle?) {
@@ -132,9 +130,16 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     if (BaseApp.isV4 && pwEntry.parent == BaseApp.KDB!!.pm.recycleBin) {
       isInRecycleBin = true
     }
+    handleBg()
     setTopBar()
     listenerSaveFile()
     module.saveRecord()
+  }
+
+  private fun handleBg() {
+    Glide.with(this).load(IconUtil.getEntryIconDrawable(this, pwEntry))
+      .apply(RequestOptions.bitmapTransform(BlurTransformation(10, 3)))
+      .into(binding.ivBlur)
   }
 
   private fun listenerSaveFile() {
