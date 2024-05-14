@@ -67,13 +67,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
     // 打开搜索
     const val OPEN_SEARCH = 1
+    const val KEY_IS_SHORTCUTS = "isShortcuts"
+    const val KEY_SHORTCUTS_TYPE = "shortcutsType"
   }
 
-  @Autowired(name = "KEY_IS_SHORTCUTS")
+  @Autowired(name = KEY_IS_SHORTCUTS)
   @JvmField
   var isShortcuts = false
 
-  @Autowired(name = "shortcutsType")
+  @Autowired(name = KEY_SHORTCUTS_TYPE)
   @JvmField
   var shortcutType = 1
 
@@ -167,14 +169,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         }
         binding.vp.adapter!!.notifyDataSetChanged()
 
-        binding.tab.getTabAt(0)!!.icon = getDrawable(R.drawable.selector_ic_tab_history)
+        binding.tab.getTabAt(0)!!.icon = ResUtil.getDrawable(R.drawable.selector_ic_tab_history)
         binding.tab.getTabAt(0)!!.text = getString(R.string.history)
-        binding.tab.getTabAt(1)!!.icon = getDrawable(R.drawable.selector_ic_tab_db)
+        binding.tab.getTabAt(1)!!.icon = ResUtil.getDrawable(R.drawable.selector_ic_tab_db)
         binding.tab.getTabAt(1)!!.text = getString(R.string.all)
 
         val totpTab = binding.tab.getTabAt(2)
         totpTab?.let {
-          it.icon = getDrawable(R.drawable.selector_ic_tab_token)
+          it.icon = ResUtil.getDrawable(R.drawable.selector_ic_tab_token)
           it.text = ResUtil.getString(R.string.kpa_totp)
         }
 
@@ -189,6 +191,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
             // This page is way off-screen to the left.
             alpha = 0f
           }
+
           position <= 1 -> { // [-1,1]
             // Modify the default slide transition to shrink the page as well
             val scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position))
@@ -196,6 +199,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
             alpha = (MIN_ALPHA +
               (((scaleFactor - MIN_SCALE) / (1 - MIN_SCALE)) * (1 - MIN_ALPHA)))
           }
+
           else -> { // (1,+Infinity]
             // This page is way off-screen to the right.
             alpha = 0f
@@ -232,6 +236,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       R.id.search -> {
         showSearchDialog()
       }
+
       R.id.lock -> {
         showQuickUnlockDialog()
       }
