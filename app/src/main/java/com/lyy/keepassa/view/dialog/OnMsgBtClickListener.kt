@@ -9,7 +9,6 @@
 package com.lyy.keepassa.view.dialog;
 
 import android.widget.Button
-import java.io.Serializable
 
 /**
  * @author laoyuyu
@@ -19,7 +18,7 @@ interface OnMsgBtClickListener {
 
   fun onCover(v: Button){}
 
-  fun onEnter(v: Button)
+  fun onEnter(v: Button){}
 
-  fun onCancel(v: Button)
+  fun onCancel(v: Button){}
 }

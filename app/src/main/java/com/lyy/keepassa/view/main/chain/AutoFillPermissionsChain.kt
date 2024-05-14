@@ -17,9 +17,9 @@ import timber.log.Timber
  * @Description
  * @Date 2023/4/22
  **/
-class PermissionsChain : IMainDialogInterceptor {
+class AutoFillPermissionsChain : IMainDialogInterceptor {
   override fun intercept(chain: DialogChain): MainDialogResponse {
-    Timber.d("PermissionsChain")
+    Timber.d("AutoFillPermissionsChain")
     val ac = chain.activity
     if (PermissionsUtil.needShowBackgroundStartDialog(ac)) {
       PermissionsUtil.showAutoFillMsgDialog(

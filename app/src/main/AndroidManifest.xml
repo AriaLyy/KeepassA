@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.lyy.keepassa">
 
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
   <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
   <uses-permission android:name="android.permission.ACTION_OPEN_DOCUMENT" />
   <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.VIBRATE" />
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
   <application
       android:name=".base.BaseApp"
@@ -137,9 +137,6 @@
         android:name=".view.detail.GroupDetailActivity"
         android:screenOrientation="portrait" />
     <activity
-        android:name=".view.detail.EntryDetailActivity"
-        android:screenOrientation="portrait" />
-    <activity
         android:name=".view.detail.EntryDetailActivityNew"
         android:screenOrientation="portrait" />
     <activity
@@ -150,9 +147,6 @@
         android:screenOrientation="portrait" />
     <activity
         android:name=".view.fingerprint.FingerprintActivity"
-        android:screenOrientation="portrait" />
-    <activity
-        android:name=".view.create.CreateEntryActivityOld"
         android:screenOrientation="portrait" />
 
     <activity
@@ -241,8 +235,6 @@
         <action android:name="android.service.autofill.AutofillService" />
       </intent-filter>
     </service>
-
-    <service android:name=".service.DbOpenNotificationService" />
 
     <service
         android:exported="true"

@@ -352,7 +352,7 @@ class KdbHandlerService : IProvider {
       mutex.withLock {
         BaseApp.KDB?.let { kdb ->
           val b = kdbHelper.save(kdb)
-          Timber.d("保存后的数据库hash：${kdb.hashCode()}，num = ${kdb.pm.entries.size}")
+          Timber.d("保存后的数据库hash：${kdb.hashCode()}，num = ${kdb.pm?.entries?.size ?: 0}")
           delay(1000)
           if (uploadDb) {
             val response = DbSynUtil.uploadSyn(BaseApp.dbRecord!!, false)

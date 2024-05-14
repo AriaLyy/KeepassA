@@ -13,11 +13,13 @@ import android.app.AppOpsManager
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import android.os.Build.VERSION_CODES
 import android.os.Process
 import android.provider.Settings
 import android.text.Html
 import android.view.autofill.AutofillManager
 import android.widget.Button
+import androidx.annotation.RequiresApi
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.RomUtils
@@ -42,11 +44,21 @@ object PermissionsUtil {
       Timber.i("不支持自动填充")
       return false
     }
-    if (am.hasEnabledAutofillServices() && !isCanBackgroundStart()) {
+    if (hasEnabledAutofillServices(am) && !isCanBackgroundStart()) {
       Timber.i("已经打开了自动填充")
       return true
     }
     return false
+  }
+
+  @RequiresApi(VERSION_CODES.O)
+  private fun hasEnabledAutofillServices(am: AutofillManager): Boolean {
+    return try {
+      am.hasEnabledAutofillServices()
+    } catch (e: Exception) {
+      Timber.e(e)
+      false
+    }
   }
 
   /**
