@@ -64,11 +64,12 @@ def play_share(aab_path):
 
 def play(aab_path, track):
     credentials = ServiceAccountCredentials.from_json_keyfile_name(
-        JSON_PATH, AUTH_API, AUTH_API)
+        JSON_PATH, AUTH_API)
     http = httplib2.Http()
     http.timeout = 10 * 60000
     http.redirect_codes = set(http.redirect_codes) - {308}
     http = credentials.authorize(http)
+
     service = discovery.build('androidpublisher', 'v3', http)
     edit_request = service.edits().insert(body={}, packageName=PACKAGE_NAME)
     result = edit_request.execute()
@@ -116,5 +117,5 @@ if __name__ == '__main__':
     if args.platform == 'play_share':
         play_share(aar_path)
     elif args.platform == 'play':
-        play(aar_path, "qa")
+        play(aar_path, 'internal')
     sys.exit(0)

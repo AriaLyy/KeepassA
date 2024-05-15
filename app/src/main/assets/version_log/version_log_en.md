@@ -1,6 +1,7 @@
-### 2.5.0
+### 2.5.0 (2024/05/15)
 * new: Entry Detail Dynamic colors
 * new: More elegant animations
+* new: In-app reviews
 * fix: Fix bug
 
 ### 2.4.7 (2024/04/30)

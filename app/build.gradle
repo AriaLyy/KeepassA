@@ -28,7 +28,7 @@ android {
     applicationId "com.lyy.keepassa"
     minSdkVersion libs.versions.minSdk.get().toInteger()
     targetSdkVersion libs.versions.targetsdk.get().toInteger()
-    versionCode 72
+    versionCode 74
     versionName "2.5.0"
     multiDexEnabled true
 
