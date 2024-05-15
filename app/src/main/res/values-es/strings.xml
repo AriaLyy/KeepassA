@@ -385,4 +385,7 @@
     <string name="not_souper_otp">Totp no compatible</string>
     <string name="modify_totp">Modificar token OTP</string>
     <string name="error_totp">Error OTP</string>
+    <string name="options">Opciones</string>
+    <string name="hint_bracket_char">()&lt;&gt;{}[]</string>
+    <string name="quick_pass_type_summary">Resumen del tipo de pase rápido</string>
 </resources>
