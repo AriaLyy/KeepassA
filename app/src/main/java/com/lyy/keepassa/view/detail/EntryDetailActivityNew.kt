@@ -146,7 +146,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
         override fun setResource(resource: Drawable?) {
           super.setResource(resource)
           lifecycleScope.launch {
-            binding.ivBlur.post {
+            binding.root.post {
               module.startRevealAnim(binding, resource)
             }
           }

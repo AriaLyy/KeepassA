@@ -33,7 +33,6 @@ import com.lyy.keepassa.entity.EntryRecord
 import com.lyy.keepassa.entity.showPopMenu
 import com.lyy.keepassa.event.EntryState.DELETE
 import com.lyy.keepassa.event.EntryState.MODIFY
-import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.doOnInterceptTouchEvent
@@ -41,8 +40,6 @@ import com.lyy.keepassa.util.updateModifyEntry
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode.MAIN
 import timber.log.Timber
 
 @Route(path = "/main/fragment/entry")
@@ -197,7 +194,7 @@ class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
 
       val index = module.entryData.indexOfFirst { oldRecord.id == it.id }
 
-      if (index in module.entryData.indices){
+      if (index in module.entryData.indices) {
         adapter.notifyItemChanged(index)
         return@let
       }

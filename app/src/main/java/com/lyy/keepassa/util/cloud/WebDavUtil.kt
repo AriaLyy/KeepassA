@@ -241,8 +241,12 @@ object WebDavUtil : ICloudUtil {
       Timber.e(e, "上传文件失败")
       return false
     } finally {
-      localToken?.let {
-        sardine?.unlock(getConvertedCloudPath(dbRecord), it)
+      kotlin.runCatching {
+        localToken?.let {
+          sardine?.unlock(getConvertedCloudPath(dbRecord), it)
+        }
+      }.onFailure {
+        Timber.e(it)
       }
     }
 
@@ -298,13 +302,13 @@ object WebDavUtil : ICloudUtil {
         Timber.e(e, "下载文件失败")
         return null
       } finally {
-        try {
+        kotlin.runCatching {
           fic?.close()
           foc?.close()
-        } catch (e: Exception) {
+          it.unlock(cloudPath, token)
+        }.onFailure { e ->
           Timber.e(e)
         }
-        it.unlock(cloudPath, token)
       }
     }
 
@@ -316,8 +320,5 @@ object WebDavUtil : ICloudUtil {
    */
   private fun convertUrl(url: String): String {
     return url
-  }
-
-  private fun getRelativePath() {
   }
 }

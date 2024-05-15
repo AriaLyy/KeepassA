@@ -33,7 +33,6 @@ import com.keepassdroid.database.security.ProtectedString
 import com.keepassdroid.utils.Types
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
-import com.lyy.keepassa.anim.ColorEvaluator
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
 import com.lyy.keepassa.databinding.ActivityEntryDetailNewBinding
