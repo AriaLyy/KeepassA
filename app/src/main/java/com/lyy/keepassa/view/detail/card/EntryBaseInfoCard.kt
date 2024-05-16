@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.core.view.isVisible
 import com.arialyy.frame.util.ResUtil
 import com.google.android.material.card.MaterialCardView
 import com.keepassdroid.database.PwEntryV4
@@ -15,6 +16,8 @@ import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.doClick
+import com.lyy.keepassa.util.getRealPass
+import com.lyy.keepassa.util.getRealUserName
 import java.util.Date
 
 /**
@@ -28,7 +31,7 @@ class EntryBaseInfoCard(context: Context, attributeSet: AttributeSet) :
     LayoutEntryCardBaseInfoBinding.inflate(LayoutInflater.from(context), this, true)
 
   fun bindData(entry: PwEntryV4) {
-    val userName = KdbUtil.getUserName(entry)
+    val userName = entry.getRealUserName()
     binding.tvUserName.text = userName
     binding.tvUserName.doClick {
       ClipboardUtil.get()
@@ -75,7 +78,8 @@ class EntryBaseInfoCard(context: Context, attributeSet: AttributeSet) :
   }
 
   private fun handlePass(entry: PwEntryV4) {
-    val pass = KdbUtil.getPassword(entry)
+    val pass = entry.getRealPass()
+    binding.groupPass.isVisible = pass.isNotEmpty()
     binding.tvPass.text = pass
     binding.ivEye.isSelected = true
     binding.ivEye.doClick {

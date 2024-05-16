@@ -439,4 +439,8 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="review_not_hint">Don\'t prompt</string>
     <string name="review_like_app">Do you like this app? Please rate us!</string>
     <string name="hint_notify_permission">Keepass requires notification permission to notify the database status.</string>
+    <string name="title_choose_icon">Select icon</string>
+    <string name="icon_select_pick">Photos</string>
+    <string name="icon_select_db">Local icon</string>
+    <string name="icon_change">Change</string>
 </resources>

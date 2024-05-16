@@ -28,8 +28,8 @@ android {
     applicationId "com.lyy.keepassa"
     minSdkVersion libs.versions.minSdk.get().toInteger()
     targetSdkVersion libs.versions.targetsdk.get().toInteger()
-    versionCode 74
-    versionName "2.5.0"
+    versionCode 75
+    versionName "2.6.0"
     multiDexEnabled true
 
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -261,7 +261,6 @@ dependencies {
   implementation(libs.third.dropbox)
   implementation(libs.third.webdav)
   implementation(libs.bundles.tencent.wcdb)
-  implementation(libs.tencent.vasdolly)
   implementation(libs.third.protector) // XP/调试/多开/模拟器/root 判断
   implementation(libs.third.autosize)
   implementation(libs.google.gson)
@@ -274,9 +273,12 @@ dependencies {
   implementation(libs.jetpack.palette.ktx)
   // mmkv
   implementation(libs.tencent.mmkv)
-
   // xlog
-  implementation 'com.tencent.mars:mars-xlog:1.2.5'
+  implementation(libs.tencent.xlog)
+
+  // 图片剪裁
+  implementation(libs.third.yimagepicker)
+
   // // =========================== 三方库 end =====================================
   implementation(libs.google.gms.billing)
   implementation(libs.google.gms.base)

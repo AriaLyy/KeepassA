@@ -37,6 +37,7 @@ import com.lyy.keepassa.entity.CommonState.DELETE
 import com.lyy.keepassa.entity.GoogleOtpBean
 import com.lyy.keepassa.entity.KeepassBean
 import com.lyy.keepassa.entity.KeepassXcBean
+import com.lyy.keepassa.entity.KpaIconType
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.entity.TagBean
 import com.lyy.keepassa.entity.TrayTotpBean
@@ -60,8 +61,6 @@ import com.lyy.keepassa.view.dialog.CreateTagDialog
 import com.lyy.keepassa.view.dialog.TimeChangeDialog
 import com.lyy.keepassa.view.dialog.otp.CreateOtpModule
 import com.lyy.keepassa.view.dir.ChooseGroupActivity
-import com.lyy.keepassa.view.icon.IconBottomSheetDialog
-import com.lyy.keepassa.view.icon.IconItemCallback
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -489,17 +488,28 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
   }
 
   private fun handleIconClick() {
+    fun showIconChangeDialog() {
+      SelectIconDialog().show()
+    }
     binding.ivIcon.doClick {
-      val iconDialog = IconBottomSheetDialog()
-      iconDialog.setCallback(object : IconItemCallback {
-        override fun onDefaultIcon(defIcon: PwIconStandard) {
-          module.icon = defIcon
-          binding.ivIcon.loadImg(ResUtil.getDrawable(IconUtil.getIconById(module.icon.iconId)))
+      showIconChangeDialog()
+    }
+
+    binding.tvEdit.doClick {
+      showIconChangeDialog()
+    }
+
+    lifecycleScope.launch {
+      SelectIconDialog.iconResultFlow.collectLatest {
+        if (it.first == KpaIconType.DEFAULT) {
+          module.icon = it.second as PwIconStandard
           module.customIcon = PwIconCustom.ZERO
+          binding.ivIcon.loadImg(ResUtil.getDrawable(IconUtil.getIconById(module.icon.iconId)))
+          return@collectLatest
         }
 
-        override fun onCustomIcon(customIcon: PwIconCustom) {
-          module.customIcon = customIcon
+        if (it.first == KpaIconType.CUSTOM) {
+          module.customIcon = it.second as PwIconCustom
           binding.ivIcon.loadImg(
             IconUtil.convertCustomIcon2Drawable(
               this@CreateEntryActivity,
@@ -507,8 +517,9 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
             )
           )
         }
-      })
-      iconDialog.show(supportFragmentManager, IconBottomSheetDialog::class.java.simpleName)
+
+        Timber.e("not support type: ${it.first}")
+      }
     }
   }
 

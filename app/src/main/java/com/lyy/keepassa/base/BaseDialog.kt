@@ -8,7 +8,6 @@
 package com.lyy.keepassa.base
 
 import android.content.Context
-import android.os.Build.VERSION
 import android.view.View
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.FragmentManager
@@ -41,6 +40,10 @@ abstract class BaseDialog<VB : ViewDataBinding> : FrameDialog<VB>() {
 
   override fun onAttach(context: Context) {
     super.onAttach(LanguageUtil.setLanguage(context, BaseApp.currentLang))
+  }
+
+  fun show(manager: FragmentManager) {
+    show(manager, this::class.java.simpleName)
   }
 
   override fun show(manager: FragmentManager, tag: String?) {

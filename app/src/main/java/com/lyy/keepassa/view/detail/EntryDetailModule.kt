@@ -83,7 +83,7 @@ class EntryDetailModule : BaseModule() {
     vAnim.start()
   }
 
-  fun startRevealAnim(binding: ActivityEntryDetailNewBinding, resource: Drawable?) {
+  fun startRevealAnim(binding: ActivityEntryDetailNewBinding) {
     val vAnim = AnimatorSet()
     val revealAnimal = ViewAnimationUtils.createCircularReveal(
       binding.root,
@@ -101,7 +101,6 @@ class EntryDetailModule : BaseModule() {
       binding.topAppBar.alpha = 0f
       binding.clContentRoot.alpha = 0f
       binding.groupContent.isVisible = true
-      binding.ivBlur.setImageDrawable(resource)
     }
     vAnim.playTogether(revealAnimal, contentAnim1, contentAnim2)
     vAnim.interpolator = revealAnimal.interpolator

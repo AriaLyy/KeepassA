@@ -67,6 +67,12 @@
         app:srcCompat="@drawable/selector_pass_visibility"
         />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupPass"
+        app:constraint_referenced_ids="tvPass, ivEye"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <com.lyy.keepassa.widget.BubbleTextView
         android:id="@+id/tvUrl"
         android:layout_width="match_parent"

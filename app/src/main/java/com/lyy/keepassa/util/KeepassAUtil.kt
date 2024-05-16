@@ -852,10 +852,12 @@ fun PwEntry.isRef(): Boolean {
 /**
  * uri 授权
  */
-fun Uri.takePermission() {
+fun Uri.takePermission(grantWrit: Boolean = true) {
   try {
-    val takeFlags =
-      Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+    var takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+    if (grantWrit){
+      takeFlags = takeFlags or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+    }
     BaseApp.APP.contentResolver.takePersistableUriPermission(this, takeFlags)
   } catch (e: Exception) {
     HitUtil.toaskShort(BaseApp.APP.getString(R.string.error_uri_grant_permission))

@@ -105,6 +105,7 @@ third-jodatime = { module = "joda-time:joda-time", version.ref = "third-jodatime
 third-utilcodex = { module = "com.blankj:utilcodex", version.ref = "third-blankj" }
 third-timber = { module = "com.jakewharton.timber:timber", version.ref = "third-timber" }
 third-BaseRecyclerViewAdapterHelper = {module = "io.github.cymchad:BaseRecyclerViewAdapterHelper", version = "3.0.14"}
+third-yimagepicker = {module = "com.ypx.yimagepicker:androidx", version = "3.1.4"}
 
 didi-drouter = { module = "io.github.didi:drouter-plugin-proxy", version = "1.0.2"} # drouter
 didi-drouter-api = { module = "io.github.didi:drouter-api", version = "2.3.0"}
@@ -129,6 +130,7 @@ tencent-vasdolly-plugin = { module = "com.tencent.vasdolly:plugin", version.ref 
 tencent-bugly-crashreport = { module = "com.tencent.bugly:crashreport", version.ref = "tencent-bugly-crashreport" }
 tencent-bugly-nativecrashreport = { module = "com.tencent.bugly:nativecrashreport", version.ref = "tencent-bugly-nativecrashreport" }
 tencent-mmkv = { module = "com.tencent:mmkv", version.ref = "tencent-mmkv" }
+tencent-xlog = { module = "com.tencent.mars:mars-xlog", version = "1.2.5"}
 tencent-andresguard = { module = "com.tencent.mm:AndResGuard-gradle-plugin", version.ref = "tencent-andresguard-gradle-plugin" } # 资源混淆
 
 google-tink = { module = "com.google.crypto.tink:tink-android", version.ref = "google-tink-android" } # 加密工具
@@ -203,8 +205,6 @@ third-eventbus = ["third-eventbus", "third-eventbus-compiler"]
 third-spongycastle = ["spongycastle-core", "spongycastle-prov"]
 
 tencent-wcdb = ["tencent-wcdb", "tencent-wcdb-room"]
-tencent-bugly = ["tencent-bugly-crashreport", "tencent-bugly-nativecrashreport"]
-
 squareup-netlibs = ["squareup-retrofit", "squareup-retrofit-gson", "squareup-okhttp3", "squareup-okhttp3-logginginterceptor"]
 
 

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+  <androidx.appcompat.widget.LinearLayoutCompat
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      style="@style/KpaDialogLayoutStyle"
+      >
+    <include
+        layout="@layout/layout_dialog_title"
+        android:id="@+id/ilTitle"
+        app:msgTitle="@{@string/title_choose_icon}"
+        />
+
+    <com.lyy.keepassa.widget.BubbleTextView
+        android:id="@+id/tvPhotos"
+        android:layout_width="match_parent"
+        android:layout_height="47dp"
+        android:background="@drawable/bg_ripple_white_selector"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:text="@string/icon_select_pick"
+        android:textColor="@color/text_black_color"
+        android:textFontWeight="400"
+        android:textSize="@dimen/text_size_normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ilTitle"
+        app:layout_constraintTop_toTopOf="parent"
+        app:icon_size="24dp"
+        app:left_icon="@drawable/ic_baseline_camera_24"
+        style="@style/DialogTitleStyle"
+        />
+
+    <com.lyy.keepassa.widget.BubbleTextView
+        android:id="@+id/tvLocal"
+        android:layout_width="match_parent"
+        android:layout_height="47dp"
+        android:background="@drawable/bg_ripple_white_selector"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:text="@string/icon_select_db"
+        android:textColor="@color/text_black_color"
+        android:textFontWeight="400"
+        android:textSize="@dimen/text_size_normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ilTitle"
+        app:layout_constraintTop_toTopOf="parent"
+        app:left_icon="@drawable/ic_baseline_dashboard_24"
+        app:icon_size="24dp"
+        style="@style/DialogTitleStyle"
+        />
+
+
+  </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

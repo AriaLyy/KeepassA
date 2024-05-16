@@ -49,7 +49,6 @@ import com.lyy.keepassa.util.isCollectioned
 import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.util.transformation.WhiteBgBlurTransformation
 import com.lyy.keepassa.view.detail.card.EntryFileCard
-import com.lyy.keepassa.widget.toPx
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -138,16 +137,21 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     module.saveRecord()
   }
 
-  private fun handleBg() {
+  private fun handleBg(startAnim: Boolean = true) {
     Glide.with(this)
       .load(IconUtil.getEntryIconDrawable(this, pwEntry))
       .apply(RequestOptions.bitmapTransform(WhiteBgBlurTransformation(10, 3)))
-      .into(object :DrawableImageViewTarget(binding.ivBlur){
+      .into(object : DrawableImageViewTarget(binding.ivBlur) {
         override fun setResource(resource: Drawable?) {
           super.setResource(resource)
+
+          if (!startAnim) {
+            Timber.d("not start anim")
+            return
+          }
           lifecycleScope.launch {
             binding.root.post {
-              module.startRevealAnim(binding, resource)
+              module.startRevealAnim(binding)
             }
           }
         }
@@ -158,7 +162,6 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     super.finishAfterTransition()
     overridePendingTransition(0, 0)
   }
-
 
   override fun finishAfterTransition() {
     rootView.setBackgroundColor(Color.TRANSPARENT)
@@ -180,6 +183,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
   }
 
   private fun bindData() {
+    handleBg(false)
     setIcon()
     // 处理过期
     KpaUtil.handleExpire(binding.tvTitle, pwEntry)
@@ -294,24 +298,5 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     cards.forEach {
       it.setBackgroundColor(ColorUtils.setAlphaComponent(color.second, 0.6f))
     }
-  }
-
-  private fun setAppIcon() {
-    val adapter = AppIconAdapter()
-
-    binding.rvAppIcon.apply {
-      this.adapter = adapter
-      setChildDrawingOrderCallback { childCount, i ->
-        if (childCount <= 1) {
-          return@setChildDrawingOrderCallback i
-        }
-        return@setChildDrawingOrderCallback childCount - i - 1
-
-      }
-      layoutManager = AppIconLayoutManager(15.toPx())
-    }
-    adapter.setData(arrayListOf<String>().apply {
-      add("tv.danmaku.bili")
-    })
   }
 }

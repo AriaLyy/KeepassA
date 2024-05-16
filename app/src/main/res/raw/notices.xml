@@ -18,6 +18,34 @@
 <notices>
 
     <notice>
+        <name>YImagePicker</name>
+        <url>https://github.com/yangpeixing/YImagePicker?tab=readme-ov-file</url>
+        <copyright/>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>Mars</name>
+        <url>https://github.com/Tencent/mars</url>
+        <copyright>Copyright (C) 2016 THL A29 Limited, a Tencent company.</copyright>
+        <license>MIT License</license>
+    </notice>
+
+    <notice>
+        <name>FreeReflection</name>
+        <url>https://github.com/tiann/FreeReflection</url>
+        <copyright/>
+        <license>MIT License</license>
+    </notice>
+
+    <notice>
+        <name>Glide Transformations</name>
+        <url>https://github.com/wasabeef/glide-transformations</url>
+        <copyright>Copyright (C) 2020 Wasabeef</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
         <name>zxing-android-embedded</name>
         <url>https://github.com/journeyapps/zxing-android-embedded</url>
         <copyright>Copyright (C) 2012-201 ZXing authors, Journey Mobile</copyright>
@@ -113,13 +141,6 @@
         <url>https://github.com/lamster2018/EasyProtector</url>
         <copyright/>
         <license>Apache Software License 2.0</license>
-    </notice>
-
-    <notice>
-        <name>VasDolly</name>
-        <url>https://github.com/Tencent/VasDolly</url>
-        <copyright>Copyright (C) 2018 THL A29 Limited, a Tencent company.</copyright>
-        <license>BSD 3-Clause License</license>
     </notice>
 
     <notice>
@@ -221,4 +242,5 @@
         <copyright>Copyright 2018, jessyan</copyright>
         <license>Apache Software License 2.0</license>
     </notice>
+
 </notices>

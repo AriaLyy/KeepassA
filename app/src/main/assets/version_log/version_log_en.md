@@ -1,3 +1,6 @@
+### 2.6.0 
+* new: Add custom icon function
+
 ### 2.5.0 (2024/05/15)
 * new: Entry Detail Dynamic colors
 * new: More elegant animations
