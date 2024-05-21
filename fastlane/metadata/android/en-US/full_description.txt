@@ -1,0 +1,9 @@
+<i>KeepassA</i> is a password management software with a simple interface and simple operation, which is fully compatible with the keeppass 2.x database. And added many commonly used functions on the original basis:
+
+1. Password automatic filling service based on android native framework
+2. Fingerprint unlock, use fingerprint one key to unlock the database
+3. Quick unlock, would you still worry about entering a long database password every time?
+4. Dropbox synchronization, PC\Android\IOS Keepass database can be synchronized
+5. Obtain the TOTP and OTP secondary verification codes. You can get the second verification code like Google Authenticator
+6. Open history record, quickly find the last opened record
+7. Shortcut, you can quickly open the function of searching and creating items on the mobile phone desktop
