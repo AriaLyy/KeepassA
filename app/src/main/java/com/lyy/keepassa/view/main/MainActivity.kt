@@ -14,7 +14,6 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.app.ActivityOptions
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.transition.Transition
 import android.transition.Transition.TransitionListener
@@ -29,7 +28,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
-import com.arialyy.frame.core.AbsFrame
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.google.android.material.tabs.TabLayoutMediator
@@ -48,8 +46,6 @@ import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.view.create.CreateDbActivity
-import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.search.SearchDialog
 import com.lyy.keepassa.widget.MainExpandFloatActionButton
 import org.greenrobot.eventbus.Subscribe
@@ -255,19 +251,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   override fun onBackPressed() {
     // 返回键不退出而是进入后台
     moveTaskToBack(true)
-  }
-
-  override fun onPostCreate(savedInstanceState: Bundle?) {
-    super.onPostCreate(savedInstanceState)
-    // 需要关闭 LauncherActivity\ InputPassActivity \ CreateActivity 三个界面
-    for (ac in AbsFrame.getInstance().activityStack) {
-      if (ac is LauncherActivity || ac is CreateDbActivity) {
-        ac.rootView.setBackgroundColor(Color.TRANSPARENT)
-        ac.rootView.visibility = View.GONE
-        ac.finish()
-        ac.overridePendingTransition(0, 0)
-      }
-    }
   }
 
   override fun onPause() {

@@ -15,10 +15,15 @@ import java.util.Date
  * 云端文件信息
  */
 data class CloudFileInfo(
-  val fileKey: String,    // webDav/dropbox中为云端路径，onedrive为id
+  val fileKey: String,    // webDav/dropbox中为云端路径，onedrive/google drive为id
   val fileName: String,     // 文件名
   val serviceModifyDate: Date, // 该文件在云端的修改时间
   val size: Long,         // 文件大小
   val isDir: Boolean,
   val contentHash: String? = null,   // hash
-)
+  val cloudPath: String? = null
+) {
+  override fun toString(): String {
+    return "[fileKey:$fileKey, fileName:$fileName, serviceModifyDate:$serviceModifyDate, size:$size, isDir:$isDir]"
+  }
+}

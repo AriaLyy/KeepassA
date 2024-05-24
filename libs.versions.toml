@@ -25,6 +25,7 @@ jetpack-autofill = "1.1.0"
 jetpack-swiperefreshlayout = "1.3.0-alpha01"
 jetpack-biometric = "1.1.0"
 jetpack-documentfile = "1.0.1"
+jetpack-credentials = "1.2.2"
 
 
 google-gson = "2.10"
@@ -94,7 +95,7 @@ third-eventbus-compiler = { module = "org.greenrobot:eventbus-annotation-process
 third-lottie = { module = "com.airbnb.android:lottie", version.ref = "third-lottie" } # lottie
 third-glide = { module = "com.github.bumptech.glide:glide", version.ref = "third-glide" } # glide
 third-glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "third-glide" } # glide
-third-glide-transformations= {module = "jp.wasabeef:glide-transformations", version = "4.3.0"}
+third-glide-transformations = { module = "jp.wasabeef:glide-transformations", version = "4.3.0" }
 third-dropbox = { module = "com.dropbox.core:dropbox-core-sdk", version.ref = "third-dropbox" } # dropbox
 third-webdav = { module = "com.thegrizzlylabs.sardine-android:sardine-android", version.ref = "third-webdav" }
 third-protector = { module = "com.lahm.library:easy-protector-release", version.ref = "third-easy-protector-release" } # XP/调试/多开/模拟器/root 判断
@@ -104,11 +105,11 @@ third-zxing-embedded = { module = "com.journeyapps:zxing-android-embedded", vers
 third-jodatime = { module = "joda-time:joda-time", version.ref = "third-jodatime" }
 third-utilcodex = { module = "com.blankj:utilcodex", version.ref = "third-blankj" }
 third-timber = { module = "com.jakewharton.timber:timber", version.ref = "third-timber" }
-third-BaseRecyclerViewAdapterHelper = {module = "io.github.cymchad:BaseRecyclerViewAdapterHelper", version = "3.0.14"}
-third-yimagepicker = {module = "com.ypx.yimagepicker:androidx", version = "3.1.4"}
+third-BaseRecyclerViewAdapterHelper = { module = "io.github.cymchad:BaseRecyclerViewAdapterHelper", version = "3.0.14" }
+third-yimagepicker = { module = "com.ypx.yimagepicker:androidx", version = "3.1.4" }
 
-didi-drouter = { module = "io.github.didi:drouter-plugin-proxy", version = "1.0.2"} # drouter
-didi-drouter-api = { module = "io.github.didi:drouter-api", version = "2.3.0"}
+didi-drouter = { module = "io.github.didi:drouter-plugin-proxy", version = "1.0.2" } # drouter
+didi-drouter-api = { module = "io.github.didi:drouter-api", version = "2.3.0" }
 
 spongycastle-core = { module = "com.madgag.spongycastle:core", version.ref = "third-spongycastle" } # 加密算法
 spongycastle-prov = { module = "com.madgag.spongycastle:prov", version.ref = "third-spongycastle" } # 加密算法
@@ -130,7 +131,7 @@ tencent-vasdolly-plugin = { module = "com.tencent.vasdolly:plugin", version.ref 
 tencent-bugly-crashreport = { module = "com.tencent.bugly:crashreport", version.ref = "tencent-bugly-crashreport" }
 tencent-bugly-nativecrashreport = { module = "com.tencent.bugly:nativecrashreport", version.ref = "tencent-bugly-nativecrashreport" }
 tencent-mmkv = { module = "com.tencent:mmkv", version.ref = "tencent-mmkv" }
-tencent-xlog = { module = "com.tencent.mars:mars-xlog", version = "1.2.5"}
+tencent-xlog = { module = "com.tencent.mars:mars-xlog", version = "1.2.5" }
 tencent-andresguard = { module = "com.tencent.mm:AndResGuard-gradle-plugin", version.ref = "tencent-andresguard-gradle-plugin" } # 资源混淆
 
 google-tink = { module = "com.google.crypto.tink:tink-android", version.ref = "google-tink-android" } # 加密工具
@@ -138,9 +139,15 @@ google-gson = { module = "com.google.code.gson:gson", version.ref = "google-gson
 google-zxing = { module = "com.google.zxing:core", version.ref = "google-zxing" }
 google-gms-billing = { module = "com.android.billingclient:billing-ktx", version.ref = "google-billing-ktx" }
 google-gms-base = { module = "com.google.android.gms:play-services-base", version.ref = "google-play-services-base" }
+google-gms-auth = {module = "com.google.android.gms:play-services-auth", version = "21.1.1"}
 google-firebase-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version = "2.9.9" }
-google-review = {module = "com.google.android.play:review", version.ref = "google-review"}
-google-review-ktx = {module = "com.google.android.play:review-ktx", version.ref = "google-review"}
+google-review = { module = "com.google.android.play:review", version.ref = "google-review" }
+google-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "google-review" }
+google-client-api = { module = "com.google.api-client:google-api-client", version = "2.0.0" }
+google-client-jetty = { module = "com.google.oauth-client:google-oauth-client-jetty", version = "1.34.1" }
+google-client-android = { module = "com.google.api-client:google-api-client-android", version = "2.5.0" }
+google-drive-services = { module = "com.google.apis:google-api-services-drive", version = "v3-rev20220815-2.0.0" }
+google-andorid-identity = { module = "com.google.android.libraries.identity.googleid:googleid", version = "1.1.0" }
 
 jetpack-workmanager = { module = "androidx.work:work-runtime-ktx", version.ref = "jetpack-workmanager" }
 jetpack-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "jetpack-appcompat" }
@@ -167,6 +174,9 @@ jetpack-palette-ktx = { module = "androidx.palette:palette-ktx", version = "1.0.
 jetpack-material2 = { module = "com.google.android.material:material", version.ref = "jetpack-material2" }
 jetpack-multidex = { module = "androidx.multidex:multidex", version.ref = "jetpack-multidex" }
 jetpack-documentfile = { module = "androidx.documentfile:documentfile", version.ref = "jetpack-documentfile" }
+jetpack-credentials = { module = "androidx.credentials:credentials", version.ref = "jetpack-credentials" }
+jetpack-credentials-play_services_auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "jetpack-credentials" }
+
 
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" } #kotlin 反射依赖
@@ -206,6 +216,8 @@ third-spongycastle = ["spongycastle-core", "spongycastle-prov"]
 
 tencent-wcdb = ["tencent-wcdb", "tencent-wcdb-room"]
 squareup-netlibs = ["squareup-retrofit", "squareup-retrofit-gson", "squareup-okhttp3", "squareup-okhttp3-logginginterceptor"]
+
+google-drive = ["google-client-api", "google-drive-services", "google-client-android", "google-gms-auth"]
 
 
 

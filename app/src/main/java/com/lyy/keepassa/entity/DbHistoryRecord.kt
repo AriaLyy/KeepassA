@@ -15,6 +15,7 @@ import android.os.Parcelable
 import android.os.Parcelable.Creator
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.StorageType
@@ -28,32 +29,36 @@ data class DbHistoryRecord(
   @PrimaryKey(autoGenerate = true) var uid: Int = 0,
 
   @ColumnInfo var time: Long,
-    // 打开类型
+  // 打开类型
   /**
    * [StorageType]
    */
   @ColumnInfo(defaultValue = "AFS") var type: String,
-    // 本地数据库uri
+  // 本地数据库uri
   @ColumnInfo var localDbUri: String,
 
-    // 云端路径
+  // 云端路径
   @ColumnInfo var cloudDiskPath: String? = null,
 
-    //密钥的路径
+  //密钥的路径
   @ColumnInfo var keyUri: String,
-    // 数据库名
+  // 数据库名
   var dbName: String
 
 //  val uri:ByteArray
 ) : Parcelable {
+
+  @Ignore
+  var extInfo: String? = null
+
   constructor(parcel: Parcel) : this(
-      parcel.readInt(),
-      parcel.readLong(),
-      parcel.readString()!!,
-      parcel.readString()!!,
-      parcel.readString(),
-      parcel.readString()!!,
-      parcel.readString()!!
+    parcel.readInt(),
+    parcel.readLong(),
+    parcel.readString()!!,
+    parcel.readString()!!,
+    parcel.readString(),
+    parcel.readString()!!,
+    parcel.readString()!!
   ) {
   }
 

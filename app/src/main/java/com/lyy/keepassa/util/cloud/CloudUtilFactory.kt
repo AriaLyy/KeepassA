@@ -11,6 +11,7 @@ package com.lyy.keepassa.util.cloud
 
 import com.lyy.keepassa.view.StorageType
 import com.lyy.keepassa.view.StorageType.DROPBOX
+import com.lyy.keepassa.view.StorageType.GOOGLE_DRIVE
 import com.lyy.keepassa.view.StorageType.ONE_DRIVE
 import com.lyy.keepassa.view.StorageType.WEBDAV
 
@@ -24,8 +25,8 @@ object CloudUtilFactory {
       DROPBOX -> DropboxUtil
       WEBDAV -> WebDavUtil
       ONE_DRIVE -> OneDriveUtil
-      else ->  throw IllegalArgumentException("不识别的工具类型：${storageType}")
+      GOOGLE_DRIVE -> GoogleDriveUtil
+      else -> throw IllegalArgumentException("不识别的工具类型：${storageType}")
     }
   }
-
 }

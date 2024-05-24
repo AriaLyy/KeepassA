@@ -58,7 +58,7 @@
     <item>@drawable/ic_android</item>
     <item>@drawable/ic_dropbox</item>
     <item>@drawable/ic_onedrive</item>
-    <!--    <item>@drawable/ic_google_drive</item>-->
+    <item>@drawable/ic_google_drive</item>
     <item>@drawable/ic_http</item>
     <!--    <item>@drawable/ic_ftp</item>-->
     <!--    <item>@drawable/ic_history</item>-->
@@ -70,7 +70,7 @@
     <item>0</item>
     <item>1</item>
     <item>2</item>
-    <!--    <item>3</item>-->
+    <item>3</item>
     <item>4</item>
     <!--    <item>5</item>-->
     <!--    <item>6</item>-->
@@ -80,7 +80,7 @@
     <item>AFS</item>
     <item>Dropbox</item>
     <item>OneDrive</item>
-    <!--    <item>GoogleDrive</item>-->
+    <item>GoogleDrive</item>
     <item>WebDav</item>
     <!--    <item>Ftp</item>-->
     <!--    <item>SFtp</item>-->

@@ -140,6 +140,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
       Routerfit.create(ActivityRouter::class.java, this).toMainActivity(
         opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
       )
+      superFinish()
     }
   }
 

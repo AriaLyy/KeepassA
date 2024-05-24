@@ -264,6 +264,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         Routerfit.create(ActivityRouter::class.java, this).toMainActivity(
           opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
         )
+        finish()
         return
       }
 
@@ -288,6 +289,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
     Routerfit.create(ActivityRouter::class.java, this).toMainActivity(
       opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
     )
+    finish()
   }
 
   override fun onNewIntent(intent: Intent?) {

@@ -217,6 +217,8 @@
       </intent-filter>
     </activity>
 
+    <activity android:name=".util.cloud.GoogleAuthActivity"/>
+
     <activity
         android:name=".view.QrCodeScannerActivity"
         android:screenOrientation="portrait" />

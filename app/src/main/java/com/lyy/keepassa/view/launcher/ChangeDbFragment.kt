@@ -34,6 +34,7 @@ import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.StorageType
 import com.lyy.keepassa.view.StorageType.AFS
 import com.lyy.keepassa.view.StorageType.DROPBOX
+import com.lyy.keepassa.view.StorageType.GOOGLE_DRIVE
 import com.lyy.keepassa.view.StorageType.ONE_DRIVE
 import com.lyy.keepassa.view.StorageType.WEBDAV
 import com.lyy.keepassa.view.launcher.ChangeDbFragment.Adataer.Holder
@@ -109,6 +110,10 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
           ONE_DRIVE.type -> {
             storageType = ONE_DRIVE
             dbDelegate = OpenOneDriveDelegate()
+          }
+          GOOGLE_DRIVE.type ->{
+            storageType = GOOGLE_DRIVE
+            dbDelegate = OpenGoogleDriveDelegate()
           }
           LauncherModule.HISTORY_ID -> { // 历史记录
             startActivity(
