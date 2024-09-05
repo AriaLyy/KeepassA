@@ -7,11 +7,15 @@
  */
 package com.lyy.keepassa.util.cloud
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.EncryptUtils
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.drive.DriveClient
+import com.google.android.gms.drive.DriveResourceClient
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.http.FileContent
 import com.google.api.client.http.HttpRequestInitializer
@@ -21,6 +25,8 @@ import com.google.api.services.drive.model.File
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.cloud.google.GoogleAuthActivity
+import com.lyy.keepassa.util.cloud.google.GoogleSelectFileActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -34,9 +40,11 @@ object GoogleDriveUtil : ICloudUtil {
   internal val GOOGLE_AUTH_FLOW = MutableSharedFlow<HttpRequestInitializer>(0)
   val AUTH_STATE_FLOW = MutableSharedFlow<Boolean>(0)
 
-  private var service: Drive? = null
+  var service: Drive? = null
   private const val APP_SPACES = "appDataFolder"
   private const val DRIVE_SPACES = "drive"
+  private const val SERVICE_ROOT = "root"
+  private const val APP_ROOT = "KeepassA"
 
   init {
     KpaUtil.scope.launch {
@@ -53,9 +61,28 @@ object GoogleDriveUtil : ICloudUtil {
     }
   }
 
+  // 获取DriveClient实例的方法（确保此方法在你的类中可用）
+  fun getDriveClient(ac: Activity): DriveClient? {
+    // 这里假设你已经通过GoogleSignInAccount初始化了DriveClient
+    val account = GoogleSignIn.getLastSignedInAccount(ac) ?: return null
+
+    return com.google.android.gms.drive.Drive.getDriveClient(ac, account)
+  }
+
+  fun getDriveResourceClient(ac: Activity): DriveResourceClient? {
+    val account = GoogleSignIn.getLastSignedInAccount(ac) ?: return null
+    return com.google.android.gms.drive.Drive.getDriveResourceClient(ac, account)
+  }
+
   override fun auth() {
     ActivityUtils.getTopActivity().apply {
       startActivity(Intent(this, GoogleAuthActivity::class.java))
+    }
+  }
+
+  fun chooseFile() {
+    ActivityUtils.getTopActivity()?.apply {
+      startActivity(Intent(this, GoogleSelectFileActivity::class.java))
     }
   }
 
@@ -142,7 +169,6 @@ object GoogleDriveUtil : ICloudUtil {
 
   private fun createInitFile() {
 
-
     val tempFileName = "KeepassA Folder"
     val tempFile = java.io.File("${BaseApp.APP.cacheDir.path}/${tempFileName}")
     if (!tempFile.exists()) {
@@ -150,8 +176,18 @@ object GoogleDriveUtil : ICloudUtil {
     }
     val fileMetadata = File()
     fileMetadata.setName(tempFileName)
-    fileMetadata.setParents(Collections.singletonList(DRIVE_SPACES))
-    service?.files()?.create(fileMetadata, FileContent("text/plain", tempFile))?.execute()
+    // fileMetadata.setParents(Collections.singletonList(DRIVE_SPACES))
+
+    val dirMetaData = File()
+    dirMetaData.setParents(Collections.singletonList(SERVICE_ROOT))
+    dirMetaData.setName(APP_ROOT)
+
+
+    val dir = service?.files()?.create(dirMetaData)
+      ?.setFields(APP_ROOT)
+      ?.execute()
+    Timber.d("folder id: ${dir?.id}")
+    // service?.files()?.create(fileMetadata, FileContent("text/plain", tempFile))?.execute()
   }
 }
 

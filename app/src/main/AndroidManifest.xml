@@ -23,11 +23,11 @@
       android:theme="@style/AppTheme.NoActionBar"
       tools:ignore="GoogleAppIndexingWarning">
     <activity
-        android:exported="true"
         android:name=".view.launcher.LauncherActivity"
         android:configChanges="layoutDirection|locale"
-        android:screenOrientation="portrait"
+        android:exported="true"
         android:launchMode="singleTask"
+        android:screenOrientation="portrait"
         android:windowSoftInputMode="adjustResize|stateVisible">
       <!-- taskAffinity 指定activity栈，可以使用finishAffinity关闭该栈中的activity -->
       <!--        android:windowSoftInputMode="stateVisible|adjustResize"-->
@@ -137,9 +137,9 @@
         android:name=".view.detail.GroupDetailActivity"
         android:screenOrientation="portrait" />
     <activity
-        android:theme="@style/Theme.notAnimation"
         android:name=".view.detail.EntryDetailActivityNew"
-        android:screenOrientation="portrait" />
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.notAnimation" />
     <activity
         android:name=".view.dir.ChooseGroupActivity"
         android:screenOrientation="portrait" />
@@ -166,9 +166,9 @@
 
     <!-- dropbox -->
     <activity
-        android:exported="true"
         android:name="com.dropbox.core.android.AuthActivity"
         android:configChanges="orientation|keyboard"
+        android:exported="true"
         android:launchMode="singleTask"
         android:screenOrientation="portrait">
       <intent-filter>
@@ -185,8 +185,8 @@
 
     <!--   onedrive -->
     <activity
-        android:exported="true"
         android:name="com.microsoft.identity.client.BrowserTabActivity"
+        android:exported="true"
         android:screenOrientation="portrait">
       <intent-filter>
         <action android:name="android.intent.action.VIEW" />
@@ -202,8 +202,8 @@
     </activity>
 
     <activity
-        android:exported="true"
         android:name=".router.DeeplinkActivity"
+        android:exported="true"
         android:noHistory="true">
       <intent-filter>
         <action android:name="android.intent.action.VIEW" />
@@ -217,7 +217,8 @@
       </intent-filter>
     </activity>
 
-    <activity android:name=".util.cloud.GoogleAuthActivity"/>
+    <activity android:name=".util.cloud.google.GoogleAuthActivity" />
+    <activity android:name=".util.cloud.google.GoogleSelectFileActivity" />
 
     <activity
         android:name=".view.QrCodeScannerActivity"
@@ -228,8 +229,8 @@
         android:screenOrientation="portrait" />
 
     <service
-        android:exported="true"
         android:name=".service.autofill.AutoFillService"
+        android:exported="true"
         android:permission="android.permission.BIND_AUTOFILL_SERVICE">
       <meta-data
           android:name="android.autofill"
@@ -240,8 +241,8 @@
     </service>
 
     <service
-        android:exported="true"
         android:name=".service.input.InputIMEService"
+        android:exported="true"
         android:label="@string/ime_label"
         android:permission="android.permission.BIND_INPUT_METHOD">
       <intent-filter>

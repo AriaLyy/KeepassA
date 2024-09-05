@@ -3,14 +3,7 @@
 buildscript {
   ext.kotlin_version = '1.9.0'
   dependencies {
-//    classpath files(libs.class.superclass.protectionDomain.codeSource.location)
-//    classpath libs.ali.arouter.register
-//    classpath libs.ali.third.arouter.register
     classpath 'com.alibaba:arouter-register-asm7:1.0.2'
-    // 资源文件混淆
-    classpath libs.tencent.andresguard
-    // 腾讯多渠道打包工具：VasDolly
-    classpath libs.tencent.vasdolly.plugin
     classpath libs.google.firebase.gradle
   }
 }

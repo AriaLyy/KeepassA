@@ -2,7 +2,6 @@ plugins {
   id 'com.android.application'
   id 'kotlin-android'
   id 'kotlin-kapt'
-  id 'com.tencent.vasdolly'
   id 'com.alibaba.arouter'
   id 'kotlin-parcelize'
   id 'com.google.gms.google-services'
@@ -140,38 +139,6 @@ configurations {
   playImplementation {}
 }
 
-/**
- * 根据已有基础包重新生成多渠道包
- * 如果是自动生成渠道包，见https://github.com/Tencent/VasDolly
- */
-rebuildChannel {
-  //指定渠道文件
-  channelFile = file("${project.getProjectDir()}/channel")
-  //  baseDebugApk = 已有Debug APK
-  // 已有Release APK
-  //  baseReleaseApk = new File("${project.buildDir}/AndResGuardFinal.apk")
-  baseApk = new File("${project.buildDir}/outputs/apk/dev/release/app-dev-release.apk")
-  //默认为new File(project.buildDir, "rebuildChannel/debug")
-  //  debugOutputDir = Debug渠道包输出目录
-  //默认为new File(project.buildDir, "rebuildChannel/release")
-  // Release渠道包输出目录
-  outputDir = new File("${project.buildDir}/outputs/channels")
-  //快速模式：生成渠道包时不进行校验（速度可以提升10倍以上，默认为false）
-  fastMode = false
-  //低内存模式（仅针对V2签名，默认为false）：只把签名块、中央目录和EOCD读取到内存，不把最大头的内容块读取到内存，在手机上合成APK时，可以使用该模式
-  lowMemory = false
-}
-
-// 配置 AndResGuard 于 channel 前执行
-// 这几行代码表示reBuildChannel任务是依赖于resguardRelease任务的，也就是说先执行完资源混淆后再执行多渠道打包。
-afterEvaluate {
-  tasks.getByName('reBuildChannel') {
-    dependsOn(assembleRelease) // 暂时使用这个
-
-    // 不要使用，1.2.21打包出来的apk，消息对话框布局错乱
-    //    dependsOn('resguardRelease')
-  }
-}
 
 boolean isReleaseBuildType() {
   for (String s : gradle.startParameter.taskNames) {
@@ -209,7 +176,6 @@ android.applicationVariants.all { variant ->
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
-
   // 测试模块
   testImplementation libs.test.junit
   androidTestImplementation libs.bundles.android.test

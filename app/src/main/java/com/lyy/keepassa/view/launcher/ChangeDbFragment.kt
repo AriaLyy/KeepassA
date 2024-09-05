@@ -113,7 +113,7 @@ class ChangeDbFragment : BaseFragment<FragmentChangeDbBinding>() {
           }
           GOOGLE_DRIVE.type ->{
             storageType = GOOGLE_DRIVE
-            dbDelegate = OpenGoogleDriveDelegate()
+            dbDelegate = OpenGoogleDriveDelegate
           }
           LauncherModule.HISTORY_ID -> { // 历史记录
             startActivity(

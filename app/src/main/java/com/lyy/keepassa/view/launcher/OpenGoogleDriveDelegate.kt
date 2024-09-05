@@ -9,12 +9,13 @@ package com.lyy.keepassa.view.launcher
 
 // import com.lyy.keepassa.util.cloud.GoogleDriveUtil
 import android.content.Intent
-import androidx.lifecycle.lifecycleScope
 import com.arialyy.frame.router.Routerfit
 import com.lyy.keepassa.router.DialogRouter
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.cloud.GoogleDriveUtil
 import com.lyy.keepassa.util.cloud.GoogleDriveUtil.AUTH_STATE_FLOW
 import com.lyy.keepassa.view.StorageType.GOOGLE_DRIVE
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -24,20 +25,24 @@ import timber.log.Timber
  * @Description
  * @Date 17:25 2024/5/16
  **/
-class OpenGoogleDriveDelegate : IOpenDbDelegate {
+object OpenGoogleDriveDelegate : IOpenDbDelegate {
   private var isAuthed = false
   private val listDialog by lazy {
     Routerfit.create(DialogRouter::class.java).getCloudFileListDialog(GOOGLE_DRIVE)
   }
 
+  private var authJob: Job? = null
+
   override fun startFlow(fragment: ChangeDbFragment) {
     GoogleDriveUtil.auth()
-    fragment.lifecycleScope.launch {
-      AUTH_STATE_FLOW.collectLatest {
-        if (it) {
-          isAuthed = true
-          Timber.d("auth success")
-          return@collectLatest
+    if (authJob == null || authJob?.isActive == false) {
+      authJob = KpaUtil.scope.launch {
+        AUTH_STATE_FLOW.collectLatest {
+          if (it) {
+            isAuthed = true
+            Timber.d("auth success")
+            return@collectLatest
+          }
         }
       }
     }
@@ -48,6 +53,7 @@ class OpenGoogleDriveDelegate : IOpenDbDelegate {
       return
     }
     listDialog.show()
+    // GoogleDriveUtil.chooseFile()
     // reset state
     isAuthed = false
   }
@@ -56,5 +62,6 @@ class OpenGoogleDriveDelegate : IOpenDbDelegate {
   }
 
   override fun destroy() {
+    authJob?.cancel()
   }
 }

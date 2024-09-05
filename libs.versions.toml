@@ -139,7 +139,8 @@ google-gson = { module = "com.google.code.gson:gson", version.ref = "google-gson
 google-zxing = { module = "com.google.zxing:core", version.ref = "google-zxing" }
 google-gms-billing = { module = "com.android.billingclient:billing-ktx", version.ref = "google-billing-ktx" }
 google-gms-base = { module = "com.google.android.gms:play-services-base", version.ref = "google-play-services-base" }
-google-gms-auth = {module = "com.google.android.gms:play-services-auth", version = "21.1.1"}
+google-gms-auth = { module = "com.google.android.gms:play-services-auth", version = "21.1.1" }
+google-gms-drive = { group = "com.google.android.gms", name = "play-services-drive", version = "17.0.0" }
 google-firebase-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version = "2.9.9" }
 google-review = { module = "com.google.android.play:review", version.ref = "google-review" }
 google-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "google-review" }
@@ -217,7 +218,7 @@ third-spongycastle = ["spongycastle-core", "spongycastle-prov"]
 tencent-wcdb = ["tencent-wcdb", "tencent-wcdb-room"]
 squareup-netlibs = ["squareup-retrofit", "squareup-retrofit-gson", "squareup-okhttp3", "squareup-okhttp3-logginginterceptor"]
 
-google-drive = ["google-client-api", "google-drive-services", "google-client-android", "google-gms-auth"]
+google-drive = ["google-client-api", "google-drive-services", "google-client-android", "google-gms-auth", "google-gms-drive"]
 
 
 
