@@ -26,6 +26,7 @@ import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
+import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.R
 import com.lyy.keepassa.R.layout
 import com.lyy.keepassa.base.AnimState
@@ -69,6 +70,9 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
+    // AppCompatDelegate.setDefaultNightMode(
+    //   AppCompatDelegate.MODE_NIGHT_NO
+    // )
     ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
     module = ViewModelProvider(this)[LauncherModule::class.java]
@@ -100,9 +104,21 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     return NOT_ANIM
   }
 
-  // override fun handleStatusBar() {
-  //   super.handleStatusBar()
-  // }
+  override fun handleStatusBar() {
+    // super.handleStatusBar()
+    ImmersionBar.with(this)
+      .transparentStatusBar()
+      .transparentNavigationBar()
+      .autoDarkModeEnable(true)
+      .autoStatusBarDarkModeEnable(true, 0.2f) //自动状态栏字体变色，必须指定状态栏颜色才可以自动变色哦
+      .flymeOSStatusBarFontColor(R.color.text_black_color)
+      .fitsSystemWindows(false)
+      .autoNavigationBarDarkModeEnable(true, 0.2f) // 自动导航栏图标变色，必须指定导航栏颜色才可以自动变色哦
+      .statusBarDarkFont(
+        true, 0.2f
+      )  //原理：如果当前设备支持状态栏字体变色，会设置状态栏字体为黑色，如果当前设备不支持状态栏字体变色，会使当前状态栏加上透明度，否则不执行透明度
+      .init()
+  }
 
   /**
    * 初始化界面
@@ -132,9 +148,9 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
           }
         }
 
-        // supportFragmentManager.beginTransaction()
-        //   .replace(R.id.content, fragment, tag)
-        //   .commitNow()
+        supportFragmentManager.beginTransaction()
+          .replace(R.id.content, fragment, tag)
+          .commitNow()
       })
   }
 

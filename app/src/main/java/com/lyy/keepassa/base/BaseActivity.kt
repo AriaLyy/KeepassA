@@ -19,6 +19,8 @@ import android.os.Looper
 import android.util.Pair
 import android.view.View
 import android.view.WindowManager
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.ViewDataBinding
 import com.arialyy.frame.core.AbsActivity
@@ -55,6 +57,9 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     } catch (e: Exception) {
       Timber.w(e)
     }
+    // AppCompatDelegate.setDefaultNightMode(
+    //   AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+    // )
   }
 
   open fun useAnim() = AnimState.ALL
@@ -74,11 +79,10 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    // enableEdgeToEdge()
+    enableEdgeToEdge()
     AutoSizeConfig.getInstance().screenHeight = ScreenUtils.getScreenHeight()
     AutoSizeConfig.getInstance().screenWidth = ScreenUtils.getScreenWidth()
     super.onCreate(savedInstanceState)
-    // WindowCompat.setDecorFitsSystemWindows(window, true)
 
     // 进入系统多任务，界面变空白，设置无法截图
     if (!AppUtils.isAppDebug()) {
@@ -90,14 +94,14 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     animState = useAnim()
     setWindowAnim()
 
-    // handleStatusBar()
+    handleStatusBar()
   }
 
   open fun handleStatusBar() {
     ImmersionBar.with(this)
-      .transparentStatusBar()
-      .transparentNavigationBar()
-      // .statusBarColor(R.color.transparent)
+      // .transparentStatusBar()
+      // .transparentNavigationBar()
+      .statusBarColor(R.color.background_color)
       .autoDarkModeEnable(true)
       .autoStatusBarDarkModeEnable(true, 0.2f) //自动状态栏字体变色，必须指定状态栏颜色才可以自动变色哦
       .flymeOSStatusBarFontColor(R.color.text_black_color)

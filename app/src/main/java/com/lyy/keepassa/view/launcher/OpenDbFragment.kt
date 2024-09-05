@@ -285,8 +285,8 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   }
 
   private fun setDbName(dbRecord: DbHistoryRecord) {
-    binding.db.text = Html.fromHtml(getString(R.string.db1, dbRecord.dbName))
-    binding.db.setLeftIcon(
+    binding.tvDb.text = "${getString(R.string.db)}|${dbRecord.dbName}"
+    binding.tvDb.setLeftIcon(
       resources.getDrawable(dbRecord.getDbPathType().icon, requireContext().theme)
     )
   }
