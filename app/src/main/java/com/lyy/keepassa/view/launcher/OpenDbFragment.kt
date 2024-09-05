@@ -117,7 +117,6 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     binding.key.setOnClickListener(this)
 
     if (!showChangeDbBt) {
-      binding.line.visibility = View.GONE
       binding.changeDb.visibility = View.GONE
     }
 
@@ -166,7 +165,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   /**
    * 处理指纹
    */
-  @TargetApi(Build.VERSION_CODES.M) private fun handleFingerprint() {
+   private fun handleFingerprint() {
     modlue.isNeedUseFingerprint(openDbRecord.localDbUri)
       .observe(this, Observer { needUse ->
         if (needUse) {

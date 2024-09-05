@@ -40,6 +40,7 @@ import com.lyy.keepassa.event.DbHistoryEvent
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
+import com.lyy.keepassa.util.loadImg
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import timber.log.Timber
@@ -74,6 +75,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     getAutoFillParam()
 
     module.showPrivacyAgreement(this)
+
     initUI()
     module.securityCheck(this)
   }
@@ -98,10 +100,15 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     return NOT_ANIM
   }
 
+  // override fun handleStatusBar() {
+  //   super.handleStatusBar()
+  // }
+
   /**
    * 初始化界面
    */
   private fun initUI() {
+    binding.ivBg.loadImg(R.drawable.bg_app_base_bg)
     module.getLastOpenDbHistory(this)
       .observe(this, Observer { t ->
         val fragment: Fragment
@@ -125,9 +132,9 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
           }
         }
 
-        supportFragmentManager.beginTransaction()
-          .replace(R.id.content, fragment, tag)
-          .commitNow()
+        // supportFragmentManager.beginTransaction()
+        //   .replace(R.id.content, fragment, tag)
+        //   .commitNow()
       })
   }
 

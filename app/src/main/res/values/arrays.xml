@@ -80,7 +80,7 @@
     <item>AFS</item>
     <item>Dropbox</item>
     <item>OneDrive</item>
-    <item>GoogleDrive</item>
+<!--    <item>GoogleDrive</item>-->
     <item>WebDav</item>
     <!--    <item>Ftp</item>-->
     <!--    <item>SFtp</item>-->

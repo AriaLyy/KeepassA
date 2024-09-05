@@ -4,6 +4,6 @@
   <style name="AppTheme.NoActionBar" parent="BaseTheme">
     <item name="android:windowActivityTransitions">true</item>
     <item name="android:windowLightStatusBar">?isLightTheme</item>
-<!--    <item name="android:windowLightNavigationBar">?isLightTheme</item>-->
+    <item name="android:windowLightNavigationBar">?isLightTheme</item>
   </style>
 </resources>
