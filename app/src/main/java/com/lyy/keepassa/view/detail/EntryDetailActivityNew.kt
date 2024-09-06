@@ -138,8 +138,16 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
   }
 
   private fun handleBg(startAnim: Boolean = true) {
+    fun startBgAnim(){
+      lifecycleScope.launch {
+        binding.root.post {
+          module.startRevealAnim(binding)
+        }
+      }
+    }
     if (KpaUtil.isNightMode()){
       Timber.i("night mode not use blur background")
+      startBgAnim()
       return
     }
     Glide.with(this)
@@ -153,11 +161,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
             Timber.d("not start anim")
             return
           }
-          lifecycleScope.launch {
-            binding.root.post {
-              module.startRevealAnim(binding)
-            }
-          }
+          startBgAnim()
         }
       })
   }

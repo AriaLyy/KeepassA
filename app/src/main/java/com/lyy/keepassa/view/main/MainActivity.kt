@@ -92,6 +92,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
+    Timber.d("MainActivity")
     ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
     module = ViewModelProvider(this)[MainModule::class.java]

@@ -25,6 +25,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -53,10 +54,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import timber.log.Timber
 import kotlin.math.max
-import java.lang.Integer.max
-import java.time.Clock
-import java.time.Instant
-import java.time.temporal.ChronoUnit
 
 @Route(path = "/launcher/activity")
 class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
@@ -97,7 +94,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     splash?.setKeepOnScreenCondition {
       isReady
     }
-    handleSplashScreen()
+    // handleSplashScreen()
   }
 
   private fun handleSplashScreen() {
@@ -115,11 +112,11 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
       // )
       //
       // // Once the delay expires, we start the lottie animation
-      // lottieView.postDelayed({
-      //   vp.view.alpha = 0f
-      //   vp.iconView.alpha = 0f
-      //   lottieView.playAnimation()
-      // }, 1000)
+      lottieView.postDelayed({
+        vp.view.alpha = 0f
+        vp.iconView.alpha = 0f
+        lottieView.playAnimation()
+      }, 100)
 
       // lottieView.playAnimation()
 
@@ -141,6 +138,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
           animator.start()
           animator.doOnEnd {
             isReady = false
+            binding.animationView.isVisible = false
           }
         }
 
@@ -162,6 +160,11 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
         searchEntityDelegate
       }
     }
+  }
+
+  override fun finish() {
+    super.finish()
+    overridePendingTransition(0, 0)
   }
 
   override fun useAnim(): AnimState {
@@ -217,9 +220,6 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
           .replace(R.id.content, fragment, tag)
           .commitNow()
         isReady = false
-        // splash?.setKeepOnScreenCondition{
-        //   false
-        // }
       })
   }
 
