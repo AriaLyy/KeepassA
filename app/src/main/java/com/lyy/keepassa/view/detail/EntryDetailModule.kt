@@ -135,7 +135,7 @@ class EntryDetailModule : BaseModule() {
       }
 
       val bgColor =
-        if (KeepassAUtil.instance.isNightMode()) sw.getDarkMutedColor(iconColor) else sw.getLightMutedColor(
+        if (KpaUtil.isNightMode()) sw.getDarkMutedColor(iconColor) else sw.getLightMutedColor(
           iconColor
         )
 

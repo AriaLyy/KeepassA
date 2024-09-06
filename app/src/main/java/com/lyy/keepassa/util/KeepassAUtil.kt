@@ -230,7 +230,7 @@ class KeepassAUtil private constructor() {
         it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
       })
       for (ac in AbsFrame.getInstance().activityStack) {
-        if (isHomeActivity(ac)) {
+        if (KpaUtil.isHomeActivity(ac)) {
           continue
         }
         ac.finish()
@@ -247,15 +247,6 @@ class KeepassAUtil private constructor() {
     NotificationUtil.startDbLocked(BaseApp.APP)
   }
 
-  fun isHomeActivity(ac: Activity): Boolean {
-    val clazz = ac.javaClass
-    return (clazz == LauncherActivity::class.java
-      || clazz == CreateDbActivity::class.java
-      || clazz == OpenDbHistoryActivity::class.java
-      || clazz == QuickUnlockActivity::class.java
-      )
-  }
-
   /**
    * 判断颜色是不是亮色
    *
@@ -267,13 +258,6 @@ class KeepassAUtil private constructor() {
     return ColorUtils.calculateLuminance(color) >= 0.5
   }
 
-  /**
-   * is night mode
-   * @return true yes, false no
-   */
-  fun isNightMode(): Boolean {
-    return BaseApp.APP.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-  }
 
   /**
    * 是否需要启动快速解锁

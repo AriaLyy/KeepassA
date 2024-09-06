@@ -138,6 +138,10 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
   }
 
   private fun handleBg(startAnim: Boolean = true) {
+    if (KpaUtil.isNightMode()){
+      Timber.i("night mode not use blur background")
+      return
+    }
     Glide.with(this)
       .load(IconUtil.getEntryIconDrawable(this, pwEntry))
       .apply(RequestOptions.bitmapTransform(WhiteBgBlurTransformation(10, 3)))

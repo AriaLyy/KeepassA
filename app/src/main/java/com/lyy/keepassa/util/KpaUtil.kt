@@ -7,7 +7,9 @@
  */
 package com.lyy.keepassa.util
 
+import android.app.Activity
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Paint
 import android.net.Uri
 import android.text.InputType
@@ -24,6 +26,10 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.EntryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.router.ServiceRouter
+import com.lyy.keepassa.view.create.CreateDbActivity
+import com.lyy.keepassa.view.launcher.LauncherActivity
+import com.lyy.keepassa.view.launcher.OpenDbHistoryActivity
+import com.lyy.keepassa.view.main.QuickUnlockActivity
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import timber.log.Timber
@@ -48,6 +54,24 @@ object KpaUtil {
   }
 
   val openEntryRecordFlow = MutableSharedFlow<EntryRecord>()
+
+  /**
+   * is night mode
+   * @return true yes, false no
+   */
+  fun isNightMode(): Boolean {
+    return BaseApp.APP.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+  }
+
+
+  fun isHomeActivity(ac: Activity): Boolean {
+    val clazz = ac.javaClass
+    return (clazz == LauncherActivity::class.java
+      || clazz == CreateDbActivity::class.java
+      || clazz == OpenDbHistoryActivity::class.java
+      || clazz == QuickUnlockActivity::class.java
+      )
+  }
 
   fun isEmptyPass(): Boolean {
     return isEmptyPass

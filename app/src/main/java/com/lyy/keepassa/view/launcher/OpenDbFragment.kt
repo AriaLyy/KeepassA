@@ -151,7 +151,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         Routerfit.create(ActivityRouter::class.java, requireActivity()).toMainActivity(
           opt = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
         )
-        requireActivity().finish()
+        // requireActivity().finish()
       }
     }
   }

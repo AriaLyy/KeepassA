@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <style name="SplashTheme" parent="Theme.SplashScreen">
+    <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    <item name="windowNoTitle">true</item>
+    <item name="windowActionBar">false</item>
+    <item name="windowSplashScreenBackground">@color/background_color</item>
+    <item name="postSplashScreenTheme">@style/BaseTheme</item>
+    <!-- 替换ICON -->
+    <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+    <!-- 设置启动画面在关闭之前显示的时长。最长时间为 1000 毫秒 -->
+    <item name="android:windowSplashScreenAnimationDuration">1000</item>
+
+  </style>
+</resources>

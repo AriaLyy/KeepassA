@@ -9,6 +9,8 @@
 
 package com.lyy.keepassa.view.launcher
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.app.PendingIntent
 import android.app.assist.AssistStructure
@@ -17,8 +19,12 @@ import android.content.Intent
 import android.content.IntentSender
 import android.os.Build
 import android.os.Bundle
+import android.view.ViewAnimationUtils
 import android.view.autofill.AutofillManager
+import androidx.core.animation.doOnEnd
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.splashscreen.SplashScreen
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -26,6 +32,7 @@ import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
+import com.blankj.utilcode.util.ScreenUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.R
 import com.lyy.keepassa.R.layout
@@ -45,6 +52,11 @@ import com.lyy.keepassa.util.loadImg
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import timber.log.Timber
+import kotlin.math.max
+import java.lang.Integer.max
+import java.time.Clock
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 @Route(path = "/launcher/activity")
 class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
@@ -53,6 +65,8 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   private var changeDbFragment: ChangeDbFragment? = null
   private var openDbFragment: OpenDbFragment? = null
   private var isChangeDb = false
+  private var isReady = true
+  private var splash: SplashScreen? = null
 
   /**
    * 启动类型，只有含有历史打开记录时，该记录才有效
@@ -69,10 +83,8 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   }
 
   override fun initData(savedInstanceState: Bundle?) {
+    splash = installSplashScreen()
     super.initData(savedInstanceState)
-    // AppCompatDelegate.setDefaultNightMode(
-    //   AppCompatDelegate.MODE_NIGHT_NO
-    // )
     ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
     module = ViewModelProvider(this)[LauncherModule::class.java]
@@ -82,6 +94,58 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
 
     initUI()
     module.securityCheck(this)
+    splash?.setKeepOnScreenCondition {
+      isReady
+    }
+    handleSplashScreen()
+  }
+
+  private fun handleSplashScreen() {
+    splash?.setOnExitAnimationListener { vp ->
+      val lottieView = binding.animationView
+      lottieView.enableMergePathsForKitKatAndAbove(true)
+
+      // We compute the delay to wait for the end of the splash screen icon
+      // animation.
+      // val splashScreenAnimationEndTime =
+      //   Instant.ofEpochMilli(vp.iconAnimationStartMillis + vp.iconAnimationDurationMillis)
+      // val delay = Instant.now(Clock.systemUTC()).until(
+      //   splashScreenAnimationEndTime,
+      //   ChronoUnit.MILLIS
+      // )
+      //
+      // // Once the delay expires, we start the lottie animation
+      // lottieView.postDelayed({
+      //   vp.view.alpha = 0f
+      //   vp.iconView.alpha = 0f
+      //   lottieView.playAnimation()
+      // }, 1000)
+
+      // lottieView.playAnimation()
+
+      // Finally we dismiss display our app content using a
+      // nice circular reveal
+
+      lottieView.addAnimatorListener(object : AnimatorListenerAdapter() {
+
+        override fun onAnimationEnd(animation: Animator) {
+          super.onAnimationEnd(animation)
+          val animator = ViewAnimationUtils.createCircularReveal(
+            binding.root,
+            ScreenUtils.getScreenWidth() / 2,
+            ScreenUtils.getScreenHeight() / 2,
+            0f,
+            max(ScreenUtils.getScreenWidth().toFloat(), ScreenUtils.getScreenHeight().toFloat())
+          ).setDuration(600)
+
+          animator.start()
+          animator.doOnEnd {
+            isReady = false
+          }
+        }
+
+      })
+    }
   }
 
   override fun onNewIntent(intent: Intent?) {
@@ -124,6 +188,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
    * 初始化界面
    */
   private fun initUI() {
+    // https://www.vecteezy.com/vector-art/3452115-wildlife-elk-in-forest-nature-landscape-vector-illustration
     binding.ivBg.loadImg(R.drawable.bg_app_base_bg)
     module.getLastOpenDbHistory(this)
       .observe(this, Observer { t ->
@@ -151,6 +216,10 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
         supportFragmentManager.beginTransaction()
           .replace(R.id.content, fragment, tag)
           .commitNow()
+        isReady = false
+        // splash?.setKeepOnScreenCondition{
+        //   false
+        // }
       })
   }
 
@@ -163,7 +232,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
       Routerfit.create(ActivityRouter::class.java, this).toMainActivity(
         opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
       )
-      superFinish()
+      // superFinish()
     }
   }
 

@@ -9,17 +9,30 @@
 
 package com.lyy.keepassa.view.main
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
+import android.view.View
+import android.view.ViewAnimationUtils
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
+import androidx.core.view.isVisible
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.ActivityUtils
+import com.blankj.utilcode.util.ScreenUtils
 import com.lahm.library.EasyProtectorLib
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
+import com.lyy.keepassa.databinding.ActivityEntryDetailNewBinding
+import com.lyy.keepassa.databinding.ActivityMainBinding
 import com.lyy.keepassa.router.DialogRouter
+import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.view.main.chain.DevBirthdayChain
 import com.lyy.keepassa.view.main.chain.DialogChain
 import com.lyy.keepassa.view.main.chain.DonateChain
@@ -34,11 +47,43 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.max
 
 class MainModule : BaseModule() {
 
   override fun onCleared() {
     super.onCleared()
+  }
+
+  fun startRevealAnim(binding: ActivityMainBinding) {
+    val vAnim = AnimatorSet()
+    val revealAnimal = ViewAnimationUtils.createCircularReveal(
+      binding.root,
+      ScreenUtils.getScreenWidth() / 2,
+      ScreenUtils.getScreenHeight() / 2,
+      0.toFloat(),
+      max(ScreenUtils.getScreenWidth().toFloat(), ScreenUtils.getScreenHeight().toFloat())
+    )
+
+    // val contentAnim1 = ObjectAnimator.ofFloat(binding.topAppBar, View.ALPHA, 0f, 1f)
+    // val contentAnim2 = ObjectAnimator.ofFloat(binding.root, View.ALPHA, 0f, 1f)
+
+    vAnim.duration = 600
+    // vAnim.doOnStart {
+      // binding.root.alpha = 0f
+      // binding.clContentRoot.alpha = 0f
+      // binding.groupContent.isVisible = true
+    // }
+    vAnim.doOnEnd {
+      ActivityUtils.getActivityList().forEach {
+        if (KpaUtil.isHomeActivity(it)){
+          ActivityUtils.finishActivity(it)
+        }
+      }
+    }
+    vAnim.playTogether(revealAnimal)
+    vAnim.interpolator = revealAnimal.interpolator
+    vAnim.start()
   }
 
   /**

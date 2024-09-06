@@ -19,6 +19,17 @@
     <item name="android:windowLightStatusBar">?isLightTheme</item>
   </style>
 
+  <style name="SplashTheme" parent="Theme.SplashScreen">
+    <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    <item name="windowNoTitle">true</item>
+    <item name="windowActionBar">false</item>
+    <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+    <item name="windowSplashScreenBackground">@color/background_color</item>
+    <item name="postSplashScreenTheme">@style/BaseTheme</item>
+    <item name="windowSplashScreenAnimationDuration">1000</item>
+
+  </style>
+
   <style name="Theme.notAnimation" parent="BaseTheme">
     <item name="android:windowAnimationStyle">@null</item>
     <item name="android:windowBackground">@android:color/transparent</item>

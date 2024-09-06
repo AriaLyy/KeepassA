@@ -11,6 +11,7 @@ package com.lyy.keepassa.view.dialog;
 
 import android.content.res.AssetManager;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import androidx.fragment.app.DialogFragment;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.lyy.keepassa.R;

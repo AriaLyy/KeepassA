@@ -33,6 +33,7 @@ import com.lyy.keepassa.base.AnimState.NOT_ANIM
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.LanguageUtil
 import me.jessyan.autosize.AutoSizeConfig
 import timber.log.Timber
@@ -65,7 +66,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   open fun useAnim() = AnimState.ALL
 
   override fun onPreInit(): Boolean {
-    if (!KeepassAUtil.instance.isHomeActivity(this)
+    if (!KpaUtil.isHomeActivity(this)
       && (BaseApp.KDB.isNull() || BaseApp.dbRecord == null)
     ) {
       BaseApp.isLocked = true
@@ -160,7 +161,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   override fun onRestart() {
     super.onRestart()
     Timber.d("onRestart")
-    if (!KeepassAUtil.instance.isHomeActivity(this) && (BaseApp.KDB.isNull() || BaseApp.isLocked)) {
+    if (!KpaUtil.isHomeActivity(this) && (BaseApp.KDB.isNull() || BaseApp.isLocked)) {
       BaseApp.handler.postDelayed({
         KeepassAUtil.instance.lock()
         finish()

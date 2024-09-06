@@ -75,7 +75,7 @@ object BarUtil {
 
   private fun setMode(): Int {
     var mode = 0
-    val isNight = KeepassAUtil.instance.isNightMode()
+    val isNight = KpaUtil.isNightMode()
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       mode = mode.or(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
     }

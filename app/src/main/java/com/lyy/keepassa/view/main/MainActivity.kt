@@ -23,6 +23,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.alibaba.android.arouter.facade.annotation.Autowired
@@ -48,6 +49,7 @@ import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.search.SearchDialog
 import com.lyy.keepassa.widget.MainExpandFloatActionButton
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import timber.log.Timber
@@ -102,6 +104,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       }
     }
     module.setEcoIcon(this, binding.dbName)
+    lifecycleScope.launch {
+      binding.root.post {
+        module.startRevealAnim(binding)
+      }
+    }
+
     initData()
     initVpAnim()
   }
