@@ -12,6 +12,7 @@ package com.lyy.keepassa.view.main
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
+import android.app.ActivityOptions
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -64,10 +65,6 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
     window.enterTransition.excludeTarget(android.R.id.navigationBarBackground, true)
   }
 
-  override fun useAnim(): AnimState {
-    return NOT_ANIM
-  }
-
   override fun setLayoutId(): Int {
     return R.layout.activity_change_db
   }
@@ -112,6 +109,11 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
   override fun onBackPressed() {
 //    super.onBackPressed()
     startArrowAnim()
+  }
+
+  override fun onResume() {
+    super.onResume()
+    updateResume(this)
   }
 
   override fun buildSharedElements(vararg sharedElements: Pair<View, String>): ArrayList<String> {

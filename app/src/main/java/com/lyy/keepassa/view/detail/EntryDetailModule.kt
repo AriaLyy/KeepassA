@@ -39,6 +39,7 @@ import com.lyy.keepassa.databinding.ActivityEntryDetailNewBinding
 import com.lyy.keepassa.entity.EntryRecord
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
+import com.lyy.keepassa.util.InterpolatorConstance
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
@@ -79,7 +80,7 @@ class EntryDetailModule : BaseModule() {
       ac.superFinish()
     }
     vAnim.playTogether(revealAnimal, contentAnim1, contentAnim2)
-    vAnim.interpolator = revealAnimal.interpolator
+    vAnim.interpolator = InterpolatorConstance.easeOutCubic
     vAnim.start()
   }
 
@@ -103,7 +104,7 @@ class EntryDetailModule : BaseModule() {
       binding.groupContent.isVisible = true
     }
     vAnim.playTogether(revealAnimal, contentAnim1, contentAnim2)
-    vAnim.interpolator = revealAnimal.interpolator
+    vAnim.interpolator = InterpolatorConstance.easeInCubic
     vAnim.start()
   }
 

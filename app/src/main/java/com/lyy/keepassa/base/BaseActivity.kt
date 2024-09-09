@@ -45,8 +45,6 @@ import java.lang.reflect.Field
 abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
 
   protected lateinit var toolbar: Toolbar
-  private var animState = AnimState.ALL
-
   companion object {
     var showStatusBar = false
   }
@@ -58,12 +56,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     } catch (e: Exception) {
       Timber.w(e)
     }
-    // AppCompatDelegate.setDefaultNightMode(
-    //   AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-    // )
   }
-
-  open fun useAnim() = AnimState.ALL
 
   override fun onPreInit(): Boolean {
     if (!KpaUtil.isHomeActivity(this)
@@ -92,16 +85,12 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
         WindowManager.LayoutParams.FLAG_SECURE
       )
     }
-    animState = useAnim()
-    setWindowAnim()
 
     handleStatusBar()
   }
 
   open fun handleStatusBar() {
     ImmersionBar.with(this)
-      // .transparentStatusBar()
-      // .transparentNavigationBar()
       .statusBarColor(R.color.background_color)
       .autoDarkModeEnable(true)
       .autoStatusBarDarkModeEnable(true, 0.2f) //自动状态栏字体变色，必须指定状态栏颜色才可以自动变色哦
@@ -121,37 +110,6 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     super.attachBaseContext(LanguageUtil.setLanguage(newBase!!, BaseApp.currentLang))
   }
 
-  private fun setWindowAnim() {
-    if (animState == NOT_ANIM) {
-      return
-    }
-
-    // salide 为滑入，其它动画效果参考：https://github.com/lgvalle/Material-Animations
-    // A -> B, B的进入动画
-    // window.enterTransition = TransitionInflater.from(this)
-    //   .inflateTransition(R.transition.slide_enter)
-
-    // A -> B, A的退出动画
-    // window.exitTransition = TransitionInflater.from(this)
-    //   .inflateTransition(R.transition.slide_exit)
-
-    // // A <- B, B的返回动画
-    // window.returnTransition = TransitionInflater.from(this)
-    //   .inflateTransition(R.transition.slide_return)
-    //
-    // // A <- B, A的进入动画
-    // window.reenterTransition = TransitionInflater.from(this)
-    //   .inflateTransition(R.transition.slide_reeter)
-
-    // A -> B, B的enter动画和A的exit动画是否同时执行，false 禁止
-    // window.allowEnterTransitionOverlap = true
-    // A <- B, A的reenter和B的return动画是否同时执行，false 禁止
-    // window.allowReturnTransitionOverlap = true
-
-    // reenterTransition、returnTransition 是方向动画
-//    EnterTransition <-> ReturnTransition
-//    ExitTransition <-> ReenterTransition
-  }
 
   protected fun showQuickUnlockDialog() {
     KeepassAUtil.instance.lock()
@@ -177,15 +135,13 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   ) {
     super.startActivity(intent, options)
     isStartOtherActivity = true
-    // overridePendingTransition(R.anim.translate_right_in, R.anim.translate_left_out)
   }
 
   /**
    * Android10 Activity的onStop方法可能会导致共享元素动画失效，通过反射注入恢复共享元素动画
    * @param activity
    */
-  @SuppressLint("PrivateApi")
-  private fun updateResume(activity: Activity) {
+  fun updateResume(activity: Activity) {
     if (!isStartOtherActivity) {
       return
     }
@@ -226,9 +182,6 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
       val sharedElementName = sharedElement.second
         ?: throw IllegalArgumentException("Shared element name must not be null")
       names.add(sharedElementName)
-      val view = sharedElement.first
-        ?: throw IllegalArgumentException("Shared element must not be null")
-//      views.add(sharedElement.first)
     }
     return names
   }
@@ -237,6 +190,5 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     super.onResume()
     // 启动定时器
     KeepassAUtil.instance.startLockTimer(this)
-    // updateResume(this)
   }
 }

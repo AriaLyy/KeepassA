@@ -117,10 +117,6 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
     })
   }
 
-  override fun useAnim(): AnimState {
-    return NOT_ANIM
-  }
-
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
     ARouter.getInstance().inject(this)

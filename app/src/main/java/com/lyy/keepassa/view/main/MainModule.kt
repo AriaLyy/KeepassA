@@ -16,7 +16,6 @@ import android.view.View
 import android.view.ViewAnimationUtils
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
-import androidx.core.view.isVisible
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
@@ -28,16 +27,15 @@ import com.lahm.library.EasyProtectorLib
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
-import com.lyy.keepassa.databinding.ActivityEntryDetailNewBinding
 import com.lyy.keepassa.databinding.ActivityMainBinding
 import com.lyy.keepassa.router.DialogRouter
-import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.InterpolatorConstance
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.view.main.chain.AutoFillPermissionsChain
 import com.lyy.keepassa.view.main.chain.DevBirthdayChain
 import com.lyy.keepassa.view.main.chain.DialogChain
 import com.lyy.keepassa.view.main.chain.DonateChain
 import com.lyy.keepassa.view.main.chain.IMainDialogInterceptor
-import com.lyy.keepassa.view.main.chain.AutoFillPermissionsChain
 import com.lyy.keepassa.view.main.chain.NotifyPermissionsChain
 import com.lyy.keepassa.view.main.chain.ReviewChain
 import com.lyy.keepassa.view.main.chain.VersionLogChain
@@ -65,24 +63,21 @@ class MainModule : BaseModule() {
       max(ScreenUtils.getScreenWidth().toFloat(), ScreenUtils.getScreenHeight().toFloat())
     )
 
-    // val contentAnim1 = ObjectAnimator.ofFloat(binding.topAppBar, View.ALPHA, 0f, 1f)
-    // val contentAnim2 = ObjectAnimator.ofFloat(binding.root, View.ALPHA, 0f, 1f)
+    val contentAnim2 = ObjectAnimator.ofFloat(binding.root, View.ALPHA, 0f, 1f)
 
-    vAnim.duration = 600
-    // vAnim.doOnStart {
-      // binding.root.alpha = 0f
-      // binding.clContentRoot.alpha = 0f
-      // binding.groupContent.isVisible = true
-    // }
+    vAnim.duration = 400
+    vAnim.doOnStart {
+      binding.root.alpha = 0f
+    }
     vAnim.doOnEnd {
       ActivityUtils.getActivityList().forEach {
-        if (KpaUtil.isHomeActivity(it)){
-          ActivityUtils.finishActivity(it)
+        if (KpaUtil.isHomeActivity(it)) {
+          ActivityUtils.finishActivity(it, false)
         }
       }
     }
-    vAnim.playTogether(revealAnimal)
-    vAnim.interpolator = revealAnimal.interpolator
+    vAnim.playTogether(revealAnimal, contentAnim2)
+    vAnim.interpolator = InterpolatorConstance.easeInCubic
     vAnim.start()
   }
 
@@ -166,5 +161,4 @@ class MainModule : BaseModule() {
     }
 
   }
-
 }

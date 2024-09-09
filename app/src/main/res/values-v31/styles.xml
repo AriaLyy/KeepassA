@@ -2,6 +2,7 @@
 <resources>
 
   <style name="SplashTheme" parent="BaseTheme">
+    <item name="android:windowAnimationStyle">@null</item>
     <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowActionBar">false</item>

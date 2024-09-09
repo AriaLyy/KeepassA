@@ -17,6 +17,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Intent
 import android.content.res.AssetManager
 import android.net.Uri
@@ -50,6 +51,7 @@ import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.StorageType
+import com.lyy.keepassa.view.main.MainActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -152,6 +154,13 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
           opt = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
         )
         // requireActivity().finish()
+        // val intent = Intent(activity, MainActivity::class.java).apply {
+        //     flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        // }
+        // activity?.startActivity(
+        //   intent, ActivityOptions.makeSceneTransitionAnimation(activity)
+        //     .toBundle()
+        // )
       }
     }
   }

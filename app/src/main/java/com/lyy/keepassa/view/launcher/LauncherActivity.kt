@@ -9,23 +9,22 @@
 
 package com.lyy.keepassa.view.launcher
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.app.PendingIntent
 import android.app.assist.AssistStructure
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.view.ViewAnimationUtils
+import android.view.View
 import android.view.autofill.AutofillManager
-import androidx.core.animation.doOnEnd
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.isVisible
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -33,7 +32,6 @@ import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
-import com.blankj.utilcode.util.ScreenUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.R
 import com.lyy.keepassa.R.layout
@@ -53,7 +51,6 @@ import com.lyy.keepassa.util.loadImg
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import timber.log.Timber
-import kotlin.math.max
 
 @Route(path = "/launcher/activity")
 class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
@@ -94,57 +91,8 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     splash?.setKeepOnScreenCondition {
       isReady
     }
-    // handleSplashScreen()
   }
 
-  private fun handleSplashScreen() {
-    splash?.setOnExitAnimationListener { vp ->
-      val lottieView = binding.animationView
-      lottieView.enableMergePathsForKitKatAndAbove(true)
-
-      // We compute the delay to wait for the end of the splash screen icon
-      // animation.
-      // val splashScreenAnimationEndTime =
-      //   Instant.ofEpochMilli(vp.iconAnimationStartMillis + vp.iconAnimationDurationMillis)
-      // val delay = Instant.now(Clock.systemUTC()).until(
-      //   splashScreenAnimationEndTime,
-      //   ChronoUnit.MILLIS
-      // )
-      //
-      // // Once the delay expires, we start the lottie animation
-      lottieView.postDelayed({
-        vp.view.alpha = 0f
-        vp.iconView.alpha = 0f
-        lottieView.playAnimation()
-      }, 100)
-
-      // lottieView.playAnimation()
-
-      // Finally we dismiss display our app content using a
-      // nice circular reveal
-
-      lottieView.addAnimatorListener(object : AnimatorListenerAdapter() {
-
-        override fun onAnimationEnd(animation: Animator) {
-          super.onAnimationEnd(animation)
-          val animator = ViewAnimationUtils.createCircularReveal(
-            binding.root,
-            ScreenUtils.getScreenWidth() / 2,
-            ScreenUtils.getScreenHeight() / 2,
-            0f,
-            max(ScreenUtils.getScreenWidth().toFloat(), ScreenUtils.getScreenHeight().toFloat())
-          ).setDuration(600)
-
-          animator.start()
-          animator.doOnEnd {
-            isReady = false
-            binding.animationView.isVisible = false
-          }
-        }
-
-      })
-    }
-  }
 
   override fun onNewIntent(intent: Intent?) {
     super.onNewIntent(intent)
@@ -163,12 +111,16 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   }
 
   override fun finish() {
+    window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+    binding.root.visibility = View.GONE
+    binding.root.alpha = 0f
     super.finish()
     overridePendingTransition(0, 0)
   }
 
-  override fun useAnim(): AnimState {
-    return NOT_ANIM
+  override fun finishAffinity() {
+    super.finishAffinity()
+    overridePendingTransition(0, 0)
   }
 
   override fun handleStatusBar() {

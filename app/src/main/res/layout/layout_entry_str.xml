@@ -13,7 +13,7 @@
       android:layout_height="wrap_content"
       android:layout_centerVertical="true"
       android:layout_marginTop="8dp"
-      android:textColor="@color/text_gray_color"
+      android:textColor="@color/text_black_color"
       android:textSize="@dimen/text_size_smallest"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
