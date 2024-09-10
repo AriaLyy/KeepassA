@@ -81,10 +81,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:orientation="vertical"
-            app:flow_horizontalAlign="start"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/app_icon"
             app:layout_constraintTop_toTopOf="parent"
+            app:flow_horizontalAlign="start"
             app:constraint_referenced_ids="db_name, db_version"
             app:flow_verticalGap="2dp"
             />
@@ -101,35 +101,6 @@
             app:srcCompat="@drawable/ic_arrow_down"
             />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/lock"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/bg_ripple_white_selector"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/search"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_lock_24px"
-            />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/search"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/bg_ripple_white_selector"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_search"
-            />
 
       </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -184,20 +155,19 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         />
 
-    <com.lyy.keepassa.widget.MainExpandFloatActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_marginBottom="24dp"
+    <com.lyy.keepassa.widgets.MainFloatActionButton
+        android:id="@+id/fabNew"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_gravity="bottom|end"
         android:layout_marginEnd="24dp"
-        app:layout_behavior="com.lyy.keepassa.widget.MainExpandFloatActionButtonBehavior"
-        />
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/main_fab_bg"
+        android:elevation="2dp"
+        app:shapeAppearanceOverlay="@style/CircleStyle"
+        app:layout_behavior="com.lyy.keepassa.widgets.MainFloatActionButtonBehavior"
+        tools:srcCompat="@drawable/ic_add_24px"
 
-    <FrameLayout
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         />
 
 

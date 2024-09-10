@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    android:background="@drawable/main_fab_sub_action_bg"
+    android:clickable="true"
+    android:elevation="2dp"
+    android:focusable="true"
+    >
+
+  <androidx.appcompat.widget.AppCompatImageView
+      android:id="@+id/img"
+      android:layout_width="24dp"
+      android:layout_height="24dp"
+      android:layout_gravity="center"
+      tools:src="@drawable/ic_add_24px"
+      />
+
+</FrameLayout>

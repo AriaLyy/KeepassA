@@ -14,11 +14,16 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.app.ActivityOptions
 import android.content.Intent
+import android.graphics.Point
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.transition.Transition
 import android.transition.Transition.TransitionListener
 import android.util.Pair
 import android.view.View
+import android.view.View.OnClickListener
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -31,11 +36,13 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.ImageUtils
+import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.shape.CornerFamily
+import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.tabs.TabLayoutMediator
 import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
-import com.lyy.keepassa.base.AnimState
-import com.lyy.keepassa.base.AnimState.NOT_ANIM
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityMainBinding
@@ -47,8 +54,12 @@ import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.doClick
 import com.lyy.keepassa.view.search.SearchDialog
-import com.lyy.keepassa.widget.MainExpandFloatActionButton
+import com.lyy.keepassa.widget.toPx
+import com.lyy.keepassa.widgets.MainFabSubAction
+import com.lyy.keepassa.widgets.MainFloatActionButton
+import com.lyy.keepassa.widgets.arc.FloatingActionMenu
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
@@ -113,33 +124,88 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
     initData()
     initVpAnim()
+    initMenu()
+  }
+
+  private fun buildMenuIcon(drawable: Drawable?, onClick: OnClickListener): MainFabSubAction {
+    val dp42 = 42.toPx()
+    val lp = FrameLayout.LayoutParams(dp42, dp42)
+    val menu = MainFabSubAction(this, null)
+    menu.layoutParams = lp
+    menu.setDrawable(drawable)
+    menu.doClick {
+      onClick.onClick(menu)
+    }
+    return menu
+  }
+
+  private fun initMenu() {
+    val menuKey = buildMenuIcon(
+      ResUtil.getSvgIcon(R.drawable.ic_password, R.color.color_FFFFFF)
+    ) {
+      Routerfit.create(ActivityRouter::class.java).toCreateEntryActivity(null)
+    }
+    val menuGroup = buildMenuIcon(ResUtil.getDrawable(R.drawable.ic_fab_dir)) {
+      Routerfit.create(DialogRouter::class.java)
+        .showCreateGroupDialog(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
+    }
+
+    val menuLock =
+      buildMenuIcon(ResUtil.getSvgIcon(R.drawable.ic_lock_24px, R.color.color_FFFFFF)) {
+        showQuickUnlockDialog()
+      }
+
+    val menuSearch = buildMenuIcon(ResUtil.getSvgIcon(R.drawable.ic_search, R.color.color_FFFFFF)) {
+      showSearchDialog()
+    }
+
+    val menu = FloatingActionMenu.Builder(this@MainActivity)
+      .setStateChangeListener(object : FloatingActionMenu.MenuStateChangeListener {
+        override fun onMenuOpened(menu: FloatingActionMenu?) {
+          binding.fabNew.rotation = 45f
+        }
+
+        override fun onMenuClosed(menu: FloatingActionMenu?) {
+          binding.fabNew.rotation = 0f
+        }
+      })
+      .setStartAngle(170)
+      .setEndAngle(300)
+      .addSubActionView(menuKey)
+      .addSubActionView(menuGroup)
+      .addSubActionView(menuLock)
+      .addSubActionView(menuSearch)
+      .setPointInterceptor { mainActionView ->
+        val localPoint = IntArray(2)
+        mainActionView.getLocationInWindow(localPoint)
+        // Timber.d("localPoint: ${localPoint}")
+        // localPoint[0] += mainActionView.width / 2
+        localPoint[1] += 4.toPx()
+
+        return@setPointInterceptor Point(localPoint[0], localPoint[1])
+      }
+      .attachTo(binding.fabNew)
+      .build()
+
+    binding.fabNew.bringToFront()
+    binding.fabNew.setImageDrawable(module.getAddIcon())
+    binding.fabNew.callback = object : MainFloatActionButton.OnOperateCallback {
+      override fun onHint(view: MainFloatActionButton) {
+        menu.close(true)
+      }
+    }
   }
 
   private fun initData() {
     module.showInfoDialog(this)
     BaseApp.isLocked = false
     binding.headToolbar.setOnClickListener(this)
-    binding.search.setOnClickListener(this)
-    binding.lock.setOnClickListener(this)
 
     binding.dbName.text = BaseApp.dbFileName
     binding.dbVersion.text = BaseApp.dbName
     val needShowTotp = PreferenceManager.getDefaultSharedPreferences(this)
       .getBoolean(getString(R.string.set_key_main_show_totp_tab), true)
     initVP(needShowTotp)
-
-    binding.fab.setOnItemClickListener(object : MainExpandFloatActionButton.OnItemClickListener {
-      override fun onKeyClick() {
-        Routerfit.create(ActivityRouter::class.java).toCreateEntryActivity(null)
-        binding.fab.hintMoreOperate()
-      }
-
-      override fun onGroupClick() {
-        Routerfit.create(DialogRouter::class.java)
-          .showCreateGroupDialog(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
-        binding.fab.hintMoreOperate()
-      }
-    })
   }
 
   private fun initVP(needShowTotp: Boolean) {
@@ -239,13 +305,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     }
     when (v!!.id) {
       R.id.head_toolbar -> startArrowAnim()
-      R.id.search -> {
-        showSearchDialog()
-      }
-
-      R.id.lock -> {
-        showQuickUnlockDialog()
-      }
     }
   }
 
@@ -271,7 +330,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     super.onDestroy()
     EventBusHelper.unReg(this)
   }
-
 
   /**
    * 跳转数据库切换

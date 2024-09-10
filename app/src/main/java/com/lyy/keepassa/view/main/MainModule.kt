@@ -19,6 +19,7 @@ import androidx.core.animation.doOnStart
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.ActivityUtils
@@ -79,6 +80,10 @@ class MainModule : BaseModule() {
     vAnim.playTogether(revealAnimal, contentAnim2)
     vAnim.interpolator = InterpolatorConstance.easeInCubic
     vAnim.start()
+  }
+
+  fun getAddIcon(): VectorDrawableCompat? {
+    return ResUtil.getSvgIcon(R.drawable.ic_add_24px, R.color.color_FFFFFF)
   }
 
   /**
