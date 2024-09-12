@@ -59,16 +59,16 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   }
 
   override fun onPreInit(): Boolean {
-    if (!KpaUtil.isHomeActivity(this)
-      && (BaseApp.KDB.isNull() || BaseApp.dbRecord == null)
-    ) {
-      BaseApp.isLocked = true
-      HitUtil.toaskShort(getString(R.string.notify_db_locked))
-      // Cannot be used finishAfterTransition(), because binding invalid
-      finish()
-
-      return false
-    }
+    // if (!KpaUtil.isHomeActivity(this)
+    //   && (BaseApp.KDB.isNull() || BaseApp.dbRecord == null)
+    // ) {
+    //   BaseApp.isLocked = true
+    //   HitUtil.toaskShort(getString(R.string.notify_db_locked))
+    //   // Cannot be used finishAfterTransition(), because binding invalid
+    //   finish()
+    //
+    //   return false
+    // }
     return true
   }
 

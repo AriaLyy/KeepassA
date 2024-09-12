@@ -23,6 +23,8 @@
       android:supportsRtl="true"
       android:theme="@style/AppTheme.NoActionBar"
       tools:ignore="GoogleAppIndexingWarning">
+
+<!--    android:name=".view.TestActivity"-->
     <activity
         android:name=".view.launcher.LauncherActivity"
         android:configChanges="layoutDirection|locale"

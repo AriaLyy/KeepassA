@@ -12,6 +12,7 @@ package com.lyy.keepassa.view.main
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Point
@@ -22,7 +23,6 @@ import android.transition.Transition.TransitionListener
 import android.util.Pair
 import android.view.View
 import android.view.View.OnClickListener
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
@@ -36,10 +36,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
-import com.blankj.utilcode.util.ImageUtils
-import com.google.android.material.imageview.ShapeableImageView
-import com.google.android.material.shape.CornerFamily
-import com.google.android.material.shape.ShapeAppearanceModel
+import com.blankj.utilcode.util.BarUtils
 import com.google.android.material.tabs.TabLayoutMediator
 import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
@@ -55,6 +52,7 @@ import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.doClick
+import com.lyy.keepassa.util.pivotCenter
 import com.lyy.keepassa.view.search.SearchDialog
 import com.lyy.keepassa.widget.toPx
 import com.lyy.keepassa.widgets.MainFabSubAction
@@ -88,6 +86,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   @Autowired(name = KEY_SHORTCUTS_TYPE)
   @JvmField
   var shortcutType = 1
+
+  private var fabMenu:FloatingActionMenu?=null
 
   private val historyFm by lazy {
     Routerfit.create(FragmentRouter::class.java).toMainHistoryFragment()
@@ -144,10 +144,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       ResUtil.getSvgIcon(R.drawable.ic_password, R.color.color_FFFFFF)
     ) {
       Routerfit.create(ActivityRouter::class.java).toCreateEntryActivity(null)
+      fabMenu?.close(true)
     }
     val menuGroup = buildMenuIcon(ResUtil.getDrawable(R.drawable.ic_fab_dir)) {
       Routerfit.create(DialogRouter::class.java)
         .showCreateGroupDialog(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
+      fabMenu?.close(true)
     }
 
     val menuLock =
@@ -157,41 +159,52 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
     val menuSearch = buildMenuIcon(ResUtil.getSvgIcon(R.drawable.ic_search, R.color.color_FFFFFF)) {
       showSearchDialog()
+      fabMenu?.close(true)
     }
-
-    val menu = FloatingActionMenu.Builder(this@MainActivity)
+    val coords = IntArray(2)
+    fabMenu = FloatingActionMenu.Builder(this@MainActivity)
       .setStateChangeListener(object : FloatingActionMenu.MenuStateChangeListener {
         override fun onMenuOpened(menu: FloatingActionMenu?) {
-          binding.fabNew.rotation = 45f
+          binding.fabNew.rotation = 0f
+          val pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 45f)
+          val animation: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(binding.fabNew, pvhR)
+          animation.start()
         }
 
         override fun onMenuClosed(menu: FloatingActionMenu?) {
-          binding.fabNew.rotation = 0f
+          binding.fabNew.rotation = 45f
+          val pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 0f)
+          val animation: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(binding.fabNew, pvhR)
+          animation.start()
         }
       })
-      .setStartAngle(170)
-      .setEndAngle(300)
       .addSubActionView(menuKey)
       .addSubActionView(menuGroup)
       .addSubActionView(menuLock)
       .addSubActionView(menuSearch)
       .setPointInterceptor { mainActionView ->
-        val localPoint = IntArray(2)
-        mainActionView.getLocationInWindow(localPoint)
-        // Timber.d("localPoint: ${localPoint}")
-        // localPoint[0] += mainActionView.width / 2
-        localPoint[1] += 4.toPx()
 
-        return@setPointInterceptor Point(localPoint[0], localPoint[1])
+        if (coords[0] != 0) {
+          return@setPointInterceptor Point(coords[0], coords[1])
+        }
+
+        mainActionView.getLocationOnScreen(coords)
+
+        coords[1] -= BarUtils.getStatusBarHeight()
+        coords[0] += mainActionView.measuredWidth / 2
+        coords[1] += mainActionView.measuredHeight/2
+
+        Timber.d("x: ${coords[0]}, y: ${coords[1]}")
+
+        return@setPointInterceptor Point(coords[0], coords[1])
       }
       .attachTo(binding.fabNew)
       .build()
 
-    binding.fabNew.bringToFront()
     binding.fabNew.setImageDrawable(module.getAddIcon())
     binding.fabNew.callback = object : MainFloatActionButton.OnOperateCallback {
       override fun onHint(view: MainFloatActionButton) {
-        menu.close(true)
+        fabMenu?.close(true)
       }
     }
   }

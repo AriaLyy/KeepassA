@@ -4,9 +4,7 @@
     android:layout_width="40dp"
     android:layout_height="40dp"
     android:background="@drawable/main_fab_sub_action_bg"
-    android:clickable="true"
     android:elevation="2dp"
-    android:focusable="true"
     >
 
   <androidx.appcompat.widget.AppCompatImageView

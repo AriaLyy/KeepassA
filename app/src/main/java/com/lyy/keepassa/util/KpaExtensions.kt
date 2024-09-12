@@ -63,6 +63,14 @@ enum class ClickScope {
 private var lastClickTime = -1L
 
 /**
+ * 设置中心锚点
+ */
+fun View.pivotCenter(){
+  pivotX = measuredWidth / 2f
+  pivotY = measuredHeight / 2f
+}
+
+/**
  * 时间间隔
  * @param clickScope  时间间隔，[ClickScope.VIEW]，[ClickScope.SYS]
  */
