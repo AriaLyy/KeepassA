@@ -8,11 +8,15 @@
 package com.lyy.keepassa.util
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.text.InputType
+import android.view.View.OnClickListener
+import android.widget.FrameLayout
 import android.widget.TextView
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
@@ -30,6 +34,8 @@ import com.lyy.keepassa.view.create.CreateDbActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.launcher.OpenDbHistoryActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
+import com.lyy.keepassa.widget.toPx
+import com.lyy.keepassa.widgets.MainFabSubAction
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import timber.log.Timber
@@ -63,6 +69,21 @@ object KpaUtil {
     return BaseApp.APP.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
   }
 
+  fun buildMenuIcon(
+    context: Context,
+    drawable: Drawable?,
+    onClick: OnClickListener
+  ): MainFabSubAction {
+    val dp42 = 42.toPx()
+    val lp = FrameLayout.LayoutParams(dp42, dp42)
+    val menu = MainFabSubAction(context, null)
+    menu.layoutParams = lp
+    menu.setDrawable(drawable)
+    menu.doClick {
+      onClick.onClick(menu)
+    }
+    return menu
+  }
 
   fun isHomeActivity(ac: Activity): Boolean {
     val clazz = ac.javaClass

@@ -96,7 +96,6 @@
         android:text="@string/need_key"
         android:textColor="@color/color_FFFFFF"
         android:textSize="@dimen/text_size_normal"
-        app:buttonTint="@color/color_FFFFFF"
         app:layout_constraintStart_toStartOf="@+id/anim"
         app:layout_constraintTop_toBottomOf="@+id/db_name_layout"
         />

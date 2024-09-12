@@ -73,7 +73,7 @@ class MainModule : BaseModule() {
     vAnim.doOnEnd {
       ActivityUtils.getActivityList().forEach {
         if (KpaUtil.isHomeActivity(it)) {
-          ActivityUtils.finishActivity(it, false)
+          ActivityUtils.finishActivity(it)
         }
       }
     }

@@ -128,7 +128,7 @@
         android:name=".view.main.MainActivity"
         android:launchMode="singleTask"
         android:screenOrientation="portrait"
-        android:theme="@style/Theme.notAnimation" />
+        />
 
     <activity
         android:name=".view.MarkDownEditorActivity"

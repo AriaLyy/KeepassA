@@ -17,11 +17,11 @@
     <item name="android:statusBarColor">@color/transparent</item>
     <item name="android:windowActivityTransitions">true</item>
     <item name="android:windowLightStatusBar">?isLightTheme</item>
-<!--    <item name="android:windowAnimationStyle">@null</item>-->
+    <item name="android:windowAnimationStyle">@style/notAnimation</item>
   </style>
 
   <style name="SplashTheme" parent="Theme.SplashScreen">
-    <item name="android:windowAnimationStyle">@null</item>
+    <item name="android:windowAnimationStyle">@style/notAnimation</item>
     <item name="windowNoTitle">true</item>
     <item name="windowActionBar">false</item>
     <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
@@ -289,6 +289,12 @@
     <item name="android:textStyle">bold</item>
     <item name="android:fontFamily">@font/roboto_bold</item>
     <item name="android:textSize">@dimen/text_size_biggest</item>
+  </style>
+
+  <style name="KpaCheckBox" parent="">
+    <item name="colorOnSurface">@color/transparent</item>
+    <item name="colorOutline">@color/white</item>
+    <item name="colorSecondary">@color/colorAccent</item>
   </style>
 
 </resources>

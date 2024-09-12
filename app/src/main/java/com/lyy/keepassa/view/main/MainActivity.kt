@@ -16,14 +16,11 @@ import android.animation.PropertyValuesHolder
 import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Point
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.transition.Transition
 import android.transition.Transition.TransitionListener
 import android.util.Pair
 import android.view.View
-import android.view.View.OnClickListener
-import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -51,11 +48,8 @@ import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.util.doClick
-import com.lyy.keepassa.util.pivotCenter
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.view.search.SearchDialog
-import com.lyy.keepassa.widget.toPx
-import com.lyy.keepassa.widgets.MainFabSubAction
 import com.lyy.keepassa.widgets.MainFloatActionButton
 import com.lyy.keepassa.widgets.arc.FloatingActionMenu
 import kotlinx.coroutines.launch
@@ -87,7 +81,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   @JvmField
   var shortcutType = 1
 
-  private var fabMenu:FloatingActionMenu?=null
+  private var fabMenu: FloatingActionMenu? = null
 
   private val historyFm by lazy {
     Routerfit.create(FragmentRouter::class.java).toMainHistoryFragment()
@@ -127,54 +121,49 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     initMenu()
   }
 
-  private fun buildMenuIcon(drawable: Drawable?, onClick: OnClickListener): MainFabSubAction {
-    val dp42 = 42.toPx()
-    val lp = FrameLayout.LayoutParams(dp42, dp42)
-    val menu = MainFabSubAction(this, null)
-    menu.layoutParams = lp
-    menu.setDrawable(drawable)
-    menu.doClick {
-      onClick.onClick(menu)
-    }
-    return menu
-  }
-
   private fun initMenu() {
-    val menuKey = buildMenuIcon(
+    val menuKey = KpaUtil.buildMenuIcon(
+      this,
       ResUtil.getSvgIcon(R.drawable.ic_password, R.color.color_FFFFFF)
     ) {
       Routerfit.create(ActivityRouter::class.java).toCreateEntryActivity(null)
       fabMenu?.close(true)
     }
-    val menuGroup = buildMenuIcon(ResUtil.getDrawable(R.drawable.ic_fab_dir)) {
+    val menuGroup = KpaUtil.buildMenuIcon(this, ResUtil.getDrawable(R.drawable.ic_fab_dir)) {
       Routerfit.create(DialogRouter::class.java)
         .showCreateGroupDialog(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
       fabMenu?.close(true)
     }
 
     val menuLock =
-      buildMenuIcon(ResUtil.getSvgIcon(R.drawable.ic_lock_24px, R.color.color_FFFFFF)) {
+      KpaUtil.buildMenuIcon(
+        this,
+        ResUtil.getSvgIcon(R.drawable.ic_lock_24px, R.color.color_FFFFFF)
+      ) {
         showQuickUnlockDialog()
       }
 
-    val menuSearch = buildMenuIcon(ResUtil.getSvgIcon(R.drawable.ic_search, R.color.color_FFFFFF)) {
-      showSearchDialog()
-      fabMenu?.close(true)
-    }
+    val menuSearch =
+      KpaUtil.buildMenuIcon(this, ResUtil.getSvgIcon(R.drawable.ic_search, R.color.color_FFFFFF)) {
+        showSearchDialog()
+        fabMenu?.close(true)
+      }
     val coords = IntArray(2)
     fabMenu = FloatingActionMenu.Builder(this@MainActivity)
       .setStateChangeListener(object : FloatingActionMenu.MenuStateChangeListener {
         override fun onMenuOpened(menu: FloatingActionMenu?) {
           binding.fabNew.rotation = 0f
           val pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 45f)
-          val animation: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(binding.fabNew, pvhR)
+          val animation: ObjectAnimator =
+            ObjectAnimator.ofPropertyValuesHolder(binding.fabNew, pvhR)
           animation.start()
         }
 
         override fun onMenuClosed(menu: FloatingActionMenu?) {
           binding.fabNew.rotation = 45f
           val pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 0f)
-          val animation: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(binding.fabNew, pvhR)
+          val animation: ObjectAnimator =
+            ObjectAnimator.ofPropertyValuesHolder(binding.fabNew, pvhR)
           animation.start()
         }
       })
@@ -192,7 +181,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
         coords[1] -= BarUtils.getStatusBarHeight()
         coords[0] += mainActionView.measuredWidth / 2
-        coords[1] += mainActionView.measuredHeight/2
+        coords[1] += mainActionView.measuredHeight / 2
 
         Timber.d("x: ${coords[0]}, y: ${coords[1]}")
 

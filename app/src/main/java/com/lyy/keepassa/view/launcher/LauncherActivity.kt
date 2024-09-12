@@ -111,16 +111,11 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   }
 
   override fun finish() {
-    window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-    binding.root.visibility = View.GONE
-    binding.root.alpha = 0f
     super.finish()
-    overridePendingTransition(0, 0)
   }
 
   override fun finishAffinity() {
     super.finishAffinity()
-    overridePendingTransition(0, 0)
   }
 
   override fun handleStatusBar() {

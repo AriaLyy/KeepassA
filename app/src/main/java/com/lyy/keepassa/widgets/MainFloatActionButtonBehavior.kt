@@ -95,7 +95,7 @@ public class MainFloatActionButtonBehavior(
       outAnim!!.cancel()
     }
     fab.callback?.onHint(fab)
-    outAnim = ObjectAnimator.ofFloat(fab, "translationY", 0f, fab.height + bottomMargin.toFloat())
+    outAnim = ObjectAnimator.ofFloat(fab, View.TRANSLATION_Y, 0f, fab.height + bottomMargin.toFloat())
     outAnim!!.duration = 200
     outAnim!!.interpolator = LinearInterpolator()
     outAnim!!.start()
@@ -111,7 +111,7 @@ public class MainFloatActionButtonBehavior(
     if (inAnim != null && inAnim!!.isRunning) {
       inAnim!!.cancel()
     }
-    inAnim = ObjectAnimator.ofFloat(fab, "translationY", fab.translationY, 0f)
+    inAnim = ObjectAnimator.ofFloat(fab, View.TRANSLATION_Y, fab.translationY, 0f)
     inAnim!!.duration = 200
     inAnim!!.interpolator = LinearInterpolator()
     inAnim!!.start()

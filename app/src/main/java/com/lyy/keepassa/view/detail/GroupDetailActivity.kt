@@ -11,13 +11,15 @@ package com.lyy.keepassa.view.detail
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
+import android.graphics.Point
 import android.os.Bundle
 import android.transition.TransitionInflater
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.app.ActivityOptionsCompat
-import androidx.core.transition.addListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,14 +27,13 @@ import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
-import com.blankj.utilcode.util.ActivityUtils
+import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.BarUtils
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupId
 import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
-import com.lyy.keepassa.base.AnimState
-import com.lyy.keepassa.base.AnimState.NOT_ANIM
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.common.SortType.CHAR_ASC
@@ -62,7 +63,8 @@ import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.util.doOnItemLongClickListener
 import com.lyy.keepassa.util.updateModifyGroup
 import com.lyy.keepassa.view.SimpleEntryAdapter
-import com.lyy.keepassa.widget.MainExpandFloatActionButton
+import com.lyy.keepassa.widgets.MainFloatActionButton
+import com.lyy.keepassa.widgets.arc.FloatingActionMenu
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
@@ -94,6 +96,8 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
 
   @Autowired(name = KEY_TITLE)
   lateinit var groupTitle: String
+
+  private var fabMenu: FloatingActionMenu? = null
 
   override fun setLayoutId(): Int {
     return R.layout.activity_group_detail
@@ -128,7 +132,7 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
         BaseApp.isV4 && BaseApp.KDB!!.pm.recycleBin != null && BaseApp.KDB!!.pm.recycleBin.id == groupId
     }
     if (isRecycleBin) {
-      binding.fab.visibility = View.GONE
+      binding.fabNew.visibility = View.GONE
     }
 
     binding.ctlCollapsingLayout.title = groupTitle
@@ -172,12 +176,15 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
               showList(true)
             }
           }
+
           MODIFY -> {
             adapter.updateModifyGroup(module.entryData, it.groupV4, module.curGroupV4)
           }
+
           MOVE -> {
             // module.moveEntry(adapter, it.pwEntryV4, it.oldParent!!)
           }
+
           DELETE -> {
             adapter.deleteGroup(
               module.entryData,
@@ -189,10 +196,12 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
               showList(false)
             }
           }
+
           SAVE -> {
             showList(true)
             adapter.notifyDataSetChanged()
           }
+
           UNKNOWN -> {
             Timber.d("un known status")
           }
@@ -215,25 +224,30 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
                 showList(true)
               }
             }
+
             MODIFY -> {
               module.updateModifyEntry(adapter, entry)
               if (module.entryData.isEmpty()) {
                 showList(false)
               }
             }
+
             MOVE -> {
               module.moveEntry(adapter, entry, it.oldParent!!)
             }
+
             DELETE -> {
               module.deleteEntry(adapter, entry, it.oldParent!!)
               if (module.entryData.isEmpty()) {
                 showList(false)
               }
             }
+
             SAVE -> {
               showList(true)
               adapter.notifyDataSetChanged()
             }
+
             UNKNOWN -> {
               Timber.d("un known status")
             }
@@ -276,15 +290,19 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
         R.id.sort_down_by_char -> {
           CHAR_DESC
         }
+
         R.id.sort_up_by_char -> {
           CHAR_ASC
         }
+
         R.id.sort_down_by_time -> {
           TIME_DESC
         }
+
         R.id.sort_up_by_time -> {
           TIME_ASC
         }
+
         else -> NONE
       }
       if (type != NONE) {
@@ -299,27 +317,83 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
    */
   private fun initFab() {
     if (isRecycleBin) {
-      binding.fab.visibility = View.GONE
+      binding.fabNew.visibility = View.GONE
       return
     }
-    binding.fab.setOnItemClickListener(object : MainExpandFloatActionButton.OnItemClickListener {
-      override fun onKeyClick() {
-        Routerfit.create(ActivityRouter::class.java, this@GroupDetailActivity)
-          .toCreateEntryActivity(
-            groupId,
-            ActivityOptionsCompat.makeSceneTransitionAnimation(this@GroupDetailActivity)
-          )
-        binding.fab.hintMoreOperate()
+    binding.fabNew.visibility = View.VISIBLE
+    val menuKey = KpaUtil.buildMenuIcon(
+      this,
+      ResUtil.getSvgIcon(R.drawable.ic_password, R.color.color_FFFFFF)
+    ) {
+      Routerfit.create(ActivityRouter::class.java).toCreateEntryActivity(null)
+      fabMenu?.close(true)
+    }
+    val menuGroup = KpaUtil.buildMenuIcon(this, ResUtil.getDrawable(R.drawable.ic_fab_dir)) {
+      Routerfit.create(DialogRouter::class.java)
+        .showCreateGroupDialog(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
+      fabMenu?.close(true)
+    }
+
+    val menuLock =
+      KpaUtil.buildMenuIcon(
+        this,
+        ResUtil.getSvgIcon(R.drawable.ic_lock_24px, R.color.color_FFFFFF)
+      ) {
+        showQuickUnlockDialog()
       }
 
-      override fun onGroupClick() {
-        Routerfit.create(DialogRouter::class.java)
-          .showCreateGroupDialog(
-            (BaseApp.KDB!!.pm.groups[groupId] ?: BaseApp.KDB!!.pm.rootGroup) as PwGroupV4
-          )
-        binding.fab.hintMoreOperate()
+    val coords = IntArray(2)
+    fabMenu = FloatingActionMenu.Builder(this)
+      .setStateChangeListener(object : FloatingActionMenu.MenuStateChangeListener {
+        override fun onMenuOpened(menu: FloatingActionMenu?) {
+          binding.fabNew.rotation = 0f
+          val pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 45f)
+          val animation: ObjectAnimator =
+            ObjectAnimator.ofPropertyValuesHolder(binding.fabNew, pvhR)
+          animation.start()
+        }
+
+        override fun onMenuClosed(menu: FloatingActionMenu?) {
+          binding.fabNew.rotation = 45f
+          val pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 0f)
+          val animation: ObjectAnimator =
+            ObjectAnimator.ofPropertyValuesHolder(binding.fabNew, pvhR)
+          animation.start()
+        }
+      })
+      .addSubActionView(menuKey)
+      .addSubActionView(menuGroup)
+      .addSubActionView(menuLock)
+      .setPointInterceptor { mainActionView ->
+
+        if (coords[0] != 0) {
+          return@setPointInterceptor Point(coords[0], coords[1])
+        }
+
+        mainActionView.getLocationOnScreen(coords)
+
+        coords[1] -= BarUtils.getStatusBarHeight()
+        coords[0] += mainActionView.measuredWidth / 2
+        coords[1] += mainActionView.measuredHeight / 2
+
+        Timber.d("x: ${coords[0]}, y: ${coords[1]}")
+
+        return@setPointInterceptor Point(coords[0], coords[1])
       }
-    })
+      .attachTo(binding.fabNew)
+      .build()
+
+    binding.fabNew.setImageDrawable(
+      ResUtil.getSvgIcon(
+        R.drawable.ic_add_24px,
+        R.color.color_FFFFFF
+      )
+    )
+    binding.fabNew.callback = object : MainFloatActionButton.OnOperateCallback {
+      override fun onHint(view: MainFloatActionButton) {
+        fabMenu?.close(true)
+      }
+    }
   }
 
   private fun initList() {
