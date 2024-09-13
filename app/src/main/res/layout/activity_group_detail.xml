@@ -9,6 +9,8 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@color/background_color"
+      android:clipChildren="false"
+      android:clipToPadding="false"
       >
 
     <com.google.android.material.appbar.AppBarLayout
@@ -78,11 +80,14 @@
         app:lottie_loop="false"
         />
 
-    <!--    <com.lyy.keepassa.widget.EmptyDataFillView-->
-    <!--        android:id="@+id/empty_layout"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        />-->
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivTheme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:alpha="0.2"
+        android:scaleType="fitEnd"
+        />
 
 
     <com.lyy.keepassa.widgets.MainFloatActionButton

@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        tools:srcCompat="@drawable/bg_app_base_bg"
+        tools:srcCompat="@drawable/theme_elk_launcher_bg"
         />
 
     <com.lyy.keepassa.view.WindowInsetsFrameLayout

@@ -55,12 +55,14 @@ import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.ThemeUtil
 import com.lyy.keepassa.util.checkGroupIsParent
 import com.lyy.keepassa.util.createGroup
 import com.lyy.keepassa.util.deleteGroup
 import com.lyy.keepassa.util.doOnInterceptTouchEvent
 import com.lyy.keepassa.util.doOnItemClickListener
 import com.lyy.keepassa.util.doOnItemLongClickListener
+import com.lyy.keepassa.util.loadImg
 import com.lyy.keepassa.util.updateModifyGroup
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import com.lyy.keepassa.widgets.MainFloatActionButton
@@ -140,6 +142,8 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
     binding.kpaToolbar.setNavigationOnClickListener {
       finishAfterTransition()
     }
+
+    binding.ivTheme.loadImg(ThemeUtil.getThemeMainBg())
   }
 
   override fun finishAfterTransition() {
@@ -391,7 +395,9 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
     )
     binding.fabNew.callback = object : MainFloatActionButton.OnOperateCallback {
       override fun onHint(view: MainFloatActionButton) {
-        fabMenu?.close(true)
+        if (fabMenu?.isOpen == true){
+          fabMenu?.close(true)
+        }
       }
     }
   }

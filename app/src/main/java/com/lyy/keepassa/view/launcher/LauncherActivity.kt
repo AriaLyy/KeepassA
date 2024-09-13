@@ -15,16 +15,12 @@ import android.app.assist.AssistStructure
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.view.autofill.AutofillManager
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -35,8 +31,6 @@ import com.arialyy.frame.router.Routerfit
 import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.R
 import com.lyy.keepassa.R.layout
-import com.lyy.keepassa.base.AnimState
-import com.lyy.keepassa.base.AnimState.NOT_ANIM
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityLauncherBinding
@@ -139,7 +133,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
    */
   private fun initUI() {
     // https://www.vecteezy.com/vector-art/3452115-wildlife-elk-in-forest-nature-landscape-vector-illustration
-    binding.ivBg.loadImg(R.drawable.bg_app_base_bg)
+    binding.ivBg.loadImg(R.drawable.theme_elk_launcher_bg)
     module.getLastOpenDbHistory(this)
       .observe(this, Observer { t ->
         val fragment: Fragment

@@ -16,6 +16,7 @@ import android.animation.PropertyValuesHolder
 import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Point
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.transition.Transition
 import android.transition.Transition.TransitionListener
@@ -34,6 +35,9 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.BarUtils
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.google.android.material.tabs.TabLayoutMediator
 import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
@@ -47,8 +51,12 @@ import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
+import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.ThemeUtil
+import com.lyy.keepassa.util.loadImg
+import com.lyy.keepassa.util.transformation.WhiteBgBlurTransformation
 import com.lyy.keepassa.view.search.SearchDialog
 import com.lyy.keepassa.widgets.MainFloatActionButton
 import com.lyy.keepassa.widgets.arc.FloatingActionMenu
@@ -119,6 +127,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     initData()
     initVpAnim()
     initMenu()
+    loadThemeIcon()
+  }
+
+  private fun loadThemeIcon(){
+    // Glide.with(this)
+    //   .load(ThemeUtil.getThemeMainBg())
+    //   .apply(RequestOptions.bitmapTransform(WhiteBgBlurTransformation(20, 2)))
+    //   .into(binding.ivTheme)
+    binding.ivTheme.loadImg(ThemeUtil.getThemeMainBg())
   }
 
   private fun initMenu() {
@@ -193,7 +210,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     binding.fabNew.setImageDrawable(module.getAddIcon())
     binding.fabNew.callback = object : MainFloatActionButton.OnOperateCallback {
       override fun onHint(view: MainFloatActionButton) {
-        fabMenu?.close(true)
+        if (fabMenu?.isOpen == true){
+          fabMenu?.close(true)
+        }
       }
     }
   }

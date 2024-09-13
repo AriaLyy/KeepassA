@@ -88,7 +88,7 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <CheckBox
+    <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/cb_key"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

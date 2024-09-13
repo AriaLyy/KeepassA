@@ -5,6 +5,8 @@
     >
 
   <androidx.coordinatorlayout.widget.CoordinatorLayout
+      android:clipChildren="false"
+      android:clipToPadding="false"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@color/background_color"
@@ -147,6 +149,14 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivTheme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:alpha="0.2"
+        android:scaleType="fitEnd"
+        />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp"
@@ -160,12 +170,12 @@
         android:layout_width="52dp"
         android:layout_height="52dp"
         android:layout_gravity="bottom|end"
-        android:layout_marginEnd="24dp"
         android:layout_marginBottom="32dp"
+        android:layout_marginEnd="24dp"
         android:background="@drawable/main_fab_bg"
         android:elevation="2dp"
-        app:shapeAppearanceOverlay="@style/CircleStyle"
         app:layout_behavior="com.lyy.keepassa.widgets.MainFloatActionButtonBehavior"
+        app:shapeAppearanceOverlay="@style/CircleStyle"
         tools:srcCompat="@drawable/ic_add_24px"
 
         />

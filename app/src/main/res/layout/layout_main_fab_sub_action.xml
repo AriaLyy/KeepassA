@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="40dp"
     android:layout_height="40dp"
-    android:background="@drawable/main_fab_sub_action_bg"
+    android:background="@drawable/main_fab_bg"
+    android:padding="2dp"
     android:elevation="2dp"
     >
 
