@@ -246,14 +246,14 @@ dependencies {
   implementation(libs.third.yimagepicker)
 
   // // =========================== 三方库 end =====================================
-  implementation(libs.google.gms.billing)
+//  implementation(libs.google.gms.billing)
   implementation(libs.google.gms.base)
   implementation(libs.google.review)
   implementation(libs.google.review.ktx)
 
   //firebase
-  implementation platform('com.google.firebase:firebase-bom:32.7.1')
-  implementation 'com.google.firebase:firebase-crashlytics-ktx'
+  implementation platform(libs.google.firebase.bom)
+  implementation libs.google.firebase.crashlyticsktx
 
   // google-drive
   implementation(libs.bundles.google.drive){

@@ -44,6 +44,7 @@
         app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/tvDesc"
         style="@style/KpaContentTextStyle"
         android:layout_width="match_parent"

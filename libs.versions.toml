@@ -143,6 +143,8 @@ google-gms-base = { module = "com.google.android.gms:play-services-base", versio
 google-gms-auth = { module = "com.google.android.gms:play-services-auth", version = "21.1.1" }
 google-gms-drive = { group = "com.google.android.gms", name = "play-services-drive", version = "17.0.0" }
 google-firebase-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version = "2.9.9" }
+google-firebase-bom = { module = "com.google.firebase:firebase-bom", version = "32.7.1"}
+google-firebase-crashlyticsktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 google-review = { module = "com.google.android.play:review", version.ref = "google-review" }
 google-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "google-review" }
 google-client-api = { module = "com.google.api-client:google-api-client", version = "2.0.0" }

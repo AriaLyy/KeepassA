@@ -54,9 +54,9 @@ class DonateDialog : BaseDialog<DialogDonateBinding>(), View.OnClickListener {
         24.toPx(),
         24.toPx()
     )
-    if (PlayUtil.playServiceExist(requireActivity())){
-      binding.rlPlay.visibility = View.VISIBLE
-    }
+    // if (PlayUtil.playServiceExist(requireActivity())){
+    //   binding.rlPlay.visibility = View.VISIBLE
+    // }
   }
 
   override fun onClick(v: View?) {
