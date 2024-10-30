@@ -54,7 +54,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
       toolbar = findViewById(R.id.kpa_toolbar)
       toolbar.setNavigationOnClickListener { finishAfterTransition() }
     } catch (e: Exception) {
-      Timber.w(e)
+      // Timber.w(e)
     }
   }
 

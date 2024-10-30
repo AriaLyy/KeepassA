@@ -1,0 +1,53 @@
+plugins {
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin.android)
+}
+
+android {
+  namespace 'com.thegrizzlylabs.sardineandroid'
+  compileSdk libs.versions.compilesdk.get().toInteger()
+
+  compileOptions {
+    // Flag to enable support for the new language APIs
+    //    coreLibraryDesugaringEnabled true
+    sourceCompatibility JavaVersion.VERSION_11
+    targetCompatibility JavaVersion.VERSION_11
+  }
+
+  defaultConfig {
+    minSdkVersion libs.versions.minSdk.get().toInteger()
+    targetSdkVersion libs.versions.targetsdk.get().toInteger()
+
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    consumerProguardFiles "consumer-rules.pro"
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+  kotlinOptions {
+    jvmTarget = '1.8'
+  }
+}
+
+dependencies {
+
+  implementation libs.kotlin.core.ktx
+  implementation libs.jetpack.appcompat
+  implementation libs.squareup.okhttp3
+  implementation(libs.third.simple.xml){
+    exclude module: 'stax'
+    exclude module: 'stax-api'
+    exclude module: 'xpp3'
+  }
+  testImplementation libs.test.junit
+  androidTestImplementation libs.test.android.junit
+  androidTestImplementation libs.test.espresso
+}

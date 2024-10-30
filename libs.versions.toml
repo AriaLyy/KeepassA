@@ -83,6 +83,8 @@ ali-arouter-register = "1.0.2"
 ali-third-arouter = "1.0.1"
 
 microsoft-msal = "2.+"
+agp = "7.2.2"
+kotlinVersion = "1.9.0"
 
 
 
@@ -108,6 +110,7 @@ third-utilcodex = { module = "com.blankj:utilcodex", version.ref = "third-blankj
 third-timber = { module = "com.jakewharton.timber:timber", version.ref = "third-timber" }
 third-BaseRecyclerViewAdapterHelper = { module = "io.github.cymchad:BaseRecyclerViewAdapterHelper", version = "3.0.14" }
 third-yimagepicker = { module = "com.ypx.yimagepicker:androidx", version = "3.1.4" }
+third-simple-xml = { module = "org.simpleframework:simple-xml", version = "2.7.1" }
 
 didi-drouter = { module = "io.github.didi:drouter-plugin-proxy", version = "1.0.2" } # drouter
 didi-drouter-api = { module = "io.github.didi:drouter-api", version = "2.3.0" }
@@ -143,7 +146,7 @@ google-gms-base = { module = "com.google.android.gms:play-services-base", versio
 google-gms-auth = { module = "com.google.android.gms:play-services-auth", version = "21.1.1" }
 google-gms-drive = { group = "com.google.android.gms", name = "play-services-drive", version = "17.0.0" }
 google-firebase-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version = "2.9.9" }
-google-firebase-bom = { module = "com.google.firebase:firebase-bom", version = "32.7.1"}
+google-firebase-bom = { module = "com.google.firebase:firebase-bom", version = "32.7.1" }
 google-firebase-crashlyticsktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 google-review = { module = "com.google.android.play:review", version.ref = "google-review" }
 google-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "google-review" }
@@ -180,7 +183,7 @@ jetpack-multidex = { module = "androidx.multidex:multidex", version.ref = "jetpa
 jetpack-documentfile = { module = "androidx.documentfile:documentfile", version.ref = "jetpack-documentfile" }
 jetpack-credentials = { module = "androidx.credentials:credentials", version.ref = "jetpack-credentials" }
 jetpack-credentials-play_services_auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "jetpack-credentials" }
-jetpack-splashscreen = {module = "androidx.core:core-splashscreen", version.ref = "jetpack-splashscreen"}
+jetpack-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "jetpack-splashscreen" }
 
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" } #kotlin 反射依赖
@@ -205,6 +208,9 @@ groovy-core = { module = "org.codehaus.groovy:groovy", version.ref = "groovy" }
 groovy-json = { module = "org.codehaus.groovy:groovy-json", version.ref = "groovy" }
 groovy-nio = { module = "org.codehaus.groovy:groovy-nio", version.ref = "groovy" }
 commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version = { strictly = "[3.8, 4.0[", prefer = "3.9" } }
+[plugins]
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
 
 [bundles]
 groovy = ["groovy-core", "groovy-json", "groovy-nio"]

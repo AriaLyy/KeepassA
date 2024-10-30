@@ -41,3 +41,4 @@ dependencyResolutionManagement {
 include ':app'
 include('VersionManager')
 rootProject.name='KeepassA-Lite'
+include ':Sardine'

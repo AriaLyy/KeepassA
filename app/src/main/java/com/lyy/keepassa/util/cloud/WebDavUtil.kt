@@ -219,20 +219,25 @@ object WebDavUtil : ICloudUtil {
   ): Boolean {
     Timber.d("uploadFile, cloudPath = ${dbRecord.cloudDiskPath}, localPath = ${dbRecord.localDbUri}")
     sardine ?: return false
-    var localToken: String? = null
     try {
-      // delFile(dbRecord.cloudDiskPath!!) // 不能删除，否则如果上传失败，文件就丢失了
-      localToken = sardine!!.lock(getConvertedCloudPath(dbRecord), 5)
-      Timber.d("localToken = $localToken")
 
+      val originUrl = getConvertedCloudPath(dbRecord)
+      // val tempPath = replaceFileName(originUrl, "${System.currentTimeMillis()}_")
+      // 1、上传备份文件
       sardine?.put(
-        getConvertedCloudPath(dbRecord),
+        originUrl,
         Uri.parse(dbRecord.localDbUri).toFile(),
         "application/binary",
-        false,
-        localToken
+        false
       )
       Timber.d("上传完成，重新获取文件信息")
+
+      // 2、删除旧的db
+      // delFile(originUrl)
+
+      // 3、将备份文件重命名
+      // sardine?.move(tempPath, originUrl, true)
+
       val info = getFileInfo(getConvertedCloudPath(dbRecord))
       if (info != null) {
         DbSynUtil.serviceModifyTime = info.serviceModifyDate
@@ -240,17 +245,17 @@ object WebDavUtil : ICloudUtil {
     } catch (e: Exception) {
       Timber.e(e, "上传文件失败")
       return false
-    } finally {
-      kotlin.runCatching {
-        localToken?.let {
-          sardine?.unlock(getConvertedCloudPath(dbRecord), it)
-        }
-      }.onFailure {
-        Timber.e(it)
-      }
     }
 
     return true
+  }
+
+  private fun replaceFileName(originalUrl: String, prefix: String): String {
+    // 使用正则表达式匹配文件名并添加前缀
+    val newUrl = originalUrl.replace(Regex("/([^/]+)\$")) { matchResult ->
+      "/${prefix}${matchResult.groupValues[1]}"
+    }
+    return newUrl
   }
 
   /**
@@ -288,11 +293,9 @@ object WebDavUtil : ICloudUtil {
       FileUtil.createFile(fp)
     }
     sardine?.let {
-      var token = ""
       var fic: ReadableByteChannel? = null
       var foc: FileChannel? = null
       try {
-        token = it.lock(cloudPath)
         val ips = it.get(cloudPath)
         val fileInfo = getFileInfo(cloudPath)
         fic = Channels.newChannel(ips)
@@ -301,14 +304,6 @@ object WebDavUtil : ICloudUtil {
       } catch (e: Exception) {
         Timber.e(e, "下载文件失败")
         return null
-      } finally {
-        kotlin.runCatching {
-          fic?.close()
-          foc?.close()
-          it.unlock(cloudPath, token)
-        }.onFailure { e ->
-          Timber.e(e)
-        }
       }
     }
 

@@ -225,7 +225,7 @@ dependencies {
   implementation(libs.third.glide.transformations)
 
   implementation(libs.third.dropbox)
-  implementation(libs.third.webdav)
+//  implementation(libs.third.webdav)
   implementation(libs.bundles.tencent.wcdb)
   implementation(libs.third.protector) // XP/调试/多开/模拟器/root 判断
   implementation(libs.third.autosize)
@@ -244,6 +244,9 @@ dependencies {
 
   // 图片剪裁
   implementation(libs.third.yimagepicker)
+
+  //webDav
+  implementation(project(":Sardine"))
 
   // // =========================== 三方库 end =====================================
 //  implementation(libs.google.gms.billing)
