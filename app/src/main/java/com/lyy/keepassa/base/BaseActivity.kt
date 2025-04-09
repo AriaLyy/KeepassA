@@ -22,16 +22,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.ViewDataBinding
 import com.arialyy.frame.core.AbsActivity
+import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ReflectionUtil
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.R
+import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.LanguageUtil
+import com.lyy.keepassa.view.launcher.LauncherActivity
 import me.jessyan.autosize.AutoSizeConfig
 import timber.log.Timber
 import java.lang.reflect.Field
@@ -118,7 +121,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     if (!KpaUtil.isHomeActivity(this) && (BaseApp.KDB.isNull() || BaseApp.isLocked)) {
       BaseApp.handler.postDelayed({
         KeepassAUtil.instance.lock()
-        finish()
+        KeepassAUtil.instance.turnLauncher(LauncherActivity.OPEN_TYPE_OPEN_DB)
       }, 150)
       return
     }
