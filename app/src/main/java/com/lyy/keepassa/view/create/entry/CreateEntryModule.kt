@@ -21,6 +21,7 @@ import com.keepassdroid.database.PwDatabaseV4
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroupId
+import com.keepassdroid.database.PwGroupIdV4
 import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
@@ -73,10 +74,13 @@ class CreateEntryModule : BaseModule() {
   var fileCacheMap = hashMapOf<String, ProtectedBinary>()
   lateinit var pwEntry: PwEntryV4
 
-  fun updateEntryGroupIdAndSave(context: CreateEntryActivity, groupId: PwGroupId) {
+  fun updateEntryGroupIdAndSave(context: CreateEntryActivity, groupId: PwGroupIdV4) {
 
     viewModelScope.launch {
-      KpaUtil.kdbHandlerService.createEntry(pwEntry)
+      KpaUtil.kdbHandlerService.createEntry(
+        pwEntry,
+        KdbUtil.findV4GroupById(groupId.id) ?: KdbUtil.getRootGroup()
+      )
       KpaUtil.kdbHandlerService.saveOnly(true) {
         context.finishAfterTransition()
       }

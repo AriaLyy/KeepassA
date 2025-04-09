@@ -27,6 +27,7 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwGroupId
+import com.keepassdroid.database.PwGroupIdV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
 import com.lyy.keepassa.R
@@ -167,7 +168,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
         Timber.d("pwGroupId is null")
         return@registerForActivityResult
       }
-      module.updateEntryGroupIdAndSave(this, it)
+      module.updateEntryGroupIdAndSave(this, it as PwGroupIdV4)
     }
 
   fun launchGroupChoose() {

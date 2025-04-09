@@ -55,6 +55,7 @@ import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.ThemeUtil
+import com.lyy.keepassa.util.doClick
 import com.lyy.keepassa.util.loadImg
 import com.lyy.keepassa.util.transformation.WhiteBgBlurTransformation
 import com.lyy.keepassa.view.search.SearchDialog
@@ -160,11 +161,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         showQuickUnlockDialog()
       }
 
-    val menuSearch =
-      KpaUtil.buildMenuIcon(this, ResUtil.getSvgIcon(R.drawable.ic_search, R.color.color_FFFFFF)) {
-        showSearchDialog()
-        fabMenu?.close(true)
-      }
     val coords = IntArray(2)
     fabMenu = FloatingActionMenu.Builder(this@MainActivity)
       .setStateChangeListener(object : FloatingActionMenu.MenuStateChangeListener {
@@ -187,7 +183,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       .addSubActionView(menuKey)
       .addSubActionView(menuGroup)
       .addSubActionView(menuLock)
-      .addSubActionView(menuSearch)
       .setPointInterceptor { mainActionView ->
 
         if (coords[0] != 0) {
@@ -227,6 +222,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     val needShowTotp = PreferenceManager.getDefaultSharedPreferences(this)
       .getBoolean(getString(R.string.set_key_main_show_totp_tab), true)
     initVP(needShowTotp)
+    binding.ivSearch.doClick {
+      showSearchDialog()
+    }
   }
 
   private fun initVP(needShowTotp: Boolean) {

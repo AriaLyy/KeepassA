@@ -33,7 +33,7 @@ android {
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     // so 版本
-    ndk.abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+    ndk.abiFilters 'armeabi-v7a', 'arm64-v8a'
 
     // 只保留以下语言包
     resConfigs "zh-rCN", "zh-rTW", "en", "fr-rCA", "nb-rNO", "ru-rRU", "fr", "de-rDE", "pl", "tr",
@@ -66,6 +66,9 @@ android {
 
       firebaseCrashlytics {
         mappingFileUploadEnabled false
+      }
+      ndk {
+        abiFilters 'x86', 'x86_64'
       }
     }
 
@@ -185,7 +188,7 @@ dependencies {
 
   // keepassA组件
   implementation 'me.laoyuyu.keepassa:KeepassIcon:0.4.0'
-  implementation 'me.laoyuyu.keepassa:KeepassLib:0.4.1'
+  implementation 'me.laoyuyu.keepassa:KeepassLib:0.4.2'
   //  implementation project(path: ':KpaLib')
   implementation 'me.laoyuyu.keepassa:KPAFrame:0.4.2'
   implementation 'me.laoyuyu.keepassa:UIWidget:0.4.2'

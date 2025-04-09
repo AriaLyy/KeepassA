@@ -9,7 +9,6 @@
 
 package com.lyy.keepassa.base
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Context
@@ -20,7 +19,6 @@ import android.util.Pair
 import android.view.View
 import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.ViewDataBinding
 import com.arialyy.frame.core.AbsActivity
@@ -29,7 +27,6 @@ import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.R
-import com.lyy.keepassa.base.AnimState.NOT_ANIM
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.KeepassAUtil
@@ -45,6 +42,7 @@ import java.lang.reflect.Field
 abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
 
   protected lateinit var toolbar: Toolbar
+
   companion object {
     var showStatusBar = false
   }
@@ -96,20 +94,18 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
       .autoStatusBarDarkModeEnable(true, 0.2f) //自动状态栏字体变色，必须指定状态栏颜色才可以自动变色哦
       .flymeOSStatusBarFontColor(R.color.text_black_color)
       .fitsSystemWindows(true)
-         // .hideBar(BarHide.FLAG_HIDE_STATUS_BAR)
+      // .hideBar(BarHide.FLAG_HIDE_STATUS_BAR)
       .autoNavigationBarDarkModeEnable(true, 0.2f) // 自动导航栏图标变色，必须指定导航栏颜色才可以自动变色哦
       .navigationBarColor(R.color.background_color)
       .statusBarDarkFont(
         true, 0.2f
       )  //原理：如果当前设备支持状态栏字体变色，会设置状态栏字体为黑色，如果当前设备不支持状态栏字体变色，会使当前状态栏加上透明度，否则不执行透明度
       .init()
-
   }
 
   override fun attachBaseContext(newBase: Context?) {
     super.attachBaseContext(LanguageUtil.setLanguage(newBase!!, BaseApp.currentLang))
   }
-
 
   protected fun showQuickUnlockDialog() {
     KeepassAUtil.instance.lock()
