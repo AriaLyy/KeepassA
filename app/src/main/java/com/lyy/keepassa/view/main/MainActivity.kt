@@ -23,6 +23,9 @@ import android.transition.Transition.TransitionListener
 import android.util.Pair
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
@@ -56,6 +59,7 @@ import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.ThemeUtil
 import com.lyy.keepassa.util.doClick
+import com.lyy.keepassa.util.handleBottomEdge
 import com.lyy.keepassa.util.loadImg
 import com.lyy.keepassa.util.transformation.WhiteBgBlurTransformation
 import com.lyy.keepassa.view.search.SearchDialog
@@ -110,6 +114,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
     module = ViewModelProvider(this)[MainModule::class.java]
+    handleEdge2Edge()
 
     // 处理快捷方式进入的情况
     if (isShortcuts) {
@@ -209,6 +214,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
           fabMenu?.close(true)
         }
       }
+    }
+  }
+
+  private fun handleEdge2Edge(){
+    binding.fabNew.handleBottomEdge { view, i ->
+      view.updateLayoutParams<CoordinatorLayout.LayoutParams> {
+        bottomMargin = i
+      }
+      binding.vp.updatePadding(bottom = i)
     }
   }
 

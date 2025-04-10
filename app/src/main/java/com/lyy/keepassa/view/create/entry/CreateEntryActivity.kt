@@ -17,8 +17,12 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.annotation.Autowired
@@ -48,6 +52,7 @@ import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.doClick
+import com.lyy.keepassa.util.handleBottomEdge
 import com.lyy.keepassa.util.hasTOTP
 import com.lyy.keepassa.util.loadImg
 import com.lyy.keepassa.util.takePermission
@@ -175,10 +180,20 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
     chooseGroupLauncher.launch(null, ActivityOptionsCompat.makeSceneTransitionAnimation(this))
   }
 
+  private fun handleEdge2Edge(){
+    binding.btnAddMore.handleBottomEdge { view, i ->
+      view.updateLayoutParams<CoordinatorLayout.LayoutParams> {
+        bottomMargin = (i * 1.5f).toInt()
+      }
+      binding.scroll.updatePadding(bottom = i)
+    }
+  }
+
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
     ARouter.getInstance().inject(this)
     module = ViewModelProvider(this)[CreateEntryModule::class.java]
+    handleEdge2Edge()
 
     createHandler = if (createEnum == MODIFY) {
       ModifyEntryHandler(this)

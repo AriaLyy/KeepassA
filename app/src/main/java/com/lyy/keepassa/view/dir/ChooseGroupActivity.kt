@@ -11,7 +11,12 @@ package com.lyy.keepassa.view.dir
 
 import android.app.Activity
 import android.os.Bundle
+import android.widget.RelativeLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.Transition
@@ -28,11 +33,13 @@ import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityGroupDirBinding
 import com.lyy.keepassa.router.FragmentRouter
+import com.lyy.keepassa.util.handleBottomEdge
 import com.lyy.keepassa.view.ChoseDirModule
 import timber.log.Timber
 import java.util.Stack
 import java.util.UUID
 import kotlin.collections.set
+import kotlin.math.abs
 
 /**
  * 选择群组
@@ -118,6 +125,7 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
     ARouter.getInstance().inject(this)
+    handleEdge2Edge()
     module = ViewModelProvider(this)[ChoseDirModule::class.java]
     curGroup = BaseApp.KDB.pm.rootGroup as PwGroupV4
     if (recycleType == DATA_MOVE_GROUP && recycleGroupId == null) {
@@ -163,6 +171,14 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
     }
 
     startNextFragment(curGroup, true)
+  }
+
+  private fun handleEdge2Edge(){
+    binding.bt.handleBottomEdge { view, i ->
+      view.updateLayoutParams<ConstraintLayout.LayoutParams> {
+        bottomMargin = i
+      }
+    }
   }
 
   /**

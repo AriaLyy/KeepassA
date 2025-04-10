@@ -15,14 +15,19 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.arialyy.frame.util.ReflectionUtil
 import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.adapter.RvItemClickSupport
+import com.blankj.utilcode.util.ActivityUtils
+import com.blankj.utilcode.util.BarUtils
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedString
@@ -45,8 +50,55 @@ import com.lyy.keepassa.util.totp.SecretHexType
 import com.lyy.keepassa.util.totp.TokenCalculator
 import com.lyy.keepassa.util.totp.TokenCalculator.HashAlgorithm
 import timber.log.Timber
+import kotlin.math.abs
 
 val charRegex = Regex("[^a-zA-Z0-9]")
+
+fun View.handleBottomEdge(callback: (View, Int) -> Unit) {
+  ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
+
+    if (!BarUtils.isNavBarVisible(ActivityUtils.getTopActivity())){
+      return@setOnApplyWindowInsetsListener insets
+    }
+
+    if (insets.isVisible(WindowInsetsCompat.Type.systemGestures())) {
+      val gestureInsets = insets.getInsets(WindowInsetsCompat.Type.systemGestures())
+      callback.invoke(this, abs(gestureInsets.bottom - gestureInsets.top))
+      return@setOnApplyWindowInsetsListener WindowInsetsCompat.CONSUMED
+    }
+
+    if (insets.isVisible(WindowInsetsCompat.Type.navigationBars())) {
+      val navigationBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+      callback.invoke(this, abs(navigationBarInsets.bottom - navigationBarInsets.top))
+      return@setOnApplyWindowInsetsListener WindowInsetsCompat.CONSUMED
+    }
+
+    insets
+  }
+}
+
+fun ViewGroup.handleBottomEdge(callback: (View, Int) -> Unit) {
+  ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
+
+    if (!BarUtils.isNavBarVisible(ActivityUtils.getTopActivity())){
+      return@setOnApplyWindowInsetsListener insets
+    }
+
+    if (insets.isVisible(WindowInsetsCompat.Type.systemGestures())) {
+      val gestureInsets = insets.getInsets(WindowInsetsCompat.Type.systemGestures())
+      callback.invoke(this, abs(gestureInsets.bottom - gestureInsets.top))
+      return@setOnApplyWindowInsetsListener WindowInsetsCompat.CONSUMED
+    }
+
+    if (insets.isVisible(WindowInsetsCompat.Type.navigationBars())) {
+      val navigationBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+      callback.invoke(this, abs(navigationBarInsets.bottom - navigationBarInsets.top))
+      return@setOnApplyWindowInsetsListener WindowInsetsCompat.CONSUMED
+    }
+
+    insets
+  }
+}
 
 enum class ClickScope {
   /**
@@ -65,7 +117,7 @@ private var lastClickTime = -1L
 /**
  * 设置中心锚点
  */
-fun View.pivotCenter(){
+fun View.pivotCenter() {
   pivotX = measuredWidth / 2f
   pivotY = measuredHeight / 2f
 }

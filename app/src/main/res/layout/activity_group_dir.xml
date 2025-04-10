@@ -3,20 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
-  <RelativeLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
       android:background="@color/background_color"
       >
 
-    <include layout="@layout/layout_action_bar"/>
+    <include layout="@layout/layout_action_bar" />
 
     <FrameLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_above="@+id/line"
         android:layout_below="@+id/kpa_toolbar"
+        app:layout_constraintBottom_toTopOf="@+id/line"
+        app:layout_constraintTop_toBottomOf="@+id/kpa_toolbar"
         />
 
     <View
@@ -25,18 +27,19 @@
         android:layout_height="1dp"
         android:layout_above="@+id/bt"
         android:background="@color/line_color"
+        app:layout_constraintBottom_toTopOf="@+id/bt"
         />
 
     <Button
         android:id="@+id/bt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:background="@drawable/bg_ripple_white_selector"
         android:text="@string/undo_to"
         android:textColor="@color/blue"
         android:textSize="@dimen/text_size_normal"
+        app:layout_constraintBottom_toBottomOf="parent"
         />
 
-  </RelativeLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

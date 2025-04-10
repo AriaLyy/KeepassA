@@ -15,9 +15,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.annotation.Autowired
@@ -44,6 +46,7 @@ import com.lyy.keepassa.util.copyPassword
 import com.lyy.keepassa.util.copyTotp
 import com.lyy.keepassa.util.copyUserName
 import com.lyy.keepassa.util.doClick
+import com.lyy.keepassa.util.handleBottomEdge
 import com.lyy.keepassa.util.hasTOTP
 import com.lyy.keepassa.util.isCollectioned
 import com.lyy.keepassa.util.takePermission
@@ -113,17 +116,13 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     return R.layout.activity_entry_detail_new
   }
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    enableEdgeToEdge()
-    super.onCreate(savedInstanceState)
-  }
-
   override fun handleStatusBar() {
     // 这个不使用父类的状态栏
   }
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
+    handleEdge2Edge()
     ARouter.getInstance().inject(this)
     module = ViewModelProvider(this)[EntryDetailModule::class.java]
     pwEntry = (BaseApp.KDB!!.pm.entries[uuid] as PwEntryV4?)!!
@@ -135,6 +134,12 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     setTopBar()
     listenerSaveFile()
     module.saveRecord()
+  }
+
+  private fun handleEdge2Edge(){
+    binding.scroll.handleBottomEdge { view, i ->
+      view.updatePadding(bottom = i)
+    }
   }
 
   private fun handleBg(startAnim: Boolean = true) {
