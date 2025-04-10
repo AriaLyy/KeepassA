@@ -13,10 +13,10 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.LinearInterpolator
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
 import androidx.core.view.ViewCompat
+import com.lyy.keepassa.util.InterpolatorConstance
 
 public class MainFloatActionButtonBehavior(
   context: Context,
@@ -38,14 +38,14 @@ public class MainFloatActionButtonBehavior(
     consumed: IntArray
   ) {
     super.onNestedScroll(
-        coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed,
-        dyUnconsumed, type, consumed
+      coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed,
+      dyUnconsumed, type, consumed
     )
-    if (dyConsumed > 0) { // 向下滑动
-      if (outAnim == null || !outAnim!!.isRunning) {
-        animateOut(child)
-      }
-    } else if (dyConsumed < 0) { // 向上滑动
+    if (dyConsumed > 0 && (outAnim == null || !outAnim!!.isRunning)) { // 向下滑动
+      animateOut(child)
+      return
+    }
+    if (dyConsumed < 0 && (inAnim == null || !inAnim!!.isRunning)) { // 向上滑动
       animateIn(child)
     }
   }
@@ -59,14 +59,12 @@ public class MainFloatActionButtonBehavior(
     consumed: IntArray,
     type: Int
   ) {
-    if (dy > 0) { // 向下滑动
-      if (outAnim == null || !outAnim!!.isRunning) {
-        animateOut(child)
-      }
-    } else if (dy < 0) { // 向上滑动
-      if (inAnim == null || !inAnim!!.isRunning) {
-        animateIn(child)
-      }
+    if (dy > 0 && (outAnim == null || !outAnim!!.isRunning)) { // 向下滑动
+      animateOut(child)
+      return
+    }
+    if (dy < 0 && (inAnim == null || !inAnim!!.isRunning)) { // 向上滑动
+      animateIn(child)
     }
   }
 
@@ -95,9 +93,10 @@ public class MainFloatActionButtonBehavior(
       outAnim!!.cancel()
     }
     fab.callback?.onHint(fab)
-    outAnim = ObjectAnimator.ofFloat(fab, View.TRANSLATION_Y, 0f, fab.height + bottomMargin.toFloat())
+    outAnim =
+      ObjectAnimator.ofFloat(fab, View.TRANSLATION_Y, 0f, fab.height + bottomMargin.toFloat())
     outAnim!!.duration = 200
-    outAnim!!.interpolator = LinearInterpolator()
+    outAnim!!.interpolator = InterpolatorConstance.easeOutCubic
     outAnim!!.start()
   }
 
@@ -113,9 +112,7 @@ public class MainFloatActionButtonBehavior(
     }
     inAnim = ObjectAnimator.ofFloat(fab, View.TRANSLATION_Y, fab.translationY, 0f)
     inAnim!!.duration = 200
-    inAnim!!.interpolator = LinearInterpolator()
+    inAnim!!.interpolator = InterpolatorConstance.easeInCubic
     inAnim!!.start()
-
   }
-
 }

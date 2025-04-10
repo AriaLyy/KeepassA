@@ -157,7 +157,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     }
     Glide.with(this)
       .load(IconUtil.getEntryIconDrawable(this, pwEntry))
-      .apply(RequestOptions.bitmapTransform(WhiteBgBlurTransformation(10, 3)))
+      .apply(RequestOptions.bitmapTransform(WhiteBgBlurTransformation(15, 2)))
       .into(object : DrawableImageViewTarget(binding.ivBlur) {
         override fun setResource(resource: Drawable?) {
           super.setResource(resource)
