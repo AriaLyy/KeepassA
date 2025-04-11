@@ -1,3 +1,6 @@
+### 2.7.0
+* fix: Fix bug
+
 ### 2.6.0 
 * new: Add custom icon function
 
