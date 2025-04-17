@@ -57,19 +57,17 @@ val charRegex = Regex("[^a-zA-Z0-9]")
 fun View.handleBottomEdge(callback: (View, Int) -> Unit) {
   ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
 
-    if (!BarUtils.isNavBarVisible(ActivityUtils.getTopActivity())){
+    if (!BarUtils.isNavBarVisible(ActivityUtils.getTopActivity())) {
       return@setOnApplyWindowInsetsListener insets
     }
 
-    if (insets.isVisible(WindowInsetsCompat.Type.systemGestures())) {
-      val gestureInsets = insets.getInsets(WindowInsetsCompat.Type.systemGestures())
-      callback.invoke(this, abs(gestureInsets.bottom - gestureInsets.top))
-      return@setOnApplyWindowInsetsListener WindowInsetsCompat.CONSUMED
+    if (isGestureBarVisible(this)){
+      callback.invoke(this, getGestureBarHeight(insets))
+      return@setOnApplyWindowInsetsListener insets
     }
 
     if (insets.isVisible(WindowInsetsCompat.Type.navigationBars())) {
-      val navigationBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-      callback.invoke(this, abs(navigationBarInsets.bottom - navigationBarInsets.top))
+      callback.invoke(this, abs(BarUtils.getNavBarHeight()))
       return@setOnApplyWindowInsetsListener WindowInsetsCompat.CONSUMED
     }
 
@@ -77,22 +75,38 @@ fun View.handleBottomEdge(callback: (View, Int) -> Unit) {
   }
 }
 
+fun getGestureBarHeight(insets: WindowInsetsCompat): Int {
+  return insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
+}
+
+fun isGestureBarVisible(view: View): Boolean {
+  val insets = ViewCompat.getRootWindowInsets(view) ?: return false
+
+  // 获取系统手势区域和导航栏区域
+  val gestureInsets = insets.getInsets(WindowInsetsCompat.Type.systemGestures())
+  val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+
+  // 手势栏可见的条件：
+  // 1. 系统手势区域大于导航栏区域（手势模式下）
+  // 2. 导航栏本身可见（非全屏模式）
+  return (gestureInsets.bottom > navBarInsets.bottom) &&
+    (navBarInsets.bottom > 0)
+}
+
 fun ViewGroup.handleBottomEdge(callback: (View, Int) -> Unit) {
   ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
 
-    if (!BarUtils.isNavBarVisible(ActivityUtils.getTopActivity())){
+    if (!BarUtils.isNavBarVisible(ActivityUtils.getTopActivity())) {
       return@setOnApplyWindowInsetsListener insets
     }
 
-    if (insets.isVisible(WindowInsetsCompat.Type.systemGestures())) {
-      val gestureInsets = insets.getInsets(WindowInsetsCompat.Type.systemGestures())
-      callback.invoke(this, abs(gestureInsets.bottom - gestureInsets.top))
-      return@setOnApplyWindowInsetsListener WindowInsetsCompat.CONSUMED
+    if (isGestureBarVisible(this)){
+      callback.invoke(this, getGestureBarHeight(insets))
+      return@setOnApplyWindowInsetsListener insets
     }
 
     if (insets.isVisible(WindowInsetsCompat.Type.navigationBars())) {
-      val navigationBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-      callback.invoke(this, abs(navigationBarInsets.bottom - navigationBarInsets.top))
+      callback.invoke(this, abs(BarUtils.getNavBarHeight()))
       return@setOnApplyWindowInsetsListener WindowInsetsCompat.CONSUMED
     }
 

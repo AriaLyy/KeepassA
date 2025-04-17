@@ -43,6 +43,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       it.add("account")
       it.add("user_name")
       it.add("mobile")
+      it.add("user id")
       it.add(HintConstants.AUTOFILL_HINT_EMAIL_ADDRESS)
       it.add(HintConstants.AUTOFILL_HINT_PHONE)
       it.add(HintConstants.AUTOFILL_HINT_NAME)
@@ -58,6 +59,8 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       it.add(HintConstants.AUTOFILL_HINT_PASSWORD)
       it.add(HintConstants.AUTOFILL_HINT_NEW_PASSWORD)
       it.add("passwort")
+      it.add("passwordAuto")
+      it.add("pswd")
     }
 
     /**
@@ -294,15 +297,17 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
    * 判断是否是用户名输入框
    */
   private fun isUserName(f: ViewNode): Boolean {
+    if ((f.idEntry != null && f.idEntry!!.contains("search", ignoreCase = true))
+      || (f.hint != null && f.hint!!.contains("search", ignoreCase = true))
+    ) {
+      return false
+    }
+
     if (!isPassword(f)
       || usernameHints.any { f.idEntry != null && f.idEntry!!.contains(it, ignoreCase = true) }
       || usernameHints.any { f.hint != null && f.hint!!.contains(it, ignoreCase = true) }
     ) {
-      if ((f.idEntry != null && f.idEntry!!.contains("search", ignoreCase = false))
-        || (f.hint != null && f.hint!!.contains("search", ignoreCase = false))
-      ) {
-        return false
-      }
+
       return true
     }
     return false
@@ -314,11 +319,17 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
    */
   private fun isPassword(f: ViewNode): Boolean {
     val inputType = f.inputType
+    if (f.idEntry?.lowercase()?.contains("search") == true
+      || f.hint?.lowercase()?.contains("search") == true
+    ) {
+      return false
+    }
     if (inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
       || inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD
       || inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
       || inputType == InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
       || passHints.any { f.idEntry != null && f.idEntry!!.contains(it, ignoreCase = true) }
+      || (f.autofillHints?.firstOrNull() == "passwordAuto")
     ) {
       return true
     }

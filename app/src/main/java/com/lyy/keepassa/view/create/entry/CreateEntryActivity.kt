@@ -68,6 +68,7 @@ import com.lyy.keepassa.view.dialog.TimeChangeDialog
 import com.lyy.keepassa.view.dialog.otp.CreateOtpModule
 import com.lyy.keepassa.view.dir.ChooseGroupActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
+import com.lyy.keepassa.widget.toPx
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -183,7 +184,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
   private fun handleEdge2Edge(){
     binding.btnAddMore.handleBottomEdge { view, i ->
       view.updateLayoutParams<CoordinatorLayout.LayoutParams> {
-        bottomMargin = (i * 1.5f).toInt()
+        bottomMargin = i + 16.toPx()
       }
       binding.scroll.updatePadding(bottom = i)
     }

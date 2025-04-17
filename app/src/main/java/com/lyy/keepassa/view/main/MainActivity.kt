@@ -63,6 +63,7 @@ import com.lyy.keepassa.util.handleBottomEdge
 import com.lyy.keepassa.util.loadImg
 import com.lyy.keepassa.util.transformation.WhiteBgBlurTransformation
 import com.lyy.keepassa.view.search.SearchDialog
+import com.lyy.keepassa.widget.toPx
 import com.lyy.keepassa.widgets.MainFloatActionButton
 import com.lyy.keepassa.widgets.arc.FloatingActionMenu
 import kotlinx.coroutines.launch
@@ -220,7 +221,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   private fun handleEdge2Edge(){
     binding.fabNew.handleBottomEdge { view, i ->
       view.updateLayoutParams<CoordinatorLayout.LayoutParams> {
-        bottomMargin = i
+        bottomMargin = i + 16.toPx()
       }
       binding.vp.updatePadding(bottom = i)
     }

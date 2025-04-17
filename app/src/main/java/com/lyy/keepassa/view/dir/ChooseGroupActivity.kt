@@ -35,6 +35,7 @@ import com.lyy.keepassa.databinding.ActivityGroupDirBinding
 import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.handleBottomEdge
 import com.lyy.keepassa.view.ChoseDirModule
+import com.lyy.keepassa.widget.toPx
 import timber.log.Timber
 import java.util.Stack
 import java.util.UUID
@@ -176,7 +177,7 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
   private fun handleEdge2Edge(){
     binding.bt.handleBottomEdge { view, i ->
       view.updateLayoutParams<ConstraintLayout.LayoutParams> {
-        bottomMargin = i
+        bottomMargin = i + 16.toPx()
       }
     }
   }
