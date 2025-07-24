@@ -27,13 +27,13 @@
 -dontusemixedcaseclassnames
 #不去忽略非公共的库类
 -dontskipnonpubliclibraryclasses
-#优化  不优化输入的类文件
--dontoptimize
+# 完全关闭优化
+# -dontoptimize
 #预校验
 -dontpreverify
 #混淆时是否记录日志
 -verbose
-# 混淆时所采用的算法
+# 混淆时所采用的策略： 禁用算术简化，禁用类型转换简化，禁用所有字段优化，禁用类合并
 -optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
 #-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 #忽略警告

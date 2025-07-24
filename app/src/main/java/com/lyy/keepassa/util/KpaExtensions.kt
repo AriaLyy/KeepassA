@@ -57,7 +57,9 @@ val charRegex = Regex("[^a-zA-Z0-9]")
 fun View.handleBottomEdge(callback: (View, Int) -> Unit) {
   ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
 
-    if (!BarUtils.isNavBarVisible(ActivityUtils.getTopActivity())) {
+    val ac = ActivityUtils.getTopActivity() ?: return@setOnApplyWindowInsetsListener insets
+
+    if (!BarUtils.isNavBarVisible(ac)) {
       return@setOnApplyWindowInsetsListener insets
     }
 
@@ -95,8 +97,9 @@ fun isGestureBarVisible(view: View): Boolean {
 
 fun ViewGroup.handleBottomEdge(callback: (View, Int) -> Unit) {
   ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
+    val ac = ActivityUtils.getTopActivity() ?: return@setOnApplyWindowInsetsListener insets
 
-    if (!BarUtils.isNavBarVisible(ActivityUtils.getTopActivity())) {
+    if (!BarUtils.isNavBarVisible(ac)) {
       return@setOnApplyWindowInsetsListener insets
     }
 

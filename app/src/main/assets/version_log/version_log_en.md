@@ -1,3 +1,9 @@
+### 2.7.2
+* fix: Fix bug
+
+### 2.7.1
+* fix: Fix bug
+
 ### 2.7.0
 * fix: Fix bug
 

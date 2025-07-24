@@ -121,6 +121,9 @@ internal class GroupDetailModule : BaseModule() {
     sortType: SortType,
     data: List<SimpleItemEntity>
   ): Set<SimpleItemEntity> {
+    if (data.isEmpty()){
+      return emptySet()
+    }
     val map = hashMapOf<SimpleItemEntity, Char?>()
     for (item in data) {
       map[item] = PinyinUtil.getFirstSpellChar(item.title)

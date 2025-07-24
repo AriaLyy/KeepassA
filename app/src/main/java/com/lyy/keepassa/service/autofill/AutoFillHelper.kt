@@ -298,7 +298,10 @@ object AutoFillHelper {
     }
   }
 
-  fun isValidHint(hint: String): Boolean {
+  fun isValidHint(hint: String?): Boolean {
+    if (hint.isNullOrEmpty()){
+      return  false
+    }
     if (hint.contains("user", true) || hint.contains("pass")) {
       return true
     }
