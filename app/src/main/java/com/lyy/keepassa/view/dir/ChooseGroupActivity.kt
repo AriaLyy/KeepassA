@@ -185,7 +185,7 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
   /**
    * 右 -> 左
    */
-  private fun getRlAnim(): Transition {
+  private fun getRlAnim(): Transition? {
     return TransitionInflater.from(this)
       .inflateTransition(R.transition.slide_enter)
   }
@@ -193,7 +193,7 @@ class ChooseGroupActivity : BaseActivity<ActivityGroupDirBinding>() {
   /**
    * 左 -> 右
    */
-  private fun getLrAnim(): Transition {
+  private fun getLrAnim(): Transition? {
     return TransitionInflater.from(this)
       .inflateTransition(R.transition.slide_exit)
   }

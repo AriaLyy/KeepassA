@@ -78,7 +78,7 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
   /**
    * 右 -> 左
    */
-  private fun getRlAnim(): Transition {
+  private fun getRlAnim(): Transition? {
     return TransitionInflater.from(this)
       .inflateTransition(R.transition.slide_enter)
   }
@@ -86,7 +86,7 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
   /**
    * 左 -> 右
    */
-  private fun getLrAnim(): Transition {
+  private fun getLrAnim(): Transition? {
     return TransitionInflater.from(this)
       .inflateTransition(R.transition.slide_exit)
   }

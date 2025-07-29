@@ -64,7 +64,7 @@ object ComposeKeepassxc : IOtpCompose {
             b,
             bean.period,
             bean.digits,
-            HashAlgorithm.valueOf(arithmetic.toUpperCase(Locale.ROOT))
+            HashAlgorithm.valueOf(arithmetic.uppercase(Locale.ROOT))
           )
         }
 
@@ -73,7 +73,7 @@ object ComposeKeepassxc : IOtpCompose {
             b,
             bean.counter?.toLong() ?: TokenCalculator.HOTP_INITIAL_COUNTER.toLong(),
             bean.digits,
-            HashAlgorithm.valueOf(arithmetic.toUpperCase(Locale.ROOT))
+            HashAlgorithm.valueOf(arithmetic.uppercase(Locale.ROOT))
           )
         }
 

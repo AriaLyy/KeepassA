@@ -100,7 +100,7 @@ object PackageVerifier {
       if (length > 2) {
         hex = hex.substring(length - 2, length)
       }
-      builder.append(hex.toUpperCase(Locale.ROOT))
+      builder.append(hex.uppercase(Locale.ROOT))
       if (i < bytes.size - 1) {
         builder.append(':')
       }

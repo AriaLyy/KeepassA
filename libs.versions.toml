@@ -7,34 +7,34 @@ targetsdk = "35"
 ndk = "21.3.6528147"
 buildtools = "34.0.0"
 
-jetpack-appcompat = "1.6.1"
+jetpack-appcompat = "1.7.1"
 jetpack-material3 = "1.0.1"
-jetpack-material2 = "1.11.0"
-jetpack-constraintlayout = "2.1.4"
+jetpack-material2 = "1.12.0"
+jetpack-constraintlayout = "2.2.1"
 jetpack-compose = "2.4.3"
 jetpack-multidex = "2.0.1"
 jetpack-aterial2 = "1.6.1"
-jetpack-room = "2.6.1"
-jetpack-lifecycle = "2.6.2"
-jetpack-viewpager2 = "1.0.0"
+jetpack-room = "2.7.2"
+jetpack-lifecycle = "2.9.2"
+jetpack-viewpager2 = "1.1.0"
 jetpack-preference-ktx = "1.2.1"
-jetpack-workmanager = "2.9.0"
+jetpack-workmanager = "2.10.2"
 jetpack-cardview = "1.0.0"
-jetpack-recyclerview = "1.3.2"
-jetpack-autofill = "1.1.0"
-jetpack-swiperefreshlayout = "1.3.0-alpha01"
+jetpack-recyclerview = "1.4.0"
+jetpack-autofill = "1.3.0"
+jetpack-swiperefreshlayout = "1.3.0"
 jetpack-biometric = "1.1.0"
-jetpack-documentfile = "1.0.1"
-jetpack-credentials = "1.2.2"
+jetpack-documentfile = "1.1.0"
+jetpack-credentials = "1.5.0"
 jetpack-splashscreen = "1.0.1"
 
 
-google-gson = "2.10"
+google-gson = "2.11.0"
 google-tink-android = "1.5.0"
 google-zxing = "3.4.1"
 google-billing-ktx = "6.2.1"
-google-play-services-base = "18.4.0"
-google-review = "2.0.1"
+google-play-services-base = "18.7.2"
+google-review = "2.0.2"
 
 squareup-retrofit = "2.9.0"
 squareup-okhttp3 = "4.12.0"
@@ -60,9 +60,9 @@ third-timber = "5.0.1"
 third-spongycastle = "1.58.0.0"
 
 
-kotlin-coroutines = "1.7.1"
-kotlin-android-core = "1.13.1"
-kotlin = "2.0.0"
+kotlin-coroutines = "1.9.0"
+kotlin-android-core = "1.16.0"
+kotlin = "2.1.20"
 
 test-junit = '4.13.2'
 test-runner = '1.5.2'
@@ -111,6 +111,8 @@ third-timber = { module = "com.jakewharton.timber:timber", version.ref = "third-
 third-BaseRecyclerViewAdapterHelper = { module = "io.github.cymchad:BaseRecyclerViewAdapterHelper", version = "3.0.14" }
 third-yimagepicker = { module = "com.ypx.yimagepicker:androidx", version = "3.1.4" }
 third-simple-xml = { module = "org.simpleframework:simple-xml", version = "2.7.1" }
+third-androidaop-core = {module = "io.github.flyjingfish:androidaop-core", version = "2.6.8"}
+third-androidaop-apt = {module = "io.github.flyjingfish:androidaop-apt", version = "2.6.8"}
 
 didi-drouter = { module = "io.github.didi:drouter-plugin-proxy", version = "1.0.2" } # drouter
 didi-drouter-api = { module = "io.github.didi:drouter-api", version = "2.3.0" }
@@ -154,7 +156,7 @@ google-client-api = { module = "com.google.api-client:google-api-client", versio
 google-client-jetty = { module = "com.google.oauth-client:google-oauth-client-jetty", version = "1.34.1" }
 google-client-android = { module = "com.google.api-client:google-api-client-android", version = "2.5.0" }
 google-drive-services = { module = "com.google.apis:google-api-services-drive", version = "v3-rev20220815-2.0.0" }
-google-andorid-identity = { module = "com.google.android.libraries.identity.googleid:googleid", version = "1.1.0" }
+google-andorid-identity = { module = "com.google.android.libraries.identity.googleid:googleid", version = "1.1.1" }
 
 jetpack-workmanager = { module = "androidx.work:work-runtime-ktx", version.ref = "jetpack-workmanager" }
 jetpack-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "jetpack-appcompat" }
