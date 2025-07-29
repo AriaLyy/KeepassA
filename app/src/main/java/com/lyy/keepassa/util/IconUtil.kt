@@ -34,7 +34,7 @@ import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupV3
 import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.PwIconCustom
-import com.lyy.keepassa.R
+import com.lyy.icon.R
 import com.lyy.keepassa.R.dimen
 import com.lyy.keepassa.widget.toPx
 import kotlinx.coroutines.Dispatchers
@@ -97,7 +97,7 @@ object IconUtil {
   fun convertCustomIcon2Drawable(
     context: Context,
     customIcon: PwIconCustom,
-    @DrawableRes defIcon: Int = R.drawable.ic_image_blue_24px
+    @DrawableRes defIcon: Int = com.lyy.keepassa.R.drawable.ic_image_blue_24px
   ): Drawable {
     if (customIconIsNull(customIcon)) {
       return context.resources.getDrawable(defIcon)
@@ -240,7 +240,7 @@ object IconUtil {
     context: Context,
     drawable: BitmapDrawable
   ): BitmapDrawable {
-    val iconSize = context.resources.getDimension(R.dimen.icon_size).toInt()
+    val iconSize = context.resources.getDimension(com.lyy.keepassa.R.dimen.icon_size).toInt()
 
     val newbmp =
       Bitmap.createScaledBitmap(drawable.bitmap, iconSize, iconSize, true)

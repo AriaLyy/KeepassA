@@ -2,7 +2,7 @@ plugins {
   id 'com.android.application'
   id 'kotlin-android'
   id 'kotlin-kapt'
-  id 'com.alibaba.arouter'
+//  id 'com.alibaba.arouter'
   id 'kotlin-parcelize'
   id 'com.google.gms.google-services'
   id 'com.google.firebase.crashlytics'
@@ -10,23 +10,23 @@ plugins {
 
 android {
   compileSdk libs.versions.compilesdk.get().toInteger()
-
+  namespace "com.lyy.keepassa"
   compileOptions {
     // Flag to enable support for the new language APIs
 //    coreLibraryDesugaringEnabled true
-    sourceCompatibility JavaVersion.VERSION_11
-    targetCompatibility JavaVersion.VERSION_11
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
   }
 
   kotlinOptions {
-    jvmTarget = "1.8"
+    jvmTarget = "17"
   }
 
   defaultConfig {
     applicationId "com.lyy.keepassa"
     minSdkVersion libs.versions.minSdk.get().toInteger()
     targetSdkVersion libs.versions.targetsdk.get().toInteger()
-    versionCode 80
+    versionCode 90
     versionName "2.7.3"
     multiDexEnabled true
 
@@ -187,11 +187,11 @@ dependencies {
   //  debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
 
   // keepassA组件
-  implementation 'me.laoyuyu.keepassa:KeepassIcon:0.4.0'
-  implementation 'me.laoyuyu.keepassa:KeepassLib:0.4.2'
+  implementation 'me.laoyuyu.keepassa:KeepassIcon:0.4.3'
+  implementation 'me.laoyuyu.keepassa:KeepassLib:0.4.3'
   //  implementation project(path: ':KpaLib')
-  implementation 'me.laoyuyu.keepassa:KPAFrame:0.4.2'
-  implementation 'me.laoyuyu.keepassa:UIWidget:0.4.2'
+  implementation 'me.laoyuyu.keepassa:KPAFrame:0.4.3'
+  implementation 'me.laoyuyu.keepassa:UIWidget:0.4.3'
 
 
   // kotlin
@@ -228,9 +228,8 @@ dependencies {
   implementation(libs.third.glide.transformations)
 
   implementation(libs.third.dropbox)
-//  implementation(libs.third.webdav)
   implementation(libs.bundles.tencent.wcdb)
-  implementation(libs.third.protector) // XP/调试/多开/模拟器/root 判断
+  implementation project (":thrid:EasyProtector") // XP/调试/多开/模拟器/root 判断
   implementation(libs.third.autosize)
   implementation(libs.google.gson)
   implementation(libs.third.freereflection)
@@ -249,7 +248,7 @@ dependencies {
   implementation(libs.third.yimagepicker)
 
   //webDav
-  implementation(project(":Sardine"))
+  implementation(libs.third.webdav)
 
   // // =========================== 三方库 end =====================================
 //  implementation(libs.google.gms.billing)

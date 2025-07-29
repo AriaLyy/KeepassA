@@ -36,15 +36,15 @@ class MsgDialog : BaseDialog<DialogMsgBinding>(), View.OnClickListener {
 
   @Autowired(name = "enterBtTextColor")
   @JvmField
-  var enterBtTextColor: Int = R.color.text_blue_color
+  var enterBtTextColor: Int = com.lyy.widget.R.color.text_blue_color
 
   @Autowired(name = "cancelBtTextColor")
   @JvmField
-  var cancelBtTextColor: Int = R.color.text_gray_color
+  var cancelBtTextColor: Int = com.lyy.widget.R.color.text_gray_color
 
   @Autowired(name = "coverBtTextColor")
   @JvmField
-  var coverBtTextColor: Int = R.color.text_blue_color
+  var coverBtTextColor: Int = com.lyy.widget.R.color.text_blue_color
 
   @Autowired(name = "msgTitle")
   @JvmField
@@ -168,11 +168,11 @@ class MsgDialog : BaseDialog<DialogMsgBinding>(), View.OnClickListener {
       }
       if (enable) {
         btn.isEnabled = true
-        btn.setTextColor(ResUtil.getColor(R.color.text_blue_color))
+        btn.setTextColor(ResUtil.getColor(com.lyy.widget.R.color.text_blue_color))
         btn.background = ResUtil.getDrawable(R.drawable.bg_ripple_white_selector)
       } else {
         btn.isEnabled = false
-        btn.setTextColor(ResUtil.getColor(R.color.text_gray_color))
+        btn.setTextColor(ResUtil.getColor(com.lyy.widget.R.color.text_gray_color))
         btn.setBackgroundColor(ResUtil.getColor(R.color.transparent))
       }
     }

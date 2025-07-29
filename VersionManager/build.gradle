@@ -37,10 +37,10 @@ testing {
 
     // Create a new test suite
     functionalTest(JvmTestSuite) {
-      dependencies {
-        // functionalTest test suite depends on the production code in tests
-        implementation project
-      }
+//      dependencies {
+//        // functionalTest test suite depends on the production code in tests
+//        implementation project
+//      }
 
       targets {
         all {
@@ -81,7 +81,7 @@ publishing {
     maven(MavenPublication) {
       groupId = 'com.lyy.kpa.version'
       artifactId = 'catalog'
-      version = '0.0.3'
+      version = '0.0.4'
       from components.versionCatalog
     }
   }

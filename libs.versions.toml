@@ -2,8 +2,8 @@
 groovy = "3.0.10"
 checkstyle = "8.37"
 minSdk = "23"
-compilesdk = "34"
-targetsdk = "34"
+compilesdk = "35"
+targetsdk = "35"
 ndk = "21.3.6528147"
 buildtools = "34.0.0"
 
@@ -75,7 +75,7 @@ tencent-wcdb = "1.0.8"
 tencent-vasdolly = "3.0.3"
 tencent-bugly-crashreport = "4.1.9"
 tencent-bugly-nativecrashreport = "3.9.2"
-tencent-mmkv = "1.2.15"
+tencent-mmkv = "2.2.2"
 tencent-andresguard-gradle-plugin = "1.2.21"
 
 ali-arouter-compiler = "1.5.2"
@@ -143,11 +143,11 @@ google-gson = { module = "com.google.code.gson:gson", version.ref = "google-gson
 google-zxing = { module = "com.google.zxing:core", version.ref = "google-zxing" }
 google-gms-billing = { module = "com.android.billingclient:billing-ktx", version.ref = "google-billing-ktx" }
 google-gms-base = { module = "com.google.android.gms:play-services-base", version.ref = "google-play-services-base" }
-google-gms-auth = { module = "com.google.android.gms:play-services-auth", version = "21.1.1" }
+google-gms-auth = { module = "com.google.android.gms:play-services-auth", version = "21.4.0" }
 google-gms-drive = { group = "com.google.android.gms", name = "play-services-drive", version = "17.0.0" }
-google-firebase-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version = "2.9.9" }
-google-firebase-bom = { module = "com.google.firebase:firebase-bom", version = "32.7.1" }
-google-firebase-crashlyticsktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
+google-firebase-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version = "3.0.5" }
+google-firebase-bom = { module = "com.google.firebase:firebase-bom", version = "34.0.0" }
+google-firebase-crashlyticsktx = { module = "com.google.firebase:firebase-crashlytics" }
 google-review = { module = "com.google.android.play:review", version.ref = "google-review" }
 google-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "google-review" }
 google-client-api = { module = "com.google.api-client:google-api-client", version = "2.0.0" }

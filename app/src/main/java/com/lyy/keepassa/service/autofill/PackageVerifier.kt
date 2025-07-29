@@ -70,9 +70,13 @@ object PackageVerifier {
       pm.getPackageInfo(
         packageName,
         PackageManager.GET_SIGNING_CERTIFICATES
-      ).signingInfo.apkContentsSigners
+      ).signingInfo?.apkContentsSigners
     } else {
       pm.getPackageInfo(packageName, PackageManager.GET_SIGNATURES).signatures
+    }
+
+    if (signatures.isNullOrEmpty()){
+      return ""
     }
 
     val cert = signatures[0].toByteArray()

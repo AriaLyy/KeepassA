@@ -92,9 +92,9 @@ class ExpandAttrStrLayout(
     attrTt = findViewById(R.id.attr_tt)
     attrArrow = findViewById(R.id.attr_arrow)
     itemLayout = findViewById(R.id.attrs)
-    val ta = context.obtainStyledAttributes(attr, R.styleable.ExpandTextView)
-    val tStr = ta.getString(R.styleable.ExpandTextView_expand_tt_title)
-    val iDrawable = ta.getDrawable(R.styleable.ExpandTextView_expand_tt_icon)
+    val ta = context.obtainStyledAttributes(attr, com.lyy.widget.R.styleable.ExpandTextView)
+    val tStr = ta.getString(com.lyy.widget.R.styleable.ExpandTextView_expand_tt_title)
+    val iDrawable = ta.getDrawable(com.lyy.widget.R.styleable.ExpandTextView_expand_tt_icon)
     ta.recycle()
     attrTt.text = tStr
     if (iDrawable != null) {

@@ -146,9 +146,9 @@ interface DialogRouter {
     @RouterArgName(name = "enterText", isObject = true) enterText: CharSequence = "",
     @RouterArgName(name = "cancelText", isObject = true) cancelText: CharSequence = "",
     @RouterArgName(name = "coverText", isObject = true) coverText: CharSequence = "",
-    @RouterArgName(name = "enterBtTextColor") enterBtTextColor: Int = R.color.text_blue_color,
-    @RouterArgName(name = "cancelBtTextColor") cancelBtTextColor: Int = R.color.text_gray_color,
-    @RouterArgName(name = "coverBtTextColor") coverBtTextColor: Int = R.color.text_blue_color,
+    @RouterArgName(name = "enterBtTextColor") enterBtTextColor: Int = com.lyy.widget.R.color.text_blue_color,
+    @RouterArgName(name = "cancelBtTextColor") cancelBtTextColor: Int = com.lyy.widget.R.color.text_gray_color,
+    @RouterArgName(name = "coverBtTextColor") coverBtTextColor: Int = com.lyy.widget.R.color.text_blue_color,
     @RouterArgName(
       name = "btnClickListener",
       isObject = true

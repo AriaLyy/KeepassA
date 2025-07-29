@@ -62,7 +62,7 @@ class PathTypeDialog(
         .setOnItemClickListener { _, position, _ ->
           val item = data[position]
           when (item.icon) {
-            R.drawable.ic_android -> {//使用系统文件管理器
+            com.lyy.widget.R.drawable.ic_android -> {//使用系统文件管理器
               module.storageType = AFS
             }
             R.drawable.ic_dropbox -> { // dropbox
