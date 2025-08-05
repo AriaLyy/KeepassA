@@ -21,6 +21,7 @@ import android.view.autofill.AutofillManager
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -41,6 +42,7 @@ import com.lyy.keepassa.event.DbHistoryEvent
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
+import com.lyy.keepassa.util.handleTopEdge
 import com.lyy.keepassa.util.loadImg
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
@@ -120,7 +122,6 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
       .autoDarkModeEnable(true)
       .autoStatusBarDarkModeEnable(true, 0.2f) //自动状态栏字体变色，必须指定状态栏颜色才可以自动变色哦
       .flymeOSStatusBarFontColor(R.color.text_black_color)
-      .fitsSystemWindows(false)
       .autoNavigationBarDarkModeEnable(true, 0.2f) // 自动导航栏图标变色，必须指定导航栏颜色才可以自动变色哦
       .statusBarDarkFont(
         true, 0.2f

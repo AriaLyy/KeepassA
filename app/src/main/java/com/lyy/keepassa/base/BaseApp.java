@@ -33,7 +33,6 @@ import com.lyy.keepassa.util.CommonKVStorage;
 import com.lyy.keepassa.util.LanguageUtil;
 import com.lyy.keepassa.view.StorageType;
 import java.util.Locale;
-import me.weishu.reflection.Reflection;
 
 public class BaseApp extends MultiDexApplication {
 
@@ -67,7 +66,6 @@ public class BaseApp extends MultiDexApplication {
     //super.attachBaseContext(LanguageUtil.INSTANCE.setLanguage(base, currentLang));
     super.attachBaseContext(base);
     setThemeStyle();
-    Reflection.unseal(base);
   }
 
   private void setThemeStyle() {

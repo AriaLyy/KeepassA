@@ -54,26 +54,40 @@ import kotlin.math.abs
 
 val charRegex = Regex("[^a-zA-Z0-9]")
 
+fun View.handleTopEdge(callback: (View, Int) -> Unit){
+  ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
+
+    val ac = ActivityUtils.getTopActivity() ?: return@setOnApplyWindowInsetsListener insets
+
+    if (!BarUtils.isStatusBarVisible(ac)) {
+      callback.invoke(this, 0)
+      return@setOnApplyWindowInsetsListener insets
+    }
+    val stateBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+
+    callback.invoke(this, stateBars.top) // 状态栏高度
+    return@setOnApplyWindowInsetsListener WindowInsetsCompat.CONSUMED
+  }
+}
+
 fun View.handleBottomEdge(callback: (View, Int) -> Unit) {
   ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
 
     val ac = ActivityUtils.getTopActivity() ?: return@setOnApplyWindowInsetsListener insets
 
     if (!BarUtils.isNavBarVisible(ac)) {
+      callback.invoke(this, 0)
       return@setOnApplyWindowInsetsListener insets
     }
+    // insets 是已经计算好的区域，直接使用left, right, top, bottom 就行
+    val bars = insets.getInsets(
+      WindowInsetsCompat.Type.systemBars()
+        or WindowInsetsCompat.Type.displayCutout()
+    )
+    callback.invoke(this, bars.bottom) // bars.bottom 是已经计算好的高度
 
-    if (isGestureBarVisible(this)){
-      callback.invoke(this, getGestureBarHeight(insets))
-      return@setOnApplyWindowInsetsListener insets
-    }
 
-    if (insets.isVisible(WindowInsetsCompat.Type.navigationBars())) {
-      callback.invoke(this, abs(BarUtils.getNavBarHeight()))
-      return@setOnApplyWindowInsetsListener WindowInsetsCompat.CONSUMED
-    }
-
-    insets
+    return@setOnApplyWindowInsetsListener WindowInsetsCompat.CONSUMED
   }
 }
 
@@ -100,20 +114,19 @@ fun ViewGroup.handleBottomEdge(callback: (View, Int) -> Unit) {
     val ac = ActivityUtils.getTopActivity() ?: return@setOnApplyWindowInsetsListener insets
 
     if (!BarUtils.isNavBarVisible(ac)) {
+      callback.invoke(this, 0)
       return@setOnApplyWindowInsetsListener insets
     }
 
-    if (isGestureBarVisible(this)){
-      callback.invoke(this, getGestureBarHeight(insets))
-      return@setOnApplyWindowInsetsListener insets
-    }
+    // insets 是已经计算好的区域，直接使用left, right, top, bottom 就行
+    val bars = insets.getInsets(
+      WindowInsetsCompat.Type.systemBars()
+        or WindowInsetsCompat.Type.displayCutout()
+    )
+    callback.invoke(this, bars.bottom) // bars.bottom 是已经计算好的高度
 
-    if (insets.isVisible(WindowInsetsCompat.Type.navigationBars())) {
-      callback.invoke(this, abs(BarUtils.getNavBarHeight()))
-      return@setOnApplyWindowInsetsListener WindowInsetsCompat.CONSUMED
-    }
 
-    insets
+    return@setOnApplyWindowInsetsListener WindowInsetsCompat.CONSUMED
   }
 }
 

@@ -9,6 +9,7 @@
 
 package com.lyy.keepassa.view.main
 
+import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
@@ -22,6 +23,7 @@ import android.transition.Transition
 import android.transition.Transition.TransitionListener
 import android.util.Pair
 import android.view.View
+import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updateLayoutParams
@@ -38,6 +40,8 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.BarUtils
+import com.blankj.utilcode.util.PermissionUtils
+import com.blankj.utilcode.util.PermissionUtils.SimpleCallback
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.DrawableImageViewTarget
@@ -57,9 +61,11 @@ import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.util.ThemeUtil
 import com.lyy.keepassa.util.doClick
 import com.lyy.keepassa.util.handleBottomEdge
+import com.lyy.keepassa.util.handleTopEdge
 import com.lyy.keepassa.util.loadImg
 import com.lyy.keepassa.util.transformation.WhiteBgBlurTransformation
 import com.lyy.keepassa.view.search.SearchDialog
@@ -225,6 +231,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       }
       binding.vp.updatePadding(bottom = i)
     }
+
   }
 
   private fun initData() {

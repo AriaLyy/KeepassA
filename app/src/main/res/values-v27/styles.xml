@@ -3,8 +3,6 @@
 
 
   <style name="AppTheme.NoActionBar" parent="BaseTheme">
-    <item name="android:windowLayoutInDisplayCutoutMode">
-      shortEdges
-    </item>
+    <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
   </style>
 </resources>

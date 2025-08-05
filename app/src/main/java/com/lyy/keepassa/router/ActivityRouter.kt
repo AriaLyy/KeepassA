@@ -7,6 +7,7 @@
  */
 package com.lyy.keepassa.router
 
+import androidx.annotation.Keep
 import androidx.core.app.ActivityOptionsCompat
 import com.arialyy.frame.router.RouterArgName
 import com.arialyy.frame.router.RouterPath
@@ -26,6 +27,7 @@ import java.util.UUID
  * @Description
  * @Date 2021/10/17
  **/
+@Keep
 interface ActivityRouter {
 
   @RouterPath(path = "/search/common")
@@ -89,7 +91,9 @@ interface ActivityRouter {
   @RouterPath(path = "/entry/create")
   fun toEditEntryActivity(
     @RouterArgName(name = CreateEntryActivity.KEY_ENTRY) uuid: UUID,
-    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = ActivityOptionsCompat.makeSceneTransitionAnimation(ActivityUtils.getTopActivity()),
+    @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = ActivityOptionsCompat.makeSceneTransitionAnimation(
+      ActivityUtils.getTopActivity()
+    ),
     @RouterArgName(name = CreateEntryActivity.KEY_TYPE) type: CreateEnum = CreateEnum.MODIFY
   )
 

@@ -1,3 +1,6 @@
+### 2.8.0
+* Android 15 Adaptation
+
 ### 2.7.2
 * fix: Fix bug
 

@@ -28,7 +28,7 @@
 #不去忽略非公共的库类
 -dontskipnonpubliclibraryclasses
 # 完全关闭优化
-# -dontoptimize
+-dontoptimize
 #预校验
 -dontpreverify
 #混淆时是否记录日志
@@ -39,6 +39,7 @@
 #忽略警告
 #-ignorewarning
 -keepattributes SourceFile,LineNumberTable   # Keep file names and line numbers.
+
 -keep public class * extends java.lang.Exception  # Optional: Keep custom exceptions.
 ################################### 混淆配置 end ############################################
 
@@ -58,6 +59,9 @@
 ################## 常用属性配置-start  ##################
 # 保护注解
 -keepattributes *Annotation*
+-keepattributes *Annotation*
+-keepattributes Signature
+-keepattributes EnclosingMethod
 # 保护support v4 包
 -dontwarn android.support.v4.app.**
 
@@ -162,6 +166,18 @@
 -keep class * extends androidx.room.RoomDatabase { *; } # androidx
 ################# room-end ##################
 
+################# gms-start ##################
+-dontwarn com.google.android.gms.common.annotation.**
+-keep class com.google.firebase.**{*;}
+################# gms-end ##################
+
+################# one-drive-start ##################
+-keep class com.microsoft.identity.common.** { *; }
+-dontwarn com.microsoft.identity.common.**
+-keep class edu.umd.cs.findbugs.annotations.** { *; }
+-dontwarn edu.umd.cs.findbugs.annotations.**
+################# one-drive-end ##################
+
 ################# bugly-start ##################
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
@@ -217,6 +233,10 @@
 ################# webdav-end ##################
 
 ################# arouter-start ##################
+-keep class javax.lang.model.** { *; }
+-keep interface javax.lang.model.** { *; }
+-dontwarn javax.lang.model.element.Element # 处理R8混淆问题
+
 -keep public class com.alibaba.android.arouter.routes.**{*;}
 -keep public class com.alibaba.android.arouter.facade.**{*;}
 -keep class * implements com.alibaba.android.arouter.facade.template.ISyringe{*;}
@@ -225,8 +245,76 @@
 -keep interface * implements com.alibaba.android.arouter.facade.template.IProvider
 
 # 如果使用了 单类注入，即不定义接口实现 IProvider，需添加下面规则，保护实现
-# -keep class * implements com.alibaba.android.arouter.facade.template.IProvider
+#-keep class * implements com.alibaba.android.arouter.facade.template.IProvider
+-keep class com.alibaba.android.arouter.core.LogisticsCenter{*;}
 ################# arouter-end ##################
+
+################# joda-start ##################
+-keep class org.joda.time.** { *; }
+-keep interface org.joda.time.** { *; }
+-keep class org.joda.convert.** { *; }
+-keep interface org.joda.convert.** { *; }
+-dontwarn org.joda.**
+################# joda-end ##################
+
+################## squareup-start  ##################
+# OkHttp3 相关
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.** { *; }
+-dontwarn okhttp3.**
+-keep class * implements okhttp3.Interceptor{*;}
+
+# Okio
+-dontwarn com.squareup.**
+-dontwarn okio.**
+-keep public class org.codehaus.* { *; }
+-keep public class java.nio.* { *; }
+
+
+# Retrofit2 相关
+-keep class retrofit2.** { *; }
+-dontwarn retrofit2.**
+-keep interface retrofit2.** { *; }
+-keep class retrofit2.converter.gson.** { *; }
+
+# butterknife
+-keep class butterknife.** { *; }
+-dontwarn butterknife.internal.**
+-keep class **$$ViewBinder { *; }
+-keepclasseswithmembernames class * {
+   @butterknife.* <fields>;
+}
+-keepclasseswithmembernames class * {
+ @butterknife.* <methods>;
+}
+
+# leakcanary
+-keep class com.squareup.leakcanary.** { *; }
+
+################## squareup-end  ##################
+
+################# android_aop-start ##################
+-keep class * implements kotlin.coroutines.Continuation{
+   kotlin.coroutines.Continuation getCompletion();
+   <fields>;
+}
+-keep class * implements com.flyjingfish.android_aop_annotation.utils.InvokeMethods{
+   <methods>;
+}
+-keepclasseswithmembers class * {
+    @com.flyjingfish.android_aop_annotation.aop_anno.AopKeep <fields>;
+}
+-keepclasseswithmembers class * {
+    @com.flyjingfish.android_aop_annotation.aop_anno.AopKeep <methods>;
+}
+-keep class com.flyjingfish.android_aop_annotation.utils.DebugAndroidAopInit{
+   *;
+}
+-keep @com.flyjingfish.android_aop_annotation.anno.AndroidAopPointCut class * { *; }
+-keep class com.flyjingfish.android_aop_core.utils.AnnotationInit{
+   *;
+}
+################# .android_aop-end ##################
 
 ################# xlog-start ##################
 -keep class com.tencent.mars.** { *; }
@@ -243,3 +331,4 @@
 -keep class * implements com.lyy.keepassa.baseapi.INotFreeLibService{ *; }
 -keep class com.lyy.keepassa.view.setting.UISettingFragment
 -keep class com.lyy.keepassa.service.autofill.AutofillService{ *; }
+-keep class * implements com.lyy.keepassa.router.IKpaRouter{*;}

@@ -8,13 +8,13 @@
 package com.lyy.keepassa.router
 
 import android.graphics.drawable.Drawable
+import androidx.annotation.Keep
 import com.arialyy.frame.router.DialogArg
 import com.arialyy.frame.router.RouterArgName
 import com.arialyy.frame.router.RouterPath
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.security.ProtectedString
-import com.lyy.keepassa.R
 import com.lyy.keepassa.entity.TagBean
 import com.lyy.keepassa.view.StorageType
 import com.lyy.keepassa.view.dialog.CloudFileSelectDialog
@@ -29,7 +29,8 @@ import java.util.UUID
  * @Description
  * @Date 2021/9/5
  **/
-interface DialogRouter {
+@Keep
+interface DialogRouter  {
 
   @RouterPath(path = "/dialog/chooseTag")
   @DialogArg(showDialog = true)

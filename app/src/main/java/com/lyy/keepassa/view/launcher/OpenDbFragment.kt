@@ -15,14 +15,10 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.app.Activity
-import android.app.ActivityOptions
 import android.content.Intent
 import android.content.res.AssetManager
 import android.net.Uri
-import android.os.Build
-import android.text.Html
 import android.text.TextUtils
 import android.view.View
 import android.view.animation.LinearInterpolator
@@ -51,7 +47,6 @@ import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.view.StorageType
-import com.lyy.keepassa.view.main.MainActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -153,14 +148,6 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         Routerfit.create(ActivityRouter::class.java, requireActivity()).toMainActivity(
           opt = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
         )
-        // requireActivity().finish()
-        // val intent = Intent(activity, MainActivity::class.java).apply {
-        //     flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        // }
-        // activity?.startActivity(
-        //   intent, ActivityOptions.makeSceneTransitionAnimation(activity)
-        //     .toBundle()
-        // )
       }
     }
   }
@@ -174,7 +161,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   /**
    * 处理指纹
    */
-   private fun handleFingerprint() {
+  private fun handleFingerprint() {
     modlue.isNeedUseFingerprint(openDbRecord.localDbUri)
       .observe(this, Observer { needUse ->
         if (needUse) {
@@ -250,10 +237,12 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         openDb(binding.password.text.toString())
         // val dialog = Routerfit.create(DialogRouter::class.java).toPlayDonateDialog()
       }
+
       R.id.change_db -> {
         binding.cbKey.isChecked = false
         (activity as LauncherActivity).changeDb()
       }
+
       R.id.key -> {
         KeepassAUtil.instance.openSysFileManager(this@OpenDbFragment, "*/*", REQ_CODE_FILE)
       }

@@ -18,6 +18,7 @@ import com.arialyy.frame.util.KeyStoreUtil.Companion.keyStorePass
 import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.Utils
+import com.lyy.keepassa.KpaEventBusIndex
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
@@ -60,7 +61,7 @@ class KpaSdkService : IProvider {
       val showStatusBar = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
         .getBoolean(ResUtil.getString(R.string.set_key_title_show_state_bar), true)
       BaseActivity.showStatusBar = showStatusBar
-      // EventBus.builder().addIndex(KpaEventBusIndex()).installDefaultEventBus()
+      EventBus.builder().addIndex(KpaEventBusIndex()).installDefaultEventBus()
       listenerAppBackground()
     }
   }

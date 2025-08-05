@@ -34,7 +34,7 @@ class NotifyPermissionsChain : IMainDialogInterceptor {
       return chain.proceed(ac)
     }
 
-    if (PermissionUtils.isGranted(Manifest.permission.POST_NOTIFICATIONS)) {
+    if (PermissionUtils.isGranted(Manifest.permission.POST_NOTIFICATIONS))  {
       return chain.proceed(ac)
     }
 

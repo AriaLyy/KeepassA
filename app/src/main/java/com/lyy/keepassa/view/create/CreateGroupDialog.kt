@@ -38,8 +38,7 @@ class CreateGroupDialog : BaseDialog<DialogAddGroupBinding>(), View.OnClickListe
   private lateinit var module: CreateEntryModule
 
   @Autowired(name = "parentGroup")
-  @JvmField
-  var parentGroup: PwGroupV4 = BaseApp.KDB!!.pm.rootGroup as PwGroupV4
+  lateinit var parentGroup: PwGroupV4
 
   override fun setLayoutId(): Int {
     return R.layout.dialog_add_group
@@ -48,6 +47,9 @@ class CreateGroupDialog : BaseDialog<DialogAddGroupBinding>(), View.OnClickListe
   override fun initData() {
     super.initData()
     ARouter.getInstance().inject(this)
+    if (!this::parentGroup.isInitialized){
+      parentGroup = BaseApp.KDB!!.pm.rootGroup as PwGroupV4
+    }
     module = ViewModelProvider(this).get(CreateEntryModule::class.java)
     binding.groupNameLayout.setEndIconOnClickListener {
       showIconDialog()
