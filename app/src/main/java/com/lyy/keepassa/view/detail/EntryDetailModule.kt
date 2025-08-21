@@ -62,50 +62,54 @@ class EntryDetailModule : BaseModule() {
 
   fun finishRevealAnim(ac: EntryDetailActivityNew) {
     val binding = ac.binding
-    val vAnim = AnimatorSet()
-    val revealAnimal = ViewAnimationUtils.createCircularReveal(
-      binding.root,
-      ScreenUtils.getScreenWidth(),
-      ScreenUtils.getScreenHeight(),
-      max(ScreenUtils.getScreenWidth().toFloat(), ScreenUtils.getScreenHeight().toFloat()),
-      0.toFloat()
-    )
-    val contentAnim1 = ObjectAnimator.ofFloat(binding.topAppBar, View.ALPHA, 1f, 0f)
-    val contentAnim2 = ObjectAnimator.ofFloat(binding.clContentRoot, View.ALPHA, 1f, 0f)
+    binding.root.post {
+      val vAnim = AnimatorSet()
+      val revealAnimal = ViewAnimationUtils.createCircularReveal(
+        binding.root,
+        ScreenUtils.getScreenWidth(),
+        ScreenUtils.getScreenHeight(),
+        max(ScreenUtils.getScreenWidth().toFloat(), ScreenUtils.getScreenHeight().toFloat()),
+        0.toFloat()
+      )
+      val contentAnim1 = ObjectAnimator.ofFloat(binding.topAppBar, View.ALPHA, 1f, 0f)
+      val contentAnim2 = ObjectAnimator.ofFloat(binding.clContentRoot, View.ALPHA, 1f, 0f)
 
-    vAnim.duration = 400
-    vAnim.doOnEnd {
-      binding.groupContent.isGone = true
-      binding.ivBlur.isGone = true
-      ac.superFinish()
+      vAnim.duration = 400
+      vAnim.doOnEnd {
+        binding.groupContent.isGone = true
+        binding.ivBlur.isGone = true
+        ac.superFinish()
+      }
+      vAnim.playTogether(revealAnimal, contentAnim1, contentAnim2)
+      vAnim.interpolator = InterpolatorConstance.easeOutCubic
+      vAnim.start()
     }
-    vAnim.playTogether(revealAnimal, contentAnim1, contentAnim2)
-    vAnim.interpolator = InterpolatorConstance.easeOutCubic
-    vAnim.start()
   }
 
   fun startRevealAnim(binding: ActivityEntryDetailNewBinding) {
-    val vAnim = AnimatorSet()
-    val revealAnimal = ViewAnimationUtils.createCircularReveal(
-      binding.root,
-      ScreenUtils.getScreenWidth(),
-      ScreenUtils.getScreenHeight(),
-      0.toFloat(),
-      max(ScreenUtils.getScreenWidth().toFloat(), ScreenUtils.getScreenHeight().toFloat())
-    )
+    binding.root.post {
+      val vAnim = AnimatorSet()
+      val revealAnimal = ViewAnimationUtils.createCircularReveal(
+        binding.root,
+        ScreenUtils.getScreenWidth(),
+        ScreenUtils.getScreenHeight(),
+        0.toFloat(),
+        max(ScreenUtils.getScreenWidth().toFloat(), ScreenUtils.getScreenHeight().toFloat())
+      )
 
-    val contentAnim1 = ObjectAnimator.ofFloat(binding.topAppBar, View.ALPHA, 0f, 1f)
-    val contentAnim2 = ObjectAnimator.ofFloat(binding.clContentRoot, View.ALPHA, 0f, 1f)
+      val contentAnim1 = ObjectAnimator.ofFloat(binding.topAppBar, View.ALPHA, 0f, 1f)
+      val contentAnim2 = ObjectAnimator.ofFloat(binding.clContentRoot, View.ALPHA, 0f, 1f)
 
-    vAnim.duration = 400
-    vAnim.doOnStart {
-      binding.topAppBar.alpha = 0f
-      binding.clContentRoot.alpha = 0f
-      binding.groupContent.isVisible = true
+      vAnim.duration = 400
+      vAnim.doOnStart {
+        binding.topAppBar.alpha = 0f
+        binding.clContentRoot.alpha = 0f
+        binding.groupContent.isVisible = true
+      }
+      vAnim.playTogether(revealAnimal, contentAnim1, contentAnim2)
+      vAnim.interpolator = InterpolatorConstance.easeInCubic
+      vAnim.start()
     }
-    vAnim.playTogether(revealAnimal, contentAnim1, contentAnim2)
-    vAnim.interpolator = InterpolatorConstance.easeInCubic
-    vAnim.start()
   }
 
   /**

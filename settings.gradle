@@ -36,7 +36,7 @@ dependencyResolutionManagement {
 include ':app'
 //include('VersionManager')
 rootProject.name='KeepassA-Lite'
-//include ':Sardine'
-//project(':thrid:Sardine')
+include ':thrid:Sardine'
+project(':thrid:Sardine').projectDir = file('thrid/Sardine')
 include ':thrid:EasyProtector'
 project(':thrid:EasyProtector').projectDir = file('thrid/EasyProtector')

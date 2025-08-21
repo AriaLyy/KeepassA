@@ -42,6 +42,8 @@ dependencies {
   implementation libs.kotlin.core.ktx
   implementation libs.jetpack.appcompat
   implementation libs.squareup.okhttp3
+  implementation(libs.squareup.okhttp3.digest)
+
   implementation(libs.third.simple.xml){
     exclude module: 'stax'
     exclude module: 'stax-api'

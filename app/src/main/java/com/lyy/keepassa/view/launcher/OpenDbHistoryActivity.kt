@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
+import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityOnlyListBinding
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
@@ -30,6 +31,10 @@ import com.lyy.keepassa.util.doOnItemLongClickListener
 import com.lyy.keepassa.view.SimpleAdapter
 import com.lyy.keepassa.view.StorageType
 import org.greenrobot.eventbus.EventBus
+import timber.log.Timber
+import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 /**
  * 数据库打开记录列表
@@ -70,18 +75,17 @@ class OpenDbHistoryActivity : BaseActivity<ActivityOnlyListBinding>() {
     binding.list.doOnItemClickListener { _, position, _ ->
       val record = data[position].obj as DbHistoryRecord
       finishAfterTransition()
-      EventBus.getDefault()
-        .post(
-          ChangeDbEvent(
-            dbName = record.dbName,
-            localFileUri = Uri.parse(record.localDbUri),
-            cloudPath = record.cloudDiskPath,
-            uriType = StorageType.valueOf(record.type),
-            keyUri = if (TextUtils.isEmpty(record.keyUri)) null else Uri.parse(
-              record.keyUri
-            )
-          )
-        )
+      val event = ChangeDbEvent(
+        dbName = record.dbName,
+        localFileUri = record.localDbUri.toUri(),
+        cloudPath = record.cloudDiskPath,
+        uriType = StorageType.valueOf(record.type),
+        keyUri = if (TextUtils.isEmpty(record.keyUri)) null else record.keyUri.toUri()
+      )
+      lifecycleScope.launch {
+        checkQuickRecord(event.localFileUri.toString())
+        EventBus.getDefault().post(event)
+      }
     }
 
     binding.list.doOnItemLongClickListener { _, position, v ->
@@ -95,6 +99,16 @@ class OpenDbHistoryActivity : BaseActivity<ActivityOnlyListBinding>() {
         curx = e.x.toInt()
       }
       return@doOnInterceptTouchEvent false
+    }
+  }
+
+  private suspend fun checkQuickRecord(localUri: String){
+    // 检查快速解锁，如果对应的本地文件名有对应的快速解锁记录，删除该记录
+    val unlockDao = BaseApp.appDatabase.quickUnlockDao()
+    val unLockRecord = unlockDao.findRecord(localUri)
+    if (unLockRecord != null){
+      Timber.d("记录存在，删除记录：${localUri}")
+      unlockDao.deleteRecord(unLockRecord)
     }
   }
 

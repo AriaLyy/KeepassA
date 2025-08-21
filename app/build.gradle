@@ -1,6 +1,6 @@
 plugins {
-  id 'com.android.application'
-  id 'kotlin-android'
+  alias(libs.plugins.android.application)
+  alias(libs.plugins.kotlin.android)
   id 'kotlin-parcelize'
   id 'com.google.gms.google-services'
   id 'com.google.firebase.crashlytics'
@@ -238,7 +238,9 @@ dependencies {
   implementation(libs.third.yimagepicker)
 
   //webDav
-  implementation(libs.third.webdav)
+//  implementation(libs.third.webdav)
+  implementation(project(":thrid:Sardine"))
+  implementation(libs.squareup.okhttp3.digest)
 
   // android 切片
   implementation(libs.third.androidaop.core)

@@ -13,6 +13,8 @@ import android.content.Context
 import android.net.Uri
 import androidx.core.net.toFile
 import com.arialyy.frame.util.FileUtil
+import com.blankj.utilcode.util.ActivityUtils
+import com.lyy.keepassa.R
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.util.hasSpecialChar
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
@@ -39,6 +41,10 @@ object WebDavUtil : ICloudUtil {
     // add("https://dav.dropdav.com") // 需要注册：https://app.dropdav.com/users/sign_in
     // add("https://webdav.yandex.com") 需要使用sdk, htts://yandex.com/dev/id/
     add("other")
+  }
+
+  val WEB_DAV_AUTH_TYPES by lazy {
+    ActivityUtils.getTopActivity().resources.getStringArray(R.array.auth_type)
   }
 
   val REMOVE_PARENT_URLS = mutableListOf<String>().apply {
@@ -90,14 +96,16 @@ object WebDavUtil : ICloudUtil {
     uri: String,
     userName: String,
     password: String,
-    isPreemptive: Boolean
+    isPreemptive: Boolean,
   ): Boolean {
     Timber.d("checkLogin, uri = ${uri}, userName = ${userName}, password = ${password}")
     this.userName = userName
     this.password = password
     setHostUri(uri)
+
     sardine = OkHttpSardine()
     sardine?.setCredentials(userName, password, isPreemptive)
+
     try {
       val list = sardine?.list(uri)
       return !list.isNullOrEmpty()
@@ -157,10 +165,10 @@ object WebDavUtil : ICloudUtil {
           CloudFileInfo(file.path, file.name, file.modified, file.contentLength, file.isDirectory)
         )
       }
-      if (hostUri in REMOVE_PARENT_URLS) {
-        // 坚果云移除第一个item
-        list.removeAt(0)
-      }
+      // if (hostUri in REMOVE_PARENT_URLS) {
+      // 坚果云移除第一个item
+      list.removeAt(0)
+      // }
     } catch (e: Exception) {
       Timber.e(e, "获取文件列表失败")
     }

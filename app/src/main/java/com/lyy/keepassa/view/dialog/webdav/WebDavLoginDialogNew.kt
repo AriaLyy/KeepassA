@@ -24,6 +24,7 @@ import com.lyy.keepassa.event.WebDavLoginEvent
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.cloud.AuthType
 import com.lyy.keepassa.util.cloud.WebDavUtil
 import com.lyy.keepassa.view.dialog.WebDavLoginModule
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -55,6 +56,8 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
   private val loadingDialog by lazy {
     Routerfit.create(DialogRouter::class.java).getLoadingDialog()
   }
+
+  private var authType = AuthType.BASIC
 
   override fun setLayoutId(): Int {
     return R.layout.dialog_webdav_login_new
@@ -90,20 +93,23 @@ class WebDavLoginDialogNew : BaseDialog<DialogWebdavLoginNewBinding>() {
       loginAdapter = when {
         module.isNextcloud() -> {
           binding.isPreemptive.isChecked = true
-          binding.passwordLayout.helperText =  null
+          binding.passwordLayout.helperText = null
           nextCloudAdapter
         }
+
         module.isJGY() -> {
           binding.isPreemptive.isChecked = false
           binding.passwordLayout.helperText = ResUtil.getString(R.string.hint_webdav_jgy)
           defaultAdapter
         }
-        module.isOtherServer() ->{
-          binding.passwordLayout.helperText =  null
+
+        module.isOtherServer() -> {
+          binding.passwordLayout.helperText = null
           otherAdapter
         }
+
         else -> {
-          binding.passwordLayout.helperText =  null
+          binding.passwordLayout.helperText = null
           defaultAdapter
         }
       }

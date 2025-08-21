@@ -443,4 +443,9 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="icon_select_pick">Photos</string>
     <string name="icon_select_db">Local icon</string>
     <string name="icon_change">Change</string>
+    <string-array name="auth_type">
+        <item>Basic</item>
+        <item>Digest</item>
+    </string-array>
+
 </resources>

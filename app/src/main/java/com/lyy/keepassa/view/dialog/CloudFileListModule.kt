@@ -72,7 +72,7 @@ class CloudFileListModule : BaseModule() {
   ) {
     viewModelScope.launch {
       val temp = cache[path]
-      if (temp != null && temp.isNotEmpty()) {
+      if (!temp.isNullOrEmpty()) {
         fileListFlow.emit(temp)
         return@launch
       }

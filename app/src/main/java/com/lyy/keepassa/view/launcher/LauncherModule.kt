@@ -380,7 +380,7 @@ internal class LauncherModule : BaseModule() {
       emit(false)
       return@liveData
     }
-
+    // todo 同名不同网络路径的数据库记录获取有问题
     val needOpen = withContext(Dispatchers.IO) {
       val unlockDao = BaseApp.appDatabase.quickUnlockDao()
       val unLockRecord = unlockDao.findRecord(dbUri)
@@ -388,6 +388,7 @@ internal class LauncherModule : BaseModule() {
         Timber.d("unLockRecord is null")
         return@withContext false
       }
+      Timber.d("uri => ${dbUri}")
       Timber.d("is full unlock = ${unLockRecord.isUseFingerprint}")
       val dbDao = BaseApp.appDatabase.dbRecordDao()
       val dbRecord = dbDao.findRecord(dbUri)

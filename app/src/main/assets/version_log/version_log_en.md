@@ -1,5 +1,7 @@
 ### 2.8.0
 * Android 15 Adaptation
+* webdav supports self-hosted services
+* fix bug
 
 ### 2.7.2
 * fix: Fix bug
