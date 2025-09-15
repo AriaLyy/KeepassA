@@ -14,10 +14,13 @@ import android.content.res.Configuration
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.text.InputType
 import android.view.View.OnClickListener
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.StringUtil
@@ -60,6 +63,16 @@ object KpaUtil {
   }
 
   val openEntryRecordFlow = MutableSharedFlow<EntryRecord>()
+
+  fun isEdgeToEdgeEnabled(activity: AppCompatActivity): Boolean {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM){
+      return true
+    }
+    if (activity.window.decorView.fitsSystemWindows){
+      return true
+    }
+    return false
+  }
 
   /**
    * is night mode

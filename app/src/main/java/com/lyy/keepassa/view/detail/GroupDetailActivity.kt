@@ -375,8 +375,11 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
         }
 
         mainActionView.getLocationOnScreen(coords)
+        Timber.d("isfitsSystemWindows: ${window.decorView.fitsSystemWindows}")
+        if (!KpaUtil.isEdgeToEdgeEnabled(this)){
+          coords[1] -= BarUtils.getStatusBarHeight()
+        }
 
-        coords[1] -= BarUtils.getStatusBarHeight()
         coords[0] += mainActionView.measuredWidth / 2
         coords[1] += mainActionView.measuredHeight / 2
 

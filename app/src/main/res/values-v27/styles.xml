@@ -5,4 +5,13 @@
   <style name="AppTheme.NoActionBar" parent="BaseTheme">
     <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
   </style>
+
+  <style name="MyDialog" parent="BaseDialogTheme">
+    <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+  </style>
+
+  <style name="FullScreenDialogTheme" parent="BaseFullScreenDialogTheme">
+    <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+  </style>
+
 </resources>

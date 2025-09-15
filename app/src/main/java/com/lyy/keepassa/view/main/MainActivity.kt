@@ -9,7 +9,6 @@
 
 package com.lyy.keepassa.view.main
 
-import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
@@ -17,13 +16,11 @@ import android.animation.PropertyValuesHolder
 import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Point
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.transition.Transition
 import android.transition.Transition.TransitionListener
 import android.util.Pair
 import android.view.View
-import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updateLayoutParams
@@ -40,11 +37,6 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.BarUtils
-import com.blankj.utilcode.util.PermissionUtils
-import com.blankj.utilcode.util.PermissionUtils.SimpleCallback
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.google.android.material.tabs.TabLayoutMediator
 import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
@@ -58,16 +50,12 @@ import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
-import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
-import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.util.ThemeUtil
 import com.lyy.keepassa.util.doClick
 import com.lyy.keepassa.util.handleBottomEdge
-import com.lyy.keepassa.util.handleTopEdge
 import com.lyy.keepassa.util.loadImg
-import com.lyy.keepassa.util.transformation.WhiteBgBlurTransformation
 import com.lyy.keepassa.view.search.SearchDialog
 import com.lyy.keepassa.widget.toPx
 import com.lyy.keepassa.widgets.MainFloatActionButton
@@ -76,6 +64,7 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import timber.log.Timber
+import kotlin.math.abs
 
 @Route(path = "/main/ac")
 class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
@@ -203,7 +192,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
         mainActionView.getLocationOnScreen(coords)
 
-        coords[1] -= BarUtils.getStatusBarHeight()
+        if (!KpaUtil.isEdgeToEdgeEnabled(this)){
+          coords[1] -= BarUtils.getStatusBarHeight()
+        }
         coords[0] += mainActionView.measuredWidth / 2
         coords[1] += mainActionView.measuredHeight / 2
 
@@ -231,7 +222,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       }
       binding.vp.updatePadding(bottom = i)
     }
+    handelTopBar()
+  }
 
+  private fun handelTopBar(){
+    binding.headBar.addOnOffsetChangedListener { _, verticalOffset ->
+      val totalScrollRange: Int =  binding.headBar.getTotalScrollRange()
+      val offset = abs(verticalOffset / totalScrollRange.toFloat()) // 0.0 到 1.0
+      Timber.d("offSet: $offset")
+      binding.headToolbar.alpha = 1 - offset
+    }
   }
 
   private fun initData() {

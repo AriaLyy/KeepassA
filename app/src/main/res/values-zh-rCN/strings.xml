@@ -461,4 +461,5 @@
     <string name="icon_select_pick">打开相册</string>
     <string name="icon_select_db">本地图标</string>
     <string name="icon_change">修改图标</string>
+    <string name="entry_not_found">未找到条目</string>
 </resources>

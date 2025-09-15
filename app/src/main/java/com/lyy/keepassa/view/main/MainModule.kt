@@ -24,6 +24,8 @@ import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.ScreenUtils
+import com.google.firebase.Firebase
+import com.google.firebase.crashlytics.crashlytics
 import com.lahm.library.EasyProtectorLib
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
@@ -32,6 +34,7 @@ import com.lyy.keepassa.databinding.ActivityMainBinding
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.InterpolatorConstance
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.isDestroyed
 import com.lyy.keepassa.view.main.chain.AutoFillPermissionsChain
 import com.lyy.keepassa.view.main.chain.DevBirthdayChain
 import com.lyy.keepassa.view.main.chain.DialogChain
@@ -46,6 +49,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import kotlin.math.max
 
 class MainModule : BaseModule() {
@@ -55,6 +59,10 @@ class MainModule : BaseModule() {
   }
 
   fun startRevealAnim(binding: ActivityMainBinding) {
+    if (binding.root.isDestroyed()){
+      Timber.e("root view is destroy")
+      return
+    }
     val vAnim = AnimatorSet()
     val revealAnimal = ViewAnimationUtils.createCircularReveal(
       binding.root,

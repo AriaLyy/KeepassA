@@ -54,6 +54,28 @@ import kotlin.math.abs
 
 val charRegex = Regex("[^a-zA-Z0-9]")
 
+/**
+ * 判断View是否被销毁或无效
+ * @return true 表示View已销毁或无效，false 表示View仍然有效
+ */
+fun View?.isDestroyed(): Boolean {
+  if (this == null) return true // View为null，视为销毁
+
+  // 检查View是否附加到窗口
+  if (!isAttachedToWindow) return true // 未附加到窗口，视为销毁
+
+  // 检查View的上下文是否有效
+  val context = context
+  if (context is Activity) {
+    if (context.isFinishing || context.isDestroyed) return true // Activity已结束或销毁
+  }
+
+  // 检查View是否在视图层级中
+  if (parent == null) return true // 没有父视图，视为已移除
+
+  return false // View仍然有效
+}
+
 fun View.handleTopEdge(callback: (View, Int) -> Unit){
   ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
 

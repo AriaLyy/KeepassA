@@ -10,6 +10,8 @@ package com.lyy.keepassa.service.feat
 import android.content.Context
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.Utils
+import com.google.firebase.Firebase
+import com.google.firebase.crashlytics.crashlytics
 import com.tencent.mars.xlog.Log
 import com.tencent.mars.xlog.Xlog
 import org.joda.time.DateTime
@@ -72,6 +74,7 @@ object XLogFeature : IFeature {
           }
           android.util.Log.ERROR -> {
             Log.e(tag, message)
+            Firebase.crashlytics.log(message)
           }
           android.util.Log.ASSERT -> {
             Log.f(tag, message)

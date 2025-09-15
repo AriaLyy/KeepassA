@@ -120,8 +120,8 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   }
 
   private fun handleApi35(){
-    binding.root.handleTopEdge { _, h ->
-      binding.root.updatePadding(top = h)
+    binding?.root?.handleTopEdge { v, h ->
+      v.updatePadding(top = h)
     }
   }
 

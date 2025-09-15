@@ -114,7 +114,7 @@ internal class EntryListModule : BaseModule() {
         }
 
         for (record in records) {
-          val entry = BaseApp.KDB!!.pm.entries[Types.bytestoUUID(record.uuid)] ?: continue
+          val entry = BaseApp.KDB?.pm?.entries?.get(Types.bytestoUUID(record.uuid)) ?: continue
           val item = KeepassAUtil.instance.convertPwEntry2Item(entry)
           item.time = record.time
           entryData.add(item)

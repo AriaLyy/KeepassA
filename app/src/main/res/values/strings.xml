@@ -447,5 +447,7 @@ If you are creating a new KeePass database, the above operations are not be need
         <item>Basic</item>
         <item>Digest</item>
     </string-array>
+    <string name="entry_not_found">Entry not found</string>
+
 
 </resources>
