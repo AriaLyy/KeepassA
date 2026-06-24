@@ -42,9 +42,6 @@ for a better service and a quicker development of features you want.</br>
 [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png"
       alt="Get it on IzzyOnDroid"
       height="80">](https://apt.izzysoft.de/fdroid/index/apk/com.lyy.keepassa)
-[<img src="https://static.coolapk.com/static/web/v8/img/icon.png"
-      alt="Get it on CoolApk"
-      height="80">](https://www.coolapk.com/apk/261010)
 [<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
       alt="Get it on Google Play"
       height="80">](https://play.google.com/store/apps/details?id=com.lyy.keepassa)
