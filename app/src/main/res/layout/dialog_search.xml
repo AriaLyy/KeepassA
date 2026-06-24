@@ -8,13 +8,15 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@color/mask"
+      android:fitsSystemWindows="false"
       >
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginHorizontal="16dp"
         android:background="@drawable/bg_white_radius_2"
         android:elevation="4dp"
         android:imeOptions="actionSearch"
@@ -27,9 +29,9 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/search"
-        android:layout_alignStart="@+id/search"
         android:layout_alignEnd="@+id/search"
+        android:layout_alignStart="@+id/search"
+        android:layout_below="@+id/search"
         android:background="@drawable/bg_white_radius_2"
         />
   </RelativeLayout>

@@ -7,16 +7,19 @@
  */
 package com.lyy.keepassa.router
 
+import androidx.annotation.Keep
 import com.arialyy.frame.router.RouterPath
 import com.lyy.keepassa.service.feat.KdbHandlerService
 import com.lyy.keepassa.service.feat.KdbOpenService
 import com.lyy.keepassa.service.feat.KpaSdkService
+import com.lyy.keepassa.service.play.PlayerService
 
 /**
  * @Author laoyuyu
  * @Description
  * @Date 2:05 下午 2022/3/24
  **/
+@Keep
 interface ServiceRouter {
 
   @RouterPath(path = "/service/kpaSdk")
@@ -27,4 +30,7 @@ interface ServiceRouter {
 
   @RouterPath(path = "/service/kdbOpen")
   fun getDbOpenService(): KdbOpenService
+
+  @RouterPath(path = "/service/play")
+  fun getPlayService(): PlayerService
 }

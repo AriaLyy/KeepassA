@@ -17,28 +17,29 @@ import kotlinx.coroutines.launch
  * @Date 5:41 PM 2024/1/25
  **/
 internal class OtpKeepassXcHandler : IOtpModifyHandler {
-  private lateinit var otpBean: KeepassXcBean
+  private var otpBean: KeepassXcBean? = null
   override fun initView(context: ModifyOtpDialog) {
     val binding = context.binding
     binding.contentLayout.group.isVisible = true
     binding.contentLayout.rbCustom.isVisible = true
-    val isSteam = context.pwEntryV4.otpIsKeepassXcSteam()
-    if (!isSteam) {
+    val isSteam = context.pwEntryV4?.otpIsKeepassXcSteam()
+    if (isSteam == false) {
       binding.contentLayout.rbCustom.isChecked = true
     } else {
       binding.contentLayout.rbSteam.isChecked = true
     }
-    otpBean = context.pwEntryV4.getKeepassXcBean()
-    binding.contentLayout.strKey.setText(otpBean.secret)
+    otpBean = context.pwEntryV4?.getKeepassXcBean()
+    binding.contentLayout.strKey.setText(otpBean?.secret)
     binding.contentLayout.sp.setSelection(
-      when (otpBean.algorithm) {
+      when (otpBean?.algorithm) {
         HashAlgorithm.SHA1 -> 0
         HashAlgorithm.SHA256 -> 1
         HashAlgorithm.SHA512 -> 2
+        else -> 0
       }
     )
-    binding.contentLayout.slTime.value = otpBean.period.toFloat()
-    binding.contentLayout.slLen.value = otpBean.digits.toFloat()
+    binding.contentLayout.slTime.value = otpBean?.period?.toFloat()!!
+    binding.contentLayout.slLen.value = otpBean?.digits?.toFloat()!!
   }
 
   override fun save(
@@ -49,14 +50,14 @@ internal class OtpKeepassXcHandler : IOtpModifyHandler {
     period: Int,
     isSteam: Boolean
   ) {
-    otpBean.digits = digits
-    otpBean.secret = secret
-    otpBean.period = period
-    otpBean.algorithm = arithmetic
-    otpBean.encoder = if (isSteam) "steam" else ""
+    otpBean?.digits = digits
+    otpBean?.secret = secret
+    otpBean?.period = period
+    otpBean?.algorithm = arithmetic
+    otpBean?.encoder = if (isSteam) "steam" else ""
 
-    otpBean.toOtpStringMap().forEach {
-      context.pwEntryV4.strings[it.key] = it.value
+    otpBean?.toOtpStringMap()?.forEach {
+      context.pwEntryV4?.strings?.set(it.key, it.value)
     }
 
     context.lifecycleScope.launch {

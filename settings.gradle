@@ -7,15 +7,10 @@ pluginManagement {
     maven { url 'https://jitpack.io' }
     mavenLocal()
     maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
-    maven {
-      url = "${rootProject.getPath()}/../localMaven"
-    }
   }
 }
 
-enableFeaturePreview('VERSION_CATALOGS')
 dependencyResolutionManagement {
-  //  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
   repositories {
     google()
     mavenCentral()
@@ -39,5 +34,9 @@ dependencyResolutionManagement {
 }
 
 include ':app'
-include('VersionManager')
+//include('VersionManager')
 rootProject.name='KeepassA-Lite'
+include ':thrid:Sardine'
+project(':thrid:Sardine').projectDir = file('thrid/Sardine')
+include ':thrid:EasyProtector'
+project(':thrid:EasyProtector').projectDir = file('thrid/EasyProtector')

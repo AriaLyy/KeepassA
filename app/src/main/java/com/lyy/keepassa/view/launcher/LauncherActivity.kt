@@ -19,6 +19,9 @@ import android.os.Build
 import android.os.Bundle
 import android.view.autofill.AutofillManager
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.splashscreen.SplashScreen
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -26,10 +29,9 @@ import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
+import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.R
 import com.lyy.keepassa.R.layout
-import com.lyy.keepassa.base.AnimState
-import com.lyy.keepassa.base.AnimState.NOT_ANIM
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityLauncherBinding
@@ -40,6 +42,8 @@ import com.lyy.keepassa.event.DbHistoryEvent
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
+import com.lyy.keepassa.util.handleTopEdge
+import com.lyy.keepassa.util.loadImg
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import timber.log.Timber
@@ -51,6 +55,8 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   private var changeDbFragment: ChangeDbFragment? = null
   private var openDbFragment: OpenDbFragment? = null
   private var isChangeDb = false
+  private var isReady = true
+  private var splash: SplashScreen? = null
 
   /**
    * 启动类型，只有含有历史打开记录时，该记录才有效
@@ -59,11 +65,15 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   @JvmField
   var type = OPEN_TYPE_OPEN_DB
 
+  private val saveEntityDelegate = SaveEntityDelegate(this)
+  private val searchEntityDelegate = SearchEntityDelegate(this)
+
   override fun setLayoutId(): Int {
     return layout.activity_launcher
   }
 
   override fun initData(savedInstanceState: Bundle?) {
+    splash = installSplashScreen()
     super.initData(savedInstanceState)
     ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
@@ -71,9 +81,14 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     getAutoFillParam()
 
     module.showPrivacyAgreement(this)
+
     initUI()
     module.securityCheck(this)
+    splash?.setKeepOnScreenCondition {
+      isReady
+    }
   }
+
 
   override fun onNewIntent(intent: Intent?) {
     super.onNewIntent(intent)
@@ -84,21 +99,42 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     module.autoFillParam = intent.getParcelableExtra(KEY_AUTO_FILL_PARAM)
     module.autoFillParam?.let {
       module.autoFillDelegate = if (it.isSave) {
-        SaveEntityDelegate(this)
+        saveEntityDelegate
       } else {
-        SearchEntityDelegate(this)
+        searchEntityDelegate
       }
     }
   }
 
-  override fun useAnim(): AnimState {
-    return NOT_ANIM
+  override fun finish() {
+    super.finish()
+  }
+
+  override fun finishAffinity() {
+    super.finishAffinity()
+  }
+
+  override fun handleStatusBar() {
+    // super.handleStatusBar()
+    ImmersionBar.with(this)
+      .transparentStatusBar()
+      .transparentNavigationBar()
+      .autoDarkModeEnable(true)
+      .autoStatusBarDarkModeEnable(true, 0.2f) //自动状态栏字体变色，必须指定状态栏颜色才可以自动变色哦
+      .flymeOSStatusBarFontColor(R.color.text_black_color)
+      .autoNavigationBarDarkModeEnable(true, 0.2f) // 自动导航栏图标变色，必须指定导航栏颜色才可以自动变色哦
+      .statusBarDarkFont(
+        true, 0.2f
+      )  //原理：如果当前设备支持状态栏字体变色，会设置状态栏字体为黑色，如果当前设备不支持状态栏字体变色，会使当前状态栏加上透明度，否则不执行透明度
+      .init()
   }
 
   /**
    * 初始化界面
    */
   private fun initUI() {
+    // https://www.vecteezy.com/vector-art/3452115-wildlife-elk-in-forest-nature-landscape-vector-illustration
+    binding.ivBg.loadImg(R.drawable.theme_elk_launcher_bg)
     module.getLastOpenDbHistory(this)
       .observe(this, Observer { t ->
         val fragment: Fragment
@@ -125,6 +161,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
         supportFragmentManager.beginTransaction()
           .replace(R.id.content, fragment, tag)
           .commitNow()
+        isReady = false
       })
   }
 
@@ -137,6 +174,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
       Routerfit.create(ActivityRouter::class.java, this).toMainActivity(
         opt = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
       )
+      // superFinish()
     }
   }
 

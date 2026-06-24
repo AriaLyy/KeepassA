@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <autofill-service xmlns:android="http://schemas.android.com/apk/res/android"
-    android:settingsActivity="com.lyy.keepassa.view.setting.SettingActivity">
+    android:settingsActivity="com.lyy.keepassa.view.setting.SettingActivity"
+    android:supportsInlineSuggestions="true">
   <!--  settingsActivity 为在系统设置跳转到应用内的页面-->
   <compatibility-package android:name="com.android.browser" />
   <compatibility-package android:name="com.android.chrome" />

@@ -42,13 +42,18 @@ class ModifyOtpDialog : BaseDialog<DialogOtpModifyBinding>() {
 
   @Autowired(name = "uid")
   lateinit var uid: UUID
-  lateinit var pwEntryV4: PwEntryV4
+  var pwEntryV4: PwEntryV4? = null
   private var handler: IOtpModifyHandler? = null
 
   override fun initData() {
     super.initData()
     ARouter.getInstance().inject(this)
-    pwEntryV4 = BaseApp.KDB.pm.entries[uid] as PwEntryV4
+    pwEntryV4 = BaseApp.KDB.pm.entries[uid] as PwEntryV4?
+    if (pwEntryV4 == null){
+      ToastUtils.showLong(ResUtil.getString(R.string.entry_not_found))
+      dismiss()
+      return
+    }
     handleLayoutSwitch()
     handleSp()
     handleSlTime()
@@ -75,19 +80,19 @@ class ModifyOtpDialog : BaseDialog<DialogOtpModifyBinding>() {
     }
     handler = when {
 
-      pwEntryV4.otpIsKeeTraySteam() -> {
+      pwEntryV4?.otpIsKeeTraySteam() == true -> {
         OtpKeeTraySteamHandler()
       }
 
-      pwEntryV4.otpIsKeeTrayTotp() -> {
+      pwEntryV4?.otpIsKeeTrayTotp() == true -> {
         OtpKeeTrayHandler()
       }
 
-      pwEntryV4.otpKeepassXC() -> {
+      pwEntryV4?.otpKeepassXC() == true -> {
         OtpKeepassXcHandler()
       }
 
-      pwEntryV4.otpKeepass() -> {
+      pwEntryV4?.otpKeepass() == true -> {
         OtpKeepassHandler()
       }
 

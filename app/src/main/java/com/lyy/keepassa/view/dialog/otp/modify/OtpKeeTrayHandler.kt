@@ -16,15 +16,15 @@ import kotlinx.coroutines.launch
  * @Date 5:41 PM 2024/1/25
  **/
 internal class OtpKeeTrayHandler : IOtpModifyHandler {
-  private lateinit var bean: TrayTotpBean
+  private var bean: TrayTotpBean? = null
   override fun initView(context: ModifyOtpDialog) {
     val binding = context.binding
     binding.contentLayout.group.isVisible = false
     binding.contentLayout.rbDefault.isChecked = true
     binding.contentLayout.rbCustom.isVisible = false
     binding.contentLayout.rbSteam.isVisible = false
-    bean = context.pwEntryV4.getKeeTrayBean()
-    binding.contentLayout.strKey.setText(bean.secret)
+    bean = context.pwEntryV4?.getKeeTrayBean()
+    binding.contentLayout.strKey.setText(bean?.secret)
   }
 
   override fun save(
@@ -35,12 +35,12 @@ internal class OtpKeeTrayHandler : IOtpModifyHandler {
     period: Int,
     isSteam: Boolean
   ) {
-    bean.period = period
-    bean.secret = secret
+    bean?.period = period
+    bean?.secret = secret
 
-    val beanMap = bean.toOtpStringMap()
-    beanMap.forEach {
-      context.pwEntryV4.strings[it.key] = it.value
+    val beanMap = bean?.toOtpStringMap()
+    beanMap?.forEach {
+      context.pwEntryV4?.strings?.set(it.key, it.value)
     }
     context.lifecycleScope.launch {
       CreateOtpModule.otpFlow.emit(Pair(OtpEnum.TRAY_TOTP, bean))

@@ -10,7 +10,6 @@
 package com.lyy.keepassa.view.dialog
 
 import android.content.Context
-import android.content.res.AssetManager
 import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.View
@@ -47,7 +46,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
-import java.io.IOException
 import java.util.Stack
 
 /**
@@ -84,7 +82,7 @@ class CloudFileSelectDialog : BaseDialog<DialogCloudFileListBinding>() {
     binding.list.adapter = adapter
     binding.list.setHasFixedSize(true)
     binding.list.layoutManager = LinearLayoutManager(context)
-    if (onlyGetDir){
+    if (onlyGetDir) {
       binding.title.text = ResUtil.getString(R.string.select_save_path)
     }
 
@@ -148,19 +146,18 @@ class CloudFileSelectDialog : BaseDialog<DialogCloudFileListBinding>() {
           module.saveWebHistory(cloudPath)
         }
         cloudFileSelectFlow.emit(CloudFileSelectedEvent(!onlyGetDir, cloudPath, storageType))
+        val event = ChangeDbEvent(
+          dbName = item.fileName,
+          localFileUri = DbSynUtil.getCloudDbTempPath(
+            storageType.name,
+            item.fileName
+          ),
+          cloudPath = cloudPath,
+          uriType = storageType
+        )
+        checkQuickRecord(event.localFileUri.toString())
         // 选择文件
-        EventBus.getDefault()
-          .post(
-            ChangeDbEvent(
-              dbName = item.fileName,
-              localFileUri = DbSynUtil.getCloudDbTempPath(
-                storageType.name,
-                item.fileName
-              ),
-              cloudPath = cloudPath,
-              uriType = storageType
-            )
-          )
+        EventBus.getDefault().post(event)
         dismiss()
       }
     }
@@ -174,6 +171,16 @@ class CloudFileSelectDialog : BaseDialog<DialogCloudFileListBinding>() {
     }
     binding.ivClose.setOnClickListener {
       dismiss()
+    }
+  }
+
+  private suspend fun checkQuickRecord(localUri: String) {
+    // 检查快速解锁，如果对应的本地文件名有对应的快速解锁记录，删除该记录
+    val unlockDao = BaseApp.appDatabase.quickUnlockDao()
+    val unLockRecord = unlockDao.findRecord(localUri)
+    if (unLockRecord != null){
+      Timber.d("记录存在，删除记录：${localUri}")
+      unlockDao.deleteRecord(unLockRecord)
     }
   }
 

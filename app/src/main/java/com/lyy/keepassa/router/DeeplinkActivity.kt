@@ -47,8 +47,9 @@ class DeeplinkActivity : AppCompatActivity() {
     }
     if (ac == "search") {
       val type = uri.getQueryParameter("shortcutsType")
-      Timber.d("to search ac")
+      Timber.d("to search ac, type: $type")
       Routerfit.create(ActivityRouter::class.java).toMainActivity(true, type!!.toInt())
+      finish()
     }
   }
 }

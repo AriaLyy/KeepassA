@@ -230,7 +230,7 @@ class KeepassAUtil private constructor() {
         it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
       })
       for (ac in AbsFrame.getInstance().activityStack) {
-        if (isHomeActivity(ac)) {
+        if (KpaUtil.isHomeActivity(ac)) {
           continue
         }
         ac.finish()
@@ -247,15 +247,6 @@ class KeepassAUtil private constructor() {
     NotificationUtil.startDbLocked(BaseApp.APP)
   }
 
-  fun isHomeActivity(ac: Activity): Boolean {
-    val clazz = ac.javaClass
-    return (clazz == LauncherActivity::class.java
-      || clazz == CreateDbActivity::class.java
-      || clazz == OpenDbHistoryActivity::class.java
-      || clazz == QuickUnlockActivity::class.java
-      )
-  }
-
   /**
    * 判断颜色是不是亮色
    *
@@ -267,13 +258,6 @@ class KeepassAUtil private constructor() {
     return ColorUtils.calculateLuminance(color) >= 0.5
   }
 
-  /**
-   * is night mode
-   * @return true yes, false no
-   */
-  fun isNightMode(): Boolean {
-    return BaseApp.APP.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-  }
 
   /**
    * 是否需要启动快速解锁
@@ -600,17 +584,17 @@ class KeepassAUtil private constructor() {
     }
 
     if (entry is PwEntry) {
-      val opt = if (showElement != null) {
-        val pair = androidx.core.util.Pair(
-          showElement, activity.getString(R.string.transition_entry_icon)
-        )
-        ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pair)
-      } else {
-        ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
-      }
+      // val opt = if (showElement != null) {
+      //   val pair = androidx.core.util.Pair(
+      //     showElement, activity.getString(R.string.transition_entry_icon)
+      //   )
+      //   ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pair)
+      // } else {
+      //   ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
+      // }
       Routerfit.create(ActivityRouter::class.java, activity).toEntryDetailActivity(
         entryId = entry.uuid,
-        opt = opt
+        opt = ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
       )
     }
   }
@@ -852,10 +836,12 @@ fun PwEntry.isRef(): Boolean {
 /**
  * uri 授权
  */
-fun Uri.takePermission() {
+fun Uri.takePermission(grantWrit: Boolean = true) {
   try {
-    val takeFlags =
-      Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+    var takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+    if (grantWrit){
+      takeFlags = takeFlags or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+    }
     BaseApp.APP.contentResolver.takePersistableUriPermission(this, takeFlags)
   } catch (e: Exception) {
     HitUtil.toaskShort(BaseApp.APP.getString(R.string.error_uri_grant_permission))

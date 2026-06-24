@@ -2,10 +2,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-  <FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+  <com.lyy.keepassa.view.WindowInsetsFrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@color/mask"
+      android:fitsSystemWindows="false"
       >
 
     <com.airbnb.lottie.LottieAnimationView
@@ -16,5 +17,5 @@
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         />
-  </FrameLayout>
+  </com.lyy.keepassa.view.WindowInsetsFrameLayout>
 </layout>

@@ -19,15 +19,15 @@ import kotlinx.coroutines.launch
  * @Date 5:41 PM 2024/1/25
  **/
 internal class OtpKeepassHandler : IOtpModifyHandler {
-  private lateinit var otpBean: KeepassBean
+  private var otpBean: KeepassBean? = null
   override fun initView(context: ModifyOtpDialog) {
     val binding = context.binding
     binding.contentLayout.group.isVisible = true
     binding.contentLayout.rbSteam.isVisible = false
     binding.contentLayout.rbCustom.isChecked = true
     binding.contentLayout.rbCustom.isVisible = true
-    val oBean = context.pwEntryV4.getKeepassBean()
-    val bean = oBean.otpBean
+    val oBean = context.pwEntryV4?.getKeepassBean()
+    val bean = oBean?.otpBean
     if (bean == null) {
       ToastUtils.showLong(ResUtil.getString(R.string.not_souper_otp))
       return
@@ -53,14 +53,14 @@ internal class OtpKeepassHandler : IOtpModifyHandler {
     period: Int,
     isSteam: Boolean
   ) {
-    otpBean.otpBean?.let {
+    otpBean?.otpBean?.let {
       it.secret = secret
       it.period = period
       it.algorithm = arithmetic
       it.digits = digits
     }
-    otpBean.toOtpStringMap().forEach {
-      context.pwEntryV4.strings[it.key] = it.value
+    otpBean?.toOtpStringMap()?.forEach {
+      context.pwEntryV4?.strings?.set(it.key, it.value)
     }
 
     context.lifecycleScope.launch {

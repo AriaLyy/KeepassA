@@ -27,7 +27,7 @@
         android:gravity="center_vertical"
         android:text="@string/kpa_totp"
         android:textColor="@color/text_blue_color"
-        android:textSize="@dimen/text_size_biggest"
+        style="@style/DialogTitleStyle"
         />
 
     <com.lyy.keepassa.widget.CountdownView
@@ -76,7 +76,7 @@
         android:id="@+id/cover"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/ripple_white_selector"
+        android:background="@drawable/bg_ripple_white_selector"
         android:onClick="@{(v) -> dialog.onClick(v)}"
         android:text="@string/kpa_copy"
         android:textColor="@color/text_blue_color"

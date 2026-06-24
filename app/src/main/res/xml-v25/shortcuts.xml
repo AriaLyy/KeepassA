@@ -8,7 +8,7 @@
       android:shortcutShortLabel="@string/create_entry">
     <intent
         android:action="android.intent.action.VIEW"
-        android:targetClass="com.lyy.keepassa.router.RouterActivity"
+        android:targetClass="com.lyy.keepassa.router.DeeplinkActivity"
         android:targetPackage="com.lyy.keepassa" >
 
       <extra
@@ -33,7 +33,7 @@
       android:shortcutShortLabel="@string/search">
     <intent
         android:action="android.intent.action.VIEW"
-        android:targetClass="com.lyy.keepassa.router.RouterActivity"
+        android:targetClass="com.lyy.keepassa.router.DeeplinkActivity"
         android:targetPackage="com.lyy.keepassa">
 
       <extra

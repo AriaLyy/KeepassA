@@ -33,7 +33,6 @@ import com.lyy.keepassa.entity.EntryRecord
 import com.lyy.keepassa.entity.showPopMenu
 import com.lyy.keepassa.event.EntryState.DELETE
 import com.lyy.keepassa.event.EntryState.MODIFY
-import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.doOnInterceptTouchEvent
@@ -41,8 +40,6 @@ import com.lyy.keepassa.util.updateModifyEntry
 import com.lyy.keepassa.view.SimpleEntryAdapter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode.MAIN
 import timber.log.Timber
 
 @Route(path = "/main/fragment/entry")
@@ -161,7 +158,7 @@ class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
     module.getData(type)
   }
 
-  private fun listenerUpdateRecord(){
+  private fun listenerUpdateRecord() {
     lifecycleScope.launch {
       KpaUtil.openEntryRecordFlow.collectLatest {
         onAddOrUpdateRecord(it)
@@ -187,20 +184,23 @@ class EntryListFragment : BaseFragment<FragmentEntryRecordBinding>() {
         val itemData = KeepassAUtil.instance.convertPwEntry2Item(it)
         itemData.time = record.time
         module.entryData.add(itemData)
-      } else {
-        val itemData = KeepassAUtil.instance.convertPwEntry2Item(it)
-        oldRecord.title = record.title
-        oldRecord.subTitle = itemData.subTitle
-        oldRecord.time = record.time
+        adapter.notifyItemInserted(module.entryData.size - 1)
+        return@let
       }
+      val itemData = KeepassAUtil.instance.convertPwEntry2Item(it)
+      oldRecord.title = record.title
+      oldRecord.subTitle = itemData.subTitle
+      oldRecord.time = record.time
 
-      module.entryData.sortByDescending { entry ->
-        entry.time
+      val index = module.entryData.indexOfFirst { oldRecord.id == it.id }
+
+      if (index in module.entryData.indices) {
+        adapter.notifyItemChanged(index)
+        return@let
       }
       adapter.notifyDataSetChanged()
     }
   }
-
 
   override fun setLayoutId(): Int {
     return R.layout.fragment_entry_record

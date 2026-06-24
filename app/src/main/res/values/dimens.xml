@@ -23,6 +23,9 @@
   <dimen name="entry_detail_item_h">48dp</dimen>
   <dimen name="dle_btn_width">80dp</dimen>
 
+  <dimen name="action_menu_radius">96dp</dimen>
+  <dimen name="sub_action_button_size">72dp</dimen>
+  <dimen name="sub_action_button_content_margin">16dp</dimen>
 
 
 </resources>

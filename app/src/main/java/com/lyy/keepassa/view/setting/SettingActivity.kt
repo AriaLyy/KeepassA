@@ -10,6 +10,10 @@
 package com.lyy.keepassa.view.setting
 
 import android.os.Bundle
+import android.widget.FrameLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.preference.PreferenceFragmentCompat
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -19,6 +23,8 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.databinding.ActivitySettingBinding
 import com.lyy.keepassa.router.FragmentRouter
+import com.lyy.keepassa.util.handleBottomEdge
+import com.lyy.keepassa.widget.toPx
 
 @Route(path = "/setting/app")
 class SettingActivity : BaseActivity<ActivitySettingBinding>() {
@@ -70,5 +76,16 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
     supportFragmentManager.beginTransaction()
       .replace(R.id.content, fragment)
       .commitAllowingStateLoss()
+    handleEdge2Edge()
+  }
+
+
+  private fun handleEdge2Edge(){
+    binding.root.handleBottomEdge { view, i ->
+      view.updateLayoutParams<FrameLayout.LayoutParams> {
+        bottomMargin = i
+      }
+    }
   }
 }
+

@@ -23,6 +23,7 @@ import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.databinding.ActivityGeneratePassNewBinding
 import com.lyy.keepassa.util.ClipboardUtil
 import com.lyy.keepassa.util.HitUtil
+import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.PasswordBuildUtil
 import com.lyy.keepassa.util.doClick
 
@@ -47,9 +48,20 @@ class GeneratePassActivity : BaseActivity<ActivityGeneratePassNewBinding>(),
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
     toolbar.title = getString(R.string.pass_generater)
-    // binding.cancel.setOnClickListener {
-    //   finishAfterTransition()
-    // }
+    toolbar.inflateMenu(R.menu.menu_password)
+
+    toolbar.setOnMenuItemClickListener { item ->
+
+      when (item.itemId) {
+        R.id.enter -> {
+          val intent = Intent()
+          intent.putExtra(DATA_PASS_WORD, binding.edPass.text.toString().trim())
+          setResult(Activity.RESULT_OK, intent)
+          finishAfterTransition()
+        }
+      }
+      true
+    }
     binding.edPassLen.setText("$passLen")
 
     binding.slider.addOnSliderTouchListener(object : OnSliderTouchListener {
@@ -108,12 +120,6 @@ class GeneratePassActivity : BaseActivity<ActivityGeneratePassNewBinding>(),
     }
   }
 
-  override fun finishAfterTransition() {
-    val intent = Intent()
-    intent.putExtra(DATA_PASS_WORD, binding.edPass.text.toString().trim())
-    setResult(Activity.RESULT_OK, intent)
-    super.finishAfterTransition()
-  }
 
   /**
    * 检查密码生成条件

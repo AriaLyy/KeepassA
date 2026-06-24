@@ -16,6 +16,7 @@ import com.lyy.keepassa.event.DbPathEvent
 import com.lyy.keepassa.view.StorageType
 import com.lyy.keepassa.view.StorageType.AFS
 import com.lyy.keepassa.view.StorageType.DROPBOX
+import com.lyy.keepassa.view.StorageType.GOOGLE_DRIVE
 import com.lyy.keepassa.view.StorageType.ONE_DRIVE
 import com.lyy.keepassa.view.StorageType.WEBDAV
 import com.lyy.keepassa.view.create.CreateDbFirstFragment
@@ -76,6 +77,7 @@ object AuthFlowFactory {
     AFS -> AFSAuthFlow()
     WEBDAV -> WebDavAuthFlow()
     ONE_DRIVE -> OneDriveAuthFlow()
+    GOOGLE_DRIVE -> GoogleDriveAuthFlow()
     else -> null
   }
 }

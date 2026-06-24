@@ -12,30 +12,34 @@ package com.lyy.keepassa.view.main
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.app.ActivityOptions
 import android.content.Intent
+import android.graphics.Point
 import android.os.Bundle
 import android.transition.Transition
 import android.transition.Transition.TransitionListener
 import android.util.Pair
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
-import com.arialyy.frame.core.AbsFrame
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.BarUtils
 import com.google.android.material.tabs.TabLayoutMediator
 import com.keepassdroid.database.PwGroupV4
 import com.lyy.keepassa.R
-import com.lyy.keepassa.base.AnimState
-import com.lyy.keepassa.base.AnimState.NOT_ANIM
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.ActivityMainBinding
@@ -47,13 +51,20 @@ import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.KeepassAUtil
-import com.lyy.keepassa.view.create.CreateDbActivity
-import com.lyy.keepassa.view.launcher.LauncherActivity
+import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.ThemeUtil
+import com.lyy.keepassa.util.doClick
+import com.lyy.keepassa.util.handleBottomEdge
+import com.lyy.keepassa.util.loadImg
 import com.lyy.keepassa.view.search.SearchDialog
-import com.lyy.keepassa.widget.MainExpandFloatActionButton
+import com.lyy.keepassa.widget.toPx
+import com.lyy.keepassa.widgets.MainFloatActionButton
+import com.lyy.keepassa.widgets.arc.FloatingActionMenu
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import timber.log.Timber
+import kotlin.math.abs
 
 @Route(path = "/main/ac")
 class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
@@ -67,15 +78,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
     // 打开搜索
     const val OPEN_SEARCH = 1
+    const val KEY_IS_SHORTCUTS = "isShortcuts"
+    const val KEY_SHORTCUTS_TYPE = "shortcutsType"
   }
 
-  @Autowired(name = "KEY_IS_SHORTCUTS")
+  @Autowired(name = KEY_IS_SHORTCUTS)
   @JvmField
   var isShortcuts = false
 
-  @Autowired(name = "shortcutsType")
+  @Autowired(name = KEY_SHORTCUTS_TYPE)
   @JvmField
   var shortcutType = 1
+
+  private var fabMenu: FloatingActionMenu? = null
 
   private val historyFm by lazy {
     Routerfit.create(FragmentRouter::class.java).toMainHistoryFragment()
@@ -91,9 +106,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
+    Timber.d("MainActivity")
     ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
     module = ViewModelProvider(this)[MainModule::class.java]
+    handleEdge2Edge()
 
     // 处理快捷方式进入的情况
     if (isShortcuts) {
@@ -103,35 +120,133 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
       }
     }
     module.setEcoIcon(this, binding.dbName)
+    lifecycleScope.launch {
+      binding.root.post {
+        module.startRevealAnim(binding)
+      }
+    }
+
     initData()
     initVpAnim()
+    initMenu()
+    loadThemeIcon()
+  }
+
+  private fun loadThemeIcon(){
+    // Glide.with(this)
+    //   .load(ThemeUtil.getThemeMainBg())
+    //   .apply(RequestOptions.bitmapTransform(WhiteBgBlurTransformation(20, 2)))
+    //   .into(binding.ivTheme)
+    binding.ivTheme.loadImg(ThemeUtil.getThemeMainBg())
+  }
+
+  private fun initMenu() {
+    val menuKey = KpaUtil.buildMenuIcon(
+      this,
+      ResUtil.getSvgIcon(R.drawable.ic_password, R.color.color_FFFFFF)
+    ) {
+      Routerfit.create(ActivityRouter::class.java).toCreateEntryActivity(null)
+      fabMenu?.close(true)
+    }
+    val menuGroup = KpaUtil.buildMenuIcon(this, ResUtil.getDrawable(R.drawable.ic_fab_dir)) {
+      Routerfit.create(DialogRouter::class.java)
+        .showCreateGroupDialog(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
+      fabMenu?.close(true)
+    }
+
+    val menuLock =
+      KpaUtil.buildMenuIcon(
+        this,
+        ResUtil.getSvgIcon(R.drawable.ic_lock_24px, R.color.color_FFFFFF)
+      ) {
+        showQuickUnlockDialog()
+      }
+
+    val coords = IntArray(2)
+    fabMenu = FloatingActionMenu.Builder(this@MainActivity)
+      .setStateChangeListener(object : FloatingActionMenu.MenuStateChangeListener {
+        override fun onMenuOpened(menu: FloatingActionMenu?) {
+          binding.fabNew.rotation = 0f
+          val pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 45f)
+          val animation: ObjectAnimator =
+            ObjectAnimator.ofPropertyValuesHolder(binding.fabNew, pvhR)
+          animation.start()
+        }
+
+        override fun onMenuClosed(menu: FloatingActionMenu?) {
+          binding.fabNew.rotation = 45f
+          val pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 0f)
+          val animation: ObjectAnimator =
+            ObjectAnimator.ofPropertyValuesHolder(binding.fabNew, pvhR)
+          animation.start()
+        }
+      })
+      .addSubActionView(menuKey)
+      .addSubActionView(menuGroup)
+      .addSubActionView(menuLock)
+      .setPointInterceptor { mainActionView ->
+
+        if (coords[0] != 0) {
+          return@setPointInterceptor Point(coords[0], coords[1])
+        }
+
+        mainActionView.getLocationOnScreen(coords)
+
+        if (!KpaUtil.isEdgeToEdgeEnabled(this)){
+          coords[1] -= BarUtils.getStatusBarHeight()
+        }
+        coords[0] += mainActionView.measuredWidth / 2
+        coords[1] += mainActionView.measuredHeight / 2
+
+        Timber.d("x: ${coords[0]}, y: ${coords[1]}")
+
+        return@setPointInterceptor Point(coords[0], coords[1])
+      }
+      .attachTo(binding.fabNew)
+      .build()
+
+    binding.fabNew.setImageDrawable(module.getAddIcon())
+    binding.fabNew.callback = object : MainFloatActionButton.OnOperateCallback {
+      override fun onHint(view: MainFloatActionButton) {
+        if (fabMenu?.isOpen == true){
+          fabMenu?.close(true)
+        }
+      }
+    }
+  }
+
+  private fun handleEdge2Edge(){
+    binding.fabNew.handleBottomEdge { view, i ->
+      view.updateLayoutParams<CoordinatorLayout.LayoutParams> {
+        bottomMargin = i + 16.toPx()
+      }
+      binding.vp.updatePadding(bottom = i)
+    }
+    handelTopBar()
+  }
+
+  private fun handelTopBar(){
+    binding.headBar.addOnOffsetChangedListener { _, verticalOffset ->
+      val totalScrollRange: Int =  binding.headBar.getTotalScrollRange()
+      val offset = abs(verticalOffset / totalScrollRange.toFloat()) // 0.0 到 1.0
+      Timber.d("offSet: $offset")
+      binding.headToolbar.alpha = 1 - offset
+    }
   }
 
   private fun initData() {
     module.showInfoDialog(this)
     BaseApp.isLocked = false
     binding.headToolbar.setOnClickListener(this)
-    binding.search.setOnClickListener(this)
-    binding.lock.setOnClickListener(this)
 
     binding.dbName.text = BaseApp.dbFileName
     binding.dbVersion.text = BaseApp.dbName
     val needShowTotp = PreferenceManager.getDefaultSharedPreferences(this)
       .getBoolean(getString(R.string.set_key_main_show_totp_tab), true)
     initVP(needShowTotp)
-
-    binding.fab.setOnItemClickListener(object : MainExpandFloatActionButton.OnItemClickListener {
-      override fun onKeyClick() {
-        Routerfit.create(ActivityRouter::class.java).toCreateEntryActivity(null)
-        binding.fab.hintMoreOperate()
-      }
-
-      override fun onGroupClick() {
-        Routerfit.create(DialogRouter::class.java)
-          .showCreateGroupDialog(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
-        binding.fab.hintMoreOperate()
-      }
-    })
+    binding.ivSearch.doClick {
+      showSearchDialog()
+    }
   }
 
   private fun initVP(needShowTotp: Boolean) {
@@ -167,14 +282,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         }
         binding.vp.adapter!!.notifyDataSetChanged()
 
-        binding.tab.getTabAt(0)!!.icon = getDrawable(R.drawable.selector_ic_tab_history)
+        binding.tab.getTabAt(0)!!.icon = ResUtil.getDrawable(R.drawable.selector_ic_tab_history)
         binding.tab.getTabAt(0)!!.text = getString(R.string.history)
-        binding.tab.getTabAt(1)!!.icon = getDrawable(R.drawable.selector_ic_tab_db)
+        binding.tab.getTabAt(1)!!.icon = ResUtil.getDrawable(R.drawable.selector_ic_tab_db)
         binding.tab.getTabAt(1)!!.text = getString(R.string.all)
 
         val totpTab = binding.tab.getTabAt(2)
         totpTab?.let {
-          it.icon = getDrawable(R.drawable.selector_ic_tab_token)
+          it.icon = ResUtil.getDrawable(R.drawable.selector_ic_tab_token)
           it.text = ResUtil.getString(R.string.kpa_totp)
         }
 
@@ -189,6 +304,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
             // This page is way off-screen to the left.
             alpha = 0f
           }
+
           position <= 1 -> { // [-1,1]
             // Modify the default slide transition to shrink the page as well
             val scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position))
@@ -196,6 +312,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
             alpha = (MIN_ALPHA +
               (((scaleFactor - MIN_SCALE) / (1 - MIN_SCALE)) * (1 - MIN_ALPHA)))
           }
+
           else -> { // (1,+Infinity]
             // This page is way off-screen to the right.
             alpha = 0f
@@ -229,12 +346,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     }
     when (v!!.id) {
       R.id.head_toolbar -> startArrowAnim()
-      R.id.search -> {
-        showSearchDialog()
-      }
-      R.id.lock -> {
-        showQuickUnlockDialog()
-      }
     }
   }
 
@@ -251,18 +362,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     moveTaskToBack(true)
   }
 
-  override fun onPostCreate(savedInstanceState: Bundle?) {
-    super.onPostCreate(savedInstanceState)
-    // 需要关闭 LauncherActivity\ InputPassActivity \ CreateActivity 三个界面
-    for (ac in AbsFrame.getInstance().activityStack) {
-      if (ac is LauncherActivity || ac is CreateDbActivity) {
-        ac.rootView.visibility = View.GONE
-        ac.finish()
-        ac.overridePendingTransition(0, 0)
-      }
-    }
-  }
-
   override fun onPause() {
     super.onPause()
     reenterListener?.isToChangeDb = false
@@ -271,10 +370,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
   override fun onDestroy() {
     super.onDestroy()
     EventBusHelper.unReg(this)
-  }
-
-  override fun useAnim(): AnimState {
-    return NOT_ANIM
   }
 
   /**

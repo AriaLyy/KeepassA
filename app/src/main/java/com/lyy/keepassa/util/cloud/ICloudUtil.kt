@@ -19,6 +19,8 @@ import java.util.Date
  */
 interface ICloudUtil {
 
+  fun auth() {}
+
   /**
    * 文件是否存在
    * @param fileKey webDav/dropbox中为云端路径，onedrive为id

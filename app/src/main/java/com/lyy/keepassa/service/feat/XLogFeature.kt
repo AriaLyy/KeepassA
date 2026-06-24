@@ -8,11 +8,12 @@
 package com.lyy.keepassa.service.feat
 
 import android.content.Context
+import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.Utils
-import com.lyy.keepassa.BuildConfig
+import com.google.firebase.Firebase
+import com.google.firebase.crashlytics.crashlytics
 import com.tencent.mars.xlog.Log
 import com.tencent.mars.xlog.Xlog
-import com.tencent.mars.xlog.Xlog.XLogConfig
 import org.joda.time.DateTime
 import timber.log.Timber
 import timber.log.Timber.DebugTree
@@ -55,7 +56,7 @@ object XLogFeature : IFeature {
   private fun setTimberPlant() {
     Timber.plant(object : DebugTree() {
       override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-        if (BuildConfig.DEBUG) {
+        if (AppUtils.isAppDebug()) {
           return
         }
         when (priority) {
@@ -73,6 +74,7 @@ object XLogFeature : IFeature {
           }
           android.util.Log.ERROR -> {
             Log.e(tag, message)
+            Firebase.crashlytics.log(message)
           }
           android.util.Log.ASSERT -> {
             Log.f(tag, message)

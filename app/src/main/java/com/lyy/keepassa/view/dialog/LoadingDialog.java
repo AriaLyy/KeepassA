@@ -11,6 +11,7 @@ package com.lyy.keepassa.view.dialog;
 
 import android.content.res.AssetManager;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import androidx.fragment.app.DialogFragment;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.lyy.keepassa.R;
@@ -26,9 +27,10 @@ import timber.log.Timber;
 @Route(path = "/dialog/loading")
 public class LoadingDialog extends BaseDialog<DialogLoadingBinding> {
 
+
   @Override protected void initData() {
     super.initData();
-    setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+    setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogTheme);
     getDialog().getWindow()
         .setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 

@@ -3,12 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.lyy.keepassa">
 
-  <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
   <uses-permission android:name="android.permission.ACTION_OPEN_DOCUMENT" />
   <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.VIBRATE" />
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
   <application
       android:name=".base.BaseApp"
@@ -18,16 +17,19 @@
       android:icon="@mipmap/ic_launcher"
       android:label="@string/app_name"
       android:networkSecurityConfig="@xml/network_security_config"
+      android:resizeableActivity="true"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:supportsRtl="true"
       android:theme="@style/AppTheme.NoActionBar"
       tools:ignore="GoogleAppIndexingWarning">
+
+<!--    android:name=".view.TestActivity"-->
     <activity
-        android:exported="true"
         android:name=".view.launcher.LauncherActivity"
         android:configChanges="layoutDirection|locale"
+        android:exported="true"
+        android:theme="@style/SplashTheme"
         android:screenOrientation="portrait"
-        android:launchMode="singleTask"
         android:windowSoftInputMode="adjustResize|stateVisible">
       <!-- taskAffinity 指定activity栈，可以使用finishAffinity关闭该栈中的activity -->
       <!--        android:windowSoftInputMode="stateVisible|adjustResize"-->
@@ -124,7 +126,8 @@
     <activity
         android:name=".view.main.MainActivity"
         android:launchMode="singleTask"
-        android:screenOrientation="portrait" />
+        android:screenOrientation="portrait"
+        />
 
     <activity
         android:name=".view.MarkDownEditorActivity"
@@ -137,11 +140,9 @@
         android:name=".view.detail.GroupDetailActivity"
         android:screenOrientation="portrait" />
     <activity
-        android:name=".view.detail.EntryDetailActivity"
-        android:screenOrientation="portrait" />
-    <activity
         android:name=".view.detail.EntryDetailActivityNew"
-        android:screenOrientation="portrait" />
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.notAnimation" />
     <activity
         android:name=".view.dir.ChooseGroupActivity"
         android:screenOrientation="portrait" />
@@ -150,9 +151,6 @@
         android:screenOrientation="portrait" />
     <activity
         android:name=".view.fingerprint.FingerprintActivity"
-        android:screenOrientation="portrait" />
-    <activity
-        android:name=".view.create.CreateEntryActivityOld"
         android:screenOrientation="portrait" />
 
     <activity
@@ -171,9 +169,9 @@
 
     <!-- dropbox -->
     <activity
-        android:exported="true"
         android:name="com.dropbox.core.android.AuthActivity"
         android:configChanges="orientation|keyboard"
+        android:exported="true"
         android:launchMode="singleTask"
         android:screenOrientation="portrait">
       <intent-filter>
@@ -190,8 +188,8 @@
 
     <!--   onedrive -->
     <activity
-        android:exported="true"
         android:name="com.microsoft.identity.client.BrowserTabActivity"
+        android:exported="true"
         android:screenOrientation="portrait">
       <intent-filter>
         <action android:name="android.intent.action.VIEW" />
@@ -207,8 +205,8 @@
     </activity>
 
     <activity
-        android:exported="true"
         android:name=".router.DeeplinkActivity"
+        android:exported="true"
         android:noHistory="true">
       <intent-filter>
         <action android:name="android.intent.action.VIEW" />
@@ -222,6 +220,9 @@
       </intent-filter>
     </activity>
 
+    <activity android:name=".util.cloud.google.GoogleAuthActivity" />
+    <activity android:name=".util.cloud.google.GoogleSelectFileActivity" />
+
     <activity
         android:name=".view.QrCodeScannerActivity"
         android:screenOrientation="portrait" />
@@ -231,8 +232,8 @@
         android:screenOrientation="portrait" />
 
     <service
-        android:exported="true"
         android:name=".service.autofill.AutoFillService"
+        android:exported="true"
         android:permission="android.permission.BIND_AUTOFILL_SERVICE">
       <meta-data
           android:name="android.autofill"
@@ -242,11 +243,9 @@
       </intent-filter>
     </service>
 
-    <service android:name=".service.DbOpenNotificationService" />
-
     <service
-        android:exported="true"
         android:name=".service.input.InputIMEService"
+        android:exported="true"
         android:label="@string/ime_label"
         android:permission="android.permission.BIND_INPUT_METHOD">
       <intent-filter>

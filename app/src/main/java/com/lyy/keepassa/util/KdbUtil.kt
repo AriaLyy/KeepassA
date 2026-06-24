@@ -245,6 +245,10 @@ object KdbUtil {
     return groups[PwGroupIdV3(groupId)]
   }
 
+  fun getRootGroup():PwGroup{
+    return BaseApp.KDB.pm.rootGroup
+  }
+
   /**
    * 通过id 获取v4的group信息
    */

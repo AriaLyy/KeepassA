@@ -385,4 +385,6 @@
     <string name="tag_name">Etiket adı</string>
     <string name="add_tag">Etiket ekle</string>
     <string name="open_file">Dosya Aç</string>
+    <string name="options">Seçenekler</string>
+    <string name="hint_bracket_char">()&lt;&gt;{}[]</string>
 </resources>

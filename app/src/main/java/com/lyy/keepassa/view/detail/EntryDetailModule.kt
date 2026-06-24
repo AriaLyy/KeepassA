@@ -9,21 +9,23 @@
 
 package com.lyy.keepassa.view.detail
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.View
 import android.view.ViewAnimationUtils
-import android.widget.ImageView
-import androidx.fragment.app.FragmentActivity
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.lifecycle.viewModelScope
 import androidx.palette.graphics.Palette
-import com.arialyy.frame.module.SingleLiveEvent
 import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.ScreenUtils
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedBinary
@@ -31,107 +33,83 @@ import com.keepassdroid.database.security.ProtectedString
 import com.keepassdroid.utils.Types
 import com.keepassdroid.utils.UriUtil
 import com.lyy.keepassa.R
-import com.lyy.keepassa.R.color
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.base.BaseModule
+import com.lyy.keepassa.databinding.ActivityEntryDetailNewBinding
 import com.lyy.keepassa.entity.EntryRecord
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.IconUtil
+import com.lyy.keepassa.util.InterpolatorConstance
 import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
-import com.lyy.keepassa.util.VibratorUtil
 import com.lyy.keepassa.widget.toPx
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import kotlin.math.max
 
 /**
  * 条目详情
  */
 class EntryDetailModule : BaseModule() {
   private lateinit var pwEntry: PwEntry
-  private val finishAnimEvent = SingleLiveEvent<Boolean>()
-  private val startAnimEvent = SingleLiveEvent<Boolean>()
 
   fun initEntry(pwEntry: PwEntry) {
     this.pwEntry = pwEntry
   }
 
-  /**
-   * 结束动画
-   */
-  fun finishAnim(
-    context: Context,
-    rootView: View,
-    icon: ImageView
-  ): SingleLiveEvent<Boolean> {
-    viewModelScope.launch {
-      val rgb = getColor(context, icon.drawable)
-      val x = icon.x + 20.toPx()
-      val y = icon.y + 60.toPx()
-      val anim = ViewAnimationUtils.createCircularReveal(
-        rootView,
-        x.toInt(),
-        y.toInt(),
-        rootView.height.toFloat(),
-        0f,
+  fun finishRevealAnim(ac: EntryDetailActivityNew) {
+    val binding = ac.binding
+    binding.root.post {
+      val vAnim = AnimatorSet()
+      val revealAnimal = ViewAnimationUtils.createCircularReveal(
+        binding.root,
+        ScreenUtils.getScreenWidth(),
+        ScreenUtils.getScreenHeight(),
+        max(ScreenUtils.getScreenWidth().toFloat(), ScreenUtils.getScreenHeight().toFloat()),
+        0.toFloat()
       )
-      anim.duration = 400
-      anim.addListener(object : AnimatorListenerAdapter() {
-        override fun onAnimationStart(animation: Animator) {
-          super.onAnimationStart(animation)
-          rootView.background = ColorDrawable(rgb)
-        }
+      val contentAnim1 = ObjectAnimator.ofFloat(binding.topAppBar, View.ALPHA, 1f, 0f)
+      val contentAnim2 = ObjectAnimator.ofFloat(binding.clContentRoot, View.ALPHA, 1f, 0f)
 
-        override fun onAnimationEnd(animation: Animator) {
-          super.onAnimationEnd(animation)
-          rootView.background = ColorDrawable(ResUtil.getColor(R.color.background_color))
-          finishAnimEvent.postValue(true)
-        }
-      })
-      anim.start()
+      vAnim.duration = 400
+      vAnim.doOnEnd {
+        binding.groupContent.isGone = true
+        binding.ivBlur.isGone = true
+        ac.superFinish()
+      }
+      vAnim.playTogether(revealAnimal, contentAnim1, contentAnim2)
+      vAnim.interpolator = InterpolatorConstance.easeOutCubic
+      vAnim.start()
     }
-
-    return finishAnimEvent
   }
 
-  /**
-   * 启动动画
-   */
-  fun startAnim(
-    context: Context,
-    rootView: View,
-    icon: ImageView
-  ): SingleLiveEvent<Boolean> {
-    viewModelScope.launch {
-      val rgb = getColor(context, icon.drawable)
-      val x = icon.x + 20.toPx()
-      val y = icon.y + 60.toPx()
-      val anim = ViewAnimationUtils.createCircularReveal(
-        rootView,
-        x.toInt(),
-        y.toInt(),
-        40.toPx()
-          .toFloat(),
-        rootView.height.toFloat()
+  fun startRevealAnim(binding: ActivityEntryDetailNewBinding) {
+    binding.root.post {
+      val vAnim = AnimatorSet()
+      val revealAnimal = ViewAnimationUtils.createCircularReveal(
+        binding.root,
+        ScreenUtils.getScreenWidth(),
+        ScreenUtils.getScreenHeight(),
+        0.toFloat(),
+        max(ScreenUtils.getScreenWidth().toFloat(), ScreenUtils.getScreenHeight().toFloat())
       )
-      anim.duration = 400
-      anim.addListener(object : AnimatorListenerAdapter() {
-        override fun onAnimationStart(animation: Animator) {
-          super.onAnimationStart(animation)
-          rootView.background = ColorDrawable(rgb)
-        }
 
-        override fun onAnimationEnd(animation: Animator) {
-          super.onAnimationEnd(animation)
-          rootView.background = ColorDrawable(ResUtil.getColor(color.background_color))
-          startAnimEvent.postValue(true)
-        }
-      })
-      anim.start()
+      val contentAnim1 = ObjectAnimator.ofFloat(binding.topAppBar, View.ALPHA, 0f, 1f)
+      val contentAnim2 = ObjectAnimator.ofFloat(binding.clContentRoot, View.ALPHA, 0f, 1f)
+
+      vAnim.duration = 400
+      vAnim.doOnStart {
+        binding.topAppBar.alpha = 0f
+        binding.clContentRoot.alpha = 0f
+        binding.groupContent.isVisible = true
+      }
+      vAnim.playTogether(revealAnimal, contentAnim1, contentAnim2)
+      vAnim.interpolator = InterpolatorConstance.easeInCubic
+      vAnim.start()
     }
-    return startAnimEvent
   }
 
   /**
@@ -140,25 +118,33 @@ class EntryDetailModule : BaseModule() {
   fun getColor(
     context: Context,
     icon: Drawable
-  ): Int {
+  ): Pair<Int, Int> {
     return with(Dispatchers.IO) {
       val temp =
         IconUtil.getBitmapFromDrawable(context, icon, 40.toPx())
       if (temp == null || temp.isRecycled) {
-        return@with Color.WHITE
+        return@with Pair(Color.WHITE, ResUtil.getColor(R.color.color_444E85DB))
       }
       val sw = Palette.from(temp)
-        .maximumColorCount(12)
+        .maximumColorCount(16)
         .generate()
-      return@with when {
+
+      val iconColor = when {
         sw.mutedSwatch != null -> sw.mutedSwatch!!.rgb
         sw.darkMutedSwatch != null -> sw.darkMutedSwatch!!.rgb
         sw.lightMutedSwatch != null -> sw.lightMutedSwatch!!.rgb
         sw.darkVibrantSwatch != null -> sw.darkVibrantSwatch!!.rgb
         sw.lightVibrantSwatch != null -> sw.lightVibrantSwatch!!.rgb
         sw.vibrantSwatch != null -> sw.vibrantSwatch!!.rgb
-        else -> ResUtil.getColor(R.color.colorPrimary)
+        else -> ResUtil.getColor(R.color.color_444E85DB)
       }
+
+      val bgColor =
+        if (KpaUtil.isNightMode()) sw.getDarkMutedColor(iconColor) else sw.getLightMutedColor(
+          iconColor
+        )
+
+      return@with Pair(iconColor, bgColor)
     }
   }
 
@@ -188,20 +174,6 @@ class EntryDetailModule : BaseModule() {
       } catch (e: Exception) {
         Timber.e(e)
       }
-    }
-  }
-
-  /**
-   * 回收项目
-   * @param pwEntry 需要回收的条目
-   */
-  fun recycleEntry(ac: FragmentActivity, pwEntry: PwEntryV4) {
-    KpaUtil.kdbHandlerService.deleteEntry(pwEntry) {
-      HitUtil.toaskShort(
-        "${ac.getString(R.string.del_entry)}${ac.getString(R.string.success)}"
-      )
-      VibratorUtil.vibrator(300)
-      ac.finishAfterTransition()
     }
   }
 

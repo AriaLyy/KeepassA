@@ -7,6 +7,7 @@
  */
 package com.lyy.keepassa.router
 
+import androidx.annotation.Keep
 import androidx.preference.PreferenceFragmentCompat
 import com.arialyy.frame.router.RouterArgName
 import com.arialyy.frame.router.RouterPath
@@ -18,16 +19,14 @@ import com.lyy.keepassa.view.launcher.ChangeDbFragment
 import com.lyy.keepassa.view.launcher.OpenDbFragment
 import com.lyy.keepassa.view.main.EntryListFragment
 import com.lyy.keepassa.view.main.HomeFragment
-import com.lyy.keepassa.view.setting.AppSettingFragment
-import com.lyy.keepassa.view.setting.DBSettingFragment
 
 /**
  * @Author laoyuyu
  * @Description
  * @Date 3:08 下午 2021/10/27
  **/
-interface FragmentRouter {
-
+@Keep
+interface FragmentRouter  {
 
   @RouterPath(path = "/setting/appFm")
   fun getAppSettingFragment(

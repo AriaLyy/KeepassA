@@ -9,6 +9,12 @@
 
 package com.lyy.keepassa.util
 
+import android.graphics.Bitmap
+import android.graphics.Bitmap.Config.ARGB_8888
+import android.graphics.Canvas
+import android.graphics.Rect
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
@@ -46,26 +52,37 @@ fun <T> Fragment.putArgument(
   when (value) {
     is Int -> this.requireArguments()
       .putInt(key, value)
+
     is Boolean -> this.requireArguments()
       .putBoolean(key, value)
+
     is String -> this.requireArguments()
       .putString(key, value)
+
     is CharSequence -> this.requireArguments()
       .putCharSequence(key, value)
+
     is Float -> this.requireArguments()
       .putFloat(key, value)
+
     is Long -> this.requireArguments()
       .putLong(key, value)
+
     is Bundle -> this.requireArguments()
       .putBundle(key, value)
+
     is Serializable -> this.requireArguments()
       .putSerializable(key, value)
+
     is Parcelable -> this.requireArguments()
       .putParcelable(key, value)
+
     is Char -> this.requireArguments()
       .putChar(key, value)
+
     is Byte -> this.requireArguments()
       .putByte(key, value)
+
     else -> error("不支持的类型, $value")
   }
 }
@@ -81,6 +98,7 @@ fun <T> Fragment.getArgument(key: String): T? {
 fun DbHistoryRecord.isAFS(): Boolean {
   return StorageType.valueOf(this.type) === AFS
 }
+
 
 //fun <U, T> Fragment.getArgument(key: String) = BindLoader<U, T>(key)
 

@@ -1,41 +1,43 @@
 plugins {
-  id 'com.android.application'
-  id 'kotlin-android'
-  id 'kotlin-kapt'
-  id 'com.tencent.vasdolly'
-  id 'com.alibaba.arouter'
+  alias(libs.plugins.android.application)
+  alias(libs.plugins.kotlin.android)
   id 'kotlin-parcelize'
   id 'com.google.gms.google-services'
   id 'com.google.firebase.crashlytics'
+  id 'kotlin-kapt'
+  id 'android.aop'
 }
 
-android {
-  compileSdkVersion libs.versions.compilesdk.get().toInteger()
-  buildToolsVersion libs.versions.buildtools.get()
+def properties = new Properties()
+def inputStream = project.rootProject.file('local.properties').newDataInputStream()
+properties.load(inputStream)
 
+android {
+  compileSdk libs.versions.compilesdk.get().toInteger()
+  namespace "com.lyy.keepassa"
   compileOptions {
     // Flag to enable support for the new language APIs
-//    coreLibraryDesugaringEnabled true
-    sourceCompatibility JavaVersion.VERSION_11
-    targetCompatibility JavaVersion.VERSION_11
+    //    coreLibraryDesugaringEnabled true
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
   }
 
   kotlinOptions {
-    jvmTarget = "1.8"
+    jvmTarget = "17"
   }
 
   defaultConfig {
     applicationId "com.lyy.keepassa"
     minSdkVersion libs.versions.minSdk.get().toInteger()
     targetSdkVersion libs.versions.targetsdk.get().toInteger()
-    versionCode 71
-    versionName "2.4.7"
+    versionCode 100011
+    versionName "2.8.1"
     multiDexEnabled true
 
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     // so 版本
-    ndk.abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+    ndk.abiFilters 'arm64-v8a'
 
     // 只保留以下语言包
     resConfigs "zh-rCN", "zh-rTW", "en", "fr-rCA", "nb-rNO", "ru-rRU", "fr", "de-rDE", "pl", "tr",
@@ -44,10 +46,6 @@ android {
 
   signingConfigs {
     release {
-      def properties = new Properties()
-      def inputStream = project.rootProject.file('local.properties').newDataInputStream()
-      properties.load(inputStream)
-
       storeFile file(properties.getProperty('storeFile'))
       storePassword properties.getProperty('storePassword')
       keyAlias properties.getProperty('keyAlias')
@@ -69,12 +67,15 @@ android {
       firebaseCrashlytics {
         mappingFileUploadEnabled false
       }
+      ndk {
+        abiFilters 'x86', 'x86_64' , 'armeabi-v7a'
+      }
     }
 
     release {
       //zipAlignEnabled true //开启Zipalign优化
       debuggable false
-//      debuggable true
+      //      debuggable true
       minifyEnabled true
       shrinkResources true // 移除无用资源
       //      multiDexKeepFile file('multidex-config.txt')
@@ -107,9 +108,6 @@ android {
 
   lintOptions {
     checkReleaseBuilds false
-    // Or, if you prefer, you can continue to check for errors in release builds,
-    // but continue the build even when errors are found:
-    //    abortOnError false
   }
 
   flavorDimensions "app"
@@ -119,7 +117,6 @@ android {
       dimension "app"
     }
   }
-
 
   ndkVersion '21.4.7075529'
 }
@@ -140,39 +137,6 @@ configurations {
   playImplementation {}
 }
 
-/**
- * 根据已有基础包重新生成多渠道包
- * 如果是自动生成渠道包，见https://github.com/Tencent/VasDolly
- */
-rebuildChannel {
-  //指定渠道文件
-  channelFile = file("${project.getProjectDir()}/channel")
-  //  baseDebugApk = 已有Debug APK
-  // 已有Release APK
-  //  baseReleaseApk = new File("${project.buildDir}/AndResGuardFinal.apk")
-  baseApk = new File("${project.buildDir}/outputs/apk/dev/release/app-dev-release.apk")
-  //默认为new File(project.buildDir, "rebuildChannel/debug")
-  //  debugOutputDir = Debug渠道包输出目录
-  //默认为new File(project.buildDir, "rebuildChannel/release")
-  // Release渠道包输出目录
-  outputDir = new File("${project.buildDir}/outputs/channels")
-  //快速模式：生成渠道包时不进行校验（速度可以提升10倍以上，默认为false）
-  fastMode = false
-  //低内存模式（仅针对V2签名，默认为false）：只把签名块、中央目录和EOCD读取到内存，不把最大头的内容块读取到内存，在手机上合成APK时，可以使用该模式
-  lowMemory = false
-}
-
-// 配置 AndResGuard 于 channel 前执行
-// 这几行代码表示reBuildChannel任务是依赖于resguardRelease任务的，也就是说先执行完资源混淆后再执行多渠道打包。
-afterEvaluate {
-  tasks.getByName('reBuildChannel') {
-    dependsOn(assembleRelease) // 暂时使用这个
-
-    // 不要使用，1.2.21打包出来的apk，消息对话框布局错乱
-    //    dependsOn('resguardRelease')
-  }
-}
-
 boolean isReleaseBuildType() {
   for (String s : gradle.startParameter.taskNames) {
     println("builtType: " + s)
@@ -191,11 +155,7 @@ android.applicationVariants.all { variant ->
       // Stores the path to the maifest.
       String manifestPath = "${multiApkManifestOutputDirectory.asFile.get()}/AndroidManifest.xml"
       println("版本类型：" + isReleaseBuildType())
-      //      def keyHash = "5qMkIKbIM5Lx7VbajX8mT3rKXpE="
-      //      if (isReleaseBuildType()) {
-      //        keyHash = "xv3czaACtp98KvuSqP3GRLCxjrc="
-      //      }
-      def keyHash = "xv3czaACtp98KvuSqP3GRLCxjrc="
+      def keyHash = properties.getProperty('msalKey')
 
       // 替换one drive 配置
       def updatedContent = file(manifestPath).getText('UTF-8')
@@ -209,7 +169,6 @@ android.applicationVariants.all { variant ->
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
-
   // 测试模块
   testImplementation libs.test.junit
   androidTestImplementation libs.bundles.android.test
@@ -219,11 +178,11 @@ dependencies {
   //  debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
 
   // keepassA组件
-  implementation 'me.laoyuyu.keepassa:KeepassIcon:0.4.0'
-  implementation 'me.laoyuyu.keepassa:KeepassLib:0.4.1'
+  implementation 'me.laoyuyu.keepassa:KeepassIcon:0.4.3'
+  implementation 'me.laoyuyu.keepassa:KeepassLib:0.4.3'
   //  implementation project(path: ':KpaLib')
-  implementation 'me.laoyuyu.keepassa:KPAFrame:0.4.1'
-  implementation 'me.laoyuyu.keepassa:UIWidget:0.4.2'
+  implementation 'me.laoyuyu.keepassa:KPAFrame:0.4.3'
+  implementation 'me.laoyuyu.keepassa:UIWidget:0.4.3'
 
 
   // kotlin
@@ -240,6 +199,7 @@ dependencies {
   implementation(libs.jetpack.autofill) // 自动填充工具
   implementation(libs.jetpack.biometric) // 生物识别
   implementation(libs.jetpack.multidex)
+  implementation(libs.jetpack.splashscreen)
   // =========================== android 组件 end =====================================
 
   // =========================== 三方库 start =====================================
@@ -252,39 +212,59 @@ dependencies {
   implementation(libs.third.eventbus)
   kapt(libs.third.eventbus.compiler)
   implementation(libs.third.lottie) // json 动画库
+
+  // glide
   implementation(libs.third.glide)
   kapt(libs.third.glide.compiler)
+  implementation(libs.third.glide.transformations)
+
   implementation(libs.third.dropbox)
-  implementation(libs.third.webdav)
   implementation(libs.bundles.tencent.wcdb)
-  implementation(libs.tencent.vasdolly)
-  implementation(libs.third.protector) // XP/调试/多开/模拟器/root 判断
+  implementation project(":thrid:EasyProtector") // XP/调试/多开/模拟器/root 判断
   implementation(libs.third.autosize)
   implementation(libs.google.gson)
-  implementation(libs.third.freereflection)
   implementation(libs.microsoft.msal)
   implementation(libs.squareup.retrofit)
-  kapt(libs.ali.third.arouter.compiler)
+  kapt(libs.ali.arouter.compiler)
   implementation(libs.third.zxing.embedded) { transitive = false }
   implementation(libs.google.zxing)
   implementation(libs.jetpack.palette.ktx)
   // mmkv
   implementation(libs.tencent.mmkv)
-
   // xlog
-  implementation 'com.tencent.mars:mars-xlog:1.2.5'
+  implementation(libs.tencent.xlog)
+
+  // 图片剪裁
+  implementation(libs.third.yimagepicker)
+
+  //webDav
+//  implementation(libs.third.webdav)
+  implementation(project(":thrid:Sardine"))
+  implementation(libs.squareup.okhttp3.digest)
+
+  // android 切片
+  implementation(libs.third.androidaop.core)
+  kapt libs.third.androidaop.apt
+
   // // =========================== 三方库 end =====================================
-  implementation(libs.google.gms.billing)
+  //  implementation(libs.google.gms.billing)
   implementation(libs.google.gms.base)
+  implementation(libs.google.review)
+  implementation(libs.google.review.ktx)
 
   //firebase
-  implementation platform('com.google.firebase:firebase-bom:32.7.1')
-  implementation 'com.google.firebase:firebase-crashlytics-ktx'
+  implementation platform(libs.google.firebase.bom)
+  implementation libs.google.firebase.crashlyticsktx
+
+  // google-drive
+  implementation(libs.bundles.google.drive) {
+    exclude group: 'org.apache.httpcomponents'
+  }
+
 }
 
-
 gradle.startParameter.taskNames.forEach {
-  if (it.contains("Test")){
+  if (it.contains("Test")) {
     apply from: "${rootDir.path}/gradle/testConfig.gradle"
   }
 }

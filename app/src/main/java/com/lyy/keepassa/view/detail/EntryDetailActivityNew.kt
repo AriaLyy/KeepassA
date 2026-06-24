@@ -7,10 +7,19 @@
  */
 package com.lyy.keepassa.view.detail
 
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.annotation.Autowired
@@ -18,7 +27,11 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
+import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ToastUtils
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedBinary
 import com.lyy.keepassa.R
@@ -33,11 +46,12 @@ import com.lyy.keepassa.util.copyPassword
 import com.lyy.keepassa.util.copyTotp
 import com.lyy.keepassa.util.copyUserName
 import com.lyy.keepassa.util.doClick
+import com.lyy.keepassa.util.handleBottomEdge
 import com.lyy.keepassa.util.hasTOTP
 import com.lyy.keepassa.util.isCollectioned
 import com.lyy.keepassa.util.takePermission
+import com.lyy.keepassa.util.transformation.WhiteBgBlurTransformation
 import com.lyy.keepassa.view.detail.card.EntryFileCard
-import com.lyy.keepassa.widget.toPx
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -102,8 +116,13 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     return R.layout.activity_entry_detail_new
   }
 
+  override fun handleStatusBar() {
+    // 这个不使用父类的状态栏
+  }
+
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
+    handleEdge2Edge()
     ARouter.getInstance().inject(this)
     module = ViewModelProvider(this)[EntryDetailModule::class.java]
     pwEntry = (BaseApp.KDB!!.pm.entries[uuid] as PwEntryV4?)!!
@@ -111,9 +130,55 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     if (BaseApp.isV4 && pwEntry.parent == BaseApp.KDB!!.pm.recycleBin) {
       isInRecycleBin = true
     }
+    handleBg()
     setTopBar()
     listenerSaveFile()
     module.saveRecord()
+  }
+
+  private fun handleEdge2Edge(){
+    binding.scroll.handleBottomEdge { view, i ->
+      view.updatePadding(bottom = i)
+    }
+  }
+
+  private fun handleBg(startAnim: Boolean = true) {
+    fun startBgAnim(){
+      lifecycleScope.launch {
+        binding.root.post {
+          module.startRevealAnim(binding)
+        }
+      }
+    }
+    if (KpaUtil.isNightMode()){
+      Timber.i("night mode not use blur background")
+      startBgAnim()
+      return
+    }
+    Glide.with(this)
+      .load(IconUtil.getEntryIconDrawable(this, pwEntry))
+      .apply(RequestOptions.bitmapTransform(WhiteBgBlurTransformation(15, 2)))
+      .into(object : DrawableImageViewTarget(binding.ivBlur) {
+        override fun setResource(resource: Drawable?) {
+          super.setResource(resource)
+
+          if (!startAnim) {
+            Timber.d("not start anim")
+            return
+          }
+          startBgAnim()
+        }
+      })
+  }
+
+  fun superFinish() {
+    super.finishAfterTransition()
+    overridePendingTransition(0, 0)
+  }
+
+  override fun finishAfterTransition() {
+    rootView.setBackgroundColor(Color.TRANSPARENT)
+    module.finishRevealAnim(this)
   }
 
   private fun listenerSaveFile() {
@@ -131,6 +196,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
   }
 
   private fun bindData() {
+    handleBg(false)
     setIcon()
     // 处理过期
     KpaUtil.handleExpire(binding.tvTitle, pwEntry)
@@ -181,9 +247,24 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
       }
       if (abs(verticalOffset) >= binding.appBarLayout.totalScrollRange) {
         binding.topAppBar.title = pwEntry.title
+        binding.clFun.setBackgroundColor(Color.TRANSPARENT)
+        binding.clContent.setBackgroundColor(Color.TRANSPARENT)
+        binding.appBarLayout.setBackgroundColor(Color.TRANSPARENT)
         return@addOnOffsetChangedListener
       }
     }
+
+    ViewCompat.setOnApplyWindowInsetsListener(binding.topAppBar) { v, windowInsets ->
+      val insets = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
+      v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+        topMargin = insets.top
+      }
+
+      WindowInsetsCompat.CONSUMED
+    }
+
+    binding.topAppBar.bringToFront()
+
     handleMenuBar()
   }
 
@@ -207,35 +288,28 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     val color = if (pwEntry.getCustomIcon()?.imageData?.isNotEmpty() == true) {
       module.getColor(this, BitmapDrawable(IconUtil.getCustomBitmap(pwEntry)))
     } else {
-      ResUtil.getColor(R.color.color_444E85DB)
+      val defColor = ResUtil.getColor(R.color.color_444E85DB)
+      Pair(defColor, defColor)
     }
 
     binding.tvChar.visibility = View.VISIBLE
-    if (pwEntry.title.isEmpty()){
+    if (pwEntry.title.isEmpty()) {
       binding.tvChar.text = "#"
-    }else{
+    } else {
       binding.tvChar.text = pwEntry.title.substring(0, 1).uppercase(Locale.getDefault())
     }
 
-    binding.ivIcon.setBackgroundColor(color)
-  }
+    val cards = arrayOf(
+      binding.cardStr,
+      binding.cardBaseInfo,
+      binding.cardTag,
+      binding.cardAtta,
+      binding.cardNote
+    )
+    binding.ivIcon.setBackgroundColor(color.first)
 
-  private fun setAppIcon() {
-    val adapter = AppIconAdapter()
-
-    binding.rvAppIcon.apply {
-      this.adapter = adapter
-      setChildDrawingOrderCallback { childCount, i ->
-        if (childCount <= 1) {
-          return@setChildDrawingOrderCallback i
-        }
-        return@setChildDrawingOrderCallback childCount - i - 1
-
-      }
-      layoutManager = AppIconLayoutManager(15.toPx())
+    cards.forEach {
+      it.setBackgroundColor(ColorUtils.setAlphaComponent(color.second, 0.6f))
     }
-    adapter.setData(arrayListOf<String>().apply {
-      add("tv.danmaku.bili")
-    })
   }
 }

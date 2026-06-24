@@ -9,29 +9,39 @@
 
 package com.lyy.keepassa.base
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.util.Pair
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.FrameLayout
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.databinding.ViewDataBinding
 import com.arialyy.frame.core.AbsActivity
 import com.arialyy.frame.util.ReflectionUtil
+import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.R
-import com.lyy.keepassa.base.AnimState.NOT_ANIM
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.LanguageUtil
+import com.lyy.keepassa.util.handleTopEdge
+import com.lyy.keepassa.view.launcher.LauncherActivity
 import me.jessyan.autosize.AutoSizeConfig
 import timber.log.Timber
 import java.lang.reflect.Field
@@ -42,7 +52,6 @@ import java.lang.reflect.Field
 abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
 
   protected lateinit var toolbar: Toolbar
-  private var animState = AnimState.ALL
 
   companion object {
     var showStatusBar = false
@@ -53,20 +62,18 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
       toolbar = findViewById(R.id.kpa_toolbar)
       toolbar.setNavigationOnClickListener { finishAfterTransition() }
     } catch (e: Exception) {
-      Timber.w(e)
+      // Timber.w(e)
     }
   }
 
-  open fun useAnim() = AnimState.ALL
-
   override fun onPreInit(): Boolean {
-    if (!KeepassAUtil.instance.isHomeActivity(this)
+    if (!KpaUtil.isHomeActivity(this)
       && (BaseApp.KDB.isNull() || BaseApp.dbRecord == null)
     ) {
       BaseApp.isLocked = true
       HitUtil.toaskShort(getString(R.string.notify_db_locked))
       // Cannot be used finishAfterTransition(), because binding invalid
-      finish()
+      showQuickUnlockDialog()
 
       return false
     }
@@ -74,6 +81,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     AutoSizeConfig.getInstance().screenHeight = ScreenUtils.getScreenHeight()
     AutoSizeConfig.getInstance().screenWidth = ScreenUtils.getScreenWidth()
     super.onCreate(savedInstanceState)
@@ -85,63 +93,40 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
         WindowManager.LayoutParams.FLAG_SECURE
       )
     }
-    animState = useAnim()
-    setWindowAnim()
 
     handleStatusBar()
   }
 
-  private fun handleStatusBar() {
-    ImmersionBar.with(this)
-      .statusBarColor(R.color.background_color)
-      .autoDarkModeEnable(true)
-      .autoStatusBarDarkModeEnable(true, 0.2f) //自动状态栏字体变色，必须指定状态栏颜色才可以自动变色哦
-      .flymeOSStatusBarFontColor(R.color.text_black_color)
-      .fitsSystemWindows(true)
-//          .hideBar(FLAG_HIDE_STATUS_BAR)
-      .autoNavigationBarDarkModeEnable(true, 0.2f) // 自动导航栏图标变色，必须指定导航栏颜色才可以自动变色哦
-      .navigationBarColor(R.color.background_color)
-      .statusBarDarkFont(
-        true, 0.2f
-      )  //原理：如果当前设备支持状态栏字体变色，会设置状态栏字体为黑色，如果当前设备不支持状态栏字体变色，会使当前状态栏加上透明度，否则不执行透明度
-      .init()
-    return
+  open fun handleStatusBar() {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM){
+      ImmersionBar.with(this)
+        .statusBarColor(R.color.background_color)
+        .autoDarkModeEnable(true)
+        .autoStatusBarDarkModeEnable(true, 0.2f) //自动状态栏字体变色，必须指定状态栏颜色才可以自动变色哦
+        .flymeOSStatusBarFontColor(R.color.text_black_color)
+        .fitsSystemWindows(true)
+        // .hideBar(BarHide.FLAG_HIDE_STATUS_BAR)
+        .autoNavigationBarDarkModeEnable(true, 0.2f) // 自动导航栏图标变色，必须指定导航栏颜色才可以自动变色哦
+        .navigationBarColor(R.color.background_color)
+        .statusBarDarkFont(
+          true, 0.2f
+        )  //原理：如果当前设备支持状态栏字体变色，会设置状态栏字体为黑色，如果当前设备不支持状态栏字体变色，会使当前状态栏加上透明度，否则不执行透明度
+        .init()
+      return
+    }
+
+    handleApi35()
+
+  }
+
+  private fun handleApi35(){
+    binding?.root?.handleTopEdge { v, h ->
+      v.updatePadding(top = h)
+    }
   }
 
   override fun attachBaseContext(newBase: Context?) {
     super.attachBaseContext(LanguageUtil.setLanguage(newBase!!, BaseApp.currentLang))
-  }
-
-  private fun setWindowAnim() {
-    if (animState == NOT_ANIM) {
-      return
-    }
-
-    // salide 为滑入，其它动画效果参考：https://github.com/lgvalle/Material-Animations
-    // A -> B, B的进入动画
-    // window.enterTransition = TransitionInflater.from(this)
-    //   .inflateTransition(R.transition.slide_enter)
-
-    // A -> B, A的退出动画
-    // window.exitTransition = TransitionInflater.from(this)
-    //   .inflateTransition(R.transition.slide_exit)
-
-    // // A <- B, B的返回动画
-    // window.returnTransition = TransitionInflater.from(this)
-    //   .inflateTransition(R.transition.slide_return)
-    //
-    // // A <- B, A的进入动画
-    // window.reenterTransition = TransitionInflater.from(this)
-    //   .inflateTransition(R.transition.slide_reeter)
-
-    // A -> B, B的enter动画和A的exit动画是否同时执行，false 禁止
-    // window.allowEnterTransitionOverlap = true
-    // A <- B, A的reenter和B的return动画是否同时执行，false 禁止
-    // window.allowReturnTransitionOverlap = true
-
-    // reenterTransition、returnTransition 是方向动画
-//    EnterTransition <-> ReturnTransition
-//    ExitTransition <-> ReenterTransition
   }
 
   protected fun showQuickUnlockDialog() {
@@ -152,10 +137,10 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   override fun onRestart() {
     super.onRestart()
     Timber.d("onRestart")
-    if (!KeepassAUtil.instance.isHomeActivity(this) && (BaseApp.KDB.isNull() || BaseApp.isLocked)) {
+    if (!KpaUtil.isHomeActivity(this) && (BaseApp.KDB.isNull() || BaseApp.isLocked)) {
       BaseApp.handler.postDelayed({
         KeepassAUtil.instance.lock()
-        finish()
+        KeepassAUtil.instance.turnLauncher(LauncherActivity.OPEN_TYPE_OPEN_DB)
       }, 150)
       return
     }
@@ -168,15 +153,13 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   ) {
     super.startActivity(intent, options)
     isStartOtherActivity = true
-    // overridePendingTransition(R.anim.translate_right_in, R.anim.translate_left_out)
   }
 
   /**
    * Android10 Activity的onStop方法可能会导致共享元素动画失效，通过反射注入恢复共享元素动画
    * @param activity
    */
-  @SuppressLint("PrivateApi")
-  private fun updateResume(activity: Activity) {
+  fun updateResume(activity: Activity) {
     if (!isStartOtherActivity) {
       return
     }
@@ -217,9 +200,6 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
       val sharedElementName = sharedElement.second
         ?: throw IllegalArgumentException("Shared element name must not be null")
       names.add(sharedElementName)
-      val view = sharedElement.first
-        ?: throw IllegalArgumentException("Shared element must not be null")
-//      views.add(sharedElement.first)
     }
     return names
   }
@@ -228,6 +208,5 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     super.onResume()
     // 启动定时器
     KeepassAUtil.instance.startLockTimer(this)
-    // updateResume(this)
   }
 }

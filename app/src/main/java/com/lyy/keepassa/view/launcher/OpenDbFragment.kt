@@ -15,13 +15,10 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Intent
 import android.content.res.AssetManager
 import android.net.Uri
-import android.os.Build
-import android.text.Html
 import android.text.TextUtils
 import android.view.View
 import android.view.animation.LinearInterpolator
@@ -117,7 +114,6 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
     binding.key.setOnClickListener(this)
 
     if (!showChangeDbBt) {
-      binding.line.visibility = View.GONE
       binding.changeDb.visibility = View.GONE
     }
 
@@ -165,7 +161,7 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   /**
    * 处理指纹
    */
-  @TargetApi(Build.VERSION_CODES.M) private fun handleFingerprint() {
+  private fun handleFingerprint() {
     modlue.isNeedUseFingerprint(openDbRecord.localDbUri)
       .observe(this, Observer { needUse ->
         if (needUse) {
@@ -241,10 +237,12 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
         openDb(binding.password.text.toString())
         // val dialog = Routerfit.create(DialogRouter::class.java).toPlayDonateDialog()
       }
+
       R.id.change_db -> {
         binding.cbKey.isChecked = false
         (activity as LauncherActivity).changeDb()
       }
+
       R.id.key -> {
         KeepassAUtil.instance.openSysFileManager(this@OpenDbFragment, "*/*", REQ_CODE_FILE)
       }
@@ -285,8 +283,8 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
   }
 
   private fun setDbName(dbRecord: DbHistoryRecord) {
-    binding.db.text = Html.fromHtml(getString(R.string.db1, dbRecord.dbName))
-    binding.db.setLeftIcon(
+    binding.tvDb.text = "${getString(R.string.db)}|${dbRecord.dbName}"
+    binding.tvDb.setLeftIcon(
       resources.getDrawable(dbRecord.getDbPathType().icon, requireContext().theme)
     )
   }

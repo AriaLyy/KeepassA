@@ -44,6 +44,10 @@ class EntryFileCard(context: Context, attributeSet: AttributeSet) :
     handleList(data)
   }
 
+  override fun setBackgroundColor(color: Int) {
+    setCardBackgroundColor(color)
+  }
+
   private fun handleList(data: MutableList<MutableEntry<String, ProtectedBinary>>) {
     val adapter = AttachmentAdapter()
 

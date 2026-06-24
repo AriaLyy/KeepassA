@@ -16,13 +16,13 @@ import kotlinx.coroutines.launch
  * @Date 5:41 PM 2024/1/25
  **/
 internal class OtpKeeTraySteamHandler : IOtpModifyHandler {
-  private lateinit var bean: TrayTotpBean
+  private var bean: TrayTotpBean?= null
   override fun initView(context: ModifyOtpDialog) {
     val binding = context.binding
     binding.contentLayout.group.isVisible = false
     binding.contentLayout.rbCustom.isVisible = false
-    bean = context.pwEntryV4.getKeeTrayBean()
-    binding.contentLayout.strKey.setText(bean.secret)
+    bean = context.pwEntryV4?.getKeeTrayBean()
+    binding.contentLayout.strKey.setText(bean?.secret)
     binding.contentLayout.rbSteam.isChecked = true
     binding.contentLayout.rbDefault.isVisible = false
   }
@@ -35,11 +35,11 @@ internal class OtpKeeTraySteamHandler : IOtpModifyHandler {
     period: Int,
     isSteam: Boolean
   ) {
-    bean.period = period
-    bean.secret = secret
-    val beanMap = bean.toOtpStringMap()
-    beanMap.forEach {
-      context.pwEntryV4.strings[it.key] = it.value
+    bean?.period = period
+    bean?.secret = secret
+    val beanMap = bean?.toOtpStringMap()
+    beanMap?.forEach {
+      context.pwEntryV4?.strings?.set(it.key, it.value)
     }
 
     context.lifecycleScope.launch {

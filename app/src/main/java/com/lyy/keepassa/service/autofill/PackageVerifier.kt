@@ -70,9 +70,13 @@ object PackageVerifier {
       pm.getPackageInfo(
         packageName,
         PackageManager.GET_SIGNING_CERTIFICATES
-      ).signingInfo.apkContentsSigners
+      ).signingInfo?.apkContentsSigners
     } else {
       pm.getPackageInfo(packageName, PackageManager.GET_SIGNATURES).signatures
+    }
+
+    if (signatures.isNullOrEmpty()){
+      return ""
     }
 
     val cert = signatures[0].toByteArray()
@@ -96,7 +100,7 @@ object PackageVerifier {
       if (length > 2) {
         hex = hex.substring(length - 2, length)
       }
-      builder.append(hex.toUpperCase(Locale.ROOT))
+      builder.append(hex.uppercase(Locale.ROOT))
       if (i < bytes.size - 1) {
         builder.append(':')
       }

@@ -34,6 +34,10 @@ class EntryTagCard(context: Context, attributeSet: AttributeSet) :
     }
   }
 
+  override fun setBackgroundColor(color: Int) {
+    setCardBackgroundColor(color)
+  }
+
   private fun buildChip(index: Int, tag: String) {
     val chip = layoutInflater.inflate(
       R.layout.layout_chip_harvest,

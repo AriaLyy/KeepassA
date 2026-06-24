@@ -7,11 +7,20 @@
  */
 package com.lyy.keepassa.util
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.text.InputType
+import android.view.View.OnClickListener
+import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.StringUtil
@@ -24,6 +33,12 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.EntryRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.router.ServiceRouter
+import com.lyy.keepassa.view.create.CreateDbActivity
+import com.lyy.keepassa.view.launcher.LauncherActivity
+import com.lyy.keepassa.view.launcher.OpenDbHistoryActivity
+import com.lyy.keepassa.view.main.QuickUnlockActivity
+import com.lyy.keepassa.widget.toPx
+import com.lyy.keepassa.widgets.MainFabSubAction
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import timber.log.Timber
@@ -48,6 +63,49 @@ object KpaUtil {
   }
 
   val openEntryRecordFlow = MutableSharedFlow<EntryRecord>()
+
+  fun isEdgeToEdgeEnabled(activity: AppCompatActivity): Boolean {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM){
+      return true
+    }
+    if (activity.window.decorView.fitsSystemWindows){
+      return true
+    }
+    return false
+  }
+
+  /**
+   * is night mode
+   * @return true yes, false no
+   */
+  fun isNightMode(): Boolean {
+    return BaseApp.APP.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+  }
+
+  fun buildMenuIcon(
+    context: Context,
+    drawable: Drawable?,
+    onClick: OnClickListener
+  ): MainFabSubAction {
+    val dp42 = 42.toPx()
+    val lp = FrameLayout.LayoutParams(dp42, dp42)
+    val menu = MainFabSubAction(context, null)
+    menu.layoutParams = lp
+    menu.setDrawable(drawable)
+    menu.doClick {
+      onClick.onClick(menu)
+    }
+    return menu
+  }
+
+  fun isHomeActivity(ac: Activity): Boolean {
+    val clazz = ac.javaClass
+    return (clazz == LauncherActivity::class.java
+      || clazz == CreateDbActivity::class.java
+      || clazz == OpenDbHistoryActivity::class.java
+      || clazz == QuickUnlockActivity::class.java
+      )
+  }
 
   fun isEmptyPass(): Boolean {
     return isEmptyPass

@@ -1,3 +1,29 @@
+### 2.8.1
+* fix bug
+
+### 2.8.0
+* Android 15 Adaptation
+* webdav supports self-hosted services
+* fix bug
+
+### 2.7.2
+* fix: Fix bug
+
+### 2.7.1
+* fix: Fix bug
+
+### 2.7.0
+* fix: Fix bug
+
+### 2.6.0 
+* new: Add custom icon function
+
+### 2.5.0 (2024/05/15)
+* new: Entry Detail Dynamic colors
+* new: More elegant animations
+* new: In-app reviews
+* fix: Fix bug
+
 ### 2.4.7 (2024/04/30)
 * fix: Fix bug
 

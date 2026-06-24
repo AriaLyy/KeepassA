@@ -2,13 +2,12 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     >
 
   <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@color/background_color"
-      android:fitsSystemWindows="true"
       >
 
     <com.airbnb.lottie.LottieAnimationView
@@ -16,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_centerVertical="true"
+        android:layout_marginTop="80dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
@@ -26,58 +26,64 @@
         android:id="@+id/head"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:gravity="center"
         android:text="@string/welcome"
-        android:textColor="@color/text_black_color"
-        android:textSize="24sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/anim"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="@+id/anim"
         app:layout_constraintStart_toStartOf="@+id/anim"
-        app:layout_constraintTop_toTopOf="@+id/anim"
+        app:layout_constraintTop_toBottomOf="@+id/anim"
+        tools:text="welcome"
         />
 
-
     <com.lyy.keepassa.widget.BubbleTextView
-        android:id="@+id/db"
-        android:layout_width="0dp"
+        android:id="@+id/tvDb"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:drawablePadding="4dp"
         android:ellipsize="middle"
         android:gravity="center_vertical"
         android:singleLine="true"
         android:text="@string/db"
-        android:textColor="@color/text_black_color"
-        android:textSize="@dimen/text_size_normal"
-        app:icon_size="24dp"
-        app:left_icon="@drawable/ic_android"
+        android:textColor="#FBF6C0"
+        android:textSize="@dimen/text_size_biggest"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/head"
         />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/db_name_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
         android:background="@color/transparent"
-        app:layout_constraintStart_toStartOf="@+id/db"
-        app:layout_constraintTop_toBottomOf="@+id/db"
         app:endIconTint="@color/color_icon_grey"
         app:errorTextAppearance="@style/InputEditTextErrorStyle"
         app:hintTextAppearance="@style/InputEditTextHintStyle"
         app:passwordToggleDrawable="@drawable/selector_password"
         app:passwordToggleEnabled="true"
+        app:startIconDrawable="@drawable/ic_password"
+        app:boxStrokeWidth="2dp"
+        app:boxStrokeErrorColor="@color/error_color"
+        app:boxStrokeColor="@color/color_FCCCB7"
+        style="@style/Widget.Material3.TextInputLayout.FilledBox"
         >
 
       <com.google.android.material.textfield.TextInputEditText
           android:id="@+id/password"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:background="@drawable/login_bg_input_pass"
           android:hint="@string/password"
           android:imeOptions="actionDone"
           android:inputType="textPassword"
-          android:paddingLeft="4dp"
-          android:paddingRight="4dp"
+          android:textSize="@dimen/text_size_normal"
           android:transitionName="@string/transition_db_name"
-          style="@style/KpaEditTextStyle"
+          tools:text="pass"
           />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -88,7 +94,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:text="@string/need_key"
-        android:textColor="@color/text_black_color"
+        android:textColor="@color/color_FFFFFF"
         android:textSize="@dimen/text_size_normal"
         app:layout_constraintStart_toStartOf="@+id/anim"
         app:layout_constraintTop_toBottomOf="@+id/db_name_layout"
@@ -106,7 +112,7 @@
         android:maxLength="40"
         android:singleLine="true"
         android:text="@string/key"
-        android:textColor="@color/text_black_color"
+        android:textColor="@color/color_FFFFFF"
         android:textSize="@dimen/text_size_normal"
         app:layout_constraintBottom_toBottomOf="@+id/cb_key"
         app:layout_constraintEnd_toEndOf="parent"
@@ -116,17 +122,48 @@
     <androidx.constraintlayout.helper.widget.Flow
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:orientation="vertical"
         android:paddingEnd="24dp"
         android:paddingStart="24dp"
-        app:layout_constraintBottom_toTopOf="@+id/fingerprint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/anim"
-        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintTop_toBottomOf="@+id/tvDb"
         app:flow_horizontalAlign="start"
-        app:flow_verticalGap="12dp"
-        app:constraint_referenced_ids="db, db_name_layout, cb_key"
+        app:constraint_referenced_ids="db_name_layout, cb_key"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/open"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/login_btn_bg"
+        android:elevation="4dp"
+        android:text="@string/open"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/text_size_normal"
+        app:layout_constraintBottom_toTopOf="@+id/change_db"
+        app:layout_constraintEnd_toEndOf="@+id/db_name_layout"
+        app:layout_constraintStart_toStartOf="@+id/db_name_layout"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/change_db"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="60dp"
+        android:background="@drawable/bg_ripple_white_selector"
+        android:padding="8dp"
+        android:text="@string/change_db"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/text_size_smallest"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         />
 
     <com.airbnb.lottie.LottieAnimationView
@@ -134,52 +171,13 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/line"
+        app:layout_constraintBottom_toTopOf="@+id/open"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:lottie_autoPlay="true"
         app:lottie_cacheComposition="true"
         app:lottie_fileName="fingerprint_anim.json"
         app:lottie_loop="false"
-        />
-
-
-    <View
-        android:id="@+id/line"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/line_color"
-        app:layout_constraintBottom_toTopOf="@+id/change_db"
-        app:layout_constraintStart_toStartOf="parent"
-        />
-
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/change_db"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
-        android:background="@drawable/ripple_white_selector"
-        android:text="@string/change_db"
-        android:textColor="@color/text_blue_color"
-        android:textSize="@dimen/text_size_normal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/open"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/ripple_white_selector"
-        android:text="@string/open"
-        android:textColor="@color/text_blue_color"
-        android:textSize="@dimen/text_size_normal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/change_db"
         />
 
 

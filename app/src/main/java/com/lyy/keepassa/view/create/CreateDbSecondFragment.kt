@@ -9,17 +9,14 @@
 
 package com.lyy.keepassa.view.create
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.text.InputType
 import android.text.TextUtils
 import android.view.View
-import android.view.animation.LinearInterpolator
 import android.widget.RadioButton
 import androidx.lifecycle.ViewModelProvider
 import com.arialyy.frame.router.Routerfit
+import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseFragment
 import com.lyy.keepassa.databinding.FragmentCreateDbSecondBinding
@@ -49,11 +46,11 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
   @SuppressLint("RestrictedApi")
   override fun initData() {
     EventBusHelper.reg(this)
-    module = ViewModelProvider(requireActivity()).get(CreateDbModule::class.java)
+    module = ViewModelProvider(requireActivity())[CreateDbModule::class.java]
     binding.dbName.setText(module.dbName)
-    val leftDrawable = resources.getDrawable(module.storageType.icon, requireContext().theme)
+    val leftDrawable = ResUtil.getDrawable(module.storageType.icon)
     val iconSize = resources.getDimension(R.dimen.icon_size)
-    leftDrawable.setBounds(0, 0, iconSize.toInt(), iconSize.toInt())
+    leftDrawable?.setBounds(0, 0, iconSize.toInt(), iconSize.toInt())
     binding.dbHint.setCompoundDrawables(leftDrawable, null, null, null)
     binding.encryptGroup.setOnCheckedChangeListener { group, checkedId ->
       val rb = group.findViewById<RadioButton>(checkedId)
@@ -68,8 +65,8 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
     binding.encryptType.setOnIconClickListener(this)
     binding.passKey.setOnIconClickListener(this)
     (binding.encryptGroup.getChildAt(0) as RadioButton).isChecked = true
-    binding.passKeyLayout.post {
-      keyPassLayoutH = binding.passKeyLayout.height
+    binding.flowKey.post {
+      keyPassLayoutH = binding.flowKey.height
     }
     binding.chooseBt.setOnClickListener {
       val dialog = CreatePassKeyDialog()
@@ -77,19 +74,19 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
     }
     KeepassAUtil.instance.toggleKeyBord(requireContext())
     binding.password.requestFocus()
-    binding.passwordLayout.endIconDrawable = resources.getDrawable(R.drawable.ic_view_off)
+    binding.passwordLayout.endIconDrawable = ResUtil.getDrawable(R.drawable.ic_view_off)
 //    binding.password.imeOptions = EditorInfo.IME_ACTION_NEXT
 
     binding.passwordLayout.setEndIconOnClickListener {
       isShowPass = !isShowPass
       if (isShowPass) {
-        binding.passwordLayout.endIconDrawable = resources.getDrawable(R.drawable.ic_view)
+        binding.passwordLayout.endIconDrawable = ResUtil.getDrawable(R.drawable.ic_view)
         binding.enterPasswordLayout.visibility = View.GONE
         binding.password.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
         // 重新修改确认按钮
 //        binding.password.imeOptions = EditorInfo.IME_ACTION_NEXT
       } else {
-        binding.passwordLayout.endIconDrawable = resources.getDrawable(R.drawable.ic_view_off)
+        binding.passwordLayout.endIconDrawable = ResUtil.getDrawable(R.drawable.ic_view_off)
         binding.enterPasswordLayout.visibility = View.VISIBLE
         binding.password.setRawInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT)
 
@@ -103,43 +100,12 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
   }
 
   private fun showPassLayout() {
-    val h = resources.getDimension(R.dimen.create_pass_key_h)
-      .toInt()
     binding.passKeyLayoutWrap.visibility = View.VISIBLE
-    binding.passKeyLayout.layoutParams.height = 0
-    binding.passKeyLayout.visibility = View.VISIBLE
-    val anim = ValueAnimator.ofInt(0, h)
-    anim.addUpdateListener { animation ->
-      binding.passKeyLayout.layoutParams.height = animation.animatedValue as Int
-      binding.passKeyLayout.requestLayout()
-    }
-    anim.interpolator = LinearInterpolator()
-    anim.duration = 400
-    anim.start()
   }
 
   private fun hintPassLayout() {
-    val h = resources.getDimension(R.dimen.create_pass_key_h)
-      .toInt()
-    binding.passKeyLayoutWrap.visibility = View.VISIBLE
-    binding.passKeyLayout.layoutParams.height = 0
-    binding.passKeyLayout.visibility = View.VISIBLE
+    binding.passKeyLayoutWrap.visibility = View.GONE
     module.keyUri = null
-    val anim = ValueAnimator.ofInt(h, 0)
-    anim.addUpdateListener { animation ->
-      binding.passKeyLayout.layoutParams.height = animation.animatedValue as Int
-      binding.passKeyLayout.requestLayout()
-    }
-    anim.interpolator = LinearInterpolator()
-    anim.duration = 400
-    anim.start()
-    anim.addListener(object : AnimatorListenerAdapter() {
-      override fun onAnimationEnd(animation: Animator) {
-        super.onAnimationEnd(animation)
-        binding.passKeyLayout.visibility = View.GONE
-        binding.passKeyLayoutWrap.visibility = View.GONE
-      }
-    })
   }
 
   /**
@@ -196,6 +162,7 @@ class CreateDbSecondFragment : BaseFragment<FragmentCreateDbSecondBinding>(),
       R.id.encrypt_type -> {
         msg = getString(R.string.help_pass_type)
       }
+
       R.id.pass_key -> {
         msg = getString(R.string.help_pass_key)
       }

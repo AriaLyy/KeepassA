@@ -18,7 +18,8 @@
         android:gravity="center"
         android:text="@string/modify_db_pass"
         android:textColor="@color/text_blue_color"
-        android:textSize="@dimen/text_size_biggest" />
+        style="@style/DialogTitleStyle"
+        />
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -91,7 +92,7 @@
           android:id="@+id/cancel"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:background="@drawable/ripple_white_selector"
+          android:background="@drawable/bg_ripple_white_selector"
           android:text="@string/cancel"
           android:textColor="@color/text_gray_color" />
 
@@ -99,7 +100,7 @@
           android:id="@+id/enter"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:background="@drawable/ripple_white_selector"
+          android:background="@drawable/bg_ripple_white_selector"
           android:text="@string/enter"
           android:textColor="@color/text_blue_color" />
 

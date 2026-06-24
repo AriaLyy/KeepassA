@@ -17,8 +17,12 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.annotation.Autowired
@@ -27,6 +31,7 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwGroupId
+import com.keepassdroid.database.PwGroupIdV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
 import com.lyy.keepassa.R
@@ -37,6 +42,7 @@ import com.lyy.keepassa.entity.CommonState.DELETE
 import com.lyy.keepassa.entity.GoogleOtpBean
 import com.lyy.keepassa.entity.KeepassBean
 import com.lyy.keepassa.entity.KeepassXcBean
+import com.lyy.keepassa.entity.KpaIconType
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.entity.TagBean
 import com.lyy.keepassa.entity.TrayTotpBean
@@ -46,6 +52,7 @@ import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.doClick
+import com.lyy.keepassa.util.handleBottomEdge
 import com.lyy.keepassa.util.hasTOTP
 import com.lyy.keepassa.util.loadImg
 import com.lyy.keepassa.util.takePermission
@@ -60,9 +67,8 @@ import com.lyy.keepassa.view.dialog.CreateTagDialog
 import com.lyy.keepassa.view.dialog.TimeChangeDialog
 import com.lyy.keepassa.view.dialog.otp.CreateOtpModule
 import com.lyy.keepassa.view.dir.ChooseGroupActivity
-import com.lyy.keepassa.view.icon.IconBottomSheetDialog
-import com.lyy.keepassa.view.icon.IconItemCallback
 import com.lyy.keepassa.view.launcher.LauncherActivity
+import com.lyy.keepassa.widget.toPx
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -168,17 +174,27 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
         Timber.d("pwGroupId is null")
         return@registerForActivityResult
       }
-      module.updateEntryGroupIdAndSave(this, it)
+      module.updateEntryGroupIdAndSave(this, it as PwGroupIdV4)
     }
 
   fun launchGroupChoose() {
     chooseGroupLauncher.launch(null, ActivityOptionsCompat.makeSceneTransitionAnimation(this))
   }
 
+  private fun handleEdge2Edge(){
+    binding.btnAddMore.handleBottomEdge { view, i ->
+      view.updateLayoutParams<CoordinatorLayout.LayoutParams> {
+        bottomMargin = i + 16.toPx()
+      }
+      binding.scroll.updatePadding(bottom = i)
+    }
+  }
+
   override fun initData(savedInstanceState: Bundle?) {
     super.initData(savedInstanceState)
     ARouter.getInstance().inject(this)
     module = ViewModelProvider(this)[CreateEntryModule::class.java]
+    handleEdge2Edge()
 
     createHandler = if (createEnum == MODIFY) {
       ModifyEntryHandler(this)
@@ -489,17 +505,28 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
   }
 
   private fun handleIconClick() {
+    fun showIconChangeDialog() {
+      SelectIconDialog().show()
+    }
     binding.ivIcon.doClick {
-      val iconDialog = IconBottomSheetDialog()
-      iconDialog.setCallback(object : IconItemCallback {
-        override fun onDefaultIcon(defIcon: PwIconStandard) {
-          module.icon = defIcon
-          binding.ivIcon.loadImg(ResUtil.getDrawable(IconUtil.getIconById(module.icon.iconId)))
+      showIconChangeDialog()
+    }
+
+    binding.tvEdit.doClick {
+      showIconChangeDialog()
+    }
+
+    lifecycleScope.launch {
+      SelectIconDialog.iconResultFlow.collectLatest {
+        if (it.first == KpaIconType.DEFAULT) {
+          module.icon = it.second as PwIconStandard
           module.customIcon = PwIconCustom.ZERO
+          binding.ivIcon.loadImg(ResUtil.getDrawable(IconUtil.getIconById(module.icon.iconId)))
+          return@collectLatest
         }
 
-        override fun onCustomIcon(customIcon: PwIconCustom) {
-          module.customIcon = customIcon
+        if (it.first == KpaIconType.CUSTOM) {
+          module.customIcon = it.second as PwIconCustom
           binding.ivIcon.loadImg(
             IconUtil.convertCustomIcon2Drawable(
               this@CreateEntryActivity,
@@ -507,8 +534,9 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
             )
           )
         }
-      })
-      iconDialog.show(supportFragmentManager, IconBottomSheetDialog::class.java.simpleName)
+
+        Timber.e("not support type: ${it.first}")
+      }
     }
   }
 

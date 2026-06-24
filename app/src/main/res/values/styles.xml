@@ -5,21 +5,76 @@
 
   </style>
 
+  <style name="BaseDialogTheme" parent="Theme.AppCompat.Dialog">
+    <item name="android:windowFrame">@null</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowIsFloating">true</item>
+    <item name="android:windowContentOverlay">@null</item>
+    <item name="android:windowBackground">@android:color/transparent</item>
+    <item name="android:windowFullscreen">true</item>
+    <item name="android:windowTranslucentStatus" >true</item>
+    <item name="android:windowTranslucentNavigation">true</item>
+  </style>
+
+  <style name="BaseFullScreenDialogTheme" parent="Theme.Material3.DayNight.NoActionBar">
+    <item name="android:windowFrame">@null</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowIsFloating">false</item>
+    <item name="android:windowContentOverlay">@null</item>
+    <item name="android:windowBackground">@android:color/transparent</item>
+    <item name="android:windowFullscreen">true</item>
+    <item name="android:windowTranslucentStatus" >true</item>
+    <item name="android:windowTranslucentNavigation">true</item>
+  </style>
+
+  <style name="MyDialog" parent="BaseDialogTheme"/>
+  <style name="FullScreenDialogTheme" parent="BaseFullScreenDialogTheme"/>
+
   <style name="BaseTheme" parent="Theme.Material3.DayNight">
     <item name="windowActionBar">false</item>
+    <item name="android:navigationBarColor">@android:color/transparent</item>
     <item name="windowNoTitle">true</item>
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorAccent</item>
+    <item name="backgroundColor">@color/background_color</item>
     <item name="android:fontFamily">@font/roboto_regular</item>
-    <item name="android:windowAnimationStyle">@style/windowAnimatorDemo</item>
-    <!--    <item name="android:windowIsTranslucent">true</item>-->
-    <!--    处理状态栏颜色 -->
-    <!--    <item name="android:windowTranslucentStatus">false</item>-->
-    <!--    <item name="android:windowTranslucentNavigation">false</item>-->
-    <item name="android:statusBarColor">@color/colorPrimary</item>
+    <item name="android:statusBarColor">@color/transparent</item>
     <item name="android:windowActivityTransitions">true</item>
+    <item name="android:windowLightStatusBar">?isLightTheme</item>
+    <item name="android:windowAnimationStyle">@style/notAnimation</item>
+  </style>
 
+  <style name="SplashTheme" parent="Theme.SplashScreen">
+    <item name="android:windowAnimationStyle">@style/notAnimation</item>
+    <item name="windowNoTitle">true</item>
+    <item name="windowActionBar">false</item>
+    <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+    <item name="windowSplashScreenBackground">@color/background_color</item>
+    <item name="postSplashScreenTheme">@style/BaseTheme</item>
+    <item name="windowSplashScreenAnimationDuration">1000</item>
+  </style>
+
+  <style name="Theme.notAnimation" parent="BaseTheme">
+    <item name="android:windowAnimationStyle">@null</item>
+    <item name="android:windowBackground">@android:color/transparent</item>
+    <item name="android:colorBackgroundCacheHint">@null</item>
+    <item name="android:windowIsTranslucent">true</item>
+  </style>
+
+  <style name="notAnimation">
+    <item name="android:activityOpenEnterAnimation">@null</item>
+    <item name="android:activityOpenExitAnimation">@null</item>
+    <item name="android:activityCloseEnterAnimation">@null</item>
+    <item name="android:activityCloseExitAnimation">@null</item>
+    <item name="android:taskOpenEnterAnimation">@null</item>
+    <item name="android:taskOpenExitAnimation">@null</item>
+    <item name="android:taskCloseEnterAnimation">@null</item>
+    <item name="android:taskCloseExitAnimation">@null</item>
+    <item name="android:taskToFrontEnterAnimation">@null</item>
+    <item name="android:taskToFrontExitAnimation">@null</item>
+    <item name="android:taskToBackEnterAnimation">@null</item>
+    <item name="android:taskToBackExitAnimation">@null</item>
   </style>
 
   <style name="windowAnimatorDemo">
@@ -28,7 +83,6 @@
     <item name="android:activityCloseEnterAnimation">@anim/translate_left_in</item>
     <item name="android:activityCloseExitAnimation">@anim/translate_right_out</item>
   </style>
-
 
 
   <style name="DialogActivityStyle" parent="Theme.Material3.DayNight.Dialog">
@@ -111,8 +165,8 @@
   <style name="FullScreenDialog" parent="Theme.AppCompat.Light.NoActionBar">
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowIsFloating">false</item>
-    <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorPrimary">@color/transparent</item>
+    <item name="colorPrimaryDark">@color/transparent</item>
   </style>
 
   <style name="PathTypeDialogAnim" parent="android:Animation">
@@ -128,7 +182,7 @@
 
   <!-- InputEditTextLayout hint样式 -->
   <style name="InputEditTextHintStyle" parent="TextAppearance.AppCompat">
-    <item name="android:textSize">@dimen/text_size_small</item>
+    <item name="android:textSize">@dimen/text_size_smallest</item>
     <item name="android:textColor">@color/colorAccent</item>
   </style>
 
@@ -155,7 +209,7 @@
     <item name="android:textColor">@color/text_black_color</item>
     <item name="android:textSize">@dimen/text_size_normal</item>
     <item name="icon_size">24dp</item>
-    <item name="android:background">@drawable/ripple_white_selector</item>
+    <item name="android:background">@drawable/bg_ripple_white_selector</item>
   </style>
 
   <style name="NoAnimDialog">
@@ -167,7 +221,7 @@
   </style>
 
   <!-- 标题字体 -->
-  <style name="KpaTitleTextStyle">
+  <style name="KpaBigTextStyle">
     <item name="android:textSize">@dimen/text_size_big</item>
     <item name="android:textColor">@color/text_black_color</item>
   </style>
@@ -194,8 +248,8 @@
   </style>
 
   <style name="KpaDialogLayoutStyle">
-    <item name="android:background">@drawable/bg_white_radius_4</item>
-    <item name="android:elevation">4dp</item>
+    <item name="android:background">@drawable/bg_white_radius_8</item>
+    <item name="android:elevation">2dp</item>
   </style>
 
   <!-- 可展开的textView样式  -->
@@ -238,14 +292,34 @@
     <item name="cornerSize">50%</item>
   </style>
 
+  <!-- ShapeableImageView底部圆角 -->
+  <style name="BottomImageRoundStyle">
+    <item name="cornerFamilyBottomRight">rounded</item>
+    <item name="cornerFamilyBottomLeft">rounded</item>
+    <item name="cornerSizeBottomRight">16dp</item>
+    <item name="cornerSizeBottomLeft">16dp</item>
+  </style>
+
 
   <style name="KpaIconButton" parent="Widget.Material3.Button.ElevatedButton.Icon">
-    <item name="android:background">@drawable/ripple_white_selector</item>
+    <item name="android:background">@drawable/bg_ripple_white_selector</item>
     <item name="android:textColor">@color/text_black_color</item>
     <item name="android:textSize">@dimen/text_size_normal</item>
     <item name="iconSize">30dp</item>
     <item name="iconGravity">top</item>
     <item name="iconTint">@color/color_icon_grey</item>
+  </style>
+
+  <style name="DialogTitleStyle">
+    <item name="android:textStyle">bold</item>
+    <item name="android:fontFamily">@font/roboto_bold</item>
+    <item name="android:textSize">@dimen/text_size_biggest</item>
+  </style>
+
+  <style name="KpaCheckBox" parent="">
+    <item name="colorOnSurface">@color/transparent</item>
+    <item name="colorOutline">@color/white</item>
+    <item name="colorSecondary">@color/colorAccent</item>
   </style>
 
 </resources>

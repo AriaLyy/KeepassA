@@ -89,7 +89,7 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
     }
     binding.btDonate.setDrawable(
       DrawableTextView.LEFT,
-      ResUtil.getSvgIcon(R.drawable.ic_favorite_24px, R.color.text_blue_color),
+      ResUtil.getSvgIcon(R.drawable.ic_favorite_24px, com.lyy.widget.R.color.text_blue_color),
       16.toPx(),
       16.toPx()
     )

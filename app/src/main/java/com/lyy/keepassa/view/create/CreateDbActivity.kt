@@ -14,7 +14,10 @@ import android.text.TextUtils
 import android.view.View
 import android.view.ViewAnimationUtils
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.Transition
@@ -30,6 +33,8 @@ import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.handleBottomEdge
+import com.lyy.keepassa.widget.toPx
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -55,6 +60,15 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
     transaction.replace(R.id.content, firstFragment)
     transaction.commitNow()
     listenerOpenDb()
+    handleEdge2Edge()
+  }
+
+  private fun handleEdge2Edge() {
+    binding.flowBottom.handleBottomEdge { view, i ->
+      view.updateLayoutParams<ConstraintLayout.LayoutParams> {
+        bottomMargin = i
+      }
+    }
   }
 
   private fun listenerOpenDb() {
@@ -78,7 +92,7 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
   /**
    * 右 -> 左
    */
-  private fun getRlAnim(): Transition {
+  private fun getRlAnim(): Transition? {
     return TransitionInflater.from(this)
       .inflateTransition(R.transition.slide_enter)
   }
@@ -86,7 +100,7 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
   /**
    * 左 -> 右
    */
-  private fun getLrAnim(): Transition {
+  private fun getLrAnim(): Transition? {
     return TransitionInflater.from(this)
       .inflateTransition(R.transition.slide_exit)
   }
@@ -116,6 +130,7 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
           done()
         }
       }
+
       R.id.up -> upFragment()
     }
   }
@@ -173,7 +188,7 @@ class CreateDbActivity : BaseActivity<ActivityCreateDbBinding>(), View.OnClickLi
   private fun upFragment() {
     curSetup = 1
     binding.next.setText(R.string.next)
-    binding.up.visibility = View.GONE
+    binding.up.visibility = View.INVISIBLE
 
     /*
      * 重新设置动画：

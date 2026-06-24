@@ -4,40 +4,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
-  <LinearLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:orientation="vertical"
+      android:background="@color/background_color"
       >
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:layout_marginTop="24dp"
+        android:alpha="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_up"
         app:subtitleTextAppearance="@style/Toolbar.SubTitleText"
         app:theme="@style/ToolbarMenuTheme"
+        tools:alpha="1"
         app:titleTextAppearance="@style/Toolbar.TitleText"
         />
 
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivBlur"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_color"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@color/color_4E85DB"
+        />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/clContentRoot"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:background="@color/transparent"
+        app:layout_constraintTop_toBottomOf="@+id/topAppBar"
+        tools:alpha="1"
         >
 
       <com.google.android.material.appbar.AppBarLayout
           android:id="@+id/appBarLayout"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:background="@color/transparent"
           app:elevation="0dp"
           >
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/transparent"
             app:layout_scrollFlags="scroll|enterAlways|snap|snapMargins"
             >
 
@@ -53,14 +71,6 @@
               app:shapeAppearance="@style/CircleStyle"
               />
 
-          <androidx.recyclerview.widget.RecyclerView
-              android:id="@+id/rvAppIcon"
-              android:layout_width="100dp"
-              android:layout_height="36dp"
-              app:layout_constraintBottom_toBottomOf="@+id/ivIcon"
-              app:layout_constraintEnd_toEndOf="@+id/ivIcon"
-              app:layout_constraintStart_toEndOf="@+id/ivIcon"
-              />
 
           <androidx.appcompat.widget.AppCompatTextView
               android:id="@+id/tvChar"
@@ -93,9 +103,10 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clFun"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
+            android:background="@color/transparent"
             app:layout_scrollFlags="noScroll"
             >
 
@@ -132,10 +143,10 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_marginTop="20dp"
+              android:background="@color/transparent"
               app:layout_constraintTop_toTopOf="parent"
               app:constraint_referenced_ids="btnUserName, btnUserPass, btnTotp"
               />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -144,6 +155,7 @@
 
 
       <androidx.core.widget.NestedScrollView
+          android:id="@+id/scroll"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:layout_marginTop="12dp"
@@ -209,5 +221,14 @@
       </androidx.core.widget.NestedScrollView>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-  </LinearLayout>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:constraint_referenced_ids="topAppBar, clContentRoot"
+        />
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -50,13 +50,13 @@ class DonateDialog : BaseDialog<DialogDonateBinding>(), View.OnClickListener {
 
     binding.title.setDrawable(
         DrawableTextView.LEFT,
-        ResUtil.getSvgIcon(R.drawable.ic_favorite_24px, R.color.text_blue_color),
+        ResUtil.getSvgIcon(R.drawable.ic_favorite_24px, com.lyy.widget.R.color.text_blue_color),
         24.toPx(),
         24.toPx()
     )
-    if (PlayUtil.playServiceExist(requireActivity())){
-      binding.rlPlay.visibility = View.VISIBLE
-    }
+    // if (PlayUtil.playServiceExist(requireActivity())){
+    //   binding.rlPlay.visibility = View.VISIBLE
+    // }
   }
 
   override fun onClick(v: View?) {

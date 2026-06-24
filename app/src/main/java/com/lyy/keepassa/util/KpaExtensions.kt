@@ -15,14 +15,19 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.arialyy.frame.util.ReflectionUtil
 import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.adapter.RvItemClickSupport
+import com.blankj.utilcode.util.ActivityUtils
+import com.blankj.utilcode.util.BarUtils
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.security.ProtectedString
@@ -45,8 +50,107 @@ import com.lyy.keepassa.util.totp.SecretHexType
 import com.lyy.keepassa.util.totp.TokenCalculator
 import com.lyy.keepassa.util.totp.TokenCalculator.HashAlgorithm
 import timber.log.Timber
+import kotlin.math.abs
 
 val charRegex = Regex("[^a-zA-Z0-9]")
+
+/**
+ * 判断View是否被销毁或无效
+ * @return true 表示View已销毁或无效，false 表示View仍然有效
+ */
+fun View?.isDestroyed(): Boolean {
+  if (this == null) return true // View为null，视为销毁
+
+  // 检查View是否附加到窗口
+  if (!isAttachedToWindow) return true // 未附加到窗口，视为销毁
+
+  // 检查View的上下文是否有效
+  val context = context
+  if (context is Activity) {
+    if (context.isFinishing || context.isDestroyed) return true // Activity已结束或销毁
+  }
+
+  // 检查View是否在视图层级中
+  if (parent == null) return true // 没有父视图，视为已移除
+
+  return false // View仍然有效
+}
+
+fun View.handleTopEdge(callback: (View, Int) -> Unit){
+  ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
+
+    val ac = ActivityUtils.getTopActivity() ?: return@setOnApplyWindowInsetsListener insets
+
+    if (!BarUtils.isStatusBarVisible(ac)) {
+      callback.invoke(this, 0)
+      return@setOnApplyWindowInsetsListener insets
+    }
+    val stateBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+
+    callback.invoke(this, stateBars.top) // 状态栏高度
+    return@setOnApplyWindowInsetsListener WindowInsetsCompat.CONSUMED
+  }
+}
+
+fun View.handleBottomEdge(callback: (View, Int) -> Unit) {
+  ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
+
+    val ac = ActivityUtils.getTopActivity() ?: return@setOnApplyWindowInsetsListener insets
+
+    if (!BarUtils.isNavBarVisible(ac)) {
+      callback.invoke(this, 0)
+      return@setOnApplyWindowInsetsListener insets
+    }
+    // insets 是已经计算好的区域，直接使用left, right, top, bottom 就行
+    val bars = insets.getInsets(
+      WindowInsetsCompat.Type.systemBars()
+        or WindowInsetsCompat.Type.displayCutout()
+    )
+    callback.invoke(this, bars.bottom) // bars.bottom 是已经计算好的高度
+
+
+    return@setOnApplyWindowInsetsListener WindowInsetsCompat.CONSUMED
+  }
+}
+
+fun getGestureBarHeight(insets: WindowInsetsCompat): Int {
+  return insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
+}
+
+fun isGestureBarVisible(view: View): Boolean {
+  val insets = ViewCompat.getRootWindowInsets(view) ?: return false
+
+  // 获取系统手势区域和导航栏区域
+  val gestureInsets = insets.getInsets(WindowInsetsCompat.Type.systemGestures())
+  val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+
+  // 手势栏可见的条件：
+  // 1. 系统手势区域大于导航栏区域（手势模式下）
+  // 2. 导航栏本身可见（非全屏模式）
+  return (gestureInsets.bottom > navBarInsets.bottom) &&
+    (navBarInsets.bottom > 0)
+}
+
+fun ViewGroup.handleBottomEdge(callback: (View, Int) -> Unit) {
+  ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
+    val ac = ActivityUtils.getTopActivity() ?: return@setOnApplyWindowInsetsListener insets
+
+    if (!BarUtils.isNavBarVisible(ac)) {
+      callback.invoke(this, 0)
+      return@setOnApplyWindowInsetsListener insets
+    }
+
+    // insets 是已经计算好的区域，直接使用left, right, top, bottom 就行
+    val bars = insets.getInsets(
+      WindowInsetsCompat.Type.systemBars()
+        or WindowInsetsCompat.Type.displayCutout()
+    )
+    callback.invoke(this, bars.bottom) // bars.bottom 是已经计算好的高度
+
+
+    return@setOnApplyWindowInsetsListener WindowInsetsCompat.CONSUMED
+  }
+}
 
 enum class ClickScope {
   /**
@@ -61,6 +165,14 @@ enum class ClickScope {
 }
 
 private var lastClickTime = -1L
+
+/**
+ * 设置中心锚点
+ */
+fun View.pivotCenter() {
+  pivotX = measuredWidth / 2f
+  pivotY = measuredHeight / 2f
+}
 
 /**
  * 时间间隔

@@ -18,5 +18,6 @@ class Constance {
     const val START_DONATE_JUDGMENT_VALUE = 60
     const val KPA_IS_COLLECTION = "KPA_IS_COLLECTION"
     const val IS_AGREE_PRIVACY_AGREEMENT = "IS_AGREE_PRIVACY_AGREEMENT"
+    const val KEY_REVIEW = "KEY_REVIEW"
   }
 }

@@ -22,7 +22,11 @@ class EntryNoteCard(context: Context, attributeSet: AttributeSet) :
   fun bindData(entryV4: PwEntryV4) {
     visibility = if (entryV4.notes.isBlank()) GONE else VISIBLE
     binding.expandTv.text = entryV4.notes
-    binding.expandTv.findViewById<TextView>(R.id.expandable_text).typeface =
+    binding.expandTv.findViewById<TextView>(com.lyy.widget.R.id.expandable_text).typeface =
       ResourcesCompat.getFont(context, R.font.roboto_thinitalic)
+  }
+
+  override fun setBackgroundColor(color: Int) {
+    setCardBackgroundColor(color)
   }
 }

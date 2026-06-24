@@ -12,6 +12,7 @@ package com.lyy.keepassa.util.cloud
 import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
+import androidx.core.net.toUri
 import com.arialyy.frame.util.SharePreUtil
 import com.dropbox.core.DbxRequestConfig
 import com.dropbox.core.android.Auth
@@ -50,9 +51,16 @@ object DropboxUtil : ICloudUtil {
    */
   private fun getRequestConfig(): DbxRequestConfig? {
     if (sDbxRequestConfig == null) {
-      sDbxRequestConfig = DbxRequestConfig.newBuilder("keepassA")
-        .withHttpRequestor(OkHttp3Requestor(OkHttp3Requestor.defaultOkHttpClient()))
-        .build()
+      val result = kotlin.runCatching {
+        sDbxRequestConfig = DbxRequestConfig.newBuilder("keepassA")
+          .withHttpRequestor(OkHttp3Requestor(OkHttp3Requestor.defaultOkHttpClient()))
+          .build()
+      }
+      if (result.isSuccess){
+        return sDbxRequestConfig
+      }
+      Timber.e(result.exceptionOrNull(), "初始化dropbox 失败")
+      return null
     }
     return sDbxRequestConfig
   }
@@ -147,7 +155,7 @@ object DropboxUtil : ICloudUtil {
     cloudFileHash: String?,
     localFileUri: Uri
   ): Boolean {
-    if (cloudFileHash == null){
+    if (cloudFileHash == null) {
       return false
     }
     val hasher = DropboxContentHasher()
@@ -207,20 +215,26 @@ object DropboxUtil : ICloudUtil {
     context: Context,
     dbRecord: DbHistoryRecord
   ): Boolean {
+    val resule = kotlin.runCatching {
+      val dbUri = dbRecord.localDbUri.toUri()
+      val cloudDiskPath = dbRecord.cloudDiskPath
 
-    val dbUri = Uri.parse(dbRecord.localDbUri)
-    val cloudDiskPath = dbRecord.cloudDiskPath
-
-    val ips = BaseApp.APP.contentResolver.openInputStream(dbUri)
-    val fd = getClient()
-      ?.files()
-      ?.uploadBuilder(cloudDiskPath)
-      ?.uploadAndFinish(ips)
-    if (fd != null) {
-      DbSynUtil.serviceModifyTime = fd.serverModified
+      val ips = BaseApp.APP.contentResolver.openInputStream(dbUri)
+      val fd = getClient()
+        ?.files()
+        ?.uploadBuilder(cloudDiskPath)
+        ?.uploadAndFinish(ips)
+      if (fd != null) {
+        DbSynUtil.serviceModifyTime = fd.serverModified
+      }
+      ips?.close()
     }
-    ips?.close()
-    return true
+
+    if (resule.isFailure) {
+      Timber.e(resule.exceptionOrNull())
+    }
+
+    return resule.isSuccess
   }
 
   override suspend fun downloadFile(
@@ -228,16 +242,25 @@ object DropboxUtil : ICloudUtil {
     dbRecord: DbHistoryRecord,
     filePath: Uri
   ): String? {
-    val client = getClient() ?: return null
-    val os = context.contentResolver.openOutputStream(filePath)
-    client.files()
-      .download(dbRecord.cloudDiskPath)
-      .download(os)
-    os?.let {
-      it.flush()
-      it.close()
+
+    val result = kotlin.runCatching {
+      val client = getClient() ?: return null
+      val os = context.contentResolver.openOutputStream(filePath)
+      client.files()
+        .download(dbRecord.cloudDiskPath)
+        .download(os)
+      os?.let {
+        it.flush()
+        it.close()
+      }
     }
-    return filePath.toString()
+
+
+    if (result.isSuccess) {
+      return filePath.toString()
+    }
+    Timber.e(result.exceptionOrNull())
+    return null
   }
 
   /**

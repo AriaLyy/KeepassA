@@ -13,6 +13,8 @@ import android.content.Context
 import android.net.Uri
 import androidx.core.net.toFile
 import com.arialyy.frame.util.FileUtil
+import com.blankj.utilcode.util.ActivityUtils
+import com.lyy.keepassa.R
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.util.hasSpecialChar
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
@@ -39,6 +41,10 @@ object WebDavUtil : ICloudUtil {
     // add("https://dav.dropdav.com") // 需要注册：https://app.dropdav.com/users/sign_in
     // add("https://webdav.yandex.com") 需要使用sdk, htts://yandex.com/dev/id/
     add("other")
+  }
+
+  val WEB_DAV_AUTH_TYPES by lazy {
+    ActivityUtils.getTopActivity().resources.getStringArray(R.array.auth_type)
   }
 
   val REMOVE_PARENT_URLS = mutableListOf<String>().apply {
@@ -90,14 +96,16 @@ object WebDavUtil : ICloudUtil {
     uri: String,
     userName: String,
     password: String,
-    isPreemptive: Boolean
+    isPreemptive: Boolean,
   ): Boolean {
     Timber.d("checkLogin, uri = ${uri}, userName = ${userName}, password = ${password}")
     this.userName = userName
     this.password = password
     setHostUri(uri)
+
     sardine = OkHttpSardine()
     sardine?.setCredentials(userName, password, isPreemptive)
+
     try {
       val list = sardine?.list(uri)
       return !list.isNullOrEmpty()
@@ -157,10 +165,10 @@ object WebDavUtil : ICloudUtil {
           CloudFileInfo(file.path, file.name, file.modified, file.contentLength, file.isDirectory)
         )
       }
-      if (hostUri in REMOVE_PARENT_URLS) {
-        // 坚果云移除第一个item
-        list.removeAt(0)
-      }
+      // if (hostUri in REMOVE_PARENT_URLS) {
+      // 坚果云移除第一个item
+      list.removeAt(0)
+      // }
     } catch (e: Exception) {
       Timber.e(e, "获取文件列表失败")
     }
@@ -219,20 +227,25 @@ object WebDavUtil : ICloudUtil {
   ): Boolean {
     Timber.d("uploadFile, cloudPath = ${dbRecord.cloudDiskPath}, localPath = ${dbRecord.localDbUri}")
     sardine ?: return false
-    var localToken: String? = null
     try {
-      // delFile(dbRecord.cloudDiskPath!!) // 不能删除，否则如果上传失败，文件就丢失了
-      localToken = sardine!!.lock(getConvertedCloudPath(dbRecord), 5)
-      Timber.d("localToken = $localToken")
 
+      val originUrl = getConvertedCloudPath(dbRecord)
+      // val tempPath = replaceFileName(originUrl, "${System.currentTimeMillis()}_")
+      // 1、上传备份文件
       sardine?.put(
-        getConvertedCloudPath(dbRecord),
+        originUrl,
         Uri.parse(dbRecord.localDbUri).toFile(),
         "application/binary",
-        false,
-        localToken
+        false
       )
       Timber.d("上传完成，重新获取文件信息")
+
+      // 2、删除旧的db
+      // delFile(originUrl)
+
+      // 3、将备份文件重命名
+      // sardine?.move(tempPath, originUrl, true)
+
       val info = getFileInfo(getConvertedCloudPath(dbRecord))
       if (info != null) {
         DbSynUtil.serviceModifyTime = info.serviceModifyDate
@@ -240,13 +253,17 @@ object WebDavUtil : ICloudUtil {
     } catch (e: Exception) {
       Timber.e(e, "上传文件失败")
       return false
-    } finally {
-      localToken?.let {
-        sardine?.unlock(getConvertedCloudPath(dbRecord), it)
-      }
     }
 
     return true
+  }
+
+  private fun replaceFileName(originalUrl: String, prefix: String): String {
+    // 使用正则表达式匹配文件名并添加前缀
+    val newUrl = originalUrl.replace(Regex("/([^/]+)\$")) { matchResult ->
+      "/${prefix}${matchResult.groupValues[1]}"
+    }
+    return newUrl
   }
 
   /**
@@ -284,11 +301,9 @@ object WebDavUtil : ICloudUtil {
       FileUtil.createFile(fp)
     }
     sardine?.let {
-      var token = ""
       var fic: ReadableByteChannel? = null
       var foc: FileChannel? = null
       try {
-        token = it.lock(cloudPath)
         val ips = it.get(cloudPath)
         val fileInfo = getFileInfo(cloudPath)
         fic = Channels.newChannel(ips)
@@ -297,14 +312,6 @@ object WebDavUtil : ICloudUtil {
       } catch (e: Exception) {
         Timber.e(e, "下载文件失败")
         return null
-      } finally {
-        try {
-          fic?.close()
-          foc?.close()
-        } catch (e: Exception) {
-          Timber.e(e)
-        }
-        it.unlock(cloudPath, token)
       }
     }
 
@@ -316,8 +323,5 @@ object WebDavUtil : ICloudUtil {
    */
   private fun convertUrl(url: String): String {
     return url
-  }
-
-  private fun getRelativePath() {
   }
 }

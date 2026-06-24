@@ -12,7 +12,7 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        style="@style/KpaTitleTextStyle"
+        style="@style/KpaBigTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -60,10 +60,10 @@
 
     <Button
         android:id="@+id/btEnter"
-        style="@style/KpaTitleTextStyle"
+        style="@style/KpaBigTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/ripple_white_selector"
+        android:background="@drawable/bg_ripple_white_selector"
         android:text="@string/close"
         android:textColor="@color/text_blue_color"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -72,10 +72,10 @@
 
     <com.lyy.keepassa.widget.DrawableTextView
         android:id="@+id/btDonate"
-        style="@style/KpaTitleTextStyle"
+        style="@style/KpaBigTextStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/ripple_white_selector"
+        android:background="@drawable/bg_ripple_white_selector"
         android:drawablePadding="4dp"
         android:text="@string/donate"
         android:textColor="@color/text_blue_color"
