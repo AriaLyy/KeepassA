@@ -68,7 +68,8 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
 
   private var appPkgName: String? = ""
   private var ic: InputConnection? = null
-  private var curEntry: PwEntry? = null
+  private val selectionTracker = CandidateSelectionTracker<PwEntry>()
+  private val curEntry: PwEntry? get() = selectionTracker.current
   private lateinit var candidatesList: RecyclerView
   private val candidatesData = arrayListOf<SimpleItemEntity>()
   private lateinit var candidatesAdapter: CandidatesAdapter
@@ -102,7 +103,6 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     scope = MainScope()
     scope.launch {
       CommonSearchActivity.searchFlow.collectLatest {
-        curEntry = it
         showEntryList(arrayListOf<PwEntry>().apply { add(it) })
       }
     }
@@ -117,21 +117,17 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     candidatesList.adapter = candidatesAdapter
     RvItemClickSupport.addTo(candidatesList)
       .setOnItemClickListener(object : RvItemClickSupport.OnItemClickListener {
-        var lastPosition = 0
         override fun onItemClicked(
           recyclerView: RecyclerView?,
           position: Int,
           v: View?
         ) {
           Timber.d("select item, position = $position")
-          val lastItemEntity = candidatesData[lastPosition]
-          val curItemEntity = candidatesData[position]
-          lastItemEntity.isSelected = false
-          curItemEntity.isSelected = true
-          candidatesAdapter.notifyItemChanged(lastPosition)
-          candidatesAdapter.notifyItemChanged(position)
-          lastPosition = position
-          curEntry = curItemEntity.obj as PwEntry
+          if (!selectionTracker.click(position)) return
+          candidatesData.forEachIndexed { i, item ->
+            item.isSelected = selectionTracker.isSelected(i)
+          }
+          candidatesAdapter.notifyDataSetChanged()
         }
       })
   }
@@ -146,10 +142,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     super.onStartInputView(info, restarting)
     EventBusHelper.reg(this)
     imeOption = info?.imeOptions ?: EditorInfo.IME_ACTION_GO
-    candidatesData.clear()
-    candidatesAdapter.notifyDataSetChanged()
     candidatesList.visibility = View.GONE
-    curEntry = null
     ic = currentInputConnection
     Timber.d("pkgName = ${info?.packageName}, inputType = ${info?.inputType}, fieldName = ${info?.fieldName}, fieldId = ${info?.fieldId}")
     appPkgName = info?.packageName
@@ -228,8 +221,9 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         if (BaseApp.APP.isCanOpenQuickLock()) {
           return
         }
-        curEntry = null
+        selectionTracker.show(emptyList())
         candidatesData.clear()
+        candidatesAdapter.notifyDataSetChanged()
         Routerfit.create(ServiceRouter::class.java).getDbSaveService().clearDb()
         Timber.d("数据库已锁定")
         HitUtil.toaskShort(getString(R.string.notify_db_locked))
@@ -241,7 +235,6 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         if (!dbIsOpen()) {
           return
         }
-        showEntryList(searchEntry(appPkgName))
         curEntry?.let {
           val userName = KdbUtil.getUserName(it)
           Timber.d("fill user name: $userName")
@@ -255,7 +248,6 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         if (!dbIsOpen()) {
           return
         }
-        showEntryList(searchEntry(appPkgName))
         curEntry?.let {
           val pass = KdbUtil.getPassword(it)
           Timber.d("fill password: $pass")
@@ -280,7 +272,6 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         if (!dbIsOpen()) {
           return
         }
-        showEntryList(searchEntry(appPkgName))
         if (curEntry == null) {
           return
         }
@@ -298,7 +289,6 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         if (!dbIsOpen()) {
           return
         }
-        showEntryList(searchEntry(appPkgName))
 
         showMoreInfoDialog()
       }
@@ -363,28 +353,29 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
   }
 
   /**
-   * 如果有多个条目，显示条目列表
+   * 显示候选列表。
+   *
+   * 仅在 [onStartInputView] 收到新输入字段或 [CommonSearchActivity] 返回结果时调用,
+   * 不要在账号/密码/TOTP 等按钮点击中重复调用——那会重置 [selectionTracker] 覆盖用户已选条目。
    */
   private fun showEntryList(entries: List<PwEntry>) {
-    if (entries.isNullOrEmpty()) {
-      candidatesList.visibility = View.GONE
-      return
-    }
-    if (entries.size == 1) {
-      candidatesList.visibility = View.GONE
-      curEntry = entries[0]
-      return
-    }
+    selectionTracker.show(entries)
     candidatesData.clear()
+    if (selectionTracker.isEmpty) {
+      candidatesList.visibility = View.GONE
+      return
+    }
+    if (selectionTracker.size == 1) {
+      candidatesList.visibility = View.GONE
+      return
+    }
     candidatesList.visibility = View.VISIBLE
-    entries.forEachIndexed { index, pwEntry ->
+    val flags = selectionTracker.selectedFlags()
+    entries.forEachIndexed { i, pwEntry ->
       val item = SimpleItemEntity()
       item.title = pwEntry.title
       item.obj = pwEntry
-      if (index == 0) {
-        item.isSelected = true
-        curEntry = pwEntry
-      }
+      item.isSelected = flags[i]
       candidatesData.add(item)
     }
     candidatesAdapter.notifyDataSetChanged()

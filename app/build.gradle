@@ -30,7 +30,7 @@ android {
     applicationId "com.lyy.keepassa"
     minSdkVersion libs.versions.minSdk.get().toInteger()
     targetSdkVersion libs.versions.targetsdk.get().toInteger()
-    versionCode 100011
+    versionCode 100012
     versionName "2.8.1"
     multiDexEnabled true
 
@@ -171,6 +171,7 @@ dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   // 测试模块
   testImplementation libs.test.junit
+  testImplementation libs.test.mockk
   androidTestImplementation libs.bundles.android.test
 
   //      debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'

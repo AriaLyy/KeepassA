@@ -28,6 +28,7 @@ import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.LanguageUtil
+import com.lyy.keepassa.util.RichTextNightMode
 import com.lyy.keepassa.view.dialog.DonateDialog
 import com.lyy.keepassa.view.fingerprint.FingerprintActivity
 import com.lyy.keepassa.widget.DrawableTextView
@@ -81,6 +82,9 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
             dismiss()
           }
           return@urlClick true
+        }
+        .done {
+          binding.tvContent.post { RichTextNightMode.fixDarkSpans(binding.tvContent) }
         }
         .into(binding.tvContent)
     }

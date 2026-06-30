@@ -19,6 +19,7 @@ import android.text.InputType
 import android.view.View.OnClickListener
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.arialyy.frame.router.Routerfit
@@ -76,10 +77,20 @@ object KpaUtil {
 
   /**
    * is night mode
+   *
+   * 注意:必须先看 AppCompatDelegate.getDefaultNightMode(),因为 Application 上下文的
+   * configuration 不跟随 setDefaultNightMode(只作用于 Activity)。用户在设置里强制选
+   * "浅色"/"深色"时,BaseApp.APP.resources 仍报告系统模式,会判断错。
+   *
    * @return true yes, false no
    */
   fun isNightMode(): Boolean {
-    return BaseApp.APP.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+    return when (AppCompatDelegate.getDefaultNightMode()) {
+      AppCompatDelegate.MODE_NIGHT_YES -> true
+      AppCompatDelegate.MODE_NIGHT_NO -> false
+      else -> BaseApp.APP.resources.configuration.uiMode and
+        Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+    }
   }
 
   fun buildMenuIcon(

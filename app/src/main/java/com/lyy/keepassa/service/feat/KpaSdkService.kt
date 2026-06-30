@@ -61,7 +61,7 @@ class KpaSdkService : IProvider {
       val showStatusBar = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
         .getBoolean(ResUtil.getString(R.string.set_key_title_show_state_bar), true)
       BaseActivity.showStatusBar = showStatusBar
-      EventBus.builder().addIndex(KpaEventBusIndex()).installDefaultEventBus()
+      KpaEventBusInitializer.installDefault()
       listenerAppBackground()
     }
   }

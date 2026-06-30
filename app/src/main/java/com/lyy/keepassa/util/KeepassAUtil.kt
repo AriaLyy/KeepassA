@@ -60,6 +60,7 @@ import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.ServiceRouter
 import com.lyy.keepassa.service.autofill.AutoFillHelper
 import com.lyy.keepassa.service.autofill.StructureParser
+import com.lyy.keepassa.service.autofill.clearAssistStructure
 import com.lyy.keepassa.view.create.CreateDbActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.launcher.OpenDbHistoryActivity
@@ -415,6 +416,7 @@ class KeepassAUtil private constructor() {
     val autoFillStructure = intent.getParcelableExtra<AssistStructure>(
       AutofillManager.EXTRA_ASSIST_STRUCTURE
     )
+    intent.clearAssistStructure()
     if (autoFillStructure == null) {
       Timber.e("autoFillStructure is null")
       return Intent()
@@ -456,6 +458,7 @@ class KeepassAUtil private constructor() {
     val autoFillStructure = intent.getParcelableExtra<AssistStructure>(
       AutofillManager.EXTRA_ASSIST_STRUCTURE
     )
+    intent.clearAssistStructure()
     if (autoFillStructure == null) {
       Timber.e("autoFillStructure is null")
       return Intent()

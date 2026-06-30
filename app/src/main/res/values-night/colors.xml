@@ -1,11 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+  <!-- ========== 反色处理:语义化的黑/白在夜间对调 ========== -->
   <color name="black">#FFFFFF</color>
-  <color name="text_black_color">#C9C4CE</color>
-  <color name="background_color">#2E2F2F</color>
-  <color name="color_icon_grey">#928F98</color>
   <color name="white">#2E2F2F</color>
   <color name="color_FFFFFF">#2E2F2F</color>
+
+  <!-- ========== 文字与图标 ========== -->
+  <color name="text_black_color">#C9C4CE</color>
+  <color name="text_black_grey_color">#C9C4CE</color>
+  <color name="text_hint_color">#9E9E9E</color>
+  <color name="textColorPrimary">#6FA0E5</color>
+  <color name="color_icon_grey">#928F98</color>
+  <color name="grey600">#9E9E9E</color>
+
+  <!-- ========== 背景与表面 ========== -->
+  <color name="background_color">#2E2F2F</color>
+  <color name="background_color_grey_w">#1F1F1F</color>
+  <color name="item_light_background">#3A3A3A</color>
+  <color name="color_note_bg">#3A3A3A</color>
+
+  <!-- ========== 线条与分隔 ========== -->
+  <color name="line_color">#3A3A3A</color>
+  <color name="bg_line">#3A3A3A</color>
+  <color name="color_E7EAED">#3A3A3A</color>
+  <color name="color_bbbbbb">#888888</color>
+  <color name="color_BB757575">#BB888888</color>
+
+  <!-- ========== 半透明遮罩与涟漪(日间为黑透,夜间反白或加深) ==========
+       mask 为对话框/扫码页背景遮罩,夜间从 #33000000 加深到 #80000000(M3 scrim 规范) -->
+  <color name="mask">#80000000</color>
+  <color name="rippleDefaultColor">#4FFFFFFF</color>
+  <color name="ripple">#1AFFFFFF</color>
+  <color name="item_un_click">#1FFFFFFF</color>
+  <color name="click_pressed_color">#22FFFFFF</color>
   <color name="color_33666666">#33F1F1F1</color>
   <color name="color_CCFFFFFF">#CC2E2F2F</color>
+  <color name="navigation_bar_color">#CC2E2F2F</color>
+
+  <!-- ========== 主题色(主色 #4E85DB 在深色上对比足够,保留;派生色微调) ========== -->
+  <color name="colorPrimary">#4E85DB</color>
+  <color name="colorPrimaryDark">#2C5BA8</color>
+  <color name="colorAccent">#6FA0E5</color>
+  <color name="color_4E85DB">#6FA0E5</color>
+  <color name="color_444E85DB">#446FA0E5</color>
+  <color name="color_524E85DB">#526FA0E5</color>
+
+  <!-- ========== 强调与状态色(夜间降低饱和,避免刺眼) ========== -->
+  <color name="highlight">#FF6E9C</color>
+  <color name="red">#FF5252</color>
+  <color name="error_color">#FF5252</color>
+  <color name="yellow">#FFD54F</color>
+  <color name="blue">#64B5F6</color>
+  <color name="green">#81C784</color>
+
+  <!-- ========== 保留不动(在深色背景上表现尚可)
+       transparent / color_072231 (深青,按钮渐变起点)
+       color_FCCCB7 (浅桃,TextInputLayout 描边)
+       color_d3ae5b (金,helper 文字)
+       color_22FEFEFE (IME 键位淡白高光)
+       bg_first_create_db (引导页绿)
+       ========== -->
+
 </resources>

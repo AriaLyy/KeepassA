@@ -89,7 +89,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     pkgName: String
   ) {
     this.pkgName = pkgName
-    parse(isManual)
+    safeParse({ parse(isManual) }, { clear() })
   }
 
   /**
