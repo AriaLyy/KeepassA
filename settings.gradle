@@ -16,6 +16,7 @@ dependencyResolutionManagement {
     mavenCentral()
     mavenLocal()
     maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+    maven { url 'https://maven.dddo.top:666/repository/maven-public/' }
     maven { url 'https://jitpack.io' }
     maven {
       url 'https://pkgs.dev.azure.com/MicrosoftDeviceSDK/DuoSDK-Public/_packaging/Duo-SDK-Feed/maven/v1'

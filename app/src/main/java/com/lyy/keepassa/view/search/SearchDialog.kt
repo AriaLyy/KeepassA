@@ -15,6 +15,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
@@ -75,6 +76,15 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
     binding.search.requestFocusFromTouch()
     binding.search.setIconifiedByDefault(true)
     binding.search.isIconified = false
+    // BaseDialogTheme 继承 Theme.AppCompat.Dialog(非 DayNight),SearchAutoComplete 的文字/hint 颜色不会跟随夜间模式,这里手动覆盖
+    val searchAutoComplete = binding.search.findViewById<androidx.appcompat.widget.SearchView.SearchAutoComplete>(
+      androidx.appcompat.R.id.search_src_text
+    )
+    searchAutoComplete.setTextColor(ResUtil.getColor(color.text_black_color))
+    searchAutoComplete.setHintTextColor(ResUtil.getColor(color.text_hint_color))
+    // 清除按钮图标颜色同样需要手动覆盖
+    val closeBtn = binding.search.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
+    closeBtn.setColorFilter(ResUtil.getColor(color.text_black_color))
     binding.search.setOnQueryTextListener(object : OnQueryTextListener {
       /**
        * 当点击搜索按钮时触发该方法

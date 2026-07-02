@@ -21,14 +21,19 @@ class AutoFillPermissionsChain : IMainDialogInterceptor {
   override fun intercept(chain: DialogChain): MainDialogResponse {
     Timber.d("AutoFillPermissionsChain")
     val ac = chain.activity
-    if (PermissionsUtil.needShowBackgroundStartDialog(ac)) {
-      PermissionsUtil.showAutoFillMsgDialog(
-        ac,
-        ResUtil.getString(R.string.hint_open_backgroun_start)
-      )
-      return MainDialogResponse(MainDialogResponse.RESPONSE_OK)
+    if (!PermissionsUtil.needShowBackgroundStartDialog(ac)) {
+      return chain.proceed(ac)
     }
 
-    return chain.proceed(ac)
+    // showAutoFillMsgDialog 内部已处理 7 天冷静期;冷静期内返回 false,链继续
+    val showed = PermissionsUtil.showAutoFillMsgDialog(
+      ac,
+      ResUtil.getString(R.string.hint_open_backgroun_start),
+    )
+    return if (showed) {
+      MainDialogResponse(MainDialogResponse.RESPONSE_OK)
+    } else {
+      chain.proceed(ac)
+    }
   }
 }

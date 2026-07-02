@@ -8,6 +8,7 @@
 package com.lyy.keepassa.view.create.entry
 
 import android.app.PendingIntent
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
@@ -167,11 +168,13 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
       }
 
       override fun parseResult(resultCode: Int, intent: Intent?): PwGroupId? {
-        return intent?.getSerializableExtra(ChooseGroupActivity.DATA_PARENT) as PwGroupId?
+        if (resultCode != Activity.RESULT_OK) return null
+        val extra = intent?.getSerializableExtra(ChooseGroupActivity.DATA_PARENT)
+        return extra as? PwGroupIdV4
       }
     }) {
       if (it == null) {
-        Timber.d("pwGroupId is null")
+        Timber.w("chooseGroupLauncher callback: groupId is null, skip save")
         return@registerForActivityResult
       }
       module.updateEntryGroupIdAndSave(this, it as PwGroupIdV4)

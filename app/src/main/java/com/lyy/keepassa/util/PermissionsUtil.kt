@@ -25,6 +25,7 @@ import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.RomUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.base.KeyConstance
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import timber.log.Timber
@@ -61,19 +62,21 @@ object PermissionsUtil {
     }
   }
 
+  private val autofillCooldown =
+    PermissionCooldown(KeyConstance.KEY_AUTOFILL_PERMISSION_REJECTED_AT)
+
   /**
-   * 显示弹出框提示用户打开后台启动界面的权限
+   * 显示弹出框提示用户打开后台启动界面的权限。
+   *
+   * 内置 7 天冷静期:用户上次取消的时间戳在冷却期内时直接返回 false,不再弹窗。
+   *
+   * @return true 已弹出对话框;false 因冷却期跳过,调用方可继续后续流程。
    */
-  fun showAutoFillMsgDialog(context: Context, msg: String) {
-//    val IS_HOWED_AUTO_FILL_HINT_DIALOG = "IS_HOWED_AUTO_FILL_HINT_DIALOG"
-//    val isShowed =
-//      SharePreUtil.getBoolean(
-//        Constance.PRE_FILE_NAME,
-//        context,
-//        IS_HOWED_AUTO_FILL_HINT_DIALOG
-//      )
-//
-//    if (!isShowed) {
+  fun showAutoFillMsgDialog(context: Context, msg: String): Boolean {
+    if (autofillCooldown.isInCooldown()) {
+      Timber.i("自动填充权限弹窗在冷静期内,跳过")
+      return false
+    }
     Routerfit.create(DialogRouter::class.java).showMsgDialog(
       msgContent = Html.fromHtml(BaseApp.APP.getString(R.string.hint_background_start, msg)),
       showCancelBt = true,
@@ -85,18 +88,11 @@ object PermissionsUtil {
         }
 
         override fun onCancel(v: Button) {
+          autofillCooldown.recordRejection()
         }
       }
     )
-//      SharePreUtil.putBoolean(
-//        Constance.PRE_FILE_NAME,
-//        context,
-//        IS_HOWED_AUTO_FILL_HINT_DIALOG,
-//        true
-//      )
-//    } else {
-//      Timber.i("已显示过自动填充对话框，不再重复显示")
-//    }
+    return true
   }
 
   fun isCanBackgroundStart(): Boolean {

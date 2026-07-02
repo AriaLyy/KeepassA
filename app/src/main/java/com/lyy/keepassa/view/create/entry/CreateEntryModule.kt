@@ -75,12 +75,58 @@ class CreateEntryModule : BaseModule() {
   lateinit var pwEntry: PwEntryV4
 
   fun updateEntryGroupIdAndSave(context: CreateEntryActivity, groupId: PwGroupIdV4) {
-
+    Timber.i(
+      "updateEntryGroupIdAndSave: invoked, groupId.id=%s, pwEntry.title=%s, pwEntry.uuid=%s, pwEntry.parent(before)=%s, pm.entries.size=%d",
+      groupId.id,
+      pwEntry.title,
+      pwEntry.uuid,
+      pwEntry.parent?.name,
+      BaseApp.KDB.pm.entries.size
+    )
     viewModelScope.launch {
-      KpaUtil.kdbHandlerService.createEntry(
-        pwEntry,
-        KdbUtil.findV4GroupById(groupId.id) ?: KdbUtil.getRootGroup()
+      val targetGroup = KdbUtil.findV4GroupById(groupId.id)
+      if (targetGroup == null) {
+        Timber.e(
+          "updateEntryGroupIdAndSave: chosen group %s not found in pm.groups nor tree walk. ABORT save (no fallback to root).",
+          groupId.id
+        )
+        HitUtil.snackShort(
+          context.rootView,
+          ResUtil.getString(R.string.fail)
+        )
+        return@launch
+      }
+
+      val targetV4 = targetGroup as? PwGroupV4
+      Timber.i(
+        "updateEntryGroupIdAndSave: target found, name=%s, uuid=%s, isV4=%b, childEntries.size(before)=%d, in pm.groups=%b",
+        targetGroup.name,
+        targetV4?.uuid,
+        targetV4 != null,
+        targetGroup.childEntries.size,
+        BaseApp.KDB.pm.groups.containsKey(targetGroup.id)
       )
+
+      val beforeParent = pwEntry.parent?.name
+      KpaUtil.kdbHandlerService.createEntry(pwEntry, targetGroup)
+
+      val containsEntry = targetGroup.childEntries.contains(pwEntry)
+      Timber.i(
+        "updateEntryGroupIdAndSave: after createEntry, pwEntry.parent=%s (before=%s), target.childEntries.size=%d, target.childEntries.contains(pwEntry)=%b, pm.entries.size=%d",
+        pwEntry.parent?.name,
+        beforeParent,
+        targetGroup.childEntries.size,
+        containsEntry,
+        BaseApp.KDB.pm.entries.size
+      )
+
+      if (!containsEntry) {
+        Timber.e(
+          "updateEntryGroupIdAndSave: pwEntry NOT in target.childEntries after createEntry, save aborted"
+        )
+        return@launch
+      }
+
       KpaUtil.kdbHandlerService.saveOnly(true) {
         context.finishAfterTransition()
       }

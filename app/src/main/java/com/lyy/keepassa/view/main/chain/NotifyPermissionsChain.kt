@@ -23,8 +23,8 @@ import com.blankj.utilcode.util.PermissionUtils.SimpleCallback
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.KeyConstance
 import com.lyy.keepassa.router.DialogRouter
-import com.lyy.keepassa.util.CommonKVStorage
 import com.lyy.keepassa.util.NotificationUtil
+import com.lyy.keepassa.util.PermissionCooldown
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import com.lyy.keepassa.view.main.MainActivity
 import timber.log.Timber
@@ -36,10 +36,7 @@ import timber.log.Timber
  **/
 class NotifyPermissionsChain : IMainDialogInterceptor {
 
-  companion object {
-    private const val COOLDOWN_DAYS = 7L
-    private const val DAY_MS = 24L * 60 * 60 * 1000
-  }
+  private val cooldown = PermissionCooldown(KeyConstance.KEY_NOTIFY_PERMISSION_REJECTED_AT)
 
   override fun intercept(chain: DialogChain): MainDialogResponse {
     Timber.d("NotifyPermissionsChain")
@@ -52,7 +49,7 @@ class NotifyPermissionsChain : IMainDialogInterceptor {
     }
 
     // 用户点过拒绝且在 7 天冷却期内,直接放行,不再弹窗打扰
-    if (isInCooldown()) {
+    if (cooldown.isInCooldown()) {
       return chain.proceed(ac)
     }
 
@@ -74,27 +71,12 @@ class NotifyPermissionsChain : IMainDialogInterceptor {
         }
 
         override fun onCancel(v: Button) {
-          recordRejection()
+          cooldown.recordRejection()
         }
       }
     )
 
     return MainDialogResponse(MainDialogResponse.RESPONSE_OK)
-  }
-
-  private fun isInCooldown(): Boolean {
-    val rejectedAt =
-      CommonKVStorage.getLong(KeyConstance.KEY_NOTIFY_PERMISSION_REJECTED_AT, 0L)
-    if (rejectedAt <= 0L) return false
-    val elapsed = System.currentTimeMillis() - rejectedAt
-    return elapsed in 0..(COOLDOWN_DAYS * DAY_MS)
-  }
-
-  private fun recordRejection() {
-    CommonKVStorage.put(
-      KeyConstance.KEY_NOTIFY_PERMISSION_REJECTED_AT,
-      System.currentTimeMillis()
-    )
   }
 
   private fun isNotifyReallyEnabled(context: Context): Boolean {

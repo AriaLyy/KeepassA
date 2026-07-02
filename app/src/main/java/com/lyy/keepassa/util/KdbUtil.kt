@@ -251,11 +251,60 @@ object KdbUtil {
 
   /**
    * 通过id 获取v4的group信息
+   *
+   * pm.groups 在某些场景下（如群组刚创建但 cache 未同步）可能查不到，
+   * 此时回退到从 rootGroup 递归查找，确保不会因 cache 失血而丢组。
    */
   fun findV4GroupById(groupId: UUID): PwGroup? {
     val groups = BaseApp.KDB.pm.groups
+    val key = PwGroupIdV4(groupId)
+    val direct = groups[key]
+    if (direct != null) {
+      Timber.i(
+        "findV4GroupById: pm.groups hit for %s, name=%s, uuid=%s, childEntries.size=%d",
+        groupId,
+        direct.name,
+        (direct as? com.keepassdroid.database.PwGroupV4)?.uuid,
+        direct.childEntries.size
+      )
+      return direct
+    }
 
-    return groups[PwGroupIdV4(groupId)]
+    Timber.w(
+      "findV4GroupById: pm.groups miss for %s (groups.size=%d), falling back to tree walk",
+      groupId,
+      groups.size
+    )
+    val walked = findV4GroupByUuidRecursive(BaseApp.KDB.pm.rootGroup, groupId)
+    if (walked == null) {
+      Timber.e(
+        "findV4GroupById: tree walk also failed for %s. Listing known groups:",
+        groupId
+      )
+      groups.forEach { (id, g) ->
+        Timber.e(
+          "  - group id=%s, name=%s",
+          (id as? com.keepassdroid.database.PwGroupIdV4)?.id,
+          g.name
+        )
+      }
+    } else {
+      Timber.i(
+        "findV4GroupById: tree walk found %s, uuid=%s, childEntries.size=%d",
+        walked.name,
+        (walked as? com.keepassdroid.database.PwGroupV4)?.uuid,
+        walked.childEntries.size
+      )
+    }
+    return walked
+  }
+
+  private fun findV4GroupByUuidRecursive(group: PwGroup, target: UUID): PwGroup? {
+    if (group is com.keepassdroid.database.PwGroupV4 && group.uuid == target) return group
+    for (child in group.childGroups) {
+      findV4GroupByUuidRecursive(child, target)?.let { return it }
+    }
+    return null
   }
 
   fun filterCustomStr(map: Map<String, ProtectedString>): Map<String, ProtectedString> {
