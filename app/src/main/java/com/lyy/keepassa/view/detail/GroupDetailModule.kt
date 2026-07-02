@@ -24,7 +24,9 @@ import com.lyy.keepassa.common.SortType.CHAR_DESC
 import com.lyy.keepassa.common.SortType.NONE
 import com.lyy.keepassa.common.SortType.TIME_ASC
 import com.lyy.keepassa.common.SortType.TIME_DESC
+import com.lyy.keepassa.base.KeyConstance
 import com.lyy.keepassa.entity.SimpleItemEntity
+import com.lyy.keepassa.util.CommonKVStorage
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.createNewEntry
 import com.lyy.keepassa.util.deleteEntry
@@ -39,6 +41,13 @@ internal class GroupDetailModule : BaseModule() {
   val entryData = mutableListOf<SimpleItemEntity>()
   val getDataFlow = MutableSharedFlow<MutableList<SimpleItemEntity>?>()
   var curGroupV4: PwGroupV4? = null
+
+  /**
+   * Active sort type for this group view. Initialised from persisted preference
+   * (default CHAR_ASC). Survives process death via MMKV.
+   */
+  var currentSortType: SortType = loadSortType()
+    private set
 
   /**
    * update the status of deleted items
@@ -89,6 +98,7 @@ internal class GroupDetailModule : BaseModule() {
         return@launch
       }
       entryData.addAll(convertGroup(context, group))
+      applySortInPlace(currentSortType)
       getDataFlow.emit(entryData)
       return@launch
     }
@@ -99,6 +109,14 @@ internal class GroupDetailModule : BaseModule() {
    * @param sortType
    */
   fun sortData(adapter: SimpleEntryAdapter, sortType: SortType) {
+    currentSortType = sortType
+    saveSortType(sortType)
+    applySortInPlace(sortType)
+    adapter.notifyDataSetChanged()
+  }
+
+  private fun applySortInPlace(sortType: SortType) {
+    if (sortType == NONE) return
     val entryList = arrayListOf<SimpleItemEntity>()
     val groupList = arrayListOf<SimpleItemEntity>()
     val tempList = arrayListOf<SimpleItemEntity>()
@@ -114,7 +132,15 @@ internal class GroupDetailModule : BaseModule() {
     tempList.addAll(sortEntry(sortType, entryList))
     entryData.clear()
     entryData.addAll(tempList)
-    adapter.notifyDataSetChanged()
+  }
+
+  private fun loadSortType(): SortType {
+    val name = CommonKVStorage.getString(KeyConstance.KEY_GROUP_SORT_TYPE, CHAR_ASC.name)
+    return runCatching { SortType.valueOf(name) }.getOrDefault(CHAR_ASC)
+  }
+
+  private fun saveSortType(sortType: SortType) {
+    CommonKVStorage.put(KeyConstance.KEY_GROUP_SORT_TYPE, sortType.name)
   }
 
   private fun sortEntry(
@@ -124,20 +150,21 @@ internal class GroupDetailModule : BaseModule() {
     if (data.isEmpty()){
       return emptySet()
     }
-    val map = hashMapOf<SimpleItemEntity, Char?>()
+    val map = hashMapOf<SimpleItemEntity, String>()
     for (item in data) {
-      map[item] = PinyinUtil.getFirstSpellChar(item.title)
+      map[item] = sortKeyForTitle(item.title)
     }
     return when (sortType) {
       CHAR_ASC -> {
         map.toList()
-          .sortedBy { it.second }
+          .sortedWith(compareBy({ it.second }, { it.first.title.toString() }))
           .toMap().keys
       }
       CHAR_DESC -> {
-        map.toList()
-          .sortedByDescending { it.second }
-          .toMap().keys
+        val cmp: Comparator<Pair<SimpleItemEntity, String>> =
+          compareByDescending { p: Pair<SimpleItemEntity, String> -> p.second }
+            .thenBy { p: Pair<SimpleItemEntity, String> -> p.first.title.toString() }
+        map.toList().sortedWith(cmp).toMap().keys
       }
       TIME_ASC -> {
         map.toList()
@@ -182,5 +209,26 @@ internal class GroupDetailModule : BaseModule() {
       data.add(item)
     }
     return data
+  }
+}
+
+/**
+ * Compute the sort key for an entry title.
+ *
+ * Bucket rule (matches user expectation in #117):
+ *   - ASCII-led titles (digit / letter / symbol) come FIRST, sorted by lowercased title.
+ *   - Non-ASCII titles (Chinese etc.) come AFTER, sorted by pinyin (via PinyinUtil.getSpells).
+ *
+ * `PinyinUtil.getFirstSpellChar` returns on the first char and collapses "1a/1b/1c" to the
+ * same key '1'; that is why we build a full-string key here.
+ */
+internal fun sortKeyForTitle(title: CharSequence): String {
+  val s = title.toString()
+  if (s.isEmpty()) return "2"
+  val first = s[0]
+  return if (first.code and 0xFF80 == 0) {
+    "0" + s.lowercase()
+  } else {
+    "1" + (PinyinUtil.getSpells(s) ?: s)
   }
 }

@@ -289,30 +289,49 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
   }
 
   private fun initMenu() {
+    markCurrentSortItem()
     binding.kpaToolbar.setOnMenuItemClickListener {
       val type = when (it.itemId) {
-        R.id.sort_down_by_char -> {
-          CHAR_DESC
-        }
-
-        R.id.sort_up_by_char -> {
-          CHAR_ASC
-        }
-
-        R.id.sort_down_by_time -> {
-          TIME_DESC
-        }
-
-        R.id.sort_up_by_time -> {
-          TIME_ASC
-        }
-
+        R.id.sort_down_by_char -> CHAR_DESC
+        R.id.sort_up_by_char -> CHAR_ASC
+        R.id.sort_down_by_time -> TIME_DESC
+        R.id.sort_up_by_time -> TIME_ASC
         else -> NONE
       }
       if (type != NONE) {
+        setSortItemChecked(it.itemId)
         module.sortData(adapter, type)
       }
       return@setOnMenuItemClickListener true
+    }
+  }
+
+  private fun markCurrentSortItem() {
+    val itemId = when (module.currentSortType) {
+      CHAR_ASC -> R.id.sort_up_by_char
+      CHAR_DESC -> R.id.sort_down_by_char
+      TIME_ASC -> R.id.sort_up_by_time
+      TIME_DESC -> R.id.sort_down_by_time
+      NONE -> R.id.sort_up_by_char
+    }
+    setSortItemChecked(itemId)
+  }
+
+  /**
+   * Manually enforce single-selection in the sort sub-menu.
+   * Setting `item.isChecked = true` alone does not auto-uncheck siblings
+   * for groups nested inside a sub-menu, so we walk them explicitly.
+   */
+  private fun setSortItemChecked(targetId: Int) {
+    val subMenu = binding.kpaToolbar.menu.findItem(R.id.sort)?.subMenu
+    val targetMenu = subMenu ?: binding.kpaToolbar.menu
+    listOf(
+      R.id.sort_down_by_char,
+      R.id.sort_up_by_char,
+      R.id.sort_down_by_time,
+      R.id.sort_up_by_time,
+    ).forEach { id ->
+      targetMenu.findItem(id)?.isChecked = (id == targetId)
     }
   }
 
