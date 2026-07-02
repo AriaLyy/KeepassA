@@ -22,3 +22,7 @@ cp_buglyQqUploadSymbolLib.jar
 local.properties
 /VersionManager/build/
 app/google-services.json
+
+# Claude Code debug artifacts
+.claude/*.png
+.claude/*.jpg
