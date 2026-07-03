@@ -351,7 +351,7 @@
     <string name="hint_del_entry">¿Realmente desea eliminar la entrada [&lt;font color=#FF0000&gt;%s&lt;/font&gt;]\? &lt;br&gt; Esto moverá este elemento a la papelera, donde podrá restaurarlo más tarde.</string>
     <string name="webdav_port_name_null">El nombre del equipo no puede estar vacío</string>
     <string name="privacy_agreement">Acuerdo de privacidad</string>
-    <string name="one_drive_hint">Para proteger su privacidad, KeePassA solo accederá al directorio &lt;font color=#FF0000&gt;【Application/KeepassA】&lt;/font&gt;, si desea leer la base de datos Keepass de OneDrive, &lt;font color=#FF0000&gt; almacene la base de datos en bajo este directorio. &lt;/fuente&gt;</string>
+    <string name="one_drive_hint">Para proteger su privacidad, KeePassA solo accederá al directorio &lt;font color=#FF0000&gt;【Application/KeepassA】&lt;/font&gt;. Si desea leer la base de datos Keepass de OneDrive, &lt;font color=#FF0000&gt;almacene la base de datos en este directorio.&lt;/font&gt;</string>
     <string name="please_open_proxy">por favor, abra el proxy</string>
     <string name="hostname">Nombre del equipo</string>
     <string name="port">Puerto</string>

@@ -10,7 +10,7 @@
 package com.lyy.keepassa
 
 import android.net.Uri
-import com.arialyy.frame.util.RegularRule
+import com.lyy.keepassa.util.RegularRule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
@@ -23,6 +23,24 @@ class UrlTest {
     val temp = "twitter.com"
     val topDomain = Regex(RegularRule.DOMAIN_TOP, RegexOption.IGNORE_CASE).find(temp)
     println("topDomain = ${topDomain?.value}")
+  }
+
+  @Test
+  fun domainAllLevelsTest(){
+    // 验证新规则对各种 TLD(含 .club/.dev/.io 等新 gTLD、多段 TLD)都正常工作
+    val cases = listOf(
+      "ubits.club" to "ubits.club",
+      "login.example.com" to "example.com",
+      "a.b.example.com" to "example.com",
+      "www.baidu.com.cn" to "baidu.com.cn",
+      "ubits.club" to "ubits.club"
+    )
+    cases.forEach { (input, _) ->
+      val top = Regex(RegularRule.DOMAIN_TOP, RegexOption.IGNORE_CASE).find(input)?.value
+      val second = Regex(RegularRule.DOMAIN_SECOND, RegexOption.IGNORE_CASE).find(input)?.value
+      val third = Regex(RegularRule.DOMAIN_THIRD, RegexOption.IGNORE_CASE).find(input)?.value
+      println("input=$input  top=$top  second=$second  third=$third")
+    }
   }
 
   @Test

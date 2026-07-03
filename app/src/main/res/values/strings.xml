@@ -306,7 +306,7 @@ If you are creating a new KeePass database, the above operations are not be need
     <string name="sort">Sort</string>
     <string name="sort_chart_desc">First letter descending(Z-A)</string>
     <string name="sort_chart_asc">First letter ascending(A-Z)</string>
-    <string name="sort_time_asc">Time earlist-latest</string>
+    <string name="sort_time_asc">Time earliest-latest</string>
     <string name="sort_time_desc">Time latest-earliest</string>
     <string name="ime_label">KeePassA security keyboard</string>
     <string name="set_open_kpa_ime_title">Security keyboard</string>

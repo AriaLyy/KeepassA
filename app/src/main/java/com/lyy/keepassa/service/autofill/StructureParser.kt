@@ -119,10 +119,16 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     }
 
     if (W3cHints.isBrowser(pkgName)) {
-      // 浏览器场景:无论 HTML input 是否被系统翻译出 autofillHints,都统一走 W3C 路径
+      // 浏览器场景:HTML input 通常带 htmlInfo,走 W3C 路径
       checkW3C(viewNode)
       if (isW3c) {
         getW3CInfo(viewNode)
+      }
+      // Edge/Chrome 等基于自有 Chromium 的浏览器,会把 HTML input 暴露成原生 EditText
+      // 虚拟视图(无 htmlInfo、tag=null),需要按原生 EditText 逻辑识别
+      val className = viewNode.className
+      if (classIsEditText(className)) {
+        getAndroidViewInfo(viewNode)
       }
     } else {
       // 原生 App 场景

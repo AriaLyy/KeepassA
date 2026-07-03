@@ -160,7 +160,13 @@ object KdbUtil {
 
   /**
    * 通过搜索条目
-   * @param domain 域名
+   *
+   * 域名匹配流程:
+   *  1. 用项目自有的 [RegularRule] 提取输入域名的 top/second/third 三级候选(支持所有 TLD)。
+   *  2. 加上输入域名本身,组成候选集。
+   *  3. 条目的 URL 字段只要命中候选集中任一项,即加入结果。
+   *
+   * @param domain 域名(webDomain,如 ubits.club、login.example.com)
    * @param listStorage 搜索结果
    */
   fun searchEntriesByDomain(
@@ -170,14 +176,17 @@ object KdbUtil {
     if (domain.isNullOrEmpty()) {
       return
     }
-    val topDomain =
-      Regex(RegularRule.DOMAIN_TOP, RegexOption.IGNORE_CASE).find(domain)?.value.toString()
-    Timber.d("topDomain = $topDomain")
+    val candidates = linkedSetOf<String>()
+    candidates.add(domain)
+    Regex(RegularRule.DOMAIN_TOP, RegexOption.IGNORE_CASE).find(domain)?.value?.let(candidates::add)
+    Regex(RegularRule.DOMAIN_SECOND, RegexOption.IGNORE_CASE).find(domain)?.value?.let(candidates::add)
+    Regex(RegularRule.DOMAIN_THIRD, RegexOption.IGNORE_CASE).find(domain)?.value?.let(candidates::add)
+    Timber.d("searchByDomain candidates = $candidates")
     for (entry in BaseApp.KDB.pm.entries.values) {
       val pe4 = entry as PwEntryV4
-      if (pe4.url.contains(topDomain, true)
-        || pe4.strings["URL"]?.toString()?.contains(topDomain) == true
-      ) {
+      val url = pe4.url
+      val urlField = pe4.strings["URL"]?.toString()
+      if (candidates.any { url.contains(it, ignoreCase = true) || urlField?.contains(it, ignoreCase = true) == true }) {
         listStorage.add(pe4)
       }
     }
