@@ -69,16 +69,18 @@ object PermissionsUtil {
    * 显示弹出框提示用户打开后台启动界面的权限。
    *
    * 内置 7 天冷静期:用户上次取消的时间戳在冷却期内时直接返回 false,不再弹窗。
+   * 设置页主动开启自动填充开关的场景应传 [force] = true,跳过冷静期,保证每次操作都有明确反馈。
    *
+   * @param force true 时跳过冷静期检查,始终弹窗(适用于用户主动触发的硬性拦截场景)
    * @return true 已弹出对话框;false 因冷却期跳过,调用方可继续后续流程。
    */
-  fun showAutoFillMsgDialog(context: Context, msg: String): Boolean {
-    if (autofillCooldown.isInCooldown()) {
+  fun showAutoFillMsgDialog(context: Context, msg: String, force: Boolean = false): Boolean {
+    if (!force && autofillCooldown.isInCooldown()) {
       Timber.i("自动填充权限弹窗在冷静期内,跳过")
       return false
     }
     Routerfit.create(DialogRouter::class.java).showMsgDialog(
-      msgContent = Html.fromHtml(BaseApp.APP.getString(R.string.hint_background_start, msg)),
+      msgContent = Html.fromHtml("$msg<br><br>${BaseApp.APP.getString(R.string.hint_background_start)}"),
       showCancelBt = true,
       cancelText = ResUtil.getString(R.string.cancel),
       enterText = ResUtil.getString(R.string.open_setting),

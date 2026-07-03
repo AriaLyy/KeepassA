@@ -330,12 +330,22 @@ class AppSettingFragment : PreferenceFragmentCompat() {
             "package:${requireContext().packageName}1",
             ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
           )
-        } else {
-          autoFillLauncher.launch(
-            "package:${requireContext().packageName}",
-            ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
-          )
+          return@setOnPreferenceChangeListener true
         }
+        // 开启前必须先有后台弹出界面权限(MIUI/Vivo/华为 等特殊系统),
+        // 否则 AutoFillService 收到 onFillRequest 后无法启动解锁界面,等于残废
+        if (!PermissionsUtil.isCanBackgroundStart()) {
+          PermissionsUtil.showAutoFillMsgDialog(
+            requireContext(),
+            getString(R.string.hint_open_backgroun_start),
+            force = true
+          )
+          return@setOnPreferenceChangeListener false
+        }
+        autoFillLauncher.launch(
+          "package:${requireContext().packageName}",
+          ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
+        )
         true
       }
     } else {

@@ -241,8 +241,8 @@
     <string name="app_feedback">提意见</string>
     <string name="error_db_pass_too_short">为了保障你的数据安全，数据库密码长度不能小于6位</string>
     <string name="autofill_sign_in_prompt">使用 KeePassA 自动填充密码</string>
-    <string name="hint_open_backgroun_start">您已经设置了自动填充，但是KeePassA没有相应的权限，请在设置页授权KeePassA后台弹出界面。</string>
-    <string name="hint_background_start">请转到 &lt;font color=#FF0000&gt;【%s】&lt;/font&gt; 并授予后台弹出窗口权限，以便更好地使用自动填充服务。&lt;br&gt; &lt;font color=#FF0000&gt;当你使用自动填充功能时，KeePassA 会显示相应的打开数据库的界面&lt;/font&gt;</string>
+    <string name="hint_open_backgroun_start">您已开启了自动填充，但在 MIUI 等特殊系统中，KeePassA 需要授予 &lt;b&gt;后台弹出界面&lt;/b&gt; 权限才能弹出解锁数据库的界面。</string>
+    <string name="hint_background_start"><![CDATA[点击下方 <font color="#FF0000"><b>去设置</b></font>，然后为 KeePassA 开启 <b>后台弹出界面</b> 权限。]]></string>
     <string name="setting_miui_background_start">设置 &gt;应用设置 &gt;应用管理 &gt;KeePassA &gt;权限管理</string>
     <string name="setting_vivo_background_start">设置 &gt;更多设置 &gt;权限管理-&gt;KeePassA &gt;权限设置 &gt;后台弹出</string>
     <string name="no_matching_entry">没有匹配的条目</string>

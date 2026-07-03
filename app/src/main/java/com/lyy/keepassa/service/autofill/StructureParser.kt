@@ -111,25 +111,23 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
   }
 
   private fun parseLocked(viewNode: ViewNode) {
-    // 处理editText 增加 android:autofillHints 的情况
-    if (!viewNode.autofillHints.isNullOrEmpty()) {
+    // 尽早捕获 domainUrl,避免 AutoFillService 因 domainUrl 为空回退到按包名匹配(浏览器场景下匹配错误)
+    if (domainUrl.isBlank() && !viewNode.webDomain.isNullOrEmpty()) {
+      domainUrl = viewNode.webDomain!!
+      W3cHints.curDomainUrl = domainUrl
+      Timber.d("domainUrl = $domainUrl")
+    }
+
+    if (W3cHints.isBrowser(pkgName)) {
+      // 浏览器场景:无论 HTML input 是否被系统翻译出 autofillHints,都统一走 W3C 路径
+      checkW3C(viewNode)
       if (isW3c) {
         getW3CInfo(viewNode)
-      } else {
-        getAndroidViewInfo(viewNode)
       }
     } else {
-      if (W3cHints.isBrowser(pkgName)) {
-        // Timber.i("is browser, start get web info")
-        checkW3C(viewNode)
-        if (isW3c) {
-          if (domainUrl.isBlank()) {
-            domainUrl = viewNode.webDomain ?: ""
-            W3cHints.curDomainUrl = domainUrl
-            Timber.d("domainUrl = $domainUrl")
-          }
-          getW3CInfo(viewNode)
-        }
+      // 原生 App 场景
+      if (!viewNode.autofillHints.isNullOrEmpty()) {
+        getAndroidViewInfo(viewNode)
       } else {
         val className = viewNode.className
         if (classIsEditText(className)) {
@@ -303,7 +301,12 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       return false
     }
 
+    val hasUserHint = f.autofillHints?.any { hint ->
+      usernameHints.any { uh -> uh.equals(hint, ignoreCase = true) }
+    } == true
+
     if (!isPassword(f)
+      || hasUserHint
       || usernameHints.any { f.idEntry != null && f.idEntry!!.contains(it, ignoreCase = true) }
       || usernameHints.any { f.hint != null && f.hint!!.contains(it, ignoreCase = true) }
     ) {
@@ -324,10 +327,14 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     ) {
       return false
     }
+    val hasPassHint = f.autofillHints?.any { hint ->
+      passHints.any { ph -> ph.equals(hint, ignoreCase = true) }
+    } == true
     if (inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
       || inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD
       || inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
       || inputType == InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
+      || hasPassHint
       || passHints.any { f.idEntry != null && f.idEntry!!.contains(it, ignoreCase = true) }
       || (f.autofillHints?.firstOrNull() == "passwordAuto")
     ) {

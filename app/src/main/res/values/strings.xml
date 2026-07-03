@@ -212,8 +212,8 @@
     <string name="app_debug">Get log file</string>
     <string name="error_db_pass_too_short">Make the database password more than 6 characters or more to protect your data</string>
     <string name="autofill_sign_in_prompt">Auto-fill password with KeePassA</string>
-    <string name="hint_open_backgroun_start">You have set up auto-fill, but KeePassA does not have the appropriate permissions, please authorize the KeePassA backend pop-up screen in the settings page.</string>
-    <string name="hint_background_start"><![CDATA[Go to<font color="#FF0000">【%s】</font>and grant the background pop-up permissions to make better use of the auto-fill service.<br> <font color="#FF0000">KeePassA shows the corresponding interface for opening the database when you use the autofill function</font>]]></string>
+    <string name="hint_open_backgroun_start">Auto-fill is enabled, but on some systems (such as MIUI), KeePassA needs the &lt;b&gt;Display pop-up windows while running in the background&lt;/b&gt; permission to launch the database unlock screen. Please grant this permission in Settings.</string>
+    <string name="hint_background_start"><![CDATA[Tap <font color="#FF0000"><b>Open Settings</b></font> below, then enable <b>Display pop-up windows while running in the background</b> for KeePassA.]]></string>
     <string name="setting_miui_background_start">Settings &gt; Application Settings &gt; Application Management &gt; KeePassA &gt; Permission Management</string>
     <string name="setting_vivo_background_start">Settings &gt; More Settings &gt; Permission Management &gt; KeePassA &gt; Permission Settings &gt; Background Popup</string>
     <string name="no_matching_entry">No matching item</string>
