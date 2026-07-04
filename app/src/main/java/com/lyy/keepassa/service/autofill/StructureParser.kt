@@ -15,6 +15,7 @@ import android.app.assist.AssistStructure.ViewNode
 import android.os.Build
 import android.text.InputType
 import android.view.View
+import android.view.autofill.AutofillId
 import androidx.autofill.HintConstants
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadata
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
@@ -34,6 +35,9 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
   var pkgName = ""
   var isW3c = false
   var isInnerAppW3c = false
+  var authPromptFallbackId: AutofillId? = null
+    private set
+  private var authPromptFallbackIdFocused = false
 
   companion object {
     // 其它应用editText 可能设置的id名，如：R.id.email
@@ -78,6 +82,8 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     autoFillFields.clear()
     useFields.clear()
     passFields.clear()
+    authPromptFallbackId = null
+    authPromptFallbackIdFocused = false
   }
 
   /**
@@ -117,6 +123,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       W3cHints.curDomainUrl = domainUrl
       Timber.d("domainUrl = $domainUrl")
     }
+    rememberAuthPromptFallbackId(viewNode)
 
     if (W3cHints.isBrowser(pkgName)) {
       // 浏览器场景:HTML input 通常带 htmlInfo,走 W3C 路径
@@ -148,6 +155,59 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     val childrenSize = viewNode.childCount
     for (i in 0 until childrenSize) {
       parseLocked(viewNode.getChildAt(i))
+    }
+  }
+
+  private fun rememberAuthPromptFallbackId(viewNode: ViewNode) {
+    val autofillId = viewNode.autofillId ?: return
+    if (!isAuthPromptFallbackCandidate(viewNode)) {
+      return
+    }
+    if (isLikelySearchOrUrlField(viewNode)) {
+      return
+    }
+
+    val isFocusedNode = viewNode.isFocused || viewNode.isAccessibilityFocused
+    if (authPromptFallbackId != null && (authPromptFallbackIdFocused || !isFocusedNode)) {
+      return
+    }
+
+    authPromptFallbackId = autofillId
+    authPromptFallbackIdFocused = isFocusedNode
+    Timber.d(
+      "auth prompt fallback id = $autofillId, isFocused = $isFocusedNode, idEntry = ${viewNode.idEntry}, hint = ${viewNode.hint}"
+    )
+  }
+
+  private fun isAuthPromptFallbackCandidate(viewNode: ViewNode): Boolean {
+    if (viewNode.autofillType != View.AUTOFILL_TYPE_TEXT || viewNode.isAssistBlocked) {
+      return false
+    }
+    return viewNode.isFocused
+      || viewNode.isAccessibilityFocused
+      || viewNode.htmlInfo?.tag.equals("input", ignoreCase = true)
+      || classIsEditText(viewNode.className)
+  }
+
+  private fun isLikelySearchOrUrlField(viewNode: ViewNode): Boolean {
+    val tokens = ArrayList<String>()
+    viewNode.idEntry?.let(tokens::add)
+    viewNode.hint?.toString()?.let(tokens::add)
+    viewNode.htmlInfo?.attributes?.forEach {
+      if (!it.first.isNullOrEmpty()) {
+        tokens.add(it.first)
+      }
+      if (!it.second.isNullOrEmpty()) {
+        tokens.add(it.second)
+      }
+    }
+    return tokens.any {
+      val token = it.lowercase()
+      token.contains("search")
+        || token == "url"
+        || token.contains("url_bar")
+        || token.contains("location_bar")
+        || token.contains("address_bar")
     }
   }
 

@@ -290,6 +290,9 @@
     <meta-data
         android:name="host_app"
         android:value="app" />
+    <meta-data
+        android:name="firebase_crashlytics_collection_enabled"
+        android:value="false" />
   </application>
 
 </manifest>

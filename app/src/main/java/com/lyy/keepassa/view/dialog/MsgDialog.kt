@@ -74,6 +74,10 @@ class MsgDialog : BaseDialog<DialogMsgBinding>(), View.OnClickListener {
   @JvmField
   var interceptBackKey: Boolean = false // 是否拦截返回键
 
+  @Autowired(name = "cancelable")
+  @JvmField
+  var cancelable: Boolean = true // 是否允许返回键或点击外部取消
+
   @Autowired(name = "msgTitleEndIcon")
   @JvmField
   var msgTitleEndIcon: Drawable? = null
@@ -105,6 +109,9 @@ class MsgDialog : BaseDialog<DialogMsgBinding>(), View.OnClickListener {
   override fun initData() {
     super.initData()
     ARouter.getInstance().inject(this)
+
+    isCancelable = cancelable
+    dialog?.setCanceledOnTouchOutside(cancelable)
 
     msgTitleEndIcon?.let {
       binding.tvTitle.setEndIcon(it)

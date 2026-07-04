@@ -187,7 +187,14 @@ class KeepassAUtil private constructor() {
    * lock the db
    */
   fun lock() {
-    Timber.d("锁定数据库")
+    lockDb(DbLockTrigger.AUTO_LOCK)
+  }
+
+  /**
+   * 统一锁定数据库入口。
+   */
+  fun lockDb(trigger: DbLockTrigger = DbLockTrigger.AUTO_LOCK) {
+    Timber.d("锁定数据库, trigger = $trigger")
     BaseApp.isLocked = true
     val plan = DbLockPlanner.plan(
       isAppForeground = AppUtils.isAppForeground(),

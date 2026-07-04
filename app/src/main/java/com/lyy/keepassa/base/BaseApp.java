@@ -29,8 +29,8 @@ import com.lyy.keepassa.entity.DbHistoryRecord;
 import com.lyy.keepassa.receiver.ScreenLockReceiver;
 import com.lyy.keepassa.router.ServiceRouter;
 import com.lyy.keepassa.service.feat.KpaSdkService;
-import com.lyy.keepassa.util.CommonKVStorage;
 import com.lyy.keepassa.util.LanguageUtil;
+import com.lyy.keepassa.util.PrivacyAgreementConsent;
 import com.lyy.keepassa.view.StorageType;
 import java.util.Locale;
 
@@ -93,7 +93,7 @@ public class BaseApp extends MultiDexApplication {
     KpaSdkService kpaSdkService = Routerfit.INSTANCE.create(ServiceRouter.class, null).getKpaSdkService();
     kpaSdkService.preInitSdk(this);
     initReceiver();
-    if (CommonKVStorage.INSTANCE.getBoolean(Constance.IS_AGREE_PRIVACY_AGREEMENT, false)) {
+    if (PrivacyAgreementConsent.INSTANCE.isAcceptedCurrentVersion()) {
       kpaSdkService.initThirdSdk(this);
     }
   }

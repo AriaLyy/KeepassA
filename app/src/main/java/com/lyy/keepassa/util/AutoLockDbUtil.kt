@@ -124,7 +124,7 @@ class AutoLockDbUtil private constructor() {
     workerParams: WorkerParameters
   ) : CoroutineWorker(appContext, workerParams) {
     override suspend fun doWork(): Result {
-      KeepassAUtil.instance.lock()
+      KeepassAUtil.instance.lockDb(DbLockTrigger.AUTO_LOCK)
       return Result.success()
     }
 

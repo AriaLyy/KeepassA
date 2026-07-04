@@ -405,7 +405,30 @@ The \n database is encrypted using AES256. No one can open your database without
     <string name="webdav_host_name_hint"><![CDATA[Please enter your hostname]]></string>
     <string name="webdav_port_hint"><![CDATA[port]]></string>
     <string name="webdav_port_name_null"><![CDATA[Hostname cannot be empty]]></string>
-    <string name="privacy_agreement"><![CDATA[privacy agreement]]></string>
+    <string name="privacy_agreement"><![CDATA[Privacy and Security Notice]]></string>
+    <string name="privacy_agreement_accept"><![CDATA[Agree]]></string>
+    <string name="privacy_agreement_exit"><![CDATA[Exit app]]></string>
+    <string name="privacy_agreement_content_html"><![CDATA[<big>Privacy and Security Notice</big>
+<br/><br/>
+Before using KeepassA, please read and confirm the following:
+<br/><br/>
+1. KeepassA is a password manager compatible with the KeePass database format. If you have not used KeePass-compatible software before, or if you do not understand concepts such as database files, master passwords, key files, and backups, please learn about these risks before using this app.
+<br/><br/>
+2. Please keep your database file, master password, key file, and unlock credentials secure. Do not share your database password, key file, or unlock credentials with anyone. If they are leaked, others may be able to access your password data, and the developer cannot recover or reset them for you.
+<br/><br/>
+3. This app does not operate its own server. The developer does not upload, collect, store, or access your database file, master password, entry content, attachments, or key file. Your database is stored only on your device, or in a remote storage service that you choose and configure yourself, such as WebDAV, FTP, Dropbox, or OneDrive.
+<br/><br/>
+4. If you enable remote sync or backup, please choose a storage provider you trust and make sure your account, network environment, and access permissions are secure. For example, when using WebDAV, use a trusted provider and do not use WebDAV services from unknown or untrusted sources.
+<br/><br/>
+5. When you configure remote storage, this app may need to use the account authorization, server address, username, token, or password that you provide in order to connect to your selected storage service. These credentials are used only for the sync or backup features you choose. The developer does not receive your database or your remote storage credentials.
+<br/><br/>
+6. After you agree to this notice, this app may initialize Firebase Crashlytics, a crash reporting service provided by Google Firebase. Crashlytics is used only to diagnose app crashes and improve stability. Crash reports may include device model, operating system version, app version, crash stack traces, Crashlytics installation identifiers, error logs, and other diagnostic information related to the crash. Crashlytics is not used to intentionally collect your database file, master password, key file, entry content, or attachments.
+<br/><br/>
+7. This app is open source, and its source code can be reviewed by anyone. To reduce the risk of installing a modified or unsafe build, please download this app from Google Play or an official project release channel, and avoid installing versions from unknown sources.
+<br/><br/>
+8. This app is a local password database management tool. You are responsible for managing your database file, master password, key file, device security, remote storage account, and backup strategy. The developer cannot recover data lost due to forgotten passwords, leaked credentials, lost devices, third-party storage service issues, or modified unofficial versions.
+<br/><br/>
+By tapping "Agree", you confirm that you have read and understood this notice and agree to continue using this app.]]></string>
     <string name="ime_hint_open_auto_fill"><![CDATA[Please turn on autofill service]]></string>
     <string name="please_open_proxy"><![CDATA[Due to well-known network reasons, in order to use onedrive services smoothly, please use appropriate network tools]]></string>
     <string name="invalid_img"><![CDATA[Invalid image]]></string>

@@ -44,10 +44,9 @@ import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.router.ServiceRouter
-import com.lyy.keepassa.util.CommonKVStorage
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.HitUtil
-import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.PrivacyAgreementConsent
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.isAFS
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
@@ -89,8 +88,7 @@ internal class LauncherModule : BaseModule() {
   }
 
   private fun isNeedShowPrPrivacyAgreement(): Boolean {
-    return KpaUtil.isChina()
-      && !CommonKVStorage.getBoolean(Constance.IS_AGREE_PRIVACY_AGREEMENT, false)
+    return PrivacyAgreementConsent.shouldShow()
   }
 
   fun showPrivacyAgreement(context: Context) {
@@ -98,14 +96,16 @@ internal class LauncherModule : BaseModule() {
       return
     }
     Routerfit.create(DialogRouter::class.java).showMsgDialog(
-      msgTitle = "隐私协议",
-      msgContent = Html.fromHtml("<big>是否同意本协议</big> <br/> * 本应用没有服务端，不收集任何用户信息，只采用Bugly收集崩溃报告和性能报告 <br/> * 本应用网络同步和备份采用WebDav、FTP协议，DropBox、OneDrive网盘，由用户自己提供同步服务 <br/> * 本应用为开源软件，使用中产生任何问题由用户自己承担"),
-      enterText = "同意",
-      cancelText = "退出应用",
+      msgTitle = context.getString(R.string.privacy_agreement),
+      msgContent = Html.fromHtml(context.getString(R.string.privacy_agreement_content_html)),
+      enterText = context.getString(R.string.privacy_agreement_accept),
+      cancelText = context.getString(R.string.privacy_agreement_exit),
+      cancelable = false,
+      interceptBackKey = true,
       btnClickListener = object : OnMsgBtClickListener {
 
         override fun onEnter(v: Button) {
-          CommonKVStorage.put(Constance.IS_AGREE_PRIVACY_AGREEMENT, true)
+          PrivacyAgreementConsent.acceptCurrentVersion()
           Routerfit.create(ServiceRouter::class.java).getKpaSdkService().initThirdSdk(context)
         }
 

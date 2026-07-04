@@ -226,6 +226,22 @@ object AutoFillHelper {
     return responseBuilder.build()
   }
 
+  fun newAuthResponse(
+    context: Context,
+    autofillIds: Array<AutofillId>,
+    sender: IntentSender
+  ): FillResponse {
+    val responseBuilder = FillResponse.Builder()
+    val presentation = newRemoteViews(
+      context,
+      context.packageName,
+      context.getString(R.string.autofill_sign_in_prompt),
+      R.mipmap.ic_launcher
+    )
+    responseBuilder.setAuthentication(autofillIds, sender, presentation)
+    return responseBuilder.build()
+  }
+
   /**
    * @param dataSetAuth true 验证通过
    * @param apkPageName 第三方apk包名

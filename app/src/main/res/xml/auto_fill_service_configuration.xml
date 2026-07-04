@@ -33,6 +33,7 @@
   <compatibility-package android:name="org.bromite.bromite" />
   <compatibility-package android:name="org.chromium.chrome" />
   <compatibility-package android:name="com.kiwibrowser.browser" />
+  <compatibility-package android:name="secure.unblock.unlimited.proxy.snap.hotspot.shield" />
   <compatibility-package android:name="com.ecosia.android" />
   <compatibility-package android:name="com.vivaldi.browser" />
   <compatibility-package android:name="mark.via" />

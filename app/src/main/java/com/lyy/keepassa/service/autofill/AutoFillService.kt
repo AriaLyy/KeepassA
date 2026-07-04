@@ -23,6 +23,7 @@ import android.service.autofill.FillRequest
 import android.service.autofill.FillResponse
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
+import android.view.autofill.AutofillId
 import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.ToastUtils
 import com.lyy.keepassa.R
@@ -87,6 +88,18 @@ class AutoFillService : AutofillService() {
     val needAuth = BaseApp.KDB == null || BaseApp.isLocked
 
     if (autoFillFields.autoFillIds.size <= 0) {
+      val fallbackId = parser.authPromptFallbackId
+      if (AutofillAuthPromptPolicy.shouldUseFallbackAuthPrompt(
+          needAuth = needAuth,
+          classifiedFieldCount = autoFillFields.autoFillIds.size,
+          hasFallbackFillId = fallbackId != null,
+          isWebContext = W3cHints.isBrowser(apkPackageName) || parser.domainUrl.isNotBlank()
+        )
+      ) {
+        Timber.i("use fallback auth prompt id for locked autofill")
+        openFallbackAuthPrompt(callback, arrayOf(fallbackId!!), apkPackageName, structure)
+        return
+      }
       Timber.i("autoFillIds is nulll")
       callback.onSuccess(null)
       return
@@ -184,6 +197,20 @@ class AutoFillService : AutofillService() {
         LauncherActivity.getAuthDbIntentSender(this, apkPackageName, structure)
       )
     )
+  }
+
+  private fun openFallbackAuthPrompt(
+    callback: FillCallback,
+    autofillIds: Array<AutofillId>,
+    apkPackageName: String,
+    structure: AssistStructure
+  ) {
+    val sender = if (BaseApp.KDB != null && BaseApp.APP.isCanOpenQuickLock()) {
+      QuickUnlockActivity.getQuickUnlockSenderForResponse(this, apkPackageName, structure)
+    } else {
+      LauncherActivity.getAuthDbIntentSender(this, apkPackageName, structure)
+    }
+    callback.onSuccess(AutoFillHelper.newAuthResponse(this, autofillIds, sender))
   }
 
   /**

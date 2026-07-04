@@ -368,7 +368,30 @@
     <string name="webdav_host_name_hint"><![CDATA[請輸入你的主機名]]></string>
     <string name="webdav_port_hint"><![CDATA[連接埠]]></string>
     <string name="webdav_port_name_null"><![CDATA[Hostname 不能為空]]></string>
-    <string name="privacy_agreement"><![CDATA[隱私協議]]></string>
+    <string name="privacy_agreement"><![CDATA[隱私協議與安全提示]]></string>
+    <string name="privacy_agreement_accept"><![CDATA[同意]]></string>
+    <string name="privacy_agreement_exit"><![CDATA[退出應用]]></string>
+    <string name="privacy_agreement_content_html"><![CDATA[<big>隱私協議與安全提示</big>
+<br/><br/>
+在使用 KeepassA 前，請你閱讀並確認以下內容：
+<br/><br/>
+1. KeepassA 是相容 KeePass 資料庫格式的密碼管理工具。如果你此前沒有使用過 KeePass 類軟體，或不了解資料庫檔案、主密碼、金鑰檔案、備份等基本概念，請先了解相關風險後再使用本應用。
+<br/><br/>
+2. 請妥善保管你的資料庫檔案、主密碼、金鑰檔案和解鎖憑證。請不要將資料庫密碼、金鑰檔案或解鎖憑證告知任何人；一旦外洩，可能導致你的密碼資料被他人讀取，且開發者無法幫你找回或重設。
+<br/><br/>
+3. 本應用沒有自建伺服器。開發者不會上傳、收集、保存或存取你的資料庫檔案、主密碼、條目內容、附件內容或金鑰檔案。你的資料庫只會保存在你的裝置本機，或由你自行選擇並設定保存到 WebDAV、FTP、Dropbox、OneDrive 等遠端儲存服務中。
+<br/><br/>
+4. 如果你啟用遠端同步或備份，請選擇你信任的儲存服務商，並確認其帳號、網路環境和存取權限安全。例如使用 WebDAV 時，請優先選擇可信服務商，不要使用來源不明或他人提供的 WebDAV 服務。
+<br/><br/>
+5. 當你設定遠端儲存時，本應用可能需要使用你提供的帳號授權、伺服器位址、使用者名稱、權杖或密碼，以連接你選擇的儲存服務。這些憑證僅用於你主動啟用的同步或備份功能。開發者不會收到你的資料庫檔案或遠端儲存憑證。
+<br/><br/>
+6. 在你同意本協議後，本應用可能會初始化 Firebase Crashlytics。Firebase Crashlytics 是 Google Firebase 提供的崩潰報告服務，僅用於定位應用崩潰問題和改善穩定性。崩潰報告可能包含裝置型號、系統版本、應用版本、崩潰堆疊、Crashlytics 安裝識別碼、錯誤日誌以及與崩潰相關的診斷資訊。本應用不會透過 Crashlytics 主動收集你的資料庫檔案、主密碼、金鑰檔案、條目內容或附件內容。
+<br/><br/>
+7. 本應用是開源軟體，原始碼可供任何人審閱。為了降低安裝到被竄改版本或不安全版本的風險，請盡量從 Google Play 或專案官方發布渠道下載本應用，不要安裝來源不明的版本。
+<br/><br/>
+8. 本應用僅作為本機密碼資料庫管理工具提供。你需要自行負責資料庫檔案、主密碼、金鑰檔案、裝置安全、遠端儲存帳號和備份策略的管理。因主密碼遺忘、憑證外洩、裝置遺失、第三方儲存服務異常或使用非官方修改版本造成的資料風險，開發者無法替你恢復資料或控制相關後果。
+<br/><br/>
+點擊「同意」表示你已閱讀並理解以上內容，並同意繼續使用本應用。]]></string>
     <string name="ime_hint_open_auto_fill"><![CDATA[請開啟自動填充服務]]></string>
     <string name="please_open_proxy"><![CDATA[由於眾所周知的網路原因，為了能順暢使用onedrive服務，請使用合適的網路工具]]></string>
     <string name="invalid_img"><![CDATA[無效的圖片]]></string>

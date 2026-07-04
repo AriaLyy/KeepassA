@@ -94,6 +94,9 @@
       android:name="com.kiwibrowser.browser"
       android:maxLongVersionCode="10000000000" />
   <compatibility-package
+      android:name="secure.unblock.unlimited.proxy.snap.hotspot.shield"
+      android:maxLongVersionCode="10000000000" />
+  <compatibility-package
       android:name="com.ecosia.android"
       android:maxLongVersionCode="10000000000" />
   <compatibility-package

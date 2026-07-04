@@ -40,6 +40,7 @@ import com.lyy.keepassa.util.ForegroundReturnLockAction
 import com.lyy.keepassa.util.ForegroundReturnLockPlanner
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil.isNull
+import com.lyy.keepassa.util.DbLockTrigger
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.LanguageUtil
@@ -132,8 +133,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   }
 
   protected fun showQuickUnlockDialog() {
-    KeepassAUtil.instance.lock()
-    finish()
+    KeepassAUtil.instance.lockDb(DbLockTrigger.MANUAL_LOCK)
   }
 
   override fun onRestart() {
@@ -146,7 +146,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     )) {
       ForegroundReturnLockAction.LOCK_ONLY -> {
         BaseApp.handler.postDelayed({
-          KeepassAUtil.instance.lock()
+          KeepassAUtil.instance.lockDb(DbLockTrigger.FOREGROUND_RETURN)
         }, 150)
       }
 

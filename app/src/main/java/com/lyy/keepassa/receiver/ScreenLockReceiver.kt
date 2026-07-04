@@ -14,6 +14,7 @@ import androidx.preference.PreferenceManager
 import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.util.DbLockTrigger
 import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.KeepassAUtil
 
@@ -33,7 +34,7 @@ class ScreenLockReceiver : BroadcastReceiver() {
       if (BaseApp.isLocked || BaseApp.KDB.isNull()){
         return
       }
-      KeepassAUtil.instance.lock()
+      KeepassAUtil.instance.lockDb(DbLockTrigger.SCREEN_LOCK)
       return
     }
   }

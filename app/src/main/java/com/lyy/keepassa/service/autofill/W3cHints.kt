@@ -50,6 +50,7 @@ object W3cHints {
     "org.bromite.bromite",
     "org.chromium.chrome",
     "com.kiwibrowser.browser",
+    "secure.unblock.unlimited.proxy.snap.hotspot.shield",
     "com.ecosia.android",
     "com.opera.mini.native.beta",
     "org.mozilla.fennec_aurora",

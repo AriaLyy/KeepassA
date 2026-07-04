@@ -160,7 +160,7 @@ android.applicationVariants.all { variant ->
       // 替换one drive 配置
       def updatedContent = file(manifestPath).getText('UTF-8')
           .replaceAll("msal_package_name", "com.lyy.keepassa") // 包名
-          .replaceAll("msal_signature_hash", keyHash)
+          .replaceAll("msal_signature_hash", "xv3czaACtp98KvuSqP3GRLCxjrc=")
       // 当前签名hash
       file(manifestPath).write(updatedContent, 'UTF-8')
     }

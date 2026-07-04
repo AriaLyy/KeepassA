@@ -423,7 +423,30 @@
     <string name="webdav_host_name_hint">请输入你的主机名</string>
     <string name="webdav_port_hint">端口</string>
     <string name="webdav_port_name_null">Hostname 不能为空</string>
-    <string name="privacy_agreement">隐私协议</string>
+    <string name="privacy_agreement"><![CDATA[隐私协议与安全提示]]></string>
+    <string name="privacy_agreement_accept"><![CDATA[同意]]></string>
+    <string name="privacy_agreement_exit"><![CDATA[退出应用]]></string>
+    <string name="privacy_agreement_content_html"><![CDATA[<big>隐私协议与安全提示</big>
+<br/><br/>
+在使用 KeepassA 前，请你阅读并确认以下内容：
+<br/><br/>
+1. KeepassA 是兼容 KeePass 数据库格式的密码管理工具。如果你此前没有使用过 KeePass 类软件，或不了解数据库文件、主密码、密钥文件、备份等基本概念，请先了解相关风险后再使用本应用。
+<br/><br/>
+2. 请妥善保管你的数据库文件、主密码、密钥文件和解锁凭据。请不要将数据库密码、密钥文件或解锁凭据告知任何人；一旦泄露，可能导致你的密码数据被他人读取，且开发者无法帮你找回或重置。
+<br/><br/>
+3. 本应用没有自建服务端。开发者不会上传、收集、保存或访问你的数据库文件、主密码、条目内容、附件内容或密钥文件。你的数据库只会保存在你的设备本地，或由你自行选择并配置保存到 WebDAV、FTP、Dropbox、OneDrive 等远程存储服务中。
+<br/><br/>
+4. 如果你启用远程同步或备份，请选择你信任的存储服务商，并确认其账号、网络环境和访问权限安全。例如使用 WebDAV 时，请优先选择可信服务商，不要使用来源不明或他人提供的 WebDAV 服务。
+<br/><br/>
+5. 当你配置远程存储时，本应用可能需要使用你提供的账号授权、服务器地址、用户名、令牌或密码，以连接你选择的存储服务。这些凭据仅用于你主动启用的同步或备份功能。开发者不会收到你的数据库文件或远程存储凭据。
+<br/><br/>
+6. 在你同意本协议后，本应用可能会初始化 Firebase Crashlytics。Firebase Crashlytics 是 Google Firebase 提供的崩溃报告服务，仅用于定位应用崩溃问题和改善稳定性。崩溃报告可能包含设备型号、系统版本、应用版本、崩溃堆栈、Crashlytics 安装标识、错误日志以及与崩溃相关的诊断信息。本应用不会通过 Crashlytics 主动收集你的数据库文件、主密码、密钥文件、条目内容或附件内容。
+<br/><br/>
+7. 本应用是开源软件，源码可供任何人审阅。为了降低安装到被篡改版本或不安全版本的风险，请尽量从 Google Play 或项目官方发布渠道下载本应用，不要安装来源不明的版本。
+<br/><br/>
+8. 本应用仅作为本地密码数据库管理工具提供。你需要自行负责数据库文件、主密码、密钥文件、设备安全、远程存储账号和备份策略的管理。因主密码遗忘、凭据泄露、设备丢失、第三方存储服务异常或使用非官方修改版本造成的数据风险，开发者无法替你恢复数据或控制相关后果。
+<br/><br/>
+点击“同意”表示你已阅读并理解以上内容，并同意继续使用本应用。]]></string>
     <string name="ime_hint_open_auto_fill">请打开自动填充服务</string>
     <string name="please_open_proxy">由于众所周知的网络原因，为了能顺畅使用onedrive服务，请使用合适的网络工具</string>
     <string name="invalid_img">无效的图片</string>

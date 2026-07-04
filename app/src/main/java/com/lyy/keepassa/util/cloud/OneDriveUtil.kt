@@ -24,6 +24,7 @@ import com.lyy.keepassa.ondrive.MsalSourceItem
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KeepassAUtil
+import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.getBytes
 import com.microsoft.identity.client.AuthenticationCallback
 import com.microsoft.identity.client.IAccount
@@ -36,6 +37,7 @@ import com.microsoft.identity.client.PublicClientApplication
 import com.microsoft.identity.client.SilentAuthenticationCallback
 import com.microsoft.identity.client.exception.MsalException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Headers
 import okhttp3.MediaType.Companion.toMediaType
@@ -183,8 +185,7 @@ object OneDriveUtil : ICloudUtil {
       SilentAuthenticationCallback {
       override fun onSuccess(authenticationResult: IAuthenticationResult?) {
         Timber.d("获取token成功")
-        authInfo = authenticationResult
-        loginCallback?.callback(true)
+        handleLoginSuccess(authenticationResult)
       }
 
       override fun onError(exception: MsalException) {
@@ -215,10 +216,9 @@ object OneDriveUtil : ICloudUtil {
   private fun login() {
     oneDriveApp.signIn(getCurActivity(), "", getScopes(), object : AuthenticationCallback {
       override fun onSuccess(authenticationResult: IAuthenticationResult?) {
-        authInfo = authenticationResult
         HitUtil.toaskShort("${getContext().getString(R.string.login)}${getContext().getString(R.string.success)}")
         Timber.d("登陆成功")
-        loginCallback?.callback(true)
+        handleLoginSuccess(authenticationResult)
       }
 
       override fun onError(exception: MsalException?) {
@@ -238,6 +238,40 @@ object OneDriveUtil : ICloudUtil {
 
   private fun getScopes(): Array<String> {
     return arrayOf("User.Read", "Files.ReadWrite.AppFolder")
+  }
+
+  private fun handleLoginSuccess(authenticationResult: IAuthenticationResult?) {
+    authInfo = authenticationResult
+    getTokenFailNum = 0
+    KpaUtil.scope.launch(Dispatchers.IO) {
+      val success = ensureAppRootFolder()
+      withContext(Dispatchers.Main) {
+        if (!success) {
+          HitUtil.toaskShort(R.string.one_drive_init_failure)
+        }
+        loginCallback?.callback(success)
+      }
+    }
+  }
+
+  private suspend fun ensureAppRootFolder(): Boolean {
+    if (!checkLogin()) {
+      return false
+    }
+    return try {
+      val appRoot = netManager.request(MsalApi::class.java)
+        .getAppRootFolder(getAuthInfo().accessToken, getUserId())
+      if (appRoot == null) {
+        Timber.e("OneDrive app root folder init failed, response is null")
+        false
+      } else {
+        Timber.d("OneDrive app root folder ready, id = ${appRoot.id}")
+        true
+      }
+    } catch (e: Exception) {
+      Timber.e(e)
+      false
+    }
   }
 
   private fun msalItem2CloudItem(item: MsalSourceItem): CloudFileInfo {

@@ -36,6 +36,7 @@ import com.lyy.keepassa.event.ModifyDbNameEvent
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.ServiceRouter
 import com.lyy.keepassa.service.feat.XLogFeature
+import com.lyy.keepassa.util.DbLockTrigger
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
@@ -161,7 +162,7 @@ class MainSettingActivity : BaseActivity<ActivityChangeDbBinding>(), View.OnClic
       }
 
       R.id.change_db -> {
-        KeepassAUtil.instance.turnLauncher()
+        KeepassAUtil.instance.lockDb(DbLockTrigger.MANUAL_LOCK)
       }
 
       R.id.app_feedback -> {

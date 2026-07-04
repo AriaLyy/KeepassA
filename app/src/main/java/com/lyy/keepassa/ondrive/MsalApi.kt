@@ -62,6 +62,15 @@ interface MsalApi {
   ): MsalResponse<List<MsalSourceItem>>
 
   /**
+   * 获取应用的app文件夹信息，如果文件夹不存在，Graph 会创建该 app folder。
+   */
+  @GET("users/{userId}/drive/special/$APP_ROOT_DIR")
+  suspend fun getAppRootFolder(
+    @Header(TOKEN_KEY) authorization: String,
+    @Path("userId") userId: String
+  ): MsalSourceItem?
+
+  /**
    * 获取单个文件信息
    * @param itemId 文件id
    */

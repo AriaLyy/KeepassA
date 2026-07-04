@@ -68,6 +68,7 @@ class KpaSdkService : IProvider {
 
   fun initThirdSdk(context: Context) {
     scope.launch(Dispatchers.IO) {
+      CrashlyticsConsent.enableCollection()
       RichText.initCacheDir(context)
       XLogFeature.init(context)
     }

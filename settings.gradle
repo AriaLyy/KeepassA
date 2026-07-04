@@ -10,13 +10,25 @@ pluginManagement {
   }
 }
 
+def localProps = new Properties()
+def localPropsFile = file('local.properties')
+if (localPropsFile.exists()) {
+  localPropsFile.withInputStream { localProps.load(it) }
+}
+
 dependencyResolutionManagement {
   repositories {
     google()
     mavenCentral()
     mavenLocal()
     maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
-    maven { url 'https://maven.dddo.top:666/repository/maven-public/' }
+    maven {
+      url 'https://maven.dddo.top:666/repository/maven-public/'
+      credentials {
+        username = localProps.getProperty('privateMavenUsername', '')
+        password = localProps.getProperty('privateMavenPassword', '')
+      }
+    }
     maven { url 'https://jitpack.io' }
     maven {
       url 'https://pkgs.dev.azure.com/MicrosoftDeviceSDK/DuoSDK-Public/_packaging/Duo-SDK-Feed/maven/v1'

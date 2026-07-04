@@ -47,10 +47,11 @@
         app:layout_constraintTop_toBottomOf="@+id/tvTitle"
         />
 
-    <androidx.core.widget.NestedScrollView
+    <com.lyy.keepassa.widget.MaxHeightNestedScrollView
         android:id="@+id/msgScroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxHeight="400dp"
         app:layout_constraintTop_toBottomOf="@+id/vLine"
         >
 
@@ -58,13 +59,12 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_margin="16dp"
-          android:maxHeight="400dp"
           android:text="@{dialog.msgContent}"
           android:textColor="@color/text_black_color"
           android:textSize="@dimen/text_size_normal"
           />
 
-    </androidx.core.widget.NestedScrollView>
+    </com.lyy.keepassa.widget.MaxHeightNestedScrollView>
 
 
     <androidx.appcompat.widget.AppCompatButton

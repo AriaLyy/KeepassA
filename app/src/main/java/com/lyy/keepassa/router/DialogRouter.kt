@@ -143,6 +143,7 @@ interface DialogRouter  {
     @RouterArgName(name = "showCancelBt") showCancelBt: Boolean = true,
     @RouterArgName(name = "showEnterBt") showEnterBt: Boolean = true,
     @RouterArgName(name = "showCoverBt") showCoverBt: Boolean = false,
+    @RouterArgName(name = "cancelable") cancelable: Boolean = true,
     @RouterArgName(name = "interceptBackKey") interceptBackKey: Boolean = false,
     @RouterArgName(name = "enterText", isObject = true) enterText: CharSequence = "",
     @RouterArgName(name = "cancelText", isObject = true) cancelText: CharSequence = "",
