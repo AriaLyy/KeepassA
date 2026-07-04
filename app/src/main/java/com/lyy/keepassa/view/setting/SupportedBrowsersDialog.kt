@@ -42,6 +42,7 @@ object SupportedBrowsersDialog {
 
   private fun buildMessage(context: Context, browsers: List<SupportedBrowser>): CharSequence {
     val sb = StringBuilder()
+    val incompatibleSuffix = context.getString(R.string.supported_browser_incompatible_suffix)
     engineOrder.forEach { engine ->
       val inGroup = browsers.filter { it.engine == engine }
       if (inGroup.isEmpty()) return@forEach
@@ -49,7 +50,13 @@ object SupportedBrowsersDialog {
       sb.append(categoryTitle(context, engine)).append('\n')
       inGroup
         .sortedBy { it.displayName.lowercase() }
-        .forEach { sb.append("· ").append(it.displayName).append('\n') }
+        .forEach { browser ->
+          sb.append("· ").append(browser.displayName)
+          if (!browser.compatible) {
+            sb.append(' ').append(incompatibleSuffix)
+          }
+          sb.append('\n')
+        }
     }
     return sb.toString().trimEnd('\n')
   }

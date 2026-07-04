@@ -254,6 +254,7 @@
     <string name="supported_browsers_title">已适配浏览器</string>
     <string name="supported_browsers_summary">查看已针对自动填充做适配的浏览器列表</string>
     <string name="supported_browsers_dialog_title">已适配浏览器(%1$d)</string>
+    <string name="supported_browser_incompatible_suffix">(不兼容)</string>
     <string name="autofill_browser_category_chromium">Chromium 系</string>
     <string name="autofill_browser_category_yandex">Yandex</string>
     <string name="autofill_browser_category_kiwi">Kiwi</string>

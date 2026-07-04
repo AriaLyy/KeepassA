@@ -28,6 +28,14 @@ internal object UcBrowserAutofillCompatibility {
     "search_input_scroll_container"
   )
 
+  private val ucAddressBarDescriptionTokens = setOf(
+    "搜索或输入网址",
+    "输入网址",
+    "网址",
+    "address",
+    "url"
+  )
+
   fun isAddressBarNode(
     strategy: BrowserAutofillStrategy,
     viewNode: ViewNode
@@ -35,8 +43,15 @@ internal object UcBrowserAutofillCompatibility {
     if (strategy.engine != BrowserAutofillEngine.UC) {
       return false
     }
-    val idEntry = viewNode.idEntry?.lowercase(Locale.ROOT) ?: return false
-    return idEntry in ucAddressBarResourceIds
+    val idEntry = viewNode.idEntry?.lowercase(Locale.ROOT)
+    if (idEntry != null && idEntry in ucAddressBarResourceIds) {
+      return true
+    }
+    val contentDescription = viewNode.contentDescription
+      ?.toString()
+      ?.lowercase(Locale.ROOT)
+      ?: return false
+    return ucAddressBarDescriptionTokens.any { contentDescription.contains(it.lowercase(Locale.ROOT)) }
   }
 
   fun canReuseStoredDomainForCurrentFallback(strategy: BrowserAutofillStrategy): Boolean {

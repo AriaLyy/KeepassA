@@ -237,6 +237,7 @@ The \n database is encrypted using AES256. No one can open your database without
     <string name="supported_browsers_title"><![CDATA[Supported browsers]]></string>
     <string name="supported_browsers_summary"><![CDATA[Browsers with tailored autofill strategies]]></string>
     <string name="supported_browsers_dialog_title"><![CDATA[Supported browsers (%1$d)]]></string>
+    <string name="supported_browser_incompatible_suffix"><![CDATA[(incompatible)]]></string>
     <string name="autofill_browser_category_chromium"><![CDATA[Chromium family]]></string>
     <string name="autofill_browser_category_yandex"><![CDATA[Yandex]]></string>
     <string name="autofill_browser_category_kiwi"><![CDATA[Kiwi]]></string>

@@ -23,11 +23,15 @@ enum class BrowserAutofillEngine {
 
 /**
  * 已适配的浏览器描述。供设置页"已适配浏览器"列表展示用。
+ *
+ * [compatible]=false 表示该浏览器虽被策略注册表识别过,但实际 autofill 不可用
+ * (典型原因:浏览器自身从未稳定触发 Autofill session)。列表展示时需要追加"不兼容"标记。
  */
 data class SupportedBrowser(
   val packageName: String,
   val displayName: String,
-  val engine: BrowserAutofillEngine
+  val engine: BrowserAutofillEngine,
+  val compatible: Boolean = true
 )
 
 internal data class BrowserAutofillStrategy(
@@ -64,7 +68,7 @@ internal object BrowserAutofillStrategyRegistry {
     "com.opera.mini.native",
     "com.opera.mini.native.beta",
     "com.opera.touch",
-    // "com.yandex.browser",
+    "com.yandex.browser",
     "com.sec.android.app.sbrowser",
     "com.sec.android.app.sbrowser.beta",
     "com.amazon.cloud9",
@@ -194,6 +198,21 @@ internal object BrowserAutofillStrategyRegistry {
   )
 
   /**
+   * 已识别但实际 autofill 不可用的浏览器包名集合。
+   *
+   * Yandex:自始至终没稳定触发 Autofill session,onFillRequest 收不到,等于残废;
+   * UC 国际版 (com.UCMobile.intl):UC 自研内核 + 屏蔽第三方 AutofillService 的虚拟节点结构,
+   * 字段推断全部失配,实测无法填充。
+   *
+   * 策略代码(forPackage)保留对它们的识别,以便系统层一旦真的下发 FillRequest 时仍能尝试兜底;
+   * 但在设置页"已适配浏览器"列表里必须明确标注"不兼容",避免用户误以为可用。
+   */
+  private val incompatiblePackages: Set<String> = setOf(
+    "com.yandex.browser",
+    "com.UCMobile.intl"
+  )
+
+  /**
    * 所有已适配的浏览器列表,按 engine 分组、组内按展示名排序。供设置页展示。
    */
   val supportedBrowsers: List<SupportedBrowser>
@@ -212,7 +231,8 @@ internal object BrowserAutofillStrategyRegistry {
           SupportedBrowser(
             packageName = pkg,
             displayName = browserDisplayNames[pkg] ?: pkg,
-            engine = engine
+            engine = engine,
+            compatible = pkg !in incompatiblePackages
           )
         }
     }
@@ -297,7 +317,6 @@ internal object BrowserAutofillStrategyRegistry {
       "输入网址",
       "网址",
       "搜索",
-      "豆瓣"
     )
   )
 
