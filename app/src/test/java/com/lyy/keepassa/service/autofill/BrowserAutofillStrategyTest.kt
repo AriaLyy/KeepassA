@@ -73,9 +73,41 @@ class BrowserAutofillStrategyTest {
     assertTrue(strategy.allowSingleFieldAuthFallback)
   }
 
+  @Test fun yandexUsesDedicatedSingleFieldFallbackStrategy() {
+    val strategy = BrowserAutofillStrategyRegistry.forPackage("com.yandex.browser")
+
+    assertEquals(BrowserAutofillEngine.YANDEX, strategy.engine)
+    assertTrue(strategy.isBrowser)
+    assertTrue(strategy.shouldClassifyNativeEditTextVirtualNodes)
+    assertFalse(strategy.allowFocusedNonTextNodeFallback)
+    assertTrue(strategy.allowRequestFocusedIdFallback)
+    assertFalse(strategy.allowBrowserFormFieldInference)
+    assertTrue(strategy.allowSingleFieldAuthFallback)
+  }
+
+  @Test fun idmBrowserUsesDedicatedStrategyWithFallbackPromptSupport() {
+    val strategy = BrowserAutofillStrategyRegistry.forPackage("idm.internet.download.manager")
+
+    assertEquals(BrowserAutofillEngine.IDM, strategy.engine)
+    assertTrue(strategy.isBrowser)
+    assertTrue(strategy.allowRequestFocusedIdFallback)
+    assertTrue(strategy.allowBrowserFormFieldInference)
+    assertTrue(strategy.allowSingleFieldAuthFallback)
+  }
+
+  @Test fun ucMobileIntlUsesDedicatedStrategyWithFallbackPromptSupport() {
+    val strategy = BrowserAutofillStrategyRegistry.forPackage("com.UCMobile.intl")
+
+    assertEquals(BrowserAutofillEngine.UC, strategy.engine)
+    assertTrue(strategy.isBrowser)
+    assertTrue(strategy.shouldClassifyNativeEditTextVirtualNodes)
+    assertTrue(strategy.allowRequestFocusedIdFallback)
+    assertTrue(strategy.allowBrowserFormFieldInference)
+    assertTrue(strategy.allowSingleFieldAuthFallback)
+  }
+
   @Test fun unverifiedDeviceBrowsersUseConservativeBrowserStrategy() {
     listOf(
-      "com.UCMobile.intl",
       "com.apusapps.browser",
       "com.explore.web.browser",
       "com.heytap.browser",
@@ -84,7 +116,6 @@ class BrowserAutofillStrategyTest {
       "com.talpa.hibrowser",
       "com.uc.browser.en",
       "com.vivo.browser",
-      "idm.internet.download.manager",
       "mobi.mgeek.TunnyBrowser",
       "net.fast.web.browser",
       "org.torproject.torbrowser"

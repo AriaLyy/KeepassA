@@ -38,9 +38,12 @@ import com.arialyy.frame.util.ResUtil
 import com.blankj.utilcode.util.LanguageUtils
 import com.blankj.utilcode.util.ReflectUtils
 import com.blankj.utilcode.util.RomUtils
+import com.blankj.utilcode.util.ToastUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.common.PassType
+import com.lyy.keepassa.service.autofill.ChromeAutofillSupport
+import com.lyy.keepassa.service.autofill.ChromeThirdPartyAutofillState
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
@@ -125,6 +128,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     setPreferencesFromResource(R.xml.app_setting, rootKey)
     setSubPassType()
     setAtoFill()
+    setBrowserAutofillSettings()
     setLanguage()
     setQuickUnLock()
     setFingerPrint()
@@ -137,6 +141,11 @@ class AppSettingFragment : PreferenceFragmentCompat() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     scrollToKey()
+  }
+
+  override fun onResume() {
+    super.onResume()
+    updateBrowserAutofillSettings()
   }
 
   /**
@@ -357,6 +366,58 @@ class AppSettingFragment : PreferenceFragmentCompat() {
       }
     } else {
       autoFill.isVisible = false
+    }
+  }
+
+  private fun setBrowserAutofillSettings() {
+    val preference = findPreference<Preference>(
+      getString(R.string.set_key_browser_autofill_settings)
+    ) ?: return
+
+    if (Build.VERSION.SDK_INT < VERSION_CODES.O) {
+      preference.isVisible = false
+      return
+    }
+
+    updateBrowserAutofillSettings()
+    preference.setOnPreferenceClickListener {
+      val opened = ChromeAutofillSupport.openSettings(requireContext())
+      if (!opened) {
+        ToastUtils.showLong(R.string.browser_autofill_settings_open_failed)
+      }
+      true
+    }
+  }
+
+  private fun updateBrowserAutofillSettings() {
+    val preference = findPreference<Preference>(
+      getString(R.string.set_key_browser_autofill_settings)
+    ) ?: return
+
+    if (Build.VERSION.SDK_INT < VERSION_CODES.O) {
+      preference.isVisible = false
+      return
+    }
+
+    when (ChromeAutofillSupport.thirdPartyModeState(requireContext())) {
+      ChromeThirdPartyAutofillState.NOT_INSTALLED -> {
+        preference.isVisible = false
+      }
+
+      ChromeThirdPartyAutofillState.DISABLED -> {
+        preference.isVisible = true
+        preference.summary = getString(R.string.browser_autofill_settings_summary_disabled)
+      }
+
+      ChromeThirdPartyAutofillState.ENABLED -> {
+        preference.isVisible = true
+        preference.summary = getString(R.string.browser_autofill_settings_summary_enabled)
+      }
+
+      ChromeThirdPartyAutofillState.UNKNOWN -> {
+        preference.isVisible = true
+        preference.summary = getString(R.string.browser_autofill_settings_summary_unknown)
+      }
     }
   }
 

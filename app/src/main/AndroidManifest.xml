@@ -9,6 +9,11 @@
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.VIBRATE" />
 
+  <queries>
+    <package android:name="com.android.chrome" />
+    <provider android:authorities="com.android.chrome.AutofillThirdPartyModeContentProvider" />
+  </queries>
+
   <application
       android:name=".base.BaseApp"
       android:allowBackup="true"

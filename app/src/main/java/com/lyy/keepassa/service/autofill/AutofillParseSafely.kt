@@ -12,11 +12,17 @@ import timber.log.Timber
 
 /**
  * 包裹自动填充 [StructureParser.parse] 调用，吞掉 OEM ROM（如 MIUI/HyperOS Android 16+）
- * 在加载 AssistStructure 时抛出的 SecurityException，避免崩溃。
+ * 在加载 AssistStructure 时抛出的异常，避免崩溃。
+ *
+ * MIUI/HyperOS 在 `AssistStructure.ensureData` 跨 binder 拉取字段时，会触发
+ * `ActivityThreadImpl.isMiuiConsumeForAutofill` → `Settings.Secure` 读取；该读取在
+ * 跨进程场景下被 AppOps `enforceSettingReadable` 拒绝，本地侧 Parcel 层抛出的异常
+ * 类型在不同 Android 版本上不固定（SecurityException / RuntimeException /
+ * IllegalStateException 都观测到过），这里统一兜底。
  *
  * @param parseBlock 实际 parse 逻辑
  * @param onFailed parse 失败时的清场回调（如清空已收集字段）
- * @return true 表示 parse 正常结束；false 表示被 SecurityException 中断
+ * @return true 表示 parse 正常结束；false 表示被异常中断
  */
 internal inline fun safeParse(parseBlock: () -> Unit, onFailed: () -> Unit): Boolean {
   return try {
@@ -24,6 +30,10 @@ internal inline fun safeParse(parseBlock: () -> Unit, onFailed: () -> Unit): Boo
     true
   } catch (e: SecurityException) {
     Timber.e(e, "AssistStructure parse blocked by OEM SecurityException")
+    onFailed()
+    false
+  } catch (e: RuntimeException) {
+    Timber.e(e, "AssistStructure parse blocked by runtime exception (Parcel/AppOps)")
     onFailed()
     false
   }

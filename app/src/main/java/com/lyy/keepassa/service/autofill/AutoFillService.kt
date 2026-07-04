@@ -127,13 +127,32 @@ class AutoFillService : AutofillService() {
         return
       }
       if (!needAuth) {
+        rememberCurrentSingleFieldFallback(
+          apkPackageName = apkPackageName,
+          browserStrategy = browserStrategy,
+          domain = parser.domainUrl,
+          fallbackId = fallbackId,
+          fallbackRole = parser.authPromptFallbackRole
+        )
         val fallbackResponse = getSingleFieldFallbackResponse(
           apkPackageName = apkPackageName,
           domain = parser.domainUrl,
-          browserStrategy = browserStrategy
+          browserStrategy = browserStrategy,
+          currentFallbackId = fallbackId,
+          currentFallbackRole = parser.authPromptFallbackRole
         )
         if (fallbackResponse != null) {
           callback.onSuccess(fallbackResponse)
+          return
+        }
+        if (browserStrategy.allowSingleFieldAuthFallback && fallbackId != null) {
+          openFallbackSearchPrompt(
+            callback,
+            arrayOf(fallbackId),
+            apkPackageName,
+            structure,
+            parser.domainUrl.takeIf { it.isNotBlank() }
+          )
           return
         }
       }
@@ -209,23 +228,47 @@ class AutoFillService : AutofillService() {
   private fun getSingleFieldFallbackResponse(
     apkPackageName: String,
     domain: String?,
-    browserStrategy: BrowserAutofillStrategy
+    browserStrategy: BrowserAutofillStrategy,
+    currentFallbackId: AutofillId? = null,
+    currentFallbackRole: BrowserFormFieldRole? = null
   ): FillResponse? {
-    if (!browserStrategy.allowSingleFieldAuthFallback) {
-      return null
-    }
-    val authContext = AutofillBrowserAuthContextStore.find(apkPackageName) ?: return null
-    val fallbackId = authContext.fallbackId ?: return null
+    val fallbackTarget = AutofillSingleFieldFallbackPolicy.resolve(
+      strategy = browserStrategy,
+      currentFallbackId = currentFallbackId,
+      currentFallbackRole = currentFallbackRole,
+      currentDomain = domain,
+      storedContext = AutofillBrowserAuthContextStore.find(apkPackageName)
+    ) ?: return null
     val datas = AutofillEntryLookup.find(
       packageName = apkPackageName,
-      domain = domain?.takeIf { it.isNotBlank() } ?: authContext.domain
+      domain = fallbackTarget.domain
     )
     return AutoFillHelper.newSingleFieldFallbackResponse(
       context = this,
       entries = datas,
       apkPageName = apkPackageName,
+      fallbackId = fallbackTarget.fallbackId,
+      fallbackRole = fallbackTarget.fallbackRole
+    )
+  }
+
+  private fun rememberCurrentSingleFieldFallback(
+    apkPackageName: String,
+    browserStrategy: BrowserAutofillStrategy,
+    domain: String?,
+    fallbackId: AutofillId?,
+    fallbackRole: BrowserFormFieldRole?
+  ) {
+    if (!browserStrategy.allowSingleFieldAuthFallback || fallbackId == null) {
+      return
+    }
+    AutofillBrowserAuthContextStore.remember(
+      packageName = apkPackageName,
+      strategy = browserStrategy,
+      domain = domain,
+      metadata = null,
       fallbackId = fallbackId,
-      fallbackRole = authContext.fallbackRole
+      fallbackRole = fallbackRole
     )
   }
 
@@ -296,6 +339,22 @@ class AutoFillService : AutofillService() {
       LauncherActivity.getAuthDbIntentSender(this, apkPackageName, structure, domain)
     }
     callback.onSuccess(AutoFillHelper.newAuthResponse(this, autofillIds, sender))
+  }
+
+  private fun openFallbackSearchPrompt(
+    callback: FillCallback,
+    autofillIds: Array<AutofillId>,
+    apkPackageName: String,
+    structure: AssistStructure,
+    domain: String? = null
+  ) {
+    callback.onSuccess(
+      AutoFillHelper.newAuthResponse(
+        this,
+        autofillIds,
+        AutoFillEntrySearchActivity.getSearchIntentSender(this, apkPackageName, structure, domain)
+      )
+    )
   }
 
   /**

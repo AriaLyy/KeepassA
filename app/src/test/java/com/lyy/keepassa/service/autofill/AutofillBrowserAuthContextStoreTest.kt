@@ -134,4 +134,36 @@ class AutofillBrowserAuthContextStoreTest {
     assertSame(fallbackId, context?.fallbackId)
     assertEquals(BrowserFormFieldRole.PASSWORD, context?.fallbackRole)
   }
+
+  @Test fun currentFallbackWithoutDomainDoesNotCarryPreviousDomain() {
+    AutofillBrowserAuthContextStore.clear()
+    val packageName = "com.yandex.browser"
+    val strategy = BrowserAutofillStrategyRegistry.forPackage(packageName)
+    val previousFallbackId = mockk<AutofillId>()
+    val currentFallbackId = mockk<AutofillId>()
+
+    AutofillBrowserAuthContextStore.remember(
+      packageName = packageName,
+      strategy = strategy,
+      domain = "example.com",
+      metadata = null,
+      fallbackId = previousFallbackId,
+      fallbackRole = BrowserFormFieldRole.PASSWORD,
+      nowMs = 1_000
+    )
+    AutofillBrowserAuthContextStore.remember(
+      packageName = packageName,
+      strategy = strategy,
+      domain = " ",
+      metadata = null,
+      fallbackId = currentFallbackId,
+      fallbackRole = null,
+      nowMs = 2_000
+    )
+
+    val context = AutofillBrowserAuthContextStore.find(packageName, 3_000)
+    assertSame(currentFallbackId, context?.fallbackId)
+    assertNull(context?.fallbackRole)
+    assertNull(context?.domain)
+  }
 }

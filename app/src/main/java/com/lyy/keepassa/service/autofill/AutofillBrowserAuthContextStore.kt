@@ -53,7 +53,11 @@ internal object AutofillBrowserAuthContextStore {
 
     contexts[packageName] = AutofillBrowserAuthContext(
       packageName = packageName,
-      domain = normalizedDomain ?: previous?.domain,
+      domain = normalizedDomain ?: if (fallbackId == null && canCarryPreviousFieldContext) {
+        previous?.domain
+      } else {
+        null
+      },
       metadata = normalizedMetadata ?: if (fallbackId == null && canCarryPreviousFieldContext) {
         previous?.metadata
       } else {
@@ -64,7 +68,7 @@ internal object AutofillBrowserAuthContextStore {
       } else {
         null
       },
-      fallbackRole = fallbackRole ?: if (normalizedMetadata == null && canCarryPreviousFieldContext) {
+      fallbackRole = fallbackRole ?: if (fallbackId == null && normalizedMetadata == null && canCarryPreviousFieldContext) {
         previous?.fallbackRole
       } else {
         null

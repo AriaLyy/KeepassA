@@ -7,7 +7,9 @@
  */
 package com.lyy.keepassa.service.autofill
 
+import java.io.File
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ChromeAutofillSupportTest {
@@ -37,6 +39,14 @@ class ChromeAutofillSupportTest {
     assertEquals(
       ChromeThirdPartyAutofillState.UNKNOWN,
       ChromeAutofillSupport.stateFromProviderValue(2)
+    )
+  }
+
+  @Test fun manifestDeclaresChromePackageVisible() {
+    val manifest = File("src/main/AndroidManifest.xml").readText()
+
+    assertTrue(
+      manifest.contains("<package android:name=\"com.android.chrome\"")
     )
   }
 }

@@ -17,13 +17,11 @@ class MainDialogChainOrderTest {
     val mainModule = File("src/main/java/com/lyy/keepassa/view/main/MainModule.kt")
       .readText()
 
-    assertTrue(
-      mainModule.contains(
-        """
-        add(AutoFillPermissionsChain())
-        add(ChromeAutofillPermissionsChain())
-        """.trimIndent()
-      )
-    )
+    val autofillIndex = mainModule.indexOf("add(AutoFillPermissionsChain())")
+    val chromeIndex = mainModule.indexOf("add(ChromeAutofillPermissionsChain())")
+
+    assertTrue("AutoFillPermissionsChain should be present", autofillIndex >= 0)
+    assertTrue("ChromeAutofillPermissionsChain should be present", chromeIndex >= 0)
+    assertTrue(chromeIndex > autofillIndex)
   }
 }

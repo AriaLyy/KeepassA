@@ -12,7 +12,10 @@ import java.util.Locale
 
 internal enum class BrowserAutofillEngine {
   CHROMIUM,
+  YANDEX,
   KIWI,
+  IDM,
+  UC,
   GECKO,
   ANDROID_BROWSER,
   DEFAULT
@@ -52,7 +55,6 @@ internal object BrowserAutofillStrategyRegistry {
     "com.opera.mini.native",
     "com.opera.mini.native.beta",
     "com.opera.touch",
-    "com.yandex.browser",
     "com.sec.android.app.sbrowser",
     "com.sec.android.app.sbrowser.beta",
     "com.amazon.cloud9",
@@ -67,9 +69,21 @@ internal object BrowserAutofillStrategyRegistry {
     "info.torapp.uweb"
   )
 
+  private val yandexPackages = setOf(
+    "com.yandex.browser"
+  )
+
   private val kiwiPackages = setOf(
     "com.kiwibrowser.browser",
     "secure.unblock.unlimited.proxy.snap.hotspot.shield"
+  )
+
+  private val idmPackages = setOf(
+    "idm.internet.download.manager"
+  )
+
+  private val ucPackages = setOf(
+    "com.UCMobile.intl"
   )
 
   private val geckoPackages = setOf(
@@ -90,7 +104,6 @@ internal object BrowserAutofillStrategyRegistry {
   )
 
   private val conservativeBrowserPackages = setOf(
-    "com.UCMobile.intl",
     "com.uc.browser.en",
     "com.mi.globalbrowser",
     "com.heytap.browser",
@@ -99,7 +112,6 @@ internal object BrowserAutofillStrategyRegistry {
     "com.apusapps.browser",
     "com.explore.web.browser",
     "net.fast.web.browser",
-    "idm.internet.download.manager",
     "com.talpa.hibrowser",
     "mobi.mgeek.TunnyBrowser"
   )
@@ -128,6 +140,17 @@ internal object BrowserAutofillStrategyRegistry {
     searchOrUrlTokens = genericSearchOrUrlTokens
   )
 
+  private val yandexStrategy = BrowserAutofillStrategy(
+    engine = BrowserAutofillEngine.YANDEX,
+    isBrowser = true,
+    shouldClassifyNativeEditTextVirtualNodes = true,
+    allowFocusedNonTextNodeFallback = false,
+    allowRequestFocusedIdFallback = true,
+    allowBrowserFormFieldInference = false,
+    allowSingleFieldAuthFallback = true,
+    searchOrUrlTokens = genericSearchOrUrlTokens
+  )
+
   private val kiwiStrategy = BrowserAutofillStrategy(
     engine = BrowserAutofillEngine.KIWI,
     isBrowser = true,
@@ -137,6 +160,28 @@ internal object BrowserAutofillStrategyRegistry {
     allowBrowserFormFieldInference = true,
     allowSingleFieldAuthFallback = true,
     searchOrUrlTokens = genericSearchOrUrlTokens + "edtsearchurl"
+  )
+
+  private val idmStrategy = BrowserAutofillStrategy(
+    engine = BrowserAutofillEngine.IDM,
+    isBrowser = true,
+    shouldClassifyNativeEditTextVirtualNodes = true,
+    allowFocusedNonTextNodeFallback = false,
+    allowRequestFocusedIdFallback = true,
+    allowBrowserFormFieldInference = true,
+    allowSingleFieldAuthFallback = true,
+    searchOrUrlTokens = genericSearchOrUrlTokens
+  )
+
+  private val ucStrategy = BrowserAutofillStrategy(
+    engine = BrowserAutofillEngine.UC,
+    isBrowser = true,
+    shouldClassifyNativeEditTextVirtualNodes = true,
+    allowFocusedNonTextNodeFallback = false,
+    allowRequestFocusedIdFallback = true,
+    allowBrowserFormFieldInference = true,
+    allowSingleFieldAuthFallback = true,
+    searchOrUrlTokens = genericSearchOrUrlTokens
   )
 
   private val geckoStrategy = BrowserAutofillStrategy(
@@ -189,7 +234,10 @@ internal object BrowserAutofillStrategyRegistry {
     }
     return when (pkgName) {
       in chromiumPackages -> chromiumStrategy
+      in yandexPackages -> yandexStrategy
       in kiwiPackages -> kiwiStrategy
+      in idmPackages -> idmStrategy
+      in ucPackages -> ucStrategy
       in geckoPackages -> geckoStrategy
       in androidBrowserPackages -> androidBrowserStrategy
       in conservativeBrowserPackages -> conservativeBrowserStrategy

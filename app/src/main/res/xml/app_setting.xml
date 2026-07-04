@@ -32,12 +32,6 @@
 
     <SwitchPreference
         android:defaultValue="false"
-        android:title="@string/set_open_auto_fill_title"
-        app:icon="@drawable/ic_auto_fill"
-        app:key="@string/set_open_auto_fill" />
-
-    <SwitchPreference
-        android:defaultValue="false"
         android:icon="@drawable/ic_screen_lock_portrait_black_24dp"
         app:key="@string/set_key_lock_screen_auto_lock_db"
         app:summaryOff="@string/set_summary_screen_lock_off"
@@ -62,6 +56,22 @@
 
     </Preference>
 
+
+  </PreferenceCategory>
+
+  <PreferenceCategory app:title="@string/auto_fill_set">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:title="@string/set_open_auto_fill_title"
+        app:icon="@drawable/ic_auto_fill"
+        app:key="@string/set_open_auto_fill" />
+
+    <Preference
+        android:title="@string/browser_autofill_settings_title"
+        app:icon="@drawable/ic_chrome"
+        app:key="@string/set_key_browser_autofill_settings"
+        app:summary="@string/browser_autofill_settings_summary_unknown" />
 
   </PreferenceCategory>
 

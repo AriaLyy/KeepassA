@@ -153,6 +153,7 @@ The \n database is encrypted using AES256. No one can open your database without
     <string name="hint_copy_totp"><![CDATA[TOTP token copied to clipboard]]></string>
     <string name="create_totp"><![CDATA[Generate OTP token]]></string>
     <string name="safety_set"><![CDATA[Security settings]]></string>
+    <string name="auto_fill_set"><![CDATA[Autofill settings]]></string>
     <string name="fingerprint_unlock"><![CDATA[Fingerprint unlock]]></string>
     <string name="db_handle"><![CDATA[Database operations]]></string>
     <string name="modify_db_name"><![CDATA[Modify database name]]></string>
@@ -225,6 +226,13 @@ The \n database is encrypted using AES256. No one can open your database without
     <string name="autofill_sign_in_prompt"><![CDATA[Autofill password using KeePassA]]></string>
     <string name="hint_open_backgroun_start"><![CDATA[You have turned on autofill, but in special systems such as MIUI, KeePassA needs to grant <b> background pop-up interface </b> permission to pop up the interface to unlock the database.]]></string>
     <string name="hint_background_start"><![CDATA[Click <font color="#FF0000"><b> below to set </b></font>, and then enable <b> background pop-up interface </b> permission for KeePassA.]]></string>
+    <string name="hint_chrome_autofill_third_party_mode"><![CDATA[Chrome has not enabled third-party autofill. KeePassA cannot receive Chrome autofill requests until Chrome allows other password managers.]]></string>
+    <string name="set_key_browser_autofill_settings"><![CDATA[set_key_browser_autofill_settings]]></string>
+    <string name="browser_autofill_settings_title"><![CDATA[Chrome autofill settings]]></string>
+    <string name="browser_autofill_settings_summary_disabled"><![CDATA[Chrome needs to allow third-party autofill before web forms can use KeePassA.]]></string>
+    <string name="browser_autofill_settings_summary_enabled"><![CDATA[Chrome already allows third-party autofill.]]></string>
+    <string name="browser_autofill_settings_summary_unknown"><![CDATA[Open Chrome autofill settings.]]></string>
+    <string name="browser_autofill_settings_open_failed"><![CDATA[Unable to open Chrome autofill settings]]></string>
     <string name="setting_miui_background_start"><![CDATA[Settings >Application Settings >Application Management >KeePassA >Permission Management]]></string>
     <string name="setting_vivo_background_start"><![CDATA[Settings > More Settings > Permission Management->KeePassA > Permission Settings > Background Popup]]></string>
     <string name="no_matching_entry"><![CDATA[No matching entries]]></string>

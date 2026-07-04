@@ -36,6 +36,7 @@ import com.lyy.keepassa.util.InterpolatorConstance
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.isDestroyed
 import com.lyy.keepassa.view.main.chain.AutoFillPermissionsChain
+import com.lyy.keepassa.view.main.chain.ChromeAutofillPermissionsChain
 import com.lyy.keepassa.view.main.chain.DevBirthdayChain
 import com.lyy.keepassa.view.main.chain.DialogChain
 import com.lyy.keepassa.view.main.chain.DonateChain
@@ -150,6 +151,7 @@ class MainModule : BaseModule() {
         add(ReviewChain())
         add(NotifyPermissionsChain())
         add(AutoFillPermissionsChain())
+        add(ChromeAutofillPermissionsChain())
         // add(TipChain())
       }
       DialogChain(activity, list, 0).proceed(activity)

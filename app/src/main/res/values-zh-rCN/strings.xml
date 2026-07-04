@@ -171,6 +171,7 @@
     <string name="hint_copy_totp">已将TOTP令牌拷贝到剪切板</string>
     <string name="create_totp">生成OTP令牌</string>
     <string name="safety_set">安全设置</string>
+    <string name="auto_fill_set">自动填充设置</string>
     <string name="fingerprint_unlock">指纹解锁</string>
     <string name="db_handle">数据库操作</string>
     <string name="modify_db_name">修改数据库名</string>
@@ -243,6 +244,12 @@
     <string name="autofill_sign_in_prompt">使用 KeePassA 自动填充密码</string>
     <string name="hint_open_backgroun_start">您已开启了自动填充，但在 MIUI 等特殊系统中，KeePassA 需要授予 &lt;b&gt;后台弹出界面&lt;/b&gt; 权限才能弹出解锁数据库的界面。</string>
     <string name="hint_background_start"><![CDATA[点击下方 <font color="#FF0000"><b>去设置</b></font>，然后为 KeePassA 开启 <b>后台弹出界面</b> 权限。]]></string>
+    <string name="hint_chrome_autofill_third_party_mode"><![CDATA[Chrome 尚未允许第三方自动填充服务。未开启时，Chrome 网页输入框不会触发 KeePassA 自动填充。]]></string>
+    <string name="browser_autofill_settings_title">Chrome 自动填充设置</string>
+    <string name="browser_autofill_settings_summary_disabled">Chrome 需要允许第三方自动填充后，网页表单才能使用 KeePassA。</string>
+    <string name="browser_autofill_settings_summary_enabled">Chrome 已允许第三方自动填充。</string>
+    <string name="browser_autofill_settings_summary_unknown">打开 Chrome 自动填充设置。</string>
+    <string name="browser_autofill_settings_open_failed">无法打开 Chrome 自动填充设置</string>
     <string name="setting_miui_background_start">设置 &gt;应用设置 &gt;应用管理 &gt;KeePassA &gt;权限管理</string>
     <string name="setting_vivo_background_start">设置 &gt;更多设置 &gt;权限管理-&gt;KeePassA &gt;权限设置 &gt;后台弹出</string>
     <string name="no_matching_entry">没有匹配的条目</string>
