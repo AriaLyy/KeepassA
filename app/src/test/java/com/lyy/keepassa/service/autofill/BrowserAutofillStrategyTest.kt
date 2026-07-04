@@ -1,0 +1,78 @@
+/*
+ * Copyright (C) 2020 AriaLyy(https://github.com/AriaLyy/KeepassA)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, you can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+package com.lyy.keepassa.service.autofill
+
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Test
+
+class BrowserAutofillStrategyTest {
+
+  @Test fun edgeUsesChromiumStrategyWithMaskedFieldFallback() {
+    val strategy = BrowserAutofillStrategyRegistry.forPackage("com.microsoft.emmx")
+
+    assertEquals(BrowserAutofillEngine.CHROMIUM, strategy.engine)
+    assertTrue(strategy.isBrowser)
+    assertTrue(strategy.shouldClassifyNativeEditTextVirtualNodes)
+    assertFalse(strategy.allowFocusedNonTextNodeFallback)
+    assertTrue(strategy.allowRequestFocusedIdFallback)
+    assertTrue(strategy.allowBrowserFormFieldInference)
+    assertTrue(strategy.allowSingleFieldAuthFallback)
+    assertTrue(strategy.isSearchOrUrlFieldToken("url_bar"))
+  }
+
+  @Test fun kiwiProxyUsesDedicatedStrategyWithBrowserFormInference() {
+    val strategy =
+      BrowserAutofillStrategyRegistry.forPackage("secure.unblock.unlimited.proxy.snap.hotspot.shield")
+
+    assertEquals(BrowserAutofillEngine.KIWI, strategy.engine)
+    assertTrue(strategy.isBrowser)
+    assertFalse(strategy.shouldClassifyNativeEditTextVirtualNodes)
+    assertTrue(strategy.allowFocusedNonTextNodeFallback)
+    assertTrue(strategy.allowRequestFocusedIdFallback)
+    assertTrue(strategy.allowBrowserFormFieldInference)
+    assertTrue(strategy.allowSingleFieldAuthFallback)
+    assertTrue(strategy.isSearchOrUrlFieldToken("edtSearchURL"))
+  }
+
+  @Test fun firefoxUsesGeckoStrategyWithoutKiwiFormInference() {
+    val strategy = BrowserAutofillStrategyRegistry.forPackage("org.mozilla.firefox")
+
+    assertEquals(BrowserAutofillEngine.GECKO, strategy.engine)
+    assertTrue(strategy.isBrowser)
+    assertFalse(strategy.allowBrowserFormFieldInference)
+    assertTrue(strategy.allowFocusedNonTextNodeFallback)
+    assertTrue(strategy.allowRequestFocusedIdFallback)
+  }
+
+  @Test fun androidBrowserUsesDedicatedWebViewStrategy() {
+    val strategy = BrowserAutofillStrategyRegistry.forPackage("com.android.browser")
+
+    assertEquals(BrowserAutofillEngine.ANDROID_BROWSER, strategy.engine)
+    assertTrue(strategy.isBrowser)
+    assertTrue(strategy.shouldClassifyNativeEditTextVirtualNodes)
+    assertFalse(strategy.allowFocusedNonTextNodeFallback)
+    assertTrue(strategy.allowRequestFocusedIdFallback)
+    assertFalse(strategy.allowBrowserFormFieldInference)
+    assertFalse(strategy.allowSingleFieldAuthFallback)
+  }
+
+  @Test fun unknownPackageUsesConservativeDefaultStrategy() {
+    val strategy = BrowserAutofillStrategyRegistry.forPackage("com.example.unknown")
+
+    assertEquals(BrowserAutofillEngine.DEFAULT, strategy.engine)
+    assertFalse(strategy.isBrowser)
+    assertFalse(strategy.shouldClassifyNativeEditTextVirtualNodes)
+    assertFalse(strategy.allowFocusedNonTextNodeFallback)
+    assertFalse(strategy.allowRequestFocusedIdFallback)
+    assertFalse(strategy.allowBrowserFormFieldInference)
+    assertTrue(strategy.isSearchOrUrlFieldToken("search"))
+  }
+}

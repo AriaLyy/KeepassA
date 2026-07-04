@@ -7,7 +7,6 @@
  */
 package com.lyy.keepassa.view.launcher
 
-import KDBAutoFillRepository
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -15,6 +14,8 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.app.ActivityOptionsCompat
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.AutoFillParam
+import com.lyy.keepassa.service.autofill.AutofillBrowserAuthContextStore
+import com.lyy.keepassa.service.autofill.AutofillEntryLookup
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 import timber.log.Timber
@@ -44,8 +45,11 @@ internal class SearchEntityDelegate(val activity: LauncherActivity) : IAutoFillF
 
   override fun handleAutoFill(autoFillParam: AutoFillParam) {
     this.autoFillParam = autoFillParam
-    // 打开搜索界面
-    val datas = KDBAutoFillRepository.getAutoFillDataByPackageName(autoFillParam.apkPkgName)
+    val authContext = AutofillBrowserAuthContextStore.find(autoFillParam.apkPkgName)
+    val datas = AutofillEntryLookup.find(
+      packageName = autoFillParam.apkPkgName,
+      domain = autoFillParam.domain ?: authContext?.domain
+    )
     // 如果查找不到数据，跳转到搜索页面
     if (datas == null || datas.isEmpty()) {
       reg.launch(autoFillParam, ActivityOptionsCompat.makeSceneTransitionAnimation(activity))

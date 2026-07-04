@@ -9,7 +9,6 @@
 
 package com.lyy.keepassa.util
 
-import KDBAutoFillRepository
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
@@ -59,6 +58,9 @@ import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.ServiceRouter
 import com.lyy.keepassa.service.autofill.AutoFillHelper
+import com.lyy.keepassa.service.autofill.AutofillBrowserAuthContextStore
+import com.lyy.keepassa.service.autofill.AutofillEntryLookup
+import com.lyy.keepassa.service.autofill.BrowserAutofillStrategyRegistry
 import com.lyy.keepassa.service.autofill.StructureParser
 import com.lyy.keepassa.service.autofill.clearAssistStructure
 import com.lyy.keepassa.view.create.CreateDbActivity
@@ -421,21 +423,25 @@ class KeepassAUtil private constructor() {
     intent: Intent,
     apkPkgName: String
   ): Intent {
+    val authContext = AutofillBrowserAuthContextStore.find(apkPkgName)
     val autoFillStructure = intent.getParcelableExtra<AssistStructure>(
       AutofillManager.EXTRA_ASSIST_STRUCTURE
     )
     intent.clearAssistStructure()
     if (autoFillStructure == null) {
       Timber.e("autoFillStructure is null")
-      return Intent()
+      return getSingleFieldFallbackFillIntent(context, apkPkgName, null) ?: Intent()
     }
 
     val parser = StructureParser(autoFillStructure)
     parser.parseForFill(true, apkPkgName)
-    val autofillFields = parser.autoFillFields
+    val autofillFields = parser.autoFillFields.takeIf { it.autoFillIds.isNotEmpty() }
+      ?: authContext?.metadata
+      ?: parser.autoFillFields
 
-    val datas = KDBAutoFillRepository.getAutoFillDataByPackageName(apkPkgName)
-    val response =
+    val domain = parser.domainUrl.takeIf { it.isNotBlank() } ?: authContext?.domain
+    val datas = AutofillEntryLookup.find(apkPkgName, domain)
+    val response = if (autofillFields.autoFillIds.isNotEmpty()) {
       AutoFillHelper.newResponse(
         context,
         true,
@@ -444,6 +450,9 @@ class KeepassAUtil private constructor() {
         apkPkgName,
         autoFillStructure
       )
+    } else {
+      getSingleFieldFallbackResponse(context, apkPkgName, datas, null)
+    }
 
     val data = Intent()
     data.putExtra(LauncherActivity.KEY_PKG_NAME, apkPkgName)
@@ -463,19 +472,22 @@ class KeepassAUtil private constructor() {
     pwEntry: PwEntry,
     apkPkgName: String
   ): Intent {
+    val authContext = AutofillBrowserAuthContextStore.find(apkPkgName)
     val autoFillStructure = intent.getParcelableExtra<AssistStructure>(
       AutofillManager.EXTRA_ASSIST_STRUCTURE
     )
     intent.clearAssistStructure()
     if (autoFillStructure == null) {
       Timber.e("autoFillStructure is null")
-      return Intent()
+      return getSingleFieldFallbackFillIntent(context, apkPkgName, pwEntry) ?: Intent()
     }
     val parser = StructureParser(autoFillStructure)
     parser.parseForFill(true, apkPkgName)
-    val autofillFields = parser.autoFillFields
+    val autofillFields = parser.autoFillFields.takeIf { it.autoFillIds.isNotEmpty() }
+      ?: authContext?.metadata
+      ?: parser.autoFillFields
 
-    val response =
+    val response = if (autofillFields.autoFillIds.isNotEmpty()) {
       AutoFillHelper.newResponse(
         context,
         true,
@@ -484,11 +496,58 @@ class KeepassAUtil private constructor() {
         apkPkgName,
         autoFillStructure
       )
+    } else {
+      getSingleFieldFallbackResponse(context, apkPkgName, mutableListOf(pwEntry), pwEntry)
+    }
 
     val data = Intent()
     data.putExtra(AutofillManager.EXTRA_AUTHENTICATION_RESULT, response)
     return data
   }
+
+  @TargetApi(Build.VERSION_CODES.O)
+  private fun getSingleFieldFallbackFillIntent(
+    context: Context,
+    apkPkgName: String,
+    pwEntry: PwEntry?
+  ): Intent? {
+    val response = getSingleFieldFallbackResponse(
+      context = context,
+      apkPkgName = apkPkgName,
+      datas = if (pwEntry == null) {
+        val authContext = AutofillBrowserAuthContextStore.find(apkPkgName)
+        AutofillEntryLookup.find(apkPkgName, authContext?.domain)
+      } else {
+        mutableListOf(pwEntry)
+      },
+      pwEntry = pwEntry
+    ) ?: return null
+
+    return Intent().apply {
+      putExtra(LauncherActivity.KEY_PKG_NAME, apkPkgName)
+      putExtra(AutofillManager.EXTRA_AUTHENTICATION_RESULT, response)
+    }
+  }
+
+  @TargetApi(Build.VERSION_CODES.O)
+  private fun getSingleFieldFallbackResponse(
+    context: Context,
+    apkPkgName: String,
+    datas: MutableList<PwEntry>?,
+    pwEntry: PwEntry?
+  ) = BrowserAutofillStrategyRegistry.forPackage(apkPkgName)
+    .takeIf { it.allowSingleFieldAuthFallback }
+    ?.let {
+      val authContext = AutofillBrowserAuthContextStore.find(apkPkgName) ?: return@let null
+      val fallbackId = authContext.fallbackId ?: return@let null
+      AutoFillHelper.newSingleFieldFallbackResponse(
+        context = context,
+        entries = datas ?: pwEntry?.let { entry -> mutableListOf(entry) },
+        apkPageName = apkPkgName,
+        fallbackId = fallbackId,
+        fallbackRole = authContext.fallbackRole
+      )
+    }
 
   /**
    * 转换uri

@@ -9,7 +9,6 @@
 
 package com.lyy.keepassa.view.main
 
-import KDBAutoFillRepository
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.PendingIntent
@@ -46,6 +45,8 @@ import com.lyy.keepassa.databinding.DialogQuickUnlockBinding
 import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.router.ActivityRouter
+import com.lyy.keepassa.service.autofill.AutofillBrowserAuthContextStore
+import com.lyy.keepassa.service.autofill.AutofillEntryLookup
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
@@ -77,7 +78,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
       override fun createIntent(context: Context, input: String): Intent {
         return AutoFillEntrySearchActivity.createSearchIntent(
           context,
-          AutoFillParam(apkPkgName = input),
+          AutoFillParam(apkPkgName = input, domain = module.autoFillParam?.domain),
           if (VERSION.SDK_INT >= VERSION_CODES.O) intent.getParcelableExtra(
             AutofillManager.EXTRA_ASSIST_STRUCTURE
           ) as AssistStructure? else null
@@ -274,10 +275,14 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
         return
       }
 
-      val datas = KDBAutoFillRepository.getAutoFillDataByPackageName(apkPkgName)
+      val authContext = AutofillBrowserAuthContextStore.find(apkPkgName)
+      val datas = AutofillEntryLookup.find(
+        packageName = apkPkgName,
+        domain = module.autoFillParam?.domain ?: authContext?.domain
+      )
       // 如果查找不到数据，跳转到搜索页面
       if (datas == null || datas.isEmpty()) {
-        searchLauncher.launch(packageName, ActivityOptionsCompat.makeSceneTransitionAnimation(this))
+        searchLauncher.launch(apkPkgName, ActivityOptionsCompat.makeSceneTransitionAnimation(this))
         return
       }
       val data = KeepassAUtil.instance.getFillResponse(this, intent, apkPkgName)
@@ -340,13 +345,21 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
     internal fun getQuickUnlockSenderForResponse(
       context: Context,
       pkgName: String,
-      structure: AssistStructure
+      structure: AssistStructure,
+      domain: String? = null
     ): IntentSender {
       if (!BaseApp.APP.isCanOpenQuickLock()) {
-        return LauncherActivity.getAuthDbIntentSender(context, apkPackageName = pkgName)
+        return LauncherActivity.getAuthDbIntentSender(
+          context = context,
+          apkPackageName = pkgName,
+          domain = domain
+        )
       }
       val intent = Intent(context, QuickUnlockActivity::class.java).also {
-        it.putExtra(LauncherActivity.KEY_AUTO_FILL_PARAM, AutoFillParam(apkPkgName = pkgName))
+        it.putExtra(
+          LauncherActivity.KEY_AUTO_FILL_PARAM,
+          AutoFillParam(apkPkgName = pkgName, domain = domain)
+        )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
           it.putExtra(AutofillManager.EXTRA_ASSIST_STRUCTURE, structure)
         }

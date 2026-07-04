@@ -305,10 +305,11 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     internal fun getAuthDbIntentSender(
       context: Context,
       apkPackageName: String,
-      structure: AssistStructure? = null
+      structure: AssistStructure? = null,
+      domain: String? = null
     ): IntentSender {
       val intent = Intent(context, LauncherActivity::class.java).also {
-        it.putExtra(KEY_AUTO_FILL_PARAM, AutoFillParam(apkPkgName = apkPackageName))
+        it.putExtra(KEY_AUTO_FILL_PARAM, AutoFillParam(apkPkgName = apkPackageName, domain = domain))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
           structure?.let { stru ->
             it.putExtra(AutofillManager.EXTRA_ASSIST_STRUCTURE, stru)

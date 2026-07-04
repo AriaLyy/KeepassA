@@ -242,6 +242,47 @@ object AutoFillHelper {
     return responseBuilder.build()
   }
 
+  internal fun newSingleFieldFallbackResponse(
+    context: Context,
+    entries: MutableList<PwEntry>?,
+    apkPageName: String,
+    fallbackId: AutofillId,
+    fallbackRole: BrowserFormFieldRole?
+  ): FillResponse? {
+    if (entries.isNullOrEmpty()) {
+      return null
+    }
+
+    val responseBuilder = FillResponse.Builder()
+    var added = false
+    entries.forEach { entry ->
+      val dataSetBuilder = Dataset.Builder(
+        buildRemoteView(
+          context,
+          entry.title,
+          if (entry is PwEntryV4) entry.customIcon else null,
+          entry.icon,
+          entry.username
+        )
+      )
+      val value = if (fallbackRole == BrowserFormFieldRole.PASSWORD) {
+        KdbUtil.getPassword(entry)
+      } else {
+        KdbUtil.getUserName(entry)
+      }
+      dataSetBuilder.setValue(fallbackId, AutofillValue.forText(value))
+      responseBuilder.addDataset(dataSetBuilder.build())
+      added = true
+    }
+
+    return if (added) {
+      responseBuilder.build()
+    } else {
+      Timber.d("No entries available for single field fallback.")
+      null
+    }
+  }
+
   /**
    * @param dataSetAuth true 验证通过
    * @param apkPageName 第三方apk包名

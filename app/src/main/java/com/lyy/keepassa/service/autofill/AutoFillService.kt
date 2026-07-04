@@ -58,15 +58,21 @@ class AutoFillService : AutofillService() {
     callback: FillCallback
   ) {
     val isManual = request.flags == FillRequest.FLAG_MANUAL_REQUEST
-    val structure = request.fillContexts[request.fillContexts.size - 1].structure
+    val fillContext = request.fillContexts[request.fillContexts.size - 1]
+    val structure = fillContext.structure
     val apkPackageName = structure.activityComponent.packageName
-    if (apkPackageName.equals(packageName, ignoreCase = true)) {
-      // 本应用内不进行填充
-      return
-    }
-
-    if (!PermissionsUtil.isCanBackgroundStart()) {
-      ToastUtils.showLong(R.string.hint_open_background_start)
+    val browserStrategy = BrowserAutofillStrategyRegistry.forPackage(apkPackageName)
+    val canBackgroundStart = PermissionsUtil.isCanBackgroundStart()
+    if (AutofillFillRequestPolicy.shouldCompleteWithNullResponse(
+        targetPackageName = apkPackageName,
+        servicePackageName = packageName,
+        canBackgroundStart = canBackgroundStart
+      )
+    ) {
+      if (!apkPackageName.equals(packageName, ignoreCase = true) && !canBackgroundStart) {
+        ToastUtils.showLong(R.string.hint_open_background_start)
+      }
+      callback.onSuccess(null)
       return
     }
 
@@ -88,17 +94,49 @@ class AutoFillService : AutofillService() {
     val needAuth = BaseApp.KDB == null || BaseApp.isLocked
 
     if (autoFillFields.autoFillIds.size <= 0) {
-      val fallbackId = parser.authPromptFallbackId
+      val requestFocusedId = fillContext.focusedId
+      val fallbackId = parser.authPromptFallbackId ?: requestFocusedId?.takeIf {
+        AutofillFallbackFieldPolicy.canUseRequestFocusedId(
+          hasRequestFocusedId = true,
+          requestFocusedIdIsSearchOrUrlField = parser.searchOrUrlAutoFillIds.contains(it),
+          strategyAllowsRequestFocusedIdFallback = browserStrategy.allowRequestFocusedIdFallback
+        )
+      }
       if (AutofillAuthPromptPolicy.shouldUseFallbackAuthPrompt(
           needAuth = needAuth,
           classifiedFieldCount = autoFillFields.autoFillIds.size,
           hasFallbackFillId = fallbackId != null,
-          isWebContext = W3cHints.isBrowser(apkPackageName) || parser.domainUrl.isNotBlank()
+          isWebContext = browserStrategy.isBrowser || parser.domainUrl.isNotBlank()
         )
       ) {
+        AutofillBrowserAuthContextStore.remember(
+          packageName = apkPackageName,
+          strategy = browserStrategy,
+          domain = parser.domainUrl,
+          metadata = null,
+          fallbackId = fallbackId,
+          fallbackRole = parser.authPromptFallbackRole
+        )
         Timber.i("use fallback auth prompt id for locked autofill")
-        openFallbackAuthPrompt(callback, arrayOf(fallbackId!!), apkPackageName, structure)
+        openFallbackAuthPrompt(
+          callback,
+          arrayOf(fallbackId!!),
+          apkPackageName,
+          structure,
+          parser.domainUrl.takeIf { it.isNotBlank() }
+        )
         return
+      }
+      if (!needAuth) {
+        val fallbackResponse = getSingleFieldFallbackResponse(
+          apkPackageName = apkPackageName,
+          domain = parser.domainUrl,
+          browserStrategy = browserStrategy
+        )
+        if (fallbackResponse != null) {
+          callback.onSuccess(fallbackResponse)
+          return
+        }
       }
       Timber.i("autoFillIds is nulll")
       callback.onSuccess(null)
@@ -109,26 +147,48 @@ class AutoFillService : AutofillService() {
     // 如果数据库没打开，或者数据库已经锁定，打开登录页面
     if (needAuth) {
       val isOpenQuickLock = BaseApp.APP.isCanOpenQuickLock()
+      AutofillBrowserAuthContextStore.remember(
+        packageName = apkPackageName,
+        strategy = browserStrategy,
+        domain = parser.domainUrl,
+        metadata = autoFillFields,
+        fallbackId = null,
+        fallbackRole = null
+      )
 
       if (BaseApp.KDB == null) {
-        openLoginActivity(callback, autoFillFields, apkPackageName, structure)
+        openLoginActivity(
+          callback,
+          autoFillFields,
+          apkPackageName,
+          structure,
+          parser.domainUrl.takeIf { it.isNotBlank() }
+        )
         return
       }
 
       if (isOpenQuickLock) {
-        openQuickUnLockActivity(callback, autoFillFields, apkPackageName, structure)
+        openQuickUnLockActivity(
+          callback,
+          autoFillFields,
+          apkPackageName,
+          structure,
+          parser.domainUrl.takeIf { it.isNotBlank() }
+        )
         return
       }
 
-      openLoginActivity(callback, autoFillFields, apkPackageName, structure)
+      openLoginActivity(
+        callback,
+        autoFillFields,
+        apkPackageName,
+        structure,
+        parser.domainUrl.takeIf { it.isNotBlank() }
+      )
       return
     }
     // 获取填充数据
-    val datas = if (parser.domainUrl.isEmpty()) {
-      KDBAutoFillRepository.getAutoFillDataByPackageName(apkPackageName)
-    } else {
-      KDBAutoFillRepository.getAutoFillDataByDomain(parser.domainUrl)
-    }
+    val datas = AutofillEntryLookup.find(apkPackageName, parser.domainUrl)
 
     Timber.d("entrySize = ${datas?.size}")
     // 没有匹配的数据，进入搜索界面
@@ -145,6 +205,29 @@ class AutoFillService : AutofillService() {
     val response =
       AutoFillHelper.newResponse(this, !needAuth, autoFillFields, datas, apkPackageName, structure)
     callback.onSuccess(response)
+  }
+
+  private fun getSingleFieldFallbackResponse(
+    apkPackageName: String,
+    domain: String?,
+    browserStrategy: BrowserAutofillStrategy
+  ): FillResponse? {
+    if (!browserStrategy.allowSingleFieldAuthFallback) {
+      return null
+    }
+    val authContext = AutofillBrowserAuthContextStore.find(apkPackageName) ?: return null
+    val fallbackId = authContext.fallbackId ?: return null
+    val datas = AutofillEntryLookup.find(
+      packageName = apkPackageName,
+      domain = domain?.takeIf { it.isNotBlank() } ?: authContext.domain
+    )
+    return AutoFillHelper.newSingleFieldFallbackResponse(
+      context = this,
+      entries = datas,
+      apkPageName = apkPackageName,
+      fallbackId = fallbackId,
+      fallbackRole = authContext.fallbackRole
+    )
   }
 
   /**
@@ -172,12 +255,13 @@ class AutoFillService : AutofillService() {
     callback: FillCallback,
     autofillFields: AutoFillFieldMetadataCollection,
     apkPackageName: String,
-    structure: AssistStructure
+    structure: AssistStructure,
+    domain: String? = null
   ) {
     callback.onSuccess(
       getAuthResponse(
         autofillFields,
-        QuickUnlockActivity.getQuickUnlockSenderForResponse(this, apkPackageName, structure)
+        QuickUnlockActivity.getQuickUnlockSenderForResponse(this, apkPackageName, structure, domain)
       )
     )
   }
@@ -189,12 +273,13 @@ class AutoFillService : AutofillService() {
     callback: FillCallback,
     autofillFields: AutoFillFieldMetadataCollection,
     apkPackageName: String,
-    structure: AssistStructure
+    structure: AssistStructure,
+    domain: String? = null
   ) {
     callback.onSuccess(
       getAuthResponse(
         autofillFields,
-        LauncherActivity.getAuthDbIntentSender(this, apkPackageName, structure)
+        LauncherActivity.getAuthDbIntentSender(this, apkPackageName, structure, domain)
       )
     )
   }
@@ -203,12 +288,13 @@ class AutoFillService : AutofillService() {
     callback: FillCallback,
     autofillIds: Array<AutofillId>,
     apkPackageName: String,
-    structure: AssistStructure
+    structure: AssistStructure,
+    domain: String? = null
   ) {
     val sender = if (BaseApp.KDB != null && BaseApp.APP.isCanOpenQuickLock()) {
-      QuickUnlockActivity.getQuickUnlockSenderForResponse(this, apkPackageName, structure)
+      QuickUnlockActivity.getQuickUnlockSenderForResponse(this, apkPackageName, structure, domain)
     } else {
-      LauncherActivity.getAuthDbIntentSender(this, apkPackageName, structure)
+      LauncherActivity.getAuthDbIntentSender(this, apkPackageName, structure, domain)
     }
     callback.onSuccess(AutoFillHelper.newAuthResponse(this, autofillIds, sender))
   }

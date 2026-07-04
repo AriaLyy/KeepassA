@@ -31,13 +31,18 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
   val autoFillFields = AutoFillFieldMetadataCollection()
   val useFields = ArrayList<ViewNode>()
   val passFields = ArrayList<ViewNode>()
+  val searchOrUrlAutoFillIds = HashSet<AutofillId>()
+  private val browserFormFieldCandidates = ArrayList<ViewNode>()
   var domainUrl = ""
   var pkgName = ""
   var isW3c = false
   var isInnerAppW3c = false
   var authPromptFallbackId: AutofillId? = null
     private set
+  var authPromptFallbackRole: BrowserFormFieldRole? = null
+    private set
   private var authPromptFallbackIdFocused = false
+  private var browserStrategy = BrowserAutofillStrategyRegistry.forPackage(null)
 
   companion object {
     // 其它应用editText 可能设置的id名，如：R.id.email
@@ -82,7 +87,10 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     autoFillFields.clear()
     useFields.clear()
     passFields.clear()
+    searchOrUrlAutoFillIds.clear()
+    browserFormFieldCandidates.clear()
     authPromptFallbackId = null
+    authPromptFallbackRole = null
     authPromptFallbackIdFocused = false
   }
 
@@ -95,6 +103,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     pkgName: String
   ) {
     this.pkgName = pkgName
+    browserStrategy = BrowserAutofillStrategyRegistry.forPackage(pkgName)
     safeParse({ parse(isManual) }, { clear() })
   }
 
@@ -110,6 +119,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     for (i in 0 until nodeSize) {
       parseLocked(autofillStructure.getWindowNodeAt(i).rootViewNode)
     }
+    applyBrowserFallbackCredentialFields()
     // 如果密码为空，默认不弹出选择item，这是为了防止遇到editText就弹出item的情况
     if (passFields.isEmpty() && !isManual && !isW3c) {
       autoFillFields.clear()
@@ -123,9 +133,11 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       W3cHints.curDomainUrl = domainUrl
       Timber.d("domainUrl = $domainUrl")
     }
+    rememberBrowserAddressFieldDomain(viewNode)
     rememberAuthPromptFallbackId(viewNode)
+    rememberBrowserFormFieldCandidate(viewNode)
 
-    if (W3cHints.isBrowser(pkgName)) {
+    if (browserStrategy.isBrowser) {
       // 浏览器场景:HTML input 通常带 htmlInfo,走 W3C 路径
       checkW3C(viewNode)
       if (isW3c) {
@@ -134,7 +146,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       // Edge/Chrome 等基于自有 Chromium 的浏览器,会把 HTML input 暴露成原生 EditText
       // 虚拟视图(无 htmlInfo、tag=null),需要按原生 EditText 逻辑识别
       val className = viewNode.className
-      if (classIsEditText(className)) {
+      if (browserStrategy.shouldClassifyNativeEditTextVirtualNodes && classIsEditText(className)) {
         getAndroidViewInfo(viewNode)
       }
     } else {
@@ -160,10 +172,11 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
 
   private fun rememberAuthPromptFallbackId(viewNode: ViewNode) {
     val autofillId = viewNode.autofillId ?: return
-    if (!isAuthPromptFallbackCandidate(viewNode)) {
+    if (isLikelySearchOrUrlField(viewNode)) {
+      searchOrUrlAutoFillIds.add(autofillId)
       return
     }
-    if (isLikelySearchOrUrlField(viewNode)) {
+    if (!isAuthPromptFallbackCandidate(viewNode)) {
       return
     }
 
@@ -173,20 +186,95 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     }
 
     authPromptFallbackId = autofillId
+    authPromptFallbackRole = if (isPassword(viewNode)) {
+      BrowserFormFieldRole.PASSWORD
+    } else {
+      BrowserFormFieldRole.USERNAME
+    }
     authPromptFallbackIdFocused = isFocusedNode
     Timber.d(
       "auth prompt fallback id = $autofillId, isFocused = $isFocusedNode, idEntry = ${viewNode.idEntry}, hint = ${viewNode.hint}"
     )
   }
 
-  private fun isAuthPromptFallbackCandidate(viewNode: ViewNode): Boolean {
-    if (viewNode.autofillType != View.AUTOFILL_TYPE_TEXT || viewNode.isAssistBlocked) {
-      return false
+  private fun rememberBrowserAddressFieldDomain(viewNode: ViewNode) {
+    if (!browserStrategy.isBrowser || domainUrl.isNotBlank() || !isLikelySearchOrUrlField(viewNode)) {
+      return
     }
-    return viewNode.isFocused
-      || viewNode.isAccessibilityFocused
-      || viewNode.htmlInfo?.tag.equals("input", ignoreCase = true)
-      || classIsEditText(viewNode.className)
+
+    val domain = AutofillBrowserUrlPolicy.extractDomainFromAddressValue(
+      viewNode.autofillValue?.takeIf { it.isText }?.textValue
+    ) ?: AutofillBrowserUrlPolicy.extractDomainFromAddressValue(viewNode.text)
+      ?: extractDomainFromHtmlValueAttribute(viewNode)
+      ?: return
+
+    domainUrl = domain
+    W3cHints.curDomainUrl = domain
+    Timber.d("domainUrl = $domainUrl")
+  }
+
+  private fun extractDomainFromHtmlValueAttribute(viewNode: ViewNode): String? {
+    return viewNode.htmlInfo?.attributes
+      ?.firstOrNull { it.first.equals("value", ignoreCase = true) }
+      ?.second
+      ?.let(AutofillBrowserUrlPolicy::extractDomainFromAddressValue)
+  }
+
+  private fun isAuthPromptFallbackCandidate(viewNode: ViewNode): Boolean {
+    return AutofillFallbackFieldPolicy.canAnchorAuthPrompt(
+      autofillType = viewNode.autofillType,
+      isAssistBlocked = viewNode.isAssistBlocked,
+      isFocused = viewNode.isFocused,
+      isAccessibilityFocused = viewNode.isAccessibilityFocused,
+      isHtmlInput = viewNode.htmlInfo?.tag.equals("input", ignoreCase = true),
+      className = viewNode.className?.toString(),
+      allowFocusedNonTextNodeFallback = browserStrategy.allowFocusedNonTextNodeFallback
+    )
+  }
+
+  private fun rememberBrowserFormFieldCandidate(viewNode: ViewNode) {
+    if (!browserStrategy.allowBrowserFormFieldInference) {
+      return
+    }
+    if (viewNode.autofillId == null || viewNode.isAssistBlocked) {
+      return
+    }
+    if (viewNode.autofillType != View.AUTOFILL_TYPE_TEXT || viewNode.visibility != View.VISIBLE) {
+      return
+    }
+    if (isLikelySearchOrUrlField(viewNode)) {
+      return
+    }
+    browserFormFieldCandidates.add(viewNode)
+  }
+
+  private fun applyBrowserFallbackCredentialFields() {
+    if (!browserStrategy.allowBrowserFormFieldInference || autoFillFields.autoFillIds.isNotEmpty()) {
+      return
+    }
+    val roles = AutofillBrowserFormFieldPolicy.inferCredentialRoles(
+      browserFormFieldCandidates.mapIndexed { index, node ->
+        BrowserFormFieldCandidate(
+          index = index,
+          top = node.top,
+          isFocused = node.isFocused || node.isAccessibilityFocused,
+          isPassword = isPassword(node),
+          isSearchOrUrl = isLikelySearchOrUrlField(node)
+        )
+      }
+    )
+    if (roles.isEmpty()) {
+      return
+    }
+
+    roles.forEach { (index, role) ->
+      val node = browserFormFieldCandidates.getOrNull(index) ?: return@forEach
+      when (role) {
+        BrowserFormFieldRole.USERNAME -> addUserField(node, force = true)
+        BrowserFormFieldRole.PASSWORD -> addPassField(node, force = true)
+      }
+    }
+    Timber.i("browser fallback credential fields inferred, count = ${roles.size}")
   }
 
   private fun isLikelySearchOrUrlField(viewNode: ViewNode): Boolean {
@@ -202,12 +290,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       }
     }
     return tokens.any {
-      val token = it.lowercase()
-      token.contains("search")
-        || token == "url"
-        || token.contains("url_bar")
-        || token.contains("location_bar")
-        || token.contains("address_bar")
+      browserStrategy.isSearchOrUrlFieldToken(it)
     }
   }
 
@@ -228,61 +311,20 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     }
   }
 
-  private fun checkIsWebView(clazz: Class<*>): Boolean {
-    if (clazz.name.equals("android.webkit.WebView")) {
-      return true
-    }
-    val sup = clazz.superclass ?: return false
-    if (sup.name.equals("java.lang.Object")) {
-      return false
-    }
-    if (sup.name.equals("android.webkit.WebView")) {
-      return true
-    }
-    return checkIsWebView(sup)
-  }
-
   private fun classIsWebView(className: String?): Boolean {
     if (className.isNullOrEmpty()) return false
-    if (webViewMap.contains(className)) return true
-    try {
-      if (checkIsWebView(Class.forName(className))) {
-        webViewMap.add(className)
-        return true
-      }
-    } catch (e: ClassNotFoundException) {
-      Timber.e(e)
+    if (!webViewMap.contains(className) && AutofillViewClassPolicy.isWebViewClassName(className)) {
+      webViewMap.add(className)
     }
-    return false
-  }
-
-  private fun checkIsEditText(clazz: Class<*>): Boolean {
-    if (clazz.name.equals("android.widget.EditText")) {
-      return true
-    }
-    val sup = clazz.superclass ?: return false
-    if (sup.name.equals("java.lang.Object")) {
-      return false
-    }
-    if (sup.name.equals("android.widget.EditText")) {
-      return true
-    }
-    return checkIsEditText(sup)
+    return webViewMap.contains(className)
   }
 
   private fun classIsEditText(className: String?): Boolean {
     if (className.isNullOrEmpty()) return false
-    if (editTextMap.contains(className)) return true
-    try {
-      if (checkIsEditText(Class.forName(className))) {
-        editTextMap.add(className)
-        return true
-      }
-    } catch (e: ClassNotFoundException) {
-      Timber.e(e)
+    if (!editTextMap.contains(className) && AutofillViewClassPolicy.isEditTextClassName(className)) {
+      editTextMap.add(className)
     }
-
-    return false
+    return editTextMap.contains(className)
   }
 
   private fun getAndroidViewInfo(viewNode: ViewNode) {
@@ -332,8 +374,8 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
   /**
    * add pass field
    */
-  private fun addPassField(viewNode: ViewNode) {
-    if (!isW3c && !isInnerAppW3c && (viewNode.visibility != View.VISIBLE || !viewNode.isFocusable)) {
+  private fun addPassField(viewNode: ViewNode, force: Boolean = false) {
+    if (!force && !isW3c && !isInnerAppW3c && (viewNode.visibility != View.VISIBLE || !viewNode.isFocusable)) {
       return
     }
     autoFillFields.tempPassFillId = viewNode.autofillId
@@ -345,8 +387,8 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
   /**
    * add userName field
    */
-  private fun addUserField(viewNode: ViewNode) {
-    if (!isW3c && !isInnerAppW3c && (viewNode.visibility != View.VISIBLE || !viewNode.isFocusable)) {
+  private fun addUserField(viewNode: ViewNode, force: Boolean = false) {
+    if (!force && !isW3c && !isInnerAppW3c && (viewNode.visibility != View.VISIBLE || !viewNode.isFocusable)) {
       return
     }
     if (autoFillFields.tempUserFillId == null || viewNode.isFocused) {
