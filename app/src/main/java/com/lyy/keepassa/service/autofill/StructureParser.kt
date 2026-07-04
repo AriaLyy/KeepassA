@@ -201,19 +201,41 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
   }
 
   private fun rememberBrowserAddressFieldDomain(viewNode: ViewNode) {
-    if (!browserStrategy.isBrowser || domainUrl.isNotBlank() || !isLikelySearchOrUrlField(viewNode)) {
+    if (!browserStrategy.isBrowser || domainUrl.isNotBlank()) {
       return
     }
 
-    val domain = AutofillBrowserUrlPolicy.extractDomainFromAddressValue(
-      viewNode.autofillValue?.takeIf { it.isText }?.textValue
-    ) ?: AutofillBrowserUrlPolicy.extractDomainFromAddressValue(viewNode.text)
-      ?: extractDomainFromHtmlValueAttribute(viewNode)
-      ?: return
+    val isUcAddressBarNode =
+      UcBrowserAutofillCompatibility.isAddressBarNode(browserStrategy, viewNode)
+    val extractedDomain = if (isUcAddressBarNode) {
+      extractUcAddressBarDomain(viewNode)
+    } else if (isLikelySearchOrUrlField(viewNode)) {
+      extractAddressFieldDomain(viewNode)
+    } else {
+      null
+    }
+    if (isUcAddressBarNode) {
+      Timber.d(
+        "UC address bar candidate idEntry = ${viewNode.idEntry}, domainExtracted = ${extractedDomain != null}, hasText = ${!viewNode.text.isNullOrBlank()}, hasContentDescription = ${!viewNode.contentDescription.isNullOrBlank()}"
+      )
+    }
+    val domain: String = extractedDomain ?: return
 
     domainUrl = domain
     W3cHints.curDomainUrl = domain
     Timber.d("domainUrl = $domainUrl")
+  }
+
+  private fun extractAddressFieldDomain(viewNode: ViewNode): String? {
+    return AutofillBrowserUrlPolicy.extractDomainFromAddressValue(
+      viewNode.autofillValue?.takeIf { it.isText }?.textValue
+    ) ?: AutofillBrowserUrlPolicy.extractDomainFromAddressValue(viewNode.text)
+      ?: extractDomainFromHtmlValueAttribute(viewNode)
+  }
+
+  private fun extractUcAddressBarDomain(viewNode: ViewNode): String? {
+    return extractAddressFieldDomain(viewNode)
+      ?: AutofillBrowserUrlPolicy.extractDomainFromAddressValue(viewNode.contentDescription)
   }
 
   private fun extractDomainFromHtmlValueAttribute(viewNode: ViewNode): String? {

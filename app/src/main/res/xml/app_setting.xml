@@ -75,7 +75,7 @@
 
     <Preference
         android:title="@string/supported_browsers_title"
-        app:icon="@drawable/ic_auto_fill"
+        app:icon="@drawable/ic_browser_adapter"
         app:key="@string/set_key_supported_browsers"
         app:summary="@string/supported_browsers_summary" />
 

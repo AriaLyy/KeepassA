@@ -10,6 +10,7 @@ package com.lyy.keepassa.service.autofill
 
 import android.view.autofill.AutofillId
 import io.mockk.mockk
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
 import org.junit.Test
@@ -69,5 +70,30 @@ class AutofillSingleFieldFallbackPolicyTest {
     assertSame(currentFallbackId, target?.fallbackId)
     assertNull(target?.fallbackRole)
     assertNull(target?.domain)
+  }
+
+  @Test fun ucCurrentFocusedIdInheritsStoredDomainWhenCurrentDomainIsMissing() {
+    val currentFallbackId = mockk<AutofillId>()
+    val storedFallbackId = mockk<AutofillId>()
+    val storedContext = AutofillBrowserAuthContext(
+      packageName = "com.UCMobile.intl",
+      domain = "ubits.club",
+      metadata = null,
+      fallbackId = storedFallbackId,
+      fallbackRole = BrowserFormFieldRole.PASSWORD,
+      createdAtMs = 1_000
+    )
+
+    val target = AutofillSingleFieldFallbackPolicy.resolve(
+      strategy = BrowserAutofillStrategyRegistry.forPackage("com.UCMobile.intl"),
+      currentFallbackId = currentFallbackId,
+      currentFallbackRole = null,
+      currentDomain = null,
+      storedContext = storedContext
+    )
+
+    assertSame(currentFallbackId, target?.fallbackId)
+    assertNull(target?.fallbackRole)
+    assertEquals("ubits.club", target?.domain)
   }
 }

@@ -50,10 +50,17 @@ internal object AutofillBrowserAuthContextStore {
       previous?.domain != null &&
       !normalizedDomain.equals(previous.domain, ignoreCase = true)
     val canCarryPreviousFieldContext = previous != null && !domainChanged
+    val canCarryPreviousDomainForCurrentFallback = fallbackId != null &&
+      previous != null &&
+      !domainChanged &&
+      UcBrowserAutofillCompatibility.canReuseStoredDomainForCurrentFallback(strategy)
 
     contexts[packageName] = AutofillBrowserAuthContext(
       packageName = packageName,
-      domain = normalizedDomain ?: if (fallbackId == null && canCarryPreviousFieldContext) {
+      domain = normalizedDomain ?: if (
+        (fallbackId == null && canCarryPreviousFieldContext) ||
+        canCarryPreviousDomainForCurrentFallback
+      ) {
         previous?.domain
       } else {
         null

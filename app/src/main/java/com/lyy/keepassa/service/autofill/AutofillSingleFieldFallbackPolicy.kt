@@ -36,7 +36,9 @@ internal object AutofillSingleFieldFallbackPolicy {
       return AutofillSingleFieldFallbackTarget(
         fallbackId = it,
         fallbackRole = currentFallbackRole,
-        domain = normalizedCurrentDomain
+        domain = normalizedCurrentDomain ?: normalizedStoredDomain.takeIf {
+          UcBrowserAutofillCompatibility.canReuseStoredDomainForCurrentFallback(strategy)
+        }
       )
     }
 

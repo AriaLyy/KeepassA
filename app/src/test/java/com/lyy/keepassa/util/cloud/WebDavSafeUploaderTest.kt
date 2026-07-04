@@ -50,6 +50,28 @@ class WebDavSafeUploaderTest {
     assertFalse(client.operations.any { it.startsWith("move:") })
   }
 
+  @Test fun putTempNetworkFailure_skipsRollbackLeavesBackupAndTempForRecovery() = runBlocking {
+    val oldInfo = cloudInfo(originUrl, size = 10, time = 1000)
+    val client = FakeWebDavUploadClient(
+      initialFiles = mutableMapOf(originUrl to oldInfo),
+      networkFailPutUrls = setOf(tempUrl),
+      createPartialOnPutFailure = true
+    )
+    val uploader = WebDavSafeUploader(client, idFactory = { "fixed" })
+
+    val result = uploader.upload(localFile(size = 20), originUrl)
+
+    assertFalse(result.success)
+    assertEquals(oldInfo, client.files[originUrl])
+    // 网络故障:跳过回滚,backup 和 temp 都保留给下次启动清理
+    assertTrue(client.files.containsKey(backupUrl))
+    assertTrue(client.files.containsKey(tempUrl))
+    assertFalse(client.operations.contains("delete:$tempUrl"))
+    assertFalse(client.operations.contains("delete:$backupUrl"))
+    assertFalse(client.operations.contains("put:$originUrl:20"))
+    assertFalse(client.operations.any { it.startsWith("move:") })
+  }
+
   @Test fun originInfoFailure_abortsBeforeChangingRemoteFiles() = runBlocking {
     val oldInfo = cloudInfo(originUrl, size = 10, time = 1000)
     val client = FakeWebDavUploadClient(
@@ -101,6 +123,27 @@ class WebDavSafeUploaderTest {
     assertFalse(client.files.containsKey(tempUrl))
     assertTrue(client.files.containsKey(backupUrl))
     assertTrue(client.operations.contains("copy:$backupUrl->$originUrl:true"))
+    assertFalse(client.operations.any { it.startsWith("move:") })
+  }
+
+  @Test fun finalPutNetworkFailure_skipsRollbackLeavesBackupAndTempForRecovery() = runBlocking {
+    val oldInfo = cloudInfo(originUrl, size = 10, time = 1000)
+    val client = FakeWebDavUploadClient(
+      initialFiles = mutableMapOf(originUrl to oldInfo),
+      networkFailPutUrls = setOf(originUrl),
+      createPartialOnPutFailure = true
+    )
+    val uploader = WebDavSafeUploader(client, idFactory = { "fixed" })
+
+    val result = uploader.upload(localFile(size = 20), originUrl)
+
+    assertFalse(result.success)
+    // 网络故障:跳过回滚。origin 可能存在 partial 坏数据,backup 保留可手动恢复,temp 也保留
+    assertTrue(client.files.containsKey(backupUrl))
+    assertTrue(client.files.containsKey(tempUrl))
+    assertFalse(client.operations.contains("delete:$tempUrl"))
+    assertFalse(client.operations.contains("delete:$backupUrl"))
+    assertFalse(client.operations.contains("copy:$backupUrl->$originUrl"))
     assertFalse(client.operations.any { it.startsWith("move:") })
   }
 
@@ -222,6 +265,7 @@ class WebDavSafeUploaderTest {
   private inner class FakeWebDavUploadClient(
     initialFiles: MutableMap<String, CloudFileInfo> = mutableMapOf(),
     private val failPutUrls: Set<String> = emptySet(),
+    private val networkFailPutUrls: Set<String> = emptySet(),
     private val uploadedSizeOverride: Map<String, Long> = emptyMap(),
     private val uploadedTime: Long = 2000,
     private val createPartialOnPutFailure: Boolean = false,
@@ -258,13 +302,25 @@ class WebDavSafeUploaderTest {
       contentType: String
     ) {
       operations.add("put:$url:${localFile.length()}")
-      if (url in failPutUrls) {
-        if (createPartialOnPutFailure) {
-          files[url] = cloudInfo(url, size = 3, time = uploadedTime)
+      when {
+        url in failPutUrls -> {
+          // 服务器级失败(HTTP 5xx):传输层正常,触发回滚路径
+          if (createPartialOnPutFailure) {
+            files[url] = cloudInfo(url, size = 3, time = uploadedTime)
+          }
+          throw SardineException("server put failed", 500, "")
         }
-        throw IOException("put failed")
+        url in networkFailPutUrls -> {
+          // 传输层故障(SocketTimeout/StreamReset 等):触发跳过回滚路径
+          if (createPartialOnPutFailure) {
+            files[url] = cloudInfo(url, size = 3, time = uploadedTime)
+          }
+          throw IOException("network put failed")
+        }
+        else -> {
+          files[url] = cloudInfo(url, uploadedSizeOverride[url] ?: localFile.length(), uploadedTime)
+        }
       }
-      files[url] = cloudInfo(url, uploadedSizeOverride[url] ?: localFile.length(), uploadedTime)
     }
 
     override suspend fun copy(

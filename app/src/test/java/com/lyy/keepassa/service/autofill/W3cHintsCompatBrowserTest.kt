@@ -11,8 +11,10 @@ package com.lyy.keepassa.service.autofill
 import java.io.File
 import javax.xml.parsers.DocumentBuilderFactory
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.w3c.dom.NodeList
 
 class W3cHintsCompatBrowserTest {
 
@@ -34,6 +36,17 @@ class W3cHintsCompatBrowserTest {
       val missingPackages = W3cHints.CompatBrowsers - compatibilityPackages(path)
 
       assertEquals("$path is missing compatibility packages", emptySet<String>(), missingPackages)
+    }
+  }
+
+  @Test fun autofillCompatibilityConfigs_doNotUseUnsupportedUrlBarResourceIdAttribute() {
+    autofillCompatibilityConfigPaths.forEach { path ->
+      compatibilityPackages(path).forEach { packageName ->
+        assertNull(
+          "$path must not use unsupported framework urlBarResourceId for $packageName",
+          compatibilityPackageAttribute(path, packageName, "urlBarResourceId")
+        )
+      }
     }
   }
 
@@ -61,10 +74,7 @@ class W3cHintsCompatBrowserTest {
   }
 
   private fun compatibilityPackages(path: String): Set<String> {
-    val document = DocumentBuilderFactory.newInstance().apply {
-      isNamespaceAware = true
-    }.newDocumentBuilder().parse(File(path))
-    val packages = document.getElementsByTagName("compatibility-package")
+    val packages = compatibilityPackageNodes(path)
     val androidNamespace = "http://schemas.android.com/apk/res/android"
     return buildSet {
       for (i in 0 until packages.length) {
@@ -72,6 +82,30 @@ class W3cHintsCompatBrowserTest {
         item.attributes.getNamedItemNS(androidNamespace, "name")?.nodeValue?.let(::add)
       }
     }
+  }
+
+  private fun compatibilityPackageAttribute(
+    path: String,
+    packageName: String,
+    attributeName: String
+  ): String? {
+    val packages = compatibilityPackageNodes(path)
+    val androidNamespace = "http://schemas.android.com/apk/res/android"
+    for (i in 0 until packages.length) {
+      val item = packages.item(i)
+      val name = item.attributes.getNamedItemNS(androidNamespace, "name")?.nodeValue
+      if (name == packageName) {
+        return item.attributes.getNamedItemNS(androidNamespace, attributeName)?.nodeValue
+      }
+    }
+    return null
+  }
+
+  private fun compatibilityPackageNodes(path: String): NodeList {
+    val document = DocumentBuilderFactory.newInstance().apply {
+      isNamespaceAware = true
+    }.newDocumentBuilder().parse(File(path))
+    return document.getElementsByTagName("compatibility-package")
   }
 
   private companion object {

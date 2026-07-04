@@ -20,8 +20,11 @@ import com.lyy.keepassa.util.hasSpecialChar
 import com.thegrizzlylabs.sardineandroid.DavResource
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import com.thegrizzlylabs.sardineandroid.impl.SardineException
+import okhttp3.ConnectionPool
+import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.io.FileOutputStream
+import java.io.IOException
 import java.net.URI
 import java.net.URLEncoder
 import java.nio.channels.Channels
@@ -105,7 +108,7 @@ object WebDavUtil : ICloudUtil {
     this.password = password
     setHostUri(uri)
 
-    sardine = OkHttpSardine()
+    sardine = OkHttpSardine(buildHttpClient())
     sardine?.setCredentials(userName, password, isPreemptive)
 
     try {
@@ -129,7 +132,7 @@ object WebDavUtil : ICloudUtil {
     this.userName = userName
     this.password = password
     setHostUri(uri)
-    sardine = OkHttpSardine()
+    sardine = OkHttpSardine(buildHttpClient())
     sardine?.setCredentials(userName, password, true)
     return sardine as OkHttpSardine
   }
@@ -283,6 +286,35 @@ object WebDavUtil : ICloudUtil {
         webDav.delete(url)
       }
     }
+  }
+
+  /**
+   * 构造一个能在 HTTP/2 StreamReset 后主动清理连接池的 OkHttpClient。
+   *
+   * 背景:某些 WebDAV 服务(坚果云、部分 nginx 配置)在 PUT 大文件途中会发送 RST_STREAM,
+   * OkHttp 把它包装成 okhttp3.internal.http2.StreamResetException。问题在于连接池里那条
+   * "出过事"的 HTTP/2 连接可能被复用,下一次请求立刻又抛 StreamReset,形成死循环。
+   * 显式 evictAll() 强制下一条请求重建连接,打破循环。
+   *
+   * 用类名字符串匹配 [StreamResetException] 是为了不依赖 okhttp3 内部包,避免 SDK 升级断裂。
+   */
+  private fun buildHttpClient(): OkHttpClient {
+    val connectionPool = ConnectionPool()
+    return OkHttpClient.Builder()
+      .connectionPool(connectionPool)
+      .addInterceptor { chain ->
+        try {
+          chain.proceed(chain.request())
+        } catch (e: IOException) {
+          val isStreamReset = e.javaClass.simpleName.equals("StreamResetException", ignoreCase = true)
+          if (isStreamReset) {
+            Timber.w(e, "HTTP/2 stream reset detected, evicting connection pool")
+            connectionPool.evictAll()
+          }
+          throw e
+        }
+      }
+      .build()
   }
 
   private fun getStrictFileInfo(

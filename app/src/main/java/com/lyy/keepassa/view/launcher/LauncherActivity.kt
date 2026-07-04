@@ -92,6 +92,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
 
   override fun onNewIntent(intent: Intent?) {
     super.onNewIntent(intent)
+    setIntent(intent)
     getAutoFillParam()
   }
 
@@ -313,7 +314,6 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
           structure?.let { stru ->
             it.putExtra(AutofillManager.EXTRA_ASSIST_STRUCTURE, stru)
-            it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
           }
         }
 

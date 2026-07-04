@@ -73,18 +73,18 @@ internal class WebDavSafeUploader(
       tempMayExist = true
       client.put(tempUrl, localFile, WEB_DAV_DB_CONTENT_TYPE)
       val tempInfo = client.getFileInfo(tempUrl)
-        ?: throw IOException("WebDAV temp upload missing: $tempUrl")
+        ?: throw IllegalStateException("WebDAV temp upload missing: $tempUrl")
       if (tempInfo.size != expectedSize) {
-        throw IOException("WebDAV temp upload size mismatch, expected=$expectedSize, actual=${tempInfo.size}")
+        throw IllegalStateException("WebDAV temp upload size mismatch, expected=$expectedSize, actual=${tempInfo.size}")
       }
 
       originPutAttempted = true
       client.put(originUrl, localFile, WEB_DAV_DB_CONTENT_TYPE)
 
       val originInfo = client.getFileInfo(originUrl)
-        ?: throw IOException("WebDAV uploaded file missing: $originUrl")
+        ?: throw IllegalStateException("WebDAV uploaded file missing: $originUrl")
       if (originInfo.size != expectedSize) {
-        throw IOException("WebDAV uploaded file size mismatch, expected=$expectedSize, actual=${originInfo.size}")
+        throw IllegalStateException("WebDAV uploaded file size mismatch, expected=$expectedSize, actual=${originInfo.size}")
       }
 
       deleteQuietly(tempUrl)
@@ -95,6 +95,12 @@ internal class WebDavSafeUploader(
       return WebDavSafeUploadResult(true, originInfo.serviceModifyDate)
     } catch (e: Exception) {
       Timber.e(e, "WebDAV safe upload failed")
+      if (isNetworkFailure(e)) {
+        // 网络挂了,任何远程操作都可能继续失败。保留 backup/temp 让下次上传或手动恢复兜底,
+        // 避免在死连接上反复重试加剧故障。代价:留下 .tmp 孤儿文件,需要后续 preflight 清理。
+        Timber.w("Network failure detected, skip remote rollback/cleanup; leave backup/temp for recovery")
+        return WebDavSafeUploadResult(false)
+      }
       if (originPutAttempted && backupReady) {
         restoreBackupQuietly(backupUrl, originUrl)
         pruneBackupsQuietly(backupDirUrl)
@@ -107,6 +113,26 @@ internal class WebDavSafeUploader(
     }
 
     return WebDavSafeUploadResult(false)
+  }
+
+  /**
+   * 判断异常是否属于"网络层故障"——应跳过所有远程回滚/清理。
+   *
+   * 区分依据:
+   * - [SardineException]:服务器正常返回了 HTTP 错误(4xx/5xx),传输层没坏 → 不是网络故障,可回滚
+   * - [IllegalStateException]:我们自己在 put 后做元数据校验时抛出的(server 返回的 size 不对、文件丢失等),
+   *   表明服务器通讯正常但内容不一致 → 不是网络故障,必须回滚
+   * - [IOException]:OkHttp/Sardine 在传输层(SocketTimeout/Connect/StreamReset 等)抛出 → 网络故障,跳过回滚
+   */
+  private fun isNetworkFailure(e: Throwable): Boolean {
+    var cur: Throwable? = e
+    while (cur != null) {
+      if (cur is SardineException) return false
+      if (cur is IllegalStateException) return false
+      if (cur is IOException) return true
+      cur = cur.cause
+    }
+    return false
   }
 
   private suspend fun ensureBackupDirectory(backupDirUrl: String) {

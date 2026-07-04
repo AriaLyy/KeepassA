@@ -64,6 +64,7 @@ internal object BrowserAutofillStrategyRegistry {
     "com.opera.mini.native",
     "com.opera.mini.native.beta",
     "com.opera.touch",
+    // "com.yandex.browser",
     "com.sec.android.app.sbrowser",
     "com.sec.android.app.sbrowser.beta",
     "com.amazon.cloud9",
@@ -197,15 +198,16 @@ internal object BrowserAutofillStrategyRegistry {
    */
   val supportedBrowsers: List<SupportedBrowser>
     get() {
-      val chromium = chromiumPackages.map { it to BrowserAutofillEngine.CHROMIUM }
-      val yandex = yandexPackages.map { it to BrowserAutofillEngine.YANDEX }
+      val chromium = chromiumPackages.map {
+        it to effectiveEngineForPackage(it, BrowserAutofillEngine.CHROMIUM)
+      }
       val kiwi = kiwiPackages.map { it to BrowserAutofillEngine.KIWI }
       val idm = idmPackages.map { it to BrowserAutofillEngine.IDM }
       val uc = ucPackages.map { it to BrowserAutofillEngine.UC }
       val gecko = geckoPackages.map { it to BrowserAutofillEngine.GECKO }
       val android = androidBrowserPackages.map { it to BrowserAutofillEngine.ANDROID_BROWSER }
       val conservative = conservativeBrowserPackages.map { it to BrowserAutofillEngine.DEFAULT }
-      return (chromium + yandex + kiwi + idm + uc + gecko + android + conservative)
+      return (chromium + kiwi + idm + uc + gecko + android + conservative)
         .map { (pkg, engine) ->
           SupportedBrowser(
             packageName = pkg,
@@ -242,6 +244,13 @@ internal object BrowserAutofillStrategyRegistry {
   private val yandexStrategy = BrowserAutofillStrategy(
     engine = BrowserAutofillEngine.YANDEX,
     isBrowser = true,
+    // Yandex Browser 需要独立记录,但当前真机证据显示它的问题多数发生在
+    // AutofillService.onFillRequest() 之前:浏览器没有稳定创建 Android Autofill session。
+    // 因此该策略只用于"系统已经把 FillRequest 交给 KeePassA"的场景,不能强制 Yandex 弹出
+    // 自动填充 UI。不要把未触发 session 的问题继续归因到策略匹配或字段推断。
+    //
+    // 策略保持保守:允许当前 focused id 做单字段认证兜底,但不启用 Chromium 的表单字段推断,
+    // 避免在 Yandex 的网页/iframe 暴露不完整时扩大误填风险。
     shouldClassifyNativeEditTextVirtualNodes = true,
     allowFocusedNonTextNodeFallback = false,
     allowRequestFocusedIdFallback = true,
@@ -249,6 +258,9 @@ internal object BrowserAutofillStrategyRegistry {
     allowSingleFieldAuthFallback = true,
     searchOrUrlTokens = genericSearchOrUrlTokens
   )
+
+  private val packageStrategyOverrides: Map<String, BrowserAutofillStrategy> =
+    yandexPackages.associateWith { yandexStrategy }
 
   private val kiwiStrategy = BrowserAutofillStrategy(
     engine = BrowserAutofillEngine.KIWI,
@@ -284,7 +296,8 @@ internal object BrowserAutofillStrategyRegistry {
       "搜索或输入网址",
       "输入网址",
       "网址",
-      "搜索"
+      "搜索",
+      "豆瓣"
     )
   )
 
@@ -336,9 +349,11 @@ internal object BrowserAutofillStrategyRegistry {
     if (pkgName.isNullOrEmpty()) {
       return nonBrowserStrategy
     }
+    packageStrategyOverrides[pkgName]?.let {
+      return it
+    }
     return when (pkgName) {
       in chromiumPackages -> chromiumStrategy
-      in yandexPackages -> yandexStrategy
       in kiwiPackages -> kiwiStrategy
       in idmPackages -> idmStrategy
       in ucPackages -> ucStrategy
@@ -348,4 +363,9 @@ internal object BrowserAutofillStrategyRegistry {
       else -> if (W3cHints.isBrowser(pkgName)) conservativeBrowserStrategy else nonBrowserStrategy
     }
   }
+
+  private fun effectiveEngineForPackage(
+    packageName: String,
+    defaultEngine: BrowserAutofillEngine
+  ): BrowserAutofillEngine = packageStrategyOverrides[packageName]?.engine ?: defaultEngine
 }

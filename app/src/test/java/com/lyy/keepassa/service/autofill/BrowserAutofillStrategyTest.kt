@@ -85,6 +85,21 @@ class BrowserAutofillStrategyTest {
     assertTrue(strategy.allowSingleFieldAuthFallback)
   }
 
+  @Test fun yandexDedicatedStrategyDoesNotRemoveLegacyChromiumMembership() {
+    val chromiumPackagesField =
+      BrowserAutofillStrategyRegistry::class.java.getDeclaredField("chromiumPackages")
+    chromiumPackagesField.isAccessible = true
+    @Suppress("UNCHECKED_CAST")
+    val chromiumPackages =
+      chromiumPackagesField.get(BrowserAutofillStrategyRegistry) as Set<String>
+
+    assertTrue(chromiumPackages.contains("com.yandex.browser"))
+    assertEquals(
+      BrowserAutofillEngine.YANDEX,
+      BrowserAutofillStrategyRegistry.forPackage("com.yandex.browser").engine
+    )
+  }
+
   @Test fun idmBrowserUsesDedicatedStrategyWithFallbackPromptSupport() {
     val strategy = BrowserAutofillStrategyRegistry.forPackage("idm.internet.download.manager")
 
