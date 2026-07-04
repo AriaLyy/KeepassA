@@ -48,7 +48,6 @@ import timber.log.Timber
  */
 @TargetApi(VERSION_CODES.O)
 class AutoFillService : AutofillService() {
-
   /**
    * 接收请求
    */

@@ -10,6 +10,7 @@ package com.lyy.keepassa.service.autofill
 
 import java.io.File
 import javax.xml.parsers.DocumentBuilderFactory
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -20,14 +21,41 @@ class W3cHintsCompatBrowserTest {
   }
 
   @Test fun autofillCompatibilityConfigs_includeKiwiProxyBrowser() {
-    listOf(
-      "src/main/res/xml/auto_fill_service_configuration.xml",
-      "src/main/res/xml-v28/auto_fill_service_configuration.xml",
-      "src/main/res/xml-v30/auto_fill_service_configuration.xml"
-    ).forEach { path ->
+    autofillCompatibilityConfigPaths.forEach { path ->
       assertTrue(
         "$path should include $KIWI_PROXY_BROWSER_PACKAGE",
         compatibilityPackages(path).contains(KIWI_PROXY_BROWSER_PACKAGE)
+      )
+    }
+  }
+
+  @Test fun autofillCompatibilityConfigs_includeEveryCompatBrowser() {
+    autofillCompatibilityConfigPaths.forEach { path ->
+      val missingPackages = W3cHints.CompatBrowsers - compatibilityPackages(path)
+
+      assertEquals("$path is missing compatibility packages", emptySet<String>(), missingPackages)
+    }
+  }
+
+  @Test fun realDeviceBrowserPackages_areTreatedAsBrowsers() {
+    listOf(
+      "com.UCMobile.intl",
+      "com.apusapps.browser",
+      "com.explore.web.browser",
+      "com.heytap.browser",
+      "com.mi.globalbrowser",
+      "com.mx.browser",
+      "com.talpa.hibrowser",
+      "com.uc.browser.en",
+      "com.vivo.browser",
+      "idm.internet.download.manager",
+      "mobi.mgeek.TunnyBrowser",
+      "net.fast.web.browser",
+      "org.adblockplus.browser"
+    ).forEach { packageName ->
+      assertTrue(
+        "$packageName should be treated as browser",
+        W3cHints.isBrowser(packageName)
       )
     }
   }
@@ -48,5 +76,10 @@ class W3cHintsCompatBrowserTest {
 
   private companion object {
     const val KIWI_PROXY_BROWSER_PACKAGE = "secure.unblock.unlimited.proxy.snap.hotspot.shield"
+    val autofillCompatibilityConfigPaths = listOf(
+      "src/main/res/xml/auto_fill_service_configuration.xml",
+      "src/main/res/xml-v28/auto_fill_service_configuration.xml",
+      "src/main/res/xml-v30/auto_fill_service_configuration.xml"
+    )
   }
 }

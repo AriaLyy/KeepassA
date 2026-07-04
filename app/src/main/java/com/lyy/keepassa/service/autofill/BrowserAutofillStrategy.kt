@@ -46,6 +46,7 @@ internal object BrowserAutofillStrategyRegistry {
     "com.google.android.apps.chrome",
     "com.google.android.apps.chrome_dev",
     "com.brave.browser",
+    "org.adblockplus.browser",
     "com.opera.browser",
     "com.opera.browser.beta",
     "com.opera.mini.native",
@@ -86,6 +87,21 @@ internal object BrowserAutofillStrategyRegistry {
   private val androidBrowserPackages = setOf(
     "com.android.browser",
     "org.codeaurora.swe.browser"
+  )
+
+  private val conservativeBrowserPackages = setOf(
+    "com.UCMobile.intl",
+    "com.uc.browser.en",
+    "com.mi.globalbrowser",
+    "com.heytap.browser",
+    "com.vivo.browser",
+    "com.mx.browser",
+    "com.apusapps.browser",
+    "com.explore.web.browser",
+    "net.fast.web.browser",
+    "idm.internet.download.manager",
+    "com.talpa.hibrowser",
+    "mobi.mgeek.TunnyBrowser"
   )
 
   private val genericSearchOrUrlTokens = setOf(
@@ -176,6 +192,7 @@ internal object BrowserAutofillStrategyRegistry {
       in kiwiPackages -> kiwiStrategy
       in geckoPackages -> geckoStrategy
       in androidBrowserPackages -> androidBrowserStrategy
+      in conservativeBrowserPackages -> conservativeBrowserStrategy
       else -> if (W3cHints.isBrowser(pkgName)) conservativeBrowserStrategy else nonBrowserStrategy
     }
   }

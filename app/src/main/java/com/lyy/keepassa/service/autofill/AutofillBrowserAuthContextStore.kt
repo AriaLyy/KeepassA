@@ -39,12 +39,36 @@ internal object AutofillBrowserAuthContextStore {
       return
     }
 
+    val existing = contexts[packageName]
+    val previous = existing?.takeIf { nowMs - it.createdAtMs <= TTL_MS }
+    if (existing != null && previous == null) {
+      contexts.remove(packageName, existing)
+    }
+    val normalizedDomain = domain?.trim()?.takeIf { it.isNotEmpty() }
+    val normalizedMetadata = metadata?.takeIf { it.autoFillIds.isNotEmpty() }
+    val domainChanged = normalizedDomain != null &&
+      previous?.domain != null &&
+      !normalizedDomain.equals(previous.domain, ignoreCase = true)
+    val canCarryPreviousFieldContext = previous != null && !domainChanged
+
     contexts[packageName] = AutofillBrowserAuthContext(
       packageName = packageName,
-      domain = domain?.trim()?.takeIf { it.isNotEmpty() },
-      metadata = metadata?.takeIf { it.autoFillIds.isNotEmpty() },
-      fallbackId = fallbackId,
-      fallbackRole = fallbackRole,
+      domain = normalizedDomain ?: previous?.domain,
+      metadata = normalizedMetadata ?: if (fallbackId == null && canCarryPreviousFieldContext) {
+        previous?.metadata
+      } else {
+        null
+      },
+      fallbackId = fallbackId ?: if (normalizedMetadata == null && canCarryPreviousFieldContext) {
+        previous?.fallbackId
+      } else {
+        null
+      },
+      fallbackRole = fallbackRole ?: if (normalizedMetadata == null && canCarryPreviousFieldContext) {
+        previous?.fallbackRole
+      } else {
+        null
+      },
       createdAtMs = nowMs
     )
   }

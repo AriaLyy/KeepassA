@@ -64,6 +64,40 @@ class BrowserAutofillStrategyTest {
     assertFalse(strategy.allowSingleFieldAuthFallback)
   }
 
+  @Test fun adblockPlusBrowserUsesChromiumStrategy() {
+    val strategy = BrowserAutofillStrategyRegistry.forPackage("org.adblockplus.browser")
+
+    assertEquals(BrowserAutofillEngine.CHROMIUM, strategy.engine)
+    assertTrue(strategy.isBrowser)
+    assertTrue(strategy.allowBrowserFormFieldInference)
+    assertTrue(strategy.allowSingleFieldAuthFallback)
+  }
+
+  @Test fun unverifiedDeviceBrowsersUseConservativeBrowserStrategy() {
+    listOf(
+      "com.UCMobile.intl",
+      "com.apusapps.browser",
+      "com.explore.web.browser",
+      "com.heytap.browser",
+      "com.mi.globalbrowser",
+      "com.mx.browser",
+      "com.talpa.hibrowser",
+      "com.uc.browser.en",
+      "com.vivo.browser",
+      "idm.internet.download.manager",
+      "mobi.mgeek.TunnyBrowser",
+      "net.fast.web.browser",
+      "org.torproject.torbrowser"
+    ).forEach { packageName ->
+      val strategy = BrowserAutofillStrategyRegistry.forPackage(packageName)
+
+      assertEquals("$packageName engine", expectedConservativeEngine(packageName), strategy.engine)
+      assertTrue("$packageName browser", strategy.isBrowser)
+      assertFalse("$packageName form inference", strategy.allowBrowserFormFieldInference)
+      assertFalse("$packageName auth fallback", strategy.allowSingleFieldAuthFallback)
+    }
+  }
+
   @Test fun unknownPackageUsesConservativeDefaultStrategy() {
     val strategy = BrowserAutofillStrategyRegistry.forPackage("com.example.unknown")
 
@@ -75,4 +109,10 @@ class BrowserAutofillStrategyTest {
     assertFalse(strategy.allowBrowserFormFieldInference)
     assertTrue(strategy.isSearchOrUrlFieldToken("search"))
   }
+
+  private fun expectedConservativeEngine(packageName: String): BrowserAutofillEngine =
+    when (packageName) {
+      "org.torproject.torbrowser" -> BrowserAutofillEngine.GECKO
+      else -> BrowserAutofillEngine.DEFAULT
+    }
 }

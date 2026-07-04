@@ -8,8 +8,11 @@
 
 package com.lyy.keepassa.service.autofill
 
+import android.view.autofill.AutofillId
+import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertSame
 import org.junit.Test
 
 class AutofillBrowserAuthContextStoreTest {
@@ -70,5 +73,65 @@ class AutofillBrowserAuthContextStoreTest {
         nowMs = 1_000 + AutofillBrowserAuthContextStore.TTL_MS + 1
       )
     )
+  }
+
+  @Test fun blankDomainDoesNotOverwriteExistingBrowserDomain() {
+    AutofillBrowserAuthContextStore.clear()
+    val packageName = "secure.unblock.unlimited.proxy.snap.hotspot.shield"
+    val strategy = BrowserAutofillStrategyRegistry.forPackage(packageName)
+
+    AutofillBrowserAuthContextStore.remember(
+      packageName = packageName,
+      strategy = strategy,
+      domain = "carpt.net",
+      metadata = null,
+      fallbackId = null,
+      fallbackRole = null,
+      nowMs = 1_000
+    )
+    AutofillBrowserAuthContextStore.remember(
+      packageName = packageName,
+      strategy = strategy,
+      domain = " ",
+      metadata = null,
+      fallbackId = null,
+      fallbackRole = null,
+      nowMs = 2_000
+    )
+
+    assertEquals(
+      "carpt.net",
+      AutofillBrowserAuthContextStore.find(packageName, 3_000)?.domain
+    )
+  }
+
+  @Test fun emptyBrowserContextDoesNotOverwriteExistingFallbackAnchor() {
+    AutofillBrowserAuthContextStore.clear()
+    val packageName = "secure.unblock.unlimited.proxy.snap.hotspot.shield"
+    val strategy = BrowserAutofillStrategyRegistry.forPackage(packageName)
+    val fallbackId = mockk<AutofillId>()
+
+    AutofillBrowserAuthContextStore.remember(
+      packageName = packageName,
+      strategy = strategy,
+      domain = "carpt.net",
+      metadata = null,
+      fallbackId = fallbackId,
+      fallbackRole = BrowserFormFieldRole.PASSWORD,
+      nowMs = 1_000
+    )
+    AutofillBrowserAuthContextStore.remember(
+      packageName = packageName,
+      strategy = strategy,
+      domain = " ",
+      metadata = null,
+      fallbackId = null,
+      fallbackRole = null,
+      nowMs = 2_000
+    )
+
+    val context = AutofillBrowserAuthContextStore.find(packageName, 3_000)
+    assertSame(fallbackId, context?.fallbackId)
+    assertEquals(BrowserFormFieldRole.PASSWORD, context?.fallbackRole)
   }
 }
