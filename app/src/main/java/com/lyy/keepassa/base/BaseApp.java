@@ -126,12 +126,11 @@ public class BaseApp extends MultiDexApplication {
       currentLang = lang;
     } else {
       Locale def = LanguageUtil.INSTANCE.getSysCurrentLan();
-      lang = new Locale(def.getLanguage(), def.getCountry());
-      if (LanguageUtil.SUPPORT_LAN.contains(lang)) {
-        LanguageUtil.INSTANCE.setLanguage(context, lang);
-      } else {
-        LanguageUtil.INSTANCE.setLanguage(context, Locale.ENGLISH);
+      lang = LanguageUtil.INSTANCE.getSupportedLanguage(new Locale(def.getLanguage(), def.getCountry()));
+      if (lang == null) {
+        lang = Locale.ENGLISH;
       }
+      LanguageUtil.INSTANCE.setLanguage(context, lang);
       LanguageUtil.INSTANCE.saveLanguage(context, lang);
     }
     return lang;

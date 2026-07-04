@@ -273,6 +273,11 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     const val OPEN_TYPE_OPEN_DB = 2
     const val EXTRA_ENTRY_ID = "EXTRA_ENTRY_ID"
 
+    // PendingIntent request codes,区分不同用途,避免 FLAG_CANCEL_CURRENT 互相取消
+    const val REQ_CODE_NOTIFICATION = 0
+    const val REQ_CODE_AUTOFILL_QUERY = 1
+    const val REQ_CODE_AUTOFILL_SAVE = 2
+
     internal fun startLauncherActivity(
       context: Context,
       flags: Int = -1
@@ -289,7 +294,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
      */
     internal fun createLauncherPending(context: Context): PendingIntent {
       return Intent(context, LauncherActivity::class.java).let { notificationIntent ->
-        PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
+        PendingIntent.getActivity(context, REQ_CODE_NOTIFICATION, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
       }
     }
 
@@ -314,7 +319,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
       }
       return PendingIntent.getActivity(
         context,
-        1,
+        REQ_CODE_AUTOFILL_QUERY,
         intent,
         PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
       )
@@ -323,13 +328,16 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
 
     /**
      * 数据库未解锁，保存数据时打开数据库，并保存
+     *
+     * requestCode 与 [getAuthDbIntentSender] 区分,避免 FLAG_CANCEL_CURRENT
+     * 互相取消导致 IntentSender 失效。
      */
-    internal fun <T : Activity> authAndSaveDb(
+    internal fun authAndSaveDb(
       context: Context,
       apkPackageName: String,
       userName: String,
       pass: String,
-      clazz: Class<T>
+      clazz: Class<out Activity>
     ): IntentSender {
       val intent = Intent(context, clazz).also {
         it.putExtra(
@@ -344,7 +352,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
       }
       return PendingIntent.getActivity(
         context,
-        1,
+        REQ_CODE_AUTOFILL_SAVE,
         intent,
         PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
       )

@@ -1,4 +1,452 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="db">Database</string>
+    <string-array name="quick_pass_type_entries">
+        <item><![CDATA[Eerste %s tekens van het databasewachtwoord]]></item>
+        <item><![CDATA[Laatste %s tekens van het databasewachtwoord]]></item>
+    </string-array>
+    <string-array name="clean_clip_entries">
+        <item><![CDATA[30 seconden]]></item>
+        <item><![CDATA[1 minuut]]></item>
+        <item><![CDATA[2 minuten]]></item>
+        <item><![CDATA[5 minuten]]></item>
+    </string-array>
+    <string-array name="quick_lock_entries">
+        <item><![CDATA[2 minuten]]></item>
+        <item><![CDATA[5 minuten]]></item>
+        <item><![CDATA[10 minuten]]></item>
+        <item><![CDATA[20 minuten]]></item>
+    </string-array>
+    <string-array name="out_db_entries">
+        <item><![CDATA[Keepass2-database]]></item>
+        <item><![CDATA[Niet-versleuteld XML-bestand]]></item>
+        <item><![CDATA[Niet-versleuteld CSV-bestand]]></item>
+    </string-array>
+    <string-array name="v3_add_mor_item">
+        <item><![CDATA[Opmerkingen]]></item>
+        <item><![CDATA[bestandsbijlage]]></item>
+        <item><![CDATA[Vervaltijd]]></item>
+    </string-array>
+    <string-array name="v4_add_mor_item">
+        <item><![CDATA[Opmerkingen]]></item>
+        <item><![CDATA[Aangepaste velden]]></item>
+        <item><![CDATA[bestandsbijlage]]></item>
+        <item><![CDATA[TOTP]]></item>
+        <item><![CDATA[etiket]]></item>
+        <item><![CDATA[koppeling]]></item>
+        <item><![CDATA[Vervaltijd]]></item>
+    </string-array>
+    <string-array name="create_normal_group">
+        <item><![CDATA[E-mail]]></item>
+        <item><![CDATA[werk]]></item>
+        <item><![CDATA[Financiën]]></item>
+        <item><![CDATA[vermaak]]></item>
+        <item><![CDATA[prullenbak]]></item>
+    </string-array>
+    <string-array name="auto_fill_hint_label">
+        <item><![CDATA[E-mail]]></item>
+        <item><![CDATA[mobiele telefoon]]></item>
+        <item><![CDATA[Gebruiker]]></item>
+        <item><![CDATA[Rekeningnummer]]></item>
+    </string-array>
+    <string name="db"><![CDATA[database]]></string>
+    <string name="db1"><![CDATA[Database\t|\t<font color="#757575">%s</font>]]></string>
+    <string name="password"><![CDATA[Wachtwoord]]></string>
+    <string name="key"><![CDATA[sleutel]]></string>
+    <string name="key1"><![CDATA[Sleutel: %s]]></string>
+    <string name="open"><![CDATA[Ontgrendelen]]></string>
+    <string name="hint_set_password"><![CDATA[Wachtwoord instellen]]></string>
+    <string name="hint_input_password"><![CDATA[Voer een wachtwoord van 6 tot 16 tekens in]]></string>
+    <string name="hint_enter_password"><![CDATA[Bevestig wachtwoord]]></string>
+    <string name="help_create_db"><![CDATA[v4 KeepPass-database standaard gemaakt]]></string>
+    <string name="help_create_group"><![CDATA[Groepsnaam mag niet langer zijn dan 16 tekens]]></string>
+    <string name="encrypt_type"><![CDATA[Versleutelingsmethode]]></string>
+    <string name="encrypt_type_1"><![CDATA[Alleen wachtwoord]]></string>
+    <string name="encrypt_type_2"><![CDATA[wachtwoord + sleutel]]></string>
+    <string name="choose_pass_key"><![CDATA[Selecteer sleutel]]></string>
+    <string name="hint_set_pass_key"><![CDATA[Selecteer een sleutel]]></string>
+    <string name="pass_key"><![CDATA[bestandssleutel]]></string>
+    <string name="helper_create_pass"><![CDATA[Het wordt aanbevolen om een gemengd wachtwoord te gebruiken (hoofdletters en kleine letters Engels + cijfers + symbolen)]]></string>
+    <string name="open_db"><![CDATA[Database openen]]></string>
+    <string name="db_name"><![CDATA[Voer de databasenaam in]]></string>
+    <string name="create_db"><![CDATA[Database maken]]></string>
+    <string name="next"><![CDATA[Volgende stap]]></string>
+    <string name="up"><![CDATA[Vorige stap]]></string>
+    <string name="hint_select_db_path"><![CDATA[Klik om de methode voor gegevensopslag in te stellen]]></string>
+    <string name="hint_select_path_type"><![CDATA[Selecteer het pad voor het opslaan van de database]]></string>
+    <string name="error_db_name_null"><![CDATA[Voer de databasenaam in]]></string>
+    <string name="done"><![CDATA[Compleet]]></string>
+    <string name="enter"><![CDATA[Bevestig]]></string>
+    <string name="cancel"><![CDATA[Annuleer]]></string>
+    <string name="hint"><![CDATA[Tips]]></string>
+    <string name="help_create_db_path"><![CDATA[Het wordt aanbevolen dat u cloudpaden zoals Dropbox en WebDAV gebruikt, waardoor uw database automatisch met de cloud wordt gesynchroniseerd en het gebruik van de database op andere apparaten wordt vergemakkelijkt.
+De \n-database is gecodeerd met AES256. Niemand kan uw database openen zonder uw wachtwoord.]]></string>
+    <string name="help_pass_type"><![CDATA[Gebruik alleen wachtwoord:
+\n heeft alleen uw wachtwoord nodig om de database te openen;
+\n wachtwoord + sleutel:
+\n U moet een wachtwoord invoeren en een sleutelbestand selecteren om de database te openen.]]></string>
+    <string name="help_pass_key"><![CDATA[Een sleutelbestand is gelijk aan een sleutel voor open data en is doorgaans veel complexer en betrouwbaarder dan een wachtwoord. Maar het is ook moeilijker om het te verbergen, en als u uw database in de cloud bewaart, mag u de sleutel en de database nooit samenvoegen.
+\n U kunt elk bestand kiezen als sleutel om de database, een foto of een TXT-document te openen.
+\n⚠️Opmerking: als deze foto of dit TXT-document wordt gewijzigd, kunt u de database niet openen! !
+\n raadt ten zeerste aan alleen-lezen bestanden als sleutels te gebruiken.]]></string>
+    <string name="choose_file"><![CDATA[Selecteer bestand]]></string>
+    <string name="choose_pass_key_file_des"><![CDATA[Kies een bestand als uw sleutel]]></string>
+    <string name="create_file"><![CDATA[Nieuw bestand maken]]></string>
+    <string name="create_pass_key_file_des"><![CDATA[Maak een nieuw bestand dat u als uw sleutel kunt gebruiken]]></string>
+    <string name="create_pass_key_success"><![CDATA[Aanmaak van sleutel [%s] succesvol]]></string>
+    <string name="error_pass_null"><![CDATA[Stel het databasewachtwoord in]]></string>
+    <string name="error_enter_pass_null"><![CDATA[Voer het bevestigingswachtwoord in]]></string>
+    <string name="error_pass_unfit"><![CDATA[Twee wachtwoorden zijn inconsistent]]></string>
+    <string name="hint_db_create_success"><![CDATA[Database [%s] gemaakt]]></string>
+    <string name="history"><![CDATA[geschiedenis]]></string>
+    <string name="history_record"><![CDATA[Geschiedenis]]></string>
+    <string name="edit"><![CDATA[Bewerken]]></string>
+    <string name="change_db"><![CDATA[Wissel van database]]></string>
+    <string name="all"><![CDATA[binnenkomst]]></string>
+    <string name="setting"><![CDATA[instellingen]]></string>
+    <string name="db_setting"><![CDATA[Database-instellingen]]></string>
+    <string name="app_setting"><![CDATA[Applicatie-instellingen]]></string>
+    <string name="welcome"><![CDATA[Welkom]]></string>
+    <string name="help_input_db_pass"><![CDATA[Voer het databasewachtwoord in]]></string>
+    <string name="need_key"><![CDATA[Sleutel nodig?]]></string>
+    <string name="error_uri"><![CDATA[URI-fout]]></string>
+    <string name="error_input_pass_null"><![CDATA[Voer het databasewachtwoord in]]></string>
+    <string name="error_open_db"><![CDATA[Kan database niet openen. Wachtwoord onjuist, of heb ik een sleutel nodig?]]></string>
+    <string name="error_open_db_key_empty"><![CDATA[Ontbrekende sleutel]]></string>
+    <string name="error_open_db_pass_error"><![CDATA[Databasewachtwoordfout]]></string>
+    <string name="error_open_db_key_invalid"><![CDATA[Ongeldige sleutel]]></string>
+    <string name="error_open_db_version_error"><![CDATA[Fout met databaseversie]]></string>
+    <string name="error_open_db_signature_error"><![CDATA[Fout in databasehandtekening]]></string>
+    <string name="error_open_db_algorithm_error"><![CDATA[Ongeldig algoritme]]></string>
+    <string name="error_open_db_arcfour_error"><![CDATA[Ongeldig streamcoderingsalgoritme]]></string>
+    <string name="hint_group_desc"><![CDATA[Groep-%s vermeldingen]]></string>
+    <string name="error_group_id_null"><![CDATA[groeps-ID is leeg]]></string>
+    <string name="error_entry_id_null"><![CDATA[invoer-ID is leeg]]></string>
+    <string name="create_time"><![CDATA[Gemaakt door %s]]></string>
+    <string name="expire_time"><![CDATA[Verloopt op %s]]></string>
+    <string name="hint_attr"><![CDATA[Geavanceerde eigenschappen]]></string>
+    <string name="attachment"><![CDATA[bestandsbijlage]]></string>
+    <string name="hint_ex_property"><![CDATA[Extra eigenschappen]]></string>
+    <string name="expire"><![CDATA[<font color=#FF0000>%s</font>Verlopen]]></string>
+    <string name="del_group"><![CDATA[Groep verwijderen]]></string>
+    <string name="edit_group"><![CDATA[Groep bewerken]]></string>
+    <string name="success"><![CDATA[succes]]></string>
+    <string name="fail"><![CDATA[mislukt]]></string>
+    <string name="del_entry"><![CDATA[Invoer verwijderen]]></string>
+    <string name="del_history"><![CDATA[Geschiedenis verwijderen]]></string>
+    <string name="copy_user_name"><![CDATA[Kopieer gebruikersnaam]]></string>
+    <string name="copy_password"><![CDATA[Kopieer wachtwoord]]></string>
+    <string name="copy_totp"><![CDATA[Kopieer het TOTP-token]]></string>
+    <string name="hint_del_group"><![CDATA[Weet u zeker dat u de groep [<font color=#FF0000>%s</font>] wilt verwijderen? <br> Met deze bewerking wordt de groep naar de prullenbak verplaatst, waar u de groep kunt herstellen.]]></string>
+    <string name="hint_del_group_no_recycle"><![CDATA[Wilt u de groep [<font color=#FF0000>%s</font>] echt verwijderen?]]></string>
+    <string name="hint_del_entry"><![CDATA[Wilt u de vermelding [<font color=#FF0000>%s</font>] echt verwijderen? <br> Met deze actie wordt dit item naar de Prullenbak verplaatst, waar u het item later kunt herstellen.]]></string>
+    <string name="hint_del_entry_no_recycle"><![CDATA[Wilt u de vermelding [<font color=#FF0000>%s</font>] echt definitief verwijderen?]]></string>
+    <string name="group_name"><![CDATA[Groepsnaam]]></string>
+    <string name="create_group"><![CDATA[Groep aanmaken]]></string>
+    <string name="error_group_name_null"><![CDATA[Groepsnaam is leeg]]></string>
+    <string name="create_group_fail"><![CDATA[Kan groep niet maken]]></string>
+    <string name="create_group_success"><![CDATA[Groep gemaakt]]></string>
+    <string name="modify_group"><![CDATA[Groep bewerken]]></string>
+    <string name="error_group_no_modify"><![CDATA[De groep is niet veranderd]]></string>
+    <string name="title_too_long"><![CDATA[Groepsnaam is te lang]]></string>
+    <string name="choose_icon"><![CDATA[Selecteer pictogram]]></string>
+    <string name="undo_entry"><![CDATA[Hersteld…]]></string>
+    <string name="undo_to"><![CDATA[Ga naar deze groep]]></string>
+    <string name="undo_grouped"><![CDATA[De groep is verplaatst naar de opgegeven locatie]]></string>
+    <string name="undo_entryed"><![CDATA[De vermelding is verplaatst naar de opgegeven locatie]]></string>
+    <string name="hint_copy_user"><![CDATA[Gebruikersnaam gekopieerd naar klembord]]></string>
+    <string name="hint_copy_pass"><![CDATA[Wachtwoord gekopieerd naar klembord]]></string>
+    <string name="hint_copy_totp"><![CDATA[TOTP-token gekopieerd naar klembord]]></string>
+    <string name="create_totp"><![CDATA[OTP-token genereren]]></string>
+    <string name="safety_set"><![CDATA[Beveiligingsinstellingen]]></string>
+    <string name="fingerprint_unlock"><![CDATA[Vingerafdruk ontgrendelen]]></string>
+    <string name="db_handle"><![CDATA[Databasebewerkingen]]></string>
+    <string name="modify_db_name"><![CDATA[Databasenaam wijzigen]]></string>
+    <string name="modify_db_pass"><![CDATA[Databasewachtwoord wijzigen]]></string>
+    <string name="out_db"><![CDATA[Database exporteren]]></string>
+    <string name="db_name_no_alter"><![CDATA[Databasenaam is niet gewijzigd]]></string>
+    <string name="db_name_modify"><![CDATA[Wijziging van de databasenaam]]></string>
+    <string name="no_record"><![CDATA[geen record]]></string>
+    <string name="hint_query"><![CDATA[Gebruikersnaam, Titel, URL, Geavanceerde eigenschappen…]]></string>
+    <string name="copy_to_clip"><![CDATA[Kopiëren naar klembord]]></string>
+    <string name="show_pass"><![CDATA[wachtwoord tonen]]></string>
+    <string name="ope_url"><![CDATA[koppeling openen]]></string>
+    <string name="hide_pass"><![CDATA[Wachtwoord verbergen]]></string>
+    <string name="hint_copy_to_clip"><![CDATA[Gegevens gekopieerd naar klembord]]></string>
+    <string name="verify_finger"><![CDATA[Vingerafdrukverificatie]]></string>
+    <string name="verify_finger_fail"><![CDATA[Kan vingerafdruk niet verifiëren]]></string>
+    <string name="ban_fingerprint"><![CDATA[Ontgrendel zonder vingerafdruk]]></string>
+    <string name="quick_use_fingerprint"><![CDATA[Gebruik alleen uw vingerafdruk om te ontgrendelen via de snelle ontgrendelingsinterface]]></string>
+    <string name="use_full_fingerprint"><![CDATA[Volledige ontgrendeling met vingerafdruk]]></string>
+    <string name="hint_full_fingerprint"><![CDATA[Vingerafdrukken worden gebruikt om de database te ontgrendelen in de interface voor snelle ontgrendeling en database-ontgrendeling. KeePassA codeert en bewaart het hoofdwachtwoord en de sleutelinformatie van de database in de lokale sleutelopslagplaats van het Android-systeem en gebruikt vingerafdrukautorisatie voor bescherming. Alleen uw vingerafdruk kan de database ontgrendelen.]]></string>
+    <string name="hint_quick_unlock"><![CDATA[Voer de laatste %s-cijfers van uw databasewachtwoord in]]></string>
+    <string name="hint_input_title"><![CDATA[Titel]]></string>
+    <string name="hint_input_user_name"><![CDATA[Gebruikersnaam]]></string>
+    <string name="hint_input_url"><![CDATA[Link-adres]]></string>
+    <string name="notice"><![CDATA[Opmerkingen]]></string>
+    <string name="hint_input_tag"><![CDATA[label 1, label 2]]></string>
+    <string name="hint_input_cover_url"><![CDATA[koppeling overschrijven]]></string>
+    <string name="create_entry"><![CDATA[Invoer maken]]></string>
+    <string name="save"><![CDATA[opslaan]]></string>
+    <string name="len"><![CDATA[lengte]]></string>
+    <string name="upper"><![CDATA[hoofdletters]]></string>
+    <string name="lower"><![CDATA[kleine letters]]></string>
+    <string name="numer"><![CDATA[cijfers]]></string>
+    <string name="minus"><![CDATA[minteken]]></string>
+    <string name="underline"><![CDATA[Onderstreep]]></string>
+    <string name="space"><![CDATA[ruimte]]></string>
+    <string name="special"><![CDATA[speciale karakters]]></string>
+    <string name="bracket"><![CDATA[beugels]]></string>
+    <string name="pass_generater"><![CDATA[wachtwoordgenerator]]></string>
+    <string name="error_genera_params"><![CDATA[Selecteer ten minste één type wachtwoordgeneratie]]></string>
+    <string name="hint_pass_null"><![CDATA[Wachtwoord is leeg]]></string>
+    <string name="date"><![CDATA[Datum]]></string>
+    <string name="time"><![CDATA[tijd]]></string>
+    <string name="choose_dir"><![CDATA[Opslaan in huidige groep]]></string>
+    <string name="normal_account"><![CDATA[Gewone rekening]]></string>
+    <string name="add_more"><![CDATA[Voeg meer artikelen toe]]></string>
+    <string name="warning"><![CDATA[waarschuwing]]></string>
+    <string name="create_entry_no_save"><![CDATA[De huidige pagina verlaten zonder de gegevens op te slaan?]]></string>
+    <string name="add_custom_str"><![CDATA[Maak aangepaste velden]]></string>
+    <string name="hint_input_attr_str_key"><![CDATA[Veldnaam]]></string>
+    <string name="hint_input_attr_str_value"><![CDATA[veldwaarde]]></string>
+    <string name="hint_protect_str"><![CDATA[beschermde velden]]></string>
+    <string name="error_attr_str_null"><![CDATA[Veldnaam is leeg]]></string>
+    <string name="del_attr_str"><![CDATA[Aangepast veld verwijderen]]></string>
+    <string name="del_attr_file"><![CDATA[Bijlage verwijderen]]></string>
+    <string name="error_attr_file_too_large"><![CDATA[Voeg geen bestanden toe die groter zijn dan 10M]]></string>
+    <string name="download_file"><![CDATA[Bewaar bijlagen op SD-kaart]]></string>
+    <string name="open_whit_text"><![CDATA[Open met binnentekst]]></string>
+    <string name="open_whit_img"><![CDATA[Openen met interne afbeeldingsviewer]]></string>
+    <string name="open_whit_other"><![CDATA[Opslaan in cache en openen met systeemapp]]></string>
+    <string name="save_file_success"><![CDATA[Opgeslagen bestand [%s]]]></string>
+    <string name="txt_viewer"><![CDATA[bestandsviewer]]></string>
+    <string name="save_db_fail"><![CDATA[Kan database niet opslaan]]></string>
+    <string name="error_pass"><![CDATA[Verkeerd wachtwoord]]></string>
+    <string name="db_pass_no_alter"><![CDATA[Het nieuwe wachtwoord is hetzelfde als het oude wachtwoord]]></string>
+    <string name="hint_db_pass_modify_success"><![CDATA[Gebruik het nieuwe databasewachtwoord om de database de volgende keer te openen]]></string>
+    <string name="hint_db_pass_modify"><![CDATA[Databasewachtwoord is gewijzigd]]></string>
+    <string name="app_feedback"><![CDATA[Geef advies]]></string>
+    <string name="error_db_pass_too_short"><![CDATA[Om de veiligheid van uw gegevens te garanderen, mag de lengte van het databasewachtwoord niet minder dan 6 tekens bedragen.]]></string>
+    <string name="autofill_sign_in_prompt"><![CDATA[Wachtwoord automatisch invullen met KeePassA]]></string>
+    <string name="hint_open_backgroun_start"><![CDATA[U heeft automatisch aanvullen ingeschakeld, maar in speciale systemen zoals MIUI moet KeePassA <b> achtergrondpop-upinterface </b> toestemming geven om de interface te openen om de database te ontgrendelen.]]></string>
+    <string name="hint_background_start"><![CDATA[Klik hieronder op <font color="#FF0000"><b> om </b></font> in te stellen en schakel vervolgens <b> achtergrondpop-upinterface </b> toestemming in voor KeePassA.]]></string>
+    <string name="setting_miui_background_start"><![CDATA[Instellingen >Applicatie-instellingen >Applicatiebeheer >KeePassA >Machtigingenbeheer]]></string>
+    <string name="setting_vivo_background_start"><![CDATA[Instellingen > Meer instellingen > Toestemmingsbeheer->KeePassA > Toestemmingsinstellingen > Achtergrondpop-up]]></string>
+    <string name="no_matching_entry"><![CDATA[Geen overeenkomende vermeldingen]]></string>
+    <string name="hint_save_auto_fill"><![CDATA[Of de pakketnaam [<font color="#FF0000">%1$s</font>] moet worden gekoppeld aan de invoer [<font color="#FF0000">%2$s</font>]]]></string>
+    <string name="relevance_db"><![CDATA[Gekoppelde gegevens]]></string>
+    <string name="modify_time"><![CDATA[wijzigingstijd]]></string>
+    <string name="lose_time"><![CDATA[Vervaltijd]]></string>
+    <string name="update_group_fail"><![CDATA[Kan groepsinformatie niet bijwerken]]></string>
+    <string name="update_group_success"><![CDATA[Groepsinformatie bijgewerkt]]></string>
+    <string name="title"><![CDATA[Titel]]></string>
+    <string name="feedback"><![CDATA[Feedback ^_^]]></string>
+    <string name="submit"><![CDATA[Verzenden]]></string>
+    <string name="send_email_fail"><![CDATA[Begin met het installeren van een app die e-mails kan verzenden]]></string>
+    <string name="feedback_email_msg"><![CDATA[Hallo, mijn naam is KeePassA, heeft u vragen? _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ Merk mobiele telefoon: %1$s Model mobiele telefoon: %2$s Systeemversie: %3$s Resolutie: %4$s Applicatieversie: %5$s]]></string>
+    <string name="mark_not_exit"><![CDATA[App-markt bestaat niet]]></string>
+    <string name="set_open_auto_fill_title"><![CDATA[Autofill-service]]></string>
+    <string name="set_key_praise_value"><![CDATA[Tarief KeePassA]]></string>
+    <string name="other_set"><![CDATA[Overige instellingen]]></string>
+    <string name="open_quick_unlock"><![CDATA[Snel ontgrendelen]]></string>
+    <string name="quick_pass_type_summary"><![CDATA[""]]></string>
+    <string name="clean_clip_time"><![CDATA[Duidelijk klembord]]></string>
+    <string name="clean_clip_time_summary"><![CDATA[Nadat u het wachtwoord hebt gekopieerd, wist u het klembord achter %s]]></string>
+    <string name="auto_lock_db_time"><![CDATA[Database automatisch vergrendelen]]></string>
+    <string name="auto_lock_db_time_summary"><![CDATA[Als er geen bewerking wordt uitgevoerd, wordt de database automatisch vergrendeld na %s minuten.]]></string>
+    <string name="quick_pass_type"><![CDATA[Korte locatie voor het onderscheppen van wachtwoorden]]></string>
+    <string name="des_quick_unlock"><![CDATA[Ontgrendel uw database met een kort wachtwoord]]></string>
+    <string name="error_short_pass_lenght"><![CDATA[Het korte wachtwoord mag niet langer zijn dan 6 tekens.]]></string>
+    <string name="error_short_pass_short"><![CDATA[De lengte van het korte wachtwoord mag niet minder dan 3 tekens bedragen]]></string>
+    <string name="quick_pass_len_title"><![CDATA[Korte wachtwoordlengte]]></string>
+    <string name="quick_pass_len_summary"><![CDATA[Korte wachtwoordlengte: %s]]></string>
+    <string name="set_key_value"><![CDATA[Selecteer taal]]></string>
+    <string name="dropbox_msg"><![CDATA[In overeenstemming met het principe van het respecteren van de privacy van gebruikers, zal KeePassA niet om toestemming vragen voor toegang tot al uw Dropbox-bestanden. KeePassA<font color=#FF0000> heeft alleen toegang tot de map [Application/KeePassA] </font>. <br /> Daarom: <br /> <b> Als u al een KeePass-database heeft, moet u KeePassA eerst autoriseren om toegang te krijgen tot de map [Application/KeePassA] in KeePassA, en de KeePass-database opslaan in de map [Application/KeePassA] nadat de autorisatie is voltooid. voltooid. </b><br/><br /> Als u een nieuwe KeepPass-database aanmaakt, heeft u de bovenstaande bewerking niet nodig. Nadat u de database heeft aangemaakt, zal KeePassA automatisch de corresponderende map aanmaken en de database uploaden naar de map [Application/KeePassA] van Dropbox.]]></string>
+    <string name="cover"><![CDATA[Deksel]]></string>
+    <string name="file_conflict_msg"><![CDATA[Er is een conflict tussen cloudgegevens en lokale gegevens. Selecteer de overschrijfmethode. De conflicterende vermeldingen zijn: \n %s]]></string>
+    <string name="cover_local"><![CDATA[lokaal]]></string>
+    <string name="cover_cloud"><![CDATA[Wolk]]></string>
+    <string name="merge"><![CDATA[samenvoegen]]></string>
+    <string name="sync_db"><![CDATA[Synchroniseer database]]></string>
+    <string name="net_error"><![CDATA[Netwerkafwijking]]></string>
+    <string name="auth"><![CDATA[Autoriseren]]></string>
+    <string name="invalid"><![CDATA[Ongeldig]]></string>
+    <string name="no_file"><![CDATA[geen bestand]]></string>
+    <string name="login"><![CDATA[Inloggen]]></string>
+    <string name="helper_webdav"><![CDATA[Bijvoorbeeld: https://dav.example.org/dav/uw map/xxx.kdbx]]></string>
+    <string name="helper_webdav_dir"><![CDATA[Bijvoorbeeld: https://dav.example.org/dav/[uw map]/]]></string>
+    <string name="hint_webdav_url"><![CDATA[Bestand URL]]></string>
+    <string name="hint_please_input"><![CDATA[Voer %s in]]></string>
+    <string name="db_file_no_exist"><![CDATA[Databasebestand bestaat niet]]></string>
+    <string name="invalid_auth"><![CDATA[Kan niet autoriseren. Probeer het opnieuw.]]></string>
+    <string name="afs"><![CDATA[Android-bestandssysteem]]></string>
+    <string name="hint_kdbx_name"><![CDATA[Verkeerd achtervoegsel, het achtervoegsel moet ".kdbx" zijn]]></string>
+    <string name="start_upload_db"><![CDATA[Begin met het uploaden van de database naar uw netwerkschijf]]></string>
+    <string name="unlocked"><![CDATA[Ontgrendeld]]></string>
+    <string name="notify_channel_db_open"><![CDATA[Melding voor het ontgrendelen van de database]]></string>
+    <string name="notify_quick_unlock_start"><![CDATA[Database is vergrendeld, snelle ontgrendeling is ingeschakeld]]></string>
+    <string name="notify_db_locked"><![CDATA[Database is vergrendeld]]></string>
+    <string name="search"><![CDATA[Zoeken]]></string>
+    <string name="disable"><![CDATA[Sluiten]]></string>
+    <string name="quick_unlock"><![CDATA[Snel ontgrendelen]]></string>
+    <string name="db_unlock"><![CDATA[Ontgrendel de database]]></string>
+    <string name="hint_quick_use_fingerprint"><![CDATA[Gebruik alleen ontgrendeling met vingerafdruk op de snelle ontgrendelingspagina]]></string>
+    <string name="version_log"><![CDATA[Upgradelogboek]]></string>
+    <string name="hint_finger_print_verfiy"><![CDATA[Om nieuwe instellingen te kunnen gebruiken, is herverificatie van vingerafdrukken vereist]]></string>
+    <string name="closed"><![CDATA[Gesloten]]></string>
+    <string name="open1"><![CDATA[inschakelen]]></string>
+    <string name="upload"><![CDATA[uploaden]]></string>
+    <string name="add_attr_file"><![CDATA[Bijlage toevoegen]]></string>
+    <string name="hint_fingerprint_modify"><![CDATA[Er wordt gedetecteerd dat de vingerafdruk is veranderd. Om uw wachtwoord veilig te houden, verzoeken wij u de vingerafdrukontgrendelingsfunctie opnieuw in te stellen.]]></string>
+    <string name="hint_please_open_database"><![CDATA[Open de database]]></string>
+    <string name="save_db_success"><![CDATA[Database opgeslagen]]></string>
+    <string name="set_delete_setting"><![CDATA[Instellingen verwijderen]]></string>
+    <string name="set_delete_no_into_recycle_bin"><![CDATA[Verwijder gegevens definitief uit de database]]></string>
+    <string name="set_delete_no_into_recycle_bin_des"><![CDATA[Verplaats verwijderde items naar de prullenbak]]></string>
+    <string name="warning_rooted"><![CDATA[Voor uw gegevensveiligheid verzoeken wij u de database niet te openen op een geroote telefoon]]></string>
+    <string name="hint_security_green"><![CDATA["Deze applicatie bevindt zich in een beveiligde omgeving"]]></string>
+    <string name="hint_security_red"><![CDATA[Uw apparaat is geroot en de database bevindt zich in een zeer gevaarlijke omgeving]]></string>
+    <string name="hint_security_yellow"><![CDATA[Waarschuwing: de applicatie draait in de simulator, welke omgeving een aantal onvoorspelbare risico\'s voor de database met zich meebrengt]]></string>
+    <string name="donate"><![CDATA[Doneer]]></string>
+    <string name="donate_desc"><![CDATA[[KeePassA](https://github.com/AriaLyy/KeepassA) is gratis software. Overweeg alstublieft om ons een donatie te geven om ons werk te ondersteunen, hartelijk dank.]]></string>
+    <string name="dev_birthday"><![CDATA[Vandaag is de verjaardag van de ontwikkelaar 🎂. Wil je de ontwikkelaar trakteren op een biertje?]]></string>
+    <string name="totp_defaule"><![CDATA[Standaard RFC 6238-tokeninstellingen]]></string>
+    <string name="totp_steam"><![CDATA[Steam-token-instellingen]]></string>
+    <string name="totp_custom"><![CDATA[Gebruik aangepaste instellingen]]></string>
+    <string name="totp_custom_hint"><![CDATA[Aangepaste instellingen]]></string>
+    <string name="totp_Arithmetic"><![CDATA[algoritme:]]></string>
+    <string name="totp_time"><![CDATA[Tijd(en):]]></string>
+    <string name="totp_len"><![CDATA[Lengte:]]></string>
+    <string name="totp_key_error"><![CDATA[Kan TOTP-code niet genereren, sleuteluitzondering]]></string>
+    <string name="sort"><![CDATA[sorteren]]></string>
+    <string name="sort_chart_desc"><![CDATA[Eerste alfabetisch aflopende volgorde (Z-A)]]></string>
+    <string name="sort_chart_asc"><![CDATA[Oplopende alfabetische volgorde (A-Z)]]></string>
+    <string name="sort_time_asc"><![CDATA[tijd oplopend]]></string>
+    <string name="sort_time_desc"><![CDATA[Dalende tijd]]></string>
+    <string name="ime_label"><![CDATA[KeePassA Beveiligingstoetsenbord]]></string>
+    <string name="set_open_kpa_ime_title"><![CDATA[beveiligd toetsenbord]]></string>
+    <string name="no_totp_token"><![CDATA[Geen TOTP-token]]></string>
+    <string name="ime_entry_other_info"><![CDATA[Vul andere velden in]]></string>
+    <string name="url"><![CDATA[URL]]></string>
+    <string name="hint_not_nore_info"><![CDATA[geen informatie meer]]></string>
+    <string name="error_uri_grant_permission"><![CDATA[URI Autorisatie mislukt]]></string>
+    <string name="license"><![CDATA[gratis softwarelicentie]]></string>
+    <string name="move"><![CDATA[bewegen]]></string>
+    <string name="set_key_sum_main_show_entries"><![CDATA[Toon alle vermeldingen na het ontgrendelen van de database]]></string>
+    <string name="set_key_sum_main_show_history"><![CDATA[Toon geschiedenis na het ontgrendelen van de database]]></string>
+    <string name="set_key_title_main_allow_show_entries"><![CDATA[Startpagina]]></string>
+    <string name="set_key_title_opr_env_check"><![CDATA[Voer de instellingen voor omgevingscontrole uit]]></string>
+    <string name="set_key_title_opr_env_check_turn_off"><![CDATA[Sluiten]]></string>
+    <string name="set_key_title_opr_env_check_turn_on"><![CDATA[geopend]]></string>
+    <string name="expand"><![CDATA[Uitbreiden]]></string>
+    <string name="shrink"><![CDATA[dichtbij]]></string>
+    <string name="ui_setting"><![CDATA[Instellingen gebruikersinterface]]></string>
+    <string name="cur_app_not_autofill"><![CDATA[Niet automatisch invullen]]></string>
+    <string name="other"><![CDATA[Anderen]]></string>
+    <string name="ref_entry"><![CDATA[Referentie-items]]></string>
+    <string name="multi_choice"><![CDATA[Meerkeuze]]></string>
+    <string name="set_summary_screen_lock_off"><![CDATA[Vergrendel de database niet]]></string>
+    <string name="set_summary_screen_lock_on"><![CDATA[Database automatisch vergrendelen]]></string>
+    <string name="set_title_screen_lock"><![CDATA[schermvergrendeling]]></string>
+    <string name="close"><![CDATA[Sluiten]]></string>
+    <string name="Alipay"><![CDATA[Alipay]]></string>
+    <string name="error_webdav_end_suffix"><![CDATA[Gebruik mappad. Bijvoorbeeld: "https://example.org/dav/kpa/"]]></string>
+    <string name="error_webdav_end_dav_suffix"><![CDATA[Het pad /dav/ is niet toegestaan. Gebruik een geldig pad, zoals: "https://example.org/dav/kpa/"]]></string>
+    <string name="set_key_title_fillet_bg_icon"><![CDATA[Afgeronde lijstpictogramhoek]]></string>
+    <string name="set_key_title_fillet_bg_icon_turn_on"><![CDATA[inschakelen]]></string>
+    <string name="set_key_title_fillet_bg_icon_turn_off"><![CDATA[Sluiten]]></string>
+    <string name="set_key_title_show_state_bar"><![CDATA[statusbalk]]></string>
+    <string name="set_key_title_show_state_bar_turn_on"><![CDATA[tonen]]></string>
+    <string name="set_key_title_show_state_bar_turn_off"><![CDATA[verbergen]]></string>
+    <string name="set_key_title_close_load_anim"><![CDATA[animatie laden]]></string>
+    <string name="set_key_title_close_load_anim_turn_on"><![CDATA[geopend]]></string>
+    <string name="set_key_title_close_load_anim_turn_off"><![CDATA[Sluiten]]></string>
+    <string name="s_default"><![CDATA[Standaard]]></string>
+    <string name="customize"><![CDATA[Pas aan]]></string>
+    <string name="set_key_title_auto_lock_database"><![CDATA[Database automatisch vergrendelen]]></string>
+    <string name="set_key_title_auto_lock_database_turn_on"><![CDATA[Ja]]></string>
+    <string name="set_key_title_auto_lock_database_turn_off"><![CDATA[Sluiten]]></string>
+    <string name="get_token_fail"><![CDATA[Kan Token niet verkrijgen]]></string>
+    <string name="one_drive_init_failure"><![CDATA[OneDrive-initialisatie is mislukt]]></string>
+    <string name="one_drive_hint"><![CDATA[Om uw privacy te beschermen heeft KeePassA alleen toegang tot de map <font color=#FF0000> [Applicatie/KeepassA] </font>. Als u de Keepass-database van OneDrive, <font color=#FF0000> wilt lezen, slaat u de database in deze map op. </font>]]></string>
+    <string name="open_permissions"><![CDATA[Rechten openen]]></string>
+    <string name="miui_permissions"><![CDATA[miui Het systeem moet de toestemming van de pop-upinterface op de achtergrond openen om de functie voor automatisch aanvullen te kunnen gebruiken.]]></string>
+    <string name="set_key_main_show_totp_tab_title"><![CDATA[De startpagina toont de categorie TOTP]]></string>
+    <string name="set_key_main_show_totp_tab_on"><![CDATA[TOTP-categorieën weergeven]]></string>
+    <string name="set_key_main_show_totp_tab_off"><![CDATA[Categorie TOTP niet weergeven]]></string>
+    <string name="set_key_theme_style_title"><![CDATA[thema stijl]]></string>
+    <string name="set_key_theme_style_summary"><![CDATA[Volg het systeem]]></string>
+    <string name="open_setting"><![CDATA[Instellingen openen]]></string>
+    <string-array name="sek_ley_theme_style_entries">
+        <item><![CDATA[Volg het systeem]]></item>
+        <item><![CDATA[donkere modus]]></item>
+        <item><![CDATA[lichte modus]]></item>
+    </string-array>
+    <string name="error_keystore"><![CDATA[Keystore-uitzondering. Probeer het opnieuw]]></string>
+    <string name="kpa_totp"><![CDATA[teken]]></string>
+    <string name="kpa_copy"><![CDATA[Kopieer]]></string>
+    <string name="translate_language"><![CDATA[Vertaal de app naar uw taal]]></string>
+    <string name="error_qr_code_str"><![CDATA[De QR-code is abnormaal. Bevestig dat de QR-code een QR-code is die wordt ondersteund door Google Authenticator.]]></string>
+    <string name="google_play"><![CDATA[Google Play Store]]></string>
+    <string name="disposable"><![CDATA[Wegwerpbaar]]></string>
+    <string name="year"><![CDATA[elk jaar]]></string>
+    <string name="error_donate"><![CDATA[Donatie mislukt]]></string>
+    <string name="thank_donate"><![CDATA[Bedankt voor uw donatie.]]></string>
+    <string name="error_connect_play"><![CDATA[Kan geen verbinding maken met Google-services]]></string>
+    <string name="monthly"><![CDATA[maandelijks]]></string>
+    <string name="my_collection"><![CDATA[mijn collectie]]></string>
+    <string name="current_collection_num"><![CDATA[%1$s-collecties]]></string>
+    <string name="no_collection"><![CDATA[Geen favorieten]]></string>
+    <string name="error_open_db_webdav"><![CDATA[De database kan niet worden geopend omdat het WebDAV-bestand niet bestaat.]]></string>
+    <string name="helper_webdav_service"><![CDATA[Kies WebDAV-service]]></string>
+    <string name="error_is_root"><![CDATA[Al de hoofdmap]]></string>
+    <string name="select_cur_path"><![CDATA[Selecteer huidige map]]></string>
+    <string name="hint_cloud_file_already_exist"><![CDATA[%1$s bestaat al. Wilt u het bestand overschrijven?]]></string>
+    <string name="select_save_path"><![CDATA[Selecteer opslagpad]]></string>
+    <string name="one_drive_load_user_failure"><![CDATA[Kan gebruikersinformatie niet laden.]]></string>
+    <string name="hint_open_background_start"><![CDATA[Schakel de pop-uptoestemming op de achtergrond in, anders kan de functie voor automatisch aanvullen niet worden gebruikt]]></string>
+    <string name="hostname"><![CDATA[hostnaam]]></string>
+    <string name="port"><![CDATA[haven]]></string>
+    <string name="webdav_host_name_hint"><![CDATA[Voer uw hostnaam in]]></string>
+    <string name="webdav_port_hint"><![CDATA[haven]]></string>
+    <string name="webdav_port_name_null"><![CDATA[Hostnaam mag niet leeg zijn]]></string>
+    <string name="privacy_agreement"><![CDATA[privacy overeenkomst]]></string>
+    <string name="ime_hint_open_auto_fill"><![CDATA[Schakel de service voor automatisch aanvullen in]]></string>
+    <string name="please_open_proxy"><![CDATA[Om bekende netwerkredenen dient u de juiste netwerktools te gebruiken om de onedrive-services soepel te kunnen gebruiken]]></string>
+    <string name="invalid_img"><![CDATA[Ongeldige afbeelding]]></string>
+    <string name="preemptive"><![CDATA[Vooraf ingestelde modus]]></string>
+    <string name="fail_unsupported_Systems_O"><![CDATA[Ondersteunt alleen systemen met P en hoger]]></string>
+    <string name="hint_webdav_jgy"><![CDATA[Gebruik het wachtwoord in [Accountinformatie->Beveiligingsopties->Toepassingen van derden]]]></string>
+    <string name="app_debug"><![CDATA[Logbestand verwijderen]]></string>
+    <string name="hint_auto_fill_save"><![CDATA[Actuele gegevens koppelen aan bestaande gegevens?]]></string>
+    <string name="hint_dont_show_tips"><![CDATA[Niet meer laten zien]]></string>
+    <string name="title_tip_of_day"><![CDATA[dagelijkse tips]]></string>
+    <string name="base_info"><![CDATA[Basisinformatie]]></string>
+    <string name="tag"><![CDATA[etiket]]></string>
+    <string name="collection"><![CDATA[Collectie]]></string>
+    <string name="add_attr_str"><![CDATA[Voeg attributen toe]]></string>
+    <string name="delete"><![CDATA[Verwijderen]]></string>
+    <string name="create_tag"><![CDATA[Maak tags]]></string>
+    <string name="tag_name"><![CDATA[Tagnaam]]></string>
+    <string name="add_tag"><![CDATA[Label toevoegen]]></string>
+    <string name="open_file"><![CDATA[bestand openen]]></string>
+    <string name="modify_str_attr"><![CDATA[Eigenschappen wijzigen]]></string>
+    <string name="error_file"><![CDATA[Het bestand is abnormaal. Verwijder het volgende: <font color=#FF0000>%s</font>]]></string>
+    <string name="not_souper_otp"><![CDATA[Niet-ondersteund TOTP]]></string>
+    <string name="modify_totp"><![CDATA[token wijzigen]]></string>
+    <string name="error_totp"><![CDATA[Verkeerde totp]]></string>
+    <string name="file_save_success"><![CDATA[Bijlage succesvol opgeslagen]]></string>
+    <string name="options"><![CDATA[Opties]]></string>
+    <string name="review_title"><![CDATA[Commentaar]]></string>
+    <string name="review_enter"><![CDATA[Reactie starten]]></string>
+    <string name="review_cancel"><![CDATA[Deze keer niet]]></string>
+    <string name="review_fail"><![CDATA[Verzending mislukt. Controleer het netwerk]]></string>
+    <string name="review_not_hint"><![CDATA[Vraag niet opnieuw]]></string>
+    <string name="review_like_app"><![CDATA[Vind je onze app leuk? Beoordeel ons alstublieft!]]></string>
+    <string name="hint_notify_permission"><![CDATA[KeepassA vereist meldingsrechten om de databasestatus te melden.]]></string>
+    <string name="title_choose_icon"><![CDATA[Selecteer pictogram]]></string>
+    <string name="icon_select_pick"><![CDATA[Fotoalbum openen]]></string>
+    <string name="icon_select_db"><![CDATA[lokaal icoon]]></string>
+    <string name="icon_change"><![CDATA[Pictogram wijzigen]]></string>
+    <string name="entry_not_found"><![CDATA[Geen vermelding gevonden]]></string>
 </resources>

@@ -29,7 +29,6 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
-import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KLog
 import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.LanguageUtil
@@ -246,7 +245,6 @@ class AutoFillService : AutofillService() {
         )
       )
     )
-    HitUtil.toaskLong(getString(R.string.save_db_success))
   }
 
   override fun onConnected() {

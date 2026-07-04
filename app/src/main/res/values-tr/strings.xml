@@ -1,390 +1,455 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hint_enter_password">Parolayı onayla</string>
-    <string name="encrypt_type">Şifreleme</string>
-    <string name="encrypt_type_1">Yalnızca parola</string>
-    <string name="encrypt_type_2">Parola + anahtar</string>
-    <string name="choose_pass_key">Anahtar seç</string>
-    <string name="hint_set_pass_key">Lütfen bir anahtar seçin</string>
-    <string name="db">Veri tabanı</string>
-    <string name="password">Parola</string>
-    <string name="key">Gizli anahtar</string>
-    <string name="key1">Gizli anahtar: %s</string>
-    <string name="open">Kilidi aç</string>
-    <string name="helper_create_pass">Karışık parola tavsiye edilir (büyük ve küçük harf + sayılar + semboller)</string>
-    <string name="open_db">Veri tabanını aç</string>
-    <string name="db_name">Veri tabanı adını girin</string>
-    <string name="create_db">Veri tabanı oluştur</string>
-    <string name="next">Sonraki adım</string>
-    <string name="up">Önceki</string>
-    <string name="hint_set_password">Parola ayarla</string>
-    <string name="help_create_db">Öntanımlı olarak v4 KeePass veri tabanı oluştur</string>
-    <string name="help_create_group">16 veya daha az karakterden oluşan bir grup adı seçin</string>
-    <string name="hint_input_password">6-16 basamaklı bir parola girin</string>
-    <string name="pass_key">Dosya anahtarı</string>
-    <string name="hint_select_db_path">Veri kaydetme yöntemini ayarlamak için tıklayın</string>
-    <string name="hint_select_path_type">Veri tabanınızı nereye kaydedeceğinizi seçin</string>
-    <string name="error_db_name_null">Lütfen bir veri tabanı adı girin</string>
-    <string name="done">Tamam</string>
-    <string name="enter">Kaydet</string>
-    <string name="cancel">İptal</string>
-    <string name="hint">İleti</string>
-    <string name="help_create_db_path">Dropbox ve WebDAV gibi bulut yollarını kullanmanız tavsiye edilir. Bu veri tabanınızı bulutla otomatik olarak eşzamanlayarak veri tabanını diğer aygıtlarda kullanmayı kolaylaştırır.
-\n Veri tabanı AES-256 kullanılarak şifrelenir. Parolanız olmadan kimse veri tabanınızı açamaz.</string>
-    <string name="help_pass_type">Yalnızca parola kullan:
-\n Veri tabanını açmak için yalnızca parolanız gereklidir；
-\n Parola + anahtar:
-\n Veri tabanını açmak için bir parola girmeniz ve bir anahtar dosyası seçmeniz gerekir.</string>
-    <string name="dropbox_msg">Kullanıcı gizliliğine saygı ilkesini benimseyen KeePassA, Dropbox\'ınızdaki tüm dosyalar için izin istemeyecektir, KeePassA &lt;font color u003d # FF0000&gt; yalnızca 【Apps/KeePassA】 klasörüne erişir&lt;/ font &gt;.&lt;br /&gt;Bu nedenle: &lt;br /&gt; &lt;b&gt;Zaten bir KeePass veri tabanınız varsa, KeePassA\'daki 【Apps/KeePassA】 klasörüne KeePassA erişimi verin ve yetkilendirme tamamlandıktan sonra KeePass veri tabanını 【Application/KeePassA】 klasörüne kaydedin.&lt;/b&gt;&lt;br /&gt;&lt;br /&gt; Yeni bir KeePass veri tabanı oluşturuyorsanız yukarıdaki işlemlere gerek yoktur. Veri tabanını oluşturduktan sonra, KeePassA ilgili klasörü otomatik olarak oluşturur ve veri tabanını Dropbox\'ın 【Apps/KeePassA】 dizinine yükler.</string>
-    <string name="hint_security_red">Aygıtınız root yapılmış ve veri tabanı çok tehlikeli bir ortamda</string>
-    <string name="set_delete_no_into_recycle_bin">Veri tabanından girdileri kalıcı olarak sil</string>
-    <string name="helper_webdav">örneğin: https://dav.example.org/dav/[klasörünüz]/xxx.kdbx</string>
-    <string name="helper_webdav_dir">örneğin: https://dav.example.org/dav/[klasörünüz]/</string>
-    <string name="hint_please_input">Lütfen %s girin</string>
-    <string name="db_file_no_exist">Veri tabanı dosyası mevcut değil</string>
-    <string name="invalid_auth">Yetkilendirilemedi. Lütfen tekrar deneyin.</string>
-    <string name="hint_kdbx_name">Yanlış son ek adı, son ek adı .kdbx olmalıdır</string>
-    <string name="afs">Android dosya sistemi</string>
-    <string name="start_upload_db">Veri tabanını ağ diskinize yüklemeye başlayın</string>
-    <string name="notify_channel_db_open">Veri tabanı kilit açma bildirimi</string>
-    <string name="hint_quick_use_fingerprint">Hızlı kilit açma sayfasında kilidi açmak için yalnızca parmak izi kullan</string>
-    <string name="unlocked">Kilidi açıldı</string>
-    <string name="notify_quick_unlock_start">Veri tabanı kilitlendi, hızlı kilit açma etkin</string>
-    <string name="notify_db_locked">Veri tabanı kilitlendi</string>
-    <string name="search">Ara</string>
-    <string name="open1">Aç</string>
-    <string name="disable">Devre dışı bırak</string>
-    <string name="quick_unlock">Hızlı kilit açma</string>
-    <string name="db_unlock">Veri tabanının kilidini aç</string>
-    <string name="upload">Karşıya yükle</string>
-    <string name="add_attr_file">Ek ekle</string>
-    <string name="set_delete_setting">Silme ayarları</string>
-    <string name="warning_rooted">Veri tabanınızı güvende tutmak için onu root yapılmış bir telefonda açmayın</string>
-    <string name="hint_please_open_database">Lütfen veri tabanını açın</string>
-    <string name="set_delete_no_into_recycle_bin_des">Silinen ögeleri çöp kutusuna taşı</string>
-    <string name="donate_desc">[KeePassA](https://github.com/AriaLyy/KeepassA) özgür yazılımdır. Çalışmalarımızı desteklemek için bağış yapın, teşekkürler.</string>
-    <string name="dev_birthday">Bugün geliştiricinin doğum günü🎂. Geliştiriciye bir bira ısmarlamak ister misiniz?</string>
-    <string name="totp_defaule">Öntanımlı RFC 6238 belirteç ayarları</string>
-    <string name="totp_steam">Steam belirteci ayarları</string>
-    <string name="hint_security_yellow">Uyarı! Simülatörde çalışmasına göre bu ortam, veri tabanına bazı öngörülemeyen riskler getirecektir</string>
-    <string name="donate">Bağış yap</string>
-    <string name="totp_custom">Özel ayarları kullan</string>
-    <string name="totp_custom_hint">Özel ayarlar</string>
-    <string name="totp_key_error">TOTP kodu oluşturulamadı, normal olmayan anahtar</string>
-    <string name="sort_chart_desc">İlk harf azalan (Z-A)</string>
-    <string name="hint_security_green">"Uygulama güvenli bir ortamda "</string>
-    <string name="set_open_kpa_ime_title">Güvenlik klavyesi</string>
-    <string name="set_key_title_opr_env_check_turn_on">Açık</string>
-    <string name="totp_Arithmetic">Aritmetik:</string>
-    <string name="no_totp_token">TOTP belirteci yok</string>
-    <string name="ime_label">KeePassA güvenlik klavyesi</string>
-    <string name="license">Özgür yazılım lisansı</string>
-    <string name="set_key_sum_main_show_entries">Veri tabanının kilidini açtıktan sonra tüm ögeleri göster</string>
-    <string name="set_key_sum_main_show_history">Veri tabanının kilidini açtıktan sonra geçmişi göster</string>
-    <string name="set_key_title_main_allow_show_entries">Ana sayfa</string>
-    <string name="set_key_title_opr_env_check">Çalışma ortamı denetimi</string>
-    <string name="cur_app_not_autofill">Otomatik doldurma yok</string>
-    <string name="multi_choice">Çoktan seçmeli</string>
-    <string name="set_summary_screen_lock_off">Veri tabanını kilitlemez</string>
-    <string name="set_key_main_show_totp_tab_on">TOTP kategorisini görüntüle</string>
-    <string name="set_key_main_show_totp_tab_off">TOTP kategorisini görüntüleme</string>
-    <string name="s_default">Öntanımlı</string>
-    <string name="set_key_title_close_load_anim_turn_off">Kapalı</string>
-    <string name="customize">Özelleştir</string>
-    <string name="set_key_title_auto_lock_database">Veri tabanını otomatik kilitle</string>
-    <string name="set_key_title_auto_lock_database_turn_on">Evet</string>
-    <string name="set_key_title_auto_lock_database_turn_off">Hayır</string>
-    <string name="translate_language">Uygulamayı dilinize çevirin</string>
-    <string name="get_token_fail">Belirteç alınamadı</string>
-    <string name="one_drive_init_failure">OneDrive başlatma hatası</string>
-    <string name="set_key_main_show_totp_tab_title">Ana sayfa TOTP kategorisini gösterir</string>
-    <string name="numer">Rakam</string>
-    <string name="space">Boşluk</string>
-    <string name="special">Özel</string>
-    <string name="bracket">Parantez</string>
-    <string name="time">Saat</string>
-    <string name="choose_dir">Geçerli gruba kaydet</string>
-    <string name="create_entry_no_save">Girdiyi kaydetmeden geçerli sayfadan çıkılsın mı\?</string>
-    <string name="add_custom_str">Özel alanlar oluştur</string>
-    <string name="hint_db_pass_modify_success">Veri tabanını bir dahaki sefere açmak için yeni veri tabanı parolasını kullanın</string>
-    <string name="hint_db_pass_modify">Veri tabanı parolası değiştirildi</string>
-    <string name="app_feedback">Geri bildirim</string>
-    <string name="error_db_pass_too_short">Verilerinizi korumak için veri tabanı parolasını 6 karakterden uzun yapın</string>
-    <string name="autofill_sign_in_prompt">Parolayı KeePassA ile otomatik doldur</string>
-    <string name="hint_webdav_url">Dosya URL\'si</string>
-    <string name="version_log">Yükseltme günlüğü</string>
-    <string name="hint_finger_print_verfiy">Yeni ayarları kullanmak için parmak izlerinizi yeniden doğrulayın</string>
-    <string name="closed">Kapalı</string>
-    <string name="hint_fingerprint_modify">Parola güvenliğiniz için parmak izinin değiştiğini gözden geçirin, lütfen parmak izi kilit açma işlevini sıfırlayın</string>
-    <string name="set_key_title_close_load_anim">Yükleme animasyonu</string>
-    <string name="set_key_title_close_load_anim_turn_on">Açık</string>
-    <string name="help_pass_key">Anahtar dosyası, verileri açmak için bir anahtar gibi düşünülebilir ve genellikle bir paroladan çok daha karmaşık ve güvenilirdir. Ama aynı zamanda gizlemek daha zordur. Veri tabanını bulutta tutuyorsanız, anahtarı veri tabanıyla birlikte oraya koymayın.
-\n Veri tabanını açmak için herhangi bir dosyayı anahtar olarak seçebilirsiniz: bir fotoğraf veya metin dosyası gibi.
-\n⚠️ Not: Bu fotoğraf veya metin belgesi değiştirilirse veri tabanını açamayacaksınız! !!
-\n Anahtar olarak salt okunur dosyaları kullanmanız önemle tavsiye edilir.</string>
-    <string name="error_open_db_signature_error">Geçersiz veri tabanı imzası</string>
-    <string name="hint_del_group">【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】 grubu gerçekten silinsin mi\?&lt;br&gt;Bu, onu daha sonra geri yükleyebileceğiniz çöp kutusuna taşır.</string>
-    <string name="hint_del_entry">【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】 ögesi gerçekten silinsin mi\? &lt;br&gt;Bu, onu daha sonra geri yükleyebileceğiniz çöp kutusuna taşır.</string>
-    <string name="verify_finger">Parmak izi doğrulama</string>
-    <string name="hint_pass_null">Parola boş</string>
-    <string name="need_key">Bir anahtara mı ihtiyacınız var\?</string>
-    <string name="error_open_db_key_empty">Anahtar eksik</string>
-    <string name="error_open_db_arcfour_error">Geçersiz akış şifreleme algoritması</string>
-    <string name="copy_password">Parolayı kopyala</string>
-    <string name="modify_db_name">Veri tabanı adını değiştir</string>
-    <string name="pass_generater">Parola oluşturucu</string>
-    <string name="error_genera_params">Lütfen en az bir parola oluşturma türü seçin</string>
-    <string name="txt_viewer">Dosya görüntüleyici</string>
-    <string name="error_pass">Parola hatası</string>
-    <string name="error_uri">URI hatası</string>
-    <string name="error_open_db_key_invalid">Geçersiz anahtar</string>
-    <string name="hint_del_group_no_recycle">【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】 grubu gerçekten silinsin mi\?</string>
-    <string name="create_totp">OTP belirteci oluştur</string>
-    <string name="out_db">Veri tabanını dışa aktar</string>
-    <string name="db_name_no_alter">Veri tabanı adı değişmedi</string>
-    <string name="len">Uzunluk</string>
-    <string name="underline">Alt çizgi</string>
-    <string name="date">Tarih</string>
-    <string name="add_more">Daha fazla ekle</string>
-    <string name="hint_protect_str">Korumalı alan</string>
-    <string name="del_attr_str">Özel alanları sil</string>
-    <string name="open_whit_other">Önbelleğe kaydet ve sistem uygulamasıyla aç</string>
-    <string name="save_db_success">Veri tabanı kaydedildi</string>
-    <string name="hint_full_fingerprint">Parmak izi, hızlı kilit açma arayüzünde ve veri tabanı kilidi açma arayüzünde veri tabanının kilidini açmak için kullanılır; KeePassA, veri tabanı ana parolanızı ve anahtar bilgilerinizi şifreler ve Android sisteminin yerel anahtar deposunda saklar ve koruma için parmak izi yetkilendirmesini kullanır. Yalnızca parmak iziniz veri tabanının kilidini açabilir.</string>
-    <string name="upper">Büyük harf</string>
-    <string name="lower">Küçük harf</string>
-    <string name="minus">Eksi</string>
-    <string name="normal_account">Normal hesap</string>
-    <string name="warning">Uyarı</string>
-    <string name="hint_input_attr_str_key">Alan adı</string>
-    <string name="error_attr_str_null">Alan adı boş</string>
-    <string name="error_attr_file_too_large">10 MB\'den büyük dosyalar eklemeyerek bellek kullanımını azaltın</string>
-    <string name="download_file">Eki SD karta kaydet</string>
-    <string name="db_pass_no_alter">Yeni parola eskisiyle aynı</string>
-    <string name="hint_input_attr_str_value">Alan değeri</string>
-    <string name="del_attr_file">Eki sil</string>
-    <string name="open_whit_text">Dahili metin düzenleyiciyle aç</string>
-    <string name="save_file_success">[%s] dosyası kaydedildi</string>
-    <string name="open_whit_img">Dahili resim görüntüleyiciyle aç</string>
-    <string name="save_db_fail">Veri tabanı kaydedilemedi</string>
-    <string name="update_group_success">Grup bilgileri güncellendi</string>
-    <string name="title">Başlık</string>
-    <string name="feedback">Geri bildirim ^_^</string>
-    <string name="send_email_fail">Önce e-posta göndermek için bir uygulama kurun</string>
-    <string name="hint_background_start">&lt;font color=#FF0000&gt;【%s】&lt;/font&gt; seçeneğine gidin ve otomatik doldurma hizmetinden daha iyi yararlanmak için arka planda açılır pencere izinleri verin.&lt;br&gt; &lt;font color=#FF0000&gt;KeePassA, otomatik doldurma işlevini kullandığınızda veri tabanını açmak için ilgili arayüzü gösterir&lt;/font&gt;</string>
-    <string name="setting_miui_background_start">Ayarlar &gt; Uygulama Ayarları &gt; Uygulama Yönetimi &gt; KeePassA &gt; İzin Yönetimi</string>
-    <string name="feedback_email_msg">Merhaba, ben KeePassA, sorunuz var mı\?<br/> <br/> <br/> _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/> Marka: %s <br/> Model: %s <br/> Sistem sürümü:%s <br/> Çözünürlük: %s <br/> Uygulama sürümü: %s</string>
-    <string name="db1">veri tabanı\t|\t&lt;font color=#757575&gt;%s&lt;/font&gt;</string>
-    <string name="choose_file">Bir dosya seçin</string>
-    <string name="choose_pass_key_file_des">Anahtarınız olarak kullanmak için herhangi bir dosya seçin</string>
-    <string name="create_file">Yeni dosya oluştur</string>
-    <string name="create_pass_key_file_des">Anahtarınız olarak kullanmak için yeni bir dosya oluşturun</string>
-    <string name="create_pass_key_success">Anahtar oluşturma [%s] başarılı oldu</string>
-    <string name="error_pass_null">Lütfen bir veri tabanı parolası ayarlayın</string>
-    <string name="error_enter_pass_null">Lütfen onay parolasını girin</string>
-    <string name="error_pass_unfit">İki kez tutarsız parola</string>
-    <string name="hint_db_create_success">Veri tabanı [%s] oluşturuldu</string>
-    <string name="history">Geçmiş</string>
-    <string name="history_record">Geçmiş kaydı</string>
-    <string name="edit">Düzenle</string>
-    <string name="change_db">Veri tabanı değiştir</string>
-    <string name="all">Ögeler</string>
-    <string name="setting">Ayarlar</string>
-    <string name="db_setting">Veri tabanı ayarları</string>
-    <string name="app_setting">Uygulama ayarları</string>
-    <string name="welcome">Hoş geldiniz</string>
-    <string name="help_input_db_pass">Veri tabanı parolasını girin</string>
-    <string name="error_input_pass_null">Lütfen veri tabanı parolasını girin</string>
-    <string name="error_open_db">Veri tabanı açılamadı. Parola mı yanlış, yoksa bir anahtar mı gerekli\?</string>
-    <string name="error_open_db_pass_error">Geçersiz parola</string>
-    <string name="error_open_db_version_error">Geçersiz veri tabanı sürümü</string>
-    <string name="error_open_db_algorithm_error">Geçersiz algoritma</string>
-    <string name="hint_group_desc">Grup-%s ögeleri</string>
-    <string name="error_group_id_null">grup kimliğinin değeri yok</string>
-    <string name="error_entry_id_null">girdi kimliğinin değeri yok</string>
-    <string name="create_time">%s tarihinde oluşturuldu</string>
-    <string name="expire_time">%s tarihinde sona eriyor</string>
-    <string name="hint_attr">Gelişmiş özellikler</string>
-    <string name="attachment">Ek</string>
-    <string name="hint_ex_property">Ek özellikler</string>
-    <string name="expire">&lt;font color=#FF0000&gt;%s&lt;/font&gt; tarihinde süresi doldu</string>
-    <string name="del_group">Grubu sil</string>
-    <string name="edit_group">Grubu düzenle</string>
-    <string name="success">Başarılı</string>
-    <string name="fail">Başarısız</string>
-    <string name="del_entry">Ögeyi sil</string>
-    <string name="del_history">Geçmiş kaydını sil</string>
-    <string name="copy_user_name">Kullanıcı adını kopyala</string>
-    <string name="copy_totp">TOTP belirtecini kopyala</string>
-    <string name="save">Kaydet</string>
-    <string name="hint_del_entry_no_recycle">【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】girdisi gerçekten kalıcı olarak silinsin mi\?</string>
-    <string name="group_name">Grup adı</string>
-    <string name="create_group">Grup oluştur</string>
-    <string name="error_group_name_null">Grup adı boş</string>
-    <string name="create_group_fail">Grup oluşturulamadı</string>
-    <string name="create_group_success">Grup oluşturuldu</string>
-    <string name="modify_group">Grubu düzenle</string>
-    <string name="error_group_no_modify">Grup değişikliği yok</string>
-    <string name="title_too_long">Grup adı çok uzun</string>
-    <string name="choose_icon">Simge seç</string>
-    <string name="undo_entry">Devam ettirildi…</string>
-    <string name="undo_to">Bu gruba taşı</string>
-    <string name="undo_grouped">Grup belirtilen konuma taşındı</string>
-    <string name="undo_entryed">Öge belirtilen konuma taşındı</string>
-    <string name="hint_copy_user">Kullanıcı adı panoya kopyalandı</string>
-    <string name="hint_copy_pass">Parola panoya kopyalandı</string>
-    <string name="hint_copy_totp">TOTP belirteci panoya kopyalandı</string>
-    <string name="safety_set">Güvenlik Ayarları</string>
-    <string name="fingerprint_unlock">Parmak iziyle kilit açma</string>
-    <string name="db_handle">Veri tabanı işlemleri</string>
-    <string name="modify_db_pass">Veri tabanı parolasını değiştir</string>
-    <string name="db_name_modify">Veri tabanı adı değiştirildi</string>
-    <string name="no_record">Kayıt yok</string>
-    <string name="hint_query">Kullanıcı adı, başlık, URL, gelişmiş özellikler…</string>
-    <string name="copy_to_clip">Panoya kopyala</string>
-    <string name="show_pass">Parolayı göster</string>
-    <string name="ope_url">Bağlantıyı aç</string>
-    <string name="hide_pass">Parolayı gizle</string>
-    <string name="hint_copy_to_clip">Veriler panoya kopyalandı</string>
-    <string name="verify_finger_fail">Parmak izi doğrulanamadı</string>
-    <string name="ban_fingerprint">Parmak iziyle kilit açma yok</string>
-    <string name="quick_use_fingerprint">Hızlı kilit açma arayüzünde kilidi açmak için yalnızca parmak izi kullan</string>
-    <string name="use_full_fingerprint">Tam parmak iziyle kilit açma</string>
-    <string name="hint_quick_unlock">Veri tabanı parolanızın son %s basamağını girin</string>
-    <string name="hint_input_title">Başlık</string>
-    <string name="hint_input_user_name">Kullanıcı adı</string>
-    <string name="hint_input_url">Bağlantı adresi</string>
-    <string name="notice">Not</string>
-    <string name="hint_input_tag">Etiket1, Etiket2</string>
-    <string name="hint_input_cover_url">Bağlantının üzerine yaz</string>
-    <string name="create_entry">Girdi oluştur</string>
-    <string name="quick_pass_type">Kısa parola yakalama konumu</string>
-    <string name="des_quick_unlock">Veri tabanınızın kilidini kısa bir parolayla açın</string>
-    <string name="error_short_pass_lenght">Kısa parolanızı 6 veya daha az karakterden oluşacak şekilde yapın</string>
-    <string name="error_short_pass_short">Kısa parolanızı 3 veya daha fazla karakterden oluşacak şekilde yapın</string>
-    <string name="quick_pass_len_title">Kısa parola uzunluğu</string>
-    <string name="quick_pass_len_summary">Kısa parola uzunluğu: %s</string>
-    <string name="set_key_value">Dil seçin</string>
-    <string name="file_conflict_msg">Bulut verileri ve yerel veriler arasında çakışma var, lütfen çözüm yöntemini seçin. Çakışan girdiler şunlar:
-\n %s</string>
-    <string name="merge">Birleştir</string>
-    <string name="sync_db">Eşzamanlı veri tabanı</string>
-    <string name="net_error">Ağ normal değil</string>
-    <string name="cover_local">Yerel</string>
-    <string name="cover_cloud">Bulut</string>
-    <string name="invalid">Geçersiz</string>
-    <string name="no_file">Dosya yok</string>
-    <string name="login">Oturum aç</string>
-    <string name="cover">Çözüm</string>
-    <string name="auth">Yetki</string>
-    <string name="setting_vivo_background_start">Ayarlar &gt; Diğer Ayarlar &gt; İzin Yönetimi &gt; KeePassA &gt; İzin Ayarları &gt; Arka Planda Açılır Pencere</string>
-    <string name="no_matching_entry">Eşleşen öge yok</string>
-    <string name="hint_save_auto_fill">【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】paket adının【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】 girdisiyle ilişkilendirilip ilişkilendirilmeyeceği</string>
-    <string name="relevance_db">Bağlantılı veriler</string>
-    <string name="modify_time">Değiştirme zamanı</string>
-    <string name="lose_time">Süresi dolma zamanı</string>
-    <string name="update_group_fail">Grup bilgileri güncellenemedi</string>
-    <string name="submit">Gönder</string>
-    <string name="mark_not_exit">Uygulama mağazası yok</string>
-    <string name="set_open_auto_fill_title">Otomatik doldurma hizmeti</string>
-    <string name="set_key_praise_value">KeePassA\'yı değerlendirin</string>
-    <string name="other_set">Diğer ayarlar</string>
-    <string name="open_quick_unlock">Hızlı Kilit Açma</string>
-    <string name="clean_clip_time">Panoyu Temizle</string>
-    <string name="clean_clip_time_summary">Parolayı kopyalamanın ardından, %s sonra panoyu temizle</string>
-    <string name="auto_lock_db_time">Veri tabanını otomatik kilitle</string>
-    <string name="auto_lock_db_time_summary">Hiçbir işlem yapılmazsa %s sonra veri tabanını otomatik olarak kilitle</string>
-    <string name="totp_time">Zaman(lar):</string>
-    <string name="totp_len">Uzunluk:</string>
-    <string name="sort">Sırala</string>
-    <string name="sort_chart_asc">İlk harf artan (A-Z)</string>
-    <string name="sort_time_asc">Zaman (ilk - son)</string>
-    <string name="sort_time_desc">Zaman (son - ilk)</string>
-    <string name="ime_entry_other_info">Diğer alanları doldurun</string>
-    <string name="url">URL</string>
-    <string name="hint_not_nore_info">Daha fazla bilgi yok</string>
-    <string name="error_uri_grant_permission">URI yetkilendirmesi başarısız oldu</string>
-    <string name="move">Taşı</string>
-    <string name="expand">Genişlet</string>
-    <string name="shrink">Küçült</string>
-    <string name="ui_setting">Kullanıcı Arayüzü Ayarı</string>
-    <string name="set_key_title_opr_env_check_turn_off">Kapalı</string>
-    <string name="other">Diğer</string>
-    <string name="ref_entry">Referans girdi</string>
-    <string name="set_summary_screen_lock_on">Veri tabanını otomatik kilitler</string>
-    <string name="set_title_screen_lock">Ekran kilidi</string>
-    <string name="close">Kapat</string>
-    <string name="Alipay">Alipay</string>
-    <string name="error_webdav_end_suffix">Klasör yolunu kullanın. Örneğin: \"https://example.org/dav/kpa/\"</string>
-    <string name="error_webdav_end_dav_suffix">/dav/ yoluna izin verilmiyor. Geçerli bir yol kullanın, örneğin: \"https://example.org/dav/kpa/\"</string>
-    <string name="set_key_title_fillet_bg_icon">Yuvarlak liste simgesi köşeleri</string>
-    <string name="set_key_title_fillet_bg_icon_turn_on">Açık</string>
-    <string name="set_key_title_fillet_bg_icon_turn_off">Kapalı</string>
-    <string name="set_key_title_show_state_bar">Durum çubuğu</string>
-    <string name="set_key_title_show_state_bar_turn_on">Göster</string>
-    <string name="set_key_title_show_state_bar_turn_off">Gizle</string>
-    <string name="one_drive_hint">Gizliliğinizi korumak için KeePassA yalnızca &lt;font color=#FF0000&gt;【application/KeepassA】&lt;/font&gt;dizinine erişecektir. OneDrive\'ın Keepass veri tabanını okumak istiyorsanız, &lt;font color=#FF0000&gt;lütfen veri tabanını bu dizinde saklayın.&lt;/font&gt;</string>
-    <string name="open_permissions">İzinleri aç</string>
-    <string name="miui_permissions">Otomatik doldurma işlevini kullanmak için MIUI sisteminin arka plan açılır pencere arayüzünü açma iznine ihtiyacı var.</string>
-    <string name="error_keystore">Anahtar deposu istisnası, lütfen tekrar deneyin</string>
-    <string name="set_key_theme_style_title">Tema tarzı</string>
-    <string name="set_key_theme_style_summary">Sistemi takip et</string>
-    <string name="kpa_totp">Belirteç</string>
-    <string name="kpa_copy">Kopyala</string>
-    <string name="error_qr_code_str">QR kodu normal değil. Lütfen QR kodunun Google Authenticator tarafından desteklendiğinden emin olun</string>
-    <string name="google_play">Google Play</string>
-    <string name="disposable">Bir kez</string>
-    <string name="monthly">Aylık</string>
-    <string name="year">Yıl</string>
-    <string name="error_donate">Bağış başarısız oldu</string>
-    <string name="error_connect_play">Google hizmetine bağlanılamadı</string>
-    <string name="thank_donate">Bağışınız için teşekkür ederiz.</string>
-    <string name="current_collection_num">%1$s koleksiyon</string>
-    <string name="my_collection">Koleksiyonum</string>
-    <string name="no_collection">Koleksiyon yok</string>
-    <string name="error_open_db_webdav">WebDAV dosyası mevcut olmadığı için veri tabanı açılamadı.</string>
-    <string name="hint_cloud_file_already_exist">%1$s zaten var. Bu dosyanın üzerine yazılsın mı\?</string>
-    <string name="select_save_path">Kaydetme yolu seç</string>
-    <string name="helper_webdav_service">WebDAV hizmeti seç</string>
-    <string name="error_is_root">Zaten kök dizini</string>
-    <string name="select_cur_path">Klasör seç</string>
-    <string name="one_drive_load_user_failure">Kullanıcı bilgileri yüklenemedi.</string>
-    <string name="hint_open_background_start">Lütfen arka plan çıkarma iznini açın, aksi takdirde otomatik doldurmayı kullanamazsınız</string>
-    <string name="hostname">Ana makine adı</string>
-    <string name="port">Bağlantı noktası</string>
-    <string name="webdav_host_name_hint">Lütfen ana makine adınızı yazın</string>
-    <string name="webdav_port_hint">Bağlantı noktası</string>
-    <string name="webdav_port_name_null">Ana makine adı boş olamaz</string>
-    <string name="privacy_agreement">Gizlilik sözleşmesi</string>
-    <string name="ime_hint_open_auto_fill">Lütfen otomatik doldurma hizmetini açın</string>
-    <string name="please_open_proxy">Lütfen vekili açın</string>
-    <string name="invalid_img">Geçersiz Resim</string>
-    <string name="hint_open_backgroun_start">Otomatik doldurmayı ayarladınız, ancak KeePassA uygun izinlere sahip değil, lütfen ayarlar sayfasındaki KeePassA açılır ekranını yetkilendirin.</string>
-    <string name="app_debug">Günlük dosyasını al</string>
-    <string name="open_setting">Ayarlar</string>
-    <string name="hint_auto_fill_save">Geçerli veriler var olan girdilerle ilişkilendirilsin mi?</string>
-    <string name="title_tip_of_day">Günün ipucu</string>
-    <string name="hint_dont_show_tips">İpuçlarını gösterme</string>
-    <string name="preemptive">Önceden</string>
-    <string name="fail_unsupported_Systems_O">Yalnızca P veya daha yüksek sistemi destekler</string>
-    <string name="hint_webdav_jgy">Lütfen [Hesap-&gt;Güvenlik-&gt;Üçüncü Taraf Uygulama Yönetimi] bölümündeki parolayı kullanın.</string>
-    <string name="collection">Koleksiyon</string>
-    <string name="add_attr_str">Özellik ekle</string>
-    <string name="delete">Sil</string>
-    <string name="create_tag">Yeni etiket</string>
-    <string name="modify_str_attr">Özellikleri değiştir</string>
-    <string name="error_file">Dosya normal değil, lütfen silin: &lt;font color=#FF0000&gt;%s&lt;/font&gt;</string>
-    <string name="not_souper_otp">Desteklenmeyen TOTP</string>
-    <string name="modify_totp">OTP belirtecini değiştir</string>
-    <string name="error_totp">Hatalı OTP</string>
-    <string name="file_save_success">Ek başarıyla kaydedildi</string>
-    <string name="hint_confirm">Parolayı onayla</string>
-    <string name="base_info">Temel bilgiler</string>
-    <string name="tag">Etiket</string>
-    <string name="totp">TOTP</string>
-    <string name="tag_name">Etiket adı</string>
-    <string name="add_tag">Etiket ekle</string>
-    <string name="open_file">Dosya Aç</string>
-    <string name="options">Seçenekler</string>
-    <string name="hint_bracket_char">()&lt;&gt;{}[]</string>
+    <string-array name="quick_pass_type_entries">
+        <item><![CDATA[Veritabanı parolasının ilk %s karakteri]]></item>
+        <item><![CDATA[Veritabanı parolasının son %s karakteri]]></item>
+    </string-array>
+    <string-array name="clean_clip_entries">
+        <item><![CDATA[30 saniye]]></item>
+        <item><![CDATA[1 dakika]]></item>
+        <item><![CDATA[2 dakika]]></item>
+        <item><![CDATA[5 dakika]]></item>
+    </string-array>
+    <string-array name="quick_lock_entries">
+        <item><![CDATA[2 dakika]]></item>
+        <item><![CDATA[5 dakika]]></item>
+        <item><![CDATA[10 dakika]]></item>
+        <item><![CDATA[20 dakika]]></item>
+    </string-array>
+    <string-array name="out_db_entries">
+        <item><![CDATA[Keepass2 veritabanı]]></item>
+        <item><![CDATA[Şifrelenmemiş XML dosyası]]></item>
+        <item><![CDATA[Şifrelenmemiş CSV dosyası]]></item>
+    </string-array>
+    <string-array name="v3_add_mor_item">
+        <item><![CDATA[Açıklamalar]]></item>
+        <item><![CDATA[dosya eki]]></item>
+        <item><![CDATA[son kullanma süresi]]></item>
+    </string-array>
+    <string-array name="v4_add_mor_item">
+        <item><![CDATA[Açıklamalar]]></item>
+        <item><![CDATA[Özel alanlar]]></item>
+        <item><![CDATA[dosya eki]]></item>
+        <item><![CDATA[TOTP]]></item>
+        <item><![CDATA[etiket]]></item>
+        <item><![CDATA[bağlantı]]></item>
+        <item><![CDATA[son kullanma süresi]]></item>
+    </string-array>
+    <string-array name="create_normal_group">
+        <item><![CDATA[E-posta]]></item>
+        <item><![CDATA[iş]]></item>
+        <item><![CDATA[Finans]]></item>
+        <item><![CDATA[eğlence]]></item>
+        <item><![CDATA[geri dönüşüm kutusu]]></item>
+    </string-array>
+    <string-array name="auto_fill_hint_label">
+        <item><![CDATA[E-posta]]></item>
+        <item><![CDATA[cep telefonu]]></item>
+        <item><![CDATA[Kullanıcı]]></item>
+        <item><![CDATA[Hesap numarası]]></item>
+    </string-array>
+    <string name="db"><![CDATA[veritabanı]]></string>
+    <string name="db1"><![CDATA[Veritabanı\t|\t<font color="#757575">%s</font>]]></string>
+    <string name="password"><![CDATA[Şifre]]></string>
+    <string name="key"><![CDATA[anahtar]]></string>
+    <string name="key1"><![CDATA[Anahtar: %s]]></string>
+    <string name="open"><![CDATA[Kilidi aç]]></string>
+    <string name="hint_set_password"><![CDATA[Şifreyi ayarla]]></string>
+    <string name="hint_input_password"><![CDATA[6-16 karakterli bir parola girin]]></string>
+    <string name="hint_enter_password"><![CDATA[Şifreyi onayla]]></string>
+    <string name="help_create_db"><![CDATA[v4 KeepPass veritabanı varsayılan olarak oluşturuldu]]></string>
+    <string name="help_create_group"><![CDATA[Grup adı 16 karakteri aşamaz]]></string>
+    <string name="encrypt_type"><![CDATA[Şifreleme yöntemi]]></string>
+    <string name="encrypt_type_1"><![CDATA[Yalnızca şifre]]></string>
+    <string name="encrypt_type_2"><![CDATA[şifre + anahtar]]></string>
+    <string name="choose_pass_key"><![CDATA[Anahtar seç]]></string>
+    <string name="hint_set_pass_key"><![CDATA[Lütfen bir anahtar seçin]]></string>
+    <string name="pass_key"><![CDATA[dosya anahtarı]]></string>
+    <string name="helper_create_pass"><![CDATA[Karışık bir şifre kullanılması tavsiye edilir (büyük harf ve küçük harf İngilizce + sayılar + semboller)]]></string>
+    <string name="open_db"><![CDATA[Veritabanını aç]]></string>
+    <string name="db_name"><![CDATA[Veritabanı adını girin]]></string>
+    <string name="create_db"><![CDATA[Veritabanı oluştur]]></string>
+    <string name="next"><![CDATA[Sonraki adım]]></string>
+    <string name="up"><![CDATA[Önceki adım]]></string>
+    <string name="hint_select_db_path"><![CDATA[Veri kaydetme yöntemini ayarlamak için tıklayın]]></string>
+    <string name="hint_select_path_type"><![CDATA[Veritabanı kaydetme yolunu seçin]]></string>
+    <string name="error_db_name_null"><![CDATA[Lütfen veritabanı adını girin]]></string>
+    <string name="done"><![CDATA[Tamamlandı]]></string>
+    <string name="enter"><![CDATA[Onayla]]></string>
+    <string name="cancel"><![CDATA[İptal]]></string>
+    <string name="hint"><![CDATA[İpuçları]]></string>
+    <string name="help_create_db_path"><![CDATA[Veritabanınızı otomatik olarak buluta senkronize edecek ve veritabanının diğer cihazlarda kullanımını kolaylaştıracak Dropbox ve WebDAV gibi bulut yollarını kullanmanız önerilir.
+\n veritabanı, AES256 kullanılarak şifrelenmiştir. Hiç kimse şifreniz olmadan veritabanınızı açamaz.]]></string>
+    <string name="help_pass_type"><![CDATA[Yalnızca şifreyi kullan:
+\n, veritabanını açmak için yalnızca şifrenizi gerektirir;
+\n şifre + anahtar:
+\n Veritabanını açmak için bir şifre girmeniz ve bir anahtar dosyası seçmeniz gerekir.]]></string>
+    <string name="help_pass_key"><![CDATA[Anahtar dosyası, verileri açmak için kullanılan anahtara eşdeğerdir ve genellikle paroladan çok daha karmaşık ve güvenilirdir. Ancak bunu gizlemek de daha zordur ve eğer veritabanınızı bulutta tutuyorsanız, asla anahtarla veritabanını bir araya getirmeyin.
+\n Veritabanını açmak için herhangi bir dosyayı, bir fotoğrafı veya bir TXT belgesini anahtar olarak seçebilirsiniz.
+\n⚠️Not: Bu fotoğraf veya bu TXT belgesi değiştirilirse veritabanını açamazsınız! !
+\n, salt okunur dosyaların anahtar olarak kullanılmasını önemle önerir.]]></string>
+    <string name="choose_file"><![CDATA[Dosya seç]]></string>
+    <string name="choose_pass_key_file_des"><![CDATA[Anahtarınız olarak herhangi bir dosyayı seçin]]></string>
+    <string name="create_file"><![CDATA[Yeni dosya oluştur]]></string>
+    <string name="create_pass_key_file_des"><![CDATA[Anahtarınız olarak kullanılacak yeni bir dosya oluşturun]]></string>
+    <string name="create_pass_key_success"><![CDATA[[%s] anahtarının oluşturulması başarılı]]></string>
+    <string name="error_pass_null"><![CDATA[Lütfen veritabanı şifresini ayarlayın]]></string>
+    <string name="error_enter_pass_null"><![CDATA[Lütfen onay şifresini girin]]></string>
+    <string name="error_pass_unfit"><![CDATA[İki şifre tutarsız]]></string>
+    <string name="hint_db_create_success"><![CDATA[Veritabanı [%s] oluşturuldu]]></string>
+    <string name="history"><![CDATA[tarih]]></string>
+    <string name="history_record"><![CDATA[Tarih]]></string>
+    <string name="edit"><![CDATA[Düzenle]]></string>
+    <string name="change_db"><![CDATA[Veritabanını değiştir]]></string>
+    <string name="all"><![CDATA[giriş]]></string>
+    <string name="setting"><![CDATA[ayarlar]]></string>
+    <string name="db_setting"><![CDATA[Veritabanı ayarları]]></string>
+    <string name="app_setting"><![CDATA[Uygulama ayarları]]></string>
+    <string name="welcome"><![CDATA[Hoş geldiniz]]></string>
+    <string name="help_input_db_pass"><![CDATA[Veritabanı şifresini girin]]></string>
+    <string name="need_key"><![CDATA[Bir anahtara mı ihtiyacınız var?]]></string>
+    <string name="error_uri"><![CDATA[URI hatası]]></string>
+    <string name="error_input_pass_null"><![CDATA[Lütfen veritabanı şifresini girin]]></string>
+    <string name="error_open_db"><![CDATA[Veritabanı açılamıyor. Şifre yanlış mı, yoksa anahtara mı ihtiyacım var?]]></string>
+    <string name="error_open_db_key_empty"><![CDATA[Eksik anahtar]]></string>
+    <string name="error_open_db_pass_error"><![CDATA[Veritabanı şifre hatası]]></string>
+    <string name="error_open_db_key_invalid"><![CDATA[Geçersiz anahtar]]></string>
+    <string name="error_open_db_version_error"><![CDATA[Veritabanı sürüm hatası]]></string>
+    <string name="error_open_db_signature_error"><![CDATA[Veritabanı imza hatası]]></string>
+    <string name="error_open_db_algorithm_error"><![CDATA[Geçersiz algoritma]]></string>
+    <string name="error_open_db_arcfour_error"><![CDATA[Geçersiz akış şifreleme algoritması]]></string>
+    <string name="hint_group_desc"><![CDATA[Grup-%s girişleri]]></string>
+    <string name="error_group_id_null"><![CDATA[group ID is empty]]></string>
+    <string name="error_entry_id_null"><![CDATA[giriş kimliği boş]]></string>
+    <string name="create_time"><![CDATA[%s tarafından oluşturuldu]]></string>
+    <string name="expire_time"><![CDATA[%s tarihinde sona eriyor]]></string>
+    <string name="hint_attr"><![CDATA[Gelişmiş özellikler]]></string>
+    <string name="attachment"><![CDATA[dosya eki]]></string>
+    <string name="hint_ex_property"><![CDATA[Ekstra özellikler]]></string>
+    <string name="expire"><![CDATA[<font color=#FF0000>%s</font>Süresi doldu]]></string>
+    <string name="del_group"><![CDATA[Grubu sil]]></string>
+    <string name="edit_group"><![CDATA[Grubu düzenle]]></string>
+    <string name="success"><![CDATA[başarı]]></string>
+    <string name="fail"><![CDATA[başarısız oldu]]></string>
+    <string name="del_entry"><![CDATA[Delete entry]]></string>
+    <string name="del_history"><![CDATA[Delete history]]></string>
+    <string name="copy_user_name"><![CDATA[Copy username]]></string>
+    <string name="copy_password"><![CDATA[Copy password]]></string>
+    <string name="copy_totp"><![CDATA[Copy TOTP token]]></string>
+    <string name="hint_del_group"><![CDATA[[<font color=#FF0000>%s</font>] grubunu silmek istediğinizden emin misiniz? <br> This operation will move the group to the recycle bin, where you can restore the group.]]></string>
+    <string name="hint_del_group_no_recycle"><![CDATA[Do you really want to delete the group [<font color=#FF0000>%s</font>]?]]></string>
+    <string name="hint_del_entry"><![CDATA[[<font color=#FF0000>%s</font>] girişini gerçekten silmek istiyor musunuz? <br> Bu eylem, bu girişi daha sonra geri yükleyebileceğiniz Geri Dönüşüm Kutusu\'na taşıyacaktır.]]></string>
+    <string name="hint_del_entry_no_recycle"><![CDATA[Do you really want to permanently delete the entry [<font color=#FF0000>%s</font>]?]]></string>
+    <string name="group_name"><![CDATA[Group name]]></string>
+    <string name="create_group"><![CDATA[Create group]]></string>
+    <string name="error_group_name_null"><![CDATA[Group name is empty]]></string>
+    <string name="create_group_fail"><![CDATA[Unable to create group]]></string>
+    <string name="create_group_success"><![CDATA[Group created]]></string>
+    <string name="modify_group"><![CDATA[Grubu düzenle]]></string>
+    <string name="error_group_no_modify"><![CDATA[Grup değişmedi]]></string>
+    <string name="title_too_long"><![CDATA[Group name is too long]]></string>
+    <string name="choose_icon"><![CDATA[Select icon]]></string>
+    <string name="undo_entry"><![CDATA[Restored…]]></string>
+    <string name="undo_to"><![CDATA[Move to this group]]></string>
+    <string name="undo_grouped"><![CDATA[The group has been moved to the specified location]]></string>
+    <string name="undo_entryed"><![CDATA[Giriş belirtilen konuma taşındı]]></string>
+    <string name="hint_copy_user"><![CDATA[Kullanıcı adı panoya kopyalandı]]></string>
+    <string name="hint_copy_pass"><![CDATA[Şifre panoya kopyalandı]]></string>
+    <string name="hint_copy_totp"><![CDATA[TOTP jetonu panoya kopyalandı]]></string>
+    <string name="create_totp"><![CDATA[Generate OTP token]]></string>
+    <string name="safety_set"><![CDATA[Güvenlik ayarları]]></string>
+    <string name="fingerprint_unlock"><![CDATA[Fingerprint unlock]]></string>
+    <string name="db_handle"><![CDATA[Database operations]]></string>
+    <string name="modify_db_name"><![CDATA[Modify database name]]></string>
+    <string name="modify_db_pass"><![CDATA[Change database password]]></string>
+    <string name="out_db"><![CDATA[Export database]]></string>
+    <string name="db_name_no_alter"><![CDATA[Veritabanı adı değişmedi]]></string>
+    <string name="db_name_modify"><![CDATA[Veritabanı adı değişikliği]]></string>
+    <string name="no_record"><![CDATA[no record]]></string>
+    <string name="hint_query"><![CDATA[Kullanıcı Adı, Unvan, URL, Gelişmiş Özellikler…]]></string>
+    <string name="copy_to_clip"><![CDATA[Copy to clipboard]]></string>
+    <string name="show_pass"><![CDATA[show password]]></string>
+    <string name="ope_url"><![CDATA[open link]]></string>
+    <string name="hide_pass"><![CDATA[Hide password]]></string>
+    <string name="hint_copy_to_clip"><![CDATA[Data copied to clipboard]]></string>
+    <string name="verify_finger"><![CDATA[Fingerprint verification]]></string>
+    <string name="verify_finger_fail"><![CDATA[Parmak izi doğrulanamıyor]]></string>
+    <string name="ban_fingerprint"><![CDATA[Parmak izi olmadan kilidini aç]]></string>
+    <string name="quick_use_fingerprint"><![CDATA[Only use your fingerprint to unlock on the quick unlock interface]]></string>
+    <string name="use_full_fingerprint"><![CDATA[Tam parmak izi kilidini açma]]></string>
+    <string name="hint_full_fingerprint"><![CDATA[Fingerprints are used to unlock the database in the quick unlock interface and database unlock interface. KeePassA, veritabanının ana şifresini ve anahtar bilgilerini Android sisteminin yerel anahtar deposunda şifreler ve saklar ve koruma için parmak izi yetkilendirmesini kullanır. Veritabanının kilidini yalnızca parmak iziniz açabilir.]]></string>
+    <string name="hint_quick_unlock"><![CDATA[Enter the last %s digits of your database password]]></string>
+    <string name="hint_input_title"><![CDATA[Title]]></string>
+    <string name="hint_input_user_name"><![CDATA[Kullanıcı adı]]></string>
+    <string name="hint_input_url"><![CDATA[Link address]]></string>
+    <string name="notice"><![CDATA[Açıklamalar]]></string>
+    <string name="hint_input_tag"><![CDATA[tag 1, tag 2]]></string>
+    <string name="hint_input_cover_url"><![CDATA[override link]]></string>
+    <string name="create_entry"><![CDATA[Create entry]]></string>
+    <string name="save"><![CDATA[save]]></string>
+    <string name="len"><![CDATA[uzunluk]]></string>
+    <string name="upper"><![CDATA[capital letters]]></string>
+    <string name="lower"><![CDATA[küçük harfler]]></string>
+    <string name="numer"><![CDATA[numbers]]></string>
+    <string name="minus"><![CDATA[minus sign]]></string>
+    <string name="underline"><![CDATA[Underline]]></string>
+    <string name="space"><![CDATA[space]]></string>
+    <string name="special"><![CDATA[özel karakterler]]></string>
+    <string name="bracket"><![CDATA[brackets]]></string>
+    <string name="pass_generater"><![CDATA[password generator]]></string>
+    <string name="error_genera_params"><![CDATA[Please select at least one password generation type]]></string>
+    <string name="hint_pass_null"><![CDATA[Password is empty]]></string>
+    <string name="date"><![CDATA[Tarih]]></string>
+    <string name="time"><![CDATA[zaman]]></string>
+    <string name="choose_dir"><![CDATA[Save to current group]]></string>
+    <string name="normal_account"><![CDATA[Ordinary account]]></string>
+    <string name="add_more"><![CDATA[Add more items]]></string>
+    <string name="warning"><![CDATA[warning]]></string>
+    <string name="create_entry_no_save"><![CDATA[Girişleri kaydetmeden geçerli sayfadan çıkılsın mı?]]></string>
+    <string name="add_custom_str"><![CDATA[Create custom fields]]></string>
+    <string name="hint_input_attr_str_key"><![CDATA[Field name]]></string>
+    <string name="hint_input_attr_str_value"><![CDATA[alan değeri]]></string>
+    <string name="hint_protect_str"><![CDATA[protected fields]]></string>
+    <string name="error_attr_str_null"><![CDATA[Field name is empty]]></string>
+    <string name="del_attr_str"><![CDATA[Delete custom field]]></string>
+    <string name="del_attr_file"><![CDATA[Delete attachment]]></string>
+    <string name="error_attr_file_too_large"><![CDATA[Please do not attach files larger than 10M]]></string>
+    <string name="download_file"><![CDATA[Ekleri SD karta kaydet]]></string>
+    <string name="open_whit_text"><![CDATA[Open with inner text]]></string>
+    <string name="open_whit_img"><![CDATA[Dahili resim görüntüleyiciyle aç]]></string>
+    <string name="open_whit_other"><![CDATA[Önbelleğe kaydedin ve sistem uygulamasıyla açın]]></string>
+    <string name="save_file_success"><![CDATA[Saved file [%s]]]></string>
+    <string name="txt_viewer"><![CDATA[file viewer]]></string>
+    <string name="save_db_fail"><![CDATA[Unable to save database]]></string>
+    <string name="error_pass"><![CDATA[Yanlış şifre]]></string>
+    <string name="db_pass_no_alter"><![CDATA[Yeni şifre eski şifreyle aynı]]></string>
+    <string name="hint_db_pass_modify_success"><![CDATA[Use the new database password to open the database next time]]></string>
+    <string name="hint_db_pass_modify"><![CDATA[Veritabanı şifresi değiştirildi]]></string>
+    <string name="app_feedback"><![CDATA[Give advice]]></string>
+    <string name="error_db_pass_too_short"><![CDATA[In order to ensure the security of your data, the length of the database password cannot be less than 6 characters.]]></string>
+    <string name="autofill_sign_in_prompt"><![CDATA[KeePassA kullanarak şifreyi otomatik doldur]]></string>
+    <string name="hint_open_backgroun_start"><![CDATA[Otomatik doldurmayı açtınız, ancak MIUI gibi özel sistemlerde, KeePassA\'nin, veritabanının kilidini açmak üzere arayüzü açması için <b> arka plan açılır arayüzüne </b> izni vermesi gerekiyor.]]></string>
+    <string name="hint_background_start"><![CDATA[</b></font>\'ü ayarlamak için aşağıdaki <font color="#FF0000"><b> seçeneğine tıklayın ve ardından KeePassA için <b> arka plan açılır arayüzü </b> iznini etkinleştirin.]]></string>
+    <string name="setting_miui_background_start"><![CDATA[Settings >Application Settings >Application Management >KeePassA >Permission Management]]></string>
+    <string name="setting_vivo_background_start"><![CDATA[Settings > More Settings > Permission Management->KeePassA > Permission Settings > Background Popup]]></string>
+    <string name="no_matching_entry"><![CDATA[No matching entries]]></string>
+    <string name="hint_save_auto_fill"><![CDATA[Whether to associate the package name [<font color="#FF0000">%1$s</font>] with the entry [<font color="#FF0000">%2$s</font>]]]></string>
+    <string name="relevance_db"><![CDATA[Linked data]]></string>
+    <string name="modify_time"><![CDATA[modification time]]></string>
+    <string name="lose_time"><![CDATA[son kullanma süresi]]></string>
+    <string name="update_group_fail"><![CDATA[Grup bilgileri güncellenemiyor]]></string>
+    <string name="update_group_success"><![CDATA[Grup bilgileri güncellendi]]></string>
+    <string name="title"><![CDATA[Title]]></string>
+    <string name="feedback"><![CDATA[Feedback ^_^]]></string>
+    <string name="submit"><![CDATA[Gönder]]></string>
+    <string name="send_email_fail"><![CDATA[Start by installing an app that can send emails]]></string>
+    <string name="feedback_email_msg"><![CDATA[Hello, my name is KeePassA, do you have any questions? _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ Mobile phone brand: %1$s Mobile phone model: %2$s System version: %3$s Resolution: %4$s Application version: %5$s]]></string>
+    <string name="mark_not_exit"><![CDATA[Uygulama pazarı mevcut değil]]></string>
+    <string name="set_open_auto_fill_title"><![CDATA[Autofill service]]></string>
+    <string name="set_key_praise_value"><![CDATA[Rate KeePassA]]></string>
+    <string name="other_set"><![CDATA[Other settings]]></string>
+    <string name="open_quick_unlock"><![CDATA[Quick unlock]]></string>
+    <string name="quick_pass_type_summary"><![CDATA[""]]></string>
+    <string name="clean_clip_time"><![CDATA[Clear clipboard]]></string>
+    <string name="clean_clip_time_summary"><![CDATA[After copying the password, clear the clipboard after %s]]></string>
+    <string name="auto_lock_db_time"><![CDATA[Veritabanını otomatik olarak kilitle]]></string>
+    <string name="auto_lock_db_time_summary"><![CDATA[If no operation is performed, the database will be automatically locked after %s minutes.]]></string>
+    <string name="quick_pass_type"><![CDATA[Short password interception location]]></string>
+    <string name="des_quick_unlock"><![CDATA[Kısa bir şifreyle veritabanınızın kilidini açın]]></string>
+    <string name="error_short_pass_lenght"><![CDATA[The short password cannot be longer than 6 characters.]]></string>
+    <string name="error_short_pass_short"><![CDATA[The length of the short password cannot be less than 3 characters]]></string>
+    <string name="quick_pass_len_title"><![CDATA[Short password length]]></string>
+    <string name="quick_pass_len_summary"><![CDATA[Kısa şifre uzunluğu: %s]]></string>
+    <string name="set_key_value"><![CDATA[Dil seçin]]></string>
+    <string name="dropbox_msg"><![CDATA[In line with the principle of respecting user privacy, KeePassA will not ask for permission to access all your Dropbox files. KeePassA<font color=#FF0000> only accesses the [Application/KeePassA] folder </font>. <br /> Dolayısıyla: <br /> <b> Zaten bir KeePass veritabanınız varsa, o zaman KeePassA\'deki [Application/KeePassA] klasörüne erişmek için önce KeePassA\'i yetkilendirmeniz ve yetkilendirme tamamlandıktan sonra KeePass veritabanını [Application/KeePassA] klasörüne kaydetmeniz gerekir. </b><br/><br /> If you are creating a new KeepPass database, you do not need the above operation. Veritabanını oluşturduktan sonra, KeePassA otomatik olarak ilgili klasörü oluşturacak ve veritabanını Dropbox\'nin [Application/KeePassA] dizinine yükleyecektir.]]></string>
+    <string name="cover"><![CDATA[Kapak]]></string>
+    <string name="file_conflict_msg"><![CDATA[There is a conflict between cloud data and local data. Lütfen üzerine yazma yöntemini seçin. The conflicting entries are: \n %s]]></string>
+    <string name="cover_local"><![CDATA[yerel]]></string>
+    <string name="cover_cloud"><![CDATA[Cloud]]></string>
+    <string name="merge"><![CDATA[merge]]></string>
+    <string name="sync_db"><![CDATA[Sync database]]></string>
+    <string name="net_error"><![CDATA[Network abnormality]]></string>
+    <string name="auth"><![CDATA[Yetkilendir]]></string>
+    <string name="invalid"><![CDATA[Invalid]]></string>
+    <string name="no_file"><![CDATA[no file]]></string>
+    <string name="login"><![CDATA[Giriş yap]]></string>
+    <string name="helper_webdav"><![CDATA[For example: https://dav.example.org/dav/your folder/xxx.kdbx]]></string>
+    <string name="helper_webdav_dir"><![CDATA[For example: https://dav.example.org/dav/[your folder]/]]></string>
+    <string name="hint_webdav_url"><![CDATA[File URL]]></string>
+    <string name="hint_please_input"><![CDATA[Please enter %s]]></string>
+    <string name="db_file_no_exist"><![CDATA[Veritabanı dosyası mevcut değil]]></string>
+    <string name="invalid_auth"><![CDATA[Unable to authorize. Lütfen tekrar deneyin.]]></string>
+    <string name="afs"><![CDATA[Android file system]]></string>
+    <string name="hint_kdbx_name"><![CDATA[Son ek yanlış, son ek ".kdbx" olmalıdır]]></string>
+    <string name="start_upload_db"><![CDATA[Start uploading the database to your network disk]]></string>
+    <string name="unlocked"><![CDATA[Unlocked]]></string>
+    <string name="notify_channel_db_open"><![CDATA[Veritabanı kilit açma bildirimi]]></string>
+    <string name="notify_quick_unlock_start"><![CDATA[Veritabanı kilitli, hızlı kilit açma etkin]]></string>
+    <string name="notify_db_locked"><![CDATA[Database is locked]]></string>
+    <string name="search"><![CDATA[Ara]]></string>
+    <string name="disable"><![CDATA[Kapat]]></string>
+    <string name="quick_unlock"><![CDATA[Quick unlock]]></string>
+    <string name="db_unlock"><![CDATA[Unlock database]]></string>
+    <string name="hint_quick_use_fingerprint"><![CDATA[Only use fingerprint unlocking on the quick unlock page]]></string>
+    <string name="version_log"><![CDATA[Upgrade log]]></string>
+    <string name="hint_finger_print_verfiy"><![CDATA[Fingerprint re-verification is required to use new settings]]></string>
+    <string name="closed"><![CDATA[Kapalı]]></string>
+    <string name="open1"><![CDATA[turn on]]></string>
+    <string name="upload"><![CDATA[upload]]></string>
+    <string name="add_attr_file"><![CDATA[Add attachment]]></string>
+    <string name="hint_fingerprint_modify"><![CDATA[Parmak izinin değiştiği tespit edildi. For the security of your password, please reset the fingerprint unlock function.]]></string>
+    <string name="hint_please_open_database"><![CDATA[Please open the database]]></string>
+    <string name="save_db_success"><![CDATA[Database saved]]></string>
+    <string name="set_delete_setting"><![CDATA[Delete settings]]></string>
+    <string name="set_delete_no_into_recycle_bin"><![CDATA[Girişleri veritabanından kalıcı olarak sil]]></string>
+    <string name="set_delete_no_into_recycle_bin_des"><![CDATA[Silinen öğeleri geri dönüşüm kutusuna taşıyın]]></string>
+    <string name="warning_rooted"><![CDATA[For your data security, please do not open the database on a rooted phone]]></string>
+    <string name="hint_security_green"><![CDATA["Bu uygulama güvenli bir ortamdadır"]]></string>
+    <string name="hint_security_red"><![CDATA[Your device is rooted and the database is in a very dangerous environment]]></string>
+    <string name="hint_security_yellow"><![CDATA[Warning, the application runs in the simulator, which environment will bring some unpredictable risks to the database]]></string>
+    <string name="donate"><![CDATA[Donate]]></string>
+    <string name="donate_desc"><![CDATA[[KeePassA](https://github.com/AriaLyy/KeepassA) is a free software. Please consider giving us a donation to support our work, thank you very much.]]></string>
+    <string name="dev_birthday"><![CDATA[Today is the developer’s birthday 🎂. Geliştiriciye bir bira ısmarlamak ister misin?]]></string>
+    <string name="totp_defaule"><![CDATA[Varsayılan RFC 6238 jeton ayarları]]></string>
+    <string name="totp_steam"><![CDATA[Steam token settings]]></string>
+    <string name="totp_custom"><![CDATA[Use custom settings]]></string>
+    <string name="totp_custom_hint"><![CDATA[Custom settings]]></string>
+    <string name="totp_Arithmetic"><![CDATA[Algorithm:]]></string>
+    <string name="totp_time"><![CDATA[Time (s):]]></string>
+    <string name="totp_len"><![CDATA[Length:]]></string>
+    <string name="totp_key_error"><![CDATA[Unable to generate TOTP code, key exception]]></string>
+    <string name="sort"><![CDATA[sort]]></string>
+    <string name="sort_chart_desc"><![CDATA[İlk alfabetik azalan sıralama (Z-A)]]></string>
+    <string name="sort_chart_asc"><![CDATA[Artan alfabetik sıralama (A\'dan Z\'ye)]]></string>
+    <string name="sort_time_asc"><![CDATA[time ascending order]]></string>
+    <string name="sort_time_desc"><![CDATA[Descending time]]></string>
+    <string name="ime_label"><![CDATA[KeePassA Güvenlik Klavyesi]]></string>
+    <string name="set_open_kpa_ime_title"><![CDATA[secure keyboard]]></string>
+    <string name="no_totp_token"><![CDATA[No TOTP token]]></string>
+    <string name="ime_entry_other_info"><![CDATA[Populate other fields]]></string>
+    <string name="url"><![CDATA[URL\'si]]></string>
+    <string name="hint_not_nore_info"><![CDATA[no more information]]></string>
+    <string name="error_uri_grant_permission"><![CDATA[URI Yetkilendirme başarısız oldu]]></string>
+    <string name="license"><![CDATA[free software license]]></string>
+    <string name="move"><![CDATA[hareket etmek]]></string>
+    <string name="set_key_sum_main_show_entries"><![CDATA[Veritabanının kilidini açtıktan sonra tüm girişleri göster]]></string>
+    <string name="set_key_sum_main_show_history"><![CDATA[Veritabanının kilidini açtıktan sonra geçmişi göster]]></string>
+    <string name="set_key_title_main_allow_show_entries"><![CDATA[Ana sayfa]]></string>
+    <string name="set_key_title_opr_env_check"><![CDATA[Run environment check settings]]></string>
+    <string name="set_key_title_opr_env_check_turn_off"><![CDATA[Kapat]]></string>
+    <string name="set_key_title_opr_env_check_turn_on"><![CDATA[açık]]></string>
+    <string name="expand"><![CDATA[Expand]]></string>
+    <string name="shrink"><![CDATA[kapat]]></string>
+    <string name="ui_setting"><![CDATA[User interface settings]]></string>
+    <string name="cur_app_not_autofill"><![CDATA[Don\'t autofill]]></string>
+    <string name="other"><![CDATA[Diğerleri]]></string>
+    <string name="ref_entry"><![CDATA[Reference items]]></string>
+    <string name="multi_choice"><![CDATA[Çoktan seçmeli]]></string>
+    <string name="set_summary_screen_lock_off"><![CDATA[Do not lock the database]]></string>
+    <string name="set_summary_screen_lock_on"><![CDATA[Veritabanını otomatik olarak kilitle]]></string>
+    <string name="set_title_screen_lock"><![CDATA[screen lock]]></string>
+    <string name="close"><![CDATA[Kapat]]></string>
+    <string name="Alipay"><![CDATA[Alipay]]></string>
+    <string name="error_webdav_end_suffix"><![CDATA[Use folder path. Örneğin: "https://example.org/dav/kpa/"]]></string>
+    <string name="error_webdav_end_dav_suffix"><![CDATA[/dav/ yoluna izin verilmiyor. Use a valid path, such as: "https://example.org/dav/kpa/"]]></string>
+    <string name="set_key_title_fillet_bg_icon"><![CDATA[Rounded list icon corner]]></string>
+    <string name="set_key_title_fillet_bg_icon_turn_on"><![CDATA[turn on]]></string>
+    <string name="set_key_title_fillet_bg_icon_turn_off"><![CDATA[Kapat]]></string>
+    <string name="set_key_title_show_state_bar"><![CDATA[status bar]]></string>
+    <string name="set_key_title_show_state_bar_turn_on"><![CDATA[show]]></string>
+    <string name="set_key_title_show_state_bar_turn_off"><![CDATA[hide]]></string>
+    <string name="set_key_title_close_load_anim"><![CDATA[loading animation]]></string>
+    <string name="set_key_title_close_load_anim_turn_on"><![CDATA[açık]]></string>
+    <string name="set_key_title_close_load_anim_turn_off"><![CDATA[Kapat]]></string>
+    <string name="s_default"><![CDATA[Default]]></string>
+    <string name="customize"><![CDATA[Customize]]></string>
+    <string name="set_key_title_auto_lock_database"><![CDATA[Veritabanını otomatik olarak kilitle]]></string>
+    <string name="set_key_title_auto_lock_database_turn_on"><![CDATA[Evet]]></string>
+    <string name="set_key_title_auto_lock_database_turn_off"><![CDATA[Kapat]]></string>
+    <string name="get_token_fail"><![CDATA[Token alınamadı]]></string>
+    <string name="one_drive_init_failure"><![CDATA[OneDrive başlatma başarısız oldu]]></string>
+    <string name="one_drive_hint"><![CDATA[In order to protect your privacy, KeePassA will only access the <font color=#FF0000> [Application/KeepassA] </font> directory. If you want to read the Keepass database of OneDrive, <font color=#FF0000> please store the database in this directory. </font>]]></string>
+    <string name="open_permissions"><![CDATA[Open permissions]]></string>
+    <string name="miui_permissions"><![CDATA[miui The system needs to open the permission of the background pop-up interface to use the auto-fill function.]]></string>
+    <string name="set_key_main_show_totp_tab_title"><![CDATA[Ana sayfa TOTP kategorisini gösterir]]></string>
+    <string name="set_key_main_show_totp_tab_on"><![CDATA[TOTP kategorisini göster]]></string>
+    <string name="set_key_main_show_totp_tab_off"><![CDATA[TOTP kategorisini gösterme]]></string>
+    <string name="set_key_theme_style_title"><![CDATA[theme style]]></string>
+    <string name="set_key_theme_style_summary"><![CDATA[Follow the system]]></string>
+    <string name="open_setting"><![CDATA[Ayarları aç]]></string>
+    <string-array name="sek_ley_theme_style_entries">
+        <item><![CDATA[Follow the system]]></item>
+        <item><![CDATA[dark mode]]></item>
+        <item><![CDATA[light mode]]></item>
+    </string-array>
+    <string name="error_keystore"><![CDATA[Anahtar deposu istisnası, lütfen tekrar deneyin]]></string>
+    <string name="kpa_totp"><![CDATA[token]]></string>
+    <string name="kpa_copy"><![CDATA[Kopyala]]></string>
+    <string name="translate_language"><![CDATA[Uygulamayı dilinize çevirin]]></string>
+    <string name="error_qr_code_str"><![CDATA[The QR code is abnormal. Please confirm that the QR code is a QR code supported by Google Authenticator.]]></string>
+    <string name="google_play"><![CDATA[Google Play Store]]></string>
+    <string name="disposable"><![CDATA[Tek kullanımlık]]></string>
+    <string name="year"><![CDATA[her yıl]]></string>
+    <string name="error_donate"><![CDATA[Donation failed]]></string>
+    <string name="thank_donate"><![CDATA[Bağışınız için teşekkür ederiz.]]></string>
+    <string name="error_connect_play"><![CDATA[Google hizmetlerine bağlanılamıyor]]></string>
+    <string name="monthly"><![CDATA[monthly]]></string>
+    <string name="my_collection"><![CDATA[koleksiyonum]]></string>
+    <string name="current_collection_num"><![CDATA[%1$s collections]]></string>
+    <string name="no_collection"><![CDATA[No favorites]]></string>
+    <string name="error_open_db_webdav"><![CDATA[The database cannot be opened because the WebDAV file does not exist.]]></string>
+    <string name="helper_webdav_service"><![CDATA[Choose WebDAV Service]]></string>
+    <string name="error_is_root"><![CDATA[Zaten kök dizin]]></string>
+    <string name="select_cur_path"><![CDATA[Select current folder]]></string>
+    <string name="hint_cloud_file_already_exist"><![CDATA[%1$s zaten mevcut. Dosyanın üzerine yazmak istiyor musunuz?]]></string>
+    <string name="select_save_path"><![CDATA[Select save path]]></string>
+    <string name="one_drive_load_user_failure"><![CDATA[Kullanıcı bilgileri yüklenemiyor.]]></string>
+    <string name="hint_open_background_start"><![CDATA[Please turn on the background pop-up permission, otherwise the autofill function cannot be used]]></string>
+    <string name="hostname"><![CDATA[hostname]]></string>
+    <string name="port"><![CDATA[port]]></string>
+    <string name="webdav_host_name_hint"><![CDATA[Lütfen ana makine adınızı girin]]></string>
+    <string name="webdav_port_hint"><![CDATA[port]]></string>
+    <string name="webdav_port_name_null"><![CDATA[Hostname cannot be empty]]></string>
+    <string name="privacy_agreement"><![CDATA[privacy agreement]]></string>
+    <string name="ime_hint_open_auto_fill"><![CDATA[Lütfen otomatik doldurma hizmetini açın]]></string>
+    <string name="please_open_proxy"><![CDATA[Due to well-known network reasons, in order to use onedrive services smoothly, please use appropriate network tools]]></string>
+    <string name="invalid_img"><![CDATA[Invalid image]]></string>
+    <string name="preemptive"><![CDATA[Preset mode]]></string>
+    <string name="fail_unsupported_Systems_O"><![CDATA[Yalnızca P ve üzeri sistemleri destekler]]></string>
+    <string name="hint_webdav_jgy"><![CDATA[Please use the password in [Account Information->Security Options->Third-Party Applications]]]></string>
+    <string name="app_debug"><![CDATA[Remove log file]]></string>
+    <string name="hint_auto_fill_save"><![CDATA[Mevcut veriler mevcut girişlerle ilişkilendirilsin mi?]]></string>
+    <string name="hint_dont_show_tips"><![CDATA[Don\'t show again]]></string>
+    <string name="title_tip_of_day"><![CDATA[daily tips]]></string>
+    <string name="base_info"><![CDATA[Temel bilgiler]]></string>
+    <string name="tag"><![CDATA[etiket]]></string>
+    <string name="collection"><![CDATA[Collection]]></string>
+    <string name="add_attr_str"><![CDATA[Add attributes]]></string>
+    <string name="delete"><![CDATA[Sil]]></string>
+    <string name="create_tag"><![CDATA[Create tags]]></string>
+    <string name="tag_name"><![CDATA[Tag name]]></string>
+    <string name="add_tag"><![CDATA[Add tag]]></string>
+    <string name="open_file"><![CDATA[open file]]></string>
+    <string name="modify_str_attr"><![CDATA[Modify properties]]></string>
+    <string name="error_file"><![CDATA[The file is abnormal, please delete: <font color=#FF0000>%s</font>]]></string>
+    <string name="not_souper_otp"><![CDATA[Unsupported TOTP]]></string>
+    <string name="modify_totp"><![CDATA[modify token]]></string>
+    <string name="error_totp"><![CDATA[Wrong totp]]></string>
+    <string name="file_save_success"><![CDATA[Ek başarıyla kaydedildi]]></string>
+    <string name="options"><![CDATA[Options]]></string>
+    <string name="review_title"><![CDATA[Comment]]></string>
+    <string name="review_enter"><![CDATA[Start comment]]></string>
+    <string name="review_cancel"><![CDATA[Not this time]]></string>
+    <string name="review_fail"><![CDATA[Gönderim başarısız oldu, lütfen ağı kontrol edin]]></string>
+    <string name="review_not_hint"><![CDATA[Don\'t prompt again]]></string>
+    <string name="review_like_app"><![CDATA[Like our app? Please rate us!]]></string>
+    <string name="hint_notify_permission"><![CDATA[KeepassA requires notification permission to notify the database status.]]></string>
+    <string name="title_choose_icon"><![CDATA[Select icon]]></string>
+    <string name="icon_select_pick"><![CDATA[Open photo album]]></string>
+    <string name="icon_select_db"><![CDATA[local icon]]></string>
+    <string name="icon_change"><![CDATA[Modify icon]]></string>
+    <string name="entry_not_found"><![CDATA[No entry found]]></string>
+    <string name="hint_confirm"><![CDATA[Parolayı onayla]]></string>
+    <string name="totp"><![CDATA[TOTP]]></string>
+    <string name="hint_bracket_char"><![CDATA[()<>{}[]]]></string>
 </resources>

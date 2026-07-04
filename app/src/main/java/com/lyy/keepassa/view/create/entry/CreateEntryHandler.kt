@@ -13,6 +13,7 @@ import com.arialyy.frame.util.ResUtil
 import com.keepassdroid.database.PwEntryV4
 import com.keepassdroid.database.PwGroupId
 import com.keepassdroid.database.PwGroupV4
+import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 
@@ -32,6 +33,21 @@ internal class CreateEntryHandler(val context: CreateEntryActivity) : ICreateHan
     val entry = PwEntryV4(group, true, true)
     context.module.pwEntry = entry
     context.module.initCache()
+
+    // 自动填充保存场景:从 onSaveRequest 链路带过来的预填用户名/密码
+    // (DB 锁定时经 LauncherActivity/QuickUnlockActivity 解锁后转交,或 DB 已解锁时直接进入)
+    context.module.autoFillParam?.takeIf { it.isSave }?.let { p ->
+      p.saveUserName?.takeIf { it.isNotEmpty() }?.let {
+        context.module.strCacheMap[PwEntryV4.STR_USERNAME] = ProtectedString(false, it)
+        binding.edUser.setText(it)
+      }
+      p.savePass?.takeIf { it.isNotEmpty() }?.let {
+        context.module.strCacheMap[PwEntryV4.STR_PASSWORD] = ProtectedString(true, it)
+        binding.edPassword.setText(it)
+        binding.tvConfirm.setText(it)
+      }
+    }
+
     binding.cardStr.visibility = View.GONE
     binding.cardFile.visibility = View.GONE
     binding.tlLoseTime.visibility = View.GONE

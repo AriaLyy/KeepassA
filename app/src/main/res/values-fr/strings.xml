@@ -1,362 +1,452 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="db">Base de données</string>
-    <string name="time">Heure</string>
-    <string name="date">Date</string>
-    <string name="hint_pass_null">Le mot de passe est vide</string>
-    <string name="error_genera_params">Veuillez sélectionner au moins un type de génération de mot de passe</string>
-    <string name="pass_generater">Générateur de mot de passe</string>
-    <string name="bracket">Parenthèses</string>
-    <string name="special">Caractères spéciaux</string>
-    <string name="space">Espace</string>
-    <string name="underline">Tiret bas</string>
-    <string name="minus">Signe moins</string>
-    <string name="numer">Chiffres</string>
-    <string name="lower">Minuscules</string>
-    <string name="upper">Majuscules</string>
-    <string name="len">Longueur</string>
-    <string name="save">Enregistrer</string>
-    <string name="create_entry">Créer une entrée</string>
-    <string name="hint_input_cover_url">Écraser le lien</string>
-    <string name="hint_input_tag">Étiquette 1, Étiquette 2</string>
-    <string name="notice">Note</string>
-    <string name="hint_input_url">Lien</string>
-    <string name="hint_input_user_name">Nom d\'utilisateur</string>
-    <string name="hint_input_title">Nom</string>
-    <string name="hint_quick_unlock">Entrez les %s derniers caractères du mot de passe de votre base de données</string>
-    <string name="ban_fingerprint">Pas de déverrouillage par empreinte digitale</string>
-    <string name="verify_finger_fail">Impossible de vérifier l\'empreinte digitale</string>
-    <string name="verify_finger">Vérification de l\'empreinte digitale</string>
-    <string name="hint_copy_to_clip">Données copiées dans le presse-papiers</string>
-    <string name="hide_pass">Masquer le mot de passe</string>
-    <string name="ope_url">Ouvrir le lien</string>
-    <string name="show_pass">Afficher le mot de passe</string>
-    <string name="copy_to_clip">Copier dans le presse-papiers</string>
-    <string name="hint_query">Nom d\'utilisateur, nom, URL, attributs avancés…</string>
-    <string name="no_record">Aucune entrée</string>
-    <string name="db_name_modify">Nom de la base de donné modifié</string>
-    <string name="db_name_no_alter">Le nom de la base de données n\'a pas été modifié</string>
-    <string name="out_db">Exporter la base de données</string>
-    <string name="modify_db_pass">Modifier le mot de passe de la base de données</string>
-    <string name="modify_db_name">Modifier le nom de la base de données</string>
-    <string name="db_handle">Opérations sur la base de données</string>
-    <string name="fingerprint_unlock">Déverrouillage par empreinte digitale</string>
-    <string name="safety_set">Paramètres de sécurité</string>
-    <string name="create_totp">Générer un jeton OTP</string>
-    <string name="hint_copy_totp">Jeton TOTP copié dans le presse-papiers</string>
-    <string name="hint_copy_pass">Mot de passe copié dans le presse-papiers</string>
-    <string name="hint_copy_user">Nom d\'utilisateur copié dans le presse-papiers</string>
-    <string name="undo_entryed">L\'élément a été déplacé à l\'emplacement spécifié</string>
-    <string name="undo_grouped">Le groupe a été déplacé à l\'emplacement spécifié</string>
-    <string name="undo_to">Déplacer vers ce groupe</string>
-    <string name="choose_icon">Sélectionner une icône</string>
-    <string name="title_too_long">Le nom du groupe est trop long</string>
-    <string name="error_group_no_modify">Aucune modification du groupe</string>
-    <string name="modify_group">Modifier le groupe</string>
-    <string name="create_group_success">Groupe créé</string>
-    <string name="create_group_fail">Impossible de créer le groupe</string>
-    <string name="error_group_name_null">Le nom du groupe est vide</string>
-    <string name="create_group">Créer le groupe</string>
-    <string name="group_name">Nom du groupe</string>
-    <string name="hint_del_entry">Voulez-vous vraiment supprimer l\'élément【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】 \? &lt;br&gt; Il sera placé dans la corbeille où vous pourrez le restaurer plus tard.</string>
-    <string name="hint_del_group_no_recycle">Voulez-vous vraiment supprimer le groupe【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】 \?</string>
-    <string name="hint_del_group">Confirmer la suppression du groupe【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】 \? &lt;br&gt; Il sera placé dans la corbeille où vous pourrez le restaurer plus tard.</string>
-    <string name="copy_totp">Copier le jeton TOTP</string>
-    <string name="copy_password">Copier le mot de passe</string>
-    <string name="copy_user_name">Copier le nom d\'utilisateur</string>
-    <string name="history_record">Entrée de l\'historique</string>
-    <string name="del_history">Supprimer l\'entrée de l\'historique</string>
-    <string name="del_entry">Supprimer l\'élément</string>
-    <string name="edit_group">Modifier le groupe</string>
-    <string name="del_group">Supprimer le groupe</string>
-    <string name="expire">Expiré le &lt;font color=#FF0000&gt;%s&lt;/font&gt;</string>
-    <string name="hint_ex_property">Attributs supplémentaires</string>
-    <string name="attachment">Pièce-jointe</string>
-    <string name="hint_attr">Propriétés avancées</string>
-    <string name="expire_time">Expire le %s</string>
-    <string name="error_open_db_algorithm_error">Algorithme invalide</string>
-    <string name="error_open_db_signature_error">Signature de la base de données invalide</string>
-    <string name="error_open_db_version_error">Version de la base de données invalide</string>
-    <string name="error_open_db_key_invalid">Clé invalide</string>
-    <string name="error_open_db_pass_error">Mot de passe invalide</string>
-    <string name="error_open_db_key_empty">Clé manquante</string>
-    <string name="error_input_pass_null">Veuillez entrer le mot de passe de la base de données</string>
-    <string name="error_uri">Erreur de l\'URI</string>
-    <string name="need_key">Besoin d\'une clé \?</string>
-    <string name="help_input_db_pass">Entrez le mot de passe de la base de données</string>
-    <string name="welcome">Bienvenue</string>
-    <string name="app_setting">Paramètres de l\'application</string>
-    <string name="db_setting">Paramètres de la base de données</string>
-    <string name="setting">Paramètres</string>
-    <string name="all">Éléments</string>
-    <string name="change_db">Changer de base de données</string>
-    <string name="edit">Modifier</string>
-    <string name="history">Historique</string>
-    <string name="hint_db_create_success">La base de données [%s] a été créée</string>
-    <string name="error_pass_unfit">Les mots de passe ne correspondent pas</string>
-    <string name="error_enter_pass_null">Veuillez entrer le mot de passe de confirmation</string>
-    <string name="error_pass_null">Veuillez définir un mot de passe pour la base de données</string>
-    <string name="create_file">Créer un nouveau fichier</string>
-    <string name="choose_file">Sélectionner un fichier</string>
-    <string name="hint">Information</string>
-    <string name="cancel">Annuler</string>
-    <string name="enter">Valider</string>
-    <string name="done">Terminé</string>
-    <string name="error_db_name_null">Veuillez entrer un nom de base de données</string>
-    <string name="hint_select_path_type">Choisissez où sauvegarder la base de données</string>
-    <string name="hint_select_db_path">Cliquez pour définir la méthode de sauvegarde des données</string>
-    <string name="up">Précédent</string>
-    <string name="next">Étape suivante</string>
-    <string name="create_db">Créer une base de données</string>
-    <string name="db_name">Entrez un nom pour la base de données</string>
-    <string name="open_db">Ouvrir la base de données</string>
-    <string name="helper_create_pass">Un mot de passe complexe est recommandé (majuscules et minuscules + chiffres + caractères spéciaux)</string>
-    <string name="pass_key">Fichier de clé</string>
-    <string name="hint_set_pass_key">Veuillez sélectionner une clé</string>
-    <string name="choose_pass_key">Sélectionner une clé</string>
-    <string name="encrypt_type_2">Mot de passe + Clé</string>
-    <string name="encrypt_type_1">Mot de passe seul</string>
-    <string name="encrypt_type">Chiffrement</string>
-    <string name="help_create_db">Créée une base de données KeepPass v4 par défaut</string>
-    <string name="hint_enter_password">Confirmer le mot de passe</string>
-    <string name="hint_input_password">Entrez un mot de passe entre 6 et 16 caractères</string>
-    <string name="hint_set_password">Définir un mot de passe</string>
-    <string name="open">Déverrouiller</string>
-    <string name="key1">Clé secrète : %s</string>
-    <string name="key">Clé secrète</string>
-    <string name="password">Mot de passe</string>
-    <string name="sync_db">Base de données synchronisée</string>
-    <string name="cover_cloud">Dans le nuage</string>
-    <string name="net_error">Problème réseau</string>
-    <string name="no_file">Aucun fichier</string>
-    <string name="helper_webdav">ex. : https://dav.example.org/dav/[votre dossier]/xxx.kdbx</string>
-    <string name="afs">Système de fichier Android</string>
-    <string name="hint_kdbx_name">Suffixe invalide, doit être « .kdbx »</string>
-    <string name="start_upload_db">Envoyer la base de données vers votre disque réseau</string>
-    <string name="unlocked">Déverrouillé</string>
-    <string name="db_unlock">Déverrouiller la base de données</string>
-    <string name="quick_unlock">Déverrouillage rapide</string>
-    <string name="version_log">Mettre à jour le journal</string>
-    <string name="hint_finger_print_verfiy">Veuillez vérifier votre empreinte à nouveau avant d\'utiliser vos nouveaux paramètres</string>
-    <string name="open1">ouvert</string>
-    <string name="add_attr_file">Ajouter des pièces jointes</string>
-    <string name="hint_fingerprint_modify">Vérifiez que l\'empreinte digital a changé. Pour que votre mot de passe soit plus sûr, veuillez réinitialiser la fonctionnalité de déverrouillage par empreinte</string>
-    <string name="hint_please_open_database">Veuillez ouvrir la base de données</string>
-    <string name="set_delete_no_into_recycle_bin_des">Déplacer les entrées supprimés dans la corbeille</string>
-    <string name="warning_rooted">Pour plus de sécurité, veuillez ne jamais ouvrir la base de données sur un téléphone rooté</string>
-    <string name="sort">Tri</string>
-    <string name="hint_security_yellow">Attention : Cette application tournant dans un simulateur, certains risques imprévisibles pour la base de données peuvent arriver</string>
-    <string name="totp_time">Essai(s) :</string>
-    <string name="totp_len">Longueur :</string>
-    <string name="totp_custom_hint">Préférences personnalisées</string>
-    <string name="totp_custom">Utiliser les préférences personnalisées</string>
-    <string name="totp_defaule">Jeton au format RFC 6238</string>
-    <string name="sort_time_desc">Date descendante</string>
-    <string name="move">Déplacer</string>
-    <string name="hint_not_nore_info">Pas d\'autres infos</string>
-    <string name="set_key_sum_main_show_entries">Afficher toutes les entrées après avoir déverrouillé la base de données</string>
-    <string name="set_key_title_opr_env_check_turn_off">Inactif</string>
-    <string name="set_key_title_main_allow_show_entries">Page d\'accueil</string>
-    <string name="set_key_title_opr_env_check">Vérification de l’environnement opérationnel</string>
-    <string name="cur_app_not_autofill">Aucun remplissage auto</string>
-    <string name="multi_choice">Plusieurs choix</string>
-    <string name="ref_entry">Entrée de référence</string>
-    <string name="close">Fermer</string>
-    <string name="Alipay">Alipay</string>
-    <string name="set_title_screen_lock">Verrouillage de l\'écran</string>
-    <string name="set_summary_screen_lock_on">Verrouille automatiquement la base de données</string>
-    <string name="set_summary_screen_lock_off">Ne pas verrouiller la base de données</string>
-    <string name="set_key_title_show_state_bar">Barre de status</string>
-    <string name="choose_pass_key_file_des">Choisir n\'importe quel fichier pour la clé</string>
-    <string name="create_pass_key_file_des">Créer un nouveau fichier à utiliser pour la clé</string>
-    <string name="create_pass_key_success">La création de la clé [%s] a réussi</string>
-    <string name="hint_group_desc">Éléments du groupe « %s »</string>
-    <string name="error_group_id_null">L\'identifiant du groupe est vide</string>
-    <string name="fail">Échec</string>
-    <string name="quick_use_fingerprint">N\'utiliser que les empreintes digitales dans l\'interface de déverrouillage rapide</string>
-    <string name="normal_account">Compte normal</string>
-    <string name="choose_dir">Enregistrer le groupe actuel</string>
-    <string name="add_more">Ajouter plus</string>
-    <string name="warning">Avertissement</string>
-    <string name="hint_input_attr_str_key">Nom du champ</string>
-    <string name="del_attr_str">Supprimer les champs personnalisés</string>
-    <string name="download_file">Enregistrer les pièces jointes dans la carte SD</string>
-    <string name="db_pass_no_alter">Ce nouveau mot de passe est identique à l\'ancien</string>
-    <string name="open_whit_text">Ouvrir avec l\'éditeur de texte</string>
-    <string name="open_whit_other">Mettre en cache et ouvrir avec app système</string>
-    <string name="txt_viewer">Aperçu du fichier</string>
-    <string name="error_pass">Erreur du mot de passe</string>
-    <string name="app_feedback">Suggestions</string>
-    <string name="relevance_db">Données liées</string>
-    <string name="no_matching_entry">Aucun correspondance</string>
-    <string name="modify_time">Modifier la date</string>
-    <string name="title">Titre</string>
-    <string name="submit">Soumettre</string>
-    <string name="send_email_fail">Veuillez d\'abord installer une app pour envoyer des emails</string>
-    <string name="update_group_success">Infos du groupe mis à jour</string>
-    <string name="update_group_fail">Échec de la mise à jour des infos du groupe</string>
-    <string name="set_key_praise_value">Noter KeePassA</string>
-    <string name="clean_clip_time_summary">Vider le presse-papiers %s après que le mot de passe a été copié</string>
-    <string name="error_short_pass_lenght">Veuillez définir le mot de passe court avec 6 caractères ou moins</string>
-    <string name="des_quick_unlock">Verrouiller la base de données avec un mot de passe court</string>
-    <string name="quick_pass_len_summary">Longueur du mot de passe court : %s</string>
-    <string name="set_key_main_show_totp_tab_on">Afficher la catégorie TOTP</string>
-    <string name="set_key_main_show_totp_tab_title">La page d\'accueil affiche les catégories TOTP</string>
-    <string name="set_key_main_show_totp_tab_off">Ne pas afficher la catégorie TOTP</string>
-    <string name="get_token_fail">Échec d\'obtention du jeton</string>
-    <string name="error_open_db">Échec de l\'ouverture de la base de donnée. Le mot de passe est-il correct \? La clé est-elle manquante \?</string>
-    <string name="error_entry_id_null">L\'identifiant de l\'entrée est vide</string>
-    <string name="undo_entry">Reprise…</string>
-    <string name="create_entry_no_save">Quitter la page actuelle sans sauvegarder cette entrée \?</string>
-    <string name="error_attr_str_null">Le nom est vide</string>
-    <string name="hint_webdav_url">URL du fichier</string>
-    <string name="use_full_fingerprint">Déverrouillage complet par emprunte digitale</string>
-    <string name="disable">Désactiver</string>
-    <string name="helper_webdav_dir">ex. : https://dav.example.org/dav/[votre dossier]/</string>
-    <string name="save_db_fail">Échec de l\'enregistrement de la base de données</string>
-    <string name="notify_db_locked">La base de données est verrouillée</string>
-    <string name="hint_db_pass_modify_success">Utiliser ce nouveau mot de passe pour la prochaine ouverture de la base de données</string>
-    <string name="setting_miui_background_start">Paramètres &gt; Paramètres d\'application &gt; Gestion de l\'application &gt; KeePassA &gt; Gestion des permissions</string>
-    <string name="setting_vivo_background_start">Paramètres &gt; Plus de paramètres &gt; Gestion des permissions &gt; KeePassA &gt; Paramètres des permissions &gt; Notification en arrière-plan</string>
-    <string name="notify_quick_unlock_start">La base de données est verrouillée, le déverrouillage rapide est activé</string>
-    <string name="hint_quick_use_fingerprint">Ne pouvoir utilisez que votre empreinte digitale pour le déverrouillage rapide</string>
-    <string name="donate_desc">[KeepassA](https://github.com/AriaLyy/KeepassA) est une application libre et open source. Si vous l\'aimez, vous pouvez supporter notre travail par un don. Merci.</string>
-    <string name="sort_chart_asc">Ordre alphabétique (A-Z)</string>
-    <string name="sort_chart_desc">Ordre anti-alphabétique (Z-A)</string>
-    <string name="ime_label">Clavier sécurisé de KeePassA</string>
-    <string name="dev_birthday">C\'est l\'anniversaire du développeur 🎂. Aimerez-vous m\'offrir un gâteau d\'anniversaire \?</string>
-    <string name="totp_key_error">Le code TOTP n\'a pu être généré, la clé est invalide</string>
-    <string name="set_open_kpa_ime_title">Clavier sécurisé</string>
-    <string name="license">Licence de logiciel libre</string>
-    <string name="error_uri_grant_permission">Échec de l\'autorisation URI</string>
-    <string name="no_totp_token">Aucun jeton TOTP</string>
-    <string name="set_key_sum_main_show_history">Afficher l\'historique après avoir déverrouillé la base de données</string>
-    <string name="ui_setting">Préférence de l\'interface</string>
-    <string name="error_webdav_end_suffix">Utilisez le chemin vers le dossier, par ex. : « https://example.org/dav/kpa/ »</string>
-    <string name="error_webdav_end_dav_suffix">Le chemin « /dav/ » n\'est pas autorisé. Veuillez utiliser un chemin valide, comme : « https://example.org/dav/kpa/ »</string>
-    <string name="set_key_title_fillet_bg_icon">Icônes avec coin arrondis</string>
-    <string name="set_key_title_fillet_bg_icon_turn_on">Actif</string>
-    <string name="set_key_title_fillet_bg_icon_turn_off">Inactif</string>
-    <string name="s_default">Par défaut</string>
-    <string name="customize">Personnaliser</string>
-    <string name="set_key_title_close_load_anim_turn_on">Actif</string>
-    <string name="set_key_title_close_load_anim_turn_off">Inactif</string>
-    <string name="set_key_title_auto_lock_database_turn_off">Non</string>
-    <string name="translate_language">Traduisez l\'application dans votre langue</string>
-    <string name="hint_security_green">"L\'application est dans un environnement sûr "</string>
-    <string name="hint_security_red">Votre téléphone a été rooté, la base de données se trouve donc dans un environnement très peu sûr</string>
-    <string name="help_create_group">Choisissez un nom de groupe de 16 caractères max</string>
-    <string name="create_time">Fait à %s</string>
-    <string name="help_pass_type">N\'utilisez que votre mot de passe :
-\n Seul votre mot de passe sera nécessaire pour ouvrir la base de données ;
-\nMot de passe + clé :
-\n Votre mot de passe sera nécessaire mais il vous sera aussi demandé le fichier de clé pour ouvrir la base de données.</string>
-    <string name="success">Succès</string>
-    <string name="hint_protect_str">Champ protégé</string>
-    <string name="help_pass_key">Un fichier clé est l\'équivalent d\'un mot de passe pour accéder à vos données, mais bien souvent, c\'est une méthode beaucoup plus sûre mais aussi plus complexe. Mais c\'est aussi bien plus difficile à cacher. Par exemple, si vous stockez votre base de données dans le nuage, veillez ne pas placer votre fichier de clé avec.
-\n Vous pouvez choisir n\'importe quel fichier pour servir de clé, comme une photo ou un fichier texte.
-\n ⚠️ Avertissement : La moindre modification de ce fichier clé vous empêchera de pouvoir l\'utiliser pour ouvrir la base de données par la suite !!!
-\n Il est donc fortement recommandé d\'utiliser un fichier en lecture seule comme clé.</string>
-    <string name="hint_del_entry_no_recycle">Voulez-vous vraiment supprimer l\'entrée 【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】définitivement \?</string>
-    <string name="hint_input_attr_str_value">Valeur du champ</string>
-    <string name="error_attr_file_too_large">Réduisez l\'utilisation de la mémoire en évitant de joindre des fichiers de plus de 10 Mo</string>
-    <string name="hint_full_fingerprint">Votre empreinte digitale est utilisée pour déverrouiller la base de donnée dans les interfaces de déverrouillage rapide et de déverrouillage de la base de données, KeePassA crypte et stocke le mot de passe de votre base de donnée ainsi que les informations de la clé dans le trousseau d\'accès système d\'Android, et utiliser l\'autorisation d\'empreinte digitale pour plus de protection. Ainsi, seule votre empreinte digitale pourra déverrouiller votre base de données.</string>
-    <string name="add_custom_str">Créer des champs personnalisés</string>
-    <string name="del_attr_file">Supprimer la pièce jointe</string>
-    <string name="open_whit_img">Ouvrir avec le visualiseur d\'images</string>
-    <string name="save_file_success">Le fichier [%s] a été enregistré</string>
-    <string name="feedback">Suggestions ^_^</string>
-    <string name="merge">Fusionner</string>
-    <string name="search">Chercher</string>
-    <string name="open_permissions">Ouvrir les autorisations</string>
-    <string name="quick_pass_len_title">Longueur des mots de passe courts</string>
-    <string name="ime_entry_other_info">Remplir les autres champs</string>
-    <string name="cover">Couverture</string>
-    <string name="login">Connexion</string>
-    <string name="closed">Fermé</string>
-    <string name="upload">Envoyer</string>
-    <string name="donate">Faire un don</string>
-    <string name="url">URL</string>
-    <string name="expand">Développer</string>
-    <string name="shrink">Réduire</string>
-    <string name="other">Autres</string>
-    <string name="set_key_title_show_state_bar_turn_off">Masquer</string>
-    <string name="set_open_auto_fill_title">Service de remplissage auto</string>
-    <string name="clean_clip_time">Presse-papiers vide</string>
-    <string name="set_delete_setting">Supprimer les préférences</string>
-    <string name="set_key_theme_style_summary">Même que le système</string>
-    <string name="cover_local">Local</string>
-    <string name="totp_Arithmetic">Algorithme :</string>
-    <string name="set_key_title_show_state_bar_turn_on">Afficher</string>
-    <string name="lose_time">Date d\'expiration</string>
-    <string name="other_set">Autres préférences</string>
-    <string name="open_quick_unlock">Déverrouillage rapide</string>
-    <string name="set_key_value">Choisir la langue</string>
-    <string name="invalid">Invalide</string>
-    <string name="set_key_title_opr_env_check_turn_on">Actif</string>
-    <string name="save_db_success">Base de données enregistrée</string>
-    <string name="hint_db_pass_modify">Mot de passe de la base de données changé</string>
-    <string name="set_key_title_auto_lock_database_turn_on">Oui</string>
-    <string name="mark_not_exit">Boutique d\'application inexistante</string>
-    <string name="hint_please_input">Veuillez entrer %s</string>
-    <string name="db_file_no_exist">Le fichier de la base de données n\'existe pas</string>
-    <string name="feedback_email_msg">Bonjour, je suis KeePassA, avez-vous des questions \?<br/> <br/> <br/> _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/> Marque : %s <br/> Modèle : %s <br/> Version du système :%s <br/> Résolution: %s <br/> Version de l\'application: %s</string>
-    <string name="notify_channel_db_open">Notification de déverrouillage</string>
-    <string name="set_key_title_auto_lock_database">Verrouiller automatiquement la base de données</string>
-    <string name="autofill_sign_in_prompt">Remplissez automatiquement les mots de passe avec KeePassA</string>
-    <string name="auth">Authentification</string>
-    <string name="sort_time_asc">Date ascendante</string>
-    <string name="help_create_db_path">Il est recommandé d\'utiliser un chemin Cloud tel que Dropbox et Webdav. Cela synchronisera automatiquement votre base de données dans le cloud et facilitera son utilisation sur d\'autres appareils.
-\n La base de données est chiffrée en AES256. Sans votre mot de passe, personne ne peut ouvrir votre base de données.</string>
-    <string name="db1">base de données\t|\t&lt;font color=#757575&gt;%s&lt;/font&gt;</string>
-    <string name="invalid_auth">L\'autorisation a échoué. Veuillez réessayer.</string>
-    <string name="error_db_pass_too_short">Veuillez utiliser plus de 6 caractères pour le mot de passe afin de bien protéger vos données</string>
-    <string name="error_short_pass_short">Veuillez définir le mot de passe court avec 3 caractères ou plus</string>
-    <string name="file_conflict_msg">Conflit entre les données dans le nuage et les données locales, veuillez sélectionner la méthode de synchronisation. Les entrées en conflit sont :
-\n %s</string>
-    <string name="set_delete_no_into_recycle_bin">Supprime définitivement les entrées de la base de données</string>
-    <string name="set_key_theme_style_title">Style du thème</string>
-    <string name="auto_lock_db_time">Verrouiller automatiquement la base de données</string>
-    <string name="hint_background_start">Rendez-vous dans&lt;font color=#FF0000&gt;【%s】&lt;/font&gt;pour activer les permissions de notification en arrière-plan pour un meilleur remplissage en mode automatique.&lt;br&gt; &lt;font color=#FF0000&gt;keepassA va activer seulement l\'interface correspondante pour ouvrir la base de données quand vous utilisez la fonction de saisie automatique&lt;/font&gt;</string>
-    <string name="hint_save_auto_fill">Lors de l\'association du nom du paquet【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】avec l\'entrée【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】</string>
-    <string name="auto_lock_db_time_summary">Verrouiller automatiquement la base de données après %s sans aucune opération</string>
-    <string name="dropbox_msg">Afin de respecter votre vie privée, KeePassA ne demandera pas de permission sur tous les fichiers de votre compte Dropbox, mais &lt;font color = # FF0000&gt; seulement l\'accès au dossier 【Apps/KeePassA】 &lt;/ font &gt;.&lt;br /&gt; Par conséquent : &lt;br /&gt; &lt;b&gt;Si vous avez déjà une base de données KeePass, vous devez autoriser KeePassA à accéder au dossier 【apps/KeePassA】 dans KeePassA et enregistrer la base de données KeePass dans le dossier 【Application / KeePassA】 lorsque l\'autorisation est terminée. &lt;/b&gt;&lt;br /&gt;&lt;br /&gt; Si vous créez une nouvelle base de données KeePass, les opérations suivantes ne seront pas nécessaires. Après la création de la base de données, KeePassA créera automatiquement le dossier correspondant et déplacera la base de donnée dans le dossier 【Apps/KeePassA】 de Dropbox.</string>
-    <string name="one_drive_hint">Pour respecter votre vie privée, KeePassA n\'aura accéder qu\'au dossier &lt;font color=#FF0000&gt;【application/KeepassA】&lt;/font&gt;. Si vous souhaitez accéder à la base de données depuis OneDrive, &lt;font color=#FF0000&gt;veuillez la stocker dans ce même dossier.&lt;/font&gt;</string>
-    <string name="error_keystore">Erreur du trousseau d\'accès, veuillez réessayer</string>
-    <string name="kpa_totp">Jeton</string>
-    <string name="kpa_copy">Copier</string>
-    <string name="error_connect_play">Échec de la connexion aux services Google</string>
-    <string name="miui_permissions">Le système « miui » a besoin d\'autorisations pour ouvrir une fenêtre en arrière-plan pour vous permettre d\'utiliser le remplissage automatique.</string>
-    <string name="one_drive_init_failure">Échec de OneDrive</string>
-    <string name="set_key_title_close_load_anim">Animation de chargement</string>
-    <string name="error_qr_code_str">Ce QR code n\'est pas normal. Veuillez vérifier que ce QR code est supporté par Google Authenticator</string>
-    <string name="thank_donate">Merci pour votre don.</string>
-    <string name="error_donate">Échec du don</string>
-    <string name="year">Année</string>
-    <string name="monthly">Tous les mois</string>
-    <string name="disposable">Une seule fois</string>
-    <string name="google_play">Google Play</string>
-    <string name="current_collection_num">%1$s collections</string>
-    <string name="my_collection">Mes collections</string>
-    <string name="no_collection">Aucune collection</string>
-    <string name="error_open_db_webdav">Échec d\'ouverture de la base de données, le fichier WebDAV n\'existe pas</string>
-    <string name="helper_webdav_service">Sélectionner un service WebDAV</string>
-    <string name="error_is_root">Est déjà dans le dossier racine</string>
-    <string name="select_cur_path">Sélectionner un dossier</string>
-    <string name="select_save_path">Sélectionner l\'emplacement d\'enregistrement</string>
-    <string name="one_drive_load_user_failure">Échec le chargement des infos de l\'utilisateur</string>
-    <string name="totp_steam">Préférences de jeton de flux</string>
-    <string name="error_open_db_arcfour_error">Algorithme de cryptage de flux invalide</string>
-    <string name="quick_pass_type">Emplacement d\'interception de mots de passes courts</string>
-    <string name="hint_open_background_start">Veuillez ouvrir la permission de retrait en arrière-plan, sinon vous ne pourrez pas utiliser le remplissage automatique</string>
-    <string name="hint_cloud_file_already_exist">%1$s existe déjà. Voulez-vous écraser ce fichier \?</string>
-    <string name="webdav_port_name_null">Le nom de l\'hôte ne peut pas être vide</string>
-    <string name="privacy_agreement">Contrat de confidentialité</string>
-    <string name="port">Port</string>
-    <string name="hostname">Nom d\'hôte</string>
-    <string name="webdav_port_hint">Port</string>
-    <string name="webdav_host_name_hint">Veuillez entrer votre nom d\'hôte</string>
-    <string name="please_open_proxy">veuillez ouvrir le proxy</string>
-    <string name="ime_hint_open_auto_fill">Veuillez activer le service de remplissage auto</string>
-    <string name="invalid_img">Image invalide</string>
+    <string-array name="quick_pass_type_entries">
+        <item><![CDATA[%s premiers caractères du mot de passe de la base de données]]></item>
+        <item><![CDATA[%s derniers caractères du mot de passe de la base de données]]></item>
+    </string-array>
+    <string-array name="clean_clip_entries">
+        <item><![CDATA[30 secondes]]></item>
+        <item><![CDATA[1 minute]]></item>
+        <item><![CDATA[2 minutes]]></item>
+        <item><![CDATA[5 minutes]]></item>
+    </string-array>
+    <string-array name="quick_lock_entries">
+        <item><![CDATA[2 minutes]]></item>
+        <item><![CDATA[5 minutes]]></item>
+        <item><![CDATA[10 minutes]]></item>
+        <item><![CDATA[20 minutes]]></item>
+    </string-array>
+    <string-array name="out_db_entries">
+        <item><![CDATA[Base de données Keepass2]]></item>
+        <item><![CDATA[Fichier XML non chiffré]]></item>
+        <item><![CDATA[Fichier CSV non chiffré]]></item>
+    </string-array>
+    <string-array name="v3_add_mor_item">
+        <item><![CDATA[Remarques]]></item>
+        <item><![CDATA[fichier joint]]></item>
+        <item><![CDATA[Délai d\'expiration]]></item>
+    </string-array>
+    <string-array name="v4_add_mor_item">
+        <item><![CDATA[Remarques]]></item>
+        <item><![CDATA[Champs personnalisés]]></item>
+        <item><![CDATA[fichier joint]]></item>
+        <item><![CDATA[TOTP]]></item>
+        <item><![CDATA[étiquette]]></item>
+        <item><![CDATA[lien]]></item>
+        <item><![CDATA[Délai d\'expiration]]></item>
+    </string-array>
+    <string-array name="create_normal_group">
+        <item><![CDATA[Courriel]]></item>
+        <item><![CDATA[travail]]></item>
+        <item><![CDATA[Finances]]></item>
+        <item><![CDATA[divertissement]]></item>
+        <item><![CDATA[corbeille]]></item>
+    </string-array>
+    <string-array name="auto_fill_hint_label">
+        <item><![CDATA[Courriel]]></item>
+        <item><![CDATA[téléphone portable]]></item>
+        <item><![CDATA[Utilisateur]]></item>
+        <item><![CDATA[Numéro de compte]]></item>
+    </string-array>
+    <string name="db"><![CDATA[base de données]]></string>
+    <string name="db1"><![CDATA[Base de données\t|\t<font color="#757575">%s</font>]]></string>
+    <string name="password"><![CDATA[Mot de passe]]></string>
+    <string name="key"><![CDATA[clé]]></string>
+    <string name="key1"><![CDATA[Clé : %s]]></string>
+    <string name="open"><![CDATA[Déverrouiller]]></string>
+    <string name="hint_set_password"><![CDATA[Définir le mot de passe]]></string>
+    <string name="hint_input_password"><![CDATA[Entrez un mot de passe de 6 à 16 caractères]]></string>
+    <string name="hint_enter_password"><![CDATA[Confirmer le mot de passe]]></string>
+    <string name="help_create_db"><![CDATA[Base de données KeepPass v4 créée par défaut]]></string>
+    <string name="help_create_group"><![CDATA[Le nom du groupe ne peut pas dépasser 16 caractères]]></string>
+    <string name="encrypt_type"><![CDATA[Méthode de cryptage]]></string>
+    <string name="encrypt_type_1"><![CDATA[Mot de passe uniquement]]></string>
+    <string name="encrypt_type_2"><![CDATA[mot de passe + clé]]></string>
+    <string name="choose_pass_key"><![CDATA[Sélectionner la clé]]></string>
+    <string name="hint_set_pass_key"><![CDATA[Veuillez sélectionner une clé]]></string>
+    <string name="pass_key"><![CDATA[clé de fichier]]></string>
+    <string name="helper_create_pass"><![CDATA[Il est recommandé d\'utiliser un mot de passe mixte (majuscules et minuscules anglais + chiffres + symboles)]]></string>
+    <string name="open_db"><![CDATA[Ouvrir la base de données]]></string>
+    <string name="db_name"><![CDATA[Entrez le nom de la base de données]]></string>
+    <string name="create_db"><![CDATA[Créer une base de données]]></string>
+    <string name="next"><![CDATA[Étape suivante]]></string>
+    <string name="up"><![CDATA[Étape précédente]]></string>
+    <string name="hint_select_db_path"><![CDATA[Cliquez pour définir la méthode de sauvegarde des données]]></string>
+    <string name="hint_select_path_type"><![CDATA[Sélectionnez le chemin de sauvegarde de la base de données]]></string>
+    <string name="error_db_name_null"><![CDATA[Veuillez entrer le nom de la base de données]]></string>
+    <string name="done"><![CDATA[Terminé]]></string>
+    <string name="enter"><![CDATA[Confirmer]]></string>
+    <string name="cancel"><![CDATA[Annuler]]></string>
+    <string name="hint"><![CDATA[Conseils]]></string>
+    <string name="help_create_db_path"><![CDATA[Il est recommandé d\'utiliser des chemins cloud tels que Dropbox et WebDAV, qui synchroniseront automatiquement votre base de données avec le cloud et faciliteront l\'utilisation de la base de données sur d\'autres appareils.
+La base de données \n est chiffrée à l\'aide de AES256. Personne ne peut ouvrir votre base de données sans votre mot de passe.]]></string>
+    <string name="help_pass_type"><![CDATA[Utiliser uniquement le mot de passe :
+\n nécessite uniquement votre mot de passe pour ouvrir la base de données ;
+\n mot de passe + clé :
+\n Vous devez saisir un mot de passe et sélectionner un fichier clé pour ouvrir la base de données.]]></string>
+    <string name="help_pass_key"><![CDATA[Un fichier de clé équivaut à une clé pour ouvrir des données et est généralement beaucoup plus complexe et fiable qu\'un mot de passe. Mais il est également plus difficile de le cacher, et si vous conservez votre base de données dans le cloud, ne combinez jamais la clé et la base de données.
+\n Vous pouvez choisir n\'importe quel fichier comme clé pour ouvrir la base de données, une photo ou un document TXT.
+\n⚠️Remarque : Si cette photo ou ce document TXT est modifié, alors vous ne pourrez pas ouvrir la base de données ! !
+\n recommande fortement d\'utiliser des fichiers en lecture seule comme clés.]]></string>
+    <string name="choose_file"><![CDATA[Sélectionner un fichier]]></string>
+    <string name="choose_pass_key_file_des"><![CDATA[Choisissez n\'importe quel fichier comme clé]]></string>
+    <string name="create_file"><![CDATA[Créer un nouveau fichier]]></string>
+    <string name="create_pass_key_file_des"><![CDATA[Créez un nouveau fichier à utiliser comme clé]]></string>
+    <string name="create_pass_key_success"><![CDATA[Création de la clé [%s] réussie]]></string>
+    <string name="error_pass_null"><![CDATA[Veuillez définir le mot de passe de la base de données]]></string>
+    <string name="error_enter_pass_null"><![CDATA[Veuillez saisir le mot de passe de confirmation]]></string>
+    <string name="error_pass_unfit"><![CDATA[Deux mots de passe sont incohérents]]></string>
+    <string name="hint_db_create_success"><![CDATA[Base de données [%s] créée]]></string>
+    <string name="history"><![CDATA[histoire]]></string>
+    <string name="history_record"><![CDATA[Histoire]]></string>
+    <string name="edit"><![CDATA[Modifier]]></string>
+    <string name="change_db"><![CDATA[Changer de base de données]]></string>
+    <string name="all"><![CDATA[entrée]]></string>
+    <string name="setting"><![CDATA[paramètres]]></string>
+    <string name="db_setting"><![CDATA[Paramètres de la base de données]]></string>
+    <string name="app_setting"><![CDATA[Paramètres de l\'application]]></string>
+    <string name="welcome"><![CDATA[Bienvenue]]></string>
+    <string name="help_input_db_pass"><![CDATA[Entrez le mot de passe de la base de données]]></string>
+    <string name="need_key"><![CDATA[Besoin d\'une clé ?]]></string>
+    <string name="error_uri"><![CDATA[Erreur URI]]></string>
+    <string name="error_input_pass_null"><![CDATA[Veuillez saisir le mot de passe de la base de données]]></string>
+    <string name="error_open_db"><![CDATA[Impossible d\'ouvrir la base de données. Mot de passe incorrect ou ai-je besoin d\'une clé ?]]></string>
+    <string name="error_open_db_key_empty"><![CDATA[Clé manquante]]></string>
+    <string name="error_open_db_pass_error"><![CDATA[Erreur de mot de passe de base de données]]></string>
+    <string name="error_open_db_key_invalid"><![CDATA[Clé invalide]]></string>
+    <string name="error_open_db_version_error"><![CDATA[Erreur de version de la base de données]]></string>
+    <string name="error_open_db_signature_error"><![CDATA[Erreur de signature de base de données]]></string>
+    <string name="error_open_db_algorithm_error"><![CDATA[Algorithme invalide]]></string>
+    <string name="error_open_db_arcfour_error"><![CDATA[Algorithme de chiffrement de flux invalide]]></string>
+    <string name="hint_group_desc"><![CDATA[Entrées du groupe %s]]></string>
+    <string name="error_group_id_null"><![CDATA[L\'ID du groupe est vide]]></string>
+    <string name="error_entry_id_null"><![CDATA[L\'ID d\'entrée est vide]]></string>
+    <string name="create_time"><![CDATA[Créé par %s]]></string>
+    <string name="expire_time"><![CDATA[Expire à %s]]></string>
+    <string name="hint_attr"><![CDATA[Propriétés avancées]]></string>
+    <string name="attachment"><![CDATA[fichier joint]]></string>
+    <string name="hint_ex_property"><![CDATA[Propriétés supplémentaires]]></string>
+    <string name="expire"><![CDATA[<font color=#FF0000>%s</font>Expiré]]></string>
+    <string name="del_group"><![CDATA[Supprimer le groupe]]></string>
+    <string name="edit_group"><![CDATA[Modifier le groupe]]></string>
+    <string name="success"><![CDATA[succès]]></string>
+    <string name="fail"><![CDATA[échoué]]></string>
+    <string name="del_entry"><![CDATA[Supprimer l\'entrée]]></string>
+    <string name="del_history"><![CDATA[Supprimer l\'historique]]></string>
+    <string name="copy_user_name"><![CDATA[Copier le nom d\'utilisateur]]></string>
+    <string name="copy_password"><![CDATA[Copier le mot de passe]]></string>
+    <string name="copy_totp"><![CDATA[Copier le jeton TOTP]]></string>
+    <string name="hint_del_group"><![CDATA[Êtes-vous sûr de vouloir supprimer le groupe [<font color=#FF0000>%s</font>] ? <br> Cette opération déplacera le groupe vers la corbeille, où vous pourrez restaurer le groupe.]]></string>
+    <string name="hint_del_group_no_recycle"><![CDATA[Voulez-vous vraiment supprimer le groupe [<font color=#FF0000>%s</font>] ?]]></string>
+    <string name="hint_del_entry"><![CDATA[Voulez-vous vraiment supprimer l\'entrée [<font color=#FF0000>%s</font>] ? <br> Cette action déplacera cette entrée vers la Corbeille, où vous pourrez ultérieurement restaurer l\'entrée.]]></string>
+    <string name="hint_del_entry_no_recycle"><![CDATA[Voulez-vous vraiment supprimer définitivement l\'entrée [<font color=#FF0000>%s</font>] ?]]></string>
+    <string name="group_name"><![CDATA[Nom du groupe]]></string>
+    <string name="create_group"><![CDATA[Créer un groupe]]></string>
+    <string name="error_group_name_null"><![CDATA[Le nom du groupe est vide]]></string>
+    <string name="create_group_fail"><![CDATA[Impossible de créer un groupe]]></string>
+    <string name="create_group_success"><![CDATA[Groupe créé]]></string>
+    <string name="modify_group"><![CDATA[Modifier le groupe]]></string>
+    <string name="error_group_no_modify"><![CDATA[Le groupe n\'a pas changé]]></string>
+    <string name="title_too_long"><![CDATA[Le nom du groupe est trop long]]></string>
+    <string name="choose_icon"><![CDATA[Sélectionner l\'icône]]></string>
+    <string name="undo_entry"><![CDATA[Restauré…]]></string>
+    <string name="undo_to"><![CDATA[Passer à ce groupe]]></string>
+    <string name="undo_grouped"><![CDATA[Le groupe a été déplacé vers l\'emplacement spécifié]]></string>
+    <string name="undo_entryed"><![CDATA[L\'entrée a été déplacée vers l\'emplacement spécifié]]></string>
+    <string name="hint_copy_user"><![CDATA[Nom d\'utilisateur copié dans le presse-papiers]]></string>
+    <string name="hint_copy_pass"><![CDATA[Mot de passe copié dans le presse-papiers]]></string>
+    <string name="hint_copy_totp"><![CDATA[Jeton TOTP copié dans le presse-papiers]]></string>
+    <string name="create_totp"><![CDATA[Générer un jeton OTP]]></string>
+    <string name="safety_set"><![CDATA[Paramètres de sécurité]]></string>
+    <string name="fingerprint_unlock"><![CDATA[Déverrouillage par empreinte digitale]]></string>
+    <string name="db_handle"><![CDATA[Opérations de base de données]]></string>
+    <string name="modify_db_name"><![CDATA[Modifier le nom de la base de données]]></string>
+    <string name="modify_db_pass"><![CDATA[Changer le mot de passe de la base de données]]></string>
+    <string name="out_db"><![CDATA[Exporter la base de données]]></string>
+    <string name="db_name_no_alter"><![CDATA[Le nom de la base de données n\'a pas changé]]></string>
+    <string name="db_name_modify"><![CDATA[Modification du nom de la base de données]]></string>
+    <string name="no_record"><![CDATA[aucun enregistrement]]></string>
+    <string name="hint_query"><![CDATA[Nom d\'utilisateur, titre, URL, propriétés avancées…]]></string>
+    <string name="copy_to_clip"><![CDATA[Copier dans le presse-papier]]></string>
+    <string name="show_pass"><![CDATA[afficher le mot de passe]]></string>
+    <string name="ope_url"><![CDATA[ouvrir le lien]]></string>
+    <string name="hide_pass"><![CDATA[Masquer le mot de passe]]></string>
+    <string name="hint_copy_to_clip"><![CDATA[Données copiées dans le presse-papiers]]></string>
+    <string name="verify_finger"><![CDATA[Vérification des empreintes digitales]]></string>
+    <string name="verify_finger_fail"><![CDATA[Impossible de vérifier l\'empreinte digitale]]></string>
+    <string name="ban_fingerprint"><![CDATA[Déverrouiller sans empreinte digitale]]></string>
+    <string name="quick_use_fingerprint"><![CDATA[Utilisez uniquement votre empreinte digitale pour déverrouiller sur l\'interface de déverrouillage rapide]]></string>
+    <string name="use_full_fingerprint"><![CDATA[Déverrouillage complet des empreintes digitales]]></string>
+    <string name="hint_full_fingerprint"><![CDATA[Les empreintes digitales sont utilisées pour déverrouiller la base de données dans l\'interface de déverrouillage rapide et l\'interface de déverrouillage de la base de données. KeePassA crypte et stocke le mot de passe principal et les informations clés de la base de données dans le référentiel de clés local du système Android et utilise l\'autorisation par empreinte digitale pour la protection. Seule votre empreinte digitale peut déverrouiller la base de données.]]></string>
+    <string name="hint_quick_unlock"><![CDATA[Saisissez les derniers chiffres %s du mot de passe de votre base de données]]></string>
+    <string name="hint_input_title"><![CDATA[Titre]]></string>
+    <string name="hint_input_user_name"><![CDATA[Nom d\'utilisateur]]></string>
+    <string name="hint_input_url"><![CDATA[Adresse du lien]]></string>
+    <string name="notice"><![CDATA[Remarques]]></string>
+    <string name="hint_input_tag"><![CDATA[étiquette 1, étiquette 2]]></string>
+    <string name="hint_input_cover_url"><![CDATA[remplacer le lien]]></string>
+    <string name="create_entry"><![CDATA[Créer une entrée]]></string>
+    <string name="save"><![CDATA[enregistrer]]></string>
+    <string name="len"><![CDATA[longueur]]></string>
+    <string name="upper"><![CDATA[lettres majuscules]]></string>
+    <string name="lower"><![CDATA[lettres minuscules]]></string>
+    <string name="numer"><![CDATA[chiffres]]></string>
+    <string name="minus"><![CDATA[signe moins]]></string>
+    <string name="underline"><![CDATA[Souligner]]></string>
+    <string name="space"><![CDATA[espace]]></string>
+    <string name="special"><![CDATA[caractères spéciaux]]></string>
+    <string name="bracket"><![CDATA[parenthèses]]></string>
+    <string name="pass_generater"><![CDATA[générateur de mot de passe]]></string>
+    <string name="error_genera_params"><![CDATA[Veuillez sélectionner au moins un type de génération de mot de passe]]></string>
+    <string name="hint_pass_null"><![CDATA[Le mot de passe est vide]]></string>
+    <string name="date"><![CDATA[Date]]></string>
+    <string name="time"><![CDATA[temps]]></string>
+    <string name="choose_dir"><![CDATA[Enregistrer dans le groupe actuel]]></string>
+    <string name="normal_account"><![CDATA[Compte ordinaire]]></string>
+    <string name="add_more"><![CDATA[Ajouter plus d\'éléments]]></string>
+    <string name="warning"><![CDATA[avertissement]]></string>
+    <string name="create_entry_no_save"><![CDATA[Quitter la page actuelle sans enregistrer les entrées ?]]></string>
+    <string name="add_custom_str"><![CDATA[Créer des champs personnalisés]]></string>
+    <string name="hint_input_attr_str_key"><![CDATA[Nom du champ]]></string>
+    <string name="hint_input_attr_str_value"><![CDATA[valeur du champ]]></string>
+    <string name="hint_protect_str"><![CDATA[champs protégés]]></string>
+    <string name="error_attr_str_null"><![CDATA[Le nom du champ est vide]]></string>
+    <string name="del_attr_str"><![CDATA[Supprimer le champ personnalisé]]></string>
+    <string name="del_attr_file"><![CDATA[Supprimer la pièce jointe]]></string>
+    <string name="error_attr_file_too_large"><![CDATA[Veuillez ne pas joindre de fichiers de plus de 10 Mo.]]></string>
+    <string name="download_file"><![CDATA[Enregistrer les pièces jointes sur la carte SD]]></string>
+    <string name="open_whit_text"><![CDATA[Ouvrir avec le texte intérieur]]></string>
+    <string name="open_whit_img"><![CDATA[Ouvrir avec la visionneuse d\'images interne]]></string>
+    <string name="open_whit_other"><![CDATA[Enregistrer dans le cache et ouvrir avec l\'application système]]></string>
+    <string name="save_file_success"><![CDATA[Fichier enregistré [%s]]]></string>
+    <string name="txt_viewer"><![CDATA[visionneuse de fichiers]]></string>
+    <string name="save_db_fail"><![CDATA[Impossible de sauvegarder la base de données]]></string>
+    <string name="error_pass"><![CDATA[Mauvais mot de passe]]></string>
+    <string name="db_pass_no_alter"><![CDATA[Le nouveau mot de passe est le même que l\'ancien mot de passe]]></string>
+    <string name="hint_db_pass_modify_success"><![CDATA[Utilisez le nouveau mot de passe de la base de données pour ouvrir la base de données la prochaine fois]]></string>
+    <string name="hint_db_pass_modify"><![CDATA[Le mot de passe de la base de données a été modifié]]></string>
+    <string name="app_feedback"><![CDATA[Donner des conseils]]></string>
+    <string name="error_db_pass_too_short"><![CDATA[Afin d\'assurer la sécurité de vos données, la longueur du mot de passe de la base de données ne peut être inférieure à 6 caractères.]]></string>
+    <string name="autofill_sign_in_prompt"><![CDATA[Remplissage automatique du mot de passe à l\'aide de KeePassA]]></string>
+    <string name="hint_open_backgroun_start"><![CDATA[Vous avez activé la saisie automatique, mais dans des systèmes spéciaux tels que MIUI, KeePassA doit accorder à l\'interface contextuelle en arrière-plan <b> l\'autorisation </b> pour afficher l\'interface afin de déverrouiller la base de données.]]></string>
+    <string name="hint_background_start"><![CDATA[Cliquez sur <font color="#FF0000"><b> ci-dessous pour définir </b></font>, puis activez l\'interface contextuelle d\'arrière-plan <b>, l\'autorisation </b> pour KeePassA.]]></string>
+    <string name="setting_miui_background_start"><![CDATA[Paramètres > Paramètres de l\'application > Gestion des applications > KeePassA > Gestion des autorisations]]></string>
+    <string name="setting_vivo_background_start"><![CDATA[Paramètres > Plus de paramètres > Gestion des autorisations-> KeePassA > Paramètres d\'autorisation > Fenêtre contextuelle d\'arrière-plan]]></string>
+    <string name="no_matching_entry"><![CDATA[Aucune entrée correspondante]]></string>
+    <string name="hint_save_auto_fill"><![CDATA[S\'il faut associer le nom du package [<font color="#FF0000">%1$s</font>] à l\'entrée [<font color="#FF0000">%2$s</font>]]]></string>
+    <string name="relevance_db"><![CDATA[Données liées]]></string>
+    <string name="modify_time"><![CDATA[heure de modification]]></string>
+    <string name="lose_time"><![CDATA[Délai d\'expiration]]></string>
+    <string name="update_group_fail"><![CDATA[Impossible de mettre à jour les informations du groupe]]></string>
+    <string name="update_group_success"><![CDATA[Informations sur le groupe mises à jour]]></string>
+    <string name="title"><![CDATA[Titre]]></string>
+    <string name="feedback"><![CDATA[Commentaires ^_^]]></string>
+    <string name="submit"><![CDATA[Soumettre]]></string>
+    <string name="send_email_fail"><![CDATA[Commencez par installer une application capable d\'envoyer des e-mails]]></string>
+    <string name="feedback_email_msg"><![CDATA[Bonjour, je m\'appelle KeePassA, vous avez des questions ? _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ Marque du téléphone mobile : %1$s Modèle de téléphone mobile : %2$s Version du système : %3$s Résolution : %4$s Version de l\'application : %5$s]]></string>
+    <string name="mark_not_exit"><![CDATA[Le marché des applications n\'existe pas]]></string>
+    <string name="set_open_auto_fill_title"><![CDATA[Service de remplissage automatique]]></string>
+    <string name="set_key_praise_value"><![CDATA[Taux KeePassA]]></string>
+    <string name="other_set"><![CDATA[Autres paramètres]]></string>
+    <string name="open_quick_unlock"><![CDATA[Déverrouillage rapide]]></string>
+    <string name="quick_pass_type_summary"><![CDATA[""]]></string>
+    <string name="clean_clip_time"><![CDATA[Effacer le presse-papiers]]></string>
+    <string name="clean_clip_time_summary"><![CDATA[Après avoir copié le mot de passe, effacez le presse-papiers après %s]]></string>
+    <string name="auto_lock_db_time"><![CDATA[Verrouiller automatiquement la base de données]]></string>
+    <string name="auto_lock_db_time_summary"><![CDATA[Si aucune opération n\'est effectuée, la base de données sera automatiquement verrouillée après %s minutes.]]></string>
+    <string name="quick_pass_type"><![CDATA[Emplacement d\'interception de mot de passe court]]></string>
+    <string name="des_quick_unlock"><![CDATA[Déverrouillez votre base de données avec un mot de passe court]]></string>
+    <string name="error_short_pass_lenght"><![CDATA[Le mot de passe court ne peut pas dépasser 6 caractères.]]></string>
+    <string name="error_short_pass_short"><![CDATA[La longueur du mot de passe court ne peut pas être inférieure à 3 caractères]]></string>
+    <string name="quick_pass_len_title"><![CDATA[Mot de passe court]]></string>
+    <string name="quick_pass_len_summary"><![CDATA[Longueur du mot de passe courte : %s]]></string>
+    <string name="set_key_value"><![CDATA[Sélectionnez la langue]]></string>
+    <string name="dropbox_msg"><![CDATA[Conformément au principe de respect de la vie privée des utilisateurs, KeePassA ne demandera pas l\'autorisation d\'accéder à tous vos fichiers Dropbox. KeePassA<font color=#FF0000> accède uniquement au dossier [Application/KeePassA] </font>. <br /> Par conséquent : <br /> <b> Si vous disposez déjà d\'une base de données KeePass, vous devez d\'abord autoriser KeePassA à accéder au dossier [Application/KeePassA] dans KeePassA, puis enregistrer la base de données KeePass dans le dossier [Application/KeePassA] une fois l\'autorisation terminée. </b><br/><br /> Si vous créez une nouvelle base de données KeepPass, vous n\'avez pas besoin de l\'opération ci-dessus. Après avoir créé la base de données, KeePassA créera automatiquement le dossier correspondant et téléchargera la base de données dans le répertoire [Application/KeePassA] de Dropbox.]]></string>
+    <string name="cover"><![CDATA[Couverture]]></string>
+    <string name="file_conflict_msg"><![CDATA[Il existe un conflit entre les données cloud et les données locales. Veuillez sélectionner la méthode d\'écrasement. Les entrées contradictoires sont : \n %s]]></string>
+    <string name="cover_local"><![CDATA[locale]]></string>
+    <string name="cover_cloud"><![CDATA[Nuage]]></string>
+    <string name="merge"><![CDATA[fusionner]]></string>
+    <string name="sync_db"><![CDATA[Synchroniser la base de données]]></string>
+    <string name="net_error"><![CDATA[Anomalie du réseau]]></string>
+    <string name="auth"><![CDATA[Autoriser]]></string>
+    <string name="invalid"><![CDATA[Invalide]]></string>
+    <string name="no_file"><![CDATA[pas de fichier]]></string>
+    <string name="login"><![CDATA[Connexion]]></string>
+    <string name="helper_webdav"><![CDATA[Par exemple : https://dav.example.org/dav/yourfolder/xxx.kdbx]]></string>
+    <string name="helper_webdav_dir"><![CDATA[Par exemple : https://dav.example.org/dav/[votre dossier]/]]></string>
+    <string name="hint_webdav_url"><![CDATA[Fichier URL]]></string>
+    <string name="hint_please_input"><![CDATA[Veuillez saisir %s]]></string>
+    <string name="db_file_no_exist"><![CDATA[Le fichier de base de données n\'existe pas]]></string>
+    <string name="invalid_auth"><![CDATA[Impossible d\'autoriser. Veuillez réessayer.]]></string>
+    <string name="afs"><![CDATA[Système de fichiers Android]]></string>
+    <string name="hint_kdbx_name"><![CDATA[Mauvais suffixe, le suffixe devrait être ".kdbx"]]></string>
+    <string name="start_upload_db"><![CDATA[Commencez à télécharger la base de données sur votre disque réseau]]></string>
+    <string name="unlocked"><![CDATA[Débloqué]]></string>
+    <string name="notify_channel_db_open"><![CDATA[Notification de déverrouillage de la base de données]]></string>
+    <string name="notify_quick_unlock_start"><![CDATA[La base de données est verrouillée, le déverrouillage rapide est activé]]></string>
+    <string name="notify_db_locked"><![CDATA[La base de données est verrouillée]]></string>
+    <string name="search"><![CDATA[Rechercher]]></string>
+    <string name="disable"><![CDATA[Fermer]]></string>
+    <string name="quick_unlock"><![CDATA[Déverrouillage rapide]]></string>
+    <string name="db_unlock"><![CDATA[Déverrouiller la base de données]]></string>
+    <string name="hint_quick_use_fingerprint"><![CDATA[Utilisez uniquement le déverrouillage par empreinte digitale sur la page de déverrouillage rapide]]></string>
+    <string name="version_log"><![CDATA[Journal de mise à niveau]]></string>
+    <string name="hint_finger_print_verfiy"><![CDATA[La revérification des empreintes digitales est requise pour utiliser les nouveaux paramètres.]]></string>
+    <string name="closed"><![CDATA[Fermé]]></string>
+    <string name="open1"><![CDATA[allumer]]></string>
+    <string name="upload"><![CDATA[télécharger]]></string>
+    <string name="add_attr_file"><![CDATA[Ajouter une pièce jointe]]></string>
+    <string name="hint_fingerprint_modify"><![CDATA[Il est détecté que l\'empreinte digitale a changé. Pour la sécurité de votre mot de passe, veuillez réinitialiser la fonction de déverrouillage par empreinte digitale.]]></string>
+    <string name="hint_please_open_database"><![CDATA[Veuillez ouvrir la base de données]]></string>
+    <string name="save_db_success"><![CDATA[Base de données enregistrée]]></string>
+    <string name="set_delete_setting"><![CDATA[Supprimer les paramètres]]></string>
+    <string name="set_delete_no_into_recycle_bin"><![CDATA[Supprimer définitivement les entrées de la base de données]]></string>
+    <string name="set_delete_no_into_recycle_bin_des"><![CDATA[Déplacer les éléments supprimés vers la corbeille]]></string>
+    <string name="warning_rooted"><![CDATA[Pour la sécurité de vos données, veuillez ne pas ouvrir la base de données sur un téléphone rooté]]></string>
+    <string name="hint_security_green"><![CDATA["Cette application est dans un environnement sécurisé"]]></string>
+    <string name="hint_security_red"><![CDATA[Votre appareil est rooté et la base de données se trouve dans un environnement très dangereux]]></string>
+    <string name="hint_security_yellow"><![CDATA[Attention, l\'application s\'exécute dans le simulateur, ce qui entraînera des risques imprévisibles pour la base de données]]></string>
+    <string name="donate"><![CDATA[Faire un don]]></string>
+    <string name="donate_desc"><![CDATA[[KeePassA](https://github.com/AriaLyy/KeepassA) est un logiciel gratuit. Pensez à nous faire un don pour soutenir notre travail, merci beaucoup.]]></string>
+    <string name="dev_birthday"><![CDATA[Aujourd\'hui, c\'est l\'anniversaire du développeur 🎂. Voulez-vous offrir une bière au développeur ?]]></string>
+    <string name="totp_defaule"><![CDATA[Paramètres par défaut du jeton RFC 6238]]></string>
+    <string name="totp_steam"><![CDATA[Paramètres du jeton Steam]]></string>
+    <string name="totp_custom"><![CDATA[Utiliser des paramètres personnalisés]]></string>
+    <string name="totp_custom_hint"><![CDATA[Paramètres personnalisés]]></string>
+    <string name="totp_Arithmetic"><![CDATA[Algorithme :]]></string>
+    <string name="totp_time"><![CDATA[Temps(s) :]]></string>
+    <string name="totp_len"><![CDATA[Longueur :]]></string>
+    <string name="totp_key_error"><![CDATA[Impossible de générer le code TOTP, exception clé]]></string>
+    <string name="sort"><![CDATA[trier]]></string>
+    <string name="sort_chart_desc"><![CDATA[Premier ordre alphabétique décroissant (Z-A)]]></string>
+    <string name="sort_chart_asc"><![CDATA[Ordre alphabétique croissant (A-Z)]]></string>
+    <string name="sort_time_asc"><![CDATA[ordre croissant du temps]]></string>
+    <string name="sort_time_desc"><![CDATA[Temps décroissant]]></string>
+    <string name="ime_label"><![CDATA[KeePassA Clavier de sécurité]]></string>
+    <string name="set_open_kpa_ime_title"><![CDATA[clavier sécurisé]]></string>
+    <string name="no_totp_token"><![CDATA[Aucun jeton TOTP]]></string>
+    <string name="ime_entry_other_info"><![CDATA[Remplir d\'autres champs]]></string>
+    <string name="url"><![CDATA[URL]]></string>
+    <string name="hint_not_nore_info"><![CDATA[pas plus d\'informations]]></string>
+    <string name="error_uri_grant_permission"><![CDATA[URI Échec de l\'autorisation]]></string>
+    <string name="license"><![CDATA[licence de logiciel libre]]></string>
+    <string name="move"><![CDATA[bouger]]></string>
+    <string name="set_key_sum_main_show_entries"><![CDATA[Afficher toutes les entrées après le déverrouillage de la base de données]]></string>
+    <string name="set_key_sum_main_show_history"><![CDATA[Afficher l\'historique après le déverrouillage de la base de données]]></string>
+    <string name="set_key_title_main_allow_show_entries"><![CDATA[Page d\'accueil]]></string>
+    <string name="set_key_title_opr_env_check"><![CDATA[Exécuter les paramètres de vérification de l\'environnement]]></string>
+    <string name="set_key_title_opr_env_check_turn_off"><![CDATA[Fermer]]></string>
+    <string name="set_key_title_opr_env_check_turn_on"><![CDATA[ouvert]]></string>
+    <string name="expand"><![CDATA[Développer]]></string>
+    <string name="shrink"><![CDATA[fermer]]></string>
+    <string name="ui_setting"><![CDATA[Paramètres de l\'interface utilisateur]]></string>
+    <string name="cur_app_not_autofill"><![CDATA[Ne pas remplir automatiquement]]></string>
+    <string name="other"><![CDATA[D\'autres]]></string>
+    <string name="ref_entry"><![CDATA[Articles de référence]]></string>
+    <string name="multi_choice"><![CDATA[Choix multiple]]></string>
+    <string name="set_summary_screen_lock_off"><![CDATA[Ne verrouillez pas la base de données]]></string>
+    <string name="set_summary_screen_lock_on"><![CDATA[Verrouiller automatiquement la base de données]]></string>
+    <string name="set_title_screen_lock"><![CDATA[verrouillage de l\'écran]]></string>
+    <string name="close"><![CDATA[Fermer]]></string>
+    <string name="Alipay"><![CDATA[Alipay]]></string>
+    <string name="error_webdav_end_suffix"><![CDATA[Utilisez le chemin du dossier. Par exemple : "https://example.org/dav/kpa/"]]></string>
+    <string name="error_webdav_end_dav_suffix"><![CDATA[Le chemin /dav/ n\'est pas autorisé. Utilisez un chemin valide, tel que : "https://example.org/dav/kpa/"]]></string>
+    <string name="set_key_title_fillet_bg_icon"><![CDATA[Coin d’icône de liste arrondie]]></string>
+    <string name="set_key_title_fillet_bg_icon_turn_on"><![CDATA[allumer]]></string>
+    <string name="set_key_title_fillet_bg_icon_turn_off"><![CDATA[Fermer]]></string>
+    <string name="set_key_title_show_state_bar"><![CDATA[barre d\'état]]></string>
+    <string name="set_key_title_show_state_bar_turn_on"><![CDATA[montrer]]></string>
+    <string name="set_key_title_show_state_bar_turn_off"><![CDATA[cacher]]></string>
+    <string name="set_key_title_close_load_anim"><![CDATA[chargement de l\'animation]]></string>
+    <string name="set_key_title_close_load_anim_turn_on"><![CDATA[ouvert]]></string>
+    <string name="set_key_title_close_load_anim_turn_off"><![CDATA[Fermer]]></string>
+    <string name="s_default"><![CDATA[Par défaut]]></string>
+    <string name="customize"><![CDATA[Personnaliser]]></string>
+    <string name="set_key_title_auto_lock_database"><![CDATA[Verrouiller automatiquement la base de données]]></string>
+    <string name="set_key_title_auto_lock_database_turn_on"><![CDATA[Oui]]></string>
+    <string name="set_key_title_auto_lock_database_turn_off"><![CDATA[Fermer]]></string>
+    <string name="get_token_fail"><![CDATA[Échec de l\'obtention de Token]]></string>
+    <string name="one_drive_init_failure"><![CDATA[L\'initialisation de OneDrive a échoué]]></string>
+    <string name="one_drive_hint"><![CDATA[Afin de protéger votre vie privée, KeePassA accédera uniquement au répertoire <font color=#FF0000> [Application/KeepassA] </font>. Si vous souhaitez lire la base de données Keepass de OneDrive, <font color=#FF0000>, veuillez stocker la base de données dans ce répertoire. </font>]]></string>
+    <string name="open_permissions"><![CDATA[Autorisations d\'ouverture]]></string>
+    <string name="miui_permissions"><![CDATA[miui Le système doit ouvrir l\'autorisation de l\'interface contextuelle en arrière-plan pour utiliser la fonction de remplissage automatique.]]></string>
+    <string name="set_key_main_show_totp_tab_title"><![CDATA[La page d\'accueil affiche la catégorie TOTP]]></string>
+    <string name="set_key_main_show_totp_tab_on"><![CDATA[Afficher les catégories de TOTP]]></string>
+    <string name="set_key_main_show_totp_tab_off"><![CDATA[Ne pas afficher la catégorie TOTP]]></string>
+    <string name="set_key_theme_style_title"><![CDATA[style de thème]]></string>
+    <string name="set_key_theme_style_summary"><![CDATA[Suivez le système]]></string>
+    <string name="open_setting"><![CDATA[Ouvrir les paramètres]]></string>
+    <string-array name="sek_ley_theme_style_entries">
+        <item><![CDATA[Suivez le système]]></item>
+        <item><![CDATA[mode sombre]]></item>
+        <item><![CDATA[mode lumière]]></item>
+    </string-array>
+    <string name="error_keystore"><![CDATA[Exception du fichier de clés, veuillez réessayer]]></string>
+    <string name="kpa_totp"><![CDATA[jeton]]></string>
+    <string name="kpa_copy"><![CDATA[Copier]]></string>
+    <string name="translate_language"><![CDATA[Traduisez l\'application dans votre langue]]></string>
+    <string name="error_qr_code_str"><![CDATA[Le code QR est anormal. Veuillez confirmer que le code QR est un code QR pris en charge par Google Authenticator.]]></string>
+    <string name="google_play"><![CDATA[Google Play Store]]></string>
+    <string name="disposable"><![CDATA[Jetable]]></string>
+    <string name="year"><![CDATA[chaque année]]></string>
+    <string name="error_donate"><![CDATA[Le don a échoué]]></string>
+    <string name="thank_donate"><![CDATA[Merci pour votre don.]]></string>
+    <string name="error_connect_play"><![CDATA[Impossible de se connecter aux services Google]]></string>
+    <string name="monthly"><![CDATA[mensuellement]]></string>
+    <string name="my_collection"><![CDATA[ma collection]]></string>
+    <string name="current_collection_num"><![CDATA[Collections %1$s]]></string>
+    <string name="no_collection"><![CDATA[Aucun favori]]></string>
+    <string name="error_open_db_webdav"><![CDATA[La base de données ne peut pas être ouverte car le fichier WebDAV n\'existe pas.]]></string>
+    <string name="helper_webdav_service"><![CDATA[Choisissez le service WebDAV]]></string>
+    <string name="error_is_root"><![CDATA[Déjà le répertoire racine]]></string>
+    <string name="select_cur_path"><![CDATA[Sélectionner le dossier actuel]]></string>
+    <string name="hint_cloud_file_already_exist"><![CDATA[%1$s existe déjà. Voulez-vous écraser le fichier ?]]></string>
+    <string name="select_save_path"><![CDATA[Sélectionnez le chemin de sauvegarde]]></string>
+    <string name="one_drive_load_user_failure"><![CDATA[Impossible de charger les informations utilisateur.]]></string>
+    <string name="hint_open_background_start"><![CDATA[Veuillez activer l\'autorisation contextuelle en arrière-plan, sinon la fonction de remplissage automatique ne pourra pas être utilisée.]]></string>
+    <string name="hostname"><![CDATA[nom d\'hôte]]></string>
+    <string name="port"><![CDATA[port]]></string>
+    <string name="webdav_host_name_hint"><![CDATA[Veuillez entrer votre nom d\'hôte]]></string>
+    <string name="webdav_port_hint"><![CDATA[port]]></string>
+    <string name="webdav_port_name_null"><![CDATA[Le nom d\'hôte ne peut pas être vide]]></string>
+    <string name="privacy_agreement"><![CDATA[accord de confidentialité]]></string>
+    <string name="ime_hint_open_auto_fill"><![CDATA[Veuillez activer le service de saisie automatique]]></string>
+    <string name="please_open_proxy"><![CDATA[Pour des raisons de réseau bien connues, afin d\'utiliser les services onedrive en douceur, veuillez utiliser les outils réseau appropriés.]]></string>
+    <string name="invalid_img"><![CDATA[Image invalide]]></string>
+    <string name="preemptive"><![CDATA[Mode prédéfini]]></string>
+    <string name="fail_unsupported_Systems_O"><![CDATA[Prend uniquement en charge les systèmes avec P et supérieur]]></string>
+    <string name="hint_webdav_jgy"><![CDATA[Veuillez utiliser le mot de passe dans [Informations sur le compte->Options de sécurité->Applications tierces]]]></string>
+    <string name="app_debug"><![CDATA[Supprimer le fichier journal]]></string>
+    <string name="hint_auto_fill_save"><![CDATA[Associer les données actuelles aux entrées existantes ?]]></string>
+    <string name="hint_dont_show_tips"><![CDATA[Ne plus montrer]]></string>
+    <string name="title_tip_of_day"><![CDATA[conseils quotidiens]]></string>
+    <string name="base_info"><![CDATA[Informations de base]]></string>
+    <string name="tag"><![CDATA[étiquette]]></string>
+    <string name="collection"><![CDATA[Collecte]]></string>
+    <string name="add_attr_str"><![CDATA[Ajouter des attributs]]></string>
+    <string name="delete"><![CDATA[Supprimer]]></string>
+    <string name="create_tag"><![CDATA[Créer des balises]]></string>
+    <string name="tag_name"><![CDATA[Nom de la balise]]></string>
+    <string name="add_tag"><![CDATA[Ajouter une balise]]></string>
+    <string name="open_file"><![CDATA[ouvrir le fichier]]></string>
+    <string name="modify_str_attr"><![CDATA[Modifier les propriétés]]></string>
+    <string name="error_file"><![CDATA[Le fichier est anormal, veuillez supprimer : <font color=#FF0000>%s</font>]]></string>
+    <string name="not_souper_otp"><![CDATA[TOTP non pris en charge]]></string>
+    <string name="modify_totp"><![CDATA[modifier le jeton]]></string>
+    <string name="error_totp"><![CDATA[Mauvais totp]]></string>
+    <string name="file_save_success"><![CDATA[Pièce jointe enregistrée avec succès]]></string>
+    <string name="options"><![CDATA[Possibilités]]></string>
+    <string name="review_title"><![CDATA[Commentaire]]></string>
+    <string name="review_enter"><![CDATA[Commencer le commentaire]]></string>
+    <string name="review_cancel"><![CDATA[Pas cette fois]]></string>
+    <string name="review_fail"><![CDATA[La soumission a échoué, veuillez vérifier le réseau]]></string>
+    <string name="review_not_hint"><![CDATA[Ne plus demander]]></string>
+    <string name="review_like_app"><![CDATA[Vous aimez notre application ? Veuillez nous évaluer !]]></string>
+    <string name="hint_notify_permission"><![CDATA[KeepassA nécessite une autorisation de notification pour notifier l\'état de la base de données.]]></string>
+    <string name="title_choose_icon"><![CDATA[Sélectionner l\'icône]]></string>
+    <string name="icon_select_pick"><![CDATA[Ouvrir l\'album photo]]></string>
+    <string name="icon_select_db"><![CDATA[icône locale]]></string>
+    <string name="icon_change"><![CDATA[Modifier l\'icône]]></string>
+    <string name="entry_not_found"><![CDATA[Aucune entrée trouvée]]></string>
 </resources>

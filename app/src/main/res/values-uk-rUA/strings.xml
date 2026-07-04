@@ -1,388 +1,454 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="open">Розблокувати</string>
-    <string name="hint_set_password">Указати пароль</string>
-    <string name="hint_input_password">Введіть пароль від 6 до 16 цифр</string>
-    <string name="hint_enter_password">Підтвердити пароль</string>
-    <string name="help_create_db">Усталено створюється база даних KeepPass v4</string>
-    <string name="help_create_group">Виберіть назву групи з 16 або менше символів</string>
-    <string name="encrypt_type">Шифрування</string>
-    <string name="encrypt_type_1">Лише пароль</string>
-    <string name="encrypt_type_2">Пароль + ключ</string>
-    <string name="pass_key">Файл ключа</string>
-    <string name="helper_create_pass">Рекомендується змішаний пароль (великі та малі букви + цифри + символи)</string>
-    <string name="open_db">Відкрити базу даних</string>
-    <string name="db_name">Введіть назву бази даних</string>
-    <string name="hint_select_path_type">Виберіть місце збереження бази даних</string>
-    <string name="error_db_name_null">Введіть назву бази даних</string>
-    <string name="done">Готово</string>
-    <string name="enter">Готово</string>
-    <string name="cancel">Скасувати</string>
-    <string name="hint">Підказка</string>
-    <string name="db">База даних</string>
-    <string name="db1">база даних\t|\t&lt;font color=#757575&gt;%s&lt;/font&gt;</string>
-    <string name="password">Пароль</string>
-    <string name="key">Таємний ключ</string>
-    <string name="key1">Таємний ключ: %s</string>
-    <string name="choose_pass_key">Вибрати ключ</string>
-    <string name="next">Наступний крок</string>
-    <string name="hint_set_pass_key">Виберіть ключ</string>
-    <string name="create_db">Створення бази даних</string>
-    <string name="hint_select_db_path">Клацніть, щоб установити метод збереження даних</string>
-    <string name="up">Попередній</string>
-    <string name="help_create_db_path">Рекомендується використовувати хмарні сховища, такі як Dropbox і WebDAV. Це автоматично синхронізує вашу базу даних із хмарою, що полегшить користування базою даних на інших пристроях.
-\n База даних зашифрована за допомогою AES-256. Без вашого пароля ніхто не зможе відкрити вашу базу даних.</string>
-    <string name="history_record">Запис історії</string>
-    <string name="edit">Змінити</string>
-    <string name="app_setting">Налаштування застосунку</string>
-    <string name="error_open_db_key_invalid">Неправильний ключ</string>
-    <string name="help_pass_type">Лише пароль:
-\n Для відкриття бази даних потрібен тільки ваш пароль;
-\n Пароль + ключ:
-\n Для відкриття бази даних потрібно ввести пароль і вибрати файл ключа.</string>
-    <string name="help_input_db_pass">Введіть пароль бази даних</string>
-    <string name="need_key">Потрібен ключ\?</string>
-    <string name="error_open_db_algorithm_error">Неприпустимий алгоритм</string>
-    <string name="copy_user_name">Копіювати ім\'я користувача</string>
-    <string name="history">Історія</string>
-    <string name="welcome">Ласкаво просимо</string>
-    <string name="error_input_pass_null">Введіть пароль бази даних</string>
-    <string name="error_open_db_version_error">Неправильна версія бази даних</string>
-    <string name="error_open_db_signature_error">Недійсний підпис бази даних</string>
-    <string name="error_open_db_arcfour_error">Неприпустимий алгоритм шифрування потоку</string>
-    <string name="error_entry_id_null">ID запису не має значення</string>
-    <string name="hint_ex_property">Додаткові атрибути</string>
-    <string name="copy_totp">Копіювати токен TOTP</string>
-    <string name="del_history">Видалити запис історії</string>
-    <string name="group_name">Назва групи</string>
-    <string name="error_group_no_modify">Немає змін у групі</string>
-    <string name="hint_copy_user">Ім\'я користувача скопійовано до буфера обміну</string>
-    <string name="fingerprint_unlock">Розблокування відбитком пальця</string>
-    <string name="ope_url">Відкрити посилання</string>
-    <string name="create_group">Створення групи</string>
-    <string name="error_group_name_null">Назва групи порожня</string>
-    <string name="create_group_fail">Не вдалося створити групу</string>
-    <string name="modify_group">Редагувати групу</string>
-    <string name="title_too_long">Назва групи задовга</string>
-    <string name="choose_icon">Вибрати піктограму</string>
-    <string name="create_group_success">Група створена</string>
-    <string name="undo_entryed">Елемент переміщено до вказаного розташування</string>
-    <string name="undo_to">Перемістити до цієї групи</string>
-    <string name="hint_copy_pass">Пароль скопійовано до буфера обміну</string>
-    <string name="db_handle">Операції з базою даних</string>
-    <string name="db_name_no_alter">Назва бази даних не змінилася</string>
-    <string name="change_db">Перемкнути базу даних</string>
-    <string name="choose_file">Вибрати файл</string>
-    <string name="create_file">Створити новий файл</string>
-    <string name="create_pass_key_file_des">Створіть новий файл, щоб використовувати його як ключ</string>
-    <string name="choose_pass_key_file_des">Виберіть будь-який файл, щоб використовувати його як ключ</string>
-    <string name="create_pass_key_success">Створення ключа [%s] виконано</string>
-    <string name="error_pass_null">Установіть пароль бази даних</string>
-    <string name="error_enter_pass_null">Введіть підтвердження пароля</string>
-    <string name="hint_db_create_success">Створено базу даних [%s]</string>
-    <string name="all">Елементи</string>
-    <string name="setting">Налаштування</string>
-    <string name="db_setting">Налаштування бази даних</string>
-    <string name="error_uri">Помилка URI</string>
-    <string name="error_open_db_key_empty">Відсутній ключ</string>
-    <string name="error_open_db_pass_error">Неправильний пароль</string>
-    <string name="error_open_db">Не вдалося відкрити базу даних. Неправильний пароль, чи потрібен ключ\?</string>
-    <string name="error_group_id_null">ID групи не має значення</string>
-    <string name="create_time">Створено %s</string>
-    <string name="expire_time">Чинний до %s</string>
-    <string name="hint_attr">Додаткові властивості</string>
-    <string name="attachment">Вкладення</string>
-    <string name="del_group">Видалити групу</string>
-    <string name="edit_group">Редагувати групу</string>
-    <string name="success">Успішно</string>
-    <string name="fail">Помилка</string>
-    <string name="del_entry">Видалити елемент</string>
-    <string name="copy_password">Копіювати пароль</string>
-    <string name="undo_grouped">Групу переміщено до вказаного розташування</string>
-    <string name="safety_set">Налаштування безпеки</string>
-    <string name="modify_db_pass">Змінити пароль бази даних</string>
-    <string name="out_db">Експортувати базу даних</string>
-    <string name="db_name_modify">Назву бази даних змінено</string>
-    <string name="no_record">Немає записів</string>
-    <string name="copy_to_clip">Копіювати до буфера обміну</string>
-    <string name="show_pass">Показати пароль</string>
-    <string name="hide_pass">Сховати пароль</string>
-    <string name="hint_copy_to_clip">Дані скопійовані до буфера обміну</string>
-    <string name="verify_finger">Перевірка відбитків пальців</string>
-    <string name="verify_finger_fail">Не вдалося перевірити відбиток пальця</string>
-    <string name="hint_protect_str">Захищене поле</string>
-    <string name="error_attr_str_null">Назва поля порожня</string>
-    <string name="lose_time">Термін дії</string>
-    <string name="auto_lock_db_time_summary">Автоблокування бази даних за %s, якщо не виконано жодних операцій</string>
-    <string name="hint_input_title">Назва</string>
-    <string name="hint_input_user_name">Ім’я користувача</string>
-    <string name="notice">Примітка</string>
-    <string name="lower">Символ нижнього регістру</string>
-    <string name="choose_dir">Зберегти в поточній групі</string>
-    <string name="hint_input_attr_str_key">Назва поля</string>
-    <string name="open_whit_img">Відкрити за допомогою внутрішнього переглядача зображень</string>
-    <string name="save_db_success">Базу даних збережено</string>
-    <string name="hint_input_url">Адреса посилання</string>
-    <string name="date">Дата</string>
-    <string name="normal_account">Звичайний обліковий запис</string>
-    <string name="add_more">Додати ще</string>
-    <string name="create_entry_no_save">Вийти з поточної сторінки без збереження запису\?</string>
-    <string name="hint_input_attr_str_value">Значення поля</string>
-    <string name="save_file_success">Файл [%s] було збережено</string>
-    <string name="txt_viewer">Переглядач файлів</string>
-    <string name="error_pass">Помилка пароля</string>
-    <string name="db_pass_no_alter">Новий пароль такий самий, як і старий</string>
-    <string name="update_group_fail">Не вдалося оновити відомості про групу</string>
-    <string name="update_group_success">Відомості про групу оновлено</string>
-    <string name="cover_cloud">Хмарна</string>
-    <string name="afs">Файлова система Android</string>
-    <string name="set_key_theme_style_title">Стиль теми</string>
-    <string name="send_email_fail">Спочатку встановіть застосунок для надсилання електронних листів</string>
-    <string name="open_quick_unlock">Швидке розблокування</string>
-    <string name="auto_lock_db_time">Автоблокування бази даних</string>
-    <string name="sort">Сортувати</string>
-    <string name="kpa_totp">Токен</string>
-    <string name="notify_quick_unlock_start">База даних заблокована, швидке розблокування увімкнено</string>
-    <string name="db_unlock">Розблокувати базу даних</string>
-    <string name="set_delete_no_into_recycle_bin">Видалити записи з бази даних назавжди</string>
-    <string name="ime_label">Безпечна клавіатура KeePassA</string>
-    <string name="no_totp_token">Немає токена TOTP</string>
-    <string name="set_key_sum_main_show_entries">Показувати всі елементи після розблокування бази даних</string>
-    <string name="set_key_title_auto_lock_database_turn_off">Ні</string>
-    <string name="set_key_praise_value">Оцінити KeePassA</string>
-    <string name="sync_db">Синхронна база даних</string>
-    <string name="net_error">Ненормальна мережа</string>
-    <string name="notify_db_locked">База даних заблокована</string>
-    <string name="totp_len">Довжина:</string>
-    <string name="shrink">Стиснути</string>
-    <string name="ui_setting">Налаштування інтерфейсу користувача</string>
-    <string name="set_key_title_opr_env_check">Перевірка робочого середовища</string>
-    <string name="set_key_title_opr_env_check_turn_on">Увімкнено</string>
-    <string name="other">Інше</string>
-    <string name="set_key_title_fillet_bg_icon_turn_off">Вимкнено</string>
-    <string name="url">URL-адреса</string>
-    <string name="ime_entry_other_info">Заповнити інші поля</string>
-    <string name="set_key_title_main_allow_show_entries">Домашня сторінка</string>
-    <string name="expand">Розгорнути</string>
-    <string name="ref_entry">Довідковий запис</string>
-    <string name="multi_choice">Множинний вибір</string>
-    <string name="set_summary_screen_lock_off">Не блокувати базу даних</string>
-    <string name="set_title_screen_lock">Блокування екрана</string>
-    <string name="close">Закрити</string>
-    <string name="Alipay">Alipay</string>
-    <string name="error_webdav_end_suffix">Використовуйте шлях до теки. Наприклад: «https://example.org/dav/kpa/»</string>
-    <string name="set_key_title_fillet_bg_icon">Заокруглені кути піктограм списку</string>
-    <string name="set_key_title_fillet_bg_icon_turn_on">Увімкнено</string>
-    <string name="set_key_main_show_totp_tab_off">Не показувати категорію TOTP</string>
-    <string name="set_key_theme_style_summary">Системна</string>
-    <string name="kpa_copy">Копіювати</string>
-    <string name="hint_cloud_file_already_exist">%1$s вже існує. Перезаписати цей файл\?</string>
-    <string name="one_drive_load_user_failure">Не вдалося завантажити відомості про користувача.</string>
-    <string name="hint_full_fingerprint">Відбиток пальця використовується для розблокування бази даних в інтерфейсі швидкого розблокування та інтерфейсі розблокування бази даних, KeePassA шифрує та зберігає головний пароль вашої бази та ключову інформацію в локальному сховищі ключів системи Android, а також використовує авторизацію відбитків пальців для захисту. Тільки ваш відбиток пальця може розблокувати базу даних.</string>
-    <string name="hint_background_start">Перейдіть до&lt;font color=#FF0000&gt;【%s】&lt;/font&gt;і надайте дозволи на показ фонових спливних вікон для поліпшення взаємодії зі службою автозаповнення.&lt;br&gt; &lt;font color=#FF0000&gt;KeePassA показує відповідний інтерфейс для відкриття бази даних за використання функції автозаповнення&lt;/font&gt;</string>
-    <string name="quick_pass_len_summary">Довжина короткого пароля: %s</string>
-    <string name="feedback_email_msg">Привіт, я KeePassA, маєте запитання\?<br/> <br/> <br/> _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/> Марка: %s <br/> Модель: %s <br/> Версія системи: %s <br/> Роздільна здатність: %s <br/> Версія застосунку: %s</string>
-    <string name="dropbox_msg">Дотримуючись принципу поваги до приватності користувачів, KeepPassA не запитуватиме дозволу доступу до всіх файлів у вашій теці Dropbox, KeePassA &lt;font color = # FF0000&gt; потребує доступу лише до теки 【Apps/KeePassA】 &lt;/ font &gt;.&lt;br /&gt;Отже: &lt;br /&gt; &lt;b&gt;Якщо у вас вже є база даних KeePass, надайте KeePassA доступ до теки 【Apps/KeePassA】в KeePassA та збережіть базу даних KeePass у теці 【Application/KeePassA】 після завершення авторизації.&lt;/b&gt;&lt;br /&gt;&lt;br /&gt; Якщо ви створюєте нову базу даних KeePass, наведені вже операції не потрібні. Після створення бази даних, KeePassA автоматично створює відповідну теку та завантажує базу даних до каталогу 【Apps/KeePassA】 Dropbox.</string>
-    <string name="file_conflict_msg">Конфлікт між даними хмари та локальними даними. Виберіть спосіб покриття. Конфліктні записи:
-\n %s</string>
-    <string name="hint_finger_print_verfiy">Повторно перевірте свої відбитки пальців, щоб використовувати нові налаштування</string>
-    <string name="hint_fingerprint_modify">Перевірте, чи змінився відбиток пальця. Для безпеки пароля скиньте функцію розблокування відбитком пальця</string>
-    <string name="warning_rooted">Не відкривайте базу даних на телефоні з розблокованим root, щоб захистити її</string>
-    <string name="hint_security_green">"Застосунок розміщено в безпечному середовищі "</string>
-    <string name="hint_security_red">Ваш пристрій має розблокований root, а база даних розміщена в дуже небезпечному середовищі</string>
-    <string name="donate_desc">[KeePassA](https://github.com/AriaLyy/KeepassA) — це вільне програмне забезпечення. Зробіть внесок, щоб підтримати нашу роботу, будемо щиро вдячні.</string>
-    <string name="dev_birthday">Сьогодні День народження🎂 розробника. Придбаєте йому пивця\?</string>
-    <string name="totp_defaule">Налаштування усталеного токена RFC 6238</string>
-    <string name="totp_steam">Налаштування Steam-токена</string>
-    <string name="totp_time">Раз(ів):</string>
-    <string name="license">Ліцензія на вільне програмне забезпечення</string>
-    <string name="one_drive_hint">Щоб захистити свою приватність, KeepassA отримає доступ лише до каталогу&lt;font color=#FF0000&gt;【application/KeepassA】&lt;/font&gt;. Якщо ви хочете прочитати базу даних Keepass з OneDrive, &lt;font color=#FF0000&gt;розмістіть базу даних у цьому каталозі.&lt;/font&gt;</string>
-    <string name="hint_open_background_start">Відкрийте дозвіл на витягування у фоновому режимі, інакше не можливо використовувати автозаповнення</string>
-    <string name="error_pass_unfit">Двічі введено невідповідні паролі</string>
-    <string name="help_pass_key">Файл ключа еквівалентний ключу для відкриття даних і зазвичай значно складніший і надійніший, ніж пароль. Але сховати його також важче. Якщо ви зберігаєте базу даних у хмарі, не розміщуйте ключ разом з базою даних.
-\n Ви можете вибрати будь-який файл ключем для відкриття бази даних: світлину чи файлу TXT.
-\n⚠️ Примітка: якщо ця світлина або документ TXT будуть змінені, ви не зможете відкрити базу даних! !!
-\n Радимо використовувати ключами файли лише для читання.</string>
-    <string name="expire">Термін дії закінчився &lt;font color=#FF0000&gt;%s&lt;/font&gt;</string>
-    <string name="hint_del_group">Справді видалити групу &lt;font color=#FF0000&gt;%s&lt;/font&gt;】\?&lt;br&gt;Це перемістить її в кошик, звідки ви зможете відновити її пізніше.</string>
-    <string name="hint_del_group_no_recycle">Справді видалити групу 【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】\?</string>
-    <string name="hint_del_entry">Справді видалити елемент 【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】\? &lt;br&gt;Це перемістить його в кошик, звідки ви зможете відновити його пізніше.</string>
-    <string name="hint_del_entry_no_recycle">Справді видалити запис 【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】назавжди\?</string>
-    <string name="hint_group_desc">Група-%s елементів</string>
-    <string name="undo_entry">Відновлено…</string>
-    <string name="hint_copy_totp">Токен TOTP скопійовано до буфера обміну</string>
-    <string name="create_totp">Згенерувати OTP-токен</string>
-    <string name="modify_db_name">Змінити назву бази даних</string>
-    <string name="hint_query">Ім\'я користувача, назва, URL, додаткові атрибути …</string>
-    <string name="ban_fingerprint">Немає розблокування відбитком пальця</string>
-    <string name="hint_quick_unlock">Введіть останні %s цифри пароля бази даних</string>
-    <string name="hint_input_tag">Теґ1, Теґ2</string>
-    <string name="hint_input_cover_url">Перезаписати посилання</string>
-    <string name="create_entry">Створити запис</string>
-    <string name="save">Зберегти</string>
-    <string name="len">Довжина</string>
-    <string name="upper">Символ верхнього регістру</string>
-    <string name="numer">Цифри</string>
-    <string name="minus">Мінус</string>
-    <string name="underline">Підкреслення</string>
-    <string name="space">Пробіл</string>
-    <string name="special">Спеціальний</string>
-    <string name="bracket">Дужки</string>
-    <string name="pass_generater">Генератор паролів</string>
-    <string name="error_genera_params">Виберіть принаймні один тип генерації пароля</string>
-    <string name="hint_pass_null">Пароль порожній</string>
-    <string name="time">Час</string>
-    <string name="quick_use_fingerprint">Використовувати відбиток пальця для швидкого розблокування</string>
-    <string name="use_full_fingerprint">Повне розблокування відбитками пальців</string>
-    <string name="warning">Попередження</string>
-    <string name="add_custom_str">Створити власні поля</string>
-    <string name="del_attr_str">Видалити власні поля</string>
-    <string name="del_attr_file">Видалити вкладення</string>
-    <string name="error_attr_file_too_large">Скоротіть використання пам\'яті, не додаючи файли розміром понад 10 МБ</string>
-    <string name="download_file">Зберегти вкладення на SD-карту</string>
-    <string name="open_whit_text">Відкрити у внутрішньому текстовому редакторі</string>
-    <string name="open_whit_other">Зберегти в кеші та відкрити за допомогою системного застосунку</string>
-    <string name="save_db_fail">Не вдалося зберегти базу даних</string>
-    <string name="hint_db_pass_modify_success">Використовуйте новий пароль бази даних, щоб відкрити базу даних наступного разу</string>
-    <string name="hint_db_pass_modify">Пароль бази даних змінено</string>
-    <string name="app_feedback">Відгук</string>
-    <string name="error_db_pass_too_short">Щоб захистити свої дані, створіть пароль бази даних довшим ніж 6 символів</string>
-    <string name="autofill_sign_in_prompt">Автозаповнення пароля за допомогою KeePassA</string>
-    <string name="no_matching_entry">Немає відповідного елемента</string>
-    <string name="relevance_db">Пов’язані дані</string>
-    <string name="modify_time">Змінити час</string>
-    <string name="title">Назва</string>
-    <string name="feedback">Відгук ^_^</string>
-    <string name="submit">Надіслати</string>
-    <string name="setting_miui_background_start">Налаштування &gt; Налаштування програм &gt; Керування програмами &gt; KeePassA &gt; Керування дозволами</string>
-    <string name="setting_vivo_background_start">Налаштування &gt; Додаткові налаштування &gt; Керування дозволами &gt; KeePassA &gt; Налаштування дозволами &gt; Фонове спливне вікно</string>
-    <string name="hint_save_auto_fill">Чи пов\'язувати назву пакунка【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】з записом【&lt;font color=#FF0000&gt;%s&lt;/font&gt;】</string>
-    <string name="mark_not_exit">Крамниці застосунків не існує</string>
-    <string name="set_open_auto_fill_title">Служба автозаповнення</string>
-    <string name="other_set">Інші налаштування</string>
-    <string name="clean_clip_time">Очищення буфера обміну</string>
-    <string name="clean_clip_time_summary">Після копіювання пароля очистити буфер обміну за %s</string>
-    <string name="set_key_value">Вибрати мову</string>
-    <string name="cover">Обкладинка</string>
-    <string name="merge">Об\'єднати</string>
-    <string name="cover_local">Локальна</string>
-    <string name="auth">Auth</string>
-    <string name="invalid">Недійсний</string>
-    <string name="no_file">Немає файлу</string>
-    <string name="login">Увійти</string>
-    <string name="helper_webdav">наприклад: https://dav.example.org/dav/[ваша тека]/xxx.kdbx</string>
-    <string name="helper_webdav_dir">наприклад: https://dav.example.org/dav/[ваша тека]/</string>
-    <string name="hint_webdav_url">URL-адреса файлу</string>
-    <string name="hint_please_input">Введіть %s</string>
-    <string name="db_file_no_exist">Файл бази даних не існує</string>
-    <string name="invalid_auth">Не вдалося авторизувати. Повторіть спробу.</string>
-    <string name="quick_pass_type">Розташування перехоплення короткого пароля</string>
-    <string name="des_quick_unlock">Розблокування бази даних за допомогою короткого пароля</string>
-    <string name="error_short_pass_lenght">Створіть короткий пароль з 6 або менше символів</string>
-    <string name="error_short_pass_short">Створіть короткий пароль із 3 або більше символів</string>
-    <string name="quick_pass_len_title">Довжина короткого пароля</string>
-    <string name="hint_kdbx_name">Неправильна назва суфікса. Назвою суфікса має бути .kdbx</string>
-    <string name="start_upload_db">Почати передавання бази даних на мережний диск</string>
-    <string name="unlocked">Розблоковано</string>
-    <string name="notify_channel_db_open">Сповіщення про розблокування бази даних</string>
-    <string name="search">Пошук</string>
-    <string name="disable">Вимкнути</string>
-    <string name="quick_unlock">Швидке розблокування</string>
-    <string name="version_log">Журнал оновлення</string>
-    <string name="closed">Закрито</string>
-    <string name="upload">Вивантажити</string>
-    <string name="open1">відкрити</string>
-    <string name="add_attr_file">Додати вкладення</string>
-    <string name="hint_please_open_database">Відкрийте базу даних</string>
-    <string name="set_delete_setting">Видалити налаштування</string>
-    <string name="set_delete_no_into_recycle_bin_des">Перемістити видалені елементи в кошик</string>
-    <string name="donate">Допомогти</string>
-    <string name="totp_Arithmetic">Арифметика:</string>
-    <string name="hint_quick_use_fingerprint">Використовувати лише відбиток пальця для розблокування на сторінці швидкого розблокування</string>
-    <string name="hint_security_yellow">Попередження, запущене в симуляторі, це середовище додасть деякі непередбачувані ризики базі даних</string>
-    <string name="totp_custom">Використовувати власні налаштування</string>
-    <string name="totp_custom_hint">Власні налаштування</string>
-    <string name="totp_key_error">Не вдалося створити код TOTP, неправильний ключ</string>
-    <string name="sort_chart_desc">Перша буква за спаданням (Я-А)</string>
-    <string name="sort_chart_asc">Перша буква за зростанням (А-Я)</string>
-    <string name="sort_time_asc">Давніші-новіші</string>
-    <string name="sort_time_desc">Новіші-давніші</string>
-    <string name="set_open_kpa_ime_title">Безпечна клавіатура</string>
-    <string name="error_uri_grant_permission">Помилка авторизації URI</string>
-    <string name="move">Перемістити</string>
-    <string name="hint_not_nore_info">Немає інших відомостей</string>
-    <string name="set_key_sum_main_show_history">Показувати історію після розблокування бази даних</string>
-    <string name="set_key_title_opr_env_check_turn_off">Вимкнено</string>
-    <string name="cur_app_not_autofill">Без автозаповнення</string>
-    <string name="set_key_title_show_state_bar">Панель стану</string>
-    <string name="set_key_title_show_state_bar_turn_on">Показати</string>
-    <string name="set_key_title_show_state_bar_turn_off">Сховати</string>
-    <string name="set_key_title_close_load_anim">Завантаження анімації</string>
-    <string name="set_key_title_close_load_anim_turn_on">Увімкнено</string>
-    <string name="set_key_title_close_load_anim_turn_off">Вимкнено</string>
-    <string name="s_default">Типово</string>
-    <string name="customize">Налаштувати</string>
-    <string name="set_key_title_auto_lock_database">Автоблокування бази даних</string>
-    <string name="set_key_title_auto_lock_database_turn_on">Так</string>
-    <string name="set_summary_screen_lock_on">Автоблокування бази даних</string>
-    <string name="error_webdav_end_dav_suffix">Шлях /dav/ не дозволений. Використовуйте дійсний шлях, наприклад: «https://example.org/dav/kpa/»</string>
-    <string name="translate_language">Перекласти застосунок своєю мовою</string>
-    <string name="get_token_fail">Не вдалося отримати токен</string>
-    <string name="one_drive_init_failure">Помилка ініціалізації OneDrive</string>
-    <string name="open_permissions">Відкрити дозволи</string>
-    <string name="set_key_main_show_totp_tab_title">Домашня сторінка показує категорію TOTP</string>
-    <string name="set_key_main_show_totp_tab_on">Показати категорію TOTP</string>
-    <string name="error_connect_play">Не вдалося під\'єднатися до служби Google</string>
-    <string name="disposable">Одноразово</string>
-    <string name="year">Щорічно</string>
-    <string name="monthly">Щомісячно</string>
-    <string name="error_donate">Не вдалося надіслати допомогу</string>
-    <string name="thank_donate">Дякуємо за ваш внесок.</string>
-    <string name="google_play">Google Play</string>
-    <string name="my_collection">Моя колекція</string>
-    <string name="current_collection_num">%1$s колекції</string>
-    <string name="no_collection">Немає колекції</string>
-    <string name="error_open_db_webdav">Не вдалося відкрити базу даних, файл WebDAV не існує.</string>
-    <string name="helper_webdav_service">Вибрати службу WebDAV</string>
-    <string name="error_is_root">Це вже кореневий каталог</string>
-    <string name="select_cur_path">Вибрати теку</string>
-    <string name="miui_permissions">Системі miui потрібен дозвіл на відкриття фонового спливного інтерфейсу, щоб використовувати функцію автозаповнення.</string>
-    <string name="error_keystore">Виняток сховища ключів, повторіть спробу</string>
-    <string name="error_qr_code_str">QR-код неправильний. Переконайтеся, що QR-код підтримується Google Authenticator</string>
-    <string name="select_save_path">Вибрати шлях збереження</string>
-    <string name="hostname">Ім\'я хосту</string>
-    <string name="port">Порт</string>
-    <string name="webdav_port_hint">Порт</string>
-    <string name="webdav_host_name_hint">Введіть своє ім\'я хосту</string>
-    <string name="webdav_port_name_null">Ім’я хосту не може бути порожнім</string>
-    <string name="privacy_agreement">Угода про приватність</string>
-    <string name="ime_hint_open_auto_fill">Увімкніть службу автозаповнення</string>
-    <string name="please_open_proxy">відкрийте проксі</string>
-    <string name="invalid_img">Недійсне зображення</string>
-    <string name="open_setting">Налаштування</string>
-    <string name="hint_open_backgroun_start">Ви налаштували автозаповнення, але KeePassA не має відповідних дозволів. Авторизуйте спливне вікно фонової служби KeePassA на сторінці налаштувань.</string>
-    <string name="preemptive">Пріоритетний</string>
-    <string name="fail_unsupported_Systems_O">Підтримка лише системи P або вище</string>
-    <string name="hint_webdav_jgy">Використовуйте пароль в [Обліковий запис-&gt;Безпека-&gt;Керування сторонніми застосунками].</string>
-    <string name="app_debug">Отримати файл журналу</string>
-    <string name="hint_auto_fill_save">Пов\'язати поточні дані з наявними записами\?</string>
-    <string name="title_tip_of_day">Порада дня</string>
-    <string name="hint_dont_show_tips">Не показувати поради</string>
-    <string name="base_info">Відомості про базу</string>
-    <string name="tag">Мітка</string>
-    <string name="add_attr_str">Додати атрибут</string>
-    <string name="hint_confirm">Підтвердити пароль</string>
-    <string name="collection">Збірка</string>
-    <string name="totp">TOTP</string>
-    <string name="delete">Видалити</string>
-    <string name="create_tag">Нова мітка</string>
-    <string name="error_file">Файл аномальний, видаліть його &lt;font color=#FF0000&gt;%s&lt;/font&gt;</string>
-    <string name="tag_name">Назва мітки</string>
-    <string name="add_tag">Додати мітку</string>
-    <string name="open_file">Відкрити файл</string>
-    <string name="modify_str_attr">Змінити властивості</string>
-    <string name="not_souper_otp">Непідтримуваний totp</string>
-    <string name="modify_totp">Змінити токен OTP</string>
-    <string name="error_totp">Помилка OTP</string>
-    <string name="file_save_success">Вкладення успішно збережено</string>
+    <string-array name="quick_pass_type_entries">
+        <item><![CDATA[Перші %s символів пароля бази даних]]></item>
+        <item><![CDATA[Останні %s символів пароля бази даних]]></item>
+    </string-array>
+    <string-array name="clean_clip_entries">
+        <item><![CDATA[30 секунд]]></item>
+        <item><![CDATA[1 хвилина]]></item>
+        <item><![CDATA[2 хвилини]]></item>
+        <item><![CDATA[5 хвилин]]></item>
+    </string-array>
+    <string-array name="quick_lock_entries">
+        <item><![CDATA[2 хвилини]]></item>
+        <item><![CDATA[5 хвилин]]></item>
+        <item><![CDATA[10 хвилин]]></item>
+        <item><![CDATA[20 хвилин]]></item>
+    </string-array>
+    <string-array name="out_db_entries">
+        <item><![CDATA[База даних Keepass2]]></item>
+        <item><![CDATA[Unencrypted XML file]]></item>
+        <item><![CDATA[Unencrypted CSV file]]></item>
+    </string-array>
+    <string-array name="v3_add_mor_item">
+        <item><![CDATA[Зауваження]]></item>
+        <item><![CDATA[вкладений файл]]></item>
+        <item><![CDATA[Термін придатності]]></item>
+    </string-array>
+    <string-array name="v4_add_mor_item">
+        <item><![CDATA[Зауваження]]></item>
+        <item><![CDATA[Спеціальні поля]]></item>
+        <item><![CDATA[вкладений файл]]></item>
+        <item><![CDATA[TOTP]]></item>
+        <item><![CDATA[етикетка]]></item>
+        <item><![CDATA[посилання]]></item>
+        <item><![CDATA[Термін придатності]]></item>
+    </string-array>
+    <string-array name="create_normal_group">
+        <item><![CDATA[Електронна пошта]]></item>
+        <item><![CDATA[працювати]]></item>
+        <item><![CDATA[Фінанси]]></item>
+        <item><![CDATA[розваги]]></item>
+        <item><![CDATA[корзина]]></item>
+    </string-array>
+    <string-array name="auto_fill_hint_label">
+        <item><![CDATA[Електронна пошта]]></item>
+        <item><![CDATA[мобільний телефон]]></item>
+        <item><![CDATA[Користувач]]></item>
+        <item><![CDATA[Номер рахунку]]></item>
+    </string-array>
+    <string name="db"><![CDATA[бази даних]]></string>
+    <string name="db1"><![CDATA[База даних\t|\t<font color="#757575">%s</font>]]></string>
+    <string name="password"><![CDATA[Пароль]]></string>
+    <string name="key"><![CDATA[ключ]]></string>
+    <string name="key1"><![CDATA[Ключ: %s]]></string>
+    <string name="open"><![CDATA[Розблокувати]]></string>
+    <string name="hint_set_password"><![CDATA[Встановити пароль]]></string>
+    <string name="hint_input_password"><![CDATA[Введіть пароль довжиною 6-16 символів]]></string>
+    <string name="hint_enter_password"><![CDATA[Підтвердьте пароль]]></string>
+    <string name="help_create_db"><![CDATA[База даних KeepPass v4 створена за замовчуванням]]></string>
+    <string name="help_create_group"><![CDATA[Назва групи не може перевищувати 16 символів]]></string>
+    <string name="encrypt_type"><![CDATA[Метод шифрування]]></string>
+    <string name="encrypt_type_1"><![CDATA[Лише пароль]]></string>
+    <string name="encrypt_type_2"><![CDATA[пароль + ключ]]></string>
+    <string name="choose_pass_key"><![CDATA[Виберіть ключ]]></string>
+    <string name="hint_set_pass_key"><![CDATA[Будь ласка, виберіть ключ]]></string>
+    <string name="pass_key"><![CDATA[ключ файлу]]></string>
+    <string name="helper_create_pass"><![CDATA[Рекомендується використовувати змішаний пароль (великі та малі англійські літери + цифри + символи)]]></string>
+    <string name="open_db"><![CDATA[Відкрита база даних]]></string>
+    <string name="db_name"><![CDATA[Введіть назву бази даних]]></string>
+    <string name="create_db"><![CDATA[Створити базу даних]]></string>
+    <string name="next"><![CDATA[Наступний крок]]></string>
+    <string name="up"><![CDATA[Попередній крок]]></string>
+    <string name="hint_select_db_path"><![CDATA[Натисніть, щоб встановити метод збереження даних]]></string>
+    <string name="hint_select_path_type"><![CDATA[Виберіть шлях збереження бази даних]]></string>
+    <string name="error_db_name_null"><![CDATA[Введіть назву бази даних]]></string>
+    <string name="done"><![CDATA[Повний]]></string>
+    <string name="enter"><![CDATA[Підтвердити]]></string>
+    <string name="cancel"><![CDATA[Скасувати]]></string>
+    <string name="hint"><![CDATA[Поради]]></string>
+    <string name="help_create_db_path"><![CDATA[Рекомендується використовувати хмарні шляхи, такі як Dropbox і WebDAV, які автоматично синхронізують вашу базу даних із хмарою та полегшать використання бази даних на інших пристроях.
+База даних \n зашифрована за допомогою AES256. Ніхто не може відкрити вашу базу даних без вашого пароля.]]></string>
+    <string name="help_pass_type"><![CDATA[Використовуйте лише пароль:
+Для відкриття бази даних \n потрібен лише ваш пароль;
+Пароль \n + ключ:
+\n Вам потрібно ввести пароль і вибрати файл ключа, щоб відкрити базу даних.]]></string>
+    <string name="help_pass_key"><![CDATA[Файл ключа еквівалентний ключу для відкритих даних і зазвичай набагато складніший і надійніший, ніж пароль. Але це також важче приховати, і якщо ви зберігаєте свою базу даних у хмарі, ніколи не поєднуйте ключ і базу даних разом.
+\n Ви можете вибрати будь-який файл як ключ для відкриття бази даних, фотографії або документа TXT.
+\n⚠️Примітка: якщо цю фотографію чи цей документ TXT буде змінено, ви не зможете відкрити базу даних! !
+\n наполегливо рекомендує використовувати файли, призначені лише для читання, як ключі.]]></string>
+    <string name="choose_file"><![CDATA[Виберіть файл]]></string>
+    <string name="choose_pass_key_file_des"><![CDATA[Виберіть будь-який файл як ключ]]></string>
+    <string name="create_file"><![CDATA[Створити новий файл]]></string>
+    <string name="create_pass_key_file_des"><![CDATA[Створіть новий файл, щоб використовувати його як ключ]]></string>
+    <string name="create_pass_key_success"><![CDATA[Створення ключа [%s] успішне]]></string>
+    <string name="error_pass_null"><![CDATA[Встановіть пароль бази даних]]></string>
+    <string name="error_enter_pass_null"><![CDATA[Будь ласка, введіть пароль підтвердження]]></string>
+    <string name="error_pass_unfit"><![CDATA[Два паролі не відповідають один одному]]></string>
+    <string name="hint_db_create_success"><![CDATA[Базу даних [%s] створено]]></string>
+    <string name="history"><![CDATA[історії]]></string>
+    <string name="history_record"><![CDATA[історія]]></string>
+    <string name="edit"><![CDATA[Редагувати]]></string>
+    <string name="change_db"><![CDATA[Переключити базу даних]]></string>
+    <string name="all"><![CDATA[запис]]></string>
+    <string name="setting"><![CDATA[налаштування]]></string>
+    <string name="db_setting"><![CDATA[Налаштування бази даних]]></string>
+    <string name="app_setting"><![CDATA[Налаштування програми]]></string>
+    <string name="welcome"><![CDATA[Ласкаво просимо]]></string>
+    <string name="help_input_db_pass"><![CDATA[Введіть пароль бази даних]]></string>
+    <string name="need_key"><![CDATA[Потрібен ключ?]]></string>
+    <string name="error_uri"><![CDATA[Помилка URI]]></string>
+    <string name="error_input_pass_null"><![CDATA[Будь ласка, введіть пароль бази даних]]></string>
+    <string name="error_open_db"><![CDATA[Неможливо відкрити базу даних. Пароль неправильний, чи мені потрібен ключ?]]></string>
+    <string name="error_open_db_key_empty"><![CDATA[Відсутній ключ]]></string>
+    <string name="error_open_db_pass_error"><![CDATA[Помилка пароля бази даних]]></string>
+    <string name="error_open_db_key_invalid"><![CDATA[Недійсний ключ]]></string>
+    <string name="error_open_db_version_error"><![CDATA[Помилка версії бази даних]]></string>
+    <string name="error_open_db_signature_error"><![CDATA[Помилка підпису бази даних]]></string>
+    <string name="error_open_db_algorithm_error"><![CDATA[Недійсний алгоритм]]></string>
+    <string name="error_open_db_arcfour_error"><![CDATA[Недійсний алгоритм шифрування потоку]]></string>
+    <string name="hint_group_desc"><![CDATA[Група-%s записів]]></string>
+    <string name="error_group_id_null"><![CDATA[ID групи порожній]]></string>
+    <string name="error_entry_id_null"><![CDATA[ID запису порожній]]></string>
+    <string name="create_time"><![CDATA[Створено %s]]></string>
+    <string name="expire_time"><![CDATA[Діє до %s]]></string>
+    <string name="hint_attr"><![CDATA[Розширені властивості]]></string>
+    <string name="attachment"><![CDATA[вкладений файл]]></string>
+    <string name="hint_ex_property"><![CDATA[Додаткові властивості]]></string>
+    <string name="expire"><![CDATA[<font color=#FF0000>%s</font> Термін дії минув]]></string>
+    <string name="del_group"><![CDATA[Видалити групу]]></string>
+    <string name="edit_group"><![CDATA[Редагувати групу]]></string>
+    <string name="success"><![CDATA[успіх]]></string>
+    <string name="fail"><![CDATA[не вдалося]]></string>
+    <string name="del_entry"><![CDATA[Видалити запис]]></string>
+    <string name="del_history"><![CDATA[Видалити історію]]></string>
+    <string name="copy_user_name"><![CDATA[Скопіюйте ім\'я користувача]]></string>
+    <string name="copy_password"><![CDATA[Копіювати пароль]]></string>
+    <string name="copy_totp"><![CDATA[Скопіюйте маркер TOTP]]></string>
+    <string name="hint_del_group"><![CDATA[Ви впевнені, що хочете видалити групу [<font color=#FF0000>%s</font>]? <br> Ця операція перемістить групу до кошика, де ви зможете відновити групу.]]></string>
+    <string name="hint_del_group_no_recycle"><![CDATA[Ви справді хочете видалити групу [<font color=#FF0000>%s</font>]?]]></string>
+    <string name="hint_del_entry"><![CDATA[Ви справді хочете видалити запис [<font color=#FF0000>%s</font>]? <br> Ця дія перемістить цей запис до кошика, де ви зможете пізніше відновити запис.]]></string>
+    <string name="hint_del_entry_no_recycle"><![CDATA[Ви справді бажаєте остаточно видалити запис [<font color=#FF0000>%s</font>]?]]></string>
+    <string name="group_name"><![CDATA[Назва групи]]></string>
+    <string name="create_group"><![CDATA[Створити групу]]></string>
+    <string name="error_group_name_null"><![CDATA[Назва групи порожня]]></string>
+    <string name="create_group_fail"><![CDATA[Не вдалося створити групу]]></string>
+    <string name="create_group_success"><![CDATA[Групу створено]]></string>
+    <string name="modify_group"><![CDATA[Редагувати групу]]></string>
+    <string name="error_group_no_modify"><![CDATA[Група не змінилася]]></string>
+    <string name="title_too_long"><![CDATA[Назва групи задовга]]></string>
+    <string name="choose_icon"><![CDATA[Виберіть значок]]></string>
+    <string name="undo_entry"><![CDATA[Відновлено…]]></string>
+    <string name="undo_to"><![CDATA[Перейти до цієї групи]]></string>
+    <string name="undo_grouped"><![CDATA[Групу переміщено у вказане місце]]></string>
+    <string name="undo_entryed"><![CDATA[Запис переміщено у вказане місце]]></string>
+    <string name="hint_copy_user"><![CDATA[Ім’я користувача скопійовано в буфер обміну]]></string>
+    <string name="hint_copy_pass"><![CDATA[Пароль скопійовано в буфер обміну]]></string>
+    <string name="hint_copy_totp"><![CDATA[Маркер TOTP скопійовано в буфер обміну]]></string>
+    <string name="create_totp"><![CDATA[Згенеруйте маркер OTP]]></string>
+    <string name="safety_set"><![CDATA[Налаштування безпеки]]></string>
+    <string name="fingerprint_unlock"><![CDATA[Розблокування відбитком пальця]]></string>
+    <string name="db_handle"><![CDATA[Операції з базами даних]]></string>
+    <string name="modify_db_name"><![CDATA[Змінити назву бази даних]]></string>
+    <string name="modify_db_pass"><![CDATA[Змінити пароль бази даних]]></string>
+    <string name="out_db"><![CDATA[Експорт бази даних]]></string>
+    <string name="db_name_no_alter"><![CDATA[Назва бази даних не змінилася]]></string>
+    <string name="db_name_modify"><![CDATA[Модифікація імені бази даних]]></string>
+    <string name="no_record"><![CDATA[немає запису]]></string>
+    <string name="hint_query"><![CDATA[Ім’я користувача, назва, URL, додаткові властивості…]]></string>
+    <string name="copy_to_clip"><![CDATA[Копіювати в буфер обміну]]></string>
+    <string name="show_pass"><![CDATA[показати пароль]]></string>
+    <string name="ope_url"><![CDATA[відкрити посилання]]></string>
+    <string name="hide_pass"><![CDATA[Приховати пароль]]></string>
+    <string name="hint_copy_to_clip"><![CDATA[Дані скопійовано в буфер обміну]]></string>
+    <string name="verify_finger"><![CDATA[Перевірка відбитків пальців]]></string>
+    <string name="verify_finger_fail"><![CDATA[Не вдалося перевірити відбиток пальця]]></string>
+    <string name="ban_fingerprint"><![CDATA[Розблокувати без відбитків пальців]]></string>
+    <string name="quick_use_fingerprint"><![CDATA[Для розблокування в інтерфейсі швидкого розблокування використовуйте лише відбиток пальця]]></string>
+    <string name="use_full_fingerprint"><![CDATA[Повне розблокування відбитком пальця]]></string>
+    <string name="hint_full_fingerprint"><![CDATA[Відбитки пальців використовуються для розблокування бази даних в інтерфейсі швидкого розблокування та інтерфейсі розблокування бази даних. KeePassA шифрує та зберігає головний пароль і ключову інформацію бази даних у локальному сховищі ключів системи Android і використовує авторизацію за відбитками пальців для захисту. Лише ваш відбиток пальця може розблокувати базу даних.]]></string>
+    <string name="hint_quick_unlock"><![CDATA[Введіть останні %s цифр пароля вашої бази даних]]></string>
+    <string name="hint_input_title"><![CDATA[Назва]]></string>
+    <string name="hint_input_user_name"><![CDATA[Ім\'я користувача]]></string>
+    <string name="hint_input_url"><![CDATA[Адреса посилання]]></string>
+    <string name="notice"><![CDATA[Зауваження]]></string>
+    <string name="hint_input_tag"><![CDATA[тег 1, тег 2]]></string>
+    <string name="hint_input_cover_url"><![CDATA[перевизначити посилання]]></string>
+    <string name="create_entry"><![CDATA[Створити запис]]></string>
+    <string name="save"><![CDATA[зберегти]]></string>
+    <string name="len"><![CDATA[довжина]]></string>
+    <string name="upper"><![CDATA[великі літери]]></string>
+    <string name="lower"><![CDATA[малі літери]]></string>
+    <string name="numer"><![CDATA[чисел]]></string>
+    <string name="minus"><![CDATA[знак мінус]]></string>
+    <string name="underline"><![CDATA[Підкреслити]]></string>
+    <string name="space"><![CDATA[простір]]></string>
+    <string name="special"><![CDATA[спеціальні символи]]></string>
+    <string name="bracket"><![CDATA[дужки]]></string>
+    <string name="pass_generater"><![CDATA[генератор паролів]]></string>
+    <string name="error_genera_params"><![CDATA[Виберіть принаймні один тип генерації пароля]]></string>
+    <string name="hint_pass_null"><![CDATA[Пароль порожній]]></string>
+    <string name="date"><![CDATA[Дата]]></string>
+    <string name="time"><![CDATA[час]]></string>
+    <string name="choose_dir"><![CDATA[Зберегти в поточну групу]]></string>
+    <string name="normal_account"><![CDATA[Звичайний рахунок]]></string>
+    <string name="add_more"><![CDATA[Додайте більше елементів]]></string>
+    <string name="warning"><![CDATA[попередження]]></string>
+    <string name="create_entry_no_save"><![CDATA[Вийти з поточної сторінки без збереження записів?]]></string>
+    <string name="add_custom_str"><![CDATA[Створення настроюваних полів]]></string>
+    <string name="hint_input_attr_str_key"><![CDATA[Назва поля]]></string>
+    <string name="hint_input_attr_str_value"><![CDATA[значення поля]]></string>
+    <string name="hint_protect_str"><![CDATA[заповідні поля]]></string>
+    <string name="error_attr_str_null"><![CDATA[Назва поля порожня]]></string>
+    <string name="del_attr_str"><![CDATA[Видалити спеціальне поле]]></string>
+    <string name="del_attr_file"><![CDATA[Видалити вкладення]]></string>
+    <string name="error_attr_file_too_large"><![CDATA[Будь ласка, не вкладайте файли, розмір яких перевищує 10 Мб]]></string>
+    <string name="download_file"><![CDATA[Зберігайте вкладення на SD-карту]]></string>
+    <string name="open_whit_text"><![CDATA[Відкрити внутрішнім текстом]]></string>
+    <string name="open_whit_img"><![CDATA[Відкрити за допомогою внутрішнього засобу перегляду зображень]]></string>
+    <string name="open_whit_other"><![CDATA[Зберегти в кеш і відкрити за допомогою системної програми]]></string>
+    <string name="save_file_success"><![CDATA[Збережений файл [%s]]]></string>
+    <string name="txt_viewer"><![CDATA[переглядач файлів]]></string>
+    <string name="save_db_fail"><![CDATA[Не вдалося зберегти базу даних]]></string>
+    <string name="error_pass"><![CDATA[Неправильний пароль]]></string>
+    <string name="db_pass_no_alter"><![CDATA[Новий пароль такий самий, як і старий]]></string>
+    <string name="hint_db_pass_modify_success"><![CDATA[Використовуйте новий пароль бази даних, щоб відкрити базу даних наступного разу]]></string>
+    <string name="hint_db_pass_modify"><![CDATA[Пароль бази даних змінено]]></string>
+    <string name="app_feedback"><![CDATA[Дайте пораду]]></string>
+    <string name="error_db_pass_too_short"><![CDATA[З метою забезпечення безпеки ваших даних довжина пароля бази даних не може бути менше 6 символів.]]></string>
+    <string name="autofill_sign_in_prompt"><![CDATA[Автозаповнення пароля за допомогою KeePassA]]></string>
+    <string name="hint_open_backgroun_start"><![CDATA[Ви ввімкнули автозаповнення, але в спеціальних системах, таких як MIUI, KeePassA має надати <b> дозвіл фонового спливаючого інтерфейсу </b> на відкриття спливаючого інтерфейсу для розблокування бази даних.]]></string>
+    <string name="hint_background_start"><![CDATA[Клацніть <font color="#FF0000"><b> нижче, щоб налаштувати </b></font>, а потім увімкніть дозвіл </b> фонового спливаючого інтерфейсу <b> для KeePassA.]]></string>
+    <string name="setting_miui_background_start"><![CDATA[Параметри > Параметри програми > Керування програмами > KeePassA > Керування дозволами]]></string>
+    <string name="setting_vivo_background_start"><![CDATA[Налаштування > Інші налаштування > Керування дозволами->KeePassA > Параметри дозволів > Фонове спливаюче вікно]]></string>
+    <string name="no_matching_entry"><![CDATA[Немає відповідних записів]]></string>
+    <string name="hint_save_auto_fill"><![CDATA[Чи пов’язувати назву пакета [<font color="#FF0000">%1$s</font>] із записом [<font color="#FF0000">%2$s</font>]]]></string>
+    <string name="relevance_db"><![CDATA[Зв\'язані дані]]></string>
+    <string name="modify_time"><![CDATA[час модифікації]]></string>
+    <string name="lose_time"><![CDATA[Термін придатності]]></string>
+    <string name="update_group_fail"><![CDATA[Не вдалося оновити інформацію про групу]]></string>
+    <string name="update_group_success"><![CDATA[Інформація про групу оновлена]]></string>
+    <string name="title"><![CDATA[Назва]]></string>
+    <string name="feedback"><![CDATA[Відгук ^_^]]></string>
+    <string name="submit"><![CDATA[Надіслати]]></string>
+    <string name="send_email_fail"><![CDATA[Почніть із встановлення програми, яка може надсилати електронні листи]]></string>
+    <string name="feedback_email_msg"><![CDATA[Привіт, мене звати KeePassA, у вас є запитання? _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ Бренд мобільного телефону: %1$s Модель мобільного телефону: %2$s Версія системи: %3$s Роздільна здатність: %4$s Версія програми: %5$s]]></string>
+    <string name="mark_not_exit"><![CDATA[Маркет додатків не існує]]></string>
+    <string name="set_open_auto_fill_title"><![CDATA[Сервіс автозаповнення]]></string>
+    <string name="set_key_praise_value"><![CDATA[Курс KeePassA]]></string>
+    <string name="other_set"><![CDATA[Інші налаштування]]></string>
+    <string name="open_quick_unlock"><![CDATA[Швидке розблокування]]></string>
+    <string name="quick_pass_type_summary"><![CDATA[""]]></string>
+    <string name="clean_clip_time"><![CDATA[Очистити буфер обміну]]></string>
+    <string name="clean_clip_time_summary"><![CDATA[Після копіювання пароля очистіть буфер обміну після %s]]></string>
+    <string name="auto_lock_db_time"><![CDATA[Автоматично блокувати базу даних]]></string>
+    <string name="auto_lock_db_time_summary"><![CDATA[Якщо не виконати жодної операції, базу даних буде автоматично заблоковано через %s хвилин.]]></string>
+    <string name="quick_pass_type"><![CDATA[Місце перехоплення короткого пароля]]></string>
+    <string name="des_quick_unlock"><![CDATA[Розблокуйте свою базу даних за допомогою короткого пароля]]></string>
+    <string name="error_short_pass_lenght"><![CDATA[Короткий пароль не може бути довшим за 6 символів.]]></string>
+    <string name="error_short_pass_short"><![CDATA[Довжина короткого пароля не може бути менше 3 символів]]></string>
+    <string name="quick_pass_len_title"><![CDATA[Коротка довжина пароля]]></string>
+    <string name="quick_pass_len_summary"><![CDATA[Довжина короткого пароля: %s]]></string>
+    <string name="set_key_value"><![CDATA[Виберіть мову]]></string>
+    <string name="dropbox_msg"><![CDATA[Відповідно до принципу поваги до конфіденційності користувачів, KeePassA не запитуватиме дозволу на доступ до всіх ваших файлів Dropbox. KeePassA<font color=#FF0000> має доступ лише до папки [Application/KeePassA] </font>. <br /> Таким чином: <br /> <b> Якщо у вас уже є база даних KeePass, вам потрібно спочатку авторизувати KeePassA для доступу до папки [Application/KeePassA] у KeePassA, а після авторизації зберегти базу даних KeePass у папці [Application/KeePassA]. завершено. </b><br/><br /> Якщо ви створюєте нову базу даних KeepPass, вам не потрібна вищевказана операція. Після створення бази даних KeePassA автоматично створить відповідну папку та завантажить базу даних до каталогу [Application/KeePassA] Dropbox.]]></string>
+    <string name="cover"><![CDATA[Обкладинка]]></string>
+    <string name="file_conflict_msg"><![CDATA[Існує конфлікт між хмарними та локальними даними. Виберіть метод перезапису. Конфліктні записи: \n %s]]></string>
+    <string name="cover_local"><![CDATA[місцевий]]></string>
+    <string name="cover_cloud"><![CDATA[Хмара]]></string>
+    <string name="merge"><![CDATA[злиття]]></string>
+    <string name="sync_db"><![CDATA[Синхронізація бази даних]]></string>
+    <string name="net_error"><![CDATA[Аномалія мережі]]></string>
+    <string name="auth"><![CDATA[Авторизувати]]></string>
+    <string name="invalid"><![CDATA[Недійсний]]></string>
+    <string name="no_file"><![CDATA[немає файлу]]></string>
+    <string name="login"><![CDATA[Логін]]></string>
+    <string name="helper_webdav"><![CDATA[Наприклад: https://dav.example.org/dav/your folder/xxx.kdbx]]></string>
+    <string name="helper_webdav_dir"><![CDATA[Наприклад: https://dav.example.org/dav/[ваша папка]/]]></string>
+    <string name="hint_webdav_url"><![CDATA[Файл URL]]></string>
+    <string name="hint_please_input"><![CDATA[Будь ласка, введіть %s]]></string>
+    <string name="db_file_no_exist"><![CDATA[Файл бази даних не існує]]></string>
+    <string name="invalid_auth"><![CDATA[Неможливо авторизуватися. Спробуйте ще раз.]]></string>
+    <string name="afs"><![CDATA[Файлова система Android]]></string>
+    <string name="hint_kdbx_name"><![CDATA[Неправильний суфікс, суфікс має бути ".kdbx"]]></string>
+    <string name="start_upload_db"><![CDATA[Почніть завантажувати базу даних на мережевий диск]]></string>
+    <string name="unlocked"><![CDATA[Розблоковано]]></string>
+    <string name="notify_channel_db_open"><![CDATA[Сповіщення про розблокування бази даних]]></string>
+    <string name="notify_quick_unlock_start"><![CDATA[База даних заблокована, швидке розблокування включено]]></string>
+    <string name="notify_db_locked"><![CDATA[База даних заблокована]]></string>
+    <string name="search"><![CDATA[Пошук]]></string>
+    <string name="disable"><![CDATA[Закрити]]></string>
+    <string name="quick_unlock"><![CDATA[Швидке розблокування]]></string>
+    <string name="db_unlock"><![CDATA[Розблокувати базу даних]]></string>
+    <string name="hint_quick_use_fingerprint"><![CDATA[Використовуйте розблокування відбитком пальця лише на сторінці швидкого розблокування]]></string>
+    <string name="version_log"><![CDATA[Журнал оновлення]]></string>
+    <string name="hint_finger_print_verfiy"><![CDATA[Для використання нових налаштувань потрібна повторна перевірка відбитка пальця]]></string>
+    <string name="closed"><![CDATA[Закрито]]></string>
+    <string name="open1"><![CDATA[включити]]></string>
+    <string name="upload"><![CDATA[завантажити]]></string>
+    <string name="add_attr_file"><![CDATA[Додайте вкладення]]></string>
+    <string name="hint_fingerprint_modify"><![CDATA[Виявлено, що відбиток пальця змінився. Для безпеки вашого пароля скиньте функцію розблокування відбитком пальця.]]></string>
+    <string name="hint_please_open_database"><![CDATA[Будь ласка, відкрийте базу даних]]></string>
+    <string name="save_db_success"><![CDATA[Базу даних збережено]]></string>
+    <string name="set_delete_setting"><![CDATA[Видалити налаштування]]></string>
+    <string name="set_delete_no_into_recycle_bin"><![CDATA[Назавжди видалити записи з бази даних]]></string>
+    <string name="set_delete_no_into_recycle_bin_des"><![CDATA[Перемістіть видалені елементи в кошик]]></string>
+    <string name="warning_rooted"><![CDATA[З міркувань безпеки даних не відкривайте базу даних на телефоні з рутованим доступом]]></string>
+    <string name="hint_security_green"><![CDATA[«Ця програма знаходиться в безпечному середовищі»]]></string>
+    <string name="hint_security_red"><![CDATA[Ваш пристрій рутовано, а база даних знаходиться в дуже небезпечному середовищі]]></string>
+    <string name="hint_security_yellow"><![CDATA[Попередження, програма працює в симуляторі, середовище якого створить деякі непередбачувані ризики для бази даних]]></string>
+    <string name="donate"><![CDATA[Пожертвуйте]]></string>
+    <string name="donate_desc"><![CDATA[[KeePassA](https://github.com/AriaLyy/KeepassA) — безкоштовне програмне забезпечення. Будь ласка, подумайте про надання нам пожертви на підтримку нашої роботи, велике вам спасибі.]]></string>
+    <string name="dev_birthday"><![CDATA[Сьогодні день народження розробника 🎂. Хочете пригостити розробника пивом?]]></string>
+    <string name="totp_defaule"><![CDATA[Параметри маркера RFC 6238 за замовчуванням]]></string>
+    <string name="totp_steam"><![CDATA[Налаштування маркера Steam]]></string>
+    <string name="totp_custom"><![CDATA[Використовуйте спеціальні налаштування]]></string>
+    <string name="totp_custom_hint"><![CDATA[Спеціальні налаштування]]></string>
+    <string name="totp_Arithmetic"><![CDATA[Алгоритм:]]></string>
+    <string name="totp_time"><![CDATA[Час (с):]]></string>
+    <string name="totp_len"><![CDATA[Довжина:]]></string>
+    <string name="totp_key_error"><![CDATA[Неможливо згенерувати код TOTP, виняток ключа]]></string>
+    <string name="sort"><![CDATA[сортувати]]></string>
+    <string name="sort_chart_desc"><![CDATA[Перший алфавітний порядок спадання (Я-А)]]></string>
+    <string name="sort_chart_asc"><![CDATA[Алфавітний порядок за зростанням (A-Z)]]></string>
+    <string name="sort_time_asc"><![CDATA[порядок зростання часу]]></string>
+    <string name="sort_time_desc"><![CDATA[Час спуску]]></string>
+    <string name="ime_label"><![CDATA[Клавіатура безпеки KeePassA]]></string>
+    <string name="set_open_kpa_ime_title"><![CDATA[безпечна клавіатура]]></string>
+    <string name="no_totp_token"><![CDATA[Немає маркера TOTP]]></string>
+    <string name="ime_entry_other_info"><![CDATA[Заповнити інші поля]]></string>
+    <string name="url"><![CDATA[URL]]></string>
+    <string name="hint_not_nore_info"><![CDATA[більше немає інформації]]></string>
+    <string name="error_uri_grant_permission"><![CDATA[URI Помилка авторизації]]></string>
+    <string name="license"><![CDATA[ліцензія на безкоштовне програмне забезпечення]]></string>
+    <string name="move"><![CDATA[рухатися]]></string>
+    <string name="set_key_sum_main_show_entries"><![CDATA[Показати всі записи після розблокування бази даних]]></string>
+    <string name="set_key_sum_main_show_history"><![CDATA[Показувати історію після розблокування бази даних]]></string>
+    <string name="set_key_title_main_allow_show_entries"><![CDATA[Домашня сторінка]]></string>
+    <string name="set_key_title_opr_env_check"><![CDATA[Запустіть параметри перевірки середовища]]></string>
+    <string name="set_key_title_opr_env_check_turn_off"><![CDATA[Закрити]]></string>
+    <string name="set_key_title_opr_env_check_turn_on"><![CDATA[відкритий]]></string>
+    <string name="expand"><![CDATA[Розгорнути]]></string>
+    <string name="shrink"><![CDATA[закрити]]></string>
+    <string name="ui_setting"><![CDATA[Налаштування інтерфейсу користувача]]></string>
+    <string name="cur_app_not_autofill"><![CDATA[Не виконувати автозаповнення]]></string>
+    <string name="other"><![CDATA[інші]]></string>
+    <string name="ref_entry"><![CDATA[Довідкові предмети]]></string>
+    <string name="multi_choice"><![CDATA[Множинний вибір]]></string>
+    <string name="set_summary_screen_lock_off"><![CDATA[Не блокуйте базу даних]]></string>
+    <string name="set_summary_screen_lock_on"><![CDATA[Автоматично блокувати базу даних]]></string>
+    <string name="set_title_screen_lock"><![CDATA[блокування екрана]]></string>
+    <string name="close"><![CDATA[Закрити]]></string>
+    <string name="Alipay"><![CDATA[Alipay]]></string>
+    <string name="error_webdav_end_suffix"><![CDATA[Використовувати шлях до папки. Наприклад: "https://example.org/dav/kpa/"]]></string>
+    <string name="error_webdav_end_dav_suffix"><![CDATA[Шлях /dav/ не дозволений. Використовуйте дійсний шлях, наприклад: "https://example.org/dav/kpa/"]]></string>
+    <string name="set_key_title_fillet_bg_icon"><![CDATA[Заокруглений кут значка списку]]></string>
+    <string name="set_key_title_fillet_bg_icon_turn_on"><![CDATA[включити]]></string>
+    <string name="set_key_title_fillet_bg_icon_turn_off"><![CDATA[Закрити]]></string>
+    <string name="set_key_title_show_state_bar"><![CDATA[рядок стану]]></string>
+    <string name="set_key_title_show_state_bar_turn_on"><![CDATA[шоу]]></string>
+    <string name="set_key_title_show_state_bar_turn_off"><![CDATA[приховати]]></string>
+    <string name="set_key_title_close_load_anim"><![CDATA[завантаження анімації]]></string>
+    <string name="set_key_title_close_load_anim_turn_on"><![CDATA[відкритий]]></string>
+    <string name="set_key_title_close_load_anim_turn_off"><![CDATA[Закрити]]></string>
+    <string name="s_default"><![CDATA[За замовчуванням]]></string>
+    <string name="customize"><![CDATA[Налаштувати]]></string>
+    <string name="set_key_title_auto_lock_database"><![CDATA[Автоматично блокувати базу даних]]></string>
+    <string name="set_key_title_auto_lock_database_turn_on"><![CDATA[так]]></string>
+    <string name="set_key_title_auto_lock_database_turn_off"><![CDATA[Закрити]]></string>
+    <string name="get_token_fail"><![CDATA[Не вдалося отримати Token]]></string>
+    <string name="one_drive_init_failure"><![CDATA[Помилка ініціалізації OneDrive]]></string>
+    <string name="one_drive_hint"><![CDATA[Щоб захистити вашу конфіденційність, KeePassA матиме доступ лише до каталогу <font color=#FF0000> [Application/KeepassA] </font>. Якщо ви хочете прочитати базу даних Keepass для OneDrive, <font color=#FF0000>, збережіть базу даних у цьому каталозі. </font>]]></string>
+    <string name="open_permissions"><![CDATA[Відкриті дозволи]]></string>
+    <string name="miui_permissions"><![CDATA[miui Щоб використовувати функцію автозаповнення, системі потрібно відкрити дозвіл фонового спливаючого інтерфейсу.]]></string>
+    <string name="set_key_main_show_totp_tab_title"><![CDATA[Домашня сторінка показує категорію TOTP]]></string>
+    <string name="set_key_main_show_totp_tab_on"><![CDATA[Показати категорії TOTP]]></string>
+    <string name="set_key_main_show_totp_tab_off"><![CDATA[Не відображати категорію TOTP]]></string>
+    <string name="set_key_theme_style_title"><![CDATA[стиль теми]]></string>
+    <string name="set_key_theme_style_summary"><![CDATA[Слідкуйте за системою]]></string>
+    <string name="open_setting"><![CDATA[Відкрийте налаштування]]></string>
+    <string-array name="sek_ley_theme_style_entries">
+        <item><![CDATA[Слідкуйте за системою]]></item>
+        <item><![CDATA[темний режим]]></item>
+        <item><![CDATA[світловий режим]]></item>
+    </string-array>
+    <string name="error_keystore"><![CDATA[Виняток із сховища ключів, спробуйте ще раз]]></string>
+    <string name="kpa_totp"><![CDATA[жетон]]></string>
+    <string name="kpa_copy"><![CDATA[Копіювати]]></string>
+    <string name="translate_language"><![CDATA[Перекладіть додаток на свою мову]]></string>
+    <string name="error_qr_code_str"><![CDATA[QR-код ненормальний. Підтвердьте, що QR-код підтримується Google Authenticator.]]></string>
+    <string name="google_play"><![CDATA[Google Play Store]]></string>
+    <string name="disposable"><![CDATA[Одноразовий]]></string>
+    <string name="year"><![CDATA[кожного року]]></string>
+    <string name="error_donate"><![CDATA[Пожертвування не вдалося]]></string>
+    <string name="thank_donate"><![CDATA[Дякуємо за вашу пожертву.]]></string>
+    <string name="error_connect_play"><![CDATA[Не вдалося підключитися до служб Google]]></string>
+    <string name="monthly"><![CDATA[щомісяця]]></string>
+    <string name="my_collection"><![CDATA[моя колекція]]></string>
+    <string name="current_collection_num"><![CDATA[Колекції %1$s]]></string>
+    <string name="no_collection"><![CDATA[Немає улюблених]]></string>
+    <string name="error_open_db_webdav"><![CDATA[Базу даних неможливо відкрити, оскільки файл WebDAV не існує.]]></string>
+    <string name="helper_webdav_service"><![CDATA[Виберіть послугу WebDAV]]></string>
+    <string name="error_is_root"><![CDATA[Вже кореневий каталог]]></string>
+    <string name="select_cur_path"><![CDATA[Виберіть поточну папку]]></string>
+    <string name="hint_cloud_file_already_exist"><![CDATA[%1$s вже існує. Ви хочете перезаписати файл?]]></string>
+    <string name="select_save_path"><![CDATA[Виберіть шлях збереження]]></string>
+    <string name="one_drive_load_user_failure"><![CDATA[Не вдалося завантажити інформацію про користувача.]]></string>
+    <string name="hint_open_background_start"><![CDATA[Будь ласка, увімкніть дозвіл на фонове спливаюче вікно, інакше функцію автозаповнення використовувати не можна]]></string>
+    <string name="hostname"><![CDATA[ім\'я хоста]]></string>
+    <string name="port"><![CDATA[порт]]></string>
+    <string name="webdav_host_name_hint"><![CDATA[Будь ласка, введіть своє ім\'я хосту]]></string>
+    <string name="webdav_port_hint"><![CDATA[порт]]></string>
+    <string name="webdav_port_name_null"><![CDATA[Ім’я хосту не може бути пустим]]></string>
+    <string name="privacy_agreement"><![CDATA[угода про конфіденційність]]></string>
+    <string name="ime_hint_open_auto_fill"><![CDATA[Увімкніть службу автозаповнення]]></string>
+    <string name="please_open_proxy"><![CDATA[Через відомі мережеві причини, щоб безперебійно користуватися послугами onedrive, використовуйте відповідні мережеві інструменти]]></string>
+    <string name="invalid_img"><![CDATA[Недійсне зображення]]></string>
+    <string name="preemptive"><![CDATA[Попередній режим]]></string>
+    <string name="fail_unsupported_Systems_O"><![CDATA[Підтримує лише системи з P і вище]]></string>
+    <string name="hint_webdav_jgy"><![CDATA[Будь ласка, використовуйте пароль у [Інформація про обліковий запис->Параметри безпеки->Програми третіх сторін]]]></string>
+    <string name="app_debug"><![CDATA[Видалити файл журналу]]></string>
+    <string name="hint_auto_fill_save"><![CDATA[Пов’язати поточні дані з наявними записами?]]></string>
+    <string name="hint_dont_show_tips"><![CDATA[Більше не показувати]]></string>
+    <string name="title_tip_of_day"><![CDATA[щоденні поради]]></string>
+    <string name="base_info"><![CDATA[Основна інформація]]></string>
+    <string name="tag"><![CDATA[етикетка]]></string>
+    <string name="collection"><![CDATA[Колекція]]></string>
+    <string name="add_attr_str"><![CDATA[Додайте атрибути]]></string>
+    <string name="delete"><![CDATA[Видалити]]></string>
+    <string name="create_tag"><![CDATA[Створення тегів]]></string>
+    <string name="tag_name"><![CDATA[Назва тега]]></string>
+    <string name="add_tag"><![CDATA[Додати тег]]></string>
+    <string name="open_file"><![CDATA[відкрити файл]]></string>
+    <string name="modify_str_attr"><![CDATA[Змінити властивості]]></string>
+    <string name="error_file"><![CDATA[Файл ненормальний, будь ласка, видаліть: <font color=#FF0000>%s</font>]]></string>
+    <string name="not_souper_otp"><![CDATA[TOTP не підтримується]]></string>
+    <string name="modify_totp"><![CDATA[змінити маркер]]></string>
+    <string name="error_totp"><![CDATA[Неправильний totp]]></string>
+    <string name="file_save_success"><![CDATA[Вкладення успішно збережено]]></string>
+    <string name="options"><![CDATA[Опції]]></string>
+    <string name="review_title"><![CDATA[коментар]]></string>
+    <string name="review_enter"><![CDATA[Почати коментар]]></string>
+    <string name="review_cancel"><![CDATA[Не цього разу]]></string>
+    <string name="review_fail"><![CDATA[Не вдалося надіслати, перевірте мережу]]></string>
+    <string name="review_not_hint"><![CDATA[Більше не запитувати]]></string>
+    <string name="review_like_app"><![CDATA[Подобається наш додаток? Будь ласка, оцініть нас!]]></string>
+    <string name="hint_notify_permission"><![CDATA[KeepassA вимагає дозволу на сповіщення для сповіщення про стан бази даних.]]></string>
+    <string name="title_choose_icon"><![CDATA[Виберіть значок]]></string>
+    <string name="icon_select_pick"><![CDATA[Відкрийте фотоальбом]]></string>
+    <string name="icon_select_db"><![CDATA[місцевий значок]]></string>
+    <string name="icon_change"><![CDATA[Змінити значок]]></string>
+    <string name="entry_not_found"><![CDATA[Запис не знайдено]]></string>
+    <string name="hint_confirm"><![CDATA[Підтвердити пароль]]></string>
+    <string name="totp"><![CDATA[TOTP]]></string>
 </resources>

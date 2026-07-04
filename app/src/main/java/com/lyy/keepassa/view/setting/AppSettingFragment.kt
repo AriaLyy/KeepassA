@@ -66,20 +66,27 @@ class AppSettingFragment : PreferenceFragmentCompat() {
   private lateinit var autoFill: SwitchPreference
 
   companion object {
-    private val LANGUAGE_MAP = hashMapOf<Int, Locale>().apply {
-      put(1, Locale.ENGLISH)
-      put(2, Locale.SIMPLIFIED_CHINESE)
-      put(3, Locale.TRADITIONAL_CHINESE)
-      put(4, Locale.CANADA_FRENCH)
-      put(5, Locale("nb", "rNO"))
-      put(6, Locale("ru", "rRU"))
-      put(7, Locale.FRENCH)
-      put(8, Locale.GERMANY)
-      put(9, Locale("pl"))
-      put(10, Locale("tr"))
-      put(11, Locale("uk", "rUA"))
-      put(12, Locale("es")) // 西班牙语)
-    }
+    private val LANGUAGE_MAP = linkedMapOf(
+      1 to Locale.ENGLISH,
+      2 to Locale.SIMPLIFIED_CHINESE,
+      3 to Locale.TRADITIONAL_CHINESE,
+      4 to Locale.CANADA_FRENCH,
+      5 to Locale("nb", "NO"),
+      6 to Locale("ru", "RU"),
+      7 to Locale.FRENCH,
+      8 to Locale.GERMANY,
+      9 to Locale("pl"),
+      10 to Locale("tr"),
+      11 to Locale("uk", "UA"),
+      12 to Locale("es"),
+      13 to Locale("ar"),
+      14 to Locale("cs"),
+      15 to Locale("fon"),
+      16 to Locale.JAPANESE,
+      17 to Locale("nl"),
+      18 to Locale("pt"),
+      19 to Locale("pt", "BR")
+    )
   }
 
   @Autowired(name = "scrollKey")
@@ -377,27 +384,29 @@ class AppSettingFragment : PreferenceFragmentCompat() {
   private fun setLanguage() {
     val langPre = findPreference<ListPreference>(getString(R.string.set_key_language))
     val spm = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
-    if (spm.getString(getString(R.string.set_key_language), null) == null
-    ) {
+    if (spm.getString(getString(R.string.set_key_language), null) == null) {
       val sysLan = LanguageUtils.getSystemLanguage()
-      val temp = LANGUAGE_MAP.entries.find { it.value.language == sysLan.language }
-      val index = LANGUAGE_MAP.entries.indexOf(temp)
-      if (index in LANGUAGE_MAP.entries.indices){
-        langPre?.setValueIndex(index)
-      }
+      findLanguageValue(sysLan)?.let { langPre?.value = it }
     }
     langPre?.setOnPreferenceChangeListener { _, newValue ->
-      val lang = LANGUAGE_MAP[newValue.toString()
-        .toInt()] ?: Locale.ENGLISH
+      val lang = LANGUAGE_MAP[newValue.toString().toIntOrNull()] ?: Locale.ENGLISH
       BaseApp.currentLang = lang
       LanguageUtil.saveLanguage(requireContext(), lang)
-      for (ac in AbsFrame.getInstance().activityStack) {
+      LanguageUtil.setLanguage(requireContext(), lang)
+      for (ac in AbsFrame.getInstance().activityStack.toList()) {
         AbsFrame.getInstance()
           .removeActivity(ac)
         ac.recreate()
       }
       true
     }
+  }
+
+  private fun findLanguageValue(locale: Locale): String? {
+    val supportedLocale = LanguageUtil.getSupportedLanguage(locale) ?: return null
+    return LANGUAGE_MAP.entries.firstOrNull { it.value == supportedLocale }
+      ?.key
+      ?.toString()
   }
 
   /**

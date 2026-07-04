@@ -1,4 +1,452 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="db">قاعدة البيانات</string>
+    <string-array name="quick_pass_type_entries">
+        <item><![CDATA[أول %s أحرف من كلمة مرور قاعدة البيانات]]></item>
+        <item><![CDATA[آخر %s أحرف من كلمة مرور قاعدة البيانات]]></item>
+    </string-array>
+    <string-array name="clean_clip_entries">
+        <item><![CDATA[30 ثانية]]></item>
+        <item><![CDATA[1 دقيقة]]></item>
+        <item><![CDATA[2 دقيقة]]></item>
+        <item><![CDATA[5 دقائق]]></item>
+    </string-array>
+    <string-array name="quick_lock_entries">
+        <item><![CDATA[2 دقيقة]]></item>
+        <item><![CDATA[5 دقائق]]></item>
+        <item><![CDATA[10 دقائق]]></item>
+        <item><![CDATA[20 دقيقة]]></item>
+    </string-array>
+    <string-array name="out_db_entries">
+        <item><![CDATA[قاعدة بيانات Keepass2]]></item>
+        <item><![CDATA[ملف XML غير مشفر]]></item>
+        <item><![CDATA[ملف CSV غير مشفر]]></item>
+    </string-array>
+    <string-array name="v3_add_mor_item">
+        <item><![CDATA[ملاحظة]]></item>
+        <item><![CDATA[مرفق الملف]]></item>
+        <item><![CDATA[وقت انتهاء الصلاحية]]></item>
+    </string-array>
+    <string-array name="v4_add_mor_item">
+        <item><![CDATA[ملاحظة]]></item>
+        <item><![CDATA[الحقول المخصصة]]></item>
+        <item><![CDATA[مرفق الملف]]></item>
+        <item><![CDATA[TOTP]]></item>
+        <item><![CDATA[ملصق]]></item>
+        <item><![CDATA[وصلة]]></item>
+        <item><![CDATA[وقت انتهاء الصلاحية]]></item>
+    </string-array>
+    <string-array name="create_normal_group">
+        <item><![CDATA[بريد]]></item>
+        <item><![CDATA[عمل]]></item>
+        <item><![CDATA[تمويل]]></item>
+        <item><![CDATA[ترفيه]]></item>
+        <item><![CDATA[سلة المحذوفات]]></item>
+    </string-array>
+    <string-array name="auto_fill_hint_label">
+        <item><![CDATA[بريد]]></item>
+        <item><![CDATA[الهاتف الخلوي]]></item>
+        <item><![CDATA[مستخدم]]></item>
+        <item><![CDATA[حساب]]></item>
+    </string-array>
+    <string name="db"><![CDATA[قاعدة البيانات]]></string>
+    <string name="db1"><![CDATA[قاعدة البيانات\t|\t<font color="#757575">%s</font>]]></string>
+    <string name="password"><![CDATA[كلمة المرور]]></string>
+    <string name="key"><![CDATA[مفتاح]]></string>
+    <string name="key1"><![CDATA[المفتاح: %s]]></string>
+    <string name="open"><![CDATA[فتح]]></string>
+    <string name="hint_set_password"><![CDATA[تعيين كلمة المرور]]></string>
+    <string name="hint_input_password"><![CDATA[أدخل كلمة مرور من 6 إلى 16 حرفًا]]></string>
+    <string name="hint_enter_password"><![CDATA[تأكيد كلمة المرور]]></string>
+    <string name="help_create_db"><![CDATA[تم إنشاء قاعدة بيانات KeepPass v4 بشكل افتراضي]]></string>
+    <string name="help_create_group"><![CDATA[لا يمكن أن يتجاوز اسم المجموعة 16 حرفًا]]></string>
+    <string name="encrypt_type"><![CDATA[طريقة التشفير]]></string>
+    <string name="encrypt_type_1"><![CDATA[كلمة المرور فقط]]></string>
+    <string name="encrypt_type_2"><![CDATA[كلمة المرور + المفتاح]]></string>
+    <string name="choose_pass_key"><![CDATA[حدد المفتاح]]></string>
+    <string name="hint_set_pass_key"><![CDATA[الرجاء تحديد المفتاح]]></string>
+    <string name="pass_key"><![CDATA[مفتاح الملف]]></string>
+    <string name="helper_create_pass"><![CDATA[يوصى باستخدام كلمة مرور مختلطة (أحرف كبيرة وصغيرة باللغة الإنجليزية + أرقام + رموز)]]></string>
+    <string name="open_db"><![CDATA[فتح قاعدة البيانات]]></string>
+    <string name="db_name"><![CDATA[أدخل اسم قاعدة البيانات]]></string>
+    <string name="create_db"><![CDATA[إنشاء قاعدة بيانات]]></string>
+    <string name="next"><![CDATA[الخطوة التالية]]></string>
+    <string name="up"><![CDATA[الخطوة السابقة]]></string>
+    <string name="hint_select_db_path"><![CDATA[انقر لتعيين طريقة حفظ البيانات]]></string>
+    <string name="hint_select_path_type"><![CDATA[حدد مسار حفظ قاعدة البيانات]]></string>
+    <string name="error_db_name_null"><![CDATA[الرجاء إدخال اسم قاعدة البيانات]]></string>
+    <string name="done"><![CDATA[ينهي]]></string>
+    <string name="enter"><![CDATA[يتأكد]]></string>
+    <string name="cancel"><![CDATA[يلغي]]></string>
+    <string name="hint"><![CDATA[تَلمِيح]]></string>
+    <string name="help_create_db_path"><![CDATA[يوصى باستخدام المسارات السحابية مثل Dropbox وWebDAV، والتي ستقوم تلقائيًا بمزامنة قاعدة بياناتك مع السحابة وتسهيل استخدام قاعدة البيانات على الأجهزة الأخرى.
+يتم تشفير قاعدة البيانات \n باستخدام AES256. لا يمكن لأحد فتح قاعدة البيانات الخاصة بك دون كلمة المرور الخاصة بك.]]></string>
+    <string name="help_pass_type"><![CDATA[استخدم كلمة المرور فقط:
+\n يتطلب فقط كلمة المرور الخاصة بك لفتح قاعدة البيانات؛
+\n كلمة المرور + المفتاح:
+\n تحتاج إلى إدخال كلمة مرور وتحديد ملف مفتاح لفتح قاعدة البيانات.]]></string>
+    <string name="help_pass_key"><![CDATA[يكافئ ملف المفتاح مفتاح البيانات المفتوحة وعادةً ما يكون أكثر تعقيدًا وموثوقية من كلمة المرور. ولكن من الصعب أيضًا إخفاءها، وإذا احتفظت بقاعدة البيانات الخاصة بك في السحابة، فلا تقم أبدًا بتجميع المفتاح وقاعدة البيانات معًا.
+\n يمكنك اختيار أي ملف كمفتاح لفتح قاعدة البيانات أو صورة أو مستند TXT.
+\n⚠️ملاحظة: إذا تم تعديل هذه الصورة أو مستند TXT، فلن تتمكن من فتح قاعدة البيانات! !
+يوصي \n بشدة باستخدام ملفات للقراءة فقط كمفاتيح.]]></string>
+    <string name="choose_file"><![CDATA[حدد الملف]]></string>
+    <string name="choose_pass_key_file_des"><![CDATA[اختر أي ملف كمفتاحك]]></string>
+    <string name="create_file"><![CDATA[إنشاء ملف جديد]]></string>
+    <string name="create_pass_key_file_des"><![CDATA[قم بإنشاء ملف جديد لاستخدامه كمفتاحك]]></string>
+    <string name="create_pass_key_success"><![CDATA[تم إنشاء المفتاح [%s] بنجاح]]></string>
+    <string name="error_pass_null"><![CDATA[الرجاء تعيين كلمة مرور قاعدة البيانات]]></string>
+    <string name="error_enter_pass_null"><![CDATA[الرجاء إدخال كلمة المرور التأكيدية]]></string>
+    <string name="error_pass_unfit"><![CDATA[كلمتا مرور غير متناسقتين]]></string>
+    <string name="hint_db_create_success"><![CDATA[تم إنشاء قاعدة البيانات [%s].]]></string>
+    <string name="history"><![CDATA[تاريخ]]></string>
+    <string name="history_record"><![CDATA[تاريخ]]></string>
+    <string name="edit"><![CDATA[يحرر]]></string>
+    <string name="change_db"><![CDATA[تبديل قاعدة البيانات]]></string>
+    <string name="all"><![CDATA[دخول]]></string>
+    <string name="setting"><![CDATA[يثبت]]></string>
+    <string name="db_setting"><![CDATA[إعدادات قاعدة البيانات]]></string>
+    <string name="app_setting"><![CDATA[إعدادات التطبيق]]></string>
+    <string name="welcome"><![CDATA[مرحباً]]></string>
+    <string name="help_input_db_pass"><![CDATA[أدخل كلمة مرور قاعدة البيانات]]></string>
+    <string name="need_key"><![CDATA[هل تحتاج إلى مفتاح؟]]></string>
+    <string name="error_uri"><![CDATA[خطأ URI]]></string>
+    <string name="error_input_pass_null"><![CDATA[الرجاء إدخال كلمة مرور قاعدة البيانات]]></string>
+    <string name="error_open_db"><![CDATA[غير قادر على فتح قاعدة البيانات. كلمة المرور غير صحيحة، أو هل أحتاج إلى مفتاح؟]]></string>
+    <string name="error_open_db_key_empty"><![CDATA[مفتاح مفقود]]></string>
+    <string name="error_open_db_pass_error"><![CDATA[خطأ في كلمة مرور قاعدة البيانات]]></string>
+    <string name="error_open_db_key_invalid"><![CDATA[مفتاح غير صالح]]></string>
+    <string name="error_open_db_version_error"><![CDATA[خطأ في إصدار قاعدة البيانات]]></string>
+    <string name="error_open_db_signature_error"><![CDATA[خطأ في توقيع قاعدة البيانات]]></string>
+    <string name="error_open_db_algorithm_error"><![CDATA[خوارزمية غير صالحة]]></string>
+    <string name="error_open_db_arcfour_error"><![CDATA[خوارزمية تشفير الدفق غير صالحة]]></string>
+    <string name="hint_group_desc"><![CDATA[إدخالات المجموعة-%s]]></string>
+    <string name="error_group_id_null"><![CDATA[معرف المجموعة فارغ]]></string>
+    <string name="error_entry_id_null"><![CDATA[معرف الإدخال فارغ]]></string>
+    <string name="create_time"><![CDATA[تم إنشاؤها بواسطة %s]]></string>
+    <string name="expire_time"><![CDATA[تنتهي صلاحيته عند %s]]></string>
+    <string name="hint_attr"><![CDATA[خصائص متقدمة]]></string>
+    <string name="attachment"><![CDATA[مرفق الملف]]></string>
+    <string name="hint_ex_property"><![CDATA[خصائص اضافية]]></string>
+    <string name="expire"><![CDATA[<font color=#FF0000>%s</font>منتهية الصلاحية]]></string>
+    <string name="del_group"><![CDATA[حذف المجموعة]]></string>
+    <string name="edit_group"><![CDATA[تحرير المجموعة]]></string>
+    <string name="success"><![CDATA[نجاح]]></string>
+    <string name="fail"><![CDATA[يفشل]]></string>
+    <string name="del_entry"><![CDATA[حذف الإدخال]]></string>
+    <string name="del_history"><![CDATA[حذف التاريخ]]></string>
+    <string name="copy_user_name"><![CDATA[انسخ اسم المستخدم]]></string>
+    <string name="copy_password"><![CDATA[انسخ كلمة المرور]]></string>
+    <string name="copy_totp"><![CDATA[انسخ الرمز المميز TOTP]]></string>
+    <string name="hint_del_group"><![CDATA[هل أنت متأكد أنك تريد حذف المجموعة [<font color=#FF0000>%s</font>]؟ <br> ستؤدي هذه العملية إلى نقل المجموعة إلى سلة المحذوفات، حيث يمكنك استعادة المجموعة.]]></string>
+    <string name="hint_del_group_no_recycle"><![CDATA[هل تريد حقًا حذف المجموعة [<font color=#FF0000>%s</font>]؟]]></string>
+    <string name="hint_del_entry"><![CDATA[هل تريد حقًا حذف الإدخال [<font color=#FF0000>%s</font>]؟ <br> سيؤدي هذا الإجراء إلى نقل هذا الإدخال إلى سلة المحذوفات، حيث يمكنك استعادة الإدخال لاحقًا.]]></string>
+    <string name="hint_del_entry_no_recycle"><![CDATA[هل تريد حقًا حذف الإدخال [<font color=#FF0000>%s</font>] نهائيًا؟]]></string>
+    <string name="group_name"><![CDATA[اسم المجموعة]]></string>
+    <string name="create_group"><![CDATA[إنشاء مجموعة]]></string>
+    <string name="error_group_name_null"><![CDATA[اسم المجموعة فارغ]]></string>
+    <string name="create_group_fail"><![CDATA[غير قادر على إنشاء المجموعة]]></string>
+    <string name="create_group_success"><![CDATA[تم إنشاء المجموعة]]></string>
+    <string name="modify_group"><![CDATA[تحرير المجموعة]]></string>
+    <string name="error_group_no_modify"><![CDATA[المجموعة لم تتغير]]></string>
+    <string name="title_too_long"><![CDATA[اسم المجموعة طويل جدًا]]></string>
+    <string name="choose_icon"><![CDATA[حدد الرمز]]></string>
+    <string name="undo_entry"><![CDATA[تمت استعادته…]]></string>
+    <string name="undo_to"><![CDATA[انتقل إلى هذه المجموعة]]></string>
+    <string name="undo_grouped"><![CDATA[تم نقل المجموعة إلى الموقع المحدد]]></string>
+    <string name="undo_entryed"><![CDATA[تم نقل الإدخال إلى الموقع المحدد]]></string>
+    <string name="hint_copy_user"><![CDATA[تم نسخ اسم المستخدم إلى الحافظة]]></string>
+    <string name="hint_copy_pass"><![CDATA[تم نسخ كلمة المرور إلى الحافظة]]></string>
+    <string name="hint_copy_totp"><![CDATA[تم نسخ رمز TOTP إلى الحافظة]]></string>
+    <string name="create_totp"><![CDATA[إنشاء رمز OTP]]></string>
+    <string name="safety_set"><![CDATA[إعدادات الأمان]]></string>
+    <string name="fingerprint_unlock"><![CDATA[فتح بصمة الإصبع]]></string>
+    <string name="db_handle"><![CDATA[عمليات قاعدة البيانات]]></string>
+    <string name="modify_db_name"><![CDATA[تعديل اسم قاعدة البيانات]]></string>
+    <string name="modify_db_pass"><![CDATA[تغيير كلمة مرور قاعدة البيانات]]></string>
+    <string name="out_db"><![CDATA[تصدير قاعدة البيانات]]></string>
+    <string name="db_name_no_alter"><![CDATA[اسم قاعدة البيانات لم يتغير]]></string>
+    <string name="db_name_modify"><![CDATA[تعديل اسم قاعدة البيانات]]></string>
+    <string name="no_record"><![CDATA[لا يوجد سجل]]></string>
+    <string name="hint_query"><![CDATA[اسم المستخدم، العنوان، URL، الخصائص المتقدمة...]]></string>
+    <string name="copy_to_clip"><![CDATA[نسخ إلى الحافظة]]></string>
+    <string name="show_pass"><![CDATA[إظهار كلمة المرور]]></string>
+    <string name="ope_url"><![CDATA[رابط مفتوح]]></string>
+    <string name="hide_pass"><![CDATA[إخفاء كلمة المرور]]></string>
+    <string name="hint_copy_to_clip"><![CDATA[تم نسخ البيانات إلى الحافظة]]></string>
+    <string name="verify_finger"><![CDATA[التحقق من بصمات الأصابع]]></string>
+    <string name="verify_finger_fail"><![CDATA[غير قادر على التحقق من بصمة الإصبع]]></string>
+    <string name="ban_fingerprint"><![CDATA[فتح بدون بصمة]]></string>
+    <string name="quick_use_fingerprint"><![CDATA[استخدم بصمة إصبعك فقط لفتح القفل على واجهة الفتح السريع]]></string>
+    <string name="use_full_fingerprint"><![CDATA[فتح كامل لبصمة الإصبع]]></string>
+    <string name="hint_full_fingerprint"><![CDATA[تُستخدم بصمات الأصابع لإلغاء قفل قاعدة البيانات في واجهة إلغاء القفل السريع وواجهة إلغاء قفل قاعدة البيانات. يقوم KeePassA بتشفير وتخزين كلمة المرور الرئيسية والمعلومات الأساسية لقاعدة البيانات في مستودع المفاتيح المحلي لنظام Android ويستخدم ترخيص بصمة الإصبع للحماية. فقط بصمة إصبعك يمكنها فتح قاعدة البيانات.]]></string>
+    <string name="hint_quick_unlock"><![CDATA[أدخل آخر أرقام %s لكلمة مرور قاعدة البيانات الخاصة بك]]></string>
+    <string name="hint_input_title"><![CDATA[عنوان]]></string>
+    <string name="hint_input_user_name"><![CDATA[اسم المستخدم]]></string>
+    <string name="hint_input_url"><![CDATA[عنوان الرابط]]></string>
+    <string name="notice"><![CDATA[ملاحظة]]></string>
+    <string name="hint_input_tag"><![CDATA[العلامة 1، العلامة 2]]></string>
+    <string name="hint_input_cover_url"><![CDATA[تجاوز الارتباط]]></string>
+    <string name="create_entry"><![CDATA[إنشاء إدخال]]></string>
+    <string name="save"><![CDATA[يحفظ]]></string>
+    <string name="len"><![CDATA[طول]]></string>
+    <string name="upper"><![CDATA[.حرف كبير]]></string>
+    <string name="lower"><![CDATA[الحروف الصغيرة]]></string>
+    <string name="numer"><![CDATA[رقم]]></string>
+    <string name="minus"><![CDATA[علامة ناقص]]></string>
+    <string name="underline"><![CDATA[تسطير]]></string>
+    <string name="space"><![CDATA[فضاء]]></string>
+    <string name="special"><![CDATA[شخصيات خاصة]]></string>
+    <string name="bracket"><![CDATA[بين قوسين]]></string>
+    <string name="pass_generater"><![CDATA[مولد كلمة المرور]]></string>
+    <string name="error_genera_params"><![CDATA[الرجاء تحديد نوع واحد على الأقل لإنشاء كلمة المرور]]></string>
+    <string name="hint_pass_null"><![CDATA[كلمة المرور فارغة]]></string>
+    <string name="date"><![CDATA[تاريخ]]></string>
+    <string name="time"><![CDATA[وقت]]></string>
+    <string name="choose_dir"><![CDATA[حفظ إلى المجموعة الحالية]]></string>
+    <string name="normal_account"><![CDATA[حساب عادي]]></string>
+    <string name="add_more"><![CDATA[أضف المزيد من العناصر]]></string>
+    <string name="warning"><![CDATA[تحذير]]></string>
+    <string name="create_entry_no_save"><![CDATA[هل تريد الخروج من الصفحة الحالية دون حفظ الإدخالات؟]]></string>
+    <string name="add_custom_str"><![CDATA[إنشاء حقول مخصصة]]></string>
+    <string name="hint_input_attr_str_key"><![CDATA[اسم الحقل]]></string>
+    <string name="hint_input_attr_str_value"><![CDATA[قيمة الحقل]]></string>
+    <string name="hint_protect_str"><![CDATA[الحقول المحمية]]></string>
+    <string name="error_attr_str_null"><![CDATA[اسم الحقل فارغ]]></string>
+    <string name="del_attr_str"><![CDATA[حذف الحقل المخصص]]></string>
+    <string name="del_attr_file"><![CDATA[حذف المرفق]]></string>
+    <string name="error_attr_file_too_large"><![CDATA[يرجى عدم إرفاق ملفات أكبر من 10 ميجا]]></string>
+    <string name="download_file"><![CDATA[حفظ المرفقات على بطاقة SD]]></string>
+    <string name="open_whit_text"><![CDATA[فتح مع النص الداخلي]]></string>
+    <string name="open_whit_img"><![CDATA[فتح مع عارض الصور الداخلي]]></string>
+    <string name="open_whit_other"><![CDATA[احفظه في ذاكرة التخزين المؤقت وافتحه باستخدام تطبيق النظام]]></string>
+    <string name="save_file_success"><![CDATA[الملف المحفوظ [%s]]]></string>
+    <string name="txt_viewer"><![CDATA[عارض الملف]]></string>
+    <string name="save_db_fail"><![CDATA[غير قادر على حفظ قاعدة البيانات]]></string>
+    <string name="error_pass"><![CDATA[كلمة مرور خاطئة]]></string>
+    <string name="db_pass_no_alter"><![CDATA[كلمة المرور الجديدة هي نفس كلمة المرور القديمة]]></string>
+    <string name="hint_db_pass_modify_success"><![CDATA[استخدم كلمة مرور قاعدة البيانات الجديدة لفتح قاعدة البيانات في المرة القادمة]]></string>
+    <string name="hint_db_pass_modify"><![CDATA[تم تغيير كلمة مرور قاعدة البيانات]]></string>
+    <string name="app_feedback"><![CDATA[تقديم المشورة]]></string>
+    <string name="error_db_pass_too_short"><![CDATA[من أجل ضمان أمان بياناتك، لا يمكن أن يقل طول كلمة مرور قاعدة البيانات عن 6 أحرف.]]></string>
+    <string name="autofill_sign_in_prompt"><![CDATA[الملء التلقائي لكلمة المرور باستخدام KeePassA]]></string>
+    <string name="hint_open_backgroun_start"><![CDATA[لقد قمت بتشغيل الملء التلقائي، ولكن في أنظمة خاصة مثل MIUI، يحتاج KeePassA إلى منح <b> الخلفية المنبثقة إذن </b> لإظهار الواجهة لفتح قاعدة البيانات.]]></string>
+    <string name="hint_background_start"><![CDATA[انقر فوق <font color="#FF0000"><b> أدناه لتعيين </b></font>، ثم قم بتمكين إذن <b> للواجهة المنبثقة الخلفية </b> لـ KeePassA.]]></string>
+    <string name="setting_miui_background_start"><![CDATA[الإعدادات > إعدادات التطبيق > إدارة التطبيقات > KeePassA > إدارة الأذونات]]></string>
+    <string name="setting_vivo_background_start"><![CDATA[الإعدادات > المزيد من الإعدادات > إدارة الأذونات-> KeePassA > إعدادات الأذونات > النافذة المنبثقة في الخلفية]]></string>
+    <string name="no_matching_entry"><![CDATA[لا توجد إدخالات مطابقة]]></string>
+    <string name="hint_save_auto_fill"><![CDATA[ما إذا كان سيتم ربط اسم الحزمة [<font color="#FF0000">%1$s</font>] بالإدخال [<font color="#FF0000">%2$s</font>]]]></string>
+    <string name="relevance_db"><![CDATA[البيانات المرتبطة]]></string>
+    <string name="modify_time"><![CDATA[وقت التعديل]]></string>
+    <string name="lose_time"><![CDATA[وقت انتهاء الصلاحية]]></string>
+    <string name="update_group_fail"><![CDATA[غير قادر على تحديث معلومات المجموعة]]></string>
+    <string name="update_group_success"><![CDATA[تم تحديث معلومات المجموعة]]></string>
+    <string name="title"><![CDATA[عنوان]]></string>
+    <string name="feedback"><![CDATA[ردود الفعل ^_^]]></string>
+    <string name="submit"><![CDATA[يُقدِّم]]></string>
+    <string name="send_email_fail"><![CDATA[ابدأ بتثبيت تطبيق يمكنه إرسال رسائل البريد الإلكتروني]]></string>
+    <string name="feedback_email_msg"><![CDATA[مرحبا، اسمي KeePassA، هل لديك أي أسئلة؟ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ العلامة التجارية للهاتف المحمول: %1$s طراز الهاتف المحمول: %2$s إصدار النظام: %3$s الدقة: %4$s إصدار التطبيق: %5$s]]></string>
+    <string name="mark_not_exit"><![CDATA[سوق التطبيقات غير موجود]]></string>
+    <string name="set_open_auto_fill_title"><![CDATA[خدمة الملء التلقائي]]></string>
+    <string name="set_key_praise_value"><![CDATA[معدل KeePassA]]></string>
+    <string name="other_set"><![CDATA[إعدادات أخرى]]></string>
+    <string name="open_quick_unlock"><![CDATA[فتح سريع]]></string>
+    <string name="quick_pass_type_summary"><![CDATA[""]]></string>
+    <string name="clean_clip_time"><![CDATA[مسح الحافظة]]></string>
+    <string name="clean_clip_time_summary"><![CDATA[بعد نسخ كلمة المرور، قم بمسح الحافظة بعد %s]]></string>
+    <string name="auto_lock_db_time"><![CDATA[قفل قاعدة البيانات تلقائيا]]></string>
+    <string name="auto_lock_db_time_summary"><![CDATA[إذا لم يتم تنفيذ أي عملية، فسيتم قفل قاعدة البيانات تلقائيًا بعد %s دقيقة.]]></string>
+    <string name="quick_pass_type"><![CDATA[موقع اعتراض كلمة المرور القصيرة]]></string>
+    <string name="des_quick_unlock"><![CDATA[فتح قاعدة البيانات الخاصة بك بكلمة مرور قصيرة]]></string>
+    <string name="error_short_pass_lenght"><![CDATA[لا يمكن أن تزيد كلمة المرور القصيرة عن 6 أحرف.]]></string>
+    <string name="error_short_pass_short"><![CDATA[لا يمكن أن يقل طول كلمة المرور القصيرة عن 3 أحرف]]></string>
+    <string name="quick_pass_len_title"><![CDATA[طول كلمة المرور قصيرة]]></string>
+    <string name="quick_pass_len_summary"><![CDATA[طول كلمة المرور القصيرة: %s]]></string>
+    <string name="set_key_value"><![CDATA[اختر اللغة]]></string>
+    <string name="dropbox_msg"><![CDATA[تماشيًا مع مبدأ احترام خصوصية المستخدم، لن يطلب KeePassA الإذن للوصول إلى جميع ملفات Dropbox الخاصة بك. يصل KeePassA<font color=#FF0000> إلى المجلد [Application/KeePassA] </font> فقط. <br /> لذلك: <br /> <b> إذا كان لديك بالفعل قاعدة بيانات KeePass، فأنت بحاجة إلى ترخيص KeePassA للوصول إلى المجلد [Application/KeePassA] في KeePassA أولاً، وحفظ قاعدة البيانات KeePass في المجلد [Application/KeePassA] بعد الحصول على التفويض اكتمل. </b><br/><br /> إذا كنت تقوم بإنشاء قاعدة بيانات KeepPass جديدة، فلن تحتاج إلى العملية المذكورة أعلاه. بعد إنشاء قاعدة البيانات، سيقوم KeePassA تلقائيًا بإنشاء المجلد المقابل وتحميل قاعدة البيانات إلى دليل [Application/KeePassA] الخاص بـ Dropbox.]]></string>
+    <string name="cover"><![CDATA[غطاء]]></string>
+    <string name="file_conflict_msg"><![CDATA[يوجد تعارض بين البيانات السحابية والبيانات المحلية. الرجاء تحديد طريقة الكتابة الفوقية. الإدخالات المتعارضة هي: \n %s]]></string>
+    <string name="cover_local"><![CDATA[محلي]]></string>
+    <string name="cover_cloud"><![CDATA[سحاب]]></string>
+    <string name="merge"><![CDATA[دمج]]></string>
+    <string name="sync_db"><![CDATA[مزامنة قاعدة البيانات]]></string>
+    <string name="net_error"><![CDATA[خلل في الشبكة]]></string>
+    <string name="auth"><![CDATA[يأذن]]></string>
+    <string name="invalid"><![CDATA[غير صالح]]></string>
+    <string name="no_file"><![CDATA[لا يوجد ملف]]></string>
+    <string name="login"><![CDATA[تسجيل الدخول]]></string>
+    <string name="helper_webdav"><![CDATA[على سبيل المثال: https://dav.example.org/dav/your Folder/xxx.kdbx]]></string>
+    <string name="helper_webdav_dir"><![CDATA[على سبيل المثال: https://dav.example.org/dav/[مجلدك]/]]></string>
+    <string name="hint_webdav_url"><![CDATA[ملف URL]]></string>
+    <string name="hint_please_input"><![CDATA[الرجاء إدخال %s]]></string>
+    <string name="db_file_no_exist"><![CDATA[ملف قاعدة البيانات غير موجود]]></string>
+    <string name="invalid_auth"><![CDATA[غير قادر على التفويض. يرجى المحاولة مرة أخرى.]]></string>
+    <string name="afs"><![CDATA[نظام ملفات أندرويد]]></string>
+    <string name="hint_kdbx_name"><![CDATA[اللاحقة خاطئة، يجب أن تكون اللاحقة ".kdbx"]]></string>
+    <string name="start_upload_db"><![CDATA[ابدأ بتحميل قاعدة البيانات إلى قرص الشبكة لديك]]></string>
+    <string name="unlocked"><![CDATA[مفتوح]]></string>
+    <string name="notify_channel_db_open"><![CDATA[إشعار فتح قاعدة البيانات]]></string>
+    <string name="notify_quick_unlock_start"><![CDATA[تم تأمين قاعدة البيانات، وتم تمكين إلغاء القفل السريع]]></string>
+    <string name="notify_db_locked"><![CDATA[قاعدة البيانات مقفلة]]></string>
+    <string name="search"><![CDATA[يبحث]]></string>
+    <string name="disable"><![CDATA[إنهاء]]></string>
+    <string name="quick_unlock"><![CDATA[فتح سريع]]></string>
+    <string name="db_unlock"><![CDATA[فتح قاعدة البيانات]]></string>
+    <string name="hint_quick_use_fingerprint"><![CDATA[استخدم فقط إلغاء القفل ببصمة الإصبع في صفحة إلغاء القفل السريع]]></string>
+    <string name="version_log"><![CDATA[سجل الترقية]]></string>
+    <string name="hint_finger_print_verfiy"><![CDATA[يلزم إعادة التحقق من بصمة الإصبع لاستخدام الإعدادات الجديدة]]></string>
+    <string name="closed"><![CDATA[مغلق]]></string>
+    <string name="open1"><![CDATA[تشغيل]]></string>
+    <string name="upload"><![CDATA[رفع]]></string>
+    <string name="add_attr_file"><![CDATA[إضافة مرفق]]></string>
+    <string name="hint_fingerprint_modify"><![CDATA[تم اكتشاف أن بصمة الإصبع قد تغيرت. لتأمين كلمة المرور الخاصة بك، يرجى إعادة تعيين وظيفة فتح القفل ببصمة الإصبع.]]></string>
+    <string name="hint_please_open_database"><![CDATA[الرجاء فتح قاعدة البيانات]]></string>
+    <string name="save_db_success"><![CDATA[تم حفظ قاعدة البيانات]]></string>
+    <string name="set_delete_setting"><![CDATA[حذف الإعدادات]]></string>
+    <string name="set_delete_no_into_recycle_bin"><![CDATA[حذف الإدخالات من قاعدة البيانات بشكل دائم]]></string>
+    <string name="set_delete_no_into_recycle_bin_des"><![CDATA[نقل العناصر المحذوفة إلى سلة المحذوفات]]></string>
+    <string name="warning_rooted"><![CDATA[من أجل أمان بياناتك، يرجى عدم فتح قاعدة البيانات على هاتف مروت]]></string>
+    <string name="hint_security_green"><![CDATA["هذا التطبيق في بيئة آمنة"]]></string>
+    <string name="hint_security_red"><![CDATA[جهازك متجذر وقاعدة البيانات في بيئة خطيرة للغاية]]></string>
+    <string name="hint_security_yellow"><![CDATA[تحذير، يتم تشغيل التطبيق في جهاز المحاكاة، وأي بيئة ستجلب بعض المخاطر غير المتوقعة إلى قاعدة البيانات]]></string>
+    <string name="donate"><![CDATA[يتبرع]]></string>
+    <string name="donate_desc"><![CDATA[[KeePassA](https://github.com/AriaLyy/KeepassA) هو برنامج مجاني. يرجى النظر في منحنا تبرعًا لدعم عملنا، شكرًا جزيلاً لك.]]></string>
+    <string name="dev_birthday"><![CDATA[اليوم هو عيد ميلاد المطور 🎂. هل ترغب في علاج المطور بالبيرة؟]]></string>
+    <string name="totp_defaule"><![CDATA[إعدادات الرمز المميز RFC 6238 الافتراضية]]></string>
+    <string name="totp_steam"><![CDATA[إعدادات رمز البخار]]></string>
+    <string name="totp_custom"><![CDATA[استخدم الإعدادات المخصصة]]></string>
+    <string name="totp_custom_hint"><![CDATA[الإعدادات المخصصة]]></string>
+    <string name="totp_Arithmetic"><![CDATA[الخوارزمية:]]></string>
+    <string name="totp_time"><![CDATA[الوقت (ق):]]></string>
+    <string name="totp_len"><![CDATA[طول:]]></string>
+    <string name="totp_key_error"><![CDATA[غير قادر على إنشاء رمز TOTP، استثناء المفتاح]]></string>
+    <string name="sort"><![CDATA[نوع]]></string>
+    <string name="sort_chart_desc"><![CDATA[الترتيب التنازلي الأبجدي الأول (Z-A)]]></string>
+    <string name="sort_chart_asc"><![CDATA[الترتيب الأبجدي التصاعدي (من الألف إلى الياء)]]></string>
+    <string name="sort_time_asc"><![CDATA[ترتيب تصاعدي للوقت]]></string>
+    <string name="sort_time_desc"><![CDATA[الوقت النازل]]></string>
+    <string name="ime_label"><![CDATA[KeePassA لوحة المفاتيح الأمنية]]></string>
+    <string name="set_open_kpa_ime_title"><![CDATA[لوحة مفاتيح آمنة]]></string>
+    <string name="no_totp_token"><![CDATA[لا يوجد رمز TOTP]]></string>
+    <string name="ime_entry_other_info"><![CDATA[ملء الحقول الأخرى]]></string>
+    <string name="url"><![CDATA[عنوان URL]]></string>
+    <string name="hint_not_nore_info"><![CDATA[لا مزيد من المعلومات]]></string>
+    <string name="error_uri_grant_permission"><![CDATA[فشل تخويل URI]]></string>
+    <string name="license"><![CDATA[ترخيص البرمجيات الحرة]]></string>
+    <string name="move"><![CDATA[يتحرك]]></string>
+    <string name="set_key_sum_main_show_entries"><![CDATA[إظهار كافة الإدخالات بعد فتح قاعدة البيانات]]></string>
+    <string name="set_key_sum_main_show_history"><![CDATA[إظهار التاريخ بعد فتح قاعدة البيانات]]></string>
+    <string name="set_key_title_main_allow_show_entries"><![CDATA[الصفحة الرئيسية]]></string>
+    <string name="set_key_title_opr_env_check"><![CDATA[تشغيل إعدادات التحقق من البيئة]]></string>
+    <string name="set_key_title_opr_env_check_turn_off"><![CDATA[إنهاء]]></string>
+    <string name="set_key_title_opr_env_check_turn_on"><![CDATA[يفتح]]></string>
+    <string name="expand"><![CDATA[يوسع]]></string>
+    <string name="shrink"><![CDATA[يغلق]]></string>
+    <string name="ui_setting"><![CDATA[إعدادات واجهة المستخدم]]></string>
+    <string name="cur_app_not_autofill"><![CDATA[لا تقم بالملء التلقائي]]></string>
+    <string name="other"><![CDATA[آخر]]></string>
+    <string name="ref_entry"><![CDATA[العناصر المرجعية]]></string>
+    <string name="multi_choice"><![CDATA[الاختيار من متعدد]]></string>
+    <string name="set_summary_screen_lock_off"><![CDATA[لا تقم بقفل قاعدة البيانات]]></string>
+    <string name="set_summary_screen_lock_on"><![CDATA[قفل قاعدة البيانات تلقائيا]]></string>
+    <string name="set_title_screen_lock"><![CDATA[قفل الشاشة]]></string>
+    <string name="close"><![CDATA[إنهاء]]></string>
+    <string name="Alipay"><![CDATA[أليباي]]></string>
+    <string name="error_webdav_end_suffix"><![CDATA[استخدم مسار المجلد. على سبيل المثال: "https://example.org/dav/kpa/"]]></string>
+    <string name="error_webdav_end_dav_suffix"><![CDATA[المسار /dav/ غير مسموح به. استخدم مسارًا صالحًا، مثل: "https://example.org/dav/kpa/"]]></string>
+    <string name="set_key_title_fillet_bg_icon"><![CDATA[زاوية أيقونة القائمة المستديرة]]></string>
+    <string name="set_key_title_fillet_bg_icon_turn_on"><![CDATA[تشغيل]]></string>
+    <string name="set_key_title_fillet_bg_icon_turn_off"><![CDATA[إنهاء]]></string>
+    <string name="set_key_title_show_state_bar"><![CDATA[شريط الحالة]]></string>
+    <string name="set_key_title_show_state_bar_turn_on"><![CDATA[يعرض]]></string>
+    <string name="set_key_title_show_state_bar_turn_off"><![CDATA[يخفي]]></string>
+    <string name="set_key_title_close_load_anim"><![CDATA[تحميل الرسوم المتحركة]]></string>
+    <string name="set_key_title_close_load_anim_turn_on"><![CDATA[يفتح]]></string>
+    <string name="set_key_title_close_load_anim_turn_off"><![CDATA[إنهاء]]></string>
+    <string name="s_default"><![CDATA[تقصير]]></string>
+    <string name="customize"><![CDATA[تخصيص]]></string>
+    <string name="set_key_title_auto_lock_database"><![CDATA[قفل قاعدة البيانات تلقائيا]]></string>
+    <string name="set_key_title_auto_lock_database_turn_on"><![CDATA[نعم]]></string>
+    <string name="set_key_title_auto_lock_database_turn_off"><![CDATA[إنهاء]]></string>
+    <string name="get_token_fail"><![CDATA[فشل الحصول على Token]]></string>
+    <string name="one_drive_init_failure"><![CDATA[فشلت تهيئة OneDrive]]></string>
+    <string name="one_drive_hint"><![CDATA[من أجل حماية خصوصيتك، لن يتمكن KeePassA من الوصول إلا إلى دليل <font color=#FF0000> [Application/KeepassA] </font>. إذا كنت ترغب في قراءة قاعدة بيانات Keepass الخاصة بـ OneDrive، <font color=#FF0000>، فيرجى تخزين قاعدة البيانات في هذا الدليل. </font>]]></string>
+    <string name="open_permissions"><![CDATA[فتح الأذونات]]></string>
+    <string name="miui_permissions"><![CDATA[miui يحتاج النظام إلى فتح إذن الواجهة المنبثقة في الخلفية لاستخدام وظيفة الملء التلقائي.]]></string>
+    <string name="set_key_main_show_totp_tab_title"><![CDATA[تعرض الصفحة الرئيسية فئة TOTP]]></string>
+    <string name="set_key_main_show_totp_tab_on"><![CDATA[إظهار فئات TOTP]]></string>
+    <string name="set_key_main_show_totp_tab_off"><![CDATA[لا تعرض فئة TOTP]]></string>
+    <string name="set_key_theme_style_title"><![CDATA[نمط الموضوع]]></string>
+    <string name="set_key_theme_style_summary"><![CDATA[اتبع النظام]]></string>
+    <string name="open_setting"><![CDATA[افتح الإعدادات]]></string>
+    <string-array name="sek_ley_theme_style_entries">
+        <item><![CDATA[اتبع النظام]]></item>
+        <item><![CDATA[الوضع المظلم]]></item>
+        <item><![CDATA[وضع الضوء]]></item>
+    </string-array>
+    <string name="error_keystore"><![CDATA[استثناء مخزن المفاتيح، يرجى المحاولة مرة أخرى]]></string>
+    <string name="kpa_totp"><![CDATA[رمز مميز]]></string>
+    <string name="kpa_copy"><![CDATA[ينسخ]]></string>
+    <string name="translate_language"><![CDATA[ترجمة التطبيق إلى لغتك]]></string>
+    <string name="error_qr_code_str"><![CDATA[رمز الاستجابة السريعة غير طبيعي. يرجى التأكد من أن رمز الاستجابة السريعة هو رمز QR مدعوم من Google Authenticator.]]></string>
+    <string name="google_play"><![CDATA[متجر جوجل بلاي]]></string>
+    <string name="disposable"><![CDATA[يمكن التخلص منه]]></string>
+    <string name="year"><![CDATA[كل عام]]></string>
+    <string name="error_donate"><![CDATA[فشل التبرع]]></string>
+    <string name="thank_donate"><![CDATA[شكرا لتبرعك.]]></string>
+    <string name="error_connect_play"><![CDATA[غير قادر على الاتصال بخدمات جوجل]]></string>
+    <string name="monthly"><![CDATA[كل شهر]]></string>
+    <string name="my_collection"><![CDATA[مجموعتي]]></string>
+    <string name="current_collection_num"><![CDATA[مجموعات %1$s]]></string>
+    <string name="no_collection"><![CDATA[لا يوجد مفضلة]]></string>
+    <string name="error_open_db_webdav"><![CDATA[لا يمكن فتح قاعدة البيانات لأن الملف WebDAV غير موجود.]]></string>
+    <string name="helper_webdav_service"><![CDATA[اختر خدمة WebDAV]]></string>
+    <string name="error_is_root"><![CDATA[بالفعل الدليل الجذر]]></string>
+    <string name="select_cur_path"><![CDATA[حدد المجلد الحالي]]></string>
+    <string name="hint_cloud_file_already_exist"><![CDATA[%1$s موجود بالفعل. هل تريد الكتابة فوق الملف؟]]></string>
+    <string name="select_save_path"><![CDATA[حدد مسار الحفظ]]></string>
+    <string name="one_drive_load_user_failure"><![CDATA[غير قادر على تحميل معلومات المستخدم.]]></string>
+    <string name="hint_open_background_start"><![CDATA[يرجى تشغيل إذن النوافذ المنبثقة في الخلفية، وإلا فلن تتمكن من استخدام وظيفة الملء التلقائي]]></string>
+    <string name="hostname"><![CDATA[اسم المضيف]]></string>
+    <string name="port"><![CDATA[ميناء]]></string>
+    <string name="webdav_host_name_hint"><![CDATA[الرجاء إدخال اسم المضيف الخاص بك]]></string>
+    <string name="webdav_port_hint"><![CDATA[ميناء]]></string>
+    <string name="webdav_port_name_null"><![CDATA[لا يمكن أن يكون اسم المضيف فارغًا]]></string>
+    <string name="privacy_agreement"><![CDATA[اتفاقية الخصوصية]]></string>
+    <string name="ime_hint_open_auto_fill"><![CDATA[يرجى تشغيل خدمة الملء التلقائي]]></string>
+    <string name="please_open_proxy"><![CDATA[نظرًا لأسباب شبكية معروفة، من أجل استخدام خدمات onedrive بسلاسة، يرجى استخدام أدوات الشبكة المناسبة]]></string>
+    <string name="invalid_img"><![CDATA[صورة غير صالحة]]></string>
+    <string name="preemptive"><![CDATA[وضع الإعداد المسبق]]></string>
+    <string name="fail_unsupported_Systems_O"><![CDATA[يدعم فقط الأنظمة ذات P وما فوق]]></string>
+    <string name="hint_webdav_jgy"><![CDATA[يرجى استخدام كلمة المرور في [معلومات الحساب->خيارات الأمان->تطبيقات الطرف الثالث]]]></string>
+    <string name="app_debug"><![CDATA[إزالة ملف السجل]]></string>
+    <string name="hint_auto_fill_save"><![CDATA[هل تريد ربط البيانات الحالية بالإدخالات الموجودة؟]]></string>
+    <string name="hint_dont_show_tips"><![CDATA[لا تظهر مرة أخرى]]></string>
+    <string name="title_tip_of_day"><![CDATA[نصائح يومية]]></string>
+    <string name="base_info"><![CDATA[المعلومات الأساسية]]></string>
+    <string name="tag"><![CDATA[ملصق]]></string>
+    <string name="collection"><![CDATA[يجمع]]></string>
+    <string name="add_attr_str"><![CDATA[أضف السمات]]></string>
+    <string name="delete"><![CDATA[يمسح]]></string>
+    <string name="create_tag"><![CDATA[إنشاء العلامات]]></string>
+    <string name="tag_name"><![CDATA[اسم العلامة]]></string>
+    <string name="add_tag"><![CDATA[إضافة علامة]]></string>
+    <string name="open_file"><![CDATA[ملف مفتوح]]></string>
+    <string name="modify_str_attr"><![CDATA[تعديل الخصائص]]></string>
+    <string name="error_file"><![CDATA[الملف غير طبيعي، يرجى حذف: <font color=#FF0000>%s</font>]]></string>
+    <string name="not_souper_otp"><![CDATA[TOTP غير مدعوم]]></string>
+    <string name="modify_totp"><![CDATA[تعديل الرمز المميز]]></string>
+    <string name="error_totp"><![CDATA[خطأ totp]]></string>
+    <string name="file_save_success"><![CDATA[تم حفظ المرفق بنجاح]]></string>
+    <string name="options"><![CDATA[خيارات]]></string>
+    <string name="review_title"><![CDATA[تعليق]]></string>
+    <string name="review_enter"><![CDATA[ابدأ التعليق]]></string>
+    <string name="review_cancel"><![CDATA[ليس هذه المرة]]></string>
+    <string name="review_fail"><![CDATA[فشل الإرسال، يرجى التحقق من الشبكة]]></string>
+    <string name="review_not_hint"><![CDATA[لا تطالب مرة أخرى]]></string>
+    <string name="review_like_app"><![CDATA[مثل التطبيق لدينا؟ يرجى تقييم لنا!]]></string>
+    <string name="hint_notify_permission"><![CDATA[يتطلب KeepassA إذن إعلام لإعلام حالة قاعدة البيانات.]]></string>
+    <string name="title_choose_icon"><![CDATA[حدد الرمز]]></string>
+    <string name="icon_select_pick"><![CDATA[افتح ألبوم الصور]]></string>
+    <string name="icon_select_db"><![CDATA[أيقونة محلية]]></string>
+    <string name="icon_change"><![CDATA[تعديل أيقونة]]></string>
+    <string name="entry_not_found"><![CDATA[لم يتم العثور على إدخال]]></string>
 </resources>

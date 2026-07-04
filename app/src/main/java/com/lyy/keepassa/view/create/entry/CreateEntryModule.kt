@@ -44,6 +44,7 @@ import com.lyy.keepassa.util.getFileInfo
 import com.lyy.keepassa.util.getRealUserName
 import com.lyy.keepassa.util.hasNote
 import com.lyy.keepassa.util.hasTOTP
+import com.lyy.keepassa.util.cloud.DbSynUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -127,7 +128,13 @@ class CreateEntryModule : BaseModule() {
         return@launch
       }
 
-      KpaUtil.kdbHandlerService.saveOnly(true) {
+      KpaUtil.kdbHandlerService.saveOnly(true) { state ->
+        if (shouldShowAutoFillSaveToast(
+            isSucceed = state == DbSynUtil.STATE_SUCCEED,
+            isAutoFillSave = autoFillParam?.isSave == true
+        )) {
+          HitUtil.toaskLong(ResUtil.getString(R.string.save_db_success))
+        }
         context.finishAfterTransition()
       }
     }

@@ -1,4 +1,452 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="db">Databáze</string>
+    <string-array name="quick_pass_type_entries">
+        <item><![CDATA[Prvních %s znaků hesla databáze]]></item>
+        <item><![CDATA[Posledních %s znaků hesla databáze]]></item>
+    </string-array>
+    <string-array name="clean_clip_entries">
+        <item><![CDATA[30 sekund]]></item>
+        <item><![CDATA[1 minuta]]></item>
+        <item><![CDATA[2 minuty]]></item>
+        <item><![CDATA[5 minut]]></item>
+    </string-array>
+    <string-array name="quick_lock_entries">
+        <item><![CDATA[2 minuty]]></item>
+        <item><![CDATA[5 minut]]></item>
+        <item><![CDATA[10 minut]]></item>
+        <item><![CDATA[20 minut]]></item>
+    </string-array>
+    <string-array name="out_db_entries">
+        <item><![CDATA[databáze Keepass2]]></item>
+        <item><![CDATA[Nešifrovaný soubor XML]]></item>
+        <item><![CDATA[Nešifrovaný soubor CSV]]></item>
+    </string-array>
+    <string-array name="v3_add_mor_item">
+        <item><![CDATA[Poznámky]]></item>
+        <item><![CDATA[příloha souboru]]></item>
+        <item><![CDATA[Doba expirace]]></item>
+    </string-array>
+    <string-array name="v4_add_mor_item">
+        <item><![CDATA[Poznámky]]></item>
+        <item><![CDATA[Vlastní pole]]></item>
+        <item><![CDATA[příloha souboru]]></item>
+        <item><![CDATA[TOTP]]></item>
+        <item><![CDATA[štítek]]></item>
+        <item><![CDATA[odkaz]]></item>
+        <item><![CDATA[Doba expirace]]></item>
+    </string-array>
+    <string-array name="create_normal_group">
+        <item><![CDATA[Email]]></item>
+        <item><![CDATA[práce]]></item>
+        <item><![CDATA[Finance]]></item>
+        <item><![CDATA[zábava]]></item>
+        <item><![CDATA[odpadkový koš]]></item>
+    </string-array>
+    <string-array name="auto_fill_hint_label">
+        <item><![CDATA[Email]]></item>
+        <item><![CDATA[mobilní telefon]]></item>
+        <item><![CDATA[Uživatel]]></item>
+        <item><![CDATA[Číslo účtu]]></item>
+    </string-array>
+    <string name="db"><![CDATA[databáze]]></string>
+    <string name="db1"><![CDATA[Databáze\t|\t<font color="#757575">%s</font>]]></string>
+    <string name="password"><![CDATA[Heslo]]></string>
+    <string name="key"><![CDATA[klíč]]></string>
+    <string name="key1"><![CDATA[Klíč: %s]]></string>
+    <string name="open"><![CDATA[Odemknout]]></string>
+    <string name="hint_set_password"><![CDATA[Nastavte heslo]]></string>
+    <string name="hint_input_password"><![CDATA[Zadejte heslo o délce 6-16 znaků]]></string>
+    <string name="hint_enter_password"><![CDATA[Potvrďte heslo]]></string>
+    <string name="help_create_db"><![CDATA[ve výchozím nastavení vytvořena databáze KeepPass]]></string>
+    <string name="help_create_group"><![CDATA[Název skupiny nesmí přesáhnout 16 znaků]]></string>
+    <string name="encrypt_type"><![CDATA[Metoda šifrování]]></string>
+    <string name="encrypt_type_1"><![CDATA[Pouze heslo]]></string>
+    <string name="encrypt_type_2"><![CDATA[heslo + klíč]]></string>
+    <string name="choose_pass_key"><![CDATA[Vybrat klíč]]></string>
+    <string name="hint_set_pass_key"><![CDATA[Vyberte klíč]]></string>
+    <string name="pass_key"><![CDATA[klíč souboru]]></string>
+    <string name="helper_create_pass"><![CDATA[Doporučuje se používat smíšené heslo (velká a malá písmena angličtiny + čísla + symboly)]]></string>
+    <string name="open_db"><![CDATA[Otevřete databázi]]></string>
+    <string name="db_name"><![CDATA[Zadejte název databáze]]></string>
+    <string name="create_db"><![CDATA[Vytvořit databázi]]></string>
+    <string name="next"><![CDATA[Další krok]]></string>
+    <string name="up"><![CDATA[Předchozí krok]]></string>
+    <string name="hint_select_db_path"><![CDATA[Kliknutím nastavíte způsob ukládání dat]]></string>
+    <string name="hint_select_path_type"><![CDATA[Vyberte cestu uložení databáze]]></string>
+    <string name="error_db_name_null"><![CDATA[Zadejte název databáze]]></string>
+    <string name="done"><![CDATA[Dokončeno]]></string>
+    <string name="enter"><![CDATA[Potvrďte]]></string>
+    <string name="cancel"><![CDATA[Zrušit]]></string>
+    <string name="hint"><![CDATA[Tipy]]></string>
+    <string name="help_create_db_path"><![CDATA[Doporučuje se používat cloudové cesty jako Dropbox a WebDAV, které automaticky synchronizují vaši databázi do cloudu a usnadní používání databáze na jiných zařízeních.
+Databáze \n je šifrována pomocí AES256. Nikdo nemůže otevřít vaši databázi bez vašeho hesla.]]></string>
+    <string name="help_pass_type"><![CDATA[Použijte pouze heslo:
+\n vyžaduje pouze vaše heslo k otevření databáze;
+\n heslo + klíč:
+\n Chcete-li otevřít databázi, musíte zadat heslo a vybrat soubor klíče.]]></string>
+    <string name="help_pass_key"><![CDATA[Soubor klíče je ekvivalentem klíče k otevřeným datům a je obvykle mnohem složitější a spolehlivější než heslo. Je ale také těžší to skrýt, a pokud máte databázi v cloudu, nikdy nedávejte klíč a databázi dohromady.
+\n Jako klíč k otevření databáze, fotografie nebo dokumentu TXT si můžete vybrat libovolný soubor.
+\n⚠️Poznámka: Pokud bude tato fotografie nebo tento dokument TXT upravena, nebudete moci databázi otevřít! !
+\n důrazně doporučuje používat jako klíče soubory pouze pro čtení.]]></string>
+    <string name="choose_file"><![CDATA[Vyberte soubor]]></string>
+    <string name="choose_pass_key_file_des"><![CDATA[Jako klíč vyberte libovolný soubor]]></string>
+    <string name="create_file"><![CDATA[Vytvořte nový soubor]]></string>
+    <string name="create_pass_key_file_des"><![CDATA[Vytvořte nový soubor, který použijete jako klíč]]></string>
+    <string name="create_pass_key_success"><![CDATA[Vytvoření klíče [%s] bylo úspěšné]]></string>
+    <string name="error_pass_null"><![CDATA[Nastavte heslo databáze]]></string>
+    <string name="error_enter_pass_null"><![CDATA[Zadejte prosím potvrzovací heslo]]></string>
+    <string name="error_pass_unfit"><![CDATA[Dvě hesla jsou nekonzistentní]]></string>
+    <string name="hint_db_create_success"><![CDATA[Databáze [%s] vytvořena]]></string>
+    <string name="history"><![CDATA[historie]]></string>
+    <string name="history_record"><![CDATA[Historie]]></string>
+    <string name="edit"><![CDATA[Upravit]]></string>
+    <string name="change_db"><![CDATA[Přepnout databázi]]></string>
+    <string name="all"><![CDATA[vstup]]></string>
+    <string name="setting"><![CDATA[nastavení]]></string>
+    <string name="db_setting"><![CDATA[Nastavení databáze]]></string>
+    <string name="app_setting"><![CDATA[Nastavení aplikace]]></string>
+    <string name="welcome"><![CDATA[Vítejte]]></string>
+    <string name="help_input_db_pass"><![CDATA[Zadejte heslo databáze]]></string>
+    <string name="need_key"><![CDATA[Potřebujete klíč?]]></string>
+    <string name="error_uri"><![CDATA[Chyba URI]]></string>
+    <string name="error_input_pass_null"><![CDATA[Zadejte heslo databáze]]></string>
+    <string name="error_open_db"><![CDATA[Nelze otevřít databázi. Nesprávné heslo nebo potřebuji klíč?]]></string>
+    <string name="error_open_db_key_empty"><![CDATA[Chybí klíč]]></string>
+    <string name="error_open_db_pass_error"><![CDATA[Chyba hesla databáze]]></string>
+    <string name="error_open_db_key_invalid"><![CDATA[Neplatný klíč]]></string>
+    <string name="error_open_db_version_error"><![CDATA[Chyba verze databáze]]></string>
+    <string name="error_open_db_signature_error"><![CDATA[Chyba podpisu databáze]]></string>
+    <string name="error_open_db_algorithm_error"><![CDATA[Neplatný algoritmus]]></string>
+    <string name="error_open_db_arcfour_error"><![CDATA[Neplatný algoritmus šifry streamu]]></string>
+    <string name="hint_group_desc"><![CDATA[Skupina-%s záznamů]]></string>
+    <string name="error_group_id_null"><![CDATA[ID skupiny je prázdné]]></string>
+    <string name="error_entry_id_null"><![CDATA[ID položky je prázdné]]></string>
+    <string name="create_time"><![CDATA[Vytvořil %s]]></string>
+    <string name="expire_time"><![CDATA[Vyprší za %s]]></string>
+    <string name="hint_attr"><![CDATA[Pokročilé vlastnosti]]></string>
+    <string name="attachment"><![CDATA[příloha souboru]]></string>
+    <string name="hint_ex_property"><![CDATA[Extra vlastnosti]]></string>
+    <string name="expire"><![CDATA[<font color=#FF0000>%s</font> Platnost vypršela]]></string>
+    <string name="del_group"><![CDATA[Smazat skupinu]]></string>
+    <string name="edit_group"><![CDATA[Upravit skupinu]]></string>
+    <string name="success"><![CDATA[úspěch]]></string>
+    <string name="fail"><![CDATA[nepodařilo]]></string>
+    <string name="del_entry"><![CDATA[Smazat záznam]]></string>
+    <string name="del_history"><![CDATA[Smazat historii]]></string>
+    <string name="copy_user_name"><![CDATA[Zkopírujte uživatelské jméno]]></string>
+    <string name="copy_password"><![CDATA[Zkopírujte heslo]]></string>
+    <string name="copy_totp"><![CDATA[Zkopírujte token TOTP]]></string>
+    <string name="hint_del_group"><![CDATA[Opravdu chcete smazat skupinu [<font color=#FF0000>%s</font>]? <br> Tato operace přesune skupinu do koše, kde můžete skupinu obnovit.]]></string>
+    <string name="hint_del_group_no_recycle"><![CDATA[Opravdu chcete smazat skupinu [<font color=#FF0000>%s</font>]?]]></string>
+    <string name="hint_del_entry"><![CDATA[Opravdu chcete smazat záznam [<font color=#FF0000>%s</font>]? <br> Tato akce přesune tento záznam do koše, kde jej můžete později obnovit.]]></string>
+    <string name="hint_del_entry_no_recycle"><![CDATA[Opravdu chcete trvale smazat záznam [<font color=#FF0000>%s</font>]?]]></string>
+    <string name="group_name"><![CDATA[Název skupiny]]></string>
+    <string name="create_group"><![CDATA[Vytvořit skupinu]]></string>
+    <string name="error_group_name_null"><![CDATA[Název skupiny je prázdný]]></string>
+    <string name="create_group_fail"><![CDATA[Nelze vytvořit skupinu]]></string>
+    <string name="create_group_success"><![CDATA[Skupina vytvořena]]></string>
+    <string name="modify_group"><![CDATA[Upravit skupinu]]></string>
+    <string name="error_group_no_modify"><![CDATA[Skupina se nezměnila]]></string>
+    <string name="title_too_long"><![CDATA[Název skupiny je příliš dlouhý]]></string>
+    <string name="choose_icon"><![CDATA[Vyberte ikonu]]></string>
+    <string name="undo_entry"><![CDATA[Obnoveno…]]></string>
+    <string name="undo_to"><![CDATA[Přesuňte se do této skupiny]]></string>
+    <string name="undo_grouped"><![CDATA[Skupina byla přesunuta do určeného umístění]]></string>
+    <string name="undo_entryed"><![CDATA[Záznam byl přesunut na zadané místo]]></string>
+    <string name="hint_copy_user"><![CDATA[Uživatelské jméno zkopírováno do schránky]]></string>
+    <string name="hint_copy_pass"><![CDATA[Heslo zkopírováno do schránky]]></string>
+    <string name="hint_copy_totp"><![CDATA[Token TOTP zkopírován do schránky]]></string>
+    <string name="create_totp"><![CDATA[Vygenerujte token OTP]]></string>
+    <string name="safety_set"><![CDATA[Nastavení zabezpečení]]></string>
+    <string name="fingerprint_unlock"><![CDATA[Odemknutí otiskem prstu]]></string>
+    <string name="db_handle"><![CDATA[Operace databáze]]></string>
+    <string name="modify_db_name"><![CDATA[Upravit název databáze]]></string>
+    <string name="modify_db_pass"><![CDATA[Změna hesla databáze]]></string>
+    <string name="out_db"><![CDATA[Export databáze]]></string>
+    <string name="db_name_no_alter"><![CDATA[Název databáze se nezměnil]]></string>
+    <string name="db_name_modify"><![CDATA[Změna názvu databáze]]></string>
+    <string name="no_record"><![CDATA[žádný záznam]]></string>
+    <string name="hint_query"><![CDATA[Uživatelské jméno, titul, URL, pokročilé vlastnosti…]]></string>
+    <string name="copy_to_clip"><![CDATA[Kopírovat do schránky]]></string>
+    <string name="show_pass"><![CDATA[zobrazit heslo]]></string>
+    <string name="ope_url"><![CDATA[otevřít odkaz]]></string>
+    <string name="hide_pass"><![CDATA[Skrýt heslo]]></string>
+    <string name="hint_copy_to_clip"><![CDATA[Data zkopírována do schránky]]></string>
+    <string name="verify_finger"><![CDATA[Ověření otisku prstu]]></string>
+    <string name="verify_finger_fail"><![CDATA[Nelze ověřit otisk prstu]]></string>
+    <string name="ban_fingerprint"><![CDATA[Odemknutí bez otisku prstu]]></string>
+    <string name="quick_use_fingerprint"><![CDATA[K odemykání na rozhraní rychlého odemykání používejte pouze otisk prstu]]></string>
+    <string name="use_full_fingerprint"><![CDATA[Kompletní odemykání otiskem prstu]]></string>
+    <string name="hint_full_fingerprint"><![CDATA[Otisky prstů se používají k odemknutí databáze v rozhraní pro rychlé odemknutí a rozhraní pro odemknutí databáze. KeePassA šifruje a ukládá hlavní heslo a informace o klíčích databáze v místním úložišti klíčů systému Android a k ochraně používá autorizaci otisků prstů. Odemknout databázi může pouze váš otisk prstu.]]></string>
+    <string name="hint_quick_unlock"><![CDATA[Zadejte posledních %s číslic hesla vaší databáze]]></string>
+    <string name="hint_input_title"><![CDATA[Název]]></string>
+    <string name="hint_input_user_name"><![CDATA[Uživatelské jméno]]></string>
+    <string name="hint_input_url"><![CDATA[Adresa odkazu]]></string>
+    <string name="notice"><![CDATA[Poznámky]]></string>
+    <string name="hint_input_tag"><![CDATA[značka 1, značka 2]]></string>
+    <string name="hint_input_cover_url"><![CDATA[přepsat odkaz]]></string>
+    <string name="create_entry"><![CDATA[Vytvořte záznam]]></string>
+    <string name="save"><![CDATA[uložit]]></string>
+    <string name="len"><![CDATA[délka]]></string>
+    <string name="upper"><![CDATA[velká písmena]]></string>
+    <string name="lower"><![CDATA[malá písmena]]></string>
+    <string name="numer"><![CDATA[čísla]]></string>
+    <string name="minus"><![CDATA[znaménko mínus]]></string>
+    <string name="underline"><![CDATA[Podtrhněte]]></string>
+    <string name="space"><![CDATA[prostor]]></string>
+    <string name="special"><![CDATA[speciální znaky]]></string>
+    <string name="bracket"><![CDATA[závorky]]></string>
+    <string name="pass_generater"><![CDATA[generátor hesel]]></string>
+    <string name="error_genera_params"><![CDATA[Vyberte prosím alespoň jeden typ generování hesla]]></string>
+    <string name="hint_pass_null"><![CDATA[Heslo je prázdné]]></string>
+    <string name="date"><![CDATA[Datum]]></string>
+    <string name="time"><![CDATA[čas]]></string>
+    <string name="choose_dir"><![CDATA[Uložit do aktuální skupiny]]></string>
+    <string name="normal_account"><![CDATA[Obyčejný účet]]></string>
+    <string name="add_more"><![CDATA[Přidejte další položky]]></string>
+    <string name="warning"><![CDATA[varování]]></string>
+    <string name="create_entry_no_save"><![CDATA[Opustit aktuální stránku bez uložení položek?]]></string>
+    <string name="add_custom_str"><![CDATA[Vytvořte vlastní pole]]></string>
+    <string name="hint_input_attr_str_key"><![CDATA[Název pole]]></string>
+    <string name="hint_input_attr_str_value"><![CDATA[hodnota pole]]></string>
+    <string name="hint_protect_str"><![CDATA[chráněná pole]]></string>
+    <string name="error_attr_str_null"><![CDATA[Název pole je prázdný]]></string>
+    <string name="del_attr_str"><![CDATA[Smazat vlastní pole]]></string>
+    <string name="del_attr_file"><![CDATA[Smazat přílohu]]></string>
+    <string name="error_attr_file_too_large"><![CDATA[Nepřipojujte soubory větší než 10 milionů]]></string>
+    <string name="download_file"><![CDATA[Uložte přílohy na SD kartu]]></string>
+    <string name="open_whit_text"><![CDATA[Otevřít s vnitřním textem]]></string>
+    <string name="open_whit_img"><![CDATA[Otevřít pomocí interního prohlížeče obrázků]]></string>
+    <string name="open_whit_other"><![CDATA[Uložit do mezipaměti a otevřít pomocí systémové aplikace]]></string>
+    <string name="save_file_success"><![CDATA[Uložený soubor [%s]]]></string>
+    <string name="txt_viewer"><![CDATA[prohlížeč souborů]]></string>
+    <string name="save_db_fail"><![CDATA[Nelze uložit databázi]]></string>
+    <string name="error_pass"><![CDATA[Nesprávné heslo]]></string>
+    <string name="db_pass_no_alter"><![CDATA[Nové heslo je stejné jako staré heslo]]></string>
+    <string name="hint_db_pass_modify_success"><![CDATA[K otevření databáze příště použijte nové heslo databáze]]></string>
+    <string name="hint_db_pass_modify"><![CDATA[Heslo databáze bylo změněno]]></string>
+    <string name="app_feedback"><![CDATA[Poraďte]]></string>
+    <string name="error_db_pass_too_short"><![CDATA[Aby byla zajištěna bezpečnost vašich dat, nesmí být délka hesla databáze kratší než 6 znaků.]]></string>
+    <string name="autofill_sign_in_prompt"><![CDATA[Automatické vyplňování hesla pomocí KeePassA]]></string>
+    <string name="hint_open_backgroun_start"><![CDATA[Zapnuli jste automatické vyplňování, ale ve speciálních systémech, jako je MIUI, musí KeePassA udělit <b> vyskakovacímu rozhraní na pozadí </b> oprávnění k zobrazení rozhraní k odemknutí databáze.]]></string>
+    <string name="hint_background_start"><![CDATA[Kliknutím na <font color="#FF0000"><b> níže nastavte </b></font> a poté povolte vyskakovací rozhraní <b> na pozadí </b> pro KeePassA.]]></string>
+    <string name="setting_miui_background_start"><![CDATA[Nastavení >Nastavení aplikace >Správa aplikací >KeePassA >Správa oprávnění]]></string>
+    <string name="setting_vivo_background_start"><![CDATA[Nastavení > Další nastavení > Správa oprávnění->KeePassA > Nastavení oprávnění > Vyskakovací okno na pozadí]]></string>
+    <string name="no_matching_entry"><![CDATA[Žádné odpovídající záznamy]]></string>
+    <string name="hint_save_auto_fill"><![CDATA[Zda přidružit název balíčku [<font color="#FF0000">%1$s</font>] k záznamu [<font color="#FF0000">%2$s</font>]]]></string>
+    <string name="relevance_db"><![CDATA[Propojená data]]></string>
+    <string name="modify_time"><![CDATA[čas modifikace]]></string>
+    <string name="lose_time"><![CDATA[Doba expirace]]></string>
+    <string name="update_group_fail"><![CDATA[Informace o skupině nelze aktualizovat]]></string>
+    <string name="update_group_success"><![CDATA[Informace o skupině byly aktualizovány]]></string>
+    <string name="title"><![CDATA[Název]]></string>
+    <string name="feedback"><![CDATA[Zpětná vazba ^_^]]></string>
+    <string name="submit"><![CDATA[Odeslat]]></string>
+    <string name="send_email_fail"><![CDATA[Začněte instalací aplikace, která umí odesílat e-maily]]></string>
+    <string name="feedback_email_msg"><![CDATA[Dobrý den, jmenuji se KeePassA, máte nějaké dotazy? _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ Značka mobilního telefonu: %1$s Model mobilního telefonu: %2$s Verze systému: %3$s Rozlišení: %4$s Verze aplikace: %5$s]]></string>
+    <string name="mark_not_exit"><![CDATA[Trh aplikací neexistuje]]></string>
+    <string name="set_open_auto_fill_title"><![CDATA[Služba automatického vyplňování]]></string>
+    <string name="set_key_praise_value"><![CDATA[Sazba KeePassA]]></string>
+    <string name="other_set"><![CDATA[Další nastavení]]></string>
+    <string name="open_quick_unlock"><![CDATA[Rychlé odemknutí]]></string>
+    <string name="quick_pass_type_summary"><![CDATA[""]]></string>
+    <string name="clean_clip_time"><![CDATA[Vymazat schránku]]></string>
+    <string name="clean_clip_time_summary"><![CDATA[Po zkopírování hesla vymažte schránku po %s]]></string>
+    <string name="auto_lock_db_time"><![CDATA[Automaticky uzamknout databázi]]></string>
+    <string name="auto_lock_db_time_summary"><![CDATA[Pokud není provedena žádná operace, databáze se po %s minutách automaticky uzamkne.]]></string>
+    <string name="quick_pass_type"><![CDATA[Místo zachycení krátkého hesla]]></string>
+    <string name="des_quick_unlock"><![CDATA[Odemkněte svou databázi pomocí krátkého hesla]]></string>
+    <string name="error_short_pass_lenght"><![CDATA[Krátké heslo nesmí být delší než 6 znaků.]]></string>
+    <string name="error_short_pass_short"><![CDATA[Délka krátkého hesla nesmí být kratší než 3 znaky]]></string>
+    <string name="quick_pass_len_title"><![CDATA[Krátká délka hesla]]></string>
+    <string name="quick_pass_len_summary"><![CDATA[Krátká délka hesla: %s]]></string>
+    <string name="set_key_value"><![CDATA[Vyberte jazyk]]></string>
+    <string name="dropbox_msg"><![CDATA[V souladu se zásadou respektování soukromí uživatelů nebude KeePassA žádat o povolení přístupu ke všem vašim souborům Dropbox. KeePassA<font color=#FF0000> přistupuje pouze ke složce [Application/KeePassA] </font>. <br /> Proto: <br /> <b> Pokud již máte databázi KeePass, musíte nejprve autorizovat KeePassA pro přístup do složky [Application/KeePassA] v KeePassA a po dokončení autorizace databáze018 aplikace018 uložit. </b><br/><br /> Pokud vytváříte novou databázi KeepPass, nepotřebujete výše uvedenou operaci. Po vytvoření databáze KeePassA automaticky vytvoří odpovídající složku a nahraje databázi do adresáře [Application/KeePassA] Dropbox.]]></string>
+    <string name="cover"><![CDATA[Kryt]]></string>
+    <string name="file_conflict_msg"><![CDATA[Mezi cloudovými daty a místními daty existuje konflikt. Vyberte prosím metodu přepsání. Konfliktní položky jsou: \n %s]]></string>
+    <string name="cover_local"><![CDATA[místní]]></string>
+    <string name="cover_cloud"><![CDATA[Cloud]]></string>
+    <string name="merge"><![CDATA[sloučit]]></string>
+    <string name="sync_db"><![CDATA[Synchronizovat databázi]]></string>
+    <string name="net_error"><![CDATA[Abnormalita sítě]]></string>
+    <string name="auth"><![CDATA[Autorizovat]]></string>
+    <string name="invalid"><![CDATA[Neplatné]]></string>
+    <string name="no_file"><![CDATA[žádný soubor]]></string>
+    <string name="login"><![CDATA[Přihlášení]]></string>
+    <string name="helper_webdav"><![CDATA[Například: https://dav.example.org/dav/vaše složka/xxx.kdbx]]></string>
+    <string name="helper_webdav_dir"><![CDATA[Například: https://dav.example.org/dav/[vaše složka]/]]></string>
+    <string name="hint_webdav_url"><![CDATA[Soubor URL]]></string>
+    <string name="hint_please_input"><![CDATA[Zadejte prosím %s]]></string>
+    <string name="db_file_no_exist"><![CDATA[Soubor databáze neexistuje]]></string>
+    <string name="invalid_auth"><![CDATA[Nelze autorizovat. Zkuste to prosím znovu.]]></string>
+    <string name="afs"><![CDATA[Souborový systém Android]]></string>
+    <string name="hint_kdbx_name"><![CDATA[Špatná přípona, přípona by měla být „.kdbx“]]></string>
+    <string name="start_upload_db"><![CDATA[Začněte nahrávat databázi na síťový disk]]></string>
+    <string name="unlocked"><![CDATA[Odemčeno]]></string>
+    <string name="notify_channel_db_open"><![CDATA[Upozornění na odemknutí databáze]]></string>
+    <string name="notify_quick_unlock_start"><![CDATA[Databáze je uzamčena, rychlé odemknutí je povoleno]]></string>
+    <string name="notify_db_locked"><![CDATA[Databáze je uzamčena]]></string>
+    <string name="search"><![CDATA[Hledat]]></string>
+    <string name="disable"><![CDATA[Zavřít]]></string>
+    <string name="quick_unlock"><![CDATA[Rychlé odemknutí]]></string>
+    <string name="db_unlock"><![CDATA[Odemknout databázi]]></string>
+    <string name="hint_quick_use_fingerprint"><![CDATA[Odemykání otiskem prstu používejte pouze na stránce rychlého odemknutí]]></string>
+    <string name="version_log"><![CDATA[Protokol upgradu]]></string>
+    <string name="hint_finger_print_verfiy"><![CDATA[K použití nových nastavení je nutné opětovné ověření otisku prstu]]></string>
+    <string name="closed"><![CDATA[Zavřeno]]></string>
+    <string name="open1"><![CDATA[zapnout]]></string>
+    <string name="upload"><![CDATA[nahrát]]></string>
+    <string name="add_attr_file"><![CDATA[Přidat přílohu]]></string>
+    <string name="hint_fingerprint_modify"><![CDATA[Je detekováno, že se otisk prstu změnil. Pro zabezpečení vašeho hesla prosím resetujte funkci odemykání otiskem prstu.]]></string>
+    <string name="hint_please_open_database"><![CDATA[Otevřete prosím databázi]]></string>
+    <string name="save_db_success"><![CDATA[Databáze uložena]]></string>
+    <string name="set_delete_setting"><![CDATA[Smazat nastavení]]></string>
+    <string name="set_delete_no_into_recycle_bin"><![CDATA[Trvale odstranit záznamy z databáze]]></string>
+    <string name="set_delete_no_into_recycle_bin_des"><![CDATA[Přesuňte smazané položky do koše]]></string>
+    <string name="warning_rooted"><![CDATA[Kvůli bezpečnosti dat neotevírejte databázi na rootovaném telefonu]]></string>
+    <string name="hint_security_green"><![CDATA["Tato aplikace je v zabezpečeném prostředí"]]></string>
+    <string name="hint_security_red"><![CDATA[Vaše zařízení je zakořeněné a databáze je ve velmi nebezpečném prostředí]]></string>
+    <string name="hint_security_yellow"><![CDATA[Upozornění, aplikace běží v simulátoru, které prostředí přinese databázi určitá nepředvídatelná rizika]]></string>
+    <string name="donate"><![CDATA[Darovat]]></string>
+    <string name="donate_desc"><![CDATA[[KeePassA](https://github.com/AriaLyy/KeepassA) je svobodný software. Zvažte, prosím, darování na podporu naší práce, děkujeme.]]></string>
+    <string name="dev_birthday"><![CDATA[Dnes má vývojář narozeniny 🎂. Chcete vývojáře pohostit pivem?]]></string>
+    <string name="totp_defaule"><![CDATA[Výchozí nastavení tokenu RFC 6238]]></string>
+    <string name="totp_steam"><![CDATA[Nastavení tokenu Steam]]></string>
+    <string name="totp_custom"><![CDATA[Použijte vlastní nastavení]]></string>
+    <string name="totp_custom_hint"><![CDATA[Vlastní nastavení]]></string>
+    <string name="totp_Arithmetic"><![CDATA[Algoritmus:]]></string>
+    <string name="totp_time"><![CDATA[Čas (s):]]></string>
+    <string name="totp_len"><![CDATA[Délka:]]></string>
+    <string name="totp_key_error"><![CDATA[Nelze vygenerovat kód TOTP, klíčová výjimka]]></string>
+    <string name="sort"><![CDATA[seřadit]]></string>
+    <string name="sort_chart_desc"><![CDATA[První abecední sestupné pořadí (Z-A)]]></string>
+    <string name="sort_chart_asc"><![CDATA[Vzestupně podle abecedy (A–Z)]]></string>
+    <string name="sort_time_asc"><![CDATA[časové vzestupné pořadí]]></string>
+    <string name="sort_time_desc"><![CDATA[Sestupný čas]]></string>
+    <string name="ime_label"><![CDATA[Bezpečnostní klávesnice KeePassA]]></string>
+    <string name="set_open_kpa_ime_title"><![CDATA[bezpečná klávesnice]]></string>
+    <string name="no_totp_token"><![CDATA[Žádný token TOTP]]></string>
+    <string name="ime_entry_other_info"><![CDATA[Vyplňte další pole]]></string>
+    <string name="url"><![CDATA[URL]]></string>
+    <string name="hint_not_nore_info"><![CDATA[žádné další informace]]></string>
+    <string name="error_uri_grant_permission"><![CDATA[Autorizace URI se nezdařila]]></string>
+    <string name="license"><![CDATA[licence svobodného softwaru]]></string>
+    <string name="move"><![CDATA[pohybovat]]></string>
+    <string name="set_key_sum_main_show_entries"><![CDATA[Zobrazit všechny záznamy po odemknutí databáze]]></string>
+    <string name="set_key_sum_main_show_history"><![CDATA[Zobrazit historii po odemknutí databáze]]></string>
+    <string name="set_key_title_main_allow_show_entries"><![CDATA[Domovská stránka]]></string>
+    <string name="set_key_title_opr_env_check"><![CDATA[Spusťte nastavení kontroly prostředí]]></string>
+    <string name="set_key_title_opr_env_check_turn_off"><![CDATA[Zavřít]]></string>
+    <string name="set_key_title_opr_env_check_turn_on"><![CDATA[otevřít]]></string>
+    <string name="expand"><![CDATA[Rozbalit]]></string>
+    <string name="shrink"><![CDATA[zavřít]]></string>
+    <string name="ui_setting"><![CDATA[Nastavení uživatelského rozhraní]]></string>
+    <string name="cur_app_not_autofill"><![CDATA[Nevyplňovat automaticky]]></string>
+    <string name="other"><![CDATA[Jiní]]></string>
+    <string name="ref_entry"><![CDATA[Referenční položky]]></string>
+    <string name="multi_choice"><![CDATA[Vícenásobný výběr]]></string>
+    <string name="set_summary_screen_lock_off"><![CDATA[Nezamykejte databázi]]></string>
+    <string name="set_summary_screen_lock_on"><![CDATA[Automaticky uzamknout databázi]]></string>
+    <string name="set_title_screen_lock"><![CDATA[zámek obrazovky]]></string>
+    <string name="close"><![CDATA[Zavřít]]></string>
+    <string name="Alipay"><![CDATA[Alipay]]></string>
+    <string name="error_webdav_end_suffix"><![CDATA[Použít cestu ke složce. Například: „https://example.org/dav/kpa/“]]></string>
+    <string name="error_webdav_end_dav_suffix"><![CDATA[Cesta /dav/ není povolena. Použijte platnou cestu, například: "https://example.org/dav/kpa/"]]></string>
+    <string name="set_key_title_fillet_bg_icon"><![CDATA[Zaoblený roh ikony seznamu]]></string>
+    <string name="set_key_title_fillet_bg_icon_turn_on"><![CDATA[zapnout]]></string>
+    <string name="set_key_title_fillet_bg_icon_turn_off"><![CDATA[Zavřít]]></string>
+    <string name="set_key_title_show_state_bar"><![CDATA[stavový řádek]]></string>
+    <string name="set_key_title_show_state_bar_turn_on"><![CDATA[show]]></string>
+    <string name="set_key_title_show_state_bar_turn_off"><![CDATA[schovat se]]></string>
+    <string name="set_key_title_close_load_anim"><![CDATA[načítání animace]]></string>
+    <string name="set_key_title_close_load_anim_turn_on"><![CDATA[otevřít]]></string>
+    <string name="set_key_title_close_load_anim_turn_off"><![CDATA[Zavřít]]></string>
+    <string name="s_default"><![CDATA[Výchozí]]></string>
+    <string name="customize"><![CDATA[Přizpůsobit]]></string>
+    <string name="set_key_title_auto_lock_database"><![CDATA[Automaticky uzamknout databázi]]></string>
+    <string name="set_key_title_auto_lock_database_turn_on"><![CDATA[Ano]]></string>
+    <string name="set_key_title_auto_lock_database_turn_off"><![CDATA[Zavřít]]></string>
+    <string name="get_token_fail"><![CDATA[Nepodařilo se získat Token]]></string>
+    <string name="one_drive_init_failure"><![CDATA[Inicializace OneDrive se nezdařila]]></string>
+    <string name="one_drive_hint"><![CDATA[Za účelem ochrany vašeho soukromí bude KeePassA přistupovat pouze k adresáři <font color=#FF0000> [Application/KeepassA] </font>. Pokud si chcete přečíst databázi Keepass z OneDrive, <font color=#FF0000>, uložte prosím databázi do tohoto adresáře. </font>]]></string>
+    <string name="open_permissions"><![CDATA[Otevřít oprávnění]]></string>
+    <string name="miui_permissions"><![CDATA[miui Systém potřebuje otevřít oprávnění vyskakovacího rozhraní na pozadí, aby mohl používat funkci automatického vyplňování.]]></string>
+    <string name="set_key_main_show_totp_tab_title"><![CDATA[Domovská stránka zobrazuje kategorii TOTP]]></string>
+    <string name="set_key_main_show_totp_tab_on"><![CDATA[Zobrazit kategorie TOTP]]></string>
+    <string name="set_key_main_show_totp_tab_off"><![CDATA[Nezobrazovat kategorii TOTP]]></string>
+    <string name="set_key_theme_style_title"><![CDATA[téma stylu]]></string>
+    <string name="set_key_theme_style_summary"><![CDATA[Postupujte podle systému]]></string>
+    <string name="open_setting"><![CDATA[Otevřete nastavení]]></string>
+    <string-array name="sek_ley_theme_style_entries">
+        <item><![CDATA[Postupujte podle systému]]></item>
+        <item><![CDATA[tmavý režim]]></item>
+        <item><![CDATA[světelný režim]]></item>
+    </string-array>
+    <string name="error_keystore"><![CDATA[Výjimka úložiště klíčů, zkuste to znovu]]></string>
+    <string name="kpa_totp"><![CDATA[žeton]]></string>
+    <string name="kpa_copy"><![CDATA[Kopírovat]]></string>
+    <string name="translate_language"><![CDATA[Přeložte aplikaci do svého jazyka]]></string>
+    <string name="error_qr_code_str"><![CDATA[QR kód je abnormální. Potvrďte prosím, že QR kód je QR kód podporovaný aplikací Google Authenticator.]]></string>
+    <string name="google_play"><![CDATA[Obchod Google Play]]></string>
+    <string name="disposable"><![CDATA[Jednorázové]]></string>
+    <string name="year"><![CDATA[každý rok]]></string>
+    <string name="error_donate"><![CDATA[Darování se nezdařilo]]></string>
+    <string name="thank_donate"><![CDATA[Děkujeme za váš dar.]]></string>
+    <string name="error_connect_play"><![CDATA[Nelze se připojit ke službám Google]]></string>
+    <string name="monthly"><![CDATA[měsíčně]]></string>
+    <string name="my_collection"><![CDATA[moje sbírka]]></string>
+    <string name="current_collection_num"><![CDATA[sbírky %1$s]]></string>
+    <string name="no_collection"><![CDATA[Žádné oblíbené]]></string>
+    <string name="error_open_db_webdav"><![CDATA[Databázi nelze otevřít, protože soubor WebDAV neexistuje.]]></string>
+    <string name="helper_webdav_service"><![CDATA[Vyberte službu WebDAV]]></string>
+    <string name="error_is_root"><![CDATA[Již kořenový adresář]]></string>
+    <string name="select_cur_path"><![CDATA[Vyberte aktuální složku]]></string>
+    <string name="hint_cloud_file_already_exist"><![CDATA[%1$s již existuje. Chcete přepsat soubor?]]></string>
+    <string name="select_save_path"><![CDATA[Vyberte cestu uložení]]></string>
+    <string name="one_drive_load_user_failure"><![CDATA[Nelze načíst informace o uživateli.]]></string>
+    <string name="hint_open_background_start"><![CDATA[Zapněte prosím vyskakovací okno na pozadí, jinak nebude možné použít funkci automatického vyplňování]]></string>
+    <string name="hostname"><![CDATA[název hostitele]]></string>
+    <string name="port"><![CDATA[přístav]]></string>
+    <string name="webdav_host_name_hint"><![CDATA[Zadejte své jméno hostitele]]></string>
+    <string name="webdav_port_hint"><![CDATA[přístav]]></string>
+    <string name="webdav_port_name_null"><![CDATA[Název hostitele nemůže být prázdný]]></string>
+    <string name="privacy_agreement"><![CDATA[dohoda o ochraně osobních údajů]]></string>
+    <string name="ime_hint_open_auto_fill"><![CDATA[Zapněte prosím službu automatického vyplňování]]></string>
+    <string name="please_open_proxy"><![CDATA[Kvůli dobře známým síťovým důvodům, abyste mohli hladce používat služby onedrive, použijte prosím vhodné síťové nástroje]]></string>
+    <string name="invalid_img"><![CDATA[Neplatný obrázek]]></string>
+    <string name="preemptive"><![CDATA[Přednastavený režim]]></string>
+    <string name="fail_unsupported_Systems_O"><![CDATA[Podporuje pouze systémy s P a vyšším]]></string>
+    <string name="hint_webdav_jgy"><![CDATA[Použijte prosím heslo v [Informace o účtu->Možnosti zabezpečení->Aplikace třetích stran]]]></string>
+    <string name="app_debug"><![CDATA[Odebrat soubor protokolu]]></string>
+    <string name="hint_auto_fill_save"><![CDATA[Vztahovat aktuální data k existujícím záznamům?]]></string>
+    <string name="hint_dont_show_tips"><![CDATA[Nezobrazovat znovu]]></string>
+    <string name="title_tip_of_day"><![CDATA[denní tipy]]></string>
+    <string name="base_info"><![CDATA[Základní informace]]></string>
+    <string name="tag"><![CDATA[štítek]]></string>
+    <string name="collection"><![CDATA[Kolekce]]></string>
+    <string name="add_attr_str"><![CDATA[Přidejte atributy]]></string>
+    <string name="delete"><![CDATA[Smazat]]></string>
+    <string name="create_tag"><![CDATA[Vytvořte značky]]></string>
+    <string name="tag_name"><![CDATA[Název značky]]></string>
+    <string name="add_tag"><![CDATA[Přidat značku]]></string>
+    <string name="open_file"><![CDATA[otevřít soubor]]></string>
+    <string name="modify_str_attr"><![CDATA[Upravte vlastnosti]]></string>
+    <string name="error_file"><![CDATA[Soubor je abnormální, prosím smažte: <font color=#FF0000>%s</font>]]></string>
+    <string name="not_souper_otp"><![CDATA[Nepodporováno TOTP]]></string>
+    <string name="modify_totp"><![CDATA[upravit token]]></string>
+    <string name="error_totp"><![CDATA[Špatně totp]]></string>
+    <string name="file_save_success"><![CDATA[Příloha byla úspěšně uložena]]></string>
+    <string name="options"><![CDATA[Možnosti]]></string>
+    <string name="review_title"><![CDATA[Komentář]]></string>
+    <string name="review_enter"><![CDATA[Spustit komentář]]></string>
+    <string name="review_cancel"><![CDATA[Tentokrát ne]]></string>
+    <string name="review_fail"><![CDATA[Odeslání se nezdařilo, zkontrolujte síť]]></string>
+    <string name="review_not_hint"><![CDATA[Nezobrazovat výzvu znovu]]></string>
+    <string name="review_like_app"><![CDATA[Líbí se vám naše aplikace? Ohodnoťte nás!]]></string>
+    <string name="hint_notify_permission"><![CDATA[KeepassA vyžaduje oprávnění k oznámení k oznámení stavu databáze.]]></string>
+    <string name="title_choose_icon"><![CDATA[Vyberte ikonu]]></string>
+    <string name="icon_select_pick"><![CDATA[Otevřete fotoalbum]]></string>
+    <string name="icon_select_db"><![CDATA[místní ikona]]></string>
+    <string name="icon_change"><![CDATA[Upravit ikonu]]></string>
+    <string name="entry_not_found"><![CDATA[Nebyl nalezen žádný záznam]]></string>
 </resources>

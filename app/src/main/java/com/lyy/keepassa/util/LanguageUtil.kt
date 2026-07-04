@@ -31,8 +31,52 @@ object LanguageUtil {
       Locale.ENGLISH,
       Locale.SIMPLIFIED_CHINESE,
       Locale.TRADITIONAL_CHINESE,
-      Locale.CANADA_FRENCH
+      Locale.CANADA_FRENCH,
+      Locale("nb", "NO"),
+      Locale("ru", "RU"),
+      Locale.FRENCH,
+      Locale.GERMANY,
+      Locale("pl"),
+      Locale("tr"),
+      Locale("uk", "UA"),
+      Locale("es"),
+      Locale("ar"),
+      Locale("cs"),
+      Locale("fon"),
+      Locale.JAPANESE,
+      Locale("nl"),
+      Locale("pt"),
+      Locale("pt", "BR")
     )
+
+  fun getSupportedLanguage(locale: Locale): Locale? {
+    return when (locale.language) {
+      Locale.TRADITIONAL_CHINESE.language -> {
+        when (locale.country.uppercase(Locale.ROOT)) {
+          Locale.TRADITIONAL_CHINESE.country,
+          "HK",
+          "MO" -> Locale.TRADITIONAL_CHINESE
+          else -> Locale.SIMPLIFIED_CHINESE
+        }
+      }
+      Locale.FRENCH.language -> {
+        if (locale.country.equals(Locale.CANADA.country, ignoreCase = true)) {
+          Locale.CANADA_FRENCH
+        } else {
+          Locale.FRENCH
+        }
+      }
+      "nb", "no" -> Locale("nb", "NO")
+      Locale("pt").language -> {
+        if (locale.country.equals("BR", ignoreCase = true)) {
+          Locale("pt", "BR")
+        } else {
+          Locale("pt")
+        }
+      }
+      else -> SUPPORT_LAN.firstOrNull { it.language == locale.language }
+    }
+  }
 
   /**
    * 设置app语言
@@ -96,12 +140,14 @@ object LanguageUtil {
    */
   fun getDefLanguage(context: Context): Locale? {
     val pre = context.getSharedPreferences(Constance.PRE_FILE_NAME, Context.MODE_PRIVATE)
-    val lang = pre.getString(LOCALE_KEY_LANG, "")
+    val lang = pre.getString(LOCALE_KEY_LANG, "").orEmpty()
     val country = pre.getString(LOCALE_KEY_COUNTRY, "")
+      .orEmpty()
+      .removePrefix("r")
     return if (TextUtils.isEmpty(lang) && TextUtils.isEmpty(country)) {
       null
     } else {
-      Locale(lang, country)
+      getSupportedLanguage(Locale(lang, country)) ?: Locale(lang, country)
     }
   }
 

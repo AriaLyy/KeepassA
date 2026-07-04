@@ -317,7 +317,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
       }
 
       return Intent(context, QuickUnlockActivity::class.java).let { notificationIntent ->
-        PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
+        PendingIntent.getActivity(context, LauncherActivity.REQ_CODE_NOTIFICATION, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
       }
     }
 
@@ -354,7 +354,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
       }
       return PendingIntent.getActivity(
         context,
-        1,
+        LauncherActivity.REQ_CODE_AUTOFILL_QUERY,
         intent,
         PendingIntent.FLAG_CANCEL_CURRENT or FLAG_IMMUTABLE
       )

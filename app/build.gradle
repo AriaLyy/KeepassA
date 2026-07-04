@@ -41,7 +41,7 @@ android {
 
     // 只保留以下语言包
     resConfigs "zh-rCN", "zh-rTW", "en", "fr-rCA", "nb-rNO", "ru-rRU", "fr", "de-rDE", "pl", "tr",
-        "uk-rUA", "es"
+        "uk-rUA", "es", "ar", "cs", "fon", "ja", "nl", "pt", "pt-rBR"
   }
 
   signingConfigs {

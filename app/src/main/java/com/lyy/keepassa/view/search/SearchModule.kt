@@ -22,10 +22,12 @@ import com.lyy.keepassa.entity.SearchRecord
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.util.cloud.DbSynUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class SearchModule : BaseModule() {
 
@@ -40,22 +42,39 @@ class SearchModule : BaseModule() {
 
   /**
    * 将条目和包名进行关联
+   *
+   * 1. 已存在相同关联时直接成功返回,避免冗余污染
+   * 2. KP2A_URL_1..99 全被占用时回 [DbSynUtil.STATE_FAIL],避免覆盖 slot 1
    */
   fun relevanceEntry(
     pwEntry: PwEntryV4,
     apkPkgName: String,
     callback: (Int) -> Unit
   ) {
-    // 关联数据
-    var nextId = 1
-    for (i in 1 until 100) {
-      if (pwEntry.strings["KP2A_URL_$i"] != null) {
-        continue
-      }
-      nextId = i
-      break
+    val targetUrl = "androidapp://$apkPkgName"
+
+    // 已关联过同一个包名:跳过写入,直接成功
+    if (pwEntry.strings.values.any { it.toString().equals(targetUrl, ignoreCase = true) }) {
+      Timber.i("条目已关联过 %s,跳过", targetUrl)
+      callback(DbSynUtil.STATE_SUCCEED)
+      return
     }
-    pwEntry.strings["KP2A_URL_$nextId"] = ProtectedString(false, "androidapp://$apkPkgName")
+
+    // 找首个空闲 slot;全部占满则失败,绝不覆盖 slot 1
+    var nextId = -1
+    for (i in 1 until 100) {
+      if (pwEntry.strings["KP2A_URL_$i"] == null) {
+        nextId = i
+        break
+      }
+    }
+    if (nextId == -1) {
+      Timber.e("关联失败,KP2A_URL_1..99 已被占满")
+      callback(DbSynUtil.STATE_FAIL)
+      return
+    }
+
+    pwEntry.strings["KP2A_URL_$nextId"] = ProtectedString(false, targetUrl)
     KpaUtil.kdbHandlerService.saveDbByForeground(callback = callback)
   }
 

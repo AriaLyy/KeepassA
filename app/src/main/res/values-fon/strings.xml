@@ -1,2 +1,452 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string-array name="quick_pass_type_entries">
+        <item><![CDATA[Xógbe hwláhwlá e ɖò xójlawema ɔ mɛ é nɔ jɛ nukɔn nú kɛ́n %s tɔn lɛ]]></item>
+        <item><![CDATA[Xógbe hwláhwlá e ɖò xójlawema ɔ mɛ é nɔ fó kpo kɛ́n %s kpo]]></item>
+    </string-array>
+    <string-array name="clean_clip_entries">
+        <item><![CDATA[Cɛju 30]]></item>
+        <item><![CDATA[Cɛjú ɖokpó]]></item>
+        <item><![CDATA[Cɛju 2]]></item>
+        <item><![CDATA[Cɛju atɔɔn]]></item>
+    </string-array>
+    <string-array name="quick_lock_entries">
+        <item><![CDATA[Cɛju 2]]></item>
+        <item><![CDATA[Cɛju atɔɔn]]></item>
+        <item><![CDATA[Cɛjú wǒ]]></item>
+        <item><![CDATA[Cɛjú 20]]></item>
+    </string-array>
+    <string-array name="out_db_entries">
+        <item><![CDATA[Keepass2 xójlawema]]></item>
+        <item><![CDATA[XML sín wema e è ma wlan ǎ é]]></item>
+        <item><![CDATA[CSV sín wema e è ma wlan ǎ é]]></item>
+    </string-array>
+    <string-array name="v3_add_mor_item">
+        <item><![CDATA[Nǔ e è ɖɔ é]]></item>
+        <item><![CDATA[wěma gɔ́ nú wěma]]></item>
+        <item><![CDATA[Hwenu e é na fó dó é]]></item>
+    </string-array>
+    <string-array name="v4_add_mor_item">
+        <item><![CDATA[Nǔ e è ɖɔ é]]></item>
+        <item><![CDATA[Gle mɛɖesunɔ tɔn lɛ]]></item>
+        <item><![CDATA[wěma gɔ́ nú wěma]]></item>
+        <item><![CDATA[TOTP]]></item>
+        <item><![CDATA[É nùnina]]></item>
+        <item><![CDATA[Kancica]]></item>
+        <item><![CDATA[Hwenu e é na fó dó é]]></item>
+    </string-array>
+    <string-array name="create_normal_group">
+        <item><![CDATA[Mail]]></item>
+        <item><![CDATA[Azɔ̌]]></item>
+        <item><![CDATA[akwɛ́]]></item>
+        <item><![CDATA[ayihunhun]]></item>
+        <item><![CDATA[nǔ e è nɔ vɔ́ zán é]]></item>
+    </string-array>
+    <string-array name="auto_fill_hint_label">
+        <item><![CDATA[Mail]]></item>
+        <item><![CDATA[alokan]]></item>
+        <item><![CDATA[mɛ e nɔ zán é]]></item>
+        <item><![CDATA[akɔ́nta]]></item>
+    </string-array>
+    <string name="db"><![CDATA[xójlawema]]></string>
+    <string name="db1"><![CDATA[Nǔjlɛ́dónùwú\t|\t<font color="#757575">%s</font>]]></string>
+    <string name="password"><![CDATA[xókwin]]></string>
+    <string name="key"><![CDATA[càvi]]></string>
+    <string name="key1"><![CDATA[Cavi: %s]]></string>
+    <string name="open"><![CDATA[Hùn hɔn ɔ]]></string>
+    <string name="hint_set_password"><![CDATA[Sɔ́ xógbe hwláhwlá]]></string>
+    <string name="hint_input_password"><![CDATA[Wlan xógbe hwláhwlá e ɖó kɛ́n 6–16 é ɖé]]></string>
+    <string name="hint_enter_password"><![CDATA[Ɖɔ xó dó xógló hwláhwlá jí]]></string>
+    <string name="help_create_db"><![CDATA[v4 KeepPass xójlawema e è bló ɖó jlɛ̌ jí é .]]></string>
+    <string name="help_create_group"><![CDATA[Gbɛ̌ta ɔ sín nyikɔ sixu hugǎn wekwín 16 ǎ .]]></string>
+    <string name="encrypt_type"><![CDATA[Wlɛnwín nǔwlanwlán tɔn]]></string>
+    <string name="encrypt_type_1"><![CDATA[Xógbe hwláhwlá kɛɖɛ]]></string>
+    <string name="encrypt_type_2"><![CDATA[xógbe hwláhwlá + cávi]]></string>
+    <string name="choose_pass_key"><![CDATA[Hɛn cávi ɔ]]></string>
+    <string name="hint_set_pass_key"><![CDATA[Kɛnklɛn sɔ́ cávi ɖokpo .]]></string>
+    <string name="pass_key"><![CDATA[wěma cávi]]></string>
+    <string name="helper_create_pass"><![CDATA[È kplɔ́n mɛ ɖɔ è ni zán xógbe hwláhwlá ɖé (Glɛnsigbe ɖaxó kpo kpɛví kpo + kɛ́n lɛ + wuntun lɛ)]]></string>
+    <string name="open_db"><![CDATA[Hùn xójlawema]]></string>
+    <string name="db_name"><![CDATA[Wlan nyikɔ xójlawema ɔ tɔn]]></string>
+    <string name="create_db"><![CDATA[Ðó xójlawema]]></string>
+    <string name="next"><![CDATA[Afɔ e bɔ d’ewu é]]></string>
+    <string name="up"><![CDATA[Afɔ e jɛ nukɔn é]]></string>
+    <string name="hint_select_db_path"><![CDATA[Zǐn bo sɔ́ wlɛnwín nǔ lɛ hɛn ɖ’ayǐ tɔn .]]></string>
+    <string name="hint_select_path_type"><![CDATA[Hɛn ali e jí è na hɛn xójlawema ɔ ɖó é]]></string>
+    <string name="error_db_name_null"><![CDATA[Mi kɛnklɛn bo wlan dobanunǔtɛn ɔ sín nyikɔ]]></string>
+    <string name="done"><![CDATA[Fó]]></string>
+    <string name="enter"><![CDATA[tè ɖě ji]]></string>
+    <string name="cancel"><![CDATA[ÐáñáôçñÞóôå]]></string>
+    <string name="hint"><![CDATA[nùjlɛjlɛ]]></string>
+    <string name="help_create_db_path"><![CDATA[È kplɔ́n mɛ ɖɔ è ni zán ali e ɖò akpɔ́kpɔ́ mɛ lɛ é ɖi Dropbox kpo WebDAV kpo, bɔ ye na bló bɔ xójlawema towe na sɔgbe xá akpɔ́kpɔ́ ɔ ɖò éɖée mɛ, bo na lɛ́ zɔ́n bɔ è na zán xójlawema ɔ ɖò nǔ ɖevo lɛ jí.
+\n wɛ è nɔ zán dó hɛn xójlawema \n tɔn ɖó hwlahwlá. Mɛɖebǔ sixu hun xójlawema towe mɛvo ǎ.]]></string>
+    <string name="help_pass_type"><![CDATA[Mi zan password kɛɖɛ:
+\n nɔ byɔ xógbe hwláhwlá towe kɛɖɛ bo na dó hun xójlawema ɔ;
+\n xógbe hwláhwlá + cávi:
+\n A ɖo na wlan xogbe hwlɛnhwlɛn bo na sɔ file key ɖokpo bo na hun xójlawema ɔ.]]></string>
+    <string name="help_pass_key"><![CDATA[Fí e è nɔ zán key dó é sɔgbe xá key e è nɔ zán dó hun nǔ lɛ é, bɔ hwɛhwɛ ɔ, é nɔ vɛwǔ tawun bo nɔ lɛ́ ɖeji dó wǔ tɔn hú xógbe e è nɔ zán dó hun nǔ lɛ é. Amɔ̌, é lɛ́ vɛwǔ hú ɖɔ è ni hwla, bɔ enyi a hɛn xójlawema towe ɖó akpɔ́kpɔ́ mɛ hǔn, ma sɔ́ cávi ɔ kpo xójlawema ɔ kpo ɖó kpɔ́ gbeɖé ó.
+\n A sixu sɔ file ɖebu ɖi cavi bo na hun xójlawema ɔ, fɔto, alo wema TXT tɔn.
+\n⚠️Nùkplɔ́nmɛ: Nú è ɖyɔ fɔtóo élɔ́ abǐ wema TXT élɔ́ ɔ́, hǔn a sɔ́ ná hun xójlawema ɔ́ ǎ! !
+\n nɔ kplɔ́n mɛ tawun ɖɔ è ni zán wema e è nɔ xà lɛ é kɛɖɛ dó nyí cávi lɛ.]]></string>
+    <string name="choose_file"><![CDATA[Sɔ́ wema ɔ]]></string>
+    <string name="choose_pass_key_file_des"><![CDATA[Sɔ́ wema ɖebǔ dó nyí cávi towe .]]></string>
+    <string name="create_file"><![CDATA[Mi blo wema yɔyɔ]]></string>
+    <string name="create_pass_key_file_des"><![CDATA[Mi blo wema yɔyɔ ɖe bo na zan ɖi cavi mitɔn .]]></string>
+    <string name="create_pass_key_success"><![CDATA[Cavi [%s] sín ɖiɖó ɖuɖeji .]]></string>
+    <string name="error_pass_null"><![CDATA[Mi kɛnklɛn bo sɔ́ xógbe hwláhwlá xójlawema ɔ tɔn]]></string>
+    <string name="error_enter_pass_null"><![CDATA[Mi kɛnklɛn bo wlan xógbe hwlɛnhwlɛn ɔ]]></string>
+    <string name="error_pass_unfit"><![CDATA[Xógbe hwláhwlá wè nɔ sɔgbe ǎ .]]></string>
+    <string name="hint_db_create_success"><![CDATA[È bló xójlawema [%s]]]></string>
+    <string name="history"><![CDATA[xota]]></string>
+    <string name="history_record"><![CDATA[Xota]]></string>
+    <string name="edit"><![CDATA[ɖyɔ́]]></string>
+    <string name="change_db"><![CDATA[Dɔ dobanunǔ dobanunǔ tɔn]]></string>
+    <string name="all"><![CDATA[byɔbyɔ]]></string>
+    <string name="setting"><![CDATA[ɖŏtana]]></string>
+    <string name="db_setting"><![CDATA[Nǔjlajla xójlawema ɔ tɔn]]></string>
+    <string name="app_setting"><![CDATA[Nǔ e è nɔ zán ɖò nǔwiwa ɔ mɛ lɛ é]]></string>
+    <string name="welcome"><![CDATA[Yí mε]]></string>
+    <string name="help_input_db_pass"><![CDATA[Wlan xógbe hwláhwlá xójlawema ɔ tɔn]]></string>
+    <string name="need_key"><![CDATA[Hudo cavi tɔn à ?]]></string>
+    <string name="error_uri"><![CDATA[URI nuwanyido]]></string>
+    <string name="error_input_pass_null"><![CDATA[Mi kɛnklɛn bo wlan xogbe hwlɛnhwlɛn ɔ]]></string>
+    <string name="error_open_db"><![CDATA[È sixu hun xójlawema ɔ ǎ. Password ɔ sɔgbe ǎ, alǒ un ɖó hudo cávi tɔn à?]]></string>
+    <string name="error_open_db_key_empty"><![CDATA[Cavi e bú é]]></string>
+    <string name="error_open_db_pass_error"><![CDATA[Nǔwanyido xógbe hwláhwlá xójlawema ɔ tɔn]]></string>
+    <string name="error_open_db_key_invalid"><![CDATA[Cavi e ma sɔgbe ǎ é]]></string>
+    <string name="error_open_db_version_error"><![CDATA[Nǔwanyido ɖò xójlawema ɔ sín alɔkpa mɛ]]></string>
+    <string name="error_open_db_signature_error"><![CDATA[Nǔwanyido alɔnuwema ɔ tɔn]]></string>
+    <string name="error_open_db_algorithm_error"><![CDATA[Algorithme e ma sɔgbe ǎ é]]></string>
+    <string name="error_open_db_arcfour_error"><![CDATA[Algorithme cipher de flux e ma sɔgbe ǎ é]]></string>
+    <string name="hint_group_desc"><![CDATA[Gbɛ̌ta-%s sín nǔwlanwlán]]></string>
+    <string name="error_group_id_null"><![CDATA[ID gbɛ̌ta ɔ tɔn ɖò vɔ̌]]></string>
+    <string name="error_entry_id_null"><![CDATA[ID e mɛ è nɔ wlan nǔ dó é ɖò vɔ̌]]></string>
+    <string name="create_time"><![CDATA[%s wɛ bló]]></string>
+    <string name="expire_time"><![CDATA[É na fó ɖò %s jí]]></string>
+    <string name="hint_attr"><![CDATA[Nǔɖokan nukɔntɔn lɛ]]></string>
+    <string name="attachment"><![CDATA[wěma gɔ́ nú wěma]]></string>
+    <string name="hint_ex_property"><![CDATA[Nǔ ɖevo lɛ]]></string>
+    <string name="expire"><![CDATA[<font color=#FF0000>%s</font>E ko fó]]></string>
+    <string name="del_group"><![CDATA[Súnsún gbɛ̌ta ɔ]]></string>
+    <string name="edit_group"><![CDATA[Ðyɔ gbɛ̌ta ɔ]]></string>
+    <string name="success"><![CDATA[é ɖù]]></string>
+    <string name="fail"><![CDATA[ɖŏ gbĕ]]></string>
+    <string name="del_entry"><![CDATA[Súnsún nǔ e è wlan é]]></string>
+    <string name="del_history"><![CDATA[Súnsún tan ɔ]]></string>
+    <string name="copy_user_name"><![CDATA[Kpɔ́n nyikɔ mɛ e nɔ zán é tɔn]]></string>
+    <string name="copy_password"><![CDATA[Kpɔ́n xógbe hwláhwlá]]></string>
+    <string name="copy_totp"><![CDATA[Kpɔ́n wuntun TOTP tɔn]]></string>
+    <string name="hint_del_group"><![CDATA[A ka ganjɛwu ɖɔ emi jló na súnsún gbɛ̌ta [<font color=#FF0000>%s</font>] à ? <br> Azɔ̌ élɔ́ ná sɔ́ gbɛ̌ta ɔ́ ​​yi kɔ́xota, fí e a sixú vɔ́ gbɛ̌ta ɔ́ ​​blóɖó ɖè é.]]></string>
+    <string name="hint_del_group_no_recycle"><![CDATA[A jló ná súnsún gbɛ̌ta [<font color=#FF0000>%s</font>] ɔ́ nǔgbó à ?]]></string>
+    <string name="hint_del_entry"><![CDATA[A jló ná súnsún nǔwlánwlán [<font color=#FF0000>%s</font>] ɔ́ nǔgbó à? <br> Azɔwiwa enɛ ɔ na hɛn nu elɔ yi Recycle Bin mɛ, fi e a sixu hɛn nu ɔ wa ɖe ɔ.]]></string>
+    <string name="hint_del_entry_no_recycle"><![CDATA[A jló na súnsún nǔ e è wlan é [<font color=#FF0000>%s</font>] ɔ kaka sɔyi à?]]></string>
+    <string name="group_name"><![CDATA[Gbɛ̌ta ɔ sín nyikɔ]]></string>
+    <string name="create_group"><![CDATA[Mi ɖo gbɛta]]></string>
+    <string name="error_group_name_null"><![CDATA[Gbɛ̌ta ɔ sín nyikɔ ɖò vɔ̌]]></string>
+    <string name="create_group_fail"><![CDATA[È sixu ɖó gbɛ̌ta ɖé ayǐ ǎ]]></string>
+    <string name="create_group_success"><![CDATA[Gbɛ̌ta e è ɖó é]]></string>
+    <string name="modify_group"><![CDATA[Ðyɔ gbɛ̌ta ɔ]]></string>
+    <string name="error_group_no_modify"><![CDATA[Gbɛ̌ta ɔ ɖyɔ ǎ .]]></string>
+    <string name="title_too_long"><![CDATA[Gbɛ̌ta ɔ sín nyikɔ ɖiga dín]]></string>
+    <string name="choose_icon"><![CDATA[Hɛn wuntun ɔ]]></string>
+    <string name="undo_entry"><![CDATA[È vɔ́ blóɖó...]]></string>
+    <string name="undo_to"><![CDATA[Sɔ́ yì gbɛ̌ta elɔ mɛ .]]></string>
+    <string name="undo_grouped"><![CDATA[È ko sɛ̀ tɛn nú gbɛ̌ta ɔ yì fí e è ɖɔ é .]]></string>
+    <string name="undo_entryed"><![CDATA[È ko sɛ̀ tɛn nú nǔwlanwlán ɔ yì fí e è ɖɔ é .]]></string>
+    <string name="hint_copy_user"><![CDATA[È zé nyikɔ mɛ e nɔ zán é tɔn ɖó tavo jí]]></string>
+    <string name="hint_copy_pass"><![CDATA[È zé xókwín hwláhwlá ɔ dó tavo jí]]></string>
+    <string name="hint_copy_totp"><![CDATA[TOTP sín wuntun ɔ ɖiɖe ɖó tavo jí]]></string>
+    <string name="create_totp"><![CDATA[Mi ɖe OTP sin wuntun]]></string>
+    <string name="safety_set"><![CDATA[Acɛkpikpa sín tuto lɛ]]></string>
+    <string name="fingerprint_unlock"><![CDATA[Alɔví sín wuntun hunhun]]></string>
+    <string name="db_handle"><![CDATA[Azɔ̌wiwa ɖò xójlawema ɔ mɛ]]></string>
+    <string name="modify_db_name"><![CDATA[Ðyɔ nyikɔ xójlawema ɔ tɔn]]></string>
+    <string name="modify_db_pass"><![CDATA[Ðyɔ xógbe hwláhwlá xójlawema ɔ tɔn]]></string>
+    <string name="out_db"><![CDATA[Sɔ́ xójlawema dó tò ɖevo mɛ]]></string>
+    <string name="db_name_no_alter"><![CDATA[Nyikɔ xójlawema ɔ tɔn ɖyɔ ǎ .]]></string>
+    <string name="db_name_modify"><![CDATA[Nyikɔ xójlawema ɔ tɔn ɖyɔɖyɔ]]></string>
+    <string name="no_record"><![CDATA[è wlan nǔ ɖě ǎ]]></string>
+    <string name="hint_query"><![CDATA[Nyikɔ mɛ e nɔ zan ɔ, xota, URL, Nuɖonukun nukɔntɔn lɛ...]]></string>
+    <string name="copy_to_clip"><![CDATA[Kpɔ́n dó tavo jí]]></string>
+    <string name="show_pass"><![CDATA[xlɛ xógbe hwláhwlá]]></string>
+    <string name="ope_url"><![CDATA[hun linki]]></string>
+    <string name="hide_pass"><![CDATA[Hwlá xógbe hwláhwlá]]></string>
+    <string name="hint_copy_to_clip"><![CDATA[È zé nǔ lɛ ɖó tavo jí]]></string>
+    <string name="verify_finger"><![CDATA[Alɔví ɖiɖe kpɔ́n]]></string>
+    <string name="verify_finger_fail"><![CDATA[È sixú gbéjé alɔví sín wuntun kpɔ́n ǎ]]></string>
+    <string name="ban_fingerprint"><![CDATA[Hùn alɔví sín wuntun mɛvo]]></string>
+    <string name="quick_use_fingerprint"><![CDATA[Zǎn alɔví towe sín wuntun kɛɖɛ dó hun hɔn ɔ ɖò nǔ e nɔ yawu hun hɔn ɔ é jí .]]></string>
+    <string name="use_full_fingerprint"><![CDATA[Alɔví sín wuntun hunhun bǐ mlɛ́mlɛ́]]></string>
+    <string name="hint_full_fingerprint"><![CDATA[Alɔví sín wuntun lɛ wɛ è nɔ zán dó hun xójlawema ɔ ɖò xójlawema hunhun tlolo kpo xójlawema hunhun xójlawema ɔ kpo mɛ. KeePassA nɔ hwlá bo nɔ hɛn xógbe hwláhwlá ɖaxó ɔ kpo nǔ taji e ɖò xójlawema ɔ mɛ lɛ é kpo ɖó fí e è nɔ bɛ́ nǔ taji lɛ ɖó ɖò tutoblonunu Android tɔn mɛ é, bo nɔ lɛ́ zán alɔví sín wuntun lɛ dó cyɔn alɔ ye jí. Alɔví towe sín wuntun kɛɖɛ wɛ sixu hun xójlawema ɔ.]]></string>
+    <string name="hint_quick_unlock"><![CDATA[Mi wlan %s gudo tɔn lɛ ɖo xogbe hwlɛnhwlɛn mitɔn mɛ]]></string>
+    <string name="hint_input_title"><![CDATA[xota tɔn]]></string>
+    <string name="hint_input_user_name"><![CDATA[nyikɔ]]></string>
+    <string name="hint_input_url"><![CDATA[Adlɛsi linki tɔn]]></string>
+    <string name="notice"><![CDATA[Nǔ e è ɖɔ é]]></string>
+    <string name="hint_input_tag"><![CDATA[wuntun 1, wuntun 2]]></string>
+    <string name="hint_input_cover_url"><![CDATA[ɖyɔ xókwin]]></string>
+    <string name="create_entry"><![CDATA[Ðó nǔwlanwlán]]></string>
+    <string name="save"><![CDATA[xàsà do]]></string>
+    <string name="len"><![CDATA[lín]]></string>
+    <string name="upper"><![CDATA[wekwín ɖaxó]]></string>
+    <string name="lower"><![CDATA[wekwín kpɛví lɛ]]></string>
+    <string name="numer"><![CDATA[nùkan]]></string>
+    <string name="minus"><![CDATA[wuntun ɖekpo]]></string>
+    <string name="underline"><![CDATA[Sɔ́ zǒgbe dó dò]]></string>
+    <string name="space"><![CDATA[tɛntin]]></string>
+    <string name="special"><![CDATA[wuntun bunɔ lɛ]]></string>
+    <string name="bracket"><![CDATA[xókwín lɛ]]></string>
+    <string name="pass_generater"><![CDATA[xógbe hwláhwlá]]></string>
+    <string name="error_genera_params"><![CDATA[Mi kɛnklɛn bo sɔ́ xógbe hwlɛnhwlɛn sín jijimɛ alɔkpa ɖokpo é hwe bǐ ɔ .]]></string>
+    <string name="hint_pass_null"><![CDATA[Xógbe hwláhwlá ɔ ɖò vɔ̌]]></string>
+    <string name="date"><![CDATA[hwenu]]></string>
+    <string name="time"><![CDATA[hwenu]]></string>
+    <string name="choose_dir"><![CDATA[Sɔ́ ɖó gbɛ̌ta dìn tɔn mɛ]]></string>
+    <string name="normal_account"><![CDATA[Akɔnta yaya]]></string>
+    <string name="add_more"><![CDATA[Gɔ́ nǔ ɖevo lɛ na .]]></string>
+    <string name="warning"><![CDATA[xwi ɖí]]></string>
+    <string name="create_entry_no_save"><![CDATA[Tɔn sín wema din tɔn jí bo ma hɛn nǔ e a wlan lɛ é ɖ’ayǐ ǎ à?]]></string>
+    <string name="add_custom_str"><![CDATA[Ðó tɛnmɛ mɛɖesunɔ tɔn lɛ]]></string>
+    <string name="hint_input_attr_str_key"><![CDATA[Gle ɔ sín nyikɔ]]></string>
+    <string name="hint_input_attr_str_value"><![CDATA[gle xɔ akwɛ]]></string>
+    <string name="hint_protect_str"><![CDATA[gle e è cyɔn alɔ jí lɛ é]]></string>
+    <string name="error_attr_str_null"><![CDATA[Gle ɔ sín nyikɔ ɖò vɔ̌]]></string>
+    <string name="del_attr_str"><![CDATA[Súnsún tɛnmɛ mɛɖesunɔ tɔn]]></string>
+    <string name="del_attr_file"><![CDATA[Súnsún nǔ e è tɛ́ dó wǔ tɔn é]]></string>
+    <string name="error_attr_file_too_large"><![CDATA[Mi kɛnklɛn bo ma sɔ́ wema e ɖaxó hú 10M lɛ é ɖó kpɔ́ ó .]]></string>
+    <string name="download_file"><![CDATA[Sɔ́ nǔ e è tɛ́ dó kati SD jí lɛ é ɖó]]></string>
+    <string name="open_whit_text"><![CDATA[Hùn kpodo nuwlanwlan xomɛ tɔn kpo]]></string>
+    <string name="open_whit_img"><![CDATA[Hùn kpodo ɖiɖe kpɔ́ntɔ́ xomɛ tɔn kpo]]></string>
+    <string name="open_whit_other"><![CDATA[Sɔ́ ɖó fí e è nɔ hwla nǔ dó é bo hun kpo tuto ɔdinatɛ́ɛ jí tɔn ɔ kpo]]></string>
+    <string name="save_file_success"><![CDATA[Wěma e è hɛn ɖ\'ayǐ é [%s]]]></string>
+    <string name="txt_viewer"><![CDATA[file kpɔntɔ]]></string>
+    <string name="save_db_fail"><![CDATA[È sixu hɛn dobanunǔtɛn ɔ ɖ\'ayi ǎ]]></string>
+    <string name="error_pass"><![CDATA[Xógbe hwláhwlá e ma sɔgbe ǎ é]]></string>
+    <string name="db_pass_no_alter"><![CDATA[Xógbe yɔyɔ ɔ ɖokpo ɔ wɛ nyí xóxó ɔ .]]></string>
+    <string name="hint_db_pass_modify_success"><![CDATA[Zǎn xógbe hwláhwlá yɔyɔ̌ ɔ dó hun xójlawema ɔ hweɖevonu .]]></string>
+    <string name="hint_db_pass_modify"><![CDATA[È ɖyɔ xógbe hwláhwlá e ɖò xójlawema ɔ mɛ é .]]></string>
+    <string name="app_feedback"><![CDATA[Na wěɖexámɛ .]]></string>
+    <string name="error_db_pass_too_short"><![CDATA[Bo na dó hɛn nǔ towe lɛ ɖó ayijayǐ mɛ ɔ, xógbe e è nɔ zán dó hɛn nǔ lɛ ɖó mimɛ̌ jí é sín ga sixu hwe hú wekwín 6 ǎ.]]></string>
+    <string name="autofill_sign_in_prompt"><![CDATA[KeePassA zinzan dó gɔ́ xógbe hwláhwlá ɔ nú hwiɖée]]></string>
+    <string name="hint_open_backgroun_start"><![CDATA[A ko hun autofill, amɔ̌, ɖò tutoblonunu bunɔ ɖé lɛ mɛ ɖi MIUI ɔ, KeePassA ɖó na na gbè <b> sín xójlawema e nɔ tɔ́n ɖò gudo é </b> bonu é na hun xójlawema ɔ bo na hun xójlawema ɔ.]]></string>
+    <string name="hint_background_start"><![CDATA[Zǐn <font color="#FF0000"><b> ɖò dò bo sɔ́ </b></font> ɖó te, lobo hun <b> sín ɖiɖe e nɔ tɔ́n ɖò gudo é </b> sín gbè nú KeePassA.]]></string>
+    <string name="setting_miui_background_start"><![CDATA[Nǔjlajla >Azɔwanúmɛ sín Nǔjlajla >Azɔwanúmɛ sín Azɔ̌ >KeePassA >Acɛkpikpa]]></string>
+    <string name="setting_vivo_background_start"><![CDATA[Nǔjlajla > Nǔjlajla ɖevo lɛ > Acɛkpikpa->KeePassA > Nǔjlajla Acɛkpikpa > Nǔ e nɔ tɔ́n ɖò gudo é]]></string>
+    <string name="no_matching_entry"><![CDATA[Nǔ e sɔgbe lɛ é ɖě ɖò finɛ ǎ]]></string>
+    <string name="hint_save_auto_fill"><![CDATA[Enyi è na xò nyikɔ nǔ e è bló é tɔn [<font color="#FF0000">%1$s</font>] kplé xá nǔwlanwlán [<font color="#FF0000">%2$s</font>] ɔ à jí.]]></string>
+    <string name="relevance_db"><![CDATA[Nǔ e è cá lɛ é]]></string>
+    <string name="modify_time"><![CDATA[hwenu e è nɔ ɖyɔ é]]></string>
+    <string name="lose_time"><![CDATA[Hwenu e é na fó dó é]]></string>
+    <string name="update_group_fail"><![CDATA[É sixu jla gbɛ̌ta ɔ sín nǔ lɛ ɖó ǎ]]></string>
+    <string name="update_group_success"><![CDATA[È vɔ́ nǔ e ɖò gbɛ̌ta ɔ mɛ lɛ é jlaɖó]]></string>
+    <string name="title"><![CDATA[xota tɔn]]></string>
+    <string name="feedback"><![CDATA[Xósin ^_^]]></string>
+    <string name="submit"><![CDATA[xwlé nùdé me]]></string>
+    <string name="send_email_fail"><![CDATA[Bɛ̌ kpo appli e sixu sɛ́ e-mail dó mɛ é ɖé ɖiɖó kpo .]]></string>
+    <string name="feedback_email_msg"><![CDATA[Mi do gbe nu mi, nyikɔ ce wɛ nyi KeePassA, mi ɖo nukanbyɔ ɖebu wɛ a ? _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ Alokan alɔkpa: %1$s Alokan alɔkpa: %2$s Nǔ e ɖò tuto ɔ mɛ é: %3$s Nǔ e è nɔ zán é: %4$s App version: %5$s]]></string>
+    <string name="mark_not_exit"><![CDATA[App axi ɔ ɖe ǎ .]]></string>
+    <string name="set_open_auto_fill_title"><![CDATA[Azɔ̌ e nɔ gɔ́ nǔ nú mɛɖesunɔ é]]></string>
+    <string name="set_key_praise_value"><![CDATA[Akwɛ́ KeePassA]]></string>
+    <string name="other_set"><![CDATA[Nǔ ɖevo lɛ]]></string>
+    <string name="open_quick_unlock"><![CDATA[Hùn hɔn tlolo]]></string>
+    <string name="quick_pass_type_summary"><![CDATA[""]]></string>
+    <string name="clean_clip_time"><![CDATA[Súnsún nǔ e jí è nɔ wlan nǔ dó é]]></string>
+    <string name="clean_clip_time_summary"><![CDATA[Enyi a kpɔ́n xógbe hwláhwlá ɔ gudo hǔn, súnsún nǔ e ɖò wěma ɔ jí é ɖò %s gudo .]]></string>
+    <string name="auto_lock_db_time"><![CDATA[Sú dobanúnǔtɛn ɔ éɖesunɔ]]></string>
+    <string name="auto_lock_db_time_summary"><![CDATA[Nú è ma wà nǔ ɖebǔ ǎ ɔ, è na sú xójlawema ɔ éɖesunɔ ɖò cɛju %s gudo.]]></string>
+    <string name="quick_pass_type"><![CDATA[Fí e è nɔ wlí xógbe hwlɛnhwlɛn klewun ɖé ɖè é]]></string>
+    <string name="des_quick_unlock"><![CDATA[Hùn xójlawema towe sín hɔn kpo xógbe hwláhwlá klewun ɖé kpo .]]></string>
+    <string name="error_short_pass_lenght"><![CDATA[Xógbe klewun ɔ sixu ɖiga hú wekwín 6 ǎ.]]></string>
+    <string name="error_short_pass_short"><![CDATA[Xókwín hwláhwlá kpɛví ɔ sín ga sixu hwe hú wekwín 3 ǎ .]]></string>
+    <string name="quick_pass_len_title"><![CDATA[Xógbe hwláhwlá kpɛví ɖé]]></string>
+    <string name="quick_pass_len_summary"><![CDATA[Xógbe hwlɛnhwlɛn klewun ɖé: %s]]></string>
+    <string name="set_key_value"><![CDATA[Sɔ́ gbè]]></string>
+    <string name="dropbox_msg"><![CDATA[Ðò nǔgbododó e ɖɔ ɖɔ è ni ɖó sísí nú mɛ e nɔ zán nǔ ɔ é sín nǔ mɛɖesunɔ tɔn lɛ mɛ é mɛ ɔ, KeePassA na byɔ gbè ɖɔ è ni mɔ wema Dropbox towe lɛ bǐ ǎ. KeePassA<font color=#FF0000> nɔ mɔ [Azɔwanúmɛ/KeePassA] sín wema </font> kɛɖɛ. <br /> Enɛ wu ɔ: <br /> <b> Enyi a ko ɖó KeePass sín xójlawema ɖé ɔ, hǔn a ɖó na na gbè KeePassA ɖɔ é ni yì [Azɔwanú/KeePassA] sín xójlawema ɔ mɛ ɖò KeePassA KeePassA mɛ jɛ nukɔn, bo na hɛn KeePass xójlawema ɔ ɖ’ayǐ. [Azɔwanúmɛ/KeePassA] sín wema ɔ hwenu e è ko fó acɛ ɔ gudo é. </b><br/><br /> Nú a ɖò KeepPass sín xójlawema yɔyɔ̌ ɖé bló wɛ ɔ, a ɖó hudo azɔ̌ e ɖò aga é tɔn ǎ. Enyi a bló xójlawema ɔ gudo ɔ, KeePassA na bló xójlawema e sɔgbe é éɖesunɔ bo na sɔ́ xójlawema ɔ ɖó [Application/KeePassA] xójlawema Dropbox tɔn mɛ.]]></string>
+    <string name="cover"><![CDATA[xɛsin]]></string>
+    <string name="file_conflict_msg"><![CDATA[Kplékplé ɖé ɖò nǔ e ɖò akpɔ́kpɔ́ mɛ lɛ é kpo nǔ e ɖò xá ɔ mɛ lɛ é kpo tɛntin. Kɛnklɛn bo sɔ́ wlɛnwín nǔwlanwlán tɔn ɔ. Nǔ e è wlan bɔ ye nɔ klán gbè xá yeɖée lɛ é ɖíe: \n %s]]></string>
+    <string name="cover_local"><![CDATA[mε]]></string>
+    <string name="cover_cloud"><![CDATA[Hwesivɔ]]></string>
+    <string name="merge"><![CDATA[kplé]]></string>
+    <string name="sync_db"><![CDATA[Sɔ́ dobanúnǔ dobanúnǔ tɔn]]></string>
+    <string name="net_error"><![CDATA[Réseau abnormalité]]></string>
+    <string name="auth"><![CDATA[Na acɛ]]></string>
+    <string name="invalid"><![CDATA[nùɖíɖó e ma sɔgbe ǎ]]></string>
+    <string name="no_file"><![CDATA[wema ɖebu ɖemɛ ǎ]]></string>
+    <string name="login"><![CDATA[Mi byɔ mɛ]]></string>
+    <string name="helper_webdav"><![CDATA[Ði kpɔ́ndéwú ɔ: https://dav.kpɔ́ndéwú.org/dav/wema towe/xxx.kdbx]]></string>
+    <string name="helper_webdav_dir"><![CDATA[Ði kpɔ́ndéwú ɔ: https://dav.kpɔ́ndéwú.org/dav/[wema towe]/]]></string>
+    <string name="hint_webdav_url"><![CDATA[URL sín wěma]]></string>
+    <string name="hint_please_input"><![CDATA[Mi kɛnklɛn bo wlan %s]]></string>
+    <string name="db_file_no_exist"><![CDATA[Fí e è nɔ hɛn nǔ lɛ ɖó é ɖò finɛ ǎ]]></string>
+    <string name="invalid_auth"><![CDATA[Sixu na acɛ ǎ. Kɛnklɛn bo lɛ vɔ tɛnkpɔn.]]></string>
+    <string name="afs"><![CDATA[Nǔ e è nɔ ylɔ́ ɖɔ Android é]]></string>
+    <string name="hint_kdbx_name"><![CDATA[Suffixe nyanya, suffixe ɔ ɖo na nyi ".kdbx".]]></string>
+    <string name="start_upload_db"><![CDATA[Bɛ̌ nǔ lɛ zé dó disque réseau towe jí .]]></string>
+    <string name="unlocked"><![CDATA[È hun hɔn]]></string>
+    <string name="notify_channel_db_open"><![CDATA[Nǔ e è nɔ hun ɖò xójlawema ɔ mɛ é]]></string>
+    <string name="notify_quick_unlock_start"><![CDATA[È sú xójlawema ɔ, è hun hɔn tlolo]]></string>
+    <string name="notify_db_locked"><![CDATA[È sú xójlawema ɔ]]></string>
+    <string name="search"><![CDATA[ba]]></string>
+    <string name="disable"><![CDATA[súsú]]></string>
+    <string name="quick_unlock"><![CDATA[Hùn hɔn tlolo]]></string>
+    <string name="db_unlock"><![CDATA[Hùn xójlawema ɔ sín hɔn]]></string>
+    <string name="hint_quick_use_fingerprint"><![CDATA[Zǎn alɔví sín wuntun hunhun ɖò wexwɛ e jí è nɔ yawu hun hɔn ɖè é kɛɖɛ jí .]]></string>
+    <string name="version_log"><![CDATA[Mi jla wema ɔ ɖó]]></string>
+    <string name="hint_finger_print_verfiy"><![CDATA[È ɖó na vɔ́ alɔví sín wuntun lɛ gbéjé kpɔ́n cobo na zán nǔ yɔyɔ̌ lɛ .]]></string>
+    <string name="closed"><![CDATA[È sú]]></string>
+    <string name="open1"><![CDATA[hun]]></string>
+    <string name="upload"><![CDATA[zé ɖó jí]]></string>
+    <string name="add_attr_file"><![CDATA[Gɔ́ nǔ e è tɛ́ dó wǔ tɔn é]]></string>
+    <string name="hint_fingerprint_modify"><![CDATA[È nɔ mɔ ɖɔ alɔví ɔ sín wuntun ɖyɔ. Nú è na dó hɛn xógbe hwláhwlá towe ɖó ganji ɔ, kɛnklɛn bo vɔ́ alɔví sín wuntun hunhun sín azɔ̌ ɔ blóɖó.]]></string>
+    <string name="hint_please_open_database"><![CDATA[Mi kɛnklɛn hun dobanunǔtɛn ɔ .]]></string>
+    <string name="save_db_success"><![CDATA[È hɛn nǔ lɛ ɖó]]></string>
+    <string name="set_delete_setting"><![CDATA[Súnsún nǔjlajla lɛ]]></string>
+    <string name="set_delete_no_into_recycle_bin"><![CDATA[Súnsún nǔ e è wlan dó xójlawema ɔ mɛ lɛ é bǐ mlɛ́mlɛ́]]></string>
+    <string name="set_delete_no_into_recycle_bin_des"><![CDATA[Sɔ́ nǔ e è súnsún lɛ é dó nǔ e è nɔ vɔ́ zán lɛ é mɛ .]]></string>
+    <string name="warning_rooted"><![CDATA[Nú è na dó hɛn nǔ towe lɛ ɖó ganji ɔ, kɛnklɛn ma hun nǔ lɛ sín xójlawema ɔ ɖò alokan e ɖó root é jí ó .]]></string>
+    <string name="hint_security_green"><![CDATA["Azɔwanu elɔ ɖo ayijayi mɛ"]]></string>
+    <string name="hint_security_red"><![CDATA[Azɔwanú mitɔn ɖó root bɔ dobanúnǔwema ɔ ɖò ayikungban nyanya ɖé mɛ .]]></string>
+    <string name="hint_security_yellow"><![CDATA[Akpágbánúmɛ, nǔwiwa ɔ nɔ w’azɔ̌ ɖò nǔjlɛdonǔwu ɔ mɛ, bɔ ayikúngban e jí é na hɛn awěxomɛ e è ma sixu tuùn ǎ lɛ é ɖé lɛ wá nú xójlawema ɔ .]]></string>
+    <string name="donate"><![CDATA[Dŏ nù]]></string>
+    <string name="donate_desc"><![CDATA[[KeePassA] (https: github.com/AriaLyy/KeepassA) ɔ, xójlawema ɖé wɛ bo nɔ xɔ akwɛ ǎ. Mi kɛnklɛn bo lin tamɛ dó nùnina ɖé jí bo na dó nɔ gudo nú azɔ̌ mǐtɔn, mi dokú nú mi tawun.]]></string>
+    <string name="dev_birthday"><![CDATA[Égbé wɛ nyí developpeur ɔ sín jigbezán 🎂. A jló ná ɖu bia nú developpeur ɔ́ à ?]]></string>
+    <string name="totp_defaule"><![CDATA[RFC 6238 sín wuntun sín tuto lɛ]]></string>
+    <string name="totp_steam"><![CDATA[Nǔjlɛ́dónùwú Steam tɔn]]></string>
+    <string name="totp_custom"><![CDATA[Zǎn nǔ e è sɔ́ ɖ’ayǐ lɛ é .]]></string>
+    <string name="totp_custom_hint"><![CDATA[Nǔjlajla mɛɖesunɔ tɔn lɛ]]></string>
+    <string name="totp_Arithmetic"><![CDATA[algorithme:]]></string>
+    <string name="totp_time"><![CDATA[Ganmɛ (lɛ):]]></string>
+    <string name="totp_len"><![CDATA[lín:]]></string>
+    <string name="totp_key_error"><![CDATA[É sixú bló TOTP sín kodó ǎ, é ɖò vo]]></string>
+    <string name="sort"><![CDATA[ɖŏ azɔ̌]]></string>
+    <string name="sort_chart_desc"><![CDATA[Alfabɛti nukɔntɔn e jɛ dò é (Z-A)]]></string>
+    <string name="sort_chart_asc"><![CDATA[Alfabɛti e ɖò jijɛji wɛ é (A-Z)]]></string>
+    <string name="sort_time_asc"><![CDATA[hwenu e ɖò jijɛji wɛ é]]></string>
+    <string name="sort_time_desc"><![CDATA[Hwenu e è nɔ jɛ dò é]]></string>
+    <string name="ime_label"><![CDATA[KeePassA Acɛkpikpa Acɛkpikpa Tɔn]]></string>
+    <string name="set_open_kpa_ime_title"><![CDATA[klavié e ɖò ayijayǐ mɛ é]]></string>
+    <string name="no_totp_token"><![CDATA[TOTP sín wuntun ɖě ɖò finɛ ǎ]]></string>
+    <string name="ime_entry_other_info"><![CDATA[Mi gɔ́ tɛnmɛ ɖevo lɛ mɛ]]></string>
+    <string name="url"><![CDATA[URL]]></string>
+    <string name="hint_not_nore_info"><![CDATA[è sɔ́ ɖó xó ɖevo ǎ .]]></string>
+    <string name="error_uri_grant_permission"><![CDATA[URI Acɛkpikpa ɔ gɔn]]></string>
+    <string name="license"><![CDATA[licence logiciel vɔ̌nu]]></string>
+    <string name="move"><![CDATA[ɖyɔ́]]></string>
+    <string name="set_key_sum_main_show_entries"><![CDATA[Mi xlɛ nu e mi wlan lɛ bi hwenu e mi hun dobanunǔtɛn ɔ gudo e]]></string>
+    <string name="set_key_sum_main_show_history"><![CDATA[Mi xlɛ tan ɔ hwenu e mi hun dobanunǔtɛn ɔ gudo e]]></string>
+    <string name="set_key_title_main_allow_show_entries"><![CDATA[Wema nukɔntɔn ɔ]]></string>
+    <string name="set_key_title_opr_env_check"><![CDATA[Sɔ́ nǔ e lɛlɛ̌ dó we lɛ é kpɔ́n]]></string>
+    <string name="set_key_title_opr_env_check_turn_off"><![CDATA[súsú]]></string>
+    <string name="set_key_title_opr_env_check_turn_on"><![CDATA[Hun]]></string>
+    <string name="expand"><![CDATA[Gbló]]></string>
+    <string name="shrink"><![CDATA[bɔ̀ dŏ]]></string>
+    <string name="ui_setting"><![CDATA[Nǔjlɛ́dónùwú mɛ e nɔ zán é tɔn]]></string>
+    <string name="cur_app_not_autofill"><![CDATA[Ma gɔ́ nǔ nú hwiɖée ó]]></string>
+    <string name="other"><![CDATA[nǔ ɖevo lɛ]]></string>
+    <string name="ref_entry"><![CDATA[Nǔ e è nɔ kpɔ́n lɛ é]]></string>
+    <string name="multi_choice"><![CDATA[Nǔ gègě cyan]]></string>
+    <string name="set_summary_screen_lock_off"><![CDATA[Ma sú dobanúnǔtɛn ɔ ó .]]></string>
+    <string name="set_summary_screen_lock_on"><![CDATA[Sú dobanúnǔtɛn ɔ éɖesunɔ]]></string>
+    <string name="set_title_screen_lock"><![CDATA[écran súsú]]></string>
+    <string name="close"><![CDATA[súsú]]></string>
+    <string name="Alipay"><![CDATA[Akwɛ]]></string>
+    <string name="error_webdav_end_suffix"><![CDATA[Zǎn ali folder tɔn. Ði kpɔ́ndéwú ɔ: "https://kpɔ́ndéwú.org/dav/kpa/"]]></string>
+    <string name="error_webdav_end_dav_suffix"><![CDATA[Ali /dav/ tɔn ɔ, è nɔ yí gbè na ǎ. Zǎn ali ɖagbe ɖé, ɖi: "https://example.org/dav/kpa/".]]></string>
+    <string name="set_key_title_fillet_bg_icon"><![CDATA[Zwe wuntun wěma tɔn e è xò kplé é]]></string>
+    <string name="set_key_title_fillet_bg_icon_turn_on"><![CDATA[hun]]></string>
+    <string name="set_key_title_fillet_bg_icon_turn_off"><![CDATA[súsú]]></string>
+    <string name="set_key_title_show_state_bar"><![CDATA[tɛnmɛ ninɔmɛ tɔn]]></string>
+    <string name="set_key_title_show_state_bar_turn_on"><![CDATA[gàn]]></string>
+    <string name="set_key_title_show_state_bar_turn_off"><![CDATA[hwlá]]></string>
+    <string name="set_key_title_close_load_anim"><![CDATA[ɖiɖe ɖiɖe]]></string>
+    <string name="set_key_title_close_load_anim_turn_on"><![CDATA[Hun]]></string>
+    <string name="set_key_title_close_load_anim_turn_off"><![CDATA[súsú]]></string>
+    <string name="s_default"><![CDATA[jijɔ nyanya]]></string>
+    <string name="customize"><![CDATA[Sɔ́ nǔ dó mɛɖesunɔ jí]]></string>
+    <string name="set_key_title_auto_lock_database"><![CDATA[Sú dobanúnǔtɛn ɔ éɖesunɔ]]></string>
+    <string name="set_key_title_auto_lock_database_turn_on"><![CDATA[Ɛɛn]]></string>
+    <string name="set_key_title_auto_lock_database_turn_off"><![CDATA[súsú]]></string>
+    <string name="get_token_fail"><![CDATA[É kpéwú bo mɔ Token ǎ]]></string>
+    <string name="one_drive_init_failure"><![CDATA[OneDrive sín bǐbɛ́mɛ gló]]></string>
+    <string name="one_drive_hint"><![CDATA[Bo na dó cyɔn alɔ nǔ towe lɛ jí ɔ, KeePassA na yì <font color=#FF0000> [Azɔwanú/KeepassA] </font> sín wěma ɔ mɛ kɛɖɛ. Nú mi jló ná xa Keepass sín xójlawema OneDrive tɔn, <font color=#FF0000> hǔn, kɛnklɛn bo hɛn xójlawema ɔ ɖó xójlawema élɔ́ mɛ. </font>]]></string>
+    <string name="open_permissions"><![CDATA[Hùn acɛ lɛ]]></string>
+    <string name="miui_permissions"><![CDATA[miui Sisteme ɔ ɖo na hun acɛ e nɔ tɔ́n ɖò gudo é bo na dó sixu zán azɔ̌ e nɔ gɔ́ nǔ lɛ é.]]></string>
+    <string name="set_key_main_show_totp_tab_title"><![CDATA[Wema nukɔntɔn ɔ xlɛ TOTP sin hεnnu .]]></string>
+    <string name="set_key_main_show_totp_tab_on"><![CDATA[Xlɛ TOTP sín alɔkpa lɛ]]></string>
+    <string name="set_key_main_show_totp_tab_off"><![CDATA[Ma xlɛ TOTP sín hɛ̌nnu ó .]]></string>
+    <string name="set_key_theme_style_title"><![CDATA[xota sín alɔkpa]]></string>
+    <string name="set_key_theme_style_summary"><![CDATA[Xwedó tuto ɔ .]]></string>
+    <string name="open_setting"><![CDATA[Hùn nǔjlajla lɛ]]></string>
+    <string-array name="sek_ley_theme_style_entries">
+        <item><![CDATA[Xwedó tuto ɔ .]]></item>
+        <item><![CDATA[ablu mɛ]]></item>
+        <item><![CDATA[weziza alɔkpa]]></item>
+    </string-array>
+    <string name="error_keystore"><![CDATA[Keystore ɖevo‚ kɛnklɛn bo lɛ vɔ tɛnkpɔn]]></string>
+    <string name="kpa_totp"><![CDATA[wuntun]]></string>
+    <string name="kpa_copy"><![CDATA[kpɔ́n]]></string>
+    <string name="translate_language"><![CDATA[Lilɛ appli ɔ dó gbè towe mɛ .]]></string>
+    <string name="error_qr_code_str"><![CDATA[QR code ɔ sɔgbe ǎ. Mi kɛnklɛn bo hɛn dó ayi mɛ ɖɔ kodɛ QR ɔ nyí kodɛ QR e Google Authenticator nɔ gudo nú é ɖé.]]></string>
+    <string name="google_play"><![CDATA[Google Play Axixɔsa]]></string>
+    <string name="disposable"><![CDATA[È nɔ zán azɔn ɖokpo]]></string>
+    <string name="year"><![CDATA[xwewu xwewu]]></string>
+    <string name="error_donate"><![CDATA[Nǔnina ɔ gló]]></string>
+    <string name="thank_donate"><![CDATA[È na cɛ nú mi ɖó nùnina mitɔn wu.]]></string>
+    <string name="error_connect_play"><![CDATA[È sixú cá kàn xá azɔ̌xwé Google tɔn lɛ ǎ]]></string>
+    <string name="monthly"><![CDATA[sun ɖokpo mɛ]]></string>
+    <string name="my_collection"><![CDATA[nǔ e un kplé lɛ é]]></string>
+    <string name="current_collection_num"><![CDATA[%1$s kplékplé]]></string>
+    <string name="no_collection"><![CDATA[Mɛ e è yí wǎn na lɛ é ɖě ǎ]]></string>
+    <string name="error_open_db_webdav"><![CDATA[È sixu hun xójlawema ɔ ǎ ɖó xójlawema WebDAV ɔ ɖò finɛ ǎ.]]></string>
+    <string name="helper_webdav_service"><![CDATA[Sɔ́ Azɔ̌xwé WebDAV tɔn .]]></string>
+    <string name="error_is_root"><![CDATA[Ko ɖò wěɖexámɛ xóxó ɔ mɛ .]]></string>
+    <string name="select_cur_path"><![CDATA[Hɛn folder din tɔn]]></string>
+    <string name="hint_cloud_file_already_exist"><![CDATA[%1$s ko tíìn. A jlo na wlan nu do file ɔ ji wɛ a ?]]></string>
+    <string name="select_save_path"><![CDATA[Hɛn ali e jí è na hɛn é]]></string>
+    <string name="one_drive_load_user_failure"><![CDATA[È sixú hɛn nǔ mɛ e nɔ zán é tɔn ǎ.]]></string>
+    <string name="hint_open_background_start"><![CDATA[Mi kɛnklɛn bo hun acɛ e nɔ tɔ́n ɖò gudo é, é ma nyí mɔ̌ ǎ ɔ, è sixu zán azɔ̌ e nɔ gɔ́ nǔ lɛ é ǎ .]]></string>
+    <string name="hostname"><![CDATA[nyikɔ]]></string>
+    <string name="port"><![CDATA[tɔjihun]]></string>
+    <string name="webdav_host_name_hint"><![CDATA[Mi kɛnklɛn bo wlan nyikɔ mitɔn]]></string>
+    <string name="webdav_port_hint"><![CDATA[tɔjihun]]></string>
+    <string name="webdav_port_name_null"><![CDATA[Hostname sixu nɔ vɔ̀ ǎ .]]></string>
+    <string name="privacy_agreement"><![CDATA[akɔjijɛ mɛɖesunɔ tɔn]]></string>
+    <string name="ime_hint_open_auto_fill"><![CDATA[Mi kɛnklɛn bo hun azɔ̌ e nɔ gɔ́ nǔ lɛ é]]></string>
+    <string name="please_open_proxy"><![CDATA[Ðó hwɛjijɔ e è tuùn ganji lɛ é wutu ɔ, bo na dó sixu zán azɔ̌ onedrive tɔn lɛ ganji ɔ, kɛnklɛn bo zán azɔwanú réseau tɔn e jɛxa lɛ é .]]></string>
+    <string name="invalid_img"><![CDATA[Ɖiɖe e ma sɔgbe ǎ e]]></string>
+    <string name="preemptive"><![CDATA[Mɔdu ɖ\'ayi]]></string>
+    <string name="fail_unsupported_Systems_O"><![CDATA[É nɔ gudo nú tutoblonunu e ɖó P kpo ee ɖò aga lɛ é kpo kɛɖɛ .]]></string>
+    <string name="hint_webdav_jgy"><![CDATA[Kɛnklɛn zán xókwín e ɖò [Nǔ e kúnkplá Akɔnta ɔ lɛ é->Nǔ e è na zán dó cyɔn alɔ mɛ jí lɛ é->Azɔwanú mɛ ɖevo lɛ tɔn] mɛ é.]]></string>
+    <string name="app_debug"><![CDATA[Sún xójlawema ɔ sín wema mɛ]]></string>
+    <string name="hint_auto_fill_save"><![CDATA[Sɔ́ nǔ e ɖò ayǐ dìn lɛ é dó nǔ e ko ɖò wema mɛ lɛ é wu à?]]></string>
+    <string name="hint_dont_show_tips"><![CDATA[Ma sɔ́ xlɛ́ ó .]]></string>
+    <string name="title_tip_of_day"><![CDATA[wěɖexámɛ ayihɔngbe ayihɔngbe tɔn lɛ]]></string>
+    <string name="base_info"><![CDATA[Nǔ taji lɛ]]></string>
+    <string name="tag"><![CDATA[É nùnina]]></string>
+    <string name="collection"><![CDATA[akwèjɔ̀]]></string>
+    <string name="add_attr_str"><![CDATA[Gɔ́ jijɔ lɛ na]]></string>
+    <string name="delete"><![CDATA[ɖè]]></string>
+    <string name="create_tag"><![CDATA[Mi blo tags]]></string>
+    <string name="tag_name"><![CDATA[Nyikɔ tag tɔn]]></string>
+    <string name="add_tag"><![CDATA[Mi zé wuntun]]></string>
+    <string name="open_file"><![CDATA[hun wema ɔ]]></string>
+    <string name="modify_str_attr"><![CDATA[Ðyɔ nǔɖokan lɛ]]></string>
+    <string name="error_file"><![CDATA[Wema ɔ sɔgbe ǎ‚ mi kɛnklɛn bo súnsún: <font color=#FF0000>%s</font>]]></string>
+    <string name="not_souper_otp"><![CDATA[TOTP e è ma nɔ ɖ\'alɔ na ǎ é]]></string>
+    <string name="modify_totp"><![CDATA[ɖyɔ wuntun]]></string>
+    <string name="error_totp"><![CDATA[totp e ma sɔgbe ǎ é]]></string>
+    <string name="file_save_success"><![CDATA[È hɛn nǔ e è tɛ́ dó wema ɔ wu é ɖ’ayǐ ganji]]></string>
+    <string name="options"><![CDATA[Nǔ e è sixu cyan lɛ é]]></string>
+    <string name="review_title"><![CDATA[Xósin]]></string>
+    <string name="review_enter"><![CDATA[Bɛ̌ xósin]]></string>
+    <string name="review_cancel"><![CDATA[É nyí hwe elɔ nu ǎ .]]></string>
+    <string name="review_fail"><![CDATA[Nǔ e è sɛ́ dó mɛ é gló‚ kɛnklɛn bo kpɔn \'réseau\' ɔ]]></string>
+    <string name="review_not_hint"><![CDATA[Ma sɔ́ byɔ nǔ ó .]]></string>
+    <string name="review_like_app"><![CDATA[Ði appli mǐtɔn ɖɔhun à? Mi kɛnklɛn bo kpɔ́n mǐ!]]></string>
+    <string name="hint_notify_permission"><![CDATA[KeepassA byɔ gbeɖiɖe ɖiɖɔ tɔn bo na do jla ninɔmɛ xójlawema ɔ tɔn.]]></string>
+    <string name="title_choose_icon"><![CDATA[Hɛn wuntun ɔ]]></string>
+    <string name="icon_select_pick"><![CDATA[Hùn fɔtóowema ɔ]]></string>
+    <string name="icon_select_db"><![CDATA[wuntun xá ɔ mɛ tɔn]]></string>
+    <string name="icon_change"><![CDATA[Ðyɔ wuntun ɔ]]></string>
+    <string name="entry_not_found"><![CDATA[È mɔ nǔɖe ǎ]]></string>
+</resources>

@@ -229,7 +229,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     binding.headBar.addOnOffsetChangedListener { _, verticalOffset ->
       val totalScrollRange: Int =  binding.headBar.getTotalScrollRange()
       val offset = abs(verticalOffset / totalScrollRange.toFloat()) // 0.0 到 1.0
-      Timber.d("offSet: $offset")
       binding.headToolbar.alpha = 1 - offset
     }
   }

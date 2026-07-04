@@ -121,6 +121,14 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
   @JvmField
   var createEnum: CreateEnum = CREATE
 
+  /**
+   * 自动填充场景下,从 onSaveRequest 链路或解锁后 SaveEntityDelegate 传入的预填数据
+   * (saveUserName / savePass),用于新建条目时自动回填用户名密码
+   */
+  @Autowired(name = LauncherActivity.KEY_AUTO_FILL_PARAM)
+  @JvmField
+  var autoFillParam: AutoFillParam? = null
+
   internal lateinit var module: CreateEntryModule
   private lateinit var createHandler: ICreateHandler
   private var isShowPass = false
@@ -197,6 +205,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
     super.initData(savedInstanceState)
     ARouter.getInstance().inject(this)
     module = ViewModelProvider(this)[CreateEntryModule::class.java]
+    module.autoFillParam = autoFillParam
     handleEdge2Edge()
 
     createHandler = if (createEnum == MODIFY) {

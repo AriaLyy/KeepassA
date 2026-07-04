@@ -18,6 +18,7 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.util.hasSpecialChar
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
+import com.thegrizzlylabs.sardineandroid.impl.SardineException
 import timber.log.Timber
 import java.io.FileOutputStream
 import java.net.URI
@@ -226,30 +227,19 @@ object WebDavUtil : ICloudUtil {
     dbRecord: DbHistoryRecord
   ): Boolean {
     Timber.d("uploadFile, cloudPath = ${dbRecord.cloudDiskPath}, localPath = ${dbRecord.localDbUri}")
-    sardine ?: return false
+    val webDav = sardine ?: return false
     try {
 
       val originUrl = getConvertedCloudPath(dbRecord)
-      // val tempPath = replaceFileName(originUrl, "${System.currentTimeMillis()}_")
-      // 1、上传备份文件
-      sardine?.put(
-        originUrl,
-        Uri.parse(dbRecord.localDbUri).toFile(),
-        "application/binary",
-        false
-      )
-      Timber.d("上传完成，重新获取文件信息")
-
-      // 2、删除旧的db
-      // delFile(originUrl)
-
-      // 3、将备份文件重命名
-      // sardine?.move(tempPath, originUrl, true)
-
-      val info = getFileInfo(getConvertedCloudPath(dbRecord))
-      if (info != null) {
-        DbSynUtil.serviceModifyTime = info.serviceModifyDate
+      val result = WebDavSafeUploader(createUploadClient(webDav))
+        .upload(Uri.parse(dbRecord.localDbUri).toFile(), originUrl)
+      if (!result.success) {
+        return false
       }
+      result.serviceModifyTime?.let {
+        DbSynUtil.serviceModifyTime = it
+      }
+      Timber.d("上传完成，重新获取文件信息")
     } catch (e: Exception) {
       Timber.e(e, "上传文件失败")
       return false
@@ -258,12 +248,61 @@ object WebDavUtil : ICloudUtil {
     return true
   }
 
-  private fun replaceFileName(originalUrl: String, prefix: String): String {
-    // 使用正则表达式匹配文件名并添加前缀
-    val newUrl = originalUrl.replace(Regex("/([^/]+)\$")) { matchResult ->
-      "/${prefix}${matchResult.groupValues[1]}"
+  private fun createUploadClient(webDav: OkHttpSardine): WebDavUploadClient {
+    return object : WebDavUploadClient {
+      override suspend fun getFileInfo(url: String): CloudFileInfo? {
+        return getStrictFileInfo(webDav, url)
+      }
+
+      override suspend fun put(
+        url: String,
+        localFile: java.io.File,
+        contentType: String
+      ) {
+        webDav.put(url, localFile, contentType, false)
+      }
+
+      override suspend fun copy(
+        sourceUrl: String,
+        destinationUrl: String,
+        overwrite: Boolean
+      ) {
+        webDav.copy(sourceUrl, destinationUrl, overwrite)
+      }
+
+      override suspend fun move(
+        sourceUrl: String,
+        destinationUrl: String,
+        overwrite: Boolean
+      ) {
+        webDav.move(sourceUrl, destinationUrl, overwrite)
+      }
+
+      override suspend fun delete(url: String) {
+        webDav.delete(url)
+      }
     }
-    return newUrl
+  }
+
+  private fun getStrictFileInfo(
+    webDav: OkHttpSardine,
+    url: String
+  ): CloudFileInfo? {
+    val resources = try {
+      webDav.list(convertUrl(url))
+    } catch (e: SardineException) {
+      if (e.statusCode == 404) {
+        return null
+      }
+      throw e
+    }
+    if (resources == null || resources.isEmpty()) {
+      return null
+    }
+    val file = resources[0]
+    return CloudFileInfo(
+      file.path, file.name, file.modified, file.contentLength, file.isDirectory
+    )
   }
 
   /**

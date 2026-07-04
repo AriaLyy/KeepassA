@@ -1,2 +1,452 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string-array name="quick_pass_type_entries">
+        <item><![CDATA[データベースパスワードの先頭%s文字]]></item>
+        <item><![CDATA[データベースパスワードの末尾%s文字]]></item>
+    </string-array>
+    <string-array name="clean_clip_entries">
+        <item><![CDATA[30秒]]></item>
+        <item><![CDATA[1分]]></item>
+        <item><![CDATA[2分]]></item>
+        <item><![CDATA[5分]]></item>
+    </string-array>
+    <string-array name="quick_lock_entries">
+        <item><![CDATA[2分]]></item>
+        <item><![CDATA[5分]]></item>
+        <item><![CDATA[10分]]></item>
+        <item><![CDATA[20分]]></item>
+    </string-array>
+    <string-array name="out_db_entries">
+        <item><![CDATA[Keepass2 データベース]]></item>
+        <item><![CDATA[暗号化されていない XML ファイル]]></item>
+        <item><![CDATA[暗号化されていない CSV ファイル]]></item>
+    </string-array>
+    <string-array name="v3_add_mor_item">
+        <item><![CDATA[備考]]></item>
+        <item><![CDATA[添付ファイル]]></item>
+        <item><![CDATA[有効期限]]></item>
+    </string-array>
+    <string-array name="v4_add_mor_item">
+        <item><![CDATA[備考]]></item>
+        <item><![CDATA[カスタムフィールド]]></item>
+        <item><![CDATA[添付ファイル]]></item>
+        <item><![CDATA[TOTP]]></item>
+        <item><![CDATA[ラベル]]></item>
+        <item><![CDATA[リンク]]></item>
+        <item><![CDATA[有効期限]]></item>
+    </string-array>
+    <string-array name="create_normal_group">
+        <item><![CDATA[電子メール]]></item>
+        <item><![CDATA[仕事]]></item>
+        <item><![CDATA[金融]]></item>
+        <item><![CDATA[エンターテイメント]]></item>
+        <item><![CDATA[ゴミ箱]]></item>
+    </string-array>
+    <string-array name="auto_fill_hint_label">
+        <item><![CDATA[電子メール]]></item>
+        <item><![CDATA[携帯電話]]></item>
+        <item><![CDATA[ユーザー]]></item>
+        <item><![CDATA[口座番号]]></item>
+    </string-array>
+    <string name="db"><![CDATA[データベース]]></string>
+    <string name="db1"><![CDATA[データベース\t|\t<font color="#757575">%s</font>]]></string>
+    <string name="password"><![CDATA[パスワード]]></string>
+    <string name="key"><![CDATA[キー]]></string>
+    <string name="key1"><![CDATA[キー: %s]]></string>
+    <string name="open"><![CDATA[ロックを解除する]]></string>
+    <string name="hint_set_password"><![CDATA[パスワードを設定する]]></string>
+    <string name="hint_input_password"><![CDATA[6～16文字のパスワードを入力してください]]></string>
+    <string name="hint_enter_password"><![CDATA[パスワードの確認]]></string>
+    <string name="help_create_db"><![CDATA[デフォルトで作成される v4 KeepPass データベース]]></string>
+    <string name="help_create_group"><![CDATA[グループ名は 16 文字を超えることはできません]]></string>
+    <string name="encrypt_type"><![CDATA[暗号化方式]]></string>
+    <string name="encrypt_type_1"><![CDATA[パスワードのみ]]></string>
+    <string name="encrypt_type_2"><![CDATA[パスワード+キー]]></string>
+    <string name="choose_pass_key"><![CDATA[選択キー]]></string>
+    <string name="hint_set_pass_key"><![CDATA[キーを選択してください]]></string>
+    <string name="pass_key"><![CDATA[ファイルキー]]></string>
+    <string name="helper_create_pass"><![CDATA[混合パスワード（英語の大文字と小文字 + 数字 + 記号）を使用することをお勧めします。]]></string>
+    <string name="open_db"><![CDATA[オープンデータベース]]></string>
+    <string name="db_name"><![CDATA[データベース名を入力してください]]></string>
+    <string name="create_db"><![CDATA[データベースの作成]]></string>
+    <string name="next"><![CDATA[次のステップ]]></string>
+    <string name="up"><![CDATA[前のステップ]]></string>
+    <string name="hint_select_db_path"><![CDATA[クリックしてデータ保存方法を設定します]]></string>
+    <string name="hint_select_path_type"><![CDATA[データベースの保存パスを選択してください]]></string>
+    <string name="error_db_name_null"><![CDATA[データベース名を入力してください]]></string>
+    <string name="done"><![CDATA[完了]]></string>
+    <string name="enter"><![CDATA[確認する]]></string>
+    <string name="cancel"><![CDATA[キャンセル]]></string>
+    <string name="hint"><![CDATA[ヒント]]></string>
+    <string name="help_create_db_path"><![CDATA[Dropbox や WebDAV などのクラウド パスを使用することをお勧めします。これにより、データベースがクラウドに自動的に同期され、他のデバイスでのデータベースの使用が容易になります。
+\n データベースは、AES256 を使用して暗号化されます。パスワードがなければ誰もデータベースを開けることはできません。]]></string>
+    <string name="help_pass_type"><![CDATA[パスワードのみを使用します:
+\n では、データベースを開くためにパスワードのみが必要です。
+\n パスワード + キー:
+\n データベースを開くには、パスワードを入力し、キー ファイルを選択する必要があります。]]></string>
+    <string name="help_pass_key"><![CDATA[キー ファイルはデータを開くためのキーに相当し、通常はパスワードよりもはるかに複雑で信頼性が高くなります。しかし、それを隠すことも難しいため、データベースをクラウドに保存する場合は、キーとデータベースを決して一緒にしないでください。
+\n データベース、写真、または TXT ドキュメントを開くキーとして任意のファイルを選択できます。
+\n⚠️注: この写真またはこの TXT 文書が変更されると、データベースを開けることができなくなります。 ！
+\n では、読み取り専用ファイルをキーとして使用することを強く推奨します。]]></string>
+    <string name="choose_file"><![CDATA[ファイルを選択]]></string>
+    <string name="choose_pass_key_file_des"><![CDATA[キーとして任意のファイルを選択してください]]></string>
+    <string name="create_file"><![CDATA[新しいファイルを作成する]]></string>
+    <string name="create_pass_key_file_des"><![CDATA[キーとして使用する新しいファイルを作成します]]></string>
+    <string name="create_pass_key_success"><![CDATA[キー [%s] の作成に成功しました]]></string>
+    <string name="error_pass_null"><![CDATA[データベースのパスワードを設定してください]]></string>
+    <string name="error_enter_pass_null"><![CDATA[確認用のパスワードを入力してください]]></string>
+    <string name="error_pass_unfit"><![CDATA[2 つのパスワードが矛盾しています]]></string>
+    <string name="hint_db_create_success"><![CDATA[データベース [%s] が作成されました]]></string>
+    <string name="history"><![CDATA[歴史]]></string>
+    <string name="history_record"><![CDATA[歴史]]></string>
+    <string name="edit"><![CDATA[編集]]></string>
+    <string name="change_db"><![CDATA[スイッチデータベース]]></string>
+    <string name="all"><![CDATA[エントリー]]></string>
+    <string name="setting"><![CDATA[設定]]></string>
+    <string name="db_setting"><![CDATA[データベース設定]]></string>
+    <string name="app_setting"><![CDATA[アプリケーション設定]]></string>
+    <string name="welcome"><![CDATA[ようこそ]]></string>
+    <string name="help_input_db_pass"><![CDATA[データベースのパスワードを入力してください]]></string>
+    <string name="need_key"><![CDATA[鍵が必要ですか?]]></string>
+    <string name="error_uri"><![CDATA[URIエラー]]></string>
+    <string name="error_input_pass_null"><![CDATA[データベースのパスワードを入力してください]]></string>
+    <string name="error_open_db"><![CDATA[データベースを開けません。パスワードが間違っていますか、それともキーが必要ですか?]]></string>
+    <string name="error_open_db_key_empty"><![CDATA[鍵がありません]]></string>
+    <string name="error_open_db_pass_error"><![CDATA[データベースのパスワードエラー]]></string>
+    <string name="error_open_db_key_invalid"><![CDATA[無効なキー]]></string>
+    <string name="error_open_db_version_error"><![CDATA[データベースのバージョンエラー]]></string>
+    <string name="error_open_db_signature_error"><![CDATA[データベース署名エラー]]></string>
+    <string name="error_open_db_algorithm_error"><![CDATA[無効なアルゴリズム]]></string>
+    <string name="error_open_db_arcfour_error"><![CDATA[無効なストリーム暗号アルゴリズム]]></string>
+    <string name="hint_group_desc"><![CDATA[グループ-%sエントリ]]></string>
+    <string name="error_group_id_null"><![CDATA[グループIDが空です]]></string>
+    <string name="error_entry_id_null"><![CDATA[エントリIDが空です]]></string>
+    <string name="create_time"><![CDATA[作成者: %s]]></string>
+    <string name="expire_time"><![CDATA[%sで期限切れになります]]></string>
+    <string name="hint_attr"><![CDATA[高度なプロパティ]]></string>
+    <string name="attachment"><![CDATA[添付ファイル]]></string>
+    <string name="hint_ex_property"><![CDATA[追加のプロパティ]]></string>
+    <string name="expire"><![CDATA[<font color=#FF0000>%s</font>期限切れ]]></string>
+    <string name="del_group"><![CDATA[グループの削除]]></string>
+    <string name="edit_group"><![CDATA[グループの編集]]></string>
+    <string name="success"><![CDATA[成功]]></string>
+    <string name="fail"><![CDATA[失敗しました]]></string>
+    <string name="del_entry"><![CDATA[エントリの削除]]></string>
+    <string name="del_history"><![CDATA[履歴の削除]]></string>
+    <string name="copy_user_name"><![CDATA[ユーザー名をコピーする]]></string>
+    <string name="copy_password"><![CDATA[パスワードをコピーする]]></string>
+    <string name="copy_totp"><![CDATA[TOTPトークンをコピーする]]></string>
+    <string name="hint_del_group"><![CDATA[グループ [<font color=#FF0000>%s</font>] を削除してもよろしいですか? <br> この操作によりグループがごみ箱に移動され、グループを復元できます。]]></string>
+    <string name="hint_del_group_no_recycle"><![CDATA[本当にグループ [<font color=#FF0000>%s</font>] を削除してもよろしいですか?]]></string>
+    <string name="hint_del_entry"><![CDATA[本当にエントリ [<font color=#FF0000>%s</font>] を削除しますか? <br> この操作により、このエントリはごみ箱に移動され、後でエントリを復元できます。]]></string>
+    <string name="hint_del_entry_no_recycle"><![CDATA[本当にエントリ [<font color=#FF0000>%s</font>] を完全に削除しますか?]]></string>
+    <string name="group_name"><![CDATA[グループ名]]></string>
+    <string name="create_group"><![CDATA[グループの作成]]></string>
+    <string name="error_group_name_null"><![CDATA[グループ名が空です]]></string>
+    <string name="create_group_fail"><![CDATA[グループを作成できません]]></string>
+    <string name="create_group_success"><![CDATA[グループが作成されました]]></string>
+    <string name="modify_group"><![CDATA[グループの編集]]></string>
+    <string name="error_group_no_modify"><![CDATA[グループは変わっていない]]></string>
+    <string name="title_too_long"><![CDATA[グループ名が長すぎます]]></string>
+    <string name="choose_icon"><![CDATA[アイコンを選択]]></string>
+    <string name="undo_entry"><![CDATA[復元されました…]]></string>
+    <string name="undo_to"><![CDATA[このグループに移動します]]></string>
+    <string name="undo_grouped"><![CDATA[グループは指定された場所に移動されました]]></string>
+    <string name="undo_entryed"><![CDATA[エントリは指定された場所に移動されました]]></string>
+    <string name="hint_copy_user"><![CDATA[ユーザー名がクリップボードにコピーされました]]></string>
+    <string name="hint_copy_pass"><![CDATA[パスワードがクリップボードにコピーされました]]></string>
+    <string name="hint_copy_totp"><![CDATA[TOTP トークンがクリップボードにコピーされました]]></string>
+    <string name="create_totp"><![CDATA[OTPトークンを生成する]]></string>
+    <string name="safety_set"><![CDATA[セキュリティ設定]]></string>
+    <string name="fingerprint_unlock"><![CDATA[指紋によるロック解除]]></string>
+    <string name="db_handle"><![CDATA[データベース操作]]></string>
+    <string name="modify_db_name"><![CDATA[データベース名の変更]]></string>
+    <string name="modify_db_pass"><![CDATA[データベースのパスワードを変更する]]></string>
+    <string name="out_db"><![CDATA[データベースのエクスポート]]></string>
+    <string name="db_name_no_alter"><![CDATA[データベース名は変更されていません]]></string>
+    <string name="db_name_modify"><![CDATA[データベース名の変更]]></string>
+    <string name="no_record"><![CDATA[記録がない]]></string>
+    <string name="hint_query"><![CDATA[ユーザー名、タイトル、URL、詳細プロパティ…]]></string>
+    <string name="copy_to_clip"><![CDATA[クリップボードにコピー]]></string>
+    <string name="show_pass"><![CDATA[パスワードを表示]]></string>
+    <string name="ope_url"><![CDATA[リンクを開く]]></string>
+    <string name="hide_pass"><![CDATA[パスワードを隠す]]></string>
+    <string name="hint_copy_to_clip"><![CDATA[クリップボードにコピーされたデータ]]></string>
+    <string name="verify_finger"><![CDATA[指紋認証]]></string>
+    <string name="verify_finger_fail"><![CDATA[指紋を認証できません]]></string>
+    <string name="ban_fingerprint"><![CDATA[指紋を使わずにロックを解除する]]></string>
+    <string name="quick_use_fingerprint"><![CDATA[クイックロック解除インターフェイスでのロック解除には指紋のみを使用してください]]></string>
+    <string name="use_full_fingerprint"><![CDATA[指紋によるロック解除を完了する]]></string>
+    <string name="hint_full_fingerprint"><![CDATA[指紋は、クイック ロック解除インターフェイスおよびデータベース ロック解除インターフェイスでデータベースのロックを解除するために使用されます。 KeePassA は、データベースのマスター パスワードとキー情報を暗号化して Android システムのローカル キー リポジトリに保存し、保護のために指紋認証を使用します。データベースのロックを解除できるのは指紋だけです。]]></string>
+    <string name="hint_quick_unlock"><![CDATA[データベースパスワードの最後の %s 桁を入力してください]]></string>
+    <string name="hint_input_title"><![CDATA[タイトル]]></string>
+    <string name="hint_input_user_name"><![CDATA[ユーザー名]]></string>
+    <string name="hint_input_url"><![CDATA[リンクアドレス]]></string>
+    <string name="notice"><![CDATA[備考]]></string>
+    <string name="hint_input_tag"><![CDATA[タグ1、タグ2]]></string>
+    <string name="hint_input_cover_url"><![CDATA[リンクを上書きする]]></string>
+    <string name="create_entry"><![CDATA[エントリの作成]]></string>
+    <string name="save"><![CDATA[保存する]]></string>
+    <string name="len"><![CDATA[長さ]]></string>
+    <string name="upper"><![CDATA[大文字]]></string>
+    <string name="lower"><![CDATA[小文字]]></string>
+    <string name="numer"><![CDATA[数字]]></string>
+    <string name="minus"><![CDATA[マイナス記号]]></string>
+    <string name="underline"><![CDATA[下線]]></string>
+    <string name="space"><![CDATA[スペース]]></string>
+    <string name="special"><![CDATA[特殊文字]]></string>
+    <string name="bracket"><![CDATA[括弧]]></string>
+    <string name="pass_generater"><![CDATA[パスワードジェネレーター]]></string>
+    <string name="error_genera_params"><![CDATA[少なくとも 1 つのパスワード生成タイプを選択してください]]></string>
+    <string name="hint_pass_null"><![CDATA[パスワードが空です]]></string>
+    <string name="date"><![CDATA[日付]]></string>
+    <string name="time"><![CDATA[時間]]></string>
+    <string name="choose_dir"><![CDATA[現在のグループに保存]]></string>
+    <string name="normal_account"><![CDATA[普通口座]]></string>
+    <string name="add_more"><![CDATA[さらにアイテムを追加]]></string>
+    <string name="warning"><![CDATA[警告]]></string>
+    <string name="create_entry_no_save"><![CDATA[エントリを保存せずに現在のページを終了しますか?]]></string>
+    <string name="add_custom_str"><![CDATA[カスタムフィールドの作成]]></string>
+    <string name="hint_input_attr_str_key"><![CDATA[フィールド名]]></string>
+    <string name="hint_input_attr_str_value"><![CDATA[フィールド値]]></string>
+    <string name="hint_protect_str"><![CDATA[保護されたフィールド]]></string>
+    <string name="error_attr_str_null"><![CDATA[フィールド名が空です]]></string>
+    <string name="del_attr_str"><![CDATA[カスタムフィールドを削除する]]></string>
+    <string name="del_attr_file"><![CDATA[添付ファイルの削除]]></string>
+    <string name="error_attr_file_too_large"><![CDATA[10Mを超えるファイルは添付しないでください]]></string>
+    <string name="download_file"><![CDATA[添付ファイルをSDカードに保存]]></string>
+    <string name="open_whit_text"><![CDATA[内側のテキストで開く]]></string>
+    <string name="open_whit_img"><![CDATA[内蔵画像ビューアで開く]]></string>
+    <string name="open_whit_other"><![CDATA[キャッシュに保存してシステムアプリで開く]]></string>
+    <string name="save_file_success"><![CDATA[保存されたファイル [%s]]]></string>
+    <string name="txt_viewer"><![CDATA[ファイルビューア]]></string>
+    <string name="save_db_fail"><![CDATA[データベースを保存できません]]></string>
+    <string name="error_pass"><![CDATA[パスワードが間違っています]]></string>
+    <string name="db_pass_no_alter"><![CDATA[新しいパスワードは古いパスワードと同じです]]></string>
+    <string name="hint_db_pass_modify_success"><![CDATA[次回データベースを開くときは、新しいデータベース パスワードを使用してください]]></string>
+    <string name="hint_db_pass_modify"><![CDATA[データベースのパスワードが変更されました]]></string>
+    <string name="app_feedback"><![CDATA[アドバイスを与える]]></string>
+    <string name="error_db_pass_too_short"><![CDATA[データのセキュリティを確保するため、データベースのパスワードの長さは 6 文字未満にすることはできません。]]></string>
+    <string name="autofill_sign_in_prompt"><![CDATA[KeePassAを使用したパスワードの自動入力]]></string>
+    <string name="hint_open_backgroun_start"><![CDATA[自動入力をオンにしましたが、MIUI などの特別なシステムでは、KeePassA は <b> のバックグラウンド ポップアップ インターフェイスに、データベースのロックを解除するインターフェイスをポップアップする </b> 権限を付与する必要があります。]]></string>
+    <string name="hint_background_start"><![CDATA[下の <font color="#FF0000"><b> をクリックして </b></font> を設定し、<b> のバックグラウンド ポップアップ インターフェイス </b> の許可を KeePassA に対して有効にします。]]></string>
+    <string name="setting_miui_background_start"><![CDATA[「設定」>「アプリケーション設定」>「アプリケーション管理」>「KeePassA」>「権限管理」]]></string>
+    <string name="setting_vivo_background_start"><![CDATA[[設定] > [詳細設定] > [権限管理] -> [KeePassA] > [権限設定] > [背景ポップアップ]]]></string>
+    <string name="no_matching_entry"><![CDATA[一致するエントリはありません]]></string>
+    <string name="hint_save_auto_fill"><![CDATA[パッケージ名 [<font color="#FF0000">%1$s</font>] をエントリ [<font color="#FF0000">%2$s</font>] に関連付けるかどうか]]></string>
+    <string name="relevance_db"><![CDATA[リンクされたデータ]]></string>
+    <string name="modify_time"><![CDATA[修正時間]]></string>
+    <string name="lose_time"><![CDATA[有効期限]]></string>
+    <string name="update_group_fail"><![CDATA[グループ情報を更新できません]]></string>
+    <string name="update_group_success"><![CDATA[グループ情報を更新しました]]></string>
+    <string name="title"><![CDATA[タイトル]]></string>
+    <string name="feedback"><![CDATA[フィードバック^_^]]></string>
+    <string name="submit"><![CDATA[送信する]]></string>
+    <string name="send_email_fail"><![CDATA[まずはメールを送信できるアプリをインストールしてください]]></string>
+    <string name="feedback_email_msg"><![CDATA[こんにちは、私の名前は KeePassA です。何か質問はありますか? _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 携帯電話ブランド: %1$s 携帯電話モデル: %2$s システムバージョン: %3$s 解決策: %4$s アプリケーションバージョン: %5$s]]></string>
+    <string name="mark_not_exit"><![CDATA[アプリマーケットは存在しない]]></string>
+    <string name="set_open_auto_fill_title"><![CDATA[自動入力サービス]]></string>
+    <string name="set_key_praise_value"><![CDATA[レート KeePassA]]></string>
+    <string name="other_set"><![CDATA[その他の設定]]></string>
+    <string name="open_quick_unlock"><![CDATA[クイックロック解除]]></string>
+    <string name="quick_pass_type_summary"><![CDATA[「」]]></string>
+    <string name="clean_clip_time"><![CDATA[クリップボードをクリア]]></string>
+    <string name="clean_clip_time_summary"><![CDATA[パスワードをコピーした後、%s の後にクリップボードをクリアします。]]></string>
+    <string name="auto_lock_db_time"><![CDATA[データベースを自動的にロックする]]></string>
+    <string name="auto_lock_db_time_summary"><![CDATA[操作が実行されない場合、データベースは %s 分後に自動的にロックされます。]]></string>
+    <string name="quick_pass_type"><![CDATA[短いパスワードの傍受場所]]></string>
+    <string name="des_quick_unlock"><![CDATA[短いパスワードでデータベースのロックを解除します]]></string>
+    <string name="error_short_pass_lenght"><![CDATA[短いパスワードは 6 文字を超えることはできません。]]></string>
+    <string name="error_short_pass_short"><![CDATA[短いパスワードの長さは 3 文字未満にすることはできません]]></string>
+    <string name="quick_pass_len_title"><![CDATA[短いパスワードの長さ]]></string>
+    <string name="quick_pass_len_summary"><![CDATA[短いパスワードの長さ: %s]]></string>
+    <string name="set_key_value"><![CDATA[言語を選択してください]]></string>
+    <string name="dropbox_msg"><![CDATA[ユーザーのプライバシーを尊重する原則に従って、KeePassA はすべての Dropbox ファイルにアクセスする許可を求めません。 KeePassA<font color=#FF0000> は、[Application/KeePassA] フォルダー </font> にのみアクセスします。 <br /> したがって: <br /> <b> KeePassデータベースがすでにある場合は、まずKeePassA内の[Application/KeePassA]フォルダへのアクセスをKeePassAに許可し、許可が完了したらKeePassデータベースを[Application/KeePassA]フォルダに保存する必要があります。 </b><br/><br /> 新しい KeepPass データベースを作成する場合、上記の操作は必要ありません。データベースを作成すると、KeePassA によって対応するフォルダーが自動的に作成され、データベースが Dropbox の [Application/KeePassA] ディレクトリにアップロードされます。]]></string>
+    <string name="cover"><![CDATA[カバー]]></string>
+    <string name="file_conflict_msg"><![CDATA[クラウド データとローカル データの間に競合があります。上書き方法を選択してください。競合するエントリは次のとおりです: \n %s]]></string>
+    <string name="cover_local"><![CDATA[地元の]]></string>
+    <string name="cover_cloud"><![CDATA[クラウド]]></string>
+    <string name="merge"><![CDATA[マージ]]></string>
+    <string name="sync_db"><![CDATA[データベースを同期する]]></string>
+    <string name="net_error"><![CDATA[ネットワーク異常]]></string>
+    <string name="auth"><![CDATA[承認する]]></string>
+    <string name="invalid"><![CDATA[無効です]]></string>
+    <string name="no_file"><![CDATA[ファイルがありません]]></string>
+    <string name="login"><![CDATA[ログイン]]></string>
+    <string name="helper_webdav"><![CDATA[例: https://dav.example.org/dav/あなたのフォルダー/xxx.kdbx]]></string>
+    <string name="helper_webdav_dir"><![CDATA[例: https://dav.example.org/dav/[フォルダー]/]]></string>
+    <string name="hint_webdav_url"><![CDATA[ファイルURL]]></string>
+    <string name="hint_please_input"><![CDATA[%sを入力してください]]></string>
+    <string name="db_file_no_exist"><![CDATA[データベースファイルが存在しません]]></string>
+    <string name="invalid_auth"><![CDATA[許可できません。もう一度試してください。]]></string>
+    <string name="afs"><![CDATA[Android ファイルシステム]]></string>
+    <string name="hint_kdbx_name"><![CDATA[サフィックスが間違っています。サフィックスは「.kdbx」である必要があります。]]></string>
+    <string name="start_upload_db"><![CDATA[ネットワーク ディスクへのデータベースのアップロードを開始します]]></string>
+    <string name="unlocked"><![CDATA[ロック解除済み]]></string>
+    <string name="notify_channel_db_open"><![CDATA[データベースロック解除通知]]></string>
+    <string name="notify_quick_unlock_start"><![CDATA[データベースはロックされており、クイックロック解除が有効になっています]]></string>
+    <string name="notify_db_locked"><![CDATA[データベースがロックされています]]></string>
+    <string name="search"><![CDATA[検索]]></string>
+    <string name="disable"><![CDATA[閉じる]]></string>
+    <string name="quick_unlock"><![CDATA[クイックロック解除]]></string>
+    <string name="db_unlock"><![CDATA[データベースのロックを解除する]]></string>
+    <string name="hint_quick_use_fingerprint"><![CDATA[クイックロック解除ページでは指紋ロック解除のみを使用してください]]></string>
+    <string name="version_log"><![CDATA[アップグレードログ]]></string>
+    <string name="hint_finger_print_verfiy"><![CDATA[新しい設定を使用するには指紋の再認証が必要です]]></string>
+    <string name="closed"><![CDATA[閉店]]></string>
+    <string name="open1"><![CDATA[オンにする]]></string>
+    <string name="upload"><![CDATA[アップロード]]></string>
+    <string name="add_attr_file"><![CDATA[添付ファイルを追加する]]></string>
+    <string name="hint_fingerprint_modify"><![CDATA[指紋が変更されたことが検出されます。パスワードの安全のため、指紋ロック解除機能をリセットしてください。]]></string>
+    <string name="hint_please_open_database"><![CDATA[データベースを開いてください]]></string>
+    <string name="save_db_success"><![CDATA[データベースが保存されました]]></string>
+    <string name="set_delete_setting"><![CDATA[設定の削除]]></string>
+    <string name="set_delete_no_into_recycle_bin"><![CDATA[データベースからエントリを完全に削除します]]></string>
+    <string name="set_delete_no_into_recycle_bin_des"><![CDATA[削除されたアイテムをごみ箱に移動する]]></string>
+    <string name="warning_rooted"><![CDATA[データのセキュリティのため、root化された携帯電話でデータベースを開かないでください。]]></string>
+    <string name="hint_security_green"><![CDATA[「このアプリケーションは安全な環境にあります」]]></string>
+    <string name="hint_security_red"><![CDATA[デバイスはルート化されており、データベースは非常に危険な環境にあります]]></string>
+    <string name="hint_security_yellow"><![CDATA[警告、アプリケーションはシミュレーターで実行されます。この環境ではデータベースに予期せぬリスクがもたらされます。]]></string>
+    <string name="donate"><![CDATA[寄付する]]></string>
+    <string name="donate_desc"><![CDATA[[KeePassA](https://github.com/AriaLyy/KeepassA) はフリーソフトウェアです。私たちの活動をサポートするために寄付をご検討ください。よろしくお願いいたします。]]></string>
+    <string name="dev_birthday"><![CDATA[今日は開発者の誕生日🎂です。開発者にビールをごちそうしますか?]]></string>
+    <string name="totp_defaule"><![CDATA[デフォルトの RFC 6238 トークン設定]]></string>
+    <string name="totp_steam"><![CDATA[Steamトークンの設定]]></string>
+    <string name="totp_custom"><![CDATA[カスタム設定を使用する]]></string>
+    <string name="totp_custom_hint"><![CDATA[カスタム設定]]></string>
+    <string name="totp_Arithmetic"><![CDATA[アルゴリズム:]]></string>
+    <string name="totp_time"><![CDATA[時間(秒):]]></string>
+    <string name="totp_len"><![CDATA[長さ:]]></string>
+    <string name="totp_key_error"><![CDATA[TOTP コードを生成できません。キー例外です。]]></string>
+    <string name="sort"><![CDATA[並べ替える]]></string>
+    <string name="sort_chart_desc"><![CDATA[最初のアルファベット降順 (Z-A)]]></string>
+    <string name="sort_chart_asc"><![CDATA[アルファベット昇順(A-Z)]]></string>
+    <string name="sort_time_asc"><![CDATA[時間の昇順]]></string>
+    <string name="sort_time_desc"><![CDATA[降順時間]]></string>
+    <string name="ime_label"><![CDATA[KeePassA セキュリティ キーボード]]></string>
+    <string name="set_open_kpa_ime_title"><![CDATA[安全なキーボード]]></string>
+    <string name="no_totp_token"><![CDATA[TOTP トークンがありません]]></string>
+    <string name="ime_entry_other_info"><![CDATA[他のフィールドに値を入力します]]></string>
+    <string name="url"><![CDATA[URL]]></string>
+    <string name="hint_not_nore_info"><![CDATA[それ以上の情報はありません]]></string>
+    <string name="error_uri_grant_permission"><![CDATA[URI 認証に失敗しました]]></string>
+    <string name="license"><![CDATA[フリーソフトウェアライセンス]]></string>
+    <string name="move"><![CDATA[移動する]]></string>
+    <string name="set_key_sum_main_show_entries"><![CDATA[データベースのロックを解除した後にすべてのエントリを表示する]]></string>
+    <string name="set_key_sum_main_show_history"><![CDATA[データベースのロックを解除した後に履歴を表示する]]></string>
+    <string name="set_key_title_main_allow_show_entries"><![CDATA[ホームページ]]></string>
+    <string name="set_key_title_opr_env_check"><![CDATA[実行環境チェック設定]]></string>
+    <string name="set_key_title_opr_env_check_turn_off"><![CDATA[閉じる]]></string>
+    <string name="set_key_title_opr_env_check_turn_on"><![CDATA[開く]]></string>
+    <string name="expand"><![CDATA[拡大する]]></string>
+    <string name="shrink"><![CDATA[閉じる]]></string>
+    <string name="ui_setting"><![CDATA[ユーザーインターフェース設定]]></string>
+    <string name="cur_app_not_autofill"><![CDATA[自動入力しない]]></string>
+    <string name="other"><![CDATA[その他]]></string>
+    <string name="ref_entry"><![CDATA[参考項目]]></string>
+    <string name="multi_choice"><![CDATA[多肢選択]]></string>
+    <string name="set_summary_screen_lock_off"><![CDATA[データベースをロックしないでください]]></string>
+    <string name="set_summary_screen_lock_on"><![CDATA[データベースを自動的にロックする]]></string>
+    <string name="set_title_screen_lock"><![CDATA[画面ロック]]></string>
+    <string name="close"><![CDATA[閉じる]]></string>
+    <string name="Alipay"><![CDATA[アリペイ]]></string>
+    <string name="error_webdav_end_suffix"><![CDATA[フォルダーパスを使用します。例: 「https://example.org/dav/kpa/」]]></string>
+    <string name="error_webdav_end_dav_suffix"><![CDATA[/dav/ パスは許可されません。 「https://example.org/dav/kpa/」などの有効なパスを使用してください。]]></string>
+    <string name="set_key_title_fillet_bg_icon"><![CDATA[角の丸いリストアイコン]]></string>
+    <string name="set_key_title_fillet_bg_icon_turn_on"><![CDATA[オンにする]]></string>
+    <string name="set_key_title_fillet_bg_icon_turn_off"><![CDATA[閉じる]]></string>
+    <string name="set_key_title_show_state_bar"><![CDATA[ステータスバー]]></string>
+    <string name="set_key_title_show_state_bar_turn_on"><![CDATA[ショー]]></string>
+    <string name="set_key_title_show_state_bar_turn_off"><![CDATA[隠す]]></string>
+    <string name="set_key_title_close_load_anim"><![CDATA[読み込みアニメーション]]></string>
+    <string name="set_key_title_close_load_anim_turn_on"><![CDATA[開く]]></string>
+    <string name="set_key_title_close_load_anim_turn_off"><![CDATA[閉じる]]></string>
+    <string name="s_default"><![CDATA[デフォルト]]></string>
+    <string name="customize"><![CDATA[カスタマイズ]]></string>
+    <string name="set_key_title_auto_lock_database"><![CDATA[データベースを自動的にロックする]]></string>
+    <string name="set_key_title_auto_lock_database_turn_on"><![CDATA[はい]]></string>
+    <string name="set_key_title_auto_lock_database_turn_off"><![CDATA[閉じる]]></string>
+    <string name="get_token_fail"><![CDATA[Tokenの取得に失敗しました]]></string>
+    <string name="one_drive_init_failure"><![CDATA[OneDrive 初期化に失敗しました]]></string>
+    <string name="one_drive_hint"><![CDATA[プライバシーを保護するために、KeePassA は <font color=#FF0000> [Application/KeepassA] </font> ディレクトリにのみアクセスします。 OneDrive、<font color=#FF0000>のKeepassデータベースを読み取りたい場合は、このディレクトリにデータベースを保存してください。 </font>]]></string>
+    <string name="open_permissions"><![CDATA[オープン権限]]></string>
+    <string name="miui_permissions"><![CDATA[miui システムは、自動入力機能を使用するために、バックグラウンド ポップアップ インターフェイスの権限を開く必要があります。]]></string>
+    <string name="set_key_main_show_totp_tab_title"><![CDATA[ホームページに TOTP カテゴリが表示されます]]></string>
+    <string name="set_key_main_show_totp_tab_on"><![CDATA[TOTP カテゴリを表示]]></string>
+    <string name="set_key_main_show_totp_tab_off"><![CDATA[TOTP カテゴリを表示しない]]></string>
+    <string name="set_key_theme_style_title"><![CDATA[テーマスタイル]]></string>
+    <string name="set_key_theme_style_summary"><![CDATA[システムに従ってください]]></string>
+    <string name="open_setting"><![CDATA[設定を開く]]></string>
+    <string-array name="sek_ley_theme_style_entries">
+        <item><![CDATA[システムに従ってください]]></item>
+        <item><![CDATA[ダークモード]]></item>
+        <item><![CDATA[ライトモード]]></item>
+    </string-array>
+    <string name="error_keystore"><![CDATA[キーストア例外。もう一度お試しください。]]></string>
+    <string name="kpa_totp"><![CDATA[トークン]]></string>
+    <string name="kpa_copy"><![CDATA[コピー]]></string>
+    <string name="translate_language"><![CDATA[アプリをあなたの言語に翻訳します]]></string>
+    <string name="error_qr_code_str"><![CDATA[QRコードが異常です。 QRコードがGoogle Authenticatorに対応したQRコードであることをご確認ください。]]></string>
+    <string name="google_play"><![CDATA[Google Play ストア]]></string>
+    <string name="disposable"><![CDATA[使い捨て]]></string>
+    <string name="year"><![CDATA[毎年]]></string>
+    <string name="error_donate"><![CDATA[寄付に失敗しました]]></string>
+    <string name="thank_donate"><![CDATA[ご寄付いただきありがとうございます。]]></string>
+    <string name="error_connect_play"><![CDATA[Google サービスに接続できません]]></string>
+    <string name="monthly"><![CDATA[毎月]]></string>
+    <string name="my_collection"><![CDATA[私のコレクション]]></string>
+    <string name="current_collection_num"><![CDATA[%1$s コレクション]]></string>
+    <string name="no_collection"><![CDATA[お気に入りはありません]]></string>
+    <string name="error_open_db_webdav"><![CDATA[WebDAV ファイルが存在しないため、データベースを開けません。]]></string>
+    <string name="helper_webdav_service"><![CDATA[WebDAV サービスを選択します]]></string>
+    <string name="error_is_root"><![CDATA[すでにルートディレクトリ]]></string>
+    <string name="select_cur_path"><![CDATA[現在のフォルダーを選択]]></string>
+    <string name="hint_cloud_file_already_exist"><![CDATA[%1$s はすでに存在します。ファイルを上書きしますか?]]></string>
+    <string name="select_save_path"><![CDATA[保存パスを選択]]></string>
+    <string name="one_drive_load_user_failure"><![CDATA[ユーザー情報を読み込めません。]]></string>
+    <string name="hint_open_background_start"><![CDATA[バックグラウンドポップアップの許可をオンにしてください。オンにしないと自動入力機能が使用できません。]]></string>
+    <string name="hostname"><![CDATA[ホスト名]]></string>
+    <string name="port"><![CDATA[ポート]]></string>
+    <string name="webdav_host_name_hint"><![CDATA[ホスト名を入力してください]]></string>
+    <string name="webdav_port_hint"><![CDATA[ポート]]></string>
+    <string name="webdav_port_name_null"><![CDATA[ホスト名を空にすることはできません]]></string>
+    <string name="privacy_agreement"><![CDATA[プライバシー規約]]></string>
+    <string name="ime_hint_open_auto_fill"><![CDATA[自動入力サービスをオンにしてください]]></string>
+    <string name="please_open_proxy"><![CDATA[ネットワーク上のよく知られた理由により、onedrive サービスをスムーズに使用するには、適切なネットワーク ツールを使用してください。]]></string>
+    <string name="invalid_img"><![CDATA[無効な画像です]]></string>
+    <string name="preemptive"><![CDATA[プリセットモード]]></string>
+    <string name="fail_unsupported_Systems_O"><![CDATA[P 以降のシステムのみをサポートします]]></string>
+    <string name="hint_webdav_jgy"><![CDATA[[アカウント情報 -> セキュリティ オプション -> サードパーティ アプリケーション] のパスワードを使用してください。]]></string>
+    <string name="app_debug"><![CDATA[ログファイルを削除する]]></string>
+    <string name="hint_auto_fill_save"><![CDATA[現在のデータを既存のエントリに関連付けますか?]]></string>
+    <string name="hint_dont_show_tips"><![CDATA[二度と表示しないでください]]></string>
+    <string name="title_tip_of_day"><![CDATA[毎日のヒント]]></string>
+    <string name="base_info"><![CDATA[基本情報]]></string>
+    <string name="tag"><![CDATA[ラベル]]></string>
+    <string name="collection"><![CDATA[コレクション]]></string>
+    <string name="add_attr_str"><![CDATA[属性の追加]]></string>
+    <string name="delete"><![CDATA[削除]]></string>
+    <string name="create_tag"><![CDATA[タグの作成]]></string>
+    <string name="tag_name"><![CDATA[タグ名]]></string>
+    <string name="add_tag"><![CDATA[タグを追加]]></string>
+    <string name="open_file"><![CDATA[ファイルを開く]]></string>
+    <string name="modify_str_attr"><![CDATA[プロパティの変更]]></string>
+    <string name="error_file"><![CDATA[ファイルが異常です。削除してください: <font color=#FF0000>%s</font>]]></string>
+    <string name="not_souper_otp"><![CDATA[サポートされていない TOTP]]></string>
+    <string name="modify_totp"><![CDATA[トークンを変更する]]></string>
+    <string name="error_totp"><![CDATA[間違った totp]]></string>
+    <string name="file_save_success"><![CDATA[添付ファイルは正常に保存されました]]></string>
+    <string name="options"><![CDATA[オプション]]></string>
+    <string name="review_title"><![CDATA[コメント]]></string>
+    <string name="review_enter"><![CDATA[コメント開始]]></string>
+    <string name="review_cancel"><![CDATA[今回はありません]]></string>
+    <string name="review_fail"><![CDATA[送信に失敗しました。ネットワークを確認してください]]></string>
+    <string name="review_not_hint"><![CDATA[再度プロンプトを表示しない]]></string>
+    <string name="review_like_app"><![CDATA[私たちのアプリが気に入りましたか?評価してください！]]></string>
+    <string name="hint_notify_permission"><![CDATA[KeepassA には、データベースのステータスを通知するための通知権限が必要です。]]></string>
+    <string name="title_choose_icon"><![CDATA[アイコンを選択]]></string>
+    <string name="icon_select_pick"><![CDATA[フォトアルバムを開く]]></string>
+    <string name="icon_select_db"><![CDATA[ローカルアイコン]]></string>
+    <string name="icon_change"><![CDATA[アイコンの変更]]></string>
+    <string name="entry_not_found"><![CDATA[エントリが見つかりませんでした]]></string>
+</resources>

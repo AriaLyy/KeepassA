@@ -35,15 +35,6 @@ object NotificationUtil {
   private var notificationManager: NotificationManager
   private var CHANNEL_NAME_OPEN_DB: String = ""
   private val CHANNEL_ID_OPEN_DB = "CHANNEL_OPEN_DB"
-  private const val TYPE_OPEN_DB = 1
-  private const val TYPE_LOCK_DB = 2
-  private const val TYPE_QUICK_UNLOCK_DB = 3
-
-  // 数据库已解锁的的通知的id
-  private val DB_UNLOCK_ID = 10001
-
-  // 数据库启用快速解锁的通知的id
-  private val DB_START_QUICK_UNLOCK = 10002
 
   init {
     CHANNEL_NAME_OPEN_DB = ResUtil.getString(R.string.notify_channel_db_open)
@@ -67,26 +58,26 @@ object NotificationUtil {
    * 打开数据库通知
    */
   fun startDbOpenNotify(context: Context) {
-    startService(context, TYPE_OPEN_DB)
+    startService(context, DbNotificationState.UNLOCKED)
   }
 
   /**
    * 数据库已锁定，启动快速解锁
    */
   fun startQuickUnlockNotify(context: Context) {
-    startService(context, TYPE_QUICK_UNLOCK_DB)
+    startService(context, DbNotificationState.QUICK_UNLOCK)
   }
 
   /**
    * 数据库已锁定通知
    */
   fun startDbLocked(context: Context) {
-    startService(context, TYPE_LOCK_DB)
+    startService(context, DbNotificationState.LOCKED)
   }
 
   private fun startService(
     context: Context,
-    type: Int
+    state: DbNotificationState
   ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !PermissionUtils.isGranted(Manifest.permission.POST_NOTIFICATIONS)) {
       Timber.e("notify permission denied")
@@ -94,24 +85,26 @@ object NotificationUtil {
     }
 
     val notify: Notification
-    var notifyId = DB_UNLOCK_ID
-    when (type) {
+    val plan = DbNotificationPlanner.plan(state)
+    when (state) {
 
-      TYPE_QUICK_UNLOCK_DB -> {
-        notifyId = DB_START_QUICK_UNLOCK
+      DbNotificationState.QUICK_UNLOCK -> {
         notify = createQuickUnlockNotify(context)
       }
 
-      TYPE_LOCK_DB -> {
+      DbNotificationState.LOCKED -> {
         notify = createDbLockedNotify(context)
       }
 
-      else -> {
+      DbNotificationState.UNLOCKED -> {
         notify = createDbUnlockNotify(context)
       }
     }
 
-    notificationManager.notify(notifyId, notify)
+    plan.cancelIds
+      .filter { it != plan.notifyId }
+      .forEach { notificationManager.cancel(it) }
+    notificationManager.notify(plan.notifyId, notify)
   }
 
   /**
@@ -161,6 +154,9 @@ object NotificationUtil {
       .setSmallIcon(R.drawable.ic_security_24px) // 状态栏图标
       .setContentIntent(pendingIntent)
       .setColor(Color.TRANSPARENT) // 大图标右下角的小图标
+      .setOngoing(true)
+      .setAutoCancel(false)
+      .setOnlyAlertOnce(true)
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       builder.setChannelId(CHANNEL_ID_OPEN_DB)
