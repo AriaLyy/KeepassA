@@ -129,6 +129,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     setSubPassType()
     setAtoFill()
     setBrowserAutofillSettings()
+    setSupportedBrowsers()
     setLanguage()
     setQuickUnLock()
     setFingerPrint()
@@ -418,6 +419,16 @@ class AppSettingFragment : PreferenceFragmentCompat() {
         preference.isVisible = true
         preference.summary = getString(R.string.browser_autofill_settings_summary_unknown)
       }
+    }
+  }
+
+  private fun setSupportedBrowsers() {
+    val preference = findPreference<Preference>(
+      getString(R.string.set_key_supported_browsers)
+    ) ?: return
+    preference.setOnPreferenceClickListener {
+      SupportedBrowsersDialog.show(requireContext())
+      true
     }
   }
 

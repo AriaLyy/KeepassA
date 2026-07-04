@@ -242,6 +242,22 @@ object AutoFillHelper {
     return responseBuilder.build()
   }
 
+  fun newSearchResponse(
+    context: Context,
+    autofillIds: Array<AutofillId>,
+    sender: IntentSender
+  ): FillResponse {
+    val responseBuilder = FillResponse.Builder()
+    val presentation = newRemoteViews(
+      context,
+      context.packageName,
+      context.getString(R.string.search),
+      R.drawable.ic_search
+    )
+    responseBuilder.setAuthentication(autofillIds, sender, presentation)
+    return responseBuilder.build()
+  }
+
   internal fun newSingleFieldFallbackResponse(
     context: Context,
     entries: MutableList<PwEntry>?,

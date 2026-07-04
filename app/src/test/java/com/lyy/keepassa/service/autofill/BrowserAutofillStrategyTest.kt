@@ -106,6 +106,13 @@ class BrowserAutofillStrategyTest {
     assertTrue(strategy.allowSingleFieldAuthFallback)
   }
 
+  @Test fun ucMobileIntlRecognizesLocalizedAddressBarHints() {
+    val strategy = BrowserAutofillStrategyRegistry.forPackage("com.UCMobile.intl")
+
+    assertTrue(strategy.isSearchOrUrlFieldToken("搜索或输入网址"))
+    assertTrue(strategy.isSearchOrUrlFieldToken("输入网址"))
+  }
+
   @Test fun unverifiedDeviceBrowsersUseConservativeBrowserStrategy() {
     listOf(
       "com.apusapps.browser",

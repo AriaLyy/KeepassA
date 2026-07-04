@@ -73,6 +73,12 @@
         app:key="@string/set_key_browser_autofill_settings"
         app:summary="@string/browser_autofill_settings_summary_unknown" />
 
+    <Preference
+        android:title="@string/supported_browsers_title"
+        app:icon="@drawable/ic_auto_fill"
+        app:key="@string/set_key_supported_browsers"
+        app:summary="@string/supported_browsers_summary" />
+
   </PreferenceCategory>
 
   <PreferenceCategory app:title="@string/other_set">

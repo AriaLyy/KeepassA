@@ -146,7 +146,10 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       // Edge/Chrome 等基于自有 Chromium 的浏览器,会把 HTML input 暴露成原生 EditText
       // 虚拟视图(无 htmlInfo、tag=null),需要按原生 EditText 逻辑识别
       val className = viewNode.className
-      if (browserStrategy.shouldClassifyNativeEditTextVirtualNodes && classIsEditText(className)) {
+      if (browserStrategy.shouldClassifyNativeEditTextVirtualNodes &&
+        classIsEditText(className) &&
+        !isLikelySearchOrUrlField(viewNode)
+      ) {
         getAndroidViewInfo(viewNode)
       }
     } else {

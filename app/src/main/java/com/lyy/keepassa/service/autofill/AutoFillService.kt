@@ -211,6 +211,14 @@ class AutoFillService : AutofillService() {
     Timber.d("entrySize = ${datas?.size}")
     // 没有匹配的数据，进入搜索界面
     if (datas == null) {
+      AutofillBrowserAuthContextStore.remember(
+        packageName = apkPackageName,
+        strategy = browserStrategy,
+        domain = parser.domainUrl,
+        metadata = autoFillFields,
+        fallbackId = null,
+        fallbackRole = null
+      )
       openSearchActivity(
         callback,
         autoFillFields,
@@ -349,7 +357,7 @@ class AutoFillService : AutofillService() {
     domain: String? = null
   ) {
     callback.onSuccess(
-      AutoFillHelper.newAuthResponse(
+      AutoFillHelper.newSearchResponse(
         this,
         autofillIds,
         AutoFillEntrySearchActivity.getSearchIntentSender(this, apkPackageName, structure, domain)

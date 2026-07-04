@@ -39,13 +39,15 @@ class AutofillParseSafelyTest {
     assertTrue(failedCalled)
   }
 
-  @Test fun otherExceptions_propagate() {
-    var threw = false
-    try {
-      safeParse({ throw IllegalStateException("not a SecurityException") }, {})
-    } catch (e: IllegalStateException) {
-      threw = true
-    }
-    assertTrue(threw)
+  @Test fun runtimeException_returnsFalse_andCallsOnFailed() {
+    var failedCalled = false
+
+    val result = safeParse(
+      parseBlock = { throw IllegalStateException("Package android does not belong to 10350") },
+      onFailed = { failedCalled = true }
+    )
+
+    assertFalse(result)
+    assertTrue(failedCalled)
   }
 }
