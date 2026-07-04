@@ -227,13 +227,23 @@ class CreateEntryModule : BaseModule() {
     context: Context,
     apkPkgName: String,
     userName: String?,
-    pass: String?
+    pass: String?,
+    domain: String? = null
   ): PwEntryV4 {
     val listStorage = ArrayList<PwEntry>()
     KdbUtil.searchEntriesByPackageName(apkPkgName, listStorage)
     val entry: PwEntryV4
+    val autoFillParam = AutoFillParam(
+      apkPkgName = apkPkgName,
+      domain = domain,
+      isSave = true
+    )
     if (listStorage.isEmpty()) {
       entry = PwEntryV4(BaseApp.KDB.pm.rootGroup as PwGroupV4)
+      AutoFillSaveEntryBinder.getWebUrl(autoFillParam)?.let {
+        entry.setUrl(it, BaseApp.KDB.pm)
+      } ?: AutoFillSaveEntryBinder.applyPackageAssociation(entry.strings, autoFillParam)
+
       val icon = IconUtil.getAppIcon(context, apkPkgName)
       if (icon != null) {
         val baos = ByteArrayOutputStream()
@@ -242,7 +252,6 @@ class CreateEntryModule : BaseModule() {
         val customIcon = PwIconCustom(UUID.randomUUID(), datas)
         entry.customIcon = customIcon
         (BaseApp.KDB.pm as PwDatabaseV4).putCustomIcons(customIcon)
-        entry.strings["KP2A_URL_1"] = ProtectedString(false, "androidapp://$apkPkgName")
       }
 
       val appName = KDBAutoFillRepository.getAppName(context, apkPkgName)

@@ -45,6 +45,7 @@ import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.doOnItemClickListener
+import com.lyy.keepassa.view.create.entry.AutoFillSaveEntryBinder
 import com.lyy.keepassa.view.create.entry.CreateEntryActivity
 import com.lyy.keepassa.view.create.entry.CreateEnum
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
@@ -96,10 +97,14 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
     internal fun createSearchPending(
       context: Context,
       apkPkgName: String,
-      structure: AssistStructure
+      structure: AssistStructure,
+      domain: String? = null
     ): PendingIntent {
       val intent = Intent(context, AutoFillEntrySearchActivity::class.java).also {
-        it.putExtra(LauncherActivity.KEY_AUTO_FILL_PARAM, AutoFillParam(apkPkgName = apkPkgName))
+        it.putExtra(
+          LauncherActivity.KEY_AUTO_FILL_PARAM,
+          AutoFillParam(apkPkgName = apkPkgName, domain = domain)
+        )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
           it.putExtra(AutofillManager.EXTRA_ASSIST_STRUCTURE, structure)
@@ -115,12 +120,13 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
     internal fun getSearchIntentSender(
       context: Context,
       apkPackageName: String,
-      structure: AssistStructure
+      structure: AssistStructure,
+      domain: String? = null
     ): IntentSender {
       val intent = Intent(context, AutoFillEntrySearchActivity::class.java).also {
         it.putExtra(
           LauncherActivity.KEY_AUTO_FILL_PARAM,
-          AutoFillParam(apkPkgName = apkPackageName)
+          AutoFillParam(apkPkgName = apkPackageName, domain = domain)
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
           it.putExtra(AutofillManager.EXTRA_ASSIST_STRUCTURE, structure)
@@ -181,6 +187,9 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
       startActivity(
         Intent(this, CreateEntryActivity::class.java).apply {
           putExtra(CreateEntryActivity.KEY_TYPE, CreateEnum.CREATE)
+          module.autoFillParam?.let {
+            putExtra(LauncherActivity.KEY_AUTO_FILL_PARAM, it)
+          }
         },
         ActivityOptions.makeSceneTransitionAnimation(this)
           .toBundle()
@@ -204,7 +213,11 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
             adapter.notifyItemInserted(lastIndex)
             binding.noEntryLayout.visibility = View.GONE
             if (module.isFormAutoFill()) {
-              relevanceEntry(it.pwEntryV4)
+              if (AutoFillSaveEntryBinder.getWebUrl(module.autoFillParam) != null) {
+                callbackAutoFillService(it.pwEntryV4)
+              } else {
+                relevanceEntry(it.pwEntryV4)
+              }
             }
           }
           else -> {

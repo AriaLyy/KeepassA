@@ -35,13 +35,15 @@ import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.lyy.keepassa.R
+import com.lyy.keepassa.util.AutoLockDbUtil
+import com.lyy.keepassa.util.ForegroundReturnLockAction
+import com.lyy.keepassa.util.ForegroundReturnLockPlanner
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil.isNull
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.handleTopEdge
-import com.lyy.keepassa.view.launcher.LauncherActivity
 import me.jessyan.autosize.AutoSizeConfig
 import timber.log.Timber
 import java.lang.reflect.Field
@@ -137,12 +139,18 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
   override fun onRestart() {
     super.onRestart()
     Timber.d("onRestart")
-    if (!KpaUtil.isHomeActivity(this) && (BaseApp.KDB.isNull() || BaseApp.isLocked)) {
-      BaseApp.handler.postDelayed({
-        KeepassAUtil.instance.lock()
-        KeepassAUtil.instance.turnLauncher(LauncherActivity.OPEN_TYPE_OPEN_DB)
-      }, 150)
-      return
+    when (ForegroundReturnLockPlanner.plan(
+      isHomeActivity = KpaUtil.isHomeActivity(this),
+      hasOpenDb = !BaseApp.KDB.isNull(),
+      isLocked = BaseApp.isLocked
+    )) {
+      ForegroundReturnLockAction.LOCK_ONLY -> {
+        BaseApp.handler.postDelayed({
+          KeepassAUtil.instance.lock()
+        }, 150)
+      }
+
+      ForegroundReturnLockAction.NONE -> Unit
     }
   }
 
@@ -208,5 +216,13 @@ abstract class BaseActivity<VB : ViewDataBinding> : AbsActivity<VB>() {
     super.onResume()
     // 启动定时器
     KeepassAUtil.instance.startLockTimer(this)
+  }
+
+  override fun onUserInteraction() {
+    super.onUserInteraction()
+    if (KpaUtil.isHomeActivity(this) || BaseApp.KDB.isNull() || BaseApp.isLocked) {
+      return
+    }
+    AutoLockDbUtil.get().onUserActivity()
   }
 }

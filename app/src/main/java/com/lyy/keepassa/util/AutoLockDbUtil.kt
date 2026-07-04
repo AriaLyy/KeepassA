@@ -10,17 +10,14 @@
 package com.lyy.keepassa.util
 
 import android.content.Context
-import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy.REPLACE
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.arialyy.frame.util.StringUtil
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
-import com.lyy.keepassa.base.Constance
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -29,10 +26,8 @@ import java.util.concurrent.TimeUnit
  */
 class AutoLockDbUtil private constructor() {
   private var requestTag = "LockDbWork"
-  private val KEY_NAME = "LockTimer"
-  private val KEY_LAST_START_TIME = "LastStartTime"
-  private val sp = BaseApp.APP.getSharedPreferences(Constance.PRE_FILE_NAME, Context.MODE_PRIVATE)
   private val TIMER_TAG = "AutoLockDbTimer"
+  private val timerGate = AutoLockTimerGate(CommonKvAutoLockLastStartTimeStorage)
   private val manager by lazy {
     WorkManager.getInstance(BaseApp.APP)
   }
@@ -56,6 +51,18 @@ class AutoLockDbUtil private constructor() {
   }
 
   /**
+   * 用户仍在使用 app，刷新自动锁定计时。
+   *
+   * @return true 表示节流放行并已重新入队自动锁定 worker。
+   */
+  fun onUserActivity(): Boolean {
+    if (!KeepassAUtil.instance.isAutoLockDb() || BaseApp.isLocked) {
+      return false
+    }
+    return startLockWorker()
+  }
+
+  /**
    * cancel timer
    */
   fun cancelTimer(){
@@ -65,15 +72,11 @@ class AutoLockDbUtil private constructor() {
   /**
    * 启动定时器
    */
-  private fun startTimer(workRequest: OneTimeWorkRequest) {
-    val lastStartTime = sp.getLong(KEY_LAST_START_TIME, -1)
-    if (lastStartTime > 0 && System.currentTimeMillis() - lastStartTime <= 3000) {
-      return
+  private fun startTimer(workRequest: OneTimeWorkRequest): Boolean {
+    if (!timerGate.tryAcquire()) {
+      return false
     }
     Timber.d( "开始自动锁定")
-    sp.edit(true) {
-      putLong(KEY_LAST_START_TIME, System.currentTimeMillis())
-    }
 
     // https://developer.android.com/topic/libraries/architecture/workmanager/how-to/managing-work?hl=zh-cn
     // 唯一任务
@@ -82,22 +85,23 @@ class AutoLockDbUtil private constructor() {
         REPLACE, // 如果有新任务，则取消以前的任务
         workRequest
     )
+    return true
   }
 
   /**
    * 立即启动定时器
    */
-  fun startLockWorkerNow() {
+  fun startLockWorkerNow(): Boolean {
     val wordRequest = OneTimeWorkRequest.Builder(LockWorker::class.java)
         .addTag(requestTag)
         .build()
-    startTimer(wordRequest)
+    return startTimer(wordRequest)
   }
 
   /**
    * 启动锁定数据库的工作线程
    */
-  private fun startLockWorker() {
+  private fun startLockWorker(): Boolean {
     val time = PreferenceManager.getDefaultSharedPreferences(BaseApp.APP)
         .getString(BaseApp.APP.getString(R.string.set_key_auto_lock_db_time), "300")!!
         .toInt()
@@ -107,7 +111,7 @@ class AutoLockDbUtil private constructor() {
         .setInitialDelay(time.toLong(), TimeUnit.SECONDS)
         .build()
 
-    startTimer(wordRequest)
+    return startTimer(wordRequest)
   }
 
   /**

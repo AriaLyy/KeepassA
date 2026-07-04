@@ -189,18 +189,24 @@ class KeepassAUtil private constructor() {
   fun lock() {
     Timber.d("锁定数据库")
     BaseApp.isLocked = true
-    val isOpenQuickLock = BaseApp.APP.isCanOpenQuickLock()
-    // 只有应用在前台才会跳转到锁屏页面
-    if (AppUtils.isAppForeground() && BaseApp.KDB != null) {
-      // 开启快速解锁则跳转到快速解锁页面
-      if (isOpenQuickLock) {
-        NotificationUtil.startQuickUnlockNotify(BaseApp.APP)
-        val cActivity = AbsFrame.getInstance().currentActivity
-//        if (cActivity != null && cActivity is QuickUnlockActivity) {
-//          Timber.w("快速解锁已启动，不再启动快速解锁")
-//          return
-//        }
+    val plan = DbLockPlanner.plan(
+      isAppForeground = AppUtils.isAppForeground(),
+      hasOpenDb = BaseApp.KDB != null,
+      isQuickUnlockEnabled = BaseApp.APP.isCanOpenQuickLock()
+    )
 
+    when (plan.notificationState) {
+      DbNotificationState.QUICK_UNLOCK -> NotificationUtil.startQuickUnlockNotify(BaseApp.APP)
+      DbNotificationState.LOCKED -> NotificationUtil.startDbLocked(BaseApp.APP)
+      DbNotificationState.UNLOCKED -> NotificationUtil.startDbOpenNotify(BaseApp.APP)
+    }
+
+    if (plan.clearDb) {
+      Routerfit.create(ServiceRouter::class.java).getDbSaveService().clearDb()
+    }
+
+    when (plan.startActivity) {
+      DbLockStartActivity.QUICK_UNLOCK -> {
         Timber.d("启动快速解锁")
         BaseApp.APP.startActivity(Intent(Intent.ACTION_MAIN).also {
           it.component =
@@ -210,42 +216,37 @@ class KeepassAUtil private constructor() {
             )
           it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         })
-        return
       }
 
-      // 没有开启快速解锁，则回到启动页
-      NotificationUtil.startDbLocked(BaseApp.APP)
-      val cActivity = AbsFrame.getInstance().currentActivity
-      if (cActivity != null && cActivity is LauncherActivity) {
-        Timber.w("解锁页面已启动，不再启动快速解锁")
-        return
-      }
-      Timber.d("快速解锁没有启动，进入解锁界面")
-      Routerfit.create(ServiceRouter::class.java).getDbSaveService().clearDb()
-      BaseApp.APP.startActivity(Intent(Intent.ACTION_MAIN).also {
-        it.component =
-          ComponentName(
-            BaseApp.APP.packageName,
-            "${BaseApp.APP.packageName}.view.launcher.LauncherActivity"
-          )
-        it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-      })
-      for (ac in AbsFrame.getInstance().activityStack) {
-        if (KpaUtil.isHomeActivity(ac)) {
-          continue
+      DbLockStartActivity.LAUNCHER -> {
+        val cActivity = AbsFrame.getInstance().currentActivity
+        if (cActivity != null && cActivity is LauncherActivity) {
+          Timber.w("解锁页面已启动，不再启动解锁页面")
+        } else {
+          Timber.d("快速解锁没有启动，进入解锁界面")
+          BaseApp.APP.startActivity(Intent(Intent.ACTION_MAIN).also {
+            it.component =
+              ComponentName(
+                BaseApp.APP.packageName,
+                "${BaseApp.APP.packageName}.view.launcher.LauncherActivity"
+              )
+            it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+          })
         }
-        ac.finish()
       }
-      return
+
+      null -> return
     }
 
-    // 处理处于后台的情况
-    if (isOpenQuickLock) {
-      NotificationUtil.startQuickUnlockNotify(BaseApp.APP)
+    if (!plan.finishNonHomeActivities) {
       return
     }
-    Routerfit.create(ServiceRouter::class.java).getDbSaveService().clearDb()
-    NotificationUtil.startDbLocked(BaseApp.APP)
+    for (ac in AbsFrame.getInstance().activityStack) {
+      if (KpaUtil.isHomeActivity(ac)) {
+        continue
+      }
+      ac.finish()
+    }
   }
 
   /**

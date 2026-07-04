@@ -34,20 +34,6 @@ internal class CreateEntryHandler(val context: CreateEntryActivity) : ICreateHan
     context.module.pwEntry = entry
     context.module.initCache()
 
-    // 自动填充保存场景:从 onSaveRequest 链路带过来的预填用户名/密码
-    // (DB 锁定时经 LauncherActivity/QuickUnlockActivity 解锁后转交,或 DB 已解锁时直接进入)
-    context.module.autoFillParam?.takeIf { it.isSave }?.let { p ->
-      p.saveUserName?.takeIf { it.isNotEmpty() }?.let {
-        context.module.strCacheMap[PwEntryV4.STR_USERNAME] = ProtectedString(false, it)
-        binding.edUser.setText(it)
-      }
-      p.savePass?.takeIf { it.isNotEmpty() }?.let {
-        context.module.strCacheMap[PwEntryV4.STR_PASSWORD] = ProtectedString(true, it)
-        binding.edPassword.setText(it)
-        binding.tvConfirm.setText(it)
-      }
-    }
-
     binding.cardStr.visibility = View.GONE
     binding.cardFile.visibility = View.GONE
     binding.tlLoseTime.visibility = View.GONE
@@ -55,6 +41,32 @@ internal class CreateEntryHandler(val context: CreateEntryActivity) : ICreateHan
     binding.tlNote.visibility = View.GONE
     binding.tlTag.visibility = View.GONE
     binding.groupOtp.isVisible = false
+
+    // 自动填充保存场景:从 onSaveRequest 链路带过来的预填用户名/密码
+    // (DB 锁定时经 LauncherActivity/QuickUnlockActivity 解锁后转交,或 DB 已解锁时直接进入)
+    context.module.autoFillParam?.let { p ->
+      AutoFillSaveEntryBinder.getWebUrl(p)?.let {
+        binding.edUrl.setText(it)
+        binding.tlUrl.visibility = View.VISIBLE
+      }
+
+      if (AutoFillSaveEntryBinder.prepareCustomFieldsForCreateUi(context.module.strCacheMap, p)) {
+        binding.cardStr.visibility = View.VISIBLE
+        binding.cardStr.bindDate(context.module.strCacheMap)
+      }
+
+      if (p.isSave) {
+        p.saveUserName?.takeIf { it.isNotEmpty() }?.let {
+          context.module.strCacheMap[PwEntryV4.STR_USERNAME] = ProtectedString(false, it)
+          binding.edUser.setText(it)
+        }
+        p.savePass?.takeIf { it.isNotEmpty() }?.let {
+          context.module.strCacheMap[PwEntryV4.STR_PASSWORD] = ProtectedString(true, it)
+          binding.edPassword.setText(it)
+          binding.tvConfirm.setText(it)
+        }
+      }
+    }
   }
 
   override fun getTitle(): String {

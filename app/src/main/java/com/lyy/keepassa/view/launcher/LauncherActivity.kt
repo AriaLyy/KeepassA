@@ -335,6 +335,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     internal fun authAndSaveDb(
       context: Context,
       apkPackageName: String,
+      domain: String? = null,
       userName: String,
       pass: String,
       clazz: Class<out Activity>
@@ -343,6 +344,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
         it.putExtra(
           KEY_AUTO_FILL_PARAM, AutoFillParam(
             apkPkgName = apkPackageName,
+            domain = domain,
             isSave = true,
             saveUserName = userName,
             savePass = pass

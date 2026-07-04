@@ -17,6 +17,7 @@ import com.blankj.utilcode.util.ActivityUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.entity.DbHistoryRecord
 import com.lyy.keepassa.util.hasSpecialChar
+import com.thegrizzlylabs.sardineandroid.DavResource
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import com.thegrizzlylabs.sardineandroid.impl.SardineException
 import timber.log.Timber
@@ -254,6 +255,14 @@ object WebDavUtil : ICloudUtil {
         return getStrictFileInfo(webDav, url)
       }
 
+      override suspend fun listFiles(url: String): List<CloudFileInfo> {
+        return getStrictFileList(webDav, url)
+      }
+
+      override suspend fun createDirectory(url: String) {
+        webDav.createDirectory(url)
+      }
+
       override suspend fun put(
         url: String,
         localFile: java.io.File,
@@ -268,14 +277,6 @@ object WebDavUtil : ICloudUtil {
         overwrite: Boolean
       ) {
         webDav.copy(sourceUrl, destinationUrl, overwrite)
-      }
-
-      override suspend fun move(
-        sourceUrl: String,
-        destinationUrl: String,
-        overwrite: Boolean
-      ) {
-        webDav.move(sourceUrl, destinationUrl, overwrite)
       }
 
       override suspend fun delete(url: String) {
@@ -303,6 +304,50 @@ object WebDavUtil : ICloudUtil {
     return CloudFileInfo(
       file.path, file.name, file.modified, file.contentLength, file.isDirectory
     )
+  }
+
+  private fun getStrictFileList(
+    webDav: OkHttpSardine,
+    url: String
+  ): List<CloudFileInfo> {
+    val resources = try {
+      webDav.list(convertUrl(url))
+    } catch (e: SardineException) {
+      if (e.statusCode == 404) {
+        return emptyList()
+      }
+      throw e
+    }
+    if (resources == null || resources.isEmpty()) {
+      return emptyList()
+    }
+    return resources.map { resource ->
+      val fileKey = resolveDavResourceUrl(url, resource.href)
+      toCloudFileInfo(fileKey, resource)
+    }
+  }
+
+  private fun toCloudFileInfo(
+    fileKey: String,
+    resource: DavResource
+  ): CloudFileInfo {
+    return CloudFileInfo(
+      fileKey,
+      resource.name,
+      resource.modified,
+      resource.contentLength,
+      resource.isDirectory
+    )
+  }
+
+  private fun resolveDavResourceUrl(
+    baseUrl: String,
+    href: URI
+  ): String {
+    if (href.isAbsolute) {
+      return href.toString()
+    }
+    return URI.create(baseUrl).resolve(href).toString()
   }
 
   /**

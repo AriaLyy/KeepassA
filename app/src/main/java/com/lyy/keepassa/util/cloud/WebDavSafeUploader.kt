@@ -17,6 +17,10 @@ import timber.log.Timber
 internal interface WebDavUploadClient {
   suspend fun getFileInfo(url: String): CloudFileInfo?
 
+  suspend fun listFiles(url: String): List<CloudFileInfo>
+
+  suspend fun createDirectory(url: String)
+
   suspend fun put(
     url: String,
     localFile: File,
@@ -24,12 +28,6 @@ internal interface WebDavUploadClient {
   )
 
   suspend fun copy(
-    sourceUrl: String,
-    destinationUrl: String,
-    overwrite: Boolean
-  )
-
-  suspend fun move(
     sourceUrl: String,
     destinationUrl: String,
     overwrite: Boolean
@@ -45,7 +43,8 @@ internal data class WebDavSafeUploadResult(
 
 internal class WebDavSafeUploader(
   private val client: WebDavUploadClient,
-  private val idFactory: () -> String = { "${System.currentTimeMillis()}-${UUID.randomUUID()}" }
+  private val idFactory: () -> String = { "${System.currentTimeMillis()}-${UUID.randomUUID()}" },
+  private val maxBackupCount: Int = MAX_BACKUP_COUNT
 ) {
 
   suspend fun upload(
@@ -53,17 +52,22 @@ internal class WebDavSafeUploader(
     originUrl: String
   ): WebDavSafeUploadResult {
     val uploadId = idFactory()
+    val originFileName = originUrl.substringAfterLast('/')
     val tempUrl = "$originUrl.kpa-uploading-$uploadId.tmp"
-    val backupUrl = "$originUrl.kpa-backup-$uploadId.bak"
+    val backupDirUrl = "$originUrl.bak/"
+    val backupUrl = "$backupDirUrl$uploadId-$originFileName"
     val expectedSize = localFile.length()
     var tempMayExist = false
-    var backupCreated = false
-    var originMayBeChanged = false
+    var backupMayExist = false
+    var backupReady = false
+    var originPutAttempted = false
 
     try {
       if (client.getFileInfo(originUrl) != null) {
+        ensureBackupDirectory(backupDirUrl)
+        backupMayExist = true
         client.copy(originUrl, backupUrl, true)
-        backupCreated = true
+        backupReady = true
       }
 
       tempMayExist = true
@@ -74,9 +78,8 @@ internal class WebDavSafeUploader(
         throw IOException("WebDAV temp upload size mismatch, expected=$expectedSize, actual=${tempInfo.size}")
       }
 
-      originMayBeChanged = true
-      moveReplacing(tempUrl, originUrl, allowDeleteDestinationFallback = backupCreated)
-      tempMayExist = false
+      originPutAttempted = true
+      client.put(originUrl, localFile, WEB_DAV_DB_CONTENT_TYPE)
 
       val originInfo = client.getFileInfo(originUrl)
         ?: throw IOException("WebDAV uploaded file missing: $originUrl")
@@ -84,15 +87,18 @@ internal class WebDavSafeUploader(
         throw IOException("WebDAV uploaded file size mismatch, expected=$expectedSize, actual=${originInfo.size}")
       }
 
-      if (backupCreated) {
-        deleteQuietly(backupUrl)
+      deleteQuietly(tempUrl)
+      tempMayExist = false
+      if (backupReady) {
+        pruneBackupsQuietly(backupDirUrl)
       }
       return WebDavSafeUploadResult(true, originInfo.serviceModifyDate)
     } catch (e: Exception) {
       Timber.e(e, "WebDAV safe upload failed")
-      if (originMayBeChanged && backupCreated) {
+      if (originPutAttempted && backupReady) {
         restoreBackupQuietly(backupUrl, originUrl)
-      } else if (backupCreated) {
+        pruneBackupsQuietly(backupDirUrl)
+      } else if (backupMayExist) {
         deleteQuietly(backupUrl)
       }
       if (tempMayExist) {
@@ -103,24 +109,53 @@ internal class WebDavSafeUploader(
     return WebDavSafeUploadResult(false)
   }
 
+  private suspend fun ensureBackupDirectory(backupDirUrl: String) {
+    if (client.getFileInfo(backupDirUrl) != null) {
+      return
+    }
+    runCatching {
+      client.createDirectory(backupDirUrl)
+    }.onFailure {
+      if (client.getFileInfo(backupDirUrl) == null) {
+        throw it
+      }
+    }
+  }
+
+  private suspend fun pruneBackupsQuietly(backupDirUrl: String) {
+    runCatching {
+      val backups = client.listFiles(backupDirUrl)
+        .filter { !it.isDir && it.fileKey.startsWith(backupDirUrl) }
+        .sortedWith(
+          compareByDescending<CloudFileInfo> { backupSortKey(it) }
+            .thenByDescending { it.fileName }
+        )
+      backups.drop(maxBackupCount).forEach {
+        deleteQuietly(it.fileKey)
+      }
+    }.onFailure {
+      Timber.e(it, "Prune WebDAV backups failed, backupDirUrl=$backupDirUrl")
+    }
+  }
+
   private suspend fun restoreBackupQuietly(
     backupUrl: String,
     originUrl: String
   ) {
     runCatching {
-      moveReplacing(backupUrl, originUrl, allowDeleteDestinationFallback = true)
+      copyReplacing(backupUrl, originUrl, allowDeleteDestinationFallback = true)
     }.onFailure {
       Timber.e(it, "Restore WebDAV backup failed, backupUrl=$backupUrl, originUrl=$originUrl")
     }
   }
 
-  private suspend fun moveReplacing(
+  private suspend fun copyReplacing(
     sourceUrl: String,
     destinationUrl: String,
     allowDeleteDestinationFallback: Boolean
   ) {
     try {
-      client.move(sourceUrl, destinationUrl, true)
+      client.copy(sourceUrl, destinationUrl, true)
       return
     } catch (e: Exception) {
       if (!allowDeleteDestinationFallback || !isMoveConflict(e)) {
@@ -128,15 +163,19 @@ internal class WebDavSafeUploader(
       }
       Timber.w(
         e,
-        "WebDAV MOVE overwrite conflicted, retry after deleting destination, sourceUrl=$sourceUrl, destinationUrl=$destinationUrl"
+        "WebDAV COPY overwrite conflicted, retry after deleting destination, sourceUrl=$sourceUrl, destinationUrl=$destinationUrl"
       )
     }
     client.delete(destinationUrl)
-    client.move(sourceUrl, destinationUrl, true)
+    client.copy(sourceUrl, destinationUrl, true)
   }
 
   private fun isMoveConflict(error: Throwable): Boolean {
     return error is SardineException && error.statusCode == 409
+  }
+
+  private fun backupSortKey(info: CloudFileInfo): Long {
+    return info.fileName.substringBefore('-').toLongOrNull() ?: info.serviceModifyDate.time
   }
 
   private suspend fun deleteQuietly(url: String) {
@@ -149,5 +188,6 @@ internal class WebDavSafeUploader(
 
   private companion object {
     const val WEB_DAV_DB_CONTENT_TYPE = "application/binary"
+    const val MAX_BACKUP_COUNT = 10
   }
 }

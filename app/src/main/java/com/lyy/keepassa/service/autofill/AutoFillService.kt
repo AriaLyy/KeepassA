@@ -120,7 +120,13 @@ class AutoFillService : AutofillService() {
     Timber.d("entrySize = ${datas?.size}")
     // 没有匹配的数据，进入搜索界面
     if (datas == null) {
-      openSearchActivity(callback, autoFillFields, apkPackageName, structure)
+      openSearchActivity(
+        callback,
+        autoFillFields,
+        apkPackageName,
+        structure,
+        parser.domainUrl.takeIf { it.isNotBlank() }
+      )
       return
     }
     val response =
@@ -135,12 +141,13 @@ class AutoFillService : AutofillService() {
     callback: FillCallback,
     autofillFields: AutoFillFieldMetadataCollection,
     apkPackageName: String,
-    structure: AssistStructure
+    structure: AssistStructure,
+    domain: String? = null
   ) {
     callback.onSuccess(
       getAuthResponse(
         autofillFields,
-        AutoFillEntrySearchActivity.getSearchIntentSender(this, apkPackageName, structure)
+        AutoFillEntrySearchActivity.getSearchIntentSender(this, apkPackageName, structure, domain)
       )
     )
   }
@@ -210,6 +217,7 @@ class AutoFillService : AutofillService() {
 
     val parser = StructureParser(structure)
     parser.parseForFill(true, apkPackageName)
+    val domain = parser.domainUrl.takeIf { it.isNotBlank() }
     val needAuth = BaseApp.KDB.isNull() || BaseApp.isLocked
 
     // 如果数据库没打开，需要打开登录页面
@@ -221,6 +229,7 @@ class AutoFillService : AutofillService() {
         LauncherActivity.authAndSaveDb(
           context = this,
           apkPackageName = apkPackageName,
+          domain = domain,
           userName = p.first ?: "",
           pass = p.second ?: "",
           if (!BaseApp.KDB.isNull() && BaseApp.APP.isCanOpenQuickLock()) QuickUnlockActivity::class.java else LauncherActivity::class.java
@@ -239,6 +248,7 @@ class AutoFillService : AutofillService() {
       CreateEntryActivity.authAndSaveDb(
         this, AutoFillParam(
           apkPkgName = apkPackageName,
+          domain = domain,
           saveUserName = p.first ?: "",
           savePass = p.second ?: "",
           isSave = true

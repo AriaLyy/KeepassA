@@ -79,6 +79,11 @@ interface ICreateHandler {
         }
     }
 
+    AutoFillSaveEntryBinder.applyPackageAssociation(
+      pwEntryV4.strings,
+      context.module.autoFillParam
+    )
+
     if (binding.cardFile.isVisible && checkEntry(pwEntryV4)) {
       pwEntryV4.binaries.clear()
       context.module.fileCacheMap.forEach {

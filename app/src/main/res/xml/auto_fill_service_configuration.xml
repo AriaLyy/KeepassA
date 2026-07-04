@@ -38,5 +38,6 @@
   <compatibility-package android:name="mark.via" />
   <compatibility-package android:name="com.mmbox.xbrowser" />
   <compatibility-package android:name="info.torapp.uweb" />
+  <compatibility-package android:name="com.lyy.autofill.savedemo" />
 
 </autofill-service>
