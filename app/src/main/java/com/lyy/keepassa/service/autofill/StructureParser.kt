@@ -133,6 +133,11 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
         domainUrl = domain
         W3cHints.curDomainUrl = domainUrl
         Timber.d("domainUrl = $domainUrl")
+        ImeBrowserDomainContext.remember(
+          browserPackage = pkgName,
+          domain = domainUrl,
+          source = ImeBrowserDomainContext.Source.WEB_DOMAIN
+        )
       }
     }
     rememberBrowserAddressFieldDomain(viewNode)
@@ -226,6 +231,11 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     domainUrl = domain
     W3cHints.curDomainUrl = domain
     Timber.d("domainUrl = $domainUrl")
+    ImeBrowserDomainContext.remember(
+      browserPackage = pkgName,
+      domain = domainUrl,
+      source = ImeBrowserDomainContext.Source.ADDRESS_BAR
+    )
   }
 
   private fun extractAddressFieldDomain(viewNode: ViewNode): String? {
@@ -331,6 +341,11 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
         domainUrl = domain
         W3cHints.curDomainUrl = domainUrl
         Timber.d("domainUrl = $domainUrl")
+        ImeBrowserDomainContext.remember(
+          browserPackage = pkgName,
+          domain = domainUrl,
+          source = ImeBrowserDomainContext.Source.WEB_DOMAIN
+        )
       }
     }
     getW3CInfo(viewNode)
