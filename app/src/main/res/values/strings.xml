@@ -224,6 +224,9 @@ The \n database is encrypted using AES256. No one can open your database without
     <string name="app_feedback"><![CDATA[Give advice]]></string>
     <string name="error_db_pass_too_short"><![CDATA[In order to ensure the security of your data, the length of the database password cannot be less than 6 characters.]]></string>
     <string name="autofill_sign_in_prompt"><![CDATA[Autofill password using KeePassA]]></string>
+    <string name="credential_provider_unlock_title"><![CDATA[Unlock KeePassA]]></string>
+    <string name="credential_provider_save_title"><![CDATA[Save to KeePassA]]></string>
+    <string name="credential_provider_no_match"><![CDATA[No matching credential]]></string>
     <string name="hint_open_backgroun_start"><![CDATA[You have turned on autofill, but in special systems such as MIUI, KeePassA needs to grant <b> background pop-up interface </b> permission to pop up the interface to unlock the database.]]></string>
     <string name="hint_background_start"><![CDATA[Click <font color="#FF0000"><b> below to set </b></font>, and then enable <b> background pop-up interface </b> permission for KeePassA.]]></string>
     <string name="hint_chrome_autofill_third_party_mode"><![CDATA[Chrome has not enabled third-party autofill. KeePassA cannot receive Chrome autofill requests until Chrome allows other password managers.]]></string>

@@ -198,6 +198,7 @@ dependencies {
   kapt(libs.jetpack.room.compiler)
   implementation(libs.google.tink)
   implementation(libs.jetpack.autofill) // 自动填充工具
+  implementation(libs.jetpack.credentials) // Credential Manager provider
   implementation(libs.jetpack.biometric) // 生物识别
   implementation(libs.jetpack.multidex)
   implementation(libs.jetpack.splashscreen)
