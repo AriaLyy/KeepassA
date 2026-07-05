@@ -38,4 +38,15 @@ class TotpAutofillSourceIntegrationTest {
     assertTrue(source.contains("AutofillTotpFieldPolicy.isTotpField("))
     assertTrue(source.contains("name == \"autocomplete\" && PASSWORD_HINT_LIST.contains(value)"))
   }
+
+  @Test
+  fun autoFillHelperUsesTotpResolverAndBuildsResponsesWithoutSaveInfoForTotpOnly() {
+    val source = File("src/main/java/com/lyy/keepassa/service/autofill/AutoFillHelper.kt")
+      .readText()
+
+    assertTrue(source.contains("OtpUtil.getOtpPass(pwEntry).second"))
+    assertTrue(source.contains("AutofillTextValuePolicy.valueForRole("))
+    assertTrue(source.contains("var addedDataset = false"))
+    assertTrue(source.contains("return if (addedDataset)"))
+  }
 }

@@ -32,6 +32,7 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
+import com.lyy.keepassa.util.totp.OtpUtil
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 import com.lyy.keepassa.widget.toPx
@@ -373,9 +374,13 @@ object AutoFillHelper {
   ): FillResponse? {
     val responseBuilder = FillResponse.Builder()
 
+    var addedDataset = false
     entries?.forEach { entry ->
       val dataSet = newDataSet(context, metadata, entry, dataSetAuth, apkPageName)
-      dataSet?.let(responseBuilder::addDataset)
+      dataSet?.let {
+        responseBuilder.addDataset(it)
+        addedDataset = true
+      }
     }
 //    // user editText add other item
 //    responseBuilder.addDataset(metadata.tempUserFillId?.let {
@@ -396,7 +401,7 @@ object AutoFillHelper {
 //      )
 //    })
 
-    return if (metadata.saveType != 0) {
+    if (metadata.saveType != 0) {
       val autoFillIds = metadata.autoFillIds
       // 设置触发保存的类型
       responseBuilder.setSaveInfo(
@@ -406,6 +411,7 @@ object AutoFillHelper {
         )
           .build()
       )
+    }
 
 //      val rev = RemoteViews(context.packageName, R.layout.item_auto_fill)
 //      rev.setTextViewText(R.id.text, context.resources.getString(R.string.other))
@@ -424,9 +430,10 @@ object AutoFillHelper {
 //      setTextColor(rev, context)
 //      responseBuilder.setHeader(rev)
 
+    return if (addedDataset) {
       responseBuilder.build()
     } else {
-      Timber.d("These fields are not meant to be saved by autofill.")
+      Timber.d("No datasets available for autofill response.")
       null
     }
   }
@@ -469,6 +476,11 @@ object AutoFillHelper {
     dataSetBuilder: Dataset.Builder
   ): Boolean {
     var setValueAtLeastOnce = false
+    val totp = if (pwEntry is PwEntryV4) {
+      OtpUtil.getOtpPass(pwEntry).second
+    } else {
+      null
+    }
     for (hint in autoFillFieldMetadataList.allAutoFillHints) {
       val fillFields = autoFillFieldMetadataList.getFieldsForHint(hint) ?: continue
       loop@ for (fillField in fillFields) {
@@ -499,11 +511,13 @@ object AutoFillHelper {
           }
 
           View.AUTOFILL_TYPE_TEXT -> {
-            if (fillField.isPassword) {
-              dataSetBuilder.setValue(fillId, AutofillValue.forText(KdbUtil.getPassword(pwEntry)))
-            } else {
-              dataSetBuilder.setValue(fillId, AutofillValue.forText(KdbUtil.getUserName(pwEntry)))
-            }
+            val textValue = AutofillTextValuePolicy.valueForRole(
+              role = fillField.fieldRole,
+              username = KdbUtil.getUserName(pwEntry),
+              password = KdbUtil.getPassword(pwEntry),
+              totp = totp
+            ) ?: continue@loop
+            dataSetBuilder.setValue(fillId, AutofillValue.forText(textValue))
             setValueAtLeastOnce = true
           }
 
