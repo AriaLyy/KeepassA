@@ -14,40 +14,49 @@ import android.widget.Button
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.lyy.keepassa.R
-import com.lyy.keepassa.base.KeyConstance
 import com.lyy.keepassa.router.DialogRouter
-import com.lyy.keepassa.service.autofill.ChromeAutofillPromptPolicy
-import com.lyy.keepassa.service.autofill.ChromeAutofillSupport
+import com.lyy.keepassa.service.autofill.BrowserThirdPartyAutofillIntegration
+import com.lyy.keepassa.service.autofill.BrowserThirdPartyAutofillPromptPolicy
+import com.lyy.keepassa.service.autofill.BrowserThirdPartyAutofillSupport
+import com.lyy.keepassa.service.autofill.KeepassAutofillServiceStatus
 import com.lyy.keepassa.util.PermissionCooldown
 import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
 import timber.log.Timber
 
-class ChromeAutofillPermissionsChain : IMainDialogInterceptor {
+class BrowserAutofillPermissionsChain : IMainDialogInterceptor {
 
-  private val cooldown =
-    PermissionCooldown(KeyConstance.KEY_CHROME_AUTOFILL_PERMISSION_REJECTED_AT)
+  private val cooldowns = BrowserThirdPartyAutofillSupport.integrations.associate {
+    it.packageName to PermissionCooldown(it.cooldownStorageKey)
+  }
 
   override fun intercept(chain: DialogChain): MainDialogResponse {
-    Timber.d("ChromeAutofillPermissionsChain")
+    Timber.d("BrowserAutofillPermissionsChain")
     val ac = chain.activity
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
       return chain.proceed(ac)
     }
 
     val am = ac.getSystemService(AutofillManager::class.java)
-    val isKeepassAutofillEnabled = isKeepassAutofillEnabled(am)
-    val chromeState = ChromeAutofillSupport.thirdPartyModeState(ac)
-    if (!ChromeAutofillPromptPolicy.shouldPrompt(
+    val isKeepassAutofillEnabled = KeepassAutofillServiceStatus.isEnabled(ac, am)
+    val promptableIntegration = BrowserThirdPartyAutofillSupport.integrations.firstOrNull {
+      val cooldown = cooldownFor(it)
+      BrowserThirdPartyAutofillPromptPolicy.shouldPrompt(
         isKeepassAutofillEnabled = isKeepassAutofillEnabled,
-        chromeState = chromeState,
+        browserState = BrowserThirdPartyAutofillSupport.thirdPartyModeState(ac, it),
         isInCooldown = cooldown.isInCooldown(),
         sdkInt = Build.VERSION.SDK_INT
       )
-    ) {
+    }
+    if (promptableIntegration == null) {
       return chain.proceed(ac)
     }
 
-    val msg = Html.fromHtml(ResUtil.getString(R.string.hint_chrome_autofill_third_party_mode))
+    val msg = Html.fromHtml(
+      ac.getString(
+        R.string.hint_browser_third_party_autofill_mode,
+        promptableIntegration.displayName
+      )
+    )
     Routerfit.create(DialogRouter::class.java).showMsgDialog(
       msgContent = msg,
       showCancelBt = true,
@@ -55,23 +64,25 @@ class ChromeAutofillPermissionsChain : IMainDialogInterceptor {
       enterText = ResUtil.getString(R.string.open_setting),
       btnClickListener = object : OnMsgBtClickListener {
         override fun onEnter(v: Button) {
-          ChromeAutofillSupport.openSettings(ac)
+          BrowserThirdPartyAutofillSupport.openSettings(ac, promptableIntegration)
         }
 
         override fun onCancel(v: Button) {
-          cooldown.recordRejection()
+          cooldownFor(promptableIntegration).recordRejection()
         }
       }
     )
     return MainDialogResponse(MainDialogResponse.RESPONSE_OK)
   }
+  private fun cooldownFor(integration: BrowserThirdPartyAutofillIntegration): PermissionCooldown {
+    return cooldowns[integration.packageName] ?: PermissionCooldown(integration.cooldownStorageKey)
+  }
+}
 
-  private fun isKeepassAutofillEnabled(am: AutofillManager?): Boolean {
-    return try {
-      am?.isAutofillSupported == true && am.hasEnabledAutofillServices()
-    } catch (e: Throwable) {
-      Timber.e(e, "check KeepassA autofill service failed")
-      false
-    }
+class ChromeAutofillPermissionsChain : IMainDialogInterceptor {
+  private val delegate = BrowserAutofillPermissionsChain()
+
+  override fun intercept(chain: DialogChain): MainDialogResponse {
+    return delegate.intercept(chain)
   }
 }

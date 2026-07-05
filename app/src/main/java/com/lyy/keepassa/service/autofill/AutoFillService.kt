@@ -94,12 +94,19 @@ class AutoFillService : AutofillService() {
 
     if (autoFillFields.autoFillIds.size <= 0) {
       val requestFocusedId = fillContext.focusedId
-      val fallbackId = parser.authPromptFallbackId ?: requestFocusedId?.takeIf {
-        AutofillFallbackFieldPolicy.canUseRequestFocusedId(
-          hasRequestFocusedId = true,
-          requestFocusedIdIsSearchOrUrlField = parser.searchOrUrlAutoFillIds.contains(it),
-          strategyAllowsRequestFocusedIdFallback = browserStrategy.allowRequestFocusedIdFallback
-        )
+      val fallbackId = AutofillFallbackFieldPolicy.resolveFallbackAuthPromptId(
+        parserFallbackId = parser.authPromptFallbackId,
+        requestFocusedId = requestFocusedId,
+        requestFocusedIdIsSearchOrUrlField =
+          requestFocusedId?.let { parser.searchOrUrlAutoFillIds.contains(it) } ?: false,
+        strategyAllowsRequestFocusedIdFallback = browserStrategy.allowRequestFocusedIdFallback,
+        strategyAllowsSearchOrUrlRequestFocusedIdFallback =
+          browserStrategy.allowSearchOrUrlRequestFocusedIdFallback,
+        strategyPrefersRequestFocusedIdForAuthPrompt =
+          browserStrategy.preferRequestFocusedIdForAuthPromptFallback
+      )
+      val fallbackRole = parser.authPromptFallbackRole.takeIf {
+        fallbackId != null && fallbackId == parser.authPromptFallbackId
       }
       if (AutofillAuthPromptPolicy.shouldUseFallbackAuthPrompt(
           needAuth = needAuth,
@@ -114,7 +121,7 @@ class AutoFillService : AutofillService() {
           domain = parser.domainUrl,
           metadata = null,
           fallbackId = fallbackId,
-          fallbackRole = parser.authPromptFallbackRole
+          fallbackRole = fallbackRole
         )
         Timber.i("use fallback auth prompt id for locked autofill")
         openFallbackAuthPrompt(
@@ -132,14 +139,14 @@ class AutoFillService : AutofillService() {
           browserStrategy = browserStrategy,
           domain = parser.domainUrl,
           fallbackId = fallbackId,
-          fallbackRole = parser.authPromptFallbackRole
+          fallbackRole = fallbackRole
         )
         val fallbackResponse = getSingleFieldFallbackResponse(
           apkPackageName = apkPackageName,
           domain = parser.domainUrl,
           browserStrategy = browserStrategy,
           currentFallbackId = fallbackId,
-          currentFallbackRole = parser.authPromptFallbackRole
+          currentFallbackRole = fallbackRole
         )
         if (fallbackResponse != null) {
           callback.onSuccess(fallbackResponse)
@@ -161,6 +168,16 @@ class AutoFillService : AutofillService() {
       return
     }
 
+    if (AutofillSearchOrUrlFieldPolicy.shouldIgnoreClassifiedFields(
+        strategy = browserStrategy,
+        classifiedIds = autoFillFields.autoFillIds,
+        searchOrUrlIds = parser.searchOrUrlAutoFillIds
+      )
+    ) {
+      Timber.i("ignore search/url only autofill fields")
+      callback.onSuccess(null)
+      return
+    }
 
     // 如果数据库没打开，或者数据库已经锁定，打开登录页面
     if (needAuth) {
@@ -256,7 +273,8 @@ class AutoFillService : AutofillService() {
       entries = datas,
       apkPageName = apkPackageName,
       fallbackId = fallbackTarget.fallbackId,
-      fallbackRole = fallbackTarget.fallbackRole
+      fallbackRole = fallbackTarget.fallbackRole,
+      disableDatasetFiltering = browserStrategy.disableSingleFieldFallbackDatasetFiltering
     )
   }
 

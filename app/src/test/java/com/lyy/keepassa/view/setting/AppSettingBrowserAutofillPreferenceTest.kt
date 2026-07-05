@@ -10,6 +10,7 @@ package com.lyy.keepassa.view.setting
 import java.io.File
 import javax.xml.parsers.DocumentBuilderFactory
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -21,24 +22,13 @@ class AppSettingBrowserAutofillPreferenceTest {
   private val appNamespace = "http://schemas.android.com/apk/res-auto"
 
   @Test fun browserAutofillSettingsPreferenceIsBelowAutofillService() {
-    val document = appSettingDocument()
-    val nodes = document.getElementsByTagName("*")
+    val category = findCategoryByTitle(appSettingDocument(), "@string/auto_fill_set")
 
-    var autofillIndex = -1
-    var browserAutofillIndex = -1
-    for (i in 0 until nodes.length) {
-      val key = nodes.item(i).attributes?.getNamedItemNS(appNamespace, "key")?.nodeValue
-      if (key == "@string/set_open_auto_fill") {
-        autofillIndex = i
-      }
-      if (key == "@string/set_key_browser_autofill_settings") {
-        browserAutofillIndex = i
-      }
-    }
-
-    assertTrue("Autofill service preference should be present", autofillIndex >= 0)
-    assertTrue("Browser autofill preference should be present", browserAutofillIndex >= 0)
-    assertTrue(browserAutofillIndex > autofillIndex)
+    assertNotNull("Autofill category should be present", category)
+    assertEquals(
+      "@string/set_key_auto_fill_category",
+      category!!.attributes?.getNamedItemNS(appNamespace, "key")?.nodeValue
+    )
   }
 
   @Test fun autofillPreferencesAreInDedicatedCategory() {
@@ -46,23 +36,42 @@ class AppSettingBrowserAutofillPreferenceTest {
 
     assertNotNull("Autofill category should be present", category)
     assertTrue(category!!.directChildPreferenceKeys().contains("@string/set_open_auto_fill"))
+    assertTrue(category.directChildPreferenceKeys().contains("@string/set_key_supported_browsers"))
+  }
+
+  @Test fun browserAutofillSettingsAreCreatedDynamically() {
+    val document = appSettingDocument()
+
+    assertEquals(
+      null,
+      findPreferenceByKey(document, "@string/set_key_browser_autofill_settings")
+    )
+    assertTrue(File("src/main/res/drawable/ic_chrome.xml").exists())
+  }
+
+  @Test fun browserAutofillIconsAreBoundTo24dp() {
+    val fragment = File("src/main/java/com/lyy/keepassa/view/setting/AppSettingFragment.kt")
+      .readText()
+
+    assertTrue(fragment.contains("browserAutofillIconSizePx()"))
+    assertTrue(fragment.contains("24.toPx()"))
     assertTrue(
-      category.directChildPreferenceKeys().contains("@string/set_key_browser_autofill_settings")
+      fragment.contains(
+        "icon.setBounds(0, 0, browserAutofillIconSizePx(), browserAutofillIconSizePx())"
+      )
     )
   }
 
-  @Test fun browserAutofillSettingsUsesChromeIcon() {
-    val preference = findPreferenceByKey(
-      appSettingDocument(),
-      "@string/set_key_browser_autofill_settings"
-    )
+  @Test fun chromeAutofillIconUsesRealChromeColors() {
+    val icon = File("src/main/res/drawable/ic_chrome.xml").readText()
 
-    assertNotNull("Browser autofill preference should be present", preference)
-    assertEquals(
-      "@drawable/ic_chrome",
-      preference!!.attributes?.getNamedItemNS(appNamespace, "icon")?.nodeValue
-    )
-    assertTrue(File("src/main/res/drawable/ic_chrome.xml").exists())
+    assertTrue(icon.contains("android:width=\"24dp\""))
+    assertTrue(icon.contains("android:height=\"24dp\""))
+    assertFalse(icon.contains("@color/color_icon_grey"))
+    assertTrue(icon.contains("#EA4335"))
+    assertTrue(icon.contains("#FBBC05"))
+    assertTrue(icon.contains("#34A853"))
+    assertTrue(icon.contains("#4285F4"))
   }
 
   @Test fun appSettingFragmentInitializesBrowserAutofillSettings() {
@@ -70,21 +79,31 @@ class AppSettingBrowserAutofillPreferenceTest {
       .readText()
 
     assertTrue(fragment.contains("setBrowserAutofillSettings()"))
-    assertTrue(fragment.contains("ChromeAutofillSupport.openSettings"))
+    assertTrue(fragment.contains("BrowserThirdPartyAutofillSupport.integrations"))
+    assertTrue(fragment.contains("BrowserThirdPartyAutofillSupport.openSettings"))
+    assertFalse(fragment.contains("ChromeAutofillSupport.openSettings"))
   }
 
-  @Test fun browserAutofillSettingsTitleMentionsChrome() {
+  @Test fun autofillServiceSwitchUsesUnifiedServiceStatus() {
+    val fragment = File("src/main/java/com/lyy/keepassa/view/setting/AppSettingFragment.kt")
+      .readText()
+
+    assertTrue(fragment.contains("KeepassAutofillServiceStatus.isEnabled"))
+    assertFalse(fragment.contains("autoFill.isChecked = am.hasEnabledAutofillServices()"))
+  }
+
+  @Test fun browserAutofillSettingsTitleUsesBrowserNamePlaceholder() {
     val defaultTitle = stringValue(
       file = File("src/main/res/values/strings.xml"),
-      name = "browser_autofill_settings_title"
+      name = "browser_third_party_autofill_settings_title"
     )
     val chineseTitle = stringValue(
       file = File("src/main/res/values-zh-rCN/strings.xml"),
-      name = "browser_autofill_settings_title"
+      name = "browser_third_party_autofill_settings_title"
     )
 
-    assertTrue(defaultTitle.contains("Chrome"))
-    assertTrue(chineseTitle.contains("Chrome"))
+    assertTrue(defaultTitle.contains("%1\$s"))
+    assertTrue(chineseTitle.contains("%1\$s"))
   }
 
   private fun stringValue(file: File, name: String): String {

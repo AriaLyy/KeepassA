@@ -9,9 +9,12 @@
 
 package com.lyy.keepassa.view.setting
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION_CODES
@@ -25,11 +28,13 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.ListPreference
 import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceGroup.PreferencePositionCallback
 import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreference
 import androidx.recyclerview.widget.RecyclerView
+import androidx.core.content.ContextCompat
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
@@ -42,8 +47,10 @@ import com.blankj.utilcode.util.ToastUtils
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.common.PassType
-import com.lyy.keepassa.service.autofill.ChromeAutofillSupport
-import com.lyy.keepassa.service.autofill.ChromeThirdPartyAutofillState
+import com.lyy.keepassa.service.autofill.BrowserThirdPartyAutofillIntegration
+import com.lyy.keepassa.service.autofill.BrowserThirdPartyAutofillState
+import com.lyy.keepassa.service.autofill.BrowserThirdPartyAutofillSupport
+import com.lyy.keepassa.service.autofill.KeepassAutofillServiceStatus
 import com.lyy.keepassa.util.FingerprintUtil
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
@@ -51,6 +58,7 @@ import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.PermissionsUtil
 import com.lyy.keepassa.view.UpgradeLogDialog
 import com.lyy.keepassa.view.fingerprint.FingerprintActivity
+import com.lyy.keepassa.widget.toPx
 import de.psdev.licensesdialog.LicensesDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -69,6 +77,8 @@ class AppSettingFragment : PreferenceFragmentCompat() {
   private lateinit var autoFill: SwitchPreference
 
   companion object {
+    private const val BROWSER_AUTOFILL_SETTINGS_ORDER_START = 20
+
     private val LANGUAGE_MAP = linkedMapOf(
       1 to Locale.ENGLISH,
       2 to Locale.SIMPLIFIED_CHINESE,
@@ -112,12 +122,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
         return resultCode
       }
     }) {
-      if (it == Activity.RESULT_OK) {
-        autoFill.isChecked = true
-      } else {
-        autoFill.isChecked = requireContext().getSystemService(AutofillManager::class.java)
-          .hasEnabledAutofillServices()
-      }
+      updateAutoFillSwitch()
     }
 
   override fun onCreatePreferences(
@@ -146,6 +151,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
 
   override fun onResume() {
     super.onResume()
+    updateAutoFillSwitch()
     updateBrowserAutofillSettings()
   }
 
@@ -335,7 +341,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
       }
 
 
-      autoFill.isChecked = am.hasEnabledAutofillServices()
+      updateAutoFillSwitch()
       if (!am.isAutofillSupported) {
         autoFill.isVisible = false
       }
@@ -370,62 +376,138 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     }
   }
 
+  private fun updateAutoFillSwitch() {
+    if (!::autoFill.isInitialized || Build.VERSION.SDK_INT < VERSION_CODES.O) {
+      return
+    }
+    val am = requireContext().getSystemService(AutofillManager::class.java)
+    if (am == null || !am.isAutofillSupported) {
+      autoFill.isVisible = false
+      return
+    }
+    autoFill.isChecked = KeepassAutofillServiceStatus.isEnabled(requireContext(), am)
+  }
+
   private fun setBrowserAutofillSettings() {
-    val preference = findPreference<Preference>(
-      getString(R.string.set_key_browser_autofill_settings)
+    val category = findPreference<PreferenceCategory>(
+      getString(R.string.set_key_auto_fill_category)
     ) ?: return
 
     if (Build.VERSION.SDK_INT < VERSION_CODES.O) {
-      preference.isVisible = false
+      BrowserThirdPartyAutofillSupport.integrations.forEach {
+        findPreference<Preference>(it.settingsPreferenceKey)?.isVisible = false
+      }
       return
     }
 
-    updateBrowserAutofillSettings()
-    preference.setOnPreferenceClickListener {
-      val opened = ChromeAutofillSupport.openSettings(requireContext())
-      if (!opened) {
-        ToastUtils.showLong(R.string.browser_autofill_settings_open_failed)
+    BrowserThirdPartyAutofillSupport.integrations.forEachIndexed { index, integration ->
+      val preference = findPreference<Preference>(integration.settingsPreferenceKey)
+        ?: Preference(requireContext()).also {
+          it.key = integration.settingsPreferenceKey
+          it.order = BROWSER_AUTOFILL_SETTINGS_ORDER_START + index
+          category.addPreference(it)
+        }
+
+      preference.title = getString(
+        R.string.browser_third_party_autofill_settings_title,
+        integration.displayName
+      )
+      preference.icon = browserAutofillIcon(integration)
+      preference.setOnPreferenceClickListener {
+        val opened = BrowserThirdPartyAutofillSupport.openSettings(
+          requireContext(),
+          integration
+        )
+        if (!opened) {
+          ToastUtils.showLong(
+            getString(
+              R.string.browser_third_party_autofill_settings_open_failed,
+              integration.displayName
+            )
+          )
+        }
+        true
       }
-      true
     }
+    updateBrowserAutofillSettings()
   }
 
   private fun updateBrowserAutofillSettings() {
-    val preference = findPreference<Preference>(
-      getString(R.string.set_key_browser_autofill_settings)
-    ) ?: return
-
     if (Build.VERSION.SDK_INT < VERSION_CODES.O) {
-      preference.isVisible = false
+      BrowserThirdPartyAutofillSupport.integrations.forEach {
+        findPreference<Preference>(it.settingsPreferenceKey)?.isVisible = false
+      }
       return
     }
 
-    when (ChromeAutofillSupport.thirdPartyModeState(requireContext())) {
-      ChromeThirdPartyAutofillState.NOT_INSTALLED -> {
-        preference.isVisible = false
-      }
+    BrowserThirdPartyAutofillSupport.integrations.forEach { integration ->
+      val preference = findPreference<Preference>(integration.settingsPreferenceKey)
+        ?: return@forEach
 
-      ChromeThirdPartyAutofillState.DISABLED -> {
-        preference.isVisible = true
-        preference.summary = getString(R.string.browser_autofill_settings_summary_disabled)
-      }
+      when (BrowserThirdPartyAutofillSupport.thirdPartyModeState(requireContext(), integration)) {
+        BrowserThirdPartyAutofillState.NOT_INSTALLED -> {
+          preference.isVisible = false
+        }
 
-      ChromeThirdPartyAutofillState.ENABLED -> {
-        preference.isVisible = true
-        preference.summary = getString(R.string.browser_autofill_settings_summary_enabled)
-      }
+        BrowserThirdPartyAutofillState.DISABLED -> {
+          preference.isVisible = true
+          preference.summary = getString(
+            R.string.browser_third_party_autofill_settings_summary_disabled,
+            integration.displayName
+          )
+        }
 
-      ChromeThirdPartyAutofillState.UNKNOWN -> {
-        preference.isVisible = true
-        preference.summary = getString(R.string.browser_autofill_settings_summary_unknown)
+        BrowserThirdPartyAutofillState.ENABLED -> {
+          preference.isVisible = true
+          preference.summary = getString(
+            R.string.browser_third_party_autofill_settings_summary_enabled,
+            integration.displayName
+          )
+        }
+
+        BrowserThirdPartyAutofillState.UNKNOWN -> {
+          preference.isVisible = true
+          preference.summary = getString(
+            R.string.browser_third_party_autofill_settings_summary_unknown,
+            integration.displayName
+          )
+        }
       }
     }
   }
+
+  private fun browserAutofillIcon(
+    integration: BrowserThirdPartyAutofillIntegration
+  ) = (if (integration.packageName == BrowserThirdPartyAutofillSupport.CHROME_PACKAGE) {
+    ContextCompat.getDrawable(requireContext(), R.drawable.ic_chrome)
+  } else {
+    runCatching {
+      requireContext().packageManager.getApplicationIcon(integration.packageName)
+    }.getOrElse {
+      ContextCompat.getDrawable(requireContext(), R.drawable.ic_browser_adapter)
+    }
+  })?.let { icon ->
+    browserAutofillIconWithFixedSize(icon)
+  }
+
+  private fun browserAutofillIconWithFixedSize(icon: Drawable): Drawable {
+    val size = browserAutofillIconSizePx()
+    val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    icon.setBounds(0, 0, browserAutofillIconSizePx(), browserAutofillIconSizePx())
+    icon.draw(canvas)
+    return BitmapDrawable(resources, bitmap).also {
+      it.setBounds(0, 0, size, size)
+    }
+  }
+
+  private fun browserAutofillIconSizePx(): Int = 24.toPx()
 
   private fun setSupportedBrowsers() {
     val preference = findPreference<Preference>(
       getString(R.string.set_key_supported_browsers)
     ) ?: return
+    preference.order = 90
     preference.setOnPreferenceClickListener {
       SupportedBrowsersDialog.show(requireContext())
       true

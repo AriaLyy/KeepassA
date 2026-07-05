@@ -23,6 +23,8 @@ class BrowserAutofillStrategyTest {
     assertTrue(strategy.shouldClassifyNativeEditTextVirtualNodes)
     assertFalse(strategy.allowFocusedNonTextNodeFallback)
     assertTrue(strategy.allowRequestFocusedIdFallback)
+    assertFalse(strategy.preferRequestFocusedIdForAuthPromptFallback)
+    assertFalse(strategy.disableSingleFieldFallbackDatasetFiltering)
     assertTrue(strategy.allowBrowserFormFieldInference)
     assertTrue(strategy.allowSingleFieldAuthFallback)
     assertTrue(strategy.isSearchOrUrlFieldToken("url_bar"))
@@ -110,6 +112,22 @@ class BrowserAutofillStrategyTest {
     assertTrue(strategy.allowSingleFieldAuthFallback)
   }
 
+  @Test fun miGlobalBrowserUsesDedicatedStrategyWithFallbackPromptSupport() {
+    val strategy = BrowserAutofillStrategyRegistry.forPackage("com.mi.globalbrowser")
+
+    assertEquals(BrowserAutofillEngine.CHROMIUM, strategy.engine)
+    assertTrue(strategy.isBrowser)
+    assertTrue(strategy.shouldClassifyNativeEditTextVirtualNodes)
+    assertTrue(strategy.allowFocusedNonTextNodeFallback)
+    assertTrue(strategy.allowRequestFocusedIdFallback)
+    assertFalse(strategy.allowSearchOrUrlRequestFocusedIdFallback)
+    assertTrue(strategy.preferRequestFocusedIdForAuthPromptFallback)
+    assertTrue(strategy.disableSingleFieldFallbackDatasetFiltering)
+    assertTrue(strategy.allowBrowserFormFieldInference)
+    assertTrue(strategy.allowSingleFieldAuthFallback)
+    assertTrue(strategy.isSearchOrUrlFieldToken("url_bar"))
+  }
+
   @Test fun ucMobileIntlUsesDedicatedStrategyWithFallbackPromptSupport() {
     val strategy = BrowserAutofillStrategyRegistry.forPackage("com.UCMobile.intl")
 
@@ -133,7 +151,6 @@ class BrowserAutofillStrategyTest {
       "com.apusapps.browser",
       "com.explore.web.browser",
       "com.heytap.browser",
-      "com.mi.globalbrowser",
       "com.mx.browser",
       "com.talpa.hibrowser",
       "com.uc.browser.en",

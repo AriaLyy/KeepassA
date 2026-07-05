@@ -14,11 +14,11 @@ import org.junit.Test
 
 class ChromeAutofillPromptPolicyTest {
 
-  @Test fun enabledKeepassAutofillAndDisabledChromeThirdPartyMode_promptsUser() {
+  @Test fun enabledKeepassAutofillAndDisabledBrowserThirdPartyMode_promptsUser() {
     assertTrue(
-      ChromeAutofillPromptPolicy.shouldPrompt(
+      BrowserThirdPartyAutofillPromptPolicy.shouldPrompt(
         isKeepassAutofillEnabled = true,
-        chromeState = ChromeThirdPartyAutofillState.DISABLED,
+        browserState = BrowserThirdPartyAutofillState.DISABLED,
         isInCooldown = false,
         sdkInt = Build.VERSION_CODES.O
       )
@@ -27,31 +27,31 @@ class ChromeAutofillPromptPolicyTest {
 
   @Test fun disabledKeepassAutofill_doesNotPrompt() {
     assertFalse(
-      ChromeAutofillPromptPolicy.shouldPrompt(
+      BrowserThirdPartyAutofillPromptPolicy.shouldPrompt(
         isKeepassAutofillEnabled = false,
-        chromeState = ChromeThirdPartyAutofillState.DISABLED,
+        browserState = BrowserThirdPartyAutofillState.DISABLED,
         isInCooldown = false,
         sdkInt = Build.VERSION_CODES.O
       )
     )
   }
 
-  @Test fun enabledChromeThirdPartyMode_doesNotPrompt() {
+  @Test fun enabledBrowserThirdPartyMode_doesNotPrompt() {
     assertFalse(
-      ChromeAutofillPromptPolicy.shouldPrompt(
+      BrowserThirdPartyAutofillPromptPolicy.shouldPrompt(
         isKeepassAutofillEnabled = true,
-        chromeState = ChromeThirdPartyAutofillState.ENABLED,
+        browserState = BrowserThirdPartyAutofillState.ENABLED,
         isInCooldown = false,
         sdkInt = Build.VERSION_CODES.O
       )
     )
   }
 
-  @Test fun unknownChromeState_doesNotPrompt() {
+  @Test fun unknownBrowserState_doesNotPrompt() {
     assertFalse(
-      ChromeAutofillPromptPolicy.shouldPrompt(
+      BrowserThirdPartyAutofillPromptPolicy.shouldPrompt(
         isKeepassAutofillEnabled = true,
-        chromeState = ChromeThirdPartyAutofillState.UNKNOWN,
+        browserState = BrowserThirdPartyAutofillState.UNKNOWN,
         isInCooldown = false,
         sdkInt = Build.VERSION_CODES.O
       )
@@ -60,9 +60,9 @@ class ChromeAutofillPromptPolicyTest {
 
   @Test fun cooldownSuppressesPrompt() {
     assertFalse(
-      ChromeAutofillPromptPolicy.shouldPrompt(
+      BrowserThirdPartyAutofillPromptPolicy.shouldPrompt(
         isKeepassAutofillEnabled = true,
-        chromeState = ChromeThirdPartyAutofillState.DISABLED,
+        browserState = BrowserThirdPartyAutofillState.DISABLED,
         isInCooldown = true,
         sdkInt = Build.VERSION_CODES.O
       )
@@ -71,9 +71,9 @@ class ChromeAutofillPromptPolicyTest {
 
   @Test fun preOreo_doesNotPrompt() {
     assertFalse(
-      ChromeAutofillPromptPolicy.shouldPrompt(
+      BrowserThirdPartyAutofillPromptPolicy.shouldPrompt(
         isKeepassAutofillEnabled = true,
-        chromeState = ChromeThirdPartyAutofillState.DISABLED,
+        browserState = BrowserThirdPartyAutofillState.DISABLED,
         isInCooldown = false,
         sdkInt = Build.VERSION_CODES.N_MR1
       )

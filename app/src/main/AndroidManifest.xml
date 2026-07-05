@@ -11,7 +11,11 @@
 
   <queries>
     <package android:name="com.android.chrome" />
+    <package android:name="org.adblockplus.browser" />
+    <package android:name="com.vivaldi.browser" />
     <provider android:authorities="com.android.chrome.AutofillThirdPartyModeContentProvider" />
+    <provider android:authorities="org.adblockplus.browser.AutofillThirdPartyModeContentProvider" />
+    <provider android:authorities="com.vivaldi.browser.AutofillThirdPartyModeContentProvider" />
   </queries>
 
   <application

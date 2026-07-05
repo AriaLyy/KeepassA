@@ -545,7 +545,8 @@ class KeepassAUtil private constructor() {
         entries = datas ?: pwEntry?.let { entry -> mutableListOf(entry) },
         apkPageName = apkPkgName,
         fallbackId = fallbackId,
-        fallbackRole = authContext.fallbackRole
+        fallbackRole = authContext.fallbackRole,
+        disableDatasetFiltering = it.disableSingleFieldFallbackDatasetFiltering
       )
     }
 

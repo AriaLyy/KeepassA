@@ -245,11 +245,18 @@
     <string name="hint_open_backgroun_start">您已开启了自动填充，但在 MIUI 等特殊系统中，KeePassA 需要授予 &lt;b&gt;后台弹出界面&lt;/b&gt; 权限才能弹出解锁数据库的界面。</string>
     <string name="hint_background_start"><![CDATA[点击下方 <font color="#FF0000"><b>去设置</b></font>，然后为 KeePassA 开启 <b>后台弹出界面</b> 权限。]]></string>
     <string name="hint_chrome_autofill_third_party_mode"><![CDATA[Chrome 尚未允许第三方自动填充服务。未开启时，Chrome 网页输入框不会触发 KeePassA 自动填充。]]></string>
+    <string name="hint_browser_third_party_autofill_mode"><![CDATA[%1$s 尚未允许第三方自动填充服务。未开启时，%1$s 网页输入框不会触发 KeePassA 自动填充。]]></string>
+    <string name="set_key_auto_fill_category">set_key_auto_fill_category</string>
     <string name="browser_autofill_settings_title">Chrome 自动填充设置</string>
     <string name="browser_autofill_settings_summary_disabled">Chrome 需要允许第三方自动填充后，网页表单才能使用 KeePassA。</string>
     <string name="browser_autofill_settings_summary_enabled">Chrome 已允许第三方自动填充。</string>
     <string name="browser_autofill_settings_summary_unknown">打开 Chrome 自动填充设置。</string>
     <string name="browser_autofill_settings_open_failed">无法打开 Chrome 自动填充设置</string>
+    <string name="browser_third_party_autofill_settings_title">%1$s 自动填充设置</string>
+    <string name="browser_third_party_autofill_settings_summary_disabled">%1$s 需要允许第三方自动填充后，网页表单才能使用 KeePassA。</string>
+    <string name="browser_third_party_autofill_settings_summary_enabled">%1$s 已允许第三方自动填充。</string>
+    <string name="browser_third_party_autofill_settings_summary_unknown">打开 %1$s 自动填充设置。</string>
+    <string name="browser_third_party_autofill_settings_open_failed">无法打开 %1$s 自动填充设置</string>
     <string name="set_key_supported_browsers">set_key_supported_browsers</string>
     <string name="supported_browsers_title">已适配浏览器</string>
     <string name="supported_browsers_summary">查看已针对自动填充做适配的浏览器列表</string>

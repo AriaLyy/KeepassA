@@ -10,7 +10,6 @@ package com.lyy.keepassa.service.autofill
 
 import android.view.autofill.AutofillId
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
-import timber.log.Timber
 import java.util.concurrent.ConcurrentHashMap
 
 internal data class AutofillBrowserAuthContext(
@@ -84,11 +83,6 @@ internal object AutofillBrowserAuthContextStore {
       createdAtMs = nowMs
     )
     contexts[packageName] = next
-    if (strategy.engine == BrowserAutofillEngine.UC) {
-      Timber.d(
-        "[DEBUG-uc-domain] remember package = $packageName, domainIn = $domain, previousDomain = ${previous?.domain}, storedDomain = ${next.domain}, fallbackIdPresent = ${fallbackId != null}, storedFallbackIdPresent = ${next.fallbackId != null}, metadataCount = ${metadata?.autoFillIds?.size ?: 0}, storedMetadataCount = ${next.metadata?.autoFillIds?.size ?: 0}"
-      )
-    }
   }
 
   fun find(
@@ -97,22 +91,11 @@ internal object AutofillBrowserAuthContextStore {
   ): AutofillBrowserAuthContext? {
     val context = contexts[packageName]
     if (context == null) {
-      if (packageName == "com.UCMobile.intl") {
-        Timber.d("[DEBUG-uc-domain] find package = $packageName, result = missing")
-      }
       return null
     }
     if (nowMs - context.createdAtMs > TTL_MS) {
       contexts.remove(packageName, context)
-      if (packageName == "com.UCMobile.intl") {
-        Timber.d("[DEBUG-uc-domain] find package = $packageName, result = expired")
-      }
       return null
-    }
-    if (packageName == "com.UCMobile.intl") {
-      Timber.d(
-        "[DEBUG-uc-domain] find package = $packageName, result = hit, domain = ${context.domain}, fallbackIdPresent = ${context.fallbackId != null}, metadataCount = ${context.metadata?.autoFillIds?.size ?: 0}"
-      )
     }
     return context
   }

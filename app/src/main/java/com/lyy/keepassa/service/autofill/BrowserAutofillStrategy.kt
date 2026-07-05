@@ -40,6 +40,10 @@ internal data class BrowserAutofillStrategy(
   val shouldClassifyNativeEditTextVirtualNodes: Boolean,
   val allowFocusedNonTextNodeFallback: Boolean,
   val allowRequestFocusedIdFallback: Boolean,
+  val allowSearchOrUrlRequestFocusedIdFallback: Boolean = false,
+  val preferRequestFocusedIdForAuthPromptFallback: Boolean = false,
+  val disableSingleFieldFallbackDatasetFiltering: Boolean = false,
+  val ignoreSearchOrUrlOnlyAutofillFields: Boolean = false,
   val allowBrowserFormFieldInference: Boolean,
   val allowSingleFieldAuthFallback: Boolean,
   private val searchOrUrlTokens: Set<String>
@@ -96,6 +100,10 @@ internal object BrowserAutofillStrategyRegistry {
     "idm.internet.download.manager"
   )
 
+  private val miBrowserPackages = setOf(
+    "com.mi.globalbrowser"
+  )
+
   private val ucPackages = setOf(
     "com.UCMobile.intl"
   )
@@ -119,7 +127,6 @@ internal object BrowserAutofillStrategyRegistry {
 
   private val conservativeBrowserPackages = setOf(
     "com.uc.browser.en",
-    "com.mi.globalbrowser",
     "com.heytap.browser",
     "com.vivo.browser",
     "com.mx.browser",
@@ -169,6 +176,8 @@ internal object BrowserAutofillStrategyRegistry {
     "secure.unblock.unlimited.proxy.snap.hotspot.shield" to "Snap VPN Browser",
     // IDM
     "idm.internet.download.manager" to "IDM+",
+    // Mi Browser
+    "com.mi.globalbrowser" to "Mi Browser",
     // UC
     "com.UCMobile.intl" to "UC Browser",
     // Gecko
@@ -186,7 +195,6 @@ internal object BrowserAutofillStrategyRegistry {
     "org.codeaurora.swe.browser" to "SWE Browser",
     // Conservative
     "com.uc.browser.en" to "UC Browser HD",
-    "com.mi.globalbrowser" to "Mi Browser",
     "com.heytap.browser" to "HeyTap Browser",
     "com.vivo.browser" to "Vivo Browser",
     "com.mx.browser" to "Maxthon",
@@ -222,11 +230,12 @@ internal object BrowserAutofillStrategyRegistry {
       }
       val kiwi = kiwiPackages.map { it to BrowserAutofillEngine.KIWI }
       val idm = idmPackages.map { it to BrowserAutofillEngine.IDM }
+      val miBrowser = miBrowserPackages.map { it to BrowserAutofillEngine.CHROMIUM }
       val uc = ucPackages.map { it to BrowserAutofillEngine.UC }
       val gecko = geckoPackages.map { it to BrowserAutofillEngine.GECKO }
       val android = androidBrowserPackages.map { it to BrowserAutofillEngine.ANDROID_BROWSER }
       val conservative = conservativeBrowserPackages.map { it to BrowserAutofillEngine.DEFAULT }
-      return (chromium + kiwi + idm + uc + gecko + android + conservative)
+      return (chromium + kiwi + idm + miBrowser + uc + gecko + android + conservative)
         .map { (pkg, engine) ->
           SupportedBrowser(
             packageName = pkg,
@@ -304,6 +313,23 @@ internal object BrowserAutofillStrategyRegistry {
     searchOrUrlTokens = genericSearchOrUrlTokens
   )
 
+  private val miBrowserStrategy = BrowserAutofillStrategy(
+    engine = BrowserAutofillEngine.CHROMIUM,
+    isBrowser = true,
+    shouldClassifyNativeEditTextVirtualNodes = true,
+    // MI Global Browser creates an Autofill session, but can expose the focused web field as a
+    // non-text WebView node. Keep this targeted so other Chromium browsers are not widened.
+    allowFocusedNonTextNodeFallback = true,
+    allowRequestFocusedIdFallback = true,
+    allowSearchOrUrlRequestFocusedIdFallback = false,
+    preferRequestFocusedIdForAuthPromptFallback = true,
+    disableSingleFieldFallbackDatasetFiltering = true,
+    ignoreSearchOrUrlOnlyAutofillFields = true,
+    allowBrowserFormFieldInference = true,
+    allowSingleFieldAuthFallback = true,
+    searchOrUrlTokens = genericSearchOrUrlTokens
+  )
+
   private val ucStrategy = BrowserAutofillStrategy(
     engine = BrowserAutofillEngine.UC,
     isBrowser = true,
@@ -375,6 +401,7 @@ internal object BrowserAutofillStrategyRegistry {
       in chromiumPackages -> chromiumStrategy
       in kiwiPackages -> kiwiStrategy
       in idmPackages -> idmStrategy
+      in miBrowserPackages -> miBrowserStrategy
       in ucPackages -> ucStrategy
       in geckoPackages -> geckoStrategy
       in androidBrowserPackages -> androidBrowserStrategy

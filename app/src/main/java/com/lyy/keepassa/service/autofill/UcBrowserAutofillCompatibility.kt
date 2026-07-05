@@ -15,6 +15,11 @@ import java.util.Locale
 
 @TargetApi(Build.VERSION_CODES.O)
 internal object UcBrowserAutofillCompatibility {
+  /*
+   * 真机证据显示 UC Browser International 在部分登录页只向 AutofillService 暴露一个
+   * 空的"搜索或输入网址"TextView,没有 webDomain、URL 文本或账号/密码输入节点。
+   * 因此这里的兼容必须保持窄范围,不要在缺少 domain 时退化到浏览器包名匹配,避免误匹配其它网站条目。
+   */
 
   private val ucAddressBarResourceIds = setOf(
     "address_input_search",

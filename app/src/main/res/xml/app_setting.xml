@@ -59,24 +59,22 @@
 
   </PreferenceCategory>
 
-  <PreferenceCategory app:title="@string/auto_fill_set">
+  <PreferenceCategory
+      app:key="@string/set_key_auto_fill_category"
+      app:title="@string/auto_fill_set">
 
     <SwitchPreference
         android:defaultValue="false"
         android:title="@string/set_open_auto_fill_title"
         app:icon="@drawable/ic_auto_fill"
-        app:key="@string/set_open_auto_fill" />
-
-    <Preference
-        android:title="@string/browser_autofill_settings_title"
-        app:icon="@drawable/ic_chrome"
-        app:key="@string/set_key_browser_autofill_settings"
-        app:summary="@string/browser_autofill_settings_summary_unknown" />
+        app:key="@string/set_open_auto_fill"
+        app:order="10" />
 
     <Preference
         android:title="@string/supported_browsers_title"
         app:icon="@drawable/ic_browser_adapter"
         app:key="@string/set_key_supported_browsers"
+        app:order="11"
         app:summary="@string/supported_browsers_summary" />
 
   </PreferenceCategory>

@@ -35,6 +35,7 @@ import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.search.AutoFillEntrySearchActivity
 import com.lyy.keepassa.widget.toPx
+import java.util.regex.Pattern
 import timber.log.Timber
 
 /**
@@ -263,7 +264,8 @@ object AutoFillHelper {
     entries: MutableList<PwEntry>?,
     apkPageName: String,
     fallbackId: AutofillId,
-    fallbackRole: BrowserFormFieldRole?
+    fallbackRole: BrowserFormFieldRole?,
+    disableDatasetFiltering: Boolean = false
   ): FillResponse? {
     if (entries.isNullOrEmpty()) {
       return null
@@ -272,21 +274,29 @@ object AutoFillHelper {
     val responseBuilder = FillResponse.Builder()
     var added = false
     entries.forEach { entry ->
-      val dataSetBuilder = Dataset.Builder(
-        buildRemoteView(
-          context,
-          entry.title,
-          if (entry is PwEntryV4) entry.customIcon else null,
-          entry.icon,
-          entry.username
-        )
+      val presentation = buildRemoteView(
+        context,
+        entry.title,
+        if (entry is PwEntryV4) entry.customIcon else null,
+        entry.icon,
+        entry.username
       )
+      val dataSetBuilder = Dataset.Builder(presentation)
       val value = if (fallbackRole == BrowserFormFieldRole.PASSWORD) {
         KdbUtil.getPassword(entry)
       } else {
         KdbUtil.getUserName(entry)
       }
-      dataSetBuilder.setValue(fallbackId, AutofillValue.forText(value))
+      if (disableDatasetFiltering) {
+        dataSetBuilder.setValue(
+          fallbackId,
+          AutofillValue.forText(value),
+          null as Pattern?,
+          presentation
+        )
+      } else {
+        dataSetBuilder.setValue(fallbackId, AutofillValue.forText(value))
+      }
       responseBuilder.addDataset(dataSetBuilder.build())
       added = true
     }

@@ -9,7 +9,11 @@
 package com.lyy.keepassa.service.autofill
 
 import android.view.View
+import android.view.autofill.AutofillId
+import io.mockk.mockk
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -86,7 +90,19 @@ class AutofillFallbackFieldPolicyTest {
       AutofillFallbackFieldPolicy.canUseRequestFocusedId(
         hasRequestFocusedId = true,
         requestFocusedIdIsSearchOrUrlField = true,
-        strategyAllowsRequestFocusedIdFallback = true
+        strategyAllowsRequestFocusedIdFallback = true,
+        strategyAllowsSearchOrUrlRequestFocusedIdFallback = false
+      )
+    )
+  }
+
+  @Test fun miBrowserRequestFocusedSearchOrUrlField_canAnchorAuthPromptWhenStrategyAllowsIt() {
+    assertTrue(
+      AutofillFallbackFieldPolicy.canUseRequestFocusedId(
+        hasRequestFocusedId = true,
+        requestFocusedIdIsSearchOrUrlField = true,
+        strategyAllowsRequestFocusedIdFallback = true,
+        strategyAllowsSearchOrUrlRequestFocusedIdFallback = true
       )
     )
   }
@@ -99,5 +115,53 @@ class AutofillFallbackFieldPolicyTest {
         strategyAllowsRequestFocusedIdFallback = false
       )
     )
+  }
+
+  @Test fun defaultFallbackAuthPromptAnchorPrefersParserFallbackId() {
+    val parserFallbackId = mockk<AutofillId>()
+    val requestFocusedId = mockk<AutofillId>()
+
+    val fallbackId = AutofillFallbackFieldPolicy.resolveFallbackAuthPromptId(
+      parserFallbackId = parserFallbackId,
+      requestFocusedId = requestFocusedId,
+      requestFocusedIdIsSearchOrUrlField = false,
+      strategyAllowsRequestFocusedIdFallback = true,
+      strategyAllowsSearchOrUrlRequestFocusedIdFallback = false,
+      strategyPrefersRequestFocusedIdForAuthPrompt = false
+    )
+
+    assertSame(parserFallbackId, fallbackId)
+  }
+
+  @Test fun miBrowserFallbackAuthPromptAnchorPrefersCurrentWebFieldId() {
+    val parserFallbackId = mockk<AutofillId>()
+    val requestFocusedId = mockk<AutofillId>()
+
+    val fallbackId = AutofillFallbackFieldPolicy.resolveFallbackAuthPromptId(
+      parserFallbackId = parserFallbackId,
+      requestFocusedId = requestFocusedId,
+      requestFocusedIdIsSearchOrUrlField = false,
+      strategyAllowsRequestFocusedIdFallback = true,
+      strategyAllowsSearchOrUrlRequestFocusedIdFallback = false,
+      strategyPrefersRequestFocusedIdForAuthPrompt = true
+    )
+
+    assertSame(requestFocusedId, fallbackId)
+  }
+
+  @Test fun miBrowserSearchOrUrlFocusedSessionDoesNotUseParserFallbackAuthPrompt() {
+    val parserFallbackId = mockk<AutofillId>()
+    val requestFocusedId = mockk<AutofillId>()
+
+    val fallbackId = AutofillFallbackFieldPolicy.resolveFallbackAuthPromptId(
+      parserFallbackId = parserFallbackId,
+      requestFocusedId = requestFocusedId,
+      requestFocusedIdIsSearchOrUrlField = true,
+      strategyAllowsRequestFocusedIdFallback = true,
+      strategyAllowsSearchOrUrlRequestFocusedIdFallback = false,
+      strategyPrefersRequestFocusedIdForAuthPrompt = true
+    )
+
+    assertNull(fallbackId)
   }
 }

@@ -9,6 +9,7 @@
 package com.lyy.keepassa.service.autofill
 
 import android.view.View
+import android.view.autofill.AutofillId
 
 internal object AutofillFallbackFieldPolicy {
 
@@ -40,10 +41,45 @@ internal object AutofillFallbackFieldPolicy {
   fun canUseRequestFocusedId(
     hasRequestFocusedId: Boolean,
     requestFocusedIdIsSearchOrUrlField: Boolean,
-    strategyAllowsRequestFocusedIdFallback: Boolean
+    strategyAllowsRequestFocusedIdFallback: Boolean,
+    strategyAllowsSearchOrUrlRequestFocusedIdFallback: Boolean = false
   ): Boolean {
     return strategyAllowsRequestFocusedIdFallback &&
       hasRequestFocusedId &&
-      !requestFocusedIdIsSearchOrUrlField
+      (!requestFocusedIdIsSearchOrUrlField || strategyAllowsSearchOrUrlRequestFocusedIdFallback)
+  }
+
+  fun resolveFallbackAuthPromptId(
+    parserFallbackId: AutofillId?,
+    requestFocusedId: AutofillId?,
+    requestFocusedIdIsSearchOrUrlField: Boolean,
+    strategyAllowsRequestFocusedIdFallback: Boolean,
+    strategyAllowsSearchOrUrlRequestFocusedIdFallback: Boolean,
+    strategyPrefersRequestFocusedIdForAuthPrompt: Boolean
+  ): AutofillId? {
+    val usableRequestFocusedId = requestFocusedId?.takeIf {
+      canUseRequestFocusedId(
+        hasRequestFocusedId = true,
+        requestFocusedIdIsSearchOrUrlField = requestFocusedIdIsSearchOrUrlField,
+        strategyAllowsRequestFocusedIdFallback = strategyAllowsRequestFocusedIdFallback,
+        strategyAllowsSearchOrUrlRequestFocusedIdFallback =
+          strategyAllowsSearchOrUrlRequestFocusedIdFallback
+      )
+    }
+
+    if (
+      strategyPrefersRequestFocusedIdForAuthPrompt &&
+      requestFocusedId != null &&
+      requestFocusedIdIsSearchOrUrlField &&
+      !strategyAllowsSearchOrUrlRequestFocusedIdFallback
+    ) {
+      return null
+    }
+
+    return if (strategyPrefersRequestFocusedIdForAuthPrompt) {
+      usableRequestFocusedId ?: parserFallbackId
+    } else {
+      parserFallbackId ?: usableRequestFocusedId
+    }
   }
 }

@@ -8,20 +8,36 @@
 package com.lyy.keepassa.view.main
 
 import java.io.File
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MainDialogChainOrderTest {
 
-  @Test fun chromeAutofillPromptRunsAfterAutofillPermissionPrompt() {
+  @Test fun browserAutofillPromptRunsAfterAutofillPermissionPrompt() {
     val mainModule = File("src/main/java/com/lyy/keepassa/view/main/MainModule.kt")
       .readText()
 
     val autofillIndex = mainModule.indexOf("add(AutoFillPermissionsChain())")
-    val chromeIndex = mainModule.indexOf("add(ChromeAutofillPermissionsChain())")
+    val browserIndex = mainModule.indexOf("add(BrowserAutofillPermissionsChain())")
 
     assertTrue("AutoFillPermissionsChain should be present", autofillIndex >= 0)
-    assertTrue("ChromeAutofillPermissionsChain should be present", chromeIndex >= 0)
-    assertTrue(chromeIndex > autofillIndex)
+    assertTrue("BrowserAutofillPermissionsChain should be present", browserIndex >= 0)
+    assertTrue(browserIndex > autofillIndex)
+  }
+
+  @Test fun browserAutofillPromptUsesCooldownInProduction() {
+    val chain = File("src/main/java/com/lyy/keepassa/view/main/chain/ChromeAutofillPermissionsChain.kt")
+      .readText()
+
+    assertTrue(chain.contains("isInCooldown = cooldown.isInCooldown()"))
+    assertFalse(chain.contains("isInCooldown = false"))
+  }
+
+  @Test fun browserAutofillPromptDoesNotKeepDebugInstrumentation() {
+    val chain = File("src/main/java/com/lyy/keepassa/view/main/chain/ChromeAutofillPermissionsChain.kt")
+      .readText()
+
+    assertFalse(chain.contains("[DEBUG-browser-autofill]"))
   }
 }
