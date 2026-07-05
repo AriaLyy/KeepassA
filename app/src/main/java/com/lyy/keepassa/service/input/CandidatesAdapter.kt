@@ -13,7 +13,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.arialyy.frame.util.adapter.AbsHolder
 import com.arialyy.frame.util.adapter.AbsRVAdapter
-import com.keepassdroid.database.PwEntryV4
+import com.keepassdroid.database.PwEntry
 import com.lyy.keepassa.R
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.service.input.CandidatesAdapter.Holder
@@ -26,6 +26,10 @@ class CandidatesAdapter(
   context: Context,
   data: List<SimpleItemEntity>
 ) : AbsRVAdapter<SimpleItemEntity, Holder>(context, data) {
+
+  companion object {
+    const val ITEM_TYPE_EMPTY = -10
+  }
 
   override fun getViewHolder(
     convertView: View,
@@ -43,14 +47,31 @@ class CandidatesAdapter(
     position: Int,
     item: SimpleItemEntity
   ) {
-    val pwEntryV4 = item.obj as PwEntryV4
-    IconUtil.setEntryIcon(pwEntryV4, holder.icon)
-    holder.text.text = pwEntryV4.title
+    if (item.type == ITEM_TYPE_EMPTY) {
+      holder.icon.visibility = View.GONE
+      holder.text.text = item.title
+      holder.subtitle.visibility = View.GONE
+      holder.itemView.isSelected = false
+      return
+    }
+
+    holder.icon.visibility = View.VISIBLE
+    val entry = runCatching { item.obj as? PwEntry }.getOrNull()
+    if (entry != null) {
+      IconUtil.setEntryIcon(entry, holder.icon)
+    } else {
+      holder.icon.setImageResource(R.drawable.ic_app)
+    }
+    holder.text.text = item.title
+    val subtitle = item.subTitle.toString()
+    holder.subtitle.visibility = if (subtitle.isBlank()) View.GONE else View.VISIBLE
+    holder.subtitle.text = subtitle
     holder.itemView.isSelected = item.isSelected
   }
 
   class Holder(view: View) : AbsHolder(view) {
     val icon: ImageView = view.findViewById(R.id.icon)
     val text: TextView = view.findViewById(R.id.text)
+    val subtitle: TextView = view.findViewById(R.id.subtitle)
   }
 }
