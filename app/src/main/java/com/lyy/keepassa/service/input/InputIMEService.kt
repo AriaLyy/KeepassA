@@ -14,7 +14,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.autofill.AutofillManager
@@ -26,6 +25,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -39,7 +39,6 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.FillInfoEvent
 import com.lyy.keepassa.router.ActivityRouter
-import com.lyy.keepassa.router.ServiceRouter
 import com.lyy.keepassa.service.autofill.ImeBrowserDomainContext
 import com.lyy.keepassa.service.autofill.W3cHints
 import com.lyy.keepassa.service.input.keyboard.ImeKeyAction
@@ -53,7 +52,6 @@ import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.LanguageUtil
-import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.util.getRealUserName
 import com.lyy.keepassa.util.isCanOpenQuickLock
 import com.lyy.keepassa.util.totp.OtpUtil
@@ -78,18 +76,6 @@ import timber.log.Timber
  */
 class InputIMEService : InputMethodService(), View.OnClickListener {
 
-  private companion object {
-    /**
-     * 长按退格键的初始延迟(ms),过后开始连续删除。见 issue #86。
-     */
-    private const val BACKSPACE_REPEAT_DELAY_MS = 400L
-
-    /**
-     * 长按退格键开始后的重复间隔(ms)。
-     */
-    private const val BACKSPACE_REPEAT_INTERVAL_MS = 50L
-  }
-
   private var appPkgName: String? = ""
   private var ic: InputConnection? = null
   private val selectionTracker = CandidateSelectionTracker<PwEntry>()
@@ -100,19 +86,12 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
   private var imeOption = EditorInfo.IME_ACTION_GO
   private var curImeView: View? = null
   private var scope = MainScope()
-  private var backspaceButton: View? = null
   private val keyboardState = ImeKeyboardState()
   private val searchSession = ImeSearchSession<PwEntry>()
   private val manualSelectionPolicy = ImeManualSelectionPolicy<PwEntry>()
   private lateinit var keyboardPreferences: ImeKeyboardPreferences
   private var keyboardBinder: ImeKeyboardViewBinder? = null
   private var imeSearchJob: Job? = null
-  private val backspaceRepeatRunnable: Runnable = object : Runnable {
-    override fun run() {
-      handleBackspaceInput()
-      backspaceButton?.postDelayed(this, BACKSPACE_REPEAT_INTERVAL_MS)
-    }
-  }
 
   /**
    * 当 IME 首次显示时，系统会调用 onCreateInputView() 回调。在此方法的实现中，您可以创建要在 IME 窗口中显示的布局，并将布局返回系统。
@@ -135,7 +114,6 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     keyboardPreferences = ImeKeyboardPreferences(this)
     initImeSearchBar(layout)
     initKeyboard(layout)
-    setupBackspaceLongPress(layout)
     initCandidatesLayout()
 
     layout.findViewById<AppCompatImageView>(R.id.ivSearch).setOnClickListener {
@@ -153,7 +131,14 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
 
   private fun initImeSearchBar(layout: View) {
     val searchBar = layout.findViewById<View>(R.id.imeSearchBar)
+    val searchInput = layout.findViewById<AppCompatEditText>(R.id.tvImeSearchQuery)
     val clear = layout.findViewById<View>(R.id.btImeSearchClear)
+    searchInput.showSoftInputOnFocus = false
+    searchInput.isCursorVisible = false
+    searchInput.setOnClickListener {
+      keyboardPreferences.performKeyboardHaptic(searchInput)
+      enterImeSearchMode()
+    }
     searchBar.setOnClickListener {
       keyboardPreferences.performKeyboardHaptic(searchBar)
       enterImeSearchMode()
@@ -217,29 +202,6 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
           }
         }
       })
-  }
-
-  /**
-   * 退格键触摸处理:ACTION_DOWN 删 1 字并启动延时,长按 400ms 后每 50ms 重复删除,
-   * ACTION_UP/CANCEL 取消。返回 true 消费触摸事件,因此 [onClick] 不再处理退格。
-   * 修复 issue #86 评论(只能一个一个字符删)。
-   */
-  private fun setupBackspaceLongPress(layout: View) {
-    val bt = layout.findViewById<ImageView>(R.id.btBackspace)
-    backspaceButton = bt
-    bt.setOnTouchListener { _, event ->
-      when (event.actionMasked) {
-        MotionEvent.ACTION_DOWN -> {
-          handleBackspaceInput()
-          bt.removeCallbacks(backspaceRepeatRunnable)
-          bt.postDelayed(backspaceRepeatRunnable, BACKSPACE_REPEAT_DELAY_MS)
-        }
-        MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-          bt.removeCallbacks(backspaceRepeatRunnable)
-        }
-      }
-      true
-    }
   }
 
   private fun handleImeKeyAction(view: View, action: ImeKeyAction) {
@@ -320,6 +282,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     keyboardState.enterSearchMode()
     searchSession.clear()
     updateImeSearchUi()
+    focusImeSearchInput()
     showImeSearchEmptyOrResults()
   }
 
@@ -338,14 +301,26 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
   private fun updateImeSearchUi() {
     val root = curImeView ?: return
     val query = keyboardState.searchQuery
-    root.findViewById<TextView>(R.id.tvImeSearchQuery).text =
-      if (keyboardState.isSearchMode && query.isNotEmpty()) {
-        query
-      } else {
-        getString(R.string.ime_search_entry_hint)
-      }
+    val input = root.findViewById<AppCompatEditText>(R.id.tvImeSearchQuery)
+    if (input.text.toString() != query) {
+      input.setText(query)
+    }
+    input.isCursorVisible = keyboardState.isSearchMode
+    if (keyboardState.isSearchMode) {
+      input.setSelection(input.text?.length ?: 0)
+    } else {
+      input.clearFocus()
+    }
     root.findViewById<View>(R.id.btImeSearchClear).visibility =
       if (keyboardState.isSearchMode) View.VISIBLE else View.GONE
+  }
+
+  private fun focusImeSearchInput() {
+    val input = curImeView?.findViewById<AppCompatEditText>(R.id.tvImeSearchQuery) ?: return
+    input.showSoftInputOnFocus = false
+    input.isCursorVisible = true
+    input.requestFocus()
+    input.setSelection(input.text?.length ?: 0)
   }
 
   private fun scheduleImeSearch() {
@@ -477,31 +452,6 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
    */
   override fun onClick(v: View) {
     when (v.id) {
-      // 锁定
-      R.id.btLock -> {
-        if (BaseApp.KDB == null || BaseApp.isLocked) {
-          return
-        }
-        if (appPkgName == packageName) {
-          LauncherActivity.startLauncherActivity(this, Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
-        BaseApp.isLocked = true
-        manualSelectionPolicy.clear()
-        selectionTracker.show(emptyList())
-        exitImeSearchMode(clearResults = true)
-        NotificationUtil.startDbLocked(this)
-        if (BaseApp.APP.isCanOpenQuickLock()) {
-          return
-        }
-        selectionTracker.show(emptyList())
-        candidatesData.clear()
-        candidatesAdapter.notifyDataSetChanged()
-        Routerfit.create(ServiceRouter::class.java).getDbSaveService().clearDb()
-        Timber.d("数据库已锁定")
-        HitUtil.toaskShort(getString(R.string.notify_db_locked))
-        return
-      }
-
       // 用户名
       R.id.btAccount -> {
         if (!dbIsOpen()) {
@@ -570,15 +520,6 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         showMoreInfoDialog()
         finishSearchModeAfterFill()
       }
-
-      // 回车键
-      R.id.btEnter -> {
-        if (keyboardState.isSearchMode) {
-          runImeSearchNow()
-        } else {
-          ic?.performEditorAction(imeOption)
-        }
-      }
     }
   }
 
@@ -643,8 +584,6 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     imeSearchJob?.cancel()
     manualSelectionPolicy.clear()
     searchSession.clear()
-    backspaceButton?.removeCallbacks(backspaceRepeatRunnable)
-    backspaceButton = null
     keyboardBinder = null
   }
 

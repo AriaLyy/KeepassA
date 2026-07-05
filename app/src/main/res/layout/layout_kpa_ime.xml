@@ -37,16 +37,21 @@
         android:layout_height="20dp"
         app:srcCompat="@drawable/ic_search" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/tvImeSearchQuery"
-        style="@style/KpaContentTextStyle"
+        style="@style/KpaEditTextStyle"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginStart="8dp"
         android:layout_weight="1"
-        android:ellipsize="end"
+        android:cursorVisible="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:hint="@string/ime_search_entry_hint"
+        android:inputType="text"
         android:maxLines="1"
-        android:text="@string/ime_search_entry_hint" />
+        android:padding="0dp"
+        android:singleLine="true" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btImeSearchClear"
@@ -82,29 +87,17 @@
       app:srcCompat="@drawable/ic_search" />
 
   <ImageView
-      android:id="@+id/btLock"
-      style="@style/KpaImeKeyStyle"
-      android:layout_width="60dp"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="16dp"
-      android:src="@drawable/ic_ime_lock"
-      android:text="lock"
-      app:layout_constraintEnd_toStartOf="@+id/btAccount"
-      app:layout_constraintHorizontal_bias="0.5"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/rvContent" />
-
-  <ImageView
       android:id="@+id/btAccount"
       style="@style/KpaImeKeyStyle"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:layout_marginTop="16dp"
       android:src="@drawable/ic_ime_user"
       android:text="account"
       app:layout_constraintEnd_toStartOf="@+id/btPass"
       app:layout_constraintHorizontal_bias="0.5"
-      app:layout_constraintStart_toEndOf="@+id/btLock"
-      app:layout_constraintTop_toTopOf="@+id/btLock" />
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/rvContent" />
 
   <TextView
       android:id="@+id/btPass"
@@ -115,37 +108,11 @@
       android:src="@drawable/ic_ime_password"
       android:text="* * *"
       android:textColor="@color/color_4E85DB"
-      app:layout_constraintBottom_toBottomOf="@+id/btLock"
-      app:layout_constraintEnd_toStartOf="@+id/btClose"
-      app:layout_constraintHorizontal_bias="0.5"
-      app:layout_constraintStart_toEndOf="@+id/btAccount"
-      app:layout_constraintTop_toTopOf="@+id/btLock" />
-
-  <ImageView
-      android:id="@+id/btClose"
-      style="@style/KpaImeKeyStyle"
-      android:layout_width="60dp"
-      android:layout_height="wrap_content"
-      android:layout_marginEnd="8dp"
-      android:src="@drawable/ic_ime_close"
-      android:text="close"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.5"
-      app:layout_constraintStart_toEndOf="@+id/btPass"
-      app:layout_constraintTop_toTopOf="@+id/btLock" />
-
-  <ImageView
-      android:id="@+id/btChangeIme"
-      style="@style/KpaImeKeyStyle"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="16dp"
-      android:src="@drawable/ic_ime_keyboard"
-      android:text="ime"
+      app:layout_constraintBottom_toBottomOf="@+id/btAccount"
       app:layout_constraintEnd_toStartOf="@+id/btTotp"
       app:layout_constraintHorizontal_bias="0.5"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/btLock" />
+      app:layout_constraintStart_toEndOf="@+id/btAccount"
+      app:layout_constraintTop_toTopOf="@+id/btAccount" />
 
   <ImageView
       android:id="@+id/btTotp"
@@ -157,8 +124,8 @@
       android:visibility="visible"
       app:layout_constraintEnd_toStartOf="@+id/btOtherInfo"
       app:layout_constraintHorizontal_bias="0.5"
-      app:layout_constraintStart_toEndOf="@+id/btChangeIme"
-      app:layout_constraintTop_toTopOf="@+id/btChangeIme" />
+      app:layout_constraintStart_toEndOf="@+id/btPass"
+      app:layout_constraintTop_toTopOf="@+id/btAccount" />
 
   <ImageView
       android:id="@+id/btOtherInfo"
@@ -167,35 +134,35 @@
       android:layout_height="wrap_content"
       android:src="@drawable/ic_ime_other_info"
       android:text="other"
-      app:layout_constraintEnd_toStartOf="@+id/btBackspace"
+      app:layout_constraintEnd_toStartOf="@+id/btChangeIme"
       app:layout_constraintHorizontal_bias="0.5"
       app:layout_constraintStart_toEndOf="@+id/btTotp"
-      app:layout_constraintTop_toTopOf="@+id/btChangeIme" />
+      app:layout_constraintTop_toTopOf="@+id/btAccount" />
 
   <ImageView
-      android:id="@+id/btBackspace"
+      android:id="@+id/btChangeIme"
       style="@style/KpaImeKeyStyle"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:src="@drawable/ic_ime_backspace"
-      android:text="del"
-      app:layout_constraintEnd_toStartOf="@+id/btEnter"
+      android:src="@drawable/ic_ime_keyboard"
+      android:text="ime"
+      app:layout_constraintEnd_toStartOf="@+id/btClose"
       app:layout_constraintHorizontal_bias="0.5"
       app:layout_constraintStart_toEndOf="@+id/btOtherInfo"
-      app:layout_constraintTop_toTopOf="@+id/btChangeIme" />
+      app:layout_constraintTop_toTopOf="@+id/btAccount" />
 
   <ImageView
-      android:id="@+id/btEnter"
+      android:id="@+id/btClose"
       style="@style/KpaImeKeyStyle"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
-      android:src="@drawable/ic_ime_enter"
-      android:text="enter"
+      android:src="@drawable/ic_ime_close"
+      android:text="close"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.5"
-      app:layout_constraintStart_toEndOf="@+id/btBackspace"
-      app:layout_constraintTop_toTopOf="@+id/btChangeIme" />
+      app:layout_constraintStart_toEndOf="@+id/btChangeIme"
+      app:layout_constraintTop_toTopOf="@+id/btAccount" />
 
   <LinearLayout
       android:id="@+id/llImeKeyboard"
@@ -207,6 +174,6 @@
       android:orientation="vertical"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/btChangeIme" />
+      app:layout_constraintTop_toBottomOf="@+id/btAccount" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
