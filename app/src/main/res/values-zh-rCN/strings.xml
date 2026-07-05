@@ -244,6 +244,15 @@
     <string name="autofill_sign_in_prompt">使用 KeePassA 自动填充密码</string>
     <string name="hint_open_backgroun_start">您已开启了自动填充，但在 MIUI 等特殊系统中，KeePassA 需要授予 &lt;b&gt;后台弹出界面&lt;/b&gt; 权限才能弹出解锁数据库的界面。</string>
     <string name="hint_background_start"><![CDATA[点击下方 <font color="#FF0000"><b>去设置</b></font>，然后为 KeePassA 开启 <b>后台弹出界面</b> 权限。]]></string>
+    <string name="set_key_ime_keyboard_haptic_feedback">set_key_ime_keyboard_haptic_feedback</string>
+    <string name="set_title_ime_keyboard_haptic_feedback">键盘震动反馈</string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_on">使用 KeePassA 键盘时轻微震动</string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_off">使用 KeePassA 键盘时不震动</string>
+    <string name="ime_search_entry_hint">搜索条目</string>
+    <string name="ime_search_no_entry">无匹配条目</string>
+    <string name="ime_search_select_entry_first">请先选择条目</string>
+    <string name="ime_database_locked_hint">数据库未解锁</string>
+    <string name="ime_database_locked_unlock_button">解锁</string>
     <string name="hint_chrome_autofill_third_party_mode"><![CDATA[Chrome 尚未允许第三方自动填充服务。未开启时，Chrome 网页输入框不会触发 KeePassA 自动填充。]]></string>
     <string name="hint_browser_third_party_autofill_mode"><![CDATA[%1$s 尚未允许第三方自动填充服务。未开启时，%1$s 网页输入框不会触发 KeePassA 自动填充。]]></string>
     <string name="set_key_auto_fill_category">set_key_auto_fill_category</string>

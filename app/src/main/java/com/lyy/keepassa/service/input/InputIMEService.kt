@@ -14,7 +14,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.autofill.AutofillManager
@@ -24,10 +23,13 @@ import android.view.inputmethod.InlineSuggestionsResponse
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.adapter.RvItemClickSupport
@@ -38,19 +40,27 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.FillInfoEvent
 import com.lyy.keepassa.router.ActivityRouter
-import com.lyy.keepassa.router.ServiceRouter
+import com.lyy.keepassa.service.autofill.ImeBrowserDomainContext
 import com.lyy.keepassa.service.autofill.W3cHints
+import com.lyy.keepassa.service.input.keyboard.ImeKeyAction
+import com.lyy.keepassa.service.input.keyboard.ImeKeyboardPage
+import com.lyy.keepassa.service.input.keyboard.ImeKeyboardPreferences
+import com.lyy.keepassa.service.input.keyboard.ImeKeyboardState
+import com.lyy.keepassa.service.input.keyboard.ImeKeyboardViewBinder
+import com.lyy.keepassa.service.input.search.ImeEntrySearchEngine
+import com.lyy.keepassa.service.input.search.ImeSearchSession
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.LanguageUtil
-import com.lyy.keepassa.util.NotificationUtil
-import com.lyy.keepassa.util.totp.OtpUtil
+import com.lyy.keepassa.util.getRealUserName
 import com.lyy.keepassa.util.isCanOpenQuickLock
+import com.lyy.keepassa.util.totp.OtpUtil
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
 import com.lyy.keepassa.view.search.CommonSearchActivity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -67,18 +77,6 @@ import timber.log.Timber
  */
 class InputIMEService : InputMethodService(), View.OnClickListener {
 
-  private companion object {
-    /**
-     * 长按退格键的初始延迟(ms),过后开始连续删除。见 issue #86。
-     */
-    private const val BACKSPACE_REPEAT_DELAY_MS = 400L
-
-    /**
-     * 长按退格键开始后的重复间隔(ms)。
-     */
-    private const val BACKSPACE_REPEAT_INTERVAL_MS = 50L
-  }
-
   private var appPkgName: String? = ""
   private var ic: InputConnection? = null
   private val selectionTracker = CandidateSelectionTracker<PwEntry>()
@@ -86,16 +84,16 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
   private lateinit var candidatesList: RecyclerView
   private val candidatesData = arrayListOf<SimpleItemEntity>()
   private lateinit var candidatesAdapter: CandidatesAdapter
+  private var imeLockedBanner: View? = null
   private var imeOption = EditorInfo.IME_ACTION_GO
   private var curImeView: View? = null
   private var scope = MainScope()
-  private var backspaceButton: View? = null
-  private val backspaceRepeatRunnable: Runnable = object : Runnable {
-    override fun run() {
-      ic?.deleteSurroundingText(1, 0)
-      backspaceButton?.postDelayed(this, BACKSPACE_REPEAT_INTERVAL_MS)
-    }
-  }
+  private val keyboardState = ImeKeyboardState()
+  private val searchSession = ImeSearchSession<PwEntry>()
+  private val manualSelectionPolicy = ImeManualSelectionPolicy<PwEntry>()
+  private lateinit var keyboardPreferences: ImeKeyboardPreferences
+  private var keyboardBinder: ImeKeyboardViewBinder? = null
+  private var imeSearchJob: Job? = null
 
   /**
    * 当 IME 首次显示时，系统会调用 onCreateInputView() 回调。在此方法的实现中，您可以创建要在 IME 窗口中显示的布局，并将布局返回系统。
@@ -115,8 +113,12 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       }
     }
     curImeView = layout
-    setupBackspaceLongPress(layout)
+    keyboardPreferences = ImeKeyboardPreferences(this)
+    initImeSearchBar(layout)
+    initKeyboard(layout)
     initCandidatesLayout()
+    initLockedBanner(layout)
+    updateImeActionButtons()
 
     layout.findViewById<AppCompatImageView>(R.id.ivSearch).setOnClickListener {
       Routerfit.create(ActivityRouter::class.java).toCommonSearch()
@@ -129,6 +131,45 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     }
 
     return layout
+  }
+
+  private fun initImeSearchBar(layout: View) {
+    val searchBar = layout.findViewById<View>(R.id.imeSearchBar)
+    val clear = layout.findViewById<View>(R.id.btImeSearchClear)
+    searchBar.setOnClickListener {
+      keyboardPreferences.performKeyboardHaptic(searchBar)
+      enterImeSearchMode()
+    }
+    clear.setOnClickListener {
+      keyboardPreferences.performKeyboardHaptic(clear)
+      if (keyboardState.searchQuery.isEmpty()) {
+        exitImeSearchMode(clearResults = true)
+      } else {
+        keyboardState.clearSearchQuery()
+        searchSession.clear()
+        updateImeSearchUi()
+        showImeSearchEmptyOrResults()
+      }
+    }
+  }
+
+  private fun initKeyboard(layout: View) {
+    val container = layout.findViewById<LinearLayout>(R.id.llImeKeyboard)
+    keyboardBinder = ImeKeyboardViewBinder(
+      context = this,
+      container = container,
+      onKey = { view, action -> handleImeKeyAction(view, action) },
+      onShiftLongPress = { view ->
+        keyboardPreferences.performKeyboardHaptic(view)
+        keyboardState.longPressShift()
+        renderImeKeyboard()
+      }
+    )
+    renderImeKeyboard()
+  }
+
+  private fun renderImeKeyboard() {
+    keyboardBinder?.render(keyboardState.page, keyboardState.shiftState)
   }
 
   private fun initCandidatesLayout() {
@@ -149,31 +190,186 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
             item.isSelected = selectionTracker.isSelected(i)
           }
           candidatesAdapter.notifyDataSetChanged()
+          updateImeActionButtons()
+          if (keyboardState.isSearchMode) {
+            searchSession.results.getOrNull(position)?.let { entry ->
+              searchSession.select(entry)
+              manualSelectionPolicy.rememberManualSelection(appPkgName, entry)
+              exitImeSearchMode(clearResults = false)
+            }
+          }
         }
       })
   }
 
-  /**
-   * 退格键触摸处理:ACTION_DOWN 删 1 字并启动延时,长按 400ms 后每 50ms 重复删除,
-   * ACTION_UP/CANCEL 取消。返回 true 消费触摸事件,因此 [onClick] 不再处理退格。
-   * 修复 issue #86 评论(只能一个一个字符删)。
-   */
-  private fun setupBackspaceLongPress(layout: View) {
-    val bt = layout.findViewById<ImageView>(R.id.btBackspace)
-    backspaceButton = bt
-    bt.setOnTouchListener { _, event ->
-      when (event.actionMasked) {
-        MotionEvent.ACTION_DOWN -> {
-          ic?.deleteSurroundingText(1, 0)
-          bt.removeCallbacks(backspaceRepeatRunnable)
-          bt.postDelayed(backspaceRepeatRunnable, BACKSPACE_REPEAT_DELAY_MS)
+  private fun handleImeKeyAction(view: View, action: ImeKeyAction) {
+    keyboardPreferences.performKeyboardHaptic(view)
+    when (action) {
+      is ImeKeyAction.CommitText -> {
+        val shiftBefore = keyboardState.shiftState
+        val text = if (keyboardState.page == ImeKeyboardPage.ALPHABET) {
+          keyboardState.applyShiftTo(action.text)
+        } else {
+          action.text
         }
-        MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-          bt.removeCallbacks(backspaceRepeatRunnable)
+        if (keyboardState.isSearchMode) {
+          handleSearchTextInput(text)
+        } else {
+          fillData(text)
+        }
+        if (shiftBefore != keyboardState.shiftState) {
+          renderImeKeyboard()
         }
       }
-      true
+      ImeKeyAction.Space -> {
+        if (keyboardState.isSearchMode) {
+          handleSearchTextInput(" ")
+        } else {
+          fillData(" ")
+        }
+      }
+      ImeKeyAction.Backspace -> handleBackspaceInput()
+      ImeKeyAction.Enter -> {
+        if (keyboardState.isSearchMode) {
+          runImeSearchNow()
+        } else {
+          ic?.performEditorAction(imeOption)
+        }
+      }
+      ImeKeyAction.Shift -> {
+        keyboardState.tapShift(System.currentTimeMillis())
+        renderImeKeyboard()
+      }
+      ImeKeyAction.SwitchToSymbols -> {
+        keyboardState.switchToSymbols()
+        renderImeKeyboard()
+      }
+      ImeKeyAction.SwitchToAlphabet -> {
+        keyboardState.switchToAlphabet()
+        renderImeKeyboard()
+      }
+      ImeKeyAction.EnterSearchMode -> enterImeSearchMode()
+      ImeKeyAction.ClearSearch -> {
+        keyboardState.clearSearchQuery()
+        searchSession.clear()
+        updateImeSearchUi()
+        showImeSearchEmptyOrResults()
+      }
+      ImeKeyAction.ExitSearchMode -> exitImeSearchMode(clearResults = true)
     }
+  }
+
+  private fun handleSearchTextInput(text: String) {
+    if (!keyboardState.appendSearchText(text)) return
+    searchSession.setQuery(keyboardState.searchQuery)
+    updateImeSearchUi()
+    scheduleImeSearch()
+  }
+
+  private fun handleBackspaceInput() {
+    if (keyboardState.isSearchMode) {
+      keyboardState.backspaceSearchQuery()
+      searchSession.setQuery(keyboardState.searchQuery)
+      updateImeSearchUi()
+      scheduleImeSearch()
+    } else {
+      ic?.deleteSurroundingText(1, 0)
+    }
+  }
+
+  private fun enterImeSearchMode() {
+    if (!isDatabaseUnlocked()) {
+      showImeDatabaseLockedHint()
+      return
+    }
+    manualSelectionPolicy.onNewSearch()
+    keyboardState.enterSearchMode()
+    searchSession.clear()
+    updateImeSearchUi()
+    focusImeSearchInput()
+    showImeSearchEmptyOrResults()
+  }
+
+  private fun exitImeSearchMode(clearResults: Boolean) {
+    keyboardState.exitSearchMode()
+    imeSearchJob?.cancel()
+    if (clearResults) {
+      searchSession.clear()
+      candidatesData.clear()
+      candidatesAdapter.notifyDataSetChanged()
+      animateImeLayoutChanges {
+        candidatesList.visibility = View.GONE
+      }
+    }
+    updateImeSearchUi()
+    updateImeActionButtons()
+  }
+
+  private fun updateImeSearchUi() {
+    val root = curImeView ?: return
+    val query = keyboardState.searchQuery
+    val input = root.findViewById<TextView>(R.id.tvImeSearchQuery)
+    if (input.text?.toString() != query) {
+      input.text = query
+    }
+    root.findViewById<View>(R.id.btImeSearchClear).visibility =
+      if (keyboardState.isSearchMode) View.VISIBLE else View.GONE
+  }
+
+  private fun focusImeSearchInput() {
+    curImeView?.findViewById<TextView>(R.id.tvImeSearchQuery)?.requestFocus()
+  }
+
+  private fun scheduleImeSearch() {
+    imeSearchJob?.cancel()
+    imeSearchJob = scope.launch {
+      delay(ImeSearchSession.DEBOUNCE_MS)
+      runImeSearchNow()
+    }
+  }
+
+  private fun runImeSearchNow() {
+    if (!keyboardState.isSearchMode) return
+    val results = ImeEntrySearchEngine.search(searchSession.query)
+    searchSession.updateResults(results)
+    showImeSearchEmptyOrResults()
+  }
+
+  private fun showImeSearchEmptyOrResults() {
+    candidatesData.clear()
+    if (searchSession.isEmptyStateVisible) {
+      animateImeLayoutChanges {
+        candidatesList.visibility = View.VISIBLE
+      }
+      candidatesData.add(SimpleItemEntity().apply {
+        type = CandidatesAdapter.ITEM_TYPE_EMPTY
+        title = getString(R.string.ime_search_no_entry)
+      })
+      candidatesAdapter.notifyDataSetChanged()
+      updateImeActionButtons()
+      return
+    }
+
+    val results = searchSession.results
+    selectionTracker.show(results)
+    if (results.isEmpty()) {
+      animateImeLayoutChanges {
+        candidatesList.visibility = View.GONE
+      }
+      candidatesAdapter.notifyDataSetChanged()
+      updateImeActionButtons()
+      return
+    }
+
+    animateImeLayoutChanges {
+      candidatesList.visibility = View.VISIBLE
+    }
+    val flags = selectionTracker.selectedFlags()
+    results.forEachIndexed { index, entry ->
+      candidatesData.add(entry.toImeCandidateItem(flags[index]))
+    }
+    candidatesAdapter.notifyDataSetChanged()
+    updateImeActionButtons()
   }
 
   /**
@@ -190,6 +386,16 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     ic = currentInputConnection
     Timber.d("pkgName = ${info?.packageName}, inputType = ${info?.inputType}, fieldName = ${info?.fieldName}, fieldId = ${info?.fieldId}")
     appPkgName = info?.packageName
+    manualSelectionPolicy.onStartInput(appPkgName)
+    if (keyboardState.isSearchMode) {
+      exitImeSearchMode(clearResults = manualSelectionPolicy.currentSelection == null)
+    }
+
+    if (!isDatabaseUnlocked()) {
+      showImeDatabaseLockedHint()
+      return
+    }
+    hideImeLockedBanner()
 
     if (W3cHints.isBrowser(appPkgName) && !checkCanOpenAutoFill()) {
       if (curImeView == null) {
@@ -209,7 +415,13 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       return
     }
 
-    showEntryList(searchEntry(appPkgName))
+    if (manualSelectionPolicy.shouldUseAutomaticCandidates(appPkgName)) {
+      showEntryList(searchEntry(appPkgName))
+    } else {
+      manualSelectionPolicy.currentSelection?.let {
+        showEntryList(listOf(it), forceVisible = true)
+      }
+    }
   }
 
   private fun checkCanOpenAutoFill(): Boolean {
@@ -252,28 +464,6 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
    */
   override fun onClick(v: View) {
     when (v.id) {
-      // 锁定
-      R.id.btLock -> {
-        if (BaseApp.KDB == null || BaseApp.isLocked) {
-          return
-        }
-        if (appPkgName == packageName) {
-          LauncherActivity.startLauncherActivity(this, Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
-        BaseApp.isLocked = true
-        NotificationUtil.startDbLocked(this)
-        if (BaseApp.APP.isCanOpenQuickLock()) {
-          return
-        }
-        selectionTracker.show(emptyList())
-        candidatesData.clear()
-        candidatesAdapter.notifyDataSetChanged()
-        Routerfit.create(ServiceRouter::class.java).getDbSaveService().clearDb()
-        Timber.d("数据库已锁定")
-        HitUtil.toaskShort(getString(R.string.notify_db_locked))
-        return
-      }
-
       // 用户名
       R.id.btAccount -> {
         if (!dbIsOpen()) {
@@ -283,8 +473,10 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
           val userName = KdbUtil.getUserName(it)
           Timber.d("fill user name: $userName")
           fillData(userName)
+          finishSearchModeAfterFill()
           return
         }
+        showSelectEntryFirstIfSearching()
       }
 
       // 密码
@@ -296,8 +488,10 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
           val pass = KdbUtil.getPassword(it)
           Timber.d("fill password: $pass")
           fillData(pass)
+          finishSearchModeAfterFill()
           return
         }
+        showSelectEntryFirstIfSearching()
       }
 
       // 关键软键盘
@@ -325,6 +519,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
           return
         } else {
           fillData(totp.second!!)
+          finishSearchModeAfterFill()
         }
       }
 
@@ -335,12 +530,20 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         }
 
         showMoreInfoDialog()
+        finishSearchModeAfterFill()
       }
+    }
+  }
 
-      // 回车键
-      R.id.btEnter -> {
-        ic?.performEditorAction(imeOption)
-      }
+  private fun finishSearchModeAfterFill() {
+    if (keyboardState.isSearchMode) {
+      exitImeSearchMode(clearResults = false)
+    }
+  }
+
+  private fun showSelectEntryFirstIfSearching() {
+    if (keyboardState.isSearchMode) {
+      HitUtil.toaskShort(getString(R.string.ime_search_select_entry_first))
     }
   }
 
@@ -382,6 +585,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       }
 
       fillData(event.infoStr.toString())
+      finishSearchModeAfterFill()
     }
   }
 
@@ -389,8 +593,10 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     super.onDestroy()
     EventBusHelper.unReg(this)
     scope.cancel()
-    backspaceButton?.removeCallbacks(backspaceRepeatRunnable)
-    backspaceButton = null
+    imeSearchJob?.cancel()
+    manualSelectionPolicy.clear()
+    searchSession.clear()
+    keyboardBinder = null
   }
 
   /**
@@ -403,41 +609,125 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
    * 会再次进入 [onStartInputView],若新候选与上次同引用,resync 保留用户已选条目;
    * 列表形状变化时 resync 自动 fallback 到 show。详见 issue #86。
    */
-  private fun showEntryList(entries: List<PwEntry>) {
+  private fun showEntryList(
+    entries: List<PwEntry>,
+    forceVisible: Boolean = false
+  ) {
     selectionTracker.resync(entries)
     candidatesData.clear()
     if (selectionTracker.isEmpty) {
-      candidatesList.visibility = View.GONE
+      animateImeLayoutChanges {
+        candidatesList.visibility = View.GONE
+      }
+      updateImeActionButtons()
       return
     }
-    if (selectionTracker.size == 1) {
-      candidatesList.visibility = View.GONE
+    if (selectionTracker.size == 1 && !forceVisible) {
+      animateImeLayoutChanges {
+        candidatesList.visibility = View.GONE
+      }
+      updateImeActionButtons()
       return
     }
-    candidatesList.visibility = View.VISIBLE
+    animateImeLayoutChanges {
+      candidatesList.visibility = View.VISIBLE
+    }
     val flags = selectionTracker.selectedFlags()
     entries.forEachIndexed { i, pwEntry ->
-      val item = SimpleItemEntity()
-      item.title = pwEntry.title
-      item.obj = pwEntry
-      item.isSelected = flags[i]
-      candidatesData.add(item)
+      candidatesData.add(pwEntry.toImeCandidateItem(flags[i]))
     }
     candidatesAdapter.notifyDataSetChanged()
+    updateImeActionButtons()
+  }
+
+  private fun showImeDatabaseLockedHint() {
+    imeSearchJob?.cancel()
+    keyboardState.exitSearchMode()
+    manualSelectionPolicy.clear()
+    selectionTracker.show(emptyList())
+    candidatesData.clear()
+    candidatesAdapter.notifyDataSetChanged()
+    animateImeLayoutChanges {
+      candidatesList.visibility = View.GONE
+      imeLockedBanner?.visibility = View.VISIBLE
+    }
+    updateImeSearchUi()
+    updateImeActionButtons()
+  }
+
+  private fun hideImeLockedBanner() {
+    animateImeLayoutChanges {
+      imeLockedBanner?.visibility = View.GONE
+    }
+  }
+
+  /**
+   * 只对候选区 slot 内部的子视图(列表 / 锁定 banner / 搜索图标)做 [Fade] 过渡。
+   * slot 自身高度变化由父 ConstraintLayout 立即重排,按钮行与键盘瞬间到位,
+   * 不参与 transition —— 避免应用层动画与系统 IME 窗口调整不同步导致的键盘抖动。
+   * 搜索栏会随 IME 窗口顶部位置瞬变(系统行为),不做动画。
+   */
+  private fun animateImeLayoutChanges(block: () -> Unit) {
+    val slot = (curImeView as? ViewGroup)?.findViewById<ViewGroup>(R.id.imeCandidatesSlot)
+    if (slot == null) {
+      block()
+      return
+    }
+    TransitionManager.beginDelayedTransition(slot, Fade())
+    block()
+  }
+
+  private fun initLockedBanner(layout: View) {
+    val banner = layout.findViewById<View>(R.id.imeLockedBanner)
+    val unlockButton = layout.findViewById<View>(R.id.btImeUnlock)
+    val unlockClick = View.OnClickListener {
+      keyboardPreferences.performKeyboardHaptic(it)
+      dbIsOpen()
+    }
+    banner.setOnClickListener(unlockClick)
+    unlockButton.setOnClickListener(unlockClick)
+    imeLockedBanner = banner
+  }
+
+  private fun updateImeActionButtons() {
+    val root = curImeView ?: return
+    val enabled = isDatabaseUnlocked() && curEntry != null
+    listOf(
+      R.id.btAccount,
+      R.id.btPass,
+      R.id.btTotp,
+      R.id.btOtherInfo
+    ).forEach { buttonId ->
+      val button = root.findViewById<View>(buttonId) ?: return@forEach
+      button.isEnabled = enabled
+      button.isClickable = enabled
+      button.alpha = if (enabled) 1f else 0.35f
+    }
+  }
+
+  private fun PwEntry.toImeCandidateItem(selected: Boolean): SimpleItemEntity {
+    return SimpleItemEntity().also { item ->
+      item.title = title.orEmpty()
+      item.subTitle = getRealUserName().ifBlank { url.orEmpty() }
+      item.obj = this
+      item.isSelected = selected
+    }
   }
 
   /**
    * 填充数据
    */
   private fun fillData(text: String) {
-    ic?.commitText(text, 0)
+    ic?.commitText(text, 1)
   }
+
+  private fun isDatabaseUnlocked(): Boolean = BaseApp.KDB != null && !BaseApp.isLocked
 
   /**
    * 判断数据库是否打开，没有打开，启动登陆界面，如果是快速锁定，打开快速解锁界面
    */
   private fun dbIsOpen(): Boolean {
-    if (BaseApp.KDB == null || BaseApp.isLocked) {
+    if (!isDatabaseUnlocked()) {
       if (BaseApp.KDB == null) {
         LauncherActivity.startLauncherActivity(this, Intent.FLAG_ACTIVITY_NEW_TASK)
         return false
@@ -462,8 +752,9 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     }
     val listStorage = ArrayList<PwEntry>()
     if (W3cHints.isBrowser(pkgName)) {
-      Timber.d("curDomain = ${W3cHints.curDomainUrl}")
-      KdbUtil.searchEntriesByDomain(W3cHints.curDomainUrl, listStorage)
+      val domain = ImeBrowserDomainContext.resolve(pkgName)
+      Timber.d("ime browser domain context available = ${domain != null}")
+      KdbUtil.searchEntriesByDomain(domain, listStorage)
       return listStorage
     }
 

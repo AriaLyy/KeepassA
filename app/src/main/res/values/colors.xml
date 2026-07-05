@@ -56,6 +56,13 @@
   <color name="color_bbbbbb">#bbbbbb</color>
   <color name="color_FCCCB7">#FCCCB7</color>
 
+  <color name="ime_keyboard_background">#E7EAED</color>
+  <color name="ime_search_background">#FFFFFF</color>
+  <color name="ime_key_background">#FFFFFF</color>
+  <color name="ime_key_background_pressed">#F2F4F7</color>
+  <color name="ime_key_text">#4E85DB</color>
+  <color name="ime_search_clear_icon">#757575</color>
+
 
   <!-- 默迪卡颜色  https://www.bilibili.com/read/cv11988559-->
   <color name="color_d3ae5b">#d3ae5b</color>

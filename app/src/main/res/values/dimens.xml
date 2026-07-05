@@ -10,6 +10,7 @@
 
   <dimen name="icon_size">28dp</dimen>
   <dimen name="input_pass_key_h">30dp</dimen>
+  <dimen name="ime_key_height">40dp</dimen>
   <dimen name="create_pass_key_h">90dp</dimen>
 
   <integer name="anim_duration_very_long">1500</integer>
