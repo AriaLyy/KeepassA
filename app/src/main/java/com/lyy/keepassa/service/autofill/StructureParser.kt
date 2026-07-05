@@ -31,6 +31,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
   val autoFillFields = AutoFillFieldMetadataCollection()
   val useFields = ArrayList<ViewNode>()
   val passFields = ArrayList<ViewNode>()
+  val totpFields = ArrayList<ViewNode>()
   val searchOrUrlAutoFillIds = HashSet<AutofillId>()
   private val browserFormFieldCandidates = ArrayList<ViewNode>()
   var domainUrl = ""
@@ -87,6 +88,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     autoFillFields.clear()
     useFields.clear()
     passFields.clear()
+    totpFields.clear()
     searchOrUrlAutoFillIds.clear()
     browserFormFieldCandidates.clear()
     authPromptFallbackId = null
@@ -121,7 +123,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     }
     applyBrowserFallbackCredentialFields()
     // 如果密码为空，默认不弹出选择item，这是为了防止遇到editText就弹出item的情况
-    if (passFields.isEmpty() && !isManual && !isW3c) {
+    if (passFields.isEmpty() && totpFields.isEmpty() && !isManual && !isW3c) {
       autoFillFields.clear()
     }
   }
@@ -272,6 +274,9 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     if (isLikelySearchOrUrlField(viewNode)) {
       return
     }
+    if (isTotp(viewNode)) {
+      return
+    }
     browserFormFieldCandidates.add(viewNode)
   }
 
@@ -361,6 +366,10 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       addPassField(viewNode)
       return
     }
+    if (isTotp(viewNode)) {
+      addTotpField(viewNode)
+      return
+    }
     if (isUserName(viewNode)) {
       addUserField(viewNode)
       return
@@ -372,6 +381,11 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
 
   private fun getW3CInfo(viewNode: ViewNode) {
     if (viewNode.htmlInfo == null) {
+      return
+    }
+    if (W3cHints.isW3cTotpByHints(viewNode)) {
+      Timber.i("addTotp by hints")
+      addTotpField(viewNode)
       return
     }
     if (W3cHints.isW3CUserByHints(viewNode)) {
@@ -413,6 +427,15 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     autoFillFields.add(AutoFillFieldMetadata(viewNode, View.AUTOFILL_HINT_PASSWORD))
   }
 
+  private fun addTotpField(viewNode: ViewNode, force: Boolean = false) {
+    if (!force && !isW3c && !isInnerAppW3c && (viewNode.visibility != View.VISIBLE || !viewNode.isFocusable)) {
+      return
+    }
+    Timber.d("totp autofillType = ${viewNode.autofillType}, fillId = ${viewNode.autofillId}, idEntry = ${viewNode.idEntry}, hint = ${viewNode.hint}, visibility = ${viewNode.visibility}, isActivated = ${viewNode.isActivated}")
+    totpFields.add(viewNode)
+    autoFillFields.add(AutoFillFieldMetadata(viewNode, AutofillTotpFieldPolicy.AUTOFILL_HINT_TOTP))
+  }
+
   /**
    * add userName field
    */
@@ -431,6 +454,18 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
   /**
    * 判断是否是用户名输入框
    */
+  private fun isTotp(f: ViewNode): Boolean {
+    if (isLikelySearchOrUrlField(f) || isPassword(f)) {
+      return false
+    }
+    return AutofillTotpFieldPolicy.isTotpField(
+      autofillHints = f.autofillHints,
+      idEntry = f.idEntry,
+      hint = f.hint,
+      htmlAttributes = f.htmlInfo?.attributes
+    )
+  }
+
   private fun isUserName(f: ViewNode): Boolean {
     if ((f.idEntry != null && f.idEntry!!.contains("search", ignoreCase = true))
       || (f.hint != null && f.hint!!.contains("search", ignoreCase = true))
