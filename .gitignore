@@ -17,6 +17,7 @@ app/build
 Frame/build
 KeepassLib/build
 node_modules
+/.worktrees/
 cp_buglyQqUploadSymbolLib.jar
 /buglybin
 local.properties
