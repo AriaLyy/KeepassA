@@ -233,6 +233,7 @@ The \n database is encrypted using AES256. No one can open your database without
     <string name="ime_search_entry_hint"><![CDATA[Search entries]]></string>
     <string name="ime_search_no_entry"><![CDATA[No matching entries]]></string>
     <string name="ime_search_select_entry_first"><![CDATA[Select an entry first]]></string>
+    <string name="ime_database_locked_hint"><![CDATA[Database locked]]></string>
     <string name="hint_chrome_autofill_third_party_mode"><![CDATA[Chrome has not enabled third-party autofill. KeePassA cannot receive Chrome autofill requests until Chrome allows other password managers.]]></string>
     <string name="hint_browser_third_party_autofill_mode"><![CDATA[%1$s has not enabled third-party autofill. KeePassA cannot receive %1$s autofill requests until the browser allows other password managers.]]></string>
     <string name="set_key_auto_fill_category"><![CDATA[set_key_auto_fill_category]]></string>

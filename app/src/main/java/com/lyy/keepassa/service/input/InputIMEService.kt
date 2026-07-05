@@ -115,6 +115,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     initImeSearchBar(layout)
     initKeyboard(layout)
     initCandidatesLayout()
+    updateImeActionButtons()
 
     layout.findViewById<AppCompatImageView>(R.id.ivSearch).setOnClickListener {
       Routerfit.create(ActivityRouter::class.java).toCommonSearch()
@@ -193,6 +194,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
             item.isSelected = selectionTracker.isSelected(i)
           }
           candidatesAdapter.notifyDataSetChanged()
+          updateImeActionButtons()
           if (keyboardState.isSearchMode) {
             searchSession.results.getOrNull(position)?.let { entry ->
               searchSession.select(entry)
@@ -280,7 +282,10 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
   }
 
   private fun enterImeSearchMode() {
-    if (!dbIsOpen()) return
+    if (!isDatabaseUnlocked()) {
+      showImeDatabaseLockedHint()
+      return
+    }
     manualSelectionPolicy.onNewSearch()
     keyboardState.enterSearchMode()
     searchSession.clear()
@@ -299,6 +304,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       candidatesList.visibility = View.GONE
     }
     updateImeSearchUi()
+    updateImeActionButtons()
   }
 
   private fun updateImeSearchUi() {
@@ -350,6 +356,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         title = getString(R.string.ime_search_no_entry)
       })
       candidatesAdapter.notifyDataSetChanged()
+      updateImeActionButtons()
       return
     }
 
@@ -358,6 +365,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     if (results.isEmpty()) {
       candidatesList.visibility = View.GONE
       candidatesAdapter.notifyDataSetChanged()
+      updateImeActionButtons()
       return
     }
 
@@ -367,6 +375,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       candidatesData.add(entry.toImeCandidateItem(flags[index]))
     }
     candidatesAdapter.notifyDataSetChanged()
+    updateImeActionButtons()
   }
 
   /**
@@ -386,6 +395,11 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     manualSelectionPolicy.onStartInput(appPkgName)
     if (keyboardState.isSearchMode) {
       exitImeSearchMode(clearResults = manualSelectionPolicy.currentSelection == null)
+    }
+
+    if (!isDatabaseUnlocked()) {
+      showImeDatabaseLockedHint()
+      return
     }
 
     if (W3cHints.isBrowser(appPkgName) && !checkCanOpenAutoFill()) {
@@ -608,10 +622,12 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     candidatesData.clear()
     if (selectionTracker.isEmpty) {
       candidatesList.visibility = View.GONE
+      updateImeActionButtons()
       return
     }
     if (selectionTracker.size == 1 && !forceVisible) {
       candidatesList.visibility = View.GONE
+      updateImeActionButtons()
       return
     }
     candidatesList.visibility = View.VISIBLE
@@ -620,6 +636,39 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       candidatesData.add(pwEntry.toImeCandidateItem(flags[i]))
     }
     candidatesAdapter.notifyDataSetChanged()
+    updateImeActionButtons()
+  }
+
+  private fun showImeDatabaseLockedHint() {
+    imeSearchJob?.cancel()
+    keyboardState.exitSearchMode()
+    manualSelectionPolicy.clear()
+    selectionTracker.show(emptyList())
+    candidatesData.clear()
+    candidatesList.visibility = View.VISIBLE
+    candidatesData.add(SimpleItemEntity().apply {
+      type = CandidatesAdapter.ITEM_TYPE_EMPTY
+      title = getString(R.string.ime_database_locked_hint)
+    })
+    candidatesAdapter.notifyDataSetChanged()
+    updateImeSearchUi()
+    updateImeActionButtons()
+  }
+
+  private fun updateImeActionButtons() {
+    val root = curImeView ?: return
+    val enabled = isDatabaseUnlocked() && curEntry != null
+    listOf(
+      R.id.btAccount,
+      R.id.btPass,
+      R.id.btTotp,
+      R.id.btOtherInfo
+    ).forEach { buttonId ->
+      val button = root.findViewById<View>(buttonId) ?: return@forEach
+      button.isEnabled = enabled
+      button.isClickable = enabled
+      button.alpha = if (enabled) 1f else 0.35f
+    }
   }
 
   private fun PwEntry.toImeCandidateItem(selected: Boolean): SimpleItemEntity {
@@ -638,11 +687,13 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     ic?.commitText(text, 1)
   }
 
+  private fun isDatabaseUnlocked(): Boolean = BaseApp.KDB != null && !BaseApp.isLocked
+
   /**
    * 判断数据库是否打开，没有打开，启动登陆界面，如果是快速锁定，打开快速解锁界面
    */
   private fun dbIsOpen(): Boolean {
-    if (BaseApp.KDB == null || BaseApp.isLocked) {
+    if (!isDatabaseUnlocked()) {
       if (BaseApp.KDB == null) {
         LauncherActivity.startLauncherActivity(this, Intent.FLAG_ACTIVITY_NEW_TASK)
         return false

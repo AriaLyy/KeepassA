@@ -116,6 +116,34 @@ class InputIMEServiceSourceTest {
     assertFalse(source.contains("commitText(text, 0)"))
   }
 
+  @Test fun serviceShowsKeyboardHintWhenDatabaseIsLocked() {
+    val source = File("src/main/java/com/lyy/keepassa/service/input/InputIMEService.kt").readText()
+    val strings = File("src/main/res/values/strings.xml").readText()
+    val zhStrings = File("src/main/res/values-zh-rCN/strings.xml").readText()
+
+    assertTrue(strings.contains("name=\"ime_database_locked_hint\""))
+    assertTrue(zhStrings.contains("name=\"ime_database_locked_hint\""))
+    assertTrue(source.contains("showImeDatabaseLockedHint"))
+    assertTrue(source.contains("R.string.ime_database_locked_hint"))
+    assertTrue(source.contains("CandidatesAdapter.ITEM_TYPE_EMPTY"))
+    assertTrue(source.contains("selectionTracker.show(emptyList())"))
+    assertTrue(source.contains("if (!isDatabaseUnlocked())"))
+  }
+
+  @Test fun serviceDisablesEntryActionButtonsWithoutSelectedEntry() {
+    val source = File("src/main/java/com/lyy/keepassa/service/input/InputIMEService.kt").readText()
+
+    assertTrue(source.contains("updateImeActionButtons()"))
+    assertTrue(source.contains("val enabled = isDatabaseUnlocked() && curEntry != null"))
+    assertTrue(source.contains("R.id.btAccount"))
+    assertTrue(source.contains("R.id.btPass"))
+    assertTrue(source.contains("R.id.btTotp"))
+    assertTrue(source.contains("R.id.btOtherInfo"))
+    assertTrue(source.contains("button.isEnabled = enabled"))
+    assertTrue(source.contains("button.isClickable = enabled"))
+    assertTrue(source.contains("button.alpha = if (enabled) 1f else"))
+  }
+
   @Test fun imeActionRow_containsOnlyCurrentFirstRowActionsInOrder() {
     val layout = File("src/main/res/layout/layout_kpa_ime.xml").readText()
 
