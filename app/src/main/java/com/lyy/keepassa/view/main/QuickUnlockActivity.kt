@@ -258,6 +258,11 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
   private fun turnActivity() {
     BaseApp.isLocked = false
     NotificationUtil.startDbOpenNotify(this@QuickUnlockActivity)
+    if (intent.getBooleanExtra(LauncherActivity.EXTRA_RETURN_UNLOCK_RESULT, false)) {
+      setResult(Activity.RESULT_OK)
+      finish()
+      return
+    }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && BaseApp.KDB != null && module.isAutoFill()) {
       val apkPkgName = module.autoFillParam?.apkPkgName
       if (apkPkgName.isNullOrEmpty()) {
@@ -337,6 +342,12 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
           this.flags = flags
         }
       })
+    }
+
+    internal fun createQuickUnlockResultIntent(context: Context): Intent {
+      return Intent(context, QuickUnlockActivity::class.java).apply {
+        putExtra(LauncherActivity.EXTRA_RETURN_UNLOCK_RESULT, true)
+      }
     }
 
     /**

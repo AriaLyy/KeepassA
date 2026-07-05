@@ -8,27 +8,75 @@
 
 package com.lyy.keepassa.view.credential
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.credentials.GetCredentialResponse
 import androidx.credentials.PasswordCredential
 import androidx.credentials.provider.PendingIntentHandler
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.service.autofill.AutofillBrowserAuthContextStore
+import com.lyy.keepassa.service.credential.CredentialBeginGetResponseFactory
+import com.lyy.keepassa.service.credential.CredentialLookupTargetMapper
 import com.lyy.keepassa.service.credential.CredentialPasswordRepository
 import com.lyy.keepassa.service.credential.CredentialPasswordResultMapper
 import com.lyy.keepassa.service.credential.CredentialProviderPendingIntents
+import com.lyy.keepassa.service.credential.CredentialUnlockIntentPolicy
 import com.lyy.keepassa.util.getRealPass
 import com.lyy.keepassa.util.getRealUserName
+import com.lyy.keepassa.util.isCanOpenQuickLock
+import com.lyy.keepassa.view.launcher.LauncherActivity
+import com.lyy.keepassa.view.main.QuickUnlockActivity
 
-class CredentialGetActivity : Activity() {
+class CredentialGetActivity : ComponentActivity() {
+
+  private val unlockLauncher = registerForActivityResult(
+    object : ActivityResultContract<Unit, Boolean>() {
+      override fun createIntent(context: Context, input: Unit): Intent {
+        return if (
+          CredentialUnlockIntentPolicy.shouldUseQuickUnlock(
+            hasOpenDatabase = BaseApp.KDB != null,
+            canOpenQuickUnlock = BaseApp.APP.isCanOpenQuickLock()
+          )
+        ) {
+          QuickUnlockActivity.createQuickUnlockResultIntent(context)
+        } else {
+          LauncherActivity.createUnlockResultIntent(context)
+        }
+      }
+
+      override fun parseResult(resultCode: Int, intent: Intent?): Boolean {
+        return resultCode == RESULT_OK
+      }
+    }
+  ) { unlocked ->
+    if (unlocked) {
+      completeGet()
+    } else {
+      cancel()
+    }
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    if (BaseApp.KDB == null || BaseApp.isLocked) {
+      unlockLauncher.launch(Unit)
+      return
+    }
     completeGet()
   }
 
   private fun completeGet() {
+    if (intent.getStringExtra(CredentialProviderPendingIntents.EXTRA_ENTRY_ID) == null) {
+      completeBeginGetAfterUnlock()
+      return
+    }
+    completeSelectedGet()
+  }
+
+  private fun completeSelectedGet() {
     val providerRequest = PendingIntentHandler.retrieveProviderGetCredentialRequest(intent)
     if (providerRequest == null || BaseApp.KDB == null || BaseApp.isLocked) {
       cancel()
@@ -56,6 +104,34 @@ class CredentialGetActivity : Activity() {
         )
       )
     )
+    setResult(RESULT_OK, result)
+    finish()
+  }
+
+  private fun completeBeginGetAfterUnlock() {
+    val request = PendingIntentHandler.retrieveBeginGetCredentialRequest(intent)
+    val packageName = request?.callingAppInfo?.packageName
+    val browserDomain = packageName?.let { AutofillBrowserAuthContextStore.find(it)?.domain }
+    val target = CredentialLookupTargetMapper.from(
+      packageName = packageName,
+      origin = browserDomain?.let { "https://$it" }
+    )
+    if (request == null || target == null || BaseApp.KDB == null || BaseApp.isLocked) {
+      cancel()
+      return
+    }
+
+    val response = CredentialBeginGetResponseFactory.createResponse(
+      context = this,
+      request = request,
+      target = target
+    )
+    if (response.credentialEntries.isEmpty()) {
+      cancel()
+      return
+    }
+    val result = Intent()
+    PendingIntentHandler.setBeginGetCredentialResponse(result, response)
     setResult(RESULT_OK, result)
     finish()
   }

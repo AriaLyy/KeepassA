@@ -140,6 +140,11 @@ class OpenDbFragment : BaseFragment<FragmentOpenDbBinding>(), View.OnClickListen
           return@collectLatest
         }
         Timber.d("打开数据库成功")
+        val launcherActivity = requireActivity() as LauncherActivity
+        if (launcherActivity.shouldReturnUnlockResult()) {
+          launcherActivity.finishUnlockResult(true)
+          return@collectLatest
+        }
         modlue.autoFillParam?.let {
           Timber.d("自动填充，不进入首页")
           modlue.autoFillDelegate?.handleAutoFill(it)

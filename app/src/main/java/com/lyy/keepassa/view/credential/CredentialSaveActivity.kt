@@ -21,10 +21,40 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.service.autofill.AutofillBrowserAuthContextStore
 import com.lyy.keepassa.service.credential.CredentialSaveRequestMapper
+import com.lyy.keepassa.service.credential.CredentialUnlockIntentPolicy
+import com.lyy.keepassa.util.isCanOpenQuickLock
 import com.lyy.keepassa.view.create.entry.CreateEntryActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
+import com.lyy.keepassa.view.main.QuickUnlockActivity
 
 class CredentialSaveActivity : ComponentActivity() {
+
+  private val unlockLauncher = registerForActivityResult(
+    object : ActivityResultContract<Unit, Boolean>() {
+      override fun createIntent(context: Context, input: Unit): Intent {
+        return if (
+          CredentialUnlockIntentPolicy.shouldUseQuickUnlock(
+            hasOpenDatabase = BaseApp.KDB != null,
+            canOpenQuickUnlock = BaseApp.APP.isCanOpenQuickLock()
+          )
+        ) {
+          QuickUnlockActivity.createQuickUnlockResultIntent(context)
+        } else {
+          LauncherActivity.createUnlockResultIntent(context)
+        }
+      }
+
+      override fun parseResult(resultCode: Int, intent: Intent?): Boolean {
+        return resultCode == Activity.RESULT_OK
+      }
+    }
+  ) { unlocked ->
+    if (unlocked) {
+      continueCreate()
+    } else {
+      cancel()
+    }
+  }
 
   private val createEntryLauncher = registerForActivityResult(
     object : ActivityResultContract<AutoFillParam, Boolean>() {
@@ -52,6 +82,10 @@ class CredentialSaveActivity : ComponentActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    if (BaseApp.KDB == null || BaseApp.isLocked) {
+      unlockLauncher.launch(Unit)
+      return
+    }
     continueCreate()
   }
 

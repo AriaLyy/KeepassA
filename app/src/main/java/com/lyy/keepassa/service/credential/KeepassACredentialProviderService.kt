@@ -19,13 +19,12 @@ import androidx.credentials.provider.BeginCreateCredentialResponse
 import androidx.credentials.provider.BeginCreatePasswordCredentialRequest
 import androidx.credentials.provider.BeginGetCredentialRequest
 import androidx.credentials.provider.BeginGetCredentialResponse
-import androidx.credentials.provider.BeginGetPasswordOption
-import androidx.credentials.provider.CredentialEntry
 import androidx.credentials.provider.CredentialProviderService
 import androidx.credentials.provider.CreateEntry
-import androidx.credentials.provider.PasswordCredentialEntry
+import androidx.credentials.provider.AuthenticationAction
 import androidx.credentials.provider.ProviderClearCredentialStateRequest
 import com.lyy.keepassa.R
+import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.service.autofill.AutofillBrowserAuthContextStore
 
 @RequiresApi(34)
@@ -43,35 +42,32 @@ class KeepassACredentialProviderService : CredentialProviderService() {
       return
     }
 
-    val passwordOptions = request.beginGetCredentialOptions
-      .filterIsInstance<BeginGetPasswordOption>()
-    if (passwordOptions.isEmpty()) {
+    if (!CredentialBeginGetResponseFactory.hasPasswordOption(request)) {
       callback.onResult(BeginGetCredentialResponse())
       return
     }
 
-    val entries = CredentialPasswordRepository.find(target)
-      .flatMap { entry ->
-        passwordOptions
-          .filter { option ->
-            option.allowedUserIds.isEmpty() || option.allowedUserIds.contains(entry.username)
-          }
-          .map { option ->
-            PasswordCredentialEntry(
-              context = this,
-              username = entry.username,
-              pendingIntent = CredentialProviderPendingIntents.createGetPasswordPendingIntent(
-                context = this,
-                entryId = entry.uuid,
-                target = target
-              ),
-              beginGetPasswordOption = option,
-              displayName = entry.title
-            ) as CredentialEntry
-          }
-      }
+    if (BaseApp.KDB == null || BaseApp.isLocked) {
+      callback.onResult(
+        BeginGetCredentialResponse(
+          authenticationActions = listOf(
+            AuthenticationAction(
+              title = getString(R.string.credential_provider_unlock_title),
+              pendingIntent = CredentialProviderPendingIntents.createUnlockPendingIntent(this)
+            )
+          )
+        )
+      )
+      return
+    }
 
-    callback.onResult(BeginGetCredentialResponse(credentialEntries = entries))
+    callback.onResult(
+      CredentialBeginGetResponseFactory.createResponse(
+        context = this,
+        request = request,
+        target = target
+      )
+    )
   }
 
   override fun onBeginCreateCredentialRequest(

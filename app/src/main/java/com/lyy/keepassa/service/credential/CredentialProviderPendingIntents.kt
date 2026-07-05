@@ -22,6 +22,7 @@ internal object CredentialProviderPendingIntents {
 
   private const val REQ_GET_PASSWORD = 4101
   private const val REQ_SAVE_PASSWORD = 4102
+  private const val REQ_UNLOCK = 4103
   private const val PENDING_INTENT_FLAGS =
     PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
 
@@ -62,6 +63,15 @@ internal object CredentialProviderPendingIntents {
       context,
       REQ_SAVE_PASSWORD + target.packageName.hashCode(),
       intent,
+      PENDING_INTENT_FLAGS
+    )
+  }
+
+  fun createUnlockPendingIntent(context: Context): PendingIntent {
+    return PendingIntent.getActivity(
+      context,
+      REQ_UNLOCK,
+      Intent(context, CredentialGetActivity::class.java),
       PENDING_INTENT_FLAGS
     )
   }
