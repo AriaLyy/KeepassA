@@ -391,13 +391,21 @@ class AppSettingFragment : PreferenceFragmentCompat() {
   }
 
   private fun setCredentialManagerSettings() {
-    findPreference<Preference>(
+    val preference = findPreference<Preference>(
       getString(R.string.set_key_credential_manager_settings)
-    )?.setOnPreferenceClickListener {
+    ) ?: return
+    preference.isEnabled = true
+    if (!CredentialManagerSettingsShortcut.isCredentialManagerSupported(requireContext())) {
+      preference.summary = getString(R.string.credential_manager_settings_unsupported)
+    }
+    preference.setOnPreferenceClickListener {
       when (CredentialManagerSettingsShortcut.open(requireContext())) {
         CredentialManagerSettingsOpenResult.DIRECT -> Unit
         CredentialManagerSettingsOpenResult.FALLBACK -> {
           ToastUtils.showLong(getString(R.string.credential_manager_settings_fallback))
+        }
+        CredentialManagerSettingsOpenResult.UNSUPPORTED -> {
+          ToastUtils.showLong(getString(R.string.credential_manager_settings_unsupported))
         }
         CredentialManagerSettingsOpenResult.FAILED -> {
           ToastUtils.showLong(getString(R.string.credential_manager_settings_open_failed))

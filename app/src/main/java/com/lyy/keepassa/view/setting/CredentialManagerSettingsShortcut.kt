@@ -22,12 +22,29 @@ data class CredentialManagerSettingsCandidate(
 enum class CredentialManagerSettingsOpenResult {
   DIRECT,
   FALLBACK,
+  UNSUPPORTED,
   FAILED
 }
 
 object CredentialManagerSettingsShortcut {
+  private const val API_34 = 34
   private const val API_35 = 35
+  private const val CREDENTIALS_FEATURE = "android.software.credentials"
   const val CREDENTIAL_PROVIDER_SETTINGS_ACTION = "android.settings.CREDENTIAL_PROVIDER"
+
+  fun isCredentialManagerSupported(
+    sdkInt: Int = Build.VERSION.SDK_INT,
+    hasCredentialsFeature: Boolean
+  ): Boolean {
+    return sdkInt >= API_34 && hasCredentialsFeature
+  }
+
+  fun isCredentialManagerSupported(context: Context): Boolean {
+    return isCredentialManagerSupported(
+      sdkInt = Build.VERSION.SDK_INT,
+      hasCredentialsFeature = context.packageManager.hasSystemFeature(CREDENTIALS_FEATURE)
+    )
+  }
 
   fun candidateActions(
     sdkInt: Int = Build.VERSION.SDK_INT
@@ -55,6 +72,9 @@ object CredentialManagerSettingsShortcut {
 
   @Suppress("DEPRECATION")
   fun open(context: Context): CredentialManagerSettingsOpenResult {
+    if (!isCredentialManagerSupported(context)) {
+      return CredentialManagerSettingsOpenResult.UNSUPPORTED
+    }
     for (candidate in candidateActions()) {
       val intent = Intent(candidate.action)
       if (context !is Activity) {

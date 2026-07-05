@@ -113,6 +113,9 @@ class AppSettingBrowserAutofillPreferenceTest {
 
     assertTrue(fragment.contains("setCredentialManagerSettings()"))
     assertTrue(fragment.contains("CredentialManagerSettingsShortcut.open"))
+    assertTrue(fragment.contains("CredentialManagerSettingsShortcut.isCredentialManagerSupported"))
+    assertTrue(fragment.contains("preference.isEnabled = true"))
+    assertTrue(fragment.contains("credential_manager_settings_unsupported"))
   }
 
   @Test fun autofillServiceSwitchUsesUnifiedServiceStatus() {
@@ -163,6 +166,18 @@ class AppSettingBrowserAutofillPreferenceTest {
         file = File("src/main/res/values-zh-rCN/strings.xml"),
         name = "credential_manager_settings_summary"
       ).contains("通行密钥")
+    )
+    assertTrue(
+      stringValue(
+        file = File("src/main/res/values/strings.xml"),
+        name = "credential_manager_settings_unsupported"
+      ).contains("does not support")
+    )
+    assertTrue(
+      stringValue(
+        file = File("src/main/res/values-zh-rCN/strings.xml"),
+        name = "credential_manager_settings_unsupported"
+      ).contains("不支持")
     )
   }
 

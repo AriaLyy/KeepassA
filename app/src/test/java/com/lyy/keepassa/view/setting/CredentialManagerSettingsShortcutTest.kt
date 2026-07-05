@@ -8,6 +8,7 @@
 package com.lyy.keepassa.view.setting
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -36,5 +37,26 @@ class CredentialManagerSettingsShortcutTest {
       .map { it.action }
 
     assertEquals(actions.distinct(), actions)
+  }
+
+  @Test fun credentialManagerSupportRequiresApi34AndSystemFeature() {
+    assertTrue(
+      CredentialManagerSettingsShortcut.isCredentialManagerSupported(
+        sdkInt = 34,
+        hasCredentialsFeature = true
+      )
+    )
+    assertFalse(
+      CredentialManagerSettingsShortcut.isCredentialManagerSupported(
+        sdkInt = 33,
+        hasCredentialsFeature = true
+      )
+    )
+    assertFalse(
+      CredentialManagerSettingsShortcut.isCredentialManagerSupported(
+        sdkInt = 34,
+        hasCredentialsFeature = false
+      )
+    )
   }
 }
