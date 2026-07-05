@@ -91,6 +91,7 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
     const val KEY_TYPE = "KEY_IS_TYPE"
     const val IS_SHORTCUTS = "isShortcuts"
     const val PARENT_GROUP_ID = "PARENT_GROUP_ID"
+    const val EXTRA_FINISH_WITH_RESULT = "EXTRA_FINISH_WITH_RESULT"
 
     /**
      * 数据库未解锁，保存数据时打开数据库，并保存
@@ -190,6 +191,14 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
 
   fun launchGroupChoose() {
     chooseGroupLauncher.launch(null, ActivityOptionsCompat.makeSceneTransitionAnimation(this))
+  }
+
+  internal fun finishAfterEntrySave(saveSucceeded: Boolean) {
+    val finishWithResult = intent.getBooleanExtra(EXTRA_FINISH_WITH_RESULT, false)
+    if (CreateEntryCredentialResultPolicy.shouldReturnOk(finishWithResult, saveSucceeded)) {
+      setResult(Activity.RESULT_OK)
+    }
+    finishAfterTransition()
   }
 
   private fun handleEdge2Edge(){
