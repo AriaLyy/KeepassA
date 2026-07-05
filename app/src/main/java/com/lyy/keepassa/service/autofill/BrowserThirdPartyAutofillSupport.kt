@@ -79,6 +79,12 @@ object BrowserThirdPartyAutofillSupport {
       "${KeyConstance.KEY_BROWSER_THIRD_PARTY_AUTOFILL_PERMISSION_REJECTED_AT_PREFIX}org.adblockplus.browser"
     ),
     BrowserThirdPartyAutofillIntegration(
+      packageName = "com.hsv.freeadblockerbrowser",
+      displayName = "Free Adblocker Browser",
+      cooldownStorageKey =
+      "${KeyConstance.KEY_BROWSER_THIRD_PARTY_AUTOFILL_PERMISSION_REJECTED_AT_PREFIX}com.hsv.freeadblockerbrowser"
+    ),
+    BrowserThirdPartyAutofillIntegration(
       packageName = "com.vivaldi.browser",
       displayName = "Vivaldi",
       cooldownStorageKey =

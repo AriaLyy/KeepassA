@@ -13,6 +13,14 @@ import java.util.Locale
 
 internal object AutofillBrowserUrlPolicy {
 
+  fun normalizeDomain(value: CharSequence?): String? {
+    val raw = value?.toString()?.trim()?.lowercase(Locale.ROOT)?.trim('.') ?: return null
+    if (raw.isEmpty() || raw.any(Char::isWhitespace)) {
+      return null
+    }
+    return raw.takeIf { it.contains('.') || isIpv4Address(it) }
+  }
+
   fun extractDomainFromAddressValue(value: CharSequence?): String? {
     val raw = value?.toString()?.trim()?.takeIf { it.isNotEmpty() } ?: return null
     if (raw.any(Char::isWhitespace)) {
@@ -27,7 +35,7 @@ internal object AutofillBrowserUrlPolicy {
       ?.takeIf { it.isNotEmpty() }
       ?: return null
 
-    return host.takeIf { it.contains('.') || isIpv4Address(it) }
+    return normalizeDomain(host)
   }
 
   private fun isIpv4Address(value: String): Boolean {

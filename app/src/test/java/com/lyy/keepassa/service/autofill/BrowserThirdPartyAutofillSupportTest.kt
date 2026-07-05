@@ -19,6 +19,7 @@ class BrowserThirdPartyAutofillSupportTest {
       listOf(
         "com.android.chrome",
         "org.adblockplus.browser",
+        "com.hsv.freeadblockerbrowser",
         "com.vivaldi.browser"
       ),
       BrowserThirdPartyAutofillSupport.integrations.map { it.packageName }
@@ -37,6 +38,10 @@ class BrowserThirdPartyAutofillSupportTest {
     assertEquals(
       "content://com.vivaldi.browser.AutofillThirdPartyModeContentProvider/autofill_third_party_mode",
       BrowserThirdPartyAutofillSupport.providerUriString("com.vivaldi.browser")
+    )
+    assertEquals(
+      "content://com.hsv.freeadblockerbrowser.AutofillThirdPartyModeContentProvider/autofill_third_party_mode",
+      BrowserThirdPartyAutofillSupport.providerUriString("com.hsv.freeadblockerbrowser")
     )
   }
 

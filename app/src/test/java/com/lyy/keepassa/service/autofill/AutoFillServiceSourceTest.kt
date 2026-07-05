@@ -34,4 +34,24 @@ class AutoFillServiceSourceTest {
     assertTrue(noMatchedEntryBlock.indexOf("AutofillBrowserAuthContextStore.remember(") <
       noMatchedEntryBlock.indexOf("openSearchActivity("))
   }
+
+  @Test fun fallbackAuthPromptUsesDatasetAuthenticationWhenBrowserStrategyRequiresVisibleDataset() {
+    val source = File("src/main/java/com/lyy/keepassa/service/autofill/AutoFillService.kt").readText()
+    val method = source.substringAfter("private fun openFallbackAuthPrompt(")
+      .substringBefore("\n  private fun openFallbackSearchPrompt(")
+
+    assertTrue(method.contains("browserStrategy.useDatasetAuthenticationForFallbackAuthPrompt"))
+    assertTrue(method.contains("AutoFillHelper.newDatasetAuthResponse"))
+    assertTrue(method.contains("AutoFillHelper.newAuthResponse"))
+  }
+
+  @Test fun fallbackSearchPromptUsesDatasetAuthenticationWhenBrowserStrategyRequiresVisibleDataset() {
+    val source = File("src/main/java/com/lyy/keepassa/service/autofill/AutoFillService.kt").readText()
+    val method = source.substringAfter("private fun openFallbackSearchPrompt(")
+      .substringBefore("\n  /**\n   * 启动数据库验证界面或数据为空时的匹配界面")
+
+    assertTrue(method.contains("browserStrategy.useDatasetAuthenticationForFallbackSearchPrompt"))
+    assertTrue(method.contains("AutoFillHelper.newDatasetSearchResponse"))
+    assertTrue(method.contains("AutoFillHelper.newSearchResponse"))
+  }
 }

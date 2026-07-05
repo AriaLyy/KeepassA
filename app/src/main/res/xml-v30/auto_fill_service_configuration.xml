@@ -82,6 +82,9 @@
       android:name="org.adblockplus.browser"
       android:maxLongVersionCode="10000000000" />
   <compatibility-package
+      android:name="com.hsv.freeadblockerbrowser"
+      android:maxLongVersionCode="10000000000" />
+  <compatibility-package
       android:name="com.google.android.apps.chrome"
       android:maxLongVersionCode="10000000000" />
   <compatibility-package
@@ -128,6 +131,9 @@
       android:maxLongVersionCode="10000000000" />
   <compatibility-package
       android:name="com.mx.browser"
+      android:maxLongVersionCode="10000000000" />
+  <compatibility-package
+      android:name="com.apgsolutionsllc.APGSOLUTIONSLLC0007"
       android:maxLongVersionCode="10000000000" />
   <compatibility-package
       android:name="com.apusapps.browser"

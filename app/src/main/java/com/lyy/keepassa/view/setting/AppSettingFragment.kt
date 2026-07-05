@@ -77,7 +77,8 @@ class AppSettingFragment : PreferenceFragmentCompat() {
   private lateinit var autoFill: SwitchPreference
 
   companion object {
-    private const val BROWSER_AUTOFILL_SETTINGS_ORDER_START = 20
+    private const val SUPPORTED_BROWSERS_ORDER = 90
+    private const val BROWSER_AUTOFILL_SETTINGS_ORDER_START = SUPPORTED_BROWSERS_ORDER + 1
 
     private val LANGUAGE_MAP = linkedMapOf(
       1 to Locale.ENGLISH,
@@ -507,7 +508,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     val preference = findPreference<Preference>(
       getString(R.string.set_key_supported_browsers)
     ) ?: return
-    preference.order = 90
+    preference.order = SUPPORTED_BROWSERS_ORDER
     preference.setOnPreferenceClickListener {
       SupportedBrowsersDialog.show(requireContext())
       true

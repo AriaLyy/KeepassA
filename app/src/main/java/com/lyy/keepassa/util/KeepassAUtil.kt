@@ -60,6 +60,7 @@ import com.lyy.keepassa.router.ServiceRouter
 import com.lyy.keepassa.service.autofill.AutoFillHelper
 import com.lyy.keepassa.service.autofill.AutofillBrowserAuthContextStore
 import com.lyy.keepassa.service.autofill.AutofillEntryLookup
+import com.lyy.keepassa.service.autofill.AutofillSelectedEntryDomainCache
 import com.lyy.keepassa.service.autofill.BrowserAutofillStrategyRegistry
 import com.lyy.keepassa.service.autofill.StructureParser
 import com.lyy.keepassa.service.autofill.clearAssistStructure
@@ -472,6 +473,7 @@ class KeepassAUtil private constructor() {
     pwEntry: PwEntry,
     apkPkgName: String
   ): Intent {
+    AutofillSelectedEntryDomainCache.remember(apkPkgName, pwEntry)
     val authContext = AutofillBrowserAuthContextStore.find(apkPkgName)
     val autoFillStructure = intent.getParcelableExtra<AssistStructure>(
       AutofillManager.EXTRA_ASSIST_STRUCTURE

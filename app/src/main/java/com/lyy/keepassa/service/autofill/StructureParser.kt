@@ -129,9 +129,11 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
   private fun parseLocked(viewNode: ViewNode) {
     // 尽早捕获 domainUrl,避免 AutoFillService 因 domainUrl 为空回退到按包名匹配(浏览器场景下匹配错误)
     if (domainUrl.isBlank() && !viewNode.webDomain.isNullOrEmpty()) {
-      domainUrl = viewNode.webDomain!!
-      W3cHints.curDomainUrl = domainUrl
-      Timber.d("domainUrl = $domainUrl")
+      AutofillBrowserUrlPolicy.normalizeDomain(viewNode.webDomain)?.let { domain ->
+        domainUrl = domain
+        W3cHints.curDomainUrl = domainUrl
+        Timber.d("domainUrl = $domainUrl")
+      }
     }
     rememberBrowserAddressFieldDomain(viewNode)
     rememberAuthPromptFallbackId(viewNode)
@@ -325,9 +327,11 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
   private fun innerAppWebView(viewNode: ViewNode) {
     isInnerAppW3c = true
     if (domainUrl.isBlank()) {
-      domainUrl = viewNode.webDomain ?: ""
-      W3cHints.curDomainUrl = domainUrl
-      Timber.d("domainUrl = $domainUrl")
+      AutofillBrowserUrlPolicy.normalizeDomain(viewNode.webDomain)?.let { domain ->
+        domainUrl = domain
+        W3cHints.curDomainUrl = domainUrl
+        Timber.d("domainUrl = $domainUrl")
+      }
     }
     getW3CInfo(viewNode)
     val childrenSize = viewNode.childCount

@@ -25,6 +25,7 @@ class BrowserAutofillStrategyTest {
     assertTrue(strategy.allowRequestFocusedIdFallback)
     assertFalse(strategy.preferRequestFocusedIdForAuthPromptFallback)
     assertFalse(strategy.disableSingleFieldFallbackDatasetFiltering)
+    assertFalse(strategy.reuseStoredDomainForSingleFieldFallback)
     assertTrue(strategy.allowBrowserFormFieldInference)
     assertTrue(strategy.allowSingleFieldAuthFallback)
     assertTrue(strategy.isSearchOrUrlFieldToken("url_bar"))
@@ -133,6 +134,7 @@ class BrowserAutofillStrategyTest {
     assertTrue(strategy.preferRequestFocusedIdForAuthPromptFallback)
     assertTrue(strategy.disableSingleFieldFallbackDatasetFiltering)
     assertTrue(strategy.useDatasetAuthenticationForFallbackAuthPrompt)
+    assertFalse(strategy.useDatasetAuthenticationForFallbackSearchPrompt)
     assertTrue(strategy.allowBrowserFormFieldInference)
     assertTrue(strategy.allowSingleFieldAuthFallback)
     assertTrue(strategy.isSearchOrUrlFieldToken("url_bar"))
@@ -146,13 +148,56 @@ class BrowserAutofillStrategyTest {
     assertTrue(strategy.shouldClassifyNativeEditTextVirtualNodes)
     assertTrue(strategy.allowFocusedNonTextNodeFallback)
     assertTrue(strategy.allowRequestFocusedIdFallback)
-    assertFalse(strategy.allowSearchOrUrlRequestFocusedIdFallback)
+    assertTrue(strategy.allowSearchOrUrlRequestFocusedIdFallback)
     assertTrue(strategy.preferRequestFocusedIdForAuthPromptFallback)
     assertTrue(strategy.disableSingleFieldFallbackDatasetFiltering)
     assertTrue(strategy.useDatasetAuthenticationForFallbackAuthPrompt)
+    assertTrue(strategy.useDatasetAuthenticationForFallbackSearchPrompt)
     assertTrue(strategy.allowBrowserFormFieldInference)
     assertTrue(strategy.allowSingleFieldAuthFallback)
     assertTrue(strategy.isSearchOrUrlFieldToken("url_bar"))
+  }
+
+  @Test fun heytapBrowserIsListedAsRecognizedButIncompatible() {
+    val browser = BrowserAutofillStrategyRegistry.supportedBrowsers
+      .single { it.packageName == "com.heytap.browser" }
+
+    assertEquals("HeyTap Browser", browser.displayName)
+    assertEquals(BrowserAutofillEngine.ANDROID_BROWSER, browser.engine)
+    assertFalse(browser.compatible)
+  }
+
+  @Test fun samsungInternetIsListedAsRecognizedButIncompatible() {
+    val browser = BrowserAutofillStrategyRegistry.supportedBrowsers
+      .single { it.packageName == "com.sec.android.app.sbrowser" }
+
+    assertEquals("Samsung Internet", browser.displayName)
+    assertEquals(BrowserAutofillEngine.CHROMIUM, browser.engine)
+    assertFalse(browser.compatible)
+  }
+
+  @Test fun vivoBrowserIsListedAsRecognizedButIncompatible() {
+    val browser = BrowserAutofillStrategyRegistry.supportedBrowsers
+      .single { it.packageName == "com.vivo.browser" }
+
+    assertEquals("Vivo Browser", browser.displayName)
+    assertEquals(BrowserAutofillEngine.DEFAULT, browser.engine)
+    assertFalse(browser.compatible)
+  }
+
+  @Test fun vivoBrowserUsesDedicatedStrategyForWeakWebFormMetadata() {
+    val strategy = BrowserAutofillStrategyRegistry.forPackage("com.vivo.browser")
+
+    assertEquals(BrowserAutofillEngine.DEFAULT, strategy.engine)
+    assertTrue(strategy.isBrowser)
+    assertTrue(strategy.shouldClassifyNativeEditTextVirtualNodes)
+    assertFalse(strategy.allowFocusedNonTextNodeFallback)
+    assertTrue(strategy.allowRequestFocusedIdFallback)
+    assertFalse(strategy.allowSearchOrUrlRequestFocusedIdFallback)
+    assertFalse(strategy.preferRequestFocusedIdForAuthPromptFallback)
+    assertTrue(strategy.allowBrowserFormFieldInference)
+    assertTrue(strategy.allowSingleFieldAuthFallback)
+    assertTrue(strategy.reuseStoredDomainForSingleFieldFallback)
   }
 
   @Test fun ucMobileIntlUsesDedicatedStrategyWithFallbackPromptSupport() {
@@ -176,11 +221,11 @@ class BrowserAutofillStrategyTest {
   @Test fun unverifiedDeviceBrowsersUseConservativeBrowserStrategy() {
     listOf(
       "com.apusapps.browser",
+      "com.apgsolutionsllc.APGSOLUTIONSLLC0007",
       "com.explore.web.browser",
       "com.mx.browser",
       "com.talpa.hibrowser",
       "com.uc.browser.en",
-      "com.vivo.browser",
       "mobi.mgeek.TunnyBrowser",
       "net.fast.web.browser",
       "org.torproject.torbrowser"

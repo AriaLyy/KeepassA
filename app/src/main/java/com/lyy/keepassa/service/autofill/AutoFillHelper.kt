@@ -243,6 +243,31 @@ object AutoFillHelper {
     return responseBuilder.build()
   }
 
+  fun newDatasetAuthResponse(
+    context: Context,
+    autofillIds: Array<AutofillId>,
+    sender: IntentSender
+  ): FillResponse {
+    val responseBuilder = FillResponse.Builder()
+    val presentation = newRemoteViews(
+      context,
+      context.packageName,
+      context.getString(R.string.autofill_sign_in_prompt),
+      R.mipmap.ic_launcher
+    )
+    responseBuilder.addDataset(
+      Dataset.Builder(presentation)
+        .setAuthentication(sender)
+        .also { datasetBuilder ->
+          autofillIds.forEach { autofillId ->
+            datasetBuilder.setValue(autofillId, null, presentation)
+          }
+        }
+        .build()
+    )
+    return responseBuilder.build()
+  }
+
   fun newSearchResponse(
     context: Context,
     autofillIds: Array<AutofillId>,
@@ -256,6 +281,31 @@ object AutoFillHelper {
       R.drawable.ic_search
     )
     responseBuilder.setAuthentication(autofillIds, sender, presentation)
+    return responseBuilder.build()
+  }
+
+  fun newDatasetSearchResponse(
+    context: Context,
+    autofillIds: Array<AutofillId>,
+    sender: IntentSender
+  ): FillResponse {
+    val responseBuilder = FillResponse.Builder()
+    val presentation = newRemoteViews(
+      context,
+      context.packageName,
+      context.getString(R.string.search),
+      R.drawable.ic_search
+    )
+    responseBuilder.addDataset(
+      Dataset.Builder(presentation)
+        .setAuthentication(sender)
+        .also { datasetBuilder ->
+          autofillIds.forEach { autofillId ->
+            datasetBuilder.setValue(autofillId, null, presentation)
+          }
+        }
+        .build()
+    )
     return responseBuilder.build()
   }
 

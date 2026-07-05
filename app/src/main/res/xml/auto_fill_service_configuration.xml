@@ -29,6 +29,7 @@
   <compatibility-package android:name="org.torproject.torbrowser" />
   <compatibility-package android:name="com.brave.browser" />
   <compatibility-package android:name="org.adblockplus.browser" />
+  <compatibility-package android:name="com.hsv.freeadblockerbrowser" />
   <compatibility-package android:name="com.google.android.apps.chrome" />
   <compatibility-package android:name="com.google.android.apps.chrome_dev" />
   <compatibility-package android:name="com.yandex.browser" />
@@ -45,6 +46,7 @@
   <compatibility-package android:name="com.heytap.browser" />
   <compatibility-package android:name="com.vivo.browser" />
   <compatibility-package android:name="com.mx.browser" />
+  <compatibility-package android:name="com.apgsolutionsllc.APGSOLUTIONSLLC0007" />
   <compatibility-package android:name="com.apusapps.browser" />
   <compatibility-package android:name="com.explore.web.browser" />
   <compatibility-package android:name="net.fast.web.browser" />

@@ -198,4 +198,113 @@ class AutofillBrowserAuthContextStoreTest {
     assertNull(context?.fallbackRole)
     assertEquals("ubits.club", context?.domain)
   }
+
+  @Test fun vivoCurrentFallbackWithoutDomainCarriesPreviousDomain() {
+    AutofillBrowserAuthContextStore.clear()
+    val packageName = "com.vivo.browser"
+    val strategy = BrowserAutofillStrategyRegistry.forPackage(packageName)
+    val previousFallbackId = mockk<AutofillId>()
+    val currentFallbackId = mockk<AutofillId>()
+
+    AutofillBrowserAuthContextStore.remember(
+      packageName = packageName,
+      strategy = strategy,
+      domain = "carpt.net",
+      metadata = null,
+      fallbackId = previousFallbackId,
+      fallbackRole = BrowserFormFieldRole.PASSWORD,
+      nowMs = 1_000
+    )
+    AutofillBrowserAuthContextStore.remember(
+      packageName = packageName,
+      strategy = strategy,
+      domain = " ",
+      metadata = null,
+      fallbackId = currentFallbackId,
+      fallbackRole = null,
+      nowMs = 2_000
+    )
+
+    val context = AutofillBrowserAuthContextStore.find(packageName, 3_000)
+    assertSame(currentFallbackId, context?.fallbackId)
+    assertNull(context?.fallbackRole)
+    assertEquals("carpt.net", context?.domain)
+  }
+
+  @Test fun vivoCanRestoreDomainAfterAutofillServiceContextIsRecreated() {
+    AutofillBrowserAuthContextStore.clear()
+    val packageName = "com.vivo.browser"
+    val strategy = BrowserAutofillStrategyRegistry.forPackage(packageName)
+    val persistentStorage = FakePersistentDomainStorage()
+
+    AutofillBrowserAuthContextStore.remember(
+      packageName = packageName,
+      strategy = strategy,
+      domain = "carpt.net",
+      metadata = null,
+      fallbackId = null,
+      fallbackRole = null,
+      nowMs = 1_000,
+      persistentDomainStorage = persistentStorage
+    )
+
+    AutofillBrowserAuthContextStore.clear()
+
+    assertEquals(
+      "carpt.net",
+      AutofillBrowserAuthContextStore.find(
+        packageName = packageName,
+        nowMs = 2_000,
+        persistentDomainStorage = persistentStorage
+      )?.domain
+    )
+  }
+
+  @Test fun chromiumDoesNotPersistDomainForSingleFieldFallback() {
+    AutofillBrowserAuthContextStore.clear()
+    val packageName = "com.microsoft.emmx"
+    val strategy = BrowserAutofillStrategyRegistry.forPackage(packageName)
+    val persistentStorage = FakePersistentDomainStorage()
+
+    AutofillBrowserAuthContextStore.remember(
+      packageName = packageName,
+      strategy = strategy,
+      domain = "example.com",
+      metadata = null,
+      fallbackId = null,
+      fallbackRole = null,
+      nowMs = 1_000,
+      persistentDomainStorage = persistentStorage
+    )
+
+    AutofillBrowserAuthContextStore.clear()
+
+    assertNull(
+      AutofillBrowserAuthContextStore.find(
+        packageName = packageName,
+        nowMs = 2_000,
+        persistentDomainStorage = persistentStorage
+      )
+    )
+  }
+
+  private class FakePersistentDomainStorage : AutofillBrowserPersistentDomainStorage {
+    private val domains = HashMap<String, AutofillBrowserPersistentDomain>()
+
+    override fun save(packageName: String, domain: String, nowMs: Long) {
+      domains[packageName] = AutofillBrowserPersistentDomain(domain, nowMs)
+    }
+
+    override fun find(packageName: String): AutofillBrowserPersistentDomain? {
+      return domains[packageName]
+    }
+
+    override fun clear(packageName: String) {
+      domains.remove(packageName)
+    }
+
+    override fun clear() {
+      domains.clear()
+    }
+  }
 }

@@ -335,6 +335,14 @@ class AutoFillEntrySearchActivity : BaseActivity<ActivityAutoFillEntrySearchBind
   private fun callbackAutoFillService(pwEntry: PwEntry) {
     val data = Intent().apply {
       putExtra(EXTRA_ENTRY_ID, pwEntry.uuid)
+      module.getApkPkgName()?.let { apkPkgName ->
+        putExtras(KeepassAUtil.instance.getFillResponse(
+          this@AutoFillEntrySearchActivity,
+          intent,
+          pwEntry,
+          apkPkgName
+        ))
+      }
     }
     setResult(Activity.RESULT_OK, data)
     if (!module.isFormAutoFill()) {

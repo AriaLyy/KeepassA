@@ -44,6 +44,9 @@ internal data class BrowserAutofillStrategy(
   val preferRequestFocusedIdForAuthPromptFallback: Boolean = false,
   val disableSingleFieldFallbackDatasetFiltering: Boolean = false,
   val useDatasetAuthenticationForFallbackAuthPrompt: Boolean = false,
+  val useDatasetAuthenticationForFallbackSearchPrompt: Boolean = false,
+  val reuseStoredDomainForSingleFieldFallback: Boolean = false,
+  val persistDomainForSingleFieldFallback: Boolean = false,
   val ignoreSearchOrUrlOnlyAutofillFields: Boolean = false,
   val allowBrowserFormFieldInference: Boolean,
   val allowSingleFieldAuthFallback: Boolean,
@@ -110,6 +113,10 @@ internal object BrowserAutofillStrategyRegistry {
     "com.heytap.browser"
   )
 
+  private val vivoBrowserPackages = setOf(
+    "com.vivo.browser"
+  )
+
   private val ucPackages = setOf(
     "com.UCMobile.intl"
   )
@@ -133,7 +140,7 @@ internal object BrowserAutofillStrategyRegistry {
 
   private val conservativeBrowserPackages = setOf(
     "com.uc.browser.en",
-    "com.vivo.browser",
+    "com.apgsolutionsllc.APGSOLUTIONSLLC0007",
     "com.mx.browser",
     "com.apusapps.browser",
     "com.explore.web.browser",
@@ -203,6 +210,7 @@ internal object BrowserAutofillStrategyRegistry {
     "com.uc.browser.en" to "UC Browser HD",
     "com.heytap.browser" to "HeyTap Browser",
     "com.vivo.browser" to "Vivo Browser",
+    "com.apgsolutionsllc.APGSOLUTIONSLLC0007" to "Basic Web Browser",
     "com.mx.browser" to "Maxthon",
     "com.apusapps.browser" to "APUS Browser",
     "com.explore.web.browser" to "Explore Browser",
@@ -217,13 +225,36 @@ internal object BrowserAutofillStrategyRegistry {
    * Yandex:自始至终没稳定触发 Autofill session,onFillRequest 收不到,等于残废;
    * UC 国际版 (com.UCMobile.intl):UC 自研内核 + 屏蔽第三方 AutofillService 的虚拟节点结构,
    * 字段推断全部失配,实测无法填充。
+   * HeyTap Browser (com.heytap.browser):已加入 Android Autofill 兼容包,也能创建系统
+   * CompatibilityBridge,但在 45.14.4.1 真机网页登录页中,网页内容只暴露为空
+   * FrameLayout;账号/密码输入框没有作为 EditText、密码节点或 WebView 虚拟 autofill
+   * 节点出现在 AssistStructure/uiautomator 中。实测状态是键盘已显示且窗口焦点在 HeyTap,
+   * 但 dumpsys autofill 仍为 No sessions,logcat 也没有 startSessionLocked() 或
+   * AutoFillService.onFillRequest()。因此问题发生在系统/浏览器触发层,KeePassA 的字段推断、
+   * 条目匹配和 FillResponse fallback 都没有机会执行。
+   * Samsung Internet (com.sec.android.app.sbrowser):30.0.0.67 真机中窗口焦点和 IME 都已进入
+   * Samsung 网页,系统 compat 也有 location_bar_edit_text,但 clean trigger 下没有稳定把网页登录框
+   * 下发到 KeePassA;同时 Samsung 不暴露 Chromium ThirdPartyAutofill provider。保留 Chromium
+   * 策略作为系统真正发送 FillRequest 时的 best-effort,设置页标记为不兼容。
+   * Vivo Browser (com.vivo.browser):网页登录页能触发 Autofill session,但系统下发给 KeePassA 的
+   * AssistStructure 只包含弱化后的虚拟字段 id,没有可用于域名匹配的公开来源。实测 dumpsys
+   * autofill 中 mUrlBar=N/A,ViewNode.webDomain 为空,地址栏节点也没有被 Android Autofill compat
+   * 识别为 URL bar;logcat 里虽然能看到 Vivo Browser 进程自己的
+   * "url=https://carpt.net/login.php" 内部日志,但该值没有进入 AutofillService 可读取的
+   * FillRequest/AssistStructure。官方 autofill-service compatibility-package 也只支持 name 和
+   * maxLongVersionCode,不能为第三方服务配置 Vivo 的地址栏 resource id。由于浏览器场景严禁在
+   * domain 缺失时回退到包名匹配,否则会把同一浏览器里的不同网站匹配到错误条目,因此 Vivo
+   * 当前只能标记为不兼容,不再继续扩大 KeePassA 侧策略兜底。
    *
    * 策略代码(forPackage)保留对它们的识别,以便系统层一旦真的下发 FillRequest 时仍能尝试兜底;
    * 但在设置页"已适配浏览器"列表里必须明确标注"不兼容",避免用户误以为可用。
    */
   private val incompatiblePackages: Set<String> = setOf(
     "com.yandex.browser",
-    "com.UCMobile.intl"
+    "com.UCMobile.intl",
+    "com.heytap.browser",
+    "com.sec.android.app.sbrowser",
+    "com.vivo.browser"
   )
 
   /**
@@ -238,11 +269,12 @@ internal object BrowserAutofillStrategyRegistry {
       val idm = idmPackages.map { it to BrowserAutofillEngine.IDM }
       val miBrowser = miBrowserPackages.map { it to BrowserAutofillEngine.CHROMIUM }
       val heytapBrowser = heytapBrowserPackages.map { it to BrowserAutofillEngine.ANDROID_BROWSER }
+      val vivoBrowser = vivoBrowserPackages.map { it to BrowserAutofillEngine.DEFAULT }
       val uc = ucPackages.map { it to BrowserAutofillEngine.UC }
       val gecko = geckoPackages.map { it to BrowserAutofillEngine.GECKO }
       val android = androidBrowserPackages.map { it to BrowserAutofillEngine.ANDROID_BROWSER }
       val conservative = conservativeBrowserPackages.map { it to BrowserAutofillEngine.DEFAULT }
-      return (chromium + kiwi + idm + miBrowser + heytapBrowser + uc + gecko + android + conservative)
+      return (chromium + kiwi + idm + miBrowser + heytapBrowser + vivoBrowser + uc + gecko + android + conservative)
         .map { (pkg, engine) ->
           SupportedBrowser(
             packageName = pkg,
@@ -346,16 +378,45 @@ internal object BrowserAutofillStrategyRegistry {
     engine = BrowserAutofillEngine.ANDROID_BROWSER,
     isBrowser = true,
     shouldClassifyNativeEditTextVirtualNodes = true,
-    // HeyTap Browser uses com.android.browser activities but exposes some web fields with masked
-    // metadata, so it needs a package-scoped fallback instead of widening conservative browsers.
+    // HeyTap Browser uses com.android.browser activities and can expose masked metadata when the
+    // Android framework actually delivers a FillRequest. Keep the strategy package-scoped so it
+    // does not widen conservative browsers.
+    //
+    // Important: this strategy cannot force HeyTap to start an Autofill session. On tested HeyTap
+    // 45.14.4.1 web login pages, the browser does not expose page username/password fields to the
+    // framework, so Android never calls AutoFillService.onFillRequest(). The supported-browser list
+    // marks HeyTap incompatible for that reason, while this strategy remains as a best-effort path
+    // for builds/pages where the system does deliver a FillRequest.
     allowFocusedNonTextNodeFallback = true,
     allowRequestFocusedIdFallback = true,
-    allowSearchOrUrlRequestFocusedIdFallback = false,
+    allowSearchOrUrlRequestFocusedIdFallback = true,
     preferRequestFocusedIdForAuthPromptFallback = true,
     disableSingleFieldFallbackDatasetFiltering = true,
     useDatasetAuthenticationForFallbackAuthPrompt = true,
+    useDatasetAuthenticationForFallbackSearchPrompt = true,
     allowBrowserFormFieldInference = true,
     allowSingleFieldAuthFallback = true,
+    searchOrUrlTokens = genericSearchOrUrlTokens
+  )
+
+  private val vivoBrowserStrategy = BrowserAutofillStrategy(
+    engine = BrowserAutofillEngine.DEFAULT,
+    isBrowser = true,
+    shouldClassifyNativeEditTextVirtualNodes = true,
+    // Vivo Browser 10.8.3.4 能创建 Autofill session,但网页登录框下发给系统的
+    // AssistStructure 元数据很弱:常见表现是 flags=128,虚拟 autofill id 有效,但字段
+    // 没有稳定的 password/user hints,导致 conservative 策略下 autoFillIds 为空。
+    // 只对 Vivo 启用浏览器表单位置推断和 request focused id 兜底,避免扩大其它保守浏览器。
+    //
+    // 该浏览器还会频繁触发 AutofillService unbind/destroy。部分页面先前请求能拿到域名,
+    // 后续单字段请求只剩虚拟字段 id。这里允许按包名隔离、短 TTL 的域名持久缓存,
+    // 但仍只按域名查库,不会在域名缺失时退回浏览器包名匹配。
+    allowFocusedNonTextNodeFallback = false,
+    allowRequestFocusedIdFallback = true,
+    allowBrowserFormFieldInference = true,
+    allowSingleFieldAuthFallback = true,
+    reuseStoredDomainForSingleFieldFallback = true,
+    persistDomainForSingleFieldFallback = true,
     searchOrUrlTokens = genericSearchOrUrlTokens
   )
 
@@ -367,6 +428,7 @@ internal object BrowserAutofillStrategyRegistry {
     allowRequestFocusedIdFallback = true,
     allowBrowserFormFieldInference = true,
     allowSingleFieldAuthFallback = true,
+    reuseStoredDomainForSingleFieldFallback = true,
     searchOrUrlTokens = genericSearchOrUrlTokens + setOf(
       "搜索或输入网址",
       "输入网址",
@@ -432,6 +494,7 @@ internal object BrowserAutofillStrategyRegistry {
       in idmPackages -> idmStrategy
       in miBrowserPackages -> miBrowserStrategy
       in heytapBrowserPackages -> heytapBrowserStrategy
+      in vivoBrowserPackages -> vivoBrowserStrategy
       in ucPackages -> ucStrategy
       in geckoPackages -> geckoStrategy
       in androidBrowserPackages -> androidBrowserStrategy

@@ -128,6 +128,7 @@ class AutoFillService : AutofillService() {
           callback,
           arrayOf(fallbackId!!),
           apkPackageName,
+          browserStrategy,
           structure,
           parser.domainUrl.takeIf { it.isNotBlank() }
         )
@@ -157,6 +158,7 @@ class AutoFillService : AutofillService() {
             callback,
             arrayOf(fallbackId),
             apkPackageName,
+            browserStrategy,
             structure,
             parser.domainUrl.takeIf { it.isNotBlank() }
           )
@@ -356,6 +358,7 @@ class AutoFillService : AutofillService() {
     callback: FillCallback,
     autofillIds: Array<AutofillId>,
     apkPackageName: String,
+    browserStrategy: BrowserAutofillStrategy,
     structure: AssistStructure,
     domain: String? = null
   ) {
@@ -364,22 +367,30 @@ class AutoFillService : AutofillService() {
     } else {
       LauncherActivity.getAuthDbIntentSender(this, apkPackageName, structure, domain)
     }
-    callback.onSuccess(AutoFillHelper.newAuthResponse(this, autofillIds, sender))
+    callback.onSuccess(
+      if (browserStrategy.useDatasetAuthenticationForFallbackAuthPrompt) {
+        AutoFillHelper.newDatasetAuthResponse(this, autofillIds, sender)
+      } else {
+        AutoFillHelper.newAuthResponse(this, autofillIds, sender)
+      }
+    )
   }
 
   private fun openFallbackSearchPrompt(
     callback: FillCallback,
     autofillIds: Array<AutofillId>,
     apkPackageName: String,
+    browserStrategy: BrowserAutofillStrategy,
     structure: AssistStructure,
     domain: String? = null
   ) {
+    val sender = AutoFillEntrySearchActivity.getSearchIntentSender(this, apkPackageName, structure, domain)
     callback.onSuccess(
-      AutoFillHelper.newSearchResponse(
-        this,
-        autofillIds,
-        AutoFillEntrySearchActivity.getSearchIntentSender(this, apkPackageName, structure, domain)
-      )
+      if (browserStrategy.useDatasetAuthenticationForFallbackSearchPrompt) {
+        AutoFillHelper.newDatasetSearchResponse(this, autofillIds, sender)
+      } else {
+        AutoFillHelper.newSearchResponse(this, autofillIds, sender)
+      }
     )
   }
 

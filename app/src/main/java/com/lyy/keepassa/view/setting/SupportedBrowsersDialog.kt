@@ -8,8 +8,9 @@
 package com.lyy.keepassa.view.setting
 
 import android.content.Context
-import androidx.appcompat.app.AlertDialog
+import com.arialyy.frame.router.Routerfit
 import com.lyy.keepassa.R
+import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.service.autofill.BrowserAutofillEngine
 import com.lyy.keepassa.service.autofill.BrowserAutofillStrategyRegistry
 import com.lyy.keepassa.service.autofill.SupportedBrowser
@@ -32,12 +33,12 @@ object SupportedBrowsersDialog {
 
   fun show(context: Context) {
     val browsers = BrowserAutofillStrategyRegistry.supportedBrowsers
-    val message = buildMessage(context, browsers)
-    AlertDialog.Builder(context)
-      .setTitle(context.getString(R.string.supported_browsers_dialog_title, browsers.size))
-      .setMessage(message)
-      .setPositiveButton(android.R.string.ok, null)
-      .show()
+    Routerfit.create(DialogRouter::class.java).showMsgDialog(
+      msgTitle = context.getString(R.string.supported_browsers_dialog_title, browsers.size),
+      msgContent = buildMessage(context, browsers),
+      showCancelBt = false,
+      enterText = context.getString(android.R.string.ok)
+    )
   }
 
   private fun buildMessage(context: Context, browsers: List<SupportedBrowser>): CharSequence {

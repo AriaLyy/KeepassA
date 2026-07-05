@@ -17,7 +17,7 @@ import java.util.Locale
 internal object UcBrowserAutofillCompatibility {
   /*
    * 真机证据显示 UC Browser International 在部分登录页只向 AutofillService 暴露一个
-   * 空的"搜索或输入网址"TextView,没有 webDomain、URL 文本或账号/密码输入节点。
+   * 空的"搜索或输入网址"TextView,没有 webDomain、URL。
    * 因此这里的兼容必须保持窄范围,不要在缺少 domain 时退化到浏览器包名匹配,避免误匹配其它网站条目。
    */
 
@@ -59,7 +59,4 @@ internal object UcBrowserAutofillCompatibility {
     return ucAddressBarDescriptionTokens.any { contentDescription.contains(it.lowercase(Locale.ROOT)) }
   }
 
-  fun canReuseStoredDomainForCurrentFallback(strategy: BrowserAutofillStrategy): Boolean {
-    return strategy.engine == BrowserAutofillEngine.UC
-  }
 }

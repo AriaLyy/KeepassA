@@ -61,9 +61,11 @@ class W3cHintsCompatBrowserTest {
       "com.talpa.hibrowser",
       "com.uc.browser.en",
       "com.vivo.browser",
+      "com.apgsolutionsllc.APGSOLUTIONSLLC0007",
       "idm.internet.download.manager",
       "mobi.mgeek.TunnyBrowser",
       "net.fast.web.browser",
+      "com.hsv.freeadblockerbrowser",
       "org.adblockplus.browser"
     ).forEach { packageName ->
       assertTrue(

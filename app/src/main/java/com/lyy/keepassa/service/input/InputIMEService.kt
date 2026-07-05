@@ -14,6 +14,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.autofill.AutofillManager
@@ -66,6 +67,18 @@ import timber.log.Timber
  */
 class InputIMEService : InputMethodService(), View.OnClickListener {
 
+  private companion object {
+    /**
+     * 长按退格键的初始延迟(ms),过后开始连续删除。见 issue #86。
+     */
+    private const val BACKSPACE_REPEAT_DELAY_MS = 400L
+
+    /**
+     * 长按退格键开始后的重复间隔(ms)。
+     */
+    private const val BACKSPACE_REPEAT_INTERVAL_MS = 50L
+  }
+
   private var appPkgName: String? = ""
   private var ic: InputConnection? = null
   private val selectionTracker = CandidateSelectionTracker<PwEntry>()
@@ -76,6 +89,13 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
   private var imeOption = EditorInfo.IME_ACTION_GO
   private var curImeView: View? = null
   private var scope = MainScope()
+  private var backspaceButton: View? = null
+  private val backspaceRepeatRunnable: Runnable = object : Runnable {
+    override fun run() {
+      ic?.deleteSurroundingText(1, 0)
+      backspaceButton?.postDelayed(this, BACKSPACE_REPEAT_INTERVAL_MS)
+    }
+  }
 
   /**
    * 当 IME 首次显示时，系统会调用 onCreateInputView() 回调。在此方法的实现中，您可以创建要在 IME 窗口中显示的布局，并将布局返回系统。
@@ -85,7 +105,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     val layout = LayoutInflater.from(this)
       .inflate(R.layout.layout_kpa_ime, null) as ViewGroup
     candidatesList = layout.findViewById(R.id.rvContent)
-    for (i in 0..layout.childCount) {
+    for (i in 0 until layout.childCount) {
       val child = layout.getChildAt(i)
       if (child != null
         && (child is ImageView || child is TextView)
@@ -95,6 +115,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       }
     }
     curImeView = layout
+    setupBackspaceLongPress(layout)
     initCandidatesLayout()
 
     layout.findViewById<AppCompatImageView>(R.id.ivSearch).setOnClickListener {
@@ -130,6 +151,29 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
           candidatesAdapter.notifyDataSetChanged()
         }
       })
+  }
+
+  /**
+   * 退格键触摸处理:ACTION_DOWN 删 1 字并启动延时,长按 400ms 后每 50ms 重复删除,
+   * ACTION_UP/CANCEL 取消。返回 true 消费触摸事件,因此 [onClick] 不再处理退格。
+   * 修复 issue #86 评论(只能一个一个字符删)。
+   */
+  private fun setupBackspaceLongPress(layout: View) {
+    val bt = layout.findViewById<ImageView>(R.id.btBackspace)
+    backspaceButton = bt
+    bt.setOnTouchListener { _, event ->
+      when (event.actionMasked) {
+        MotionEvent.ACTION_DOWN -> {
+          ic?.deleteSurroundingText(1, 0)
+          bt.removeCallbacks(backspaceRepeatRunnable)
+          bt.postDelayed(backspaceRepeatRunnable, BACKSPACE_REPEAT_DELAY_MS)
+        }
+        MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+          bt.removeCallbacks(backspaceRepeatRunnable)
+        }
+      }
+      true
+    }
   }
 
   /**
@@ -293,11 +337,6 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         showMoreInfoDialog()
       }
 
-      // 回退键
-      R.id.btBackspace -> {
-        ic?.deleteSurroundingText(1, 0)
-      }
-
       // 回车键
       R.id.btEnter -> {
         ic?.performEditorAction(imeOption)
@@ -350,6 +389,8 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     super.onDestroy()
     EventBusHelper.unReg(this)
     scope.cancel()
+    backspaceButton?.removeCallbacks(backspaceRepeatRunnable)
+    backspaceButton = null
   }
 
   /**
@@ -357,9 +398,13 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
    *
    * 仅在 [onStartInputView] 收到新输入字段或 [CommonSearchActivity] 返回结果时调用,
    * 不要在账号/密码/TOTP 等按钮点击中重复调用——那会重置 [selectionTracker] 覆盖用户已选条目。
+   *
+   * 用 [CandidateSelectionTracker.resync] 而非 [show]:IME 隐藏→重显(如同 app 内切字段)
+   * 会再次进入 [onStartInputView],若新候选与上次同引用,resync 保留用户已选条目;
+   * 列表形状变化时 resync 自动 fallback 到 show。详见 issue #86。
    */
   private fun showEntryList(entries: List<PwEntry>) {
-    selectionTracker.show(entries)
+    selectionTracker.resync(entries)
     candidatesData.clear()
     if (selectionTracker.isEmpty) {
       candidatesList.visibility = View.GONE

@@ -32,6 +32,16 @@ class AutofillEntryLookupPolicyTest {
     )
   }
 
+  @Test fun apgBrowserWithoutDomainDoesNotUsePackageLookup() {
+    val strategy =
+      BrowserAutofillStrategyRegistry.forPackage("com.apgsolutionsllc.APGSOLUTIONSLLC0007")
+
+    assertEquals(
+      emptyList<AutofillEntryLookupTarget>(),
+      AutofillEntryLookupPolicy.lookupOrder(strategy, domain = null)
+    )
+  }
+
   @Test fun nonBrowserAlwaysUsesPackageLookup() {
     val strategy = BrowserAutofillStrategyRegistry.forPackage("com.example.app")
 

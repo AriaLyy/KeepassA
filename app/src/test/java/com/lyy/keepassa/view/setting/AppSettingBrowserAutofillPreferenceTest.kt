@@ -49,6 +49,19 @@ class AppSettingBrowserAutofillPreferenceTest {
     assertTrue(File("src/main/res/drawable/ic_chrome.xml").exists())
   }
 
+  @Test fun browserAutofillSettingsAreOrderedBelowSupportedBrowsersItem() {
+    val fragment = File("src/main/java/com/lyy/keepassa/view/setting/AppSettingFragment.kt")
+      .readText()
+
+    assertTrue(fragment.contains("private const val SUPPORTED_BROWSERS_ORDER = 90"))
+    assertTrue(
+      fragment.contains(
+        "private const val BROWSER_AUTOFILL_SETTINGS_ORDER_START = SUPPORTED_BROWSERS_ORDER + 1"
+      )
+    )
+    assertTrue(fragment.contains("preference.order = SUPPORTED_BROWSERS_ORDER"))
+  }
+
   @Test fun browserAutofillIconsAreBoundTo24dp() {
     val fragment = File("src/main/java/com/lyy/keepassa/view/setting/AppSettingFragment.kt")
       .readText()

@@ -96,4 +96,29 @@ class AutofillSingleFieldFallbackPolicyTest {
     assertNull(target?.fallbackRole)
     assertEquals("ubits.club", target?.domain)
   }
+
+  @Test fun vivoCurrentFocusedIdInheritsStoredDomainWhenCurrentDomainIsMissing() {
+    val currentFallbackId = mockk<AutofillId>()
+    val storedFallbackId = mockk<AutofillId>()
+    val storedContext = AutofillBrowserAuthContext(
+      packageName = "com.vivo.browser",
+      domain = "carpt.net",
+      metadata = null,
+      fallbackId = storedFallbackId,
+      fallbackRole = BrowserFormFieldRole.PASSWORD,
+      createdAtMs = 1_000
+    )
+
+    val target = AutofillSingleFieldFallbackPolicy.resolve(
+      strategy = BrowserAutofillStrategyRegistry.forPackage("com.vivo.browser"),
+      currentFallbackId = currentFallbackId,
+      currentFallbackRole = null,
+      currentDomain = null,
+      storedContext = storedContext
+    )
+
+    assertSame(currentFallbackId, target?.fallbackId)
+    assertNull(target?.fallbackRole)
+    assertEquals("carpt.net", target?.domain)
+  }
 }

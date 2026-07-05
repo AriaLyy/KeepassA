@@ -31,4 +31,8 @@ class AutofillBrowserUrlPolicyTest {
   @Test fun ignoresSearchTextWithoutHost() {
     assertNull(AutofillBrowserUrlPolicy.extractDomainFromAddressValue("keepass password manager"))
   }
+
+  @Test fun ignoresBrowserPseudoDomain() {
+    assertNull(AutofillBrowserUrlPolicy.normalizeDomain("newtab"))
+  }
 }
