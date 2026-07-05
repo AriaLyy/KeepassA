@@ -23,6 +23,7 @@ import com.keepassdroid.database.SearchParametersV4
 import com.keepassdroid.database.security.ProtectedString
 import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
+import com.lyy.keepassa.service.autofill.AutofillSaveFieldPolicy
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import com.lyy.keepassa.util.IconUtil
 import com.lyy.keepassa.util.KdbUtil
@@ -129,10 +130,10 @@ object KDBAutoFillRepository {
       for (fillField in fillFields) {
         fillField.autoFillField.textValue ?: continue
         if (fillField.autoFillType == View.AUTOFILL_TYPE_TEXT) {
-          if (fillField.isPassword) {
+          if (AutofillSaveFieldPolicy.shouldSaveAsPassword(fillField.isPassword, fillField.isTotp)) {
             entry.setPassword(fillField.autoFillField.textValue, BaseApp.KDB!!.pm)
             Timber.d("pass = ${fillField.autoFillField.textValue}")
-          } else {
+          } else if (AutofillSaveFieldPolicy.shouldSaveAsUsername(fillField.isPassword, fillField.isTotp)) {
             entry.setUsername(fillField.autoFillField.textValue, BaseApp.KDB!!.pm)
             Timber.d("userName = ${fillField.autoFillField.textValue}")
           }
@@ -156,10 +157,10 @@ object KDBAutoFillRepository {
       for (fillField in fillFields) {
         fillField.autoFillField.textValue ?: continue
         if (fillField.autoFillType == View.AUTOFILL_TYPE_TEXT) {
-          if (fillField.isPassword) {
+          if (AutofillSaveFieldPolicy.shouldSaveAsPassword(fillField.isPassword, fillField.isTotp)) {
             pass = fillField.autoFillField.textValue
           }
-          if (!fillField.isPassword) {
+          if (AutofillSaveFieldPolicy.shouldSaveAsUsername(fillField.isPassword, fillField.isTotp)) {
             user = fillField.autoFillField.textValue
           }
         }

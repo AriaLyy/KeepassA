@@ -49,4 +49,13 @@ class TotpAutofillSourceIntegrationTest {
     assertTrue(source.contains("var addedDataset = false"))
     assertTrue(source.contains("return if (addedDataset)"))
   }
+
+  @Test
+  fun repositoryDoesNotSaveTotpAsUsername() {
+    val source = File("src/main/java/com/lyy/keepassa/service/autofill/datasource/KDBAutoFillRepository.kt")
+      .readText()
+
+    assertTrue(source.contains("AutofillSaveFieldPolicy.shouldSaveAsPassword("))
+    assertTrue(source.contains("AutofillSaveFieldPolicy.shouldSaveAsUsername("))
+  }
 }
