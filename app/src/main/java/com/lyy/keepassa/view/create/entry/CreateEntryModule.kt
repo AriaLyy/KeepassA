@@ -135,7 +135,7 @@ class CreateEntryModule : BaseModule() {
         )) {
           HitUtil.toaskLong(ResUtil.getString(R.string.save_db_success))
         }
-        context.finishAfterTransition()
+        context.finishAfterEntrySave(state == DbSynUtil.STATE_SUCCEED)
       }
     }
   }

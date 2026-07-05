@@ -134,6 +134,7 @@ class AppSettingFragment : PreferenceFragmentCompat() {
     setPreferencesFromResource(R.xml.app_setting, rootKey)
     setSubPassType()
     setAtoFill()
+    setCredentialManagerSettings()
     setBrowserAutofillSettings()
     setSupportedBrowsers()
     setLanguage()
@@ -387,6 +388,31 @@ class AppSettingFragment : PreferenceFragmentCompat() {
       return
     }
     autoFill.isChecked = KeepassAutofillServiceStatus.isEnabled(requireContext(), am)
+  }
+
+  private fun setCredentialManagerSettings() {
+    val preference = findPreference<Preference>(
+      getString(R.string.set_key_credential_manager_settings)
+    ) ?: return
+    preference.isEnabled = true
+    if (!CredentialManagerSettingsShortcut.isCredentialManagerSupported(requireContext())) {
+      preference.summary = getString(R.string.credential_manager_settings_unsupported)
+    }
+    preference.setOnPreferenceClickListener {
+      when (CredentialManagerSettingsShortcut.open(requireContext())) {
+        CredentialManagerSettingsOpenResult.DIRECT -> Unit
+        CredentialManagerSettingsOpenResult.FALLBACK -> {
+          ToastUtils.showLong(getString(R.string.credential_manager_settings_fallback))
+        }
+        CredentialManagerSettingsOpenResult.UNSUPPORTED -> {
+          ToastUtils.showLong(getString(R.string.credential_manager_settings_unsupported))
+        }
+        CredentialManagerSettingsOpenResult.FAILED -> {
+          ToastUtils.showLong(getString(R.string.credential_manager_settings_open_failed))
+        }
+      }
+      true
+    }
   }
 
   private fun setBrowserAutofillSettings() {

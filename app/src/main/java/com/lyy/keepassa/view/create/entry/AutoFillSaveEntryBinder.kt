@@ -23,16 +23,14 @@ internal object AutoFillSaveEntryBinder {
     strings: MutableMap<String, ProtectedString>,
     autoFillParam: AutoFillParam?
   ): Boolean {
-    val targetUrl = getPackageAssociationUrl(autoFillParam) ?: return false
-    applyPackageAssociation(strings, autoFillParam)
-    return strings.values.any { it.toString().equals(targetUrl, ignoreCase = true) }
+    return applyPackageAssociation(strings, autoFillParam)
   }
 
   fun applyPackageAssociation(
     strings: MutableMap<String, ProtectedString>,
     autoFillParam: AutoFillParam?
   ): Boolean {
-    if (autoFillParam?.isSave != true || getWebUrl(autoFillParam) != null) {
+    if (autoFillParam?.isSave != true) {
       return false
     }
     return applyPackageAssociation(strings, autoFillParam.apkPkgName)
@@ -58,12 +56,4 @@ internal object AutoFillSaveEntryBinder {
     return false
   }
 
-  private fun getPackageAssociationUrl(autoFillParam: AutoFillParam?): String? {
-    if (autoFillParam?.isSave != true || getWebUrl(autoFillParam) != null) {
-      return null
-    }
-    val normalizedPackageName = autoFillParam.apkPkgName.trim().takeIf { it.isNotEmpty() }
-      ?: return null
-    return "$ANDROID_APP_URL_PREFIX$normalizedPackageName"
-  }
 }

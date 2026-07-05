@@ -257,6 +257,11 @@
     <string name="browser_third_party_autofill_settings_summary_enabled">%1$s 已允许第三方自动填充。</string>
     <string name="browser_third_party_autofill_settings_summary_unknown">打开 %1$s 自动填充设置。</string>
     <string name="browser_third_party_autofill_settings_open_failed">无法打开 %1$s 自动填充设置</string>
+    <string name="credential_manager_settings_title">凭据管理器</string>
+    <string name="credential_manager_settings_summary">打开系统密码、通行密钥和凭据提供程序设置</string>
+    <string name="credential_manager_settings_unsupported">当前系统不支持将 KeePassA 作为凭据提供程序。</string>
+    <string name="credential_manager_settings_fallback">当前系统不支持直达凭据管理器设置，请在系统设置中搜索“凭据”或“密码”。</string>
+    <string name="credential_manager_settings_open_failed">无法打开系统凭据管理器设置。</string>
     <string name="set_key_supported_browsers">set_key_supported_browsers</string>
     <string name="supported_browsers_title">已适配浏览器</string>
     <string name="supported_browsers_summary">查看已针对自动填充做适配的浏览器列表</string>

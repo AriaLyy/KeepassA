@@ -183,6 +183,15 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     super.finish()
   }
 
+  internal fun shouldReturnUnlockResult(): Boolean {
+    return intent.getBooleanExtra(EXTRA_RETURN_UNLOCK_RESULT, false)
+  }
+
+  internal fun finishUnlockResult(success: Boolean) {
+    setResult(if (success) Activity.RESULT_OK else Activity.RESULT_CANCELED)
+    superFinish()
+  }
+
   /**
    * 切换数据库
    */
@@ -273,11 +282,13 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     const val OPEN_TYPE_CHANGE_DB = 1
     const val OPEN_TYPE_OPEN_DB = 2
     const val EXTRA_ENTRY_ID = "EXTRA_ENTRY_ID"
+    const val EXTRA_RETURN_UNLOCK_RESULT = "EXTRA_RETURN_UNLOCK_RESULT"
 
     // PendingIntent request codes,区分不同用途,避免 FLAG_CANCEL_CURRENT 互相取消
     const val REQ_CODE_NOTIFICATION = 0
     const val REQ_CODE_AUTOFILL_QUERY = 1
     const val REQ_CODE_AUTOFILL_SAVE = 2
+    const val REQ_CODE_CREDENTIAL_UNLOCK = 3
 
     internal fun startLauncherActivity(
       context: Context,
@@ -288,6 +299,12 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
           this.flags = flags
         }
       })
+    }
+
+    internal fun createUnlockResultIntent(context: Context): Intent {
+      return Intent(context, LauncherActivity::class.java).apply {
+        putExtra(EXTRA_RETURN_UNLOCK_RESULT, true)
+      }
     }
 
     /**
