@@ -60,6 +60,14 @@
   <color name="blue">#64B5F6</color>
   <color name="green">#81C784</color>
 
+  <!-- ========== KeePassA IME ========== -->
+  <color name="ime_keyboard_background">#1F2023</color>
+  <color name="ime_search_background">#2A2B2F</color>
+  <color name="ime_key_background">#2A2B2F</color>
+  <color name="ime_key_background_pressed">#373940</color>
+  <color name="ime_key_text">#6FA0E5</color>
+  <color name="ime_search_clear_icon">#A8ABB3</color>
+
   <!-- ========== 保留不动(在深色背景上表现尚可)
        transparent / color_072231 (深青,按钮渐变起点)
        color_FCCCB7 (浅桃,TextInputLayout 描边)

@@ -60,6 +60,55 @@ class InputIMEServiceSourceTest {
     assertTrue(source.contains("showSoftInputOnFocus = false"))
   }
 
+  @Test fun imeSearchBar_centersHintAndUsesDedicatedClearIcon() {
+    val layout = File("src/main/res/layout/layout_kpa_ime.xml").readText()
+    val clearIcon = File("src/main/res/drawable/ic_ime_search_clear.xml")
+
+    assertTrue(layout.contains("android:id=\"@+id/tvImeSearchQuery\""))
+    assertTrue(layout.contains("android:gravity=\"center_vertical\""))
+    assertTrue(layout.contains("app:srcCompat=\"@drawable/ic_ime_search_clear\""))
+    assertTrue(clearIcon.exists())
+    assertTrue(clearIcon.readText().contains("pathData=\"M19,6.41"))
+  }
+
+  @Test fun imeKeyboard_usesNightAwareImeColors() {
+    val layout = File("src/main/res/layout/layout_kpa_ime.xml").readText()
+    val keyBackground = File("src/main/res/drawable/bg_ime_key.xml").readText()
+    val searchBackground = File("src/main/res/drawable/bg_ime_search_bar.xml")
+    val dayColors = File("src/main/res/values/colors.xml").readText()
+    val nightColors = File("src/main/res/values-night/colors.xml").readText()
+    val binder = File("src/main/java/com/lyy/keepassa/service/input/keyboard/ImeKeyboardViewBinder.kt").readText()
+
+    assertTrue(layout.contains("android:background=\"@color/ime_keyboard_background\""))
+    assertTrue(layout.contains("android:background=\"@drawable/bg_ime_search_bar\""))
+    assertTrue(searchBackground.exists())
+    assertTrue(keyBackground.contains("@color/ime_key_background"))
+    assertTrue(keyBackground.contains("@color/ime_key_background_pressed"))
+    assertTrue(binder.contains("R.color.ime_key_text"))
+    listOf(
+      "ime_keyboard_background",
+      "ime_search_background",
+      "ime_key_background",
+      "ime_key_background_pressed",
+      "ime_key_text",
+      "ime_search_clear_icon"
+    ).forEach { colorName ->
+      assertTrue("missing day color $colorName", dayColors.contains("name=\"$colorName\""))
+      assertTrue("missing night color $colorName", nightColors.contains("name=\"$colorName\""))
+    }
+  }
+
+  @Test fun serviceRerendersKeyboardWithShiftState() {
+    val service = File("src/main/java/com/lyy/keepassa/service/input/InputIMEService.kt").readText()
+    val binder = File("src/main/java/com/lyy/keepassa/service/input/keyboard/ImeKeyboardViewBinder.kt").readText()
+
+    assertTrue(service.contains("renderImeKeyboard()"))
+    assertTrue(service.contains("render(keyboardState.page, keyboardState.shiftState)"))
+    assertTrue(service.contains("val shiftBefore = keyboardState.shiftState"))
+    assertTrue(binder.contains("fun render(page: ImeKeyboardPage, shiftState: ImeShiftState)"))
+    assertTrue(binder.contains("displayShiftedText"))
+  }
+
   @Test fun imeActionRow_containsOnlyCurrentFirstRowActionsInOrder() {
     val layout = File("src/main/res/layout/layout_kpa_ime.xml").readText()
 

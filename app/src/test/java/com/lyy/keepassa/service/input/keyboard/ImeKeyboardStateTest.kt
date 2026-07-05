@@ -60,6 +60,22 @@ class ImeKeyboardStateTest {
     assertEquals(ImeShiftState.LOWERCASE, state.shiftState)
   }
 
+  @Test fun displayShiftedText_reflectsShiftWithoutConsumingSingleShift() {
+    val state = ImeKeyboardState()
+
+    assertEquals("a", state.displayShiftedText("a"))
+    state.tapShift(nowMillis = 1_000)
+
+    assertEquals("A", state.displayShiftedText("a"))
+    assertEquals("B", state.displayShiftedText("b"))
+    assertEquals(ImeShiftState.UPPERCASE_NEXT, state.shiftState)
+
+    state.applyShiftTo("a")
+
+    assertEquals(ImeShiftState.LOWERCASE, state.shiftState)
+    assertEquals("b", state.displayShiftedText("B"))
+  }
+
   @Test fun doubleShift_locksUppercase() {
     val state = ImeKeyboardState()
 

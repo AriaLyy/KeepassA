@@ -165,14 +165,14 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       onShiftLongPress = { view ->
         keyboardPreferences.performKeyboardHaptic(view)
         keyboardState.longPressShift()
-        renderKeyboard()
+        renderImeKeyboard()
       }
     )
-    renderKeyboard()
+    renderImeKeyboard()
   }
 
-  private fun renderKeyboard() {
-    keyboardBinder?.render(keyboardState.page)
+  private fun renderImeKeyboard() {
+    keyboardBinder?.render(keyboardState.page, keyboardState.shiftState)
   }
 
   private fun initCandidatesLayout() {
@@ -208,6 +208,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     keyboardPreferences.performKeyboardHaptic(view)
     when (action) {
       is ImeKeyAction.CommitText -> {
+        val shiftBefore = keyboardState.shiftState
         val text = if (keyboardState.page == ImeKeyboardPage.ALPHABET) {
           keyboardState.applyShiftTo(action.text)
         } else {
@@ -218,7 +219,9 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         } else {
           fillData(text)
         }
-        renderKeyboard()
+        if (shiftBefore != keyboardState.shiftState) {
+          renderImeKeyboard()
+        }
       }
       ImeKeyAction.Space -> {
         if (keyboardState.isSearchMode) {
@@ -237,15 +240,15 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       }
       ImeKeyAction.Shift -> {
         keyboardState.tapShift(System.currentTimeMillis())
-        renderKeyboard()
+        renderImeKeyboard()
       }
       ImeKeyAction.SwitchToSymbols -> {
         keyboardState.switchToSymbols()
-        renderKeyboard()
+        renderImeKeyboard()
       }
       ImeKeyAction.SwitchToAlphabet -> {
         keyboardState.switchToAlphabet()
-        renderKeyboard()
+        renderImeKeyboard()
       }
       ImeKeyAction.EnterSearchMode -> enterImeSearchMode()
       ImeKeyAction.ClearSearch -> {

@@ -1,5 +1,7 @@
 package com.lyy.keepassa.service.input.keyboard
 
+import java.util.Locale
+
 enum class ImeKeyboardPage {
   ALPHABET,
   SYMBOLS
@@ -14,6 +16,12 @@ enum class ImeShiftState {
 class ImeKeyboardState {
   companion object {
     const val SHIFT_DOUBLE_TAP_WINDOW_MS = 400L
+
+    fun displayShiftedText(text: String, shiftState: ImeShiftState): String = when (shiftState) {
+      ImeShiftState.LOWERCASE -> text.lowercase(Locale.ROOT)
+      ImeShiftState.UPPERCASE_NEXT,
+      ImeShiftState.UPPERCASE_LOCKED -> text.uppercase(Locale.ROOT)
+    }
   }
 
   var isSearchMode: Boolean = false
@@ -82,11 +90,13 @@ class ImeKeyboardState {
     shiftState = ImeShiftState.UPPERCASE_LOCKED
   }
 
+  fun displayShiftedText(text: String): String = displayShiftedText(text, shiftState)
+
   fun applyShiftTo(text: String): String {
     val result = when (shiftState) {
-      ImeShiftState.LOWERCASE -> text
+      ImeShiftState.LOWERCASE -> text.lowercase(Locale.ROOT)
       ImeShiftState.UPPERCASE_NEXT,
-      ImeShiftState.UPPERCASE_LOCKED -> text.uppercase()
+      ImeShiftState.UPPERCASE_LOCKED -> text.uppercase(Locale.ROOT)
     }
     if (shiftState == ImeShiftState.UPPERCASE_NEXT) {
       shiftState = ImeShiftState.LOWERCASE

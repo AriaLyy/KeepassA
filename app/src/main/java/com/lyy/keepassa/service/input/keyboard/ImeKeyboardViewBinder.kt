@@ -15,18 +15,18 @@ internal class ImeKeyboardViewBinder(
   private val onShiftLongPress: (View) -> Unit
 ) {
 
-  fun render(page: ImeKeyboardPage) {
+  fun render(page: ImeKeyboardPage, shiftState: ImeShiftState) {
     container.removeAllViews()
     val rows = when (page) {
       ImeKeyboardPage.ALPHABET -> ImeKeyboardLayout.alphabetRows()
       ImeKeyboardPage.SYMBOLS -> ImeKeyboardLayout.symbolRows()
     }
     rows.forEach { row ->
-      container.addView(createRow(row))
+      container.addView(createRow(row, shiftState))
     }
   }
 
-  private fun createRow(actions: List<ImeKeyAction>): View {
+  private fun createRow(actions: List<ImeKeyAction>, shiftState: ImeShiftState): View {
     return LinearLayout(context).apply {
       orientation = LinearLayout.HORIZONTAL
       gravity = Gravity.CENTER
@@ -35,18 +35,18 @@ internal class ImeKeyboardViewBinder(
         ViewGroup.LayoutParams.WRAP_CONTENT
       )
       actions.forEach { action ->
-        addView(createKey(action))
+        addView(createKey(action, shiftState))
       }
     }
   }
 
-  private fun createKey(action: ImeKeyAction): View {
+  private fun createKey(action: ImeKeyAction, shiftState: ImeShiftState): View {
     return TextView(context).apply {
-      text = label(action)
+      text = label(action, shiftState)
       gravity = Gravity.CENTER
       minHeight = context.resources.getDimensionPixelSize(R.dimen.ime_key_height)
       setBackgroundResource(R.drawable.bg_ime_key)
-      setTextColor(context.getColor(R.color.color_4E85DB))
+      setTextColor(context.getColor(R.color.ime_key_text))
       textSize = 16f
       isClickable = true
       isFocusable = true
@@ -67,8 +67,8 @@ internal class ImeKeyboardViewBinder(
     }
   }
 
-  private fun label(action: ImeKeyAction): String = when (action) {
-    is ImeKeyAction.CommitText -> action.text
+  private fun label(action: ImeKeyAction, shiftState: ImeShiftState): String = when (action) {
+    is ImeKeyAction.CommitText -> ImeKeyboardState.displayShiftedText(action.text, shiftState)
     ImeKeyAction.Space -> " "
     ImeKeyAction.Backspace -> "del"
     ImeKeyAction.Enter -> "enter"

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/color_E7EAED"
+    android:background="@color/ime_keyboard_background"
     android:paddingBottom="16dp">
 
   <View
@@ -20,7 +20,7 @@
       android:layout_marginStart="8dp"
       android:layout_marginTop="8dp"
       android:layout_marginEnd="8dp"
-      android:background="@drawable/bg_white_radius_2"
+      android:background="@drawable/bg_ime_search_bar"
       android:clickable="true"
       android:focusable="true"
       android:gravity="center_vertical"
@@ -47,7 +47,9 @@
         android:cursorVisible="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:gravity="center_vertical"
         android:hint="@string/ime_search_entry_hint"
+        android:includeFontPadding="false"
         android:inputType="text"
         android:maxLines="1"
         android:padding="0dp"
@@ -59,7 +61,7 @@
         android:layout_height="32dp"
         android:padding="6dp"
         android:visibility="gone"
-        app:srcCompat="@drawable/ic_ime_close" />
+        app:srcCompat="@drawable/ic_ime_search_clear" />
   </LinearLayout>
 
   <androidx.recyclerview.widget.RecyclerView
