@@ -24,6 +24,7 @@ import android.view.inputmethod.InlineSuggestionsResponse
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,18 +40,28 @@ import com.lyy.keepassa.entity.SimpleItemEntity
 import com.lyy.keepassa.event.FillInfoEvent
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.ServiceRouter
+import com.lyy.keepassa.service.autofill.ImeBrowserDomainContext
 import com.lyy.keepassa.service.autofill.W3cHints
+import com.lyy.keepassa.service.input.keyboard.ImeKeyAction
+import com.lyy.keepassa.service.input.keyboard.ImeKeyboardPage
+import com.lyy.keepassa.service.input.keyboard.ImeKeyboardPreferences
+import com.lyy.keepassa.service.input.keyboard.ImeKeyboardState
+import com.lyy.keepassa.service.input.keyboard.ImeKeyboardViewBinder
+import com.lyy.keepassa.service.input.search.ImeEntrySearchEngine
+import com.lyy.keepassa.service.input.search.ImeSearchSession
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.util.NotificationUtil
-import com.lyy.keepassa.util.totp.OtpUtil
+import com.lyy.keepassa.util.getRealUserName
 import com.lyy.keepassa.util.isCanOpenQuickLock
+import com.lyy.keepassa.util.totp.OtpUtil
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.main.QuickUnlockActivity
 import com.lyy.keepassa.view.search.CommonSearchActivity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -90,9 +101,15 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
   private var curImeView: View? = null
   private var scope = MainScope()
   private var backspaceButton: View? = null
+  private val keyboardState = ImeKeyboardState()
+  private val searchSession = ImeSearchSession<PwEntry>()
+  private val manualSelectionPolicy = ImeManualSelectionPolicy<PwEntry>()
+  private lateinit var keyboardPreferences: ImeKeyboardPreferences
+  private var keyboardBinder: ImeKeyboardViewBinder? = null
+  private var imeSearchJob: Job? = null
   private val backspaceRepeatRunnable: Runnable = object : Runnable {
     override fun run() {
-      ic?.deleteSurroundingText(1, 0)
+      handleBackspaceInput()
       backspaceButton?.postDelayed(this, BACKSPACE_REPEAT_INTERVAL_MS)
     }
   }
@@ -115,6 +132,9 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       }
     }
     curImeView = layout
+    keyboardPreferences = ImeKeyboardPreferences(this)
+    initImeSearchBar(layout)
+    initKeyboard(layout)
     setupBackspaceLongPress(layout)
     initCandidatesLayout()
 
@@ -129,6 +149,45 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     }
 
     return layout
+  }
+
+  private fun initImeSearchBar(layout: View) {
+    val searchBar = layout.findViewById<View>(R.id.imeSearchBar)
+    val clear = layout.findViewById<View>(R.id.btImeSearchClear)
+    searchBar.setOnClickListener {
+      keyboardPreferences.performKeyboardHaptic(searchBar)
+      enterImeSearchMode()
+    }
+    clear.setOnClickListener {
+      keyboardPreferences.performKeyboardHaptic(clear)
+      if (keyboardState.searchQuery.isEmpty()) {
+        exitImeSearchMode(clearResults = true)
+      } else {
+        keyboardState.clearSearchQuery()
+        searchSession.clear()
+        updateImeSearchUi()
+        showImeSearchEmptyOrResults()
+      }
+    }
+  }
+
+  private fun initKeyboard(layout: View) {
+    val container = layout.findViewById<LinearLayout>(R.id.llImeKeyboard)
+    keyboardBinder = ImeKeyboardViewBinder(
+      context = this,
+      container = container,
+      onKey = { view, action -> handleImeKeyAction(view, action) },
+      onShiftLongPress = { view ->
+        keyboardPreferences.performKeyboardHaptic(view)
+        keyboardState.longPressShift()
+        renderKeyboard()
+      }
+    )
+    renderKeyboard()
+  }
+
+  private fun renderKeyboard() {
+    keyboardBinder?.render(keyboardState.page)
   }
 
   private fun initCandidatesLayout() {
@@ -149,6 +208,13 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
             item.isSelected = selectionTracker.isSelected(i)
           }
           candidatesAdapter.notifyDataSetChanged()
+          if (keyboardState.isSearchMode) {
+            searchSession.results.getOrNull(position)?.let { entry ->
+              searchSession.select(entry)
+              manualSelectionPolicy.rememberManualSelection(appPkgName, entry)
+              exitImeSearchMode(clearResults = false)
+            }
+          }
         }
       })
   }
@@ -164,7 +230,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     bt.setOnTouchListener { _, event ->
       when (event.actionMasked) {
         MotionEvent.ACTION_DOWN -> {
-          ic?.deleteSurroundingText(1, 0)
+          handleBackspaceInput()
           bt.removeCallbacks(backspaceRepeatRunnable)
           bt.postDelayed(backspaceRepeatRunnable, BACKSPACE_REPEAT_DELAY_MS)
         }
@@ -174,6 +240,155 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       }
       true
     }
+  }
+
+  private fun handleImeKeyAction(view: View, action: ImeKeyAction) {
+    keyboardPreferences.performKeyboardHaptic(view)
+    when (action) {
+      is ImeKeyAction.CommitText -> {
+        val text = if (keyboardState.page == ImeKeyboardPage.ALPHABET) {
+          keyboardState.applyShiftTo(action.text)
+        } else {
+          action.text
+        }
+        if (keyboardState.isSearchMode) {
+          handleSearchTextInput(text)
+        } else {
+          fillData(text)
+        }
+        renderKeyboard()
+      }
+      ImeKeyAction.Space -> {
+        if (keyboardState.isSearchMode) {
+          handleSearchTextInput(" ")
+        } else {
+          fillData(" ")
+        }
+      }
+      ImeKeyAction.Backspace -> handleBackspaceInput()
+      ImeKeyAction.Enter -> {
+        if (keyboardState.isSearchMode) {
+          runImeSearchNow()
+        } else {
+          ic?.performEditorAction(imeOption)
+        }
+      }
+      ImeKeyAction.Shift -> {
+        keyboardState.tapShift(System.currentTimeMillis())
+        renderKeyboard()
+      }
+      ImeKeyAction.SwitchToSymbols -> {
+        keyboardState.switchToSymbols()
+        renderKeyboard()
+      }
+      ImeKeyAction.SwitchToAlphabet -> {
+        keyboardState.switchToAlphabet()
+        renderKeyboard()
+      }
+      ImeKeyAction.EnterSearchMode -> enterImeSearchMode()
+      ImeKeyAction.ClearSearch -> {
+        keyboardState.clearSearchQuery()
+        searchSession.clear()
+        updateImeSearchUi()
+        showImeSearchEmptyOrResults()
+      }
+      ImeKeyAction.ExitSearchMode -> exitImeSearchMode(clearResults = true)
+    }
+  }
+
+  private fun handleSearchTextInput(text: String) {
+    if (!keyboardState.appendSearchText(text)) return
+    searchSession.setQuery(keyboardState.searchQuery)
+    updateImeSearchUi()
+    scheduleImeSearch()
+  }
+
+  private fun handleBackspaceInput() {
+    if (keyboardState.isSearchMode) {
+      keyboardState.backspaceSearchQuery()
+      searchSession.setQuery(keyboardState.searchQuery)
+      updateImeSearchUi()
+      scheduleImeSearch()
+    } else {
+      ic?.deleteSurroundingText(1, 0)
+    }
+  }
+
+  private fun enterImeSearchMode() {
+    if (!dbIsOpen()) return
+    manualSelectionPolicy.onNewSearch()
+    keyboardState.enterSearchMode()
+    searchSession.clear()
+    updateImeSearchUi()
+    showImeSearchEmptyOrResults()
+  }
+
+  private fun exitImeSearchMode(clearResults: Boolean) {
+    keyboardState.exitSearchMode()
+    imeSearchJob?.cancel()
+    if (clearResults) {
+      searchSession.clear()
+      candidatesData.clear()
+      candidatesAdapter.notifyDataSetChanged()
+      candidatesList.visibility = View.GONE
+    }
+    updateImeSearchUi()
+  }
+
+  private fun updateImeSearchUi() {
+    val root = curImeView ?: return
+    val query = keyboardState.searchQuery
+    root.findViewById<TextView>(R.id.tvImeSearchQuery).text =
+      if (keyboardState.isSearchMode && query.isNotEmpty()) {
+        query
+      } else {
+        getString(R.string.ime_search_entry_hint)
+      }
+    root.findViewById<View>(R.id.btImeSearchClear).visibility =
+      if (keyboardState.isSearchMode) View.VISIBLE else View.GONE
+  }
+
+  private fun scheduleImeSearch() {
+    imeSearchJob?.cancel()
+    imeSearchJob = scope.launch {
+      delay(ImeSearchSession.DEBOUNCE_MS)
+      runImeSearchNow()
+    }
+  }
+
+  private fun runImeSearchNow() {
+    if (!keyboardState.isSearchMode) return
+    val results = ImeEntrySearchEngine.search(searchSession.query)
+    searchSession.updateResults(results)
+    showImeSearchEmptyOrResults()
+  }
+
+  private fun showImeSearchEmptyOrResults() {
+    candidatesData.clear()
+    if (searchSession.isEmptyStateVisible) {
+      candidatesList.visibility = View.VISIBLE
+      candidatesData.add(SimpleItemEntity().apply {
+        type = CandidatesAdapter.ITEM_TYPE_EMPTY
+        title = getString(R.string.ime_search_no_entry)
+      })
+      candidatesAdapter.notifyDataSetChanged()
+      return
+    }
+
+    val results = searchSession.results
+    selectionTracker.show(results)
+    if (results.isEmpty()) {
+      candidatesList.visibility = View.GONE
+      candidatesAdapter.notifyDataSetChanged()
+      return
+    }
+
+    candidatesList.visibility = View.VISIBLE
+    val flags = selectionTracker.selectedFlags()
+    results.forEachIndexed { index, entry ->
+      candidatesData.add(entry.toImeCandidateItem(flags[index]))
+    }
+    candidatesAdapter.notifyDataSetChanged()
   }
 
   /**
@@ -190,6 +405,10 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     ic = currentInputConnection
     Timber.d("pkgName = ${info?.packageName}, inputType = ${info?.inputType}, fieldName = ${info?.fieldName}, fieldId = ${info?.fieldId}")
     appPkgName = info?.packageName
+    manualSelectionPolicy.onStartInput(appPkgName)
+    if (keyboardState.isSearchMode) {
+      exitImeSearchMode(clearResults = manualSelectionPolicy.currentSelection == null)
+    }
 
     if (W3cHints.isBrowser(appPkgName) && !checkCanOpenAutoFill()) {
       if (curImeView == null) {
@@ -209,7 +428,13 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       return
     }
 
-    showEntryList(searchEntry(appPkgName))
+    if (manualSelectionPolicy.shouldUseAutomaticCandidates(appPkgName)) {
+      showEntryList(searchEntry(appPkgName))
+    } else {
+      manualSelectionPolicy.currentSelection?.let {
+        showEntryList(listOf(it), forceVisible = true)
+      }
+    }
   }
 
   private fun checkCanOpenAutoFill(): Boolean {
@@ -261,6 +486,9 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
           LauncherActivity.startLauncherActivity(this, Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         BaseApp.isLocked = true
+        manualSelectionPolicy.clear()
+        selectionTracker.show(emptyList())
+        exitImeSearchMode(clearResults = true)
         NotificationUtil.startDbLocked(this)
         if (BaseApp.APP.isCanOpenQuickLock()) {
           return
@@ -283,8 +511,10 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
           val userName = KdbUtil.getUserName(it)
           Timber.d("fill user name: $userName")
           fillData(userName)
+          finishSearchModeAfterFill()
           return
         }
+        showSelectEntryFirstIfSearching()
       }
 
       // 密码
@@ -296,8 +526,10 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
           val pass = KdbUtil.getPassword(it)
           Timber.d("fill password: $pass")
           fillData(pass)
+          finishSearchModeAfterFill()
           return
         }
+        showSelectEntryFirstIfSearching()
       }
 
       // 关键软键盘
@@ -325,6 +557,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
           return
         } else {
           fillData(totp.second!!)
+          finishSearchModeAfterFill()
         }
       }
 
@@ -335,12 +568,29 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
         }
 
         showMoreInfoDialog()
+        finishSearchModeAfterFill()
       }
 
       // 回车键
       R.id.btEnter -> {
-        ic?.performEditorAction(imeOption)
+        if (keyboardState.isSearchMode) {
+          runImeSearchNow()
+        } else {
+          ic?.performEditorAction(imeOption)
+        }
       }
+    }
+  }
+
+  private fun finishSearchModeAfterFill() {
+    if (keyboardState.isSearchMode) {
+      exitImeSearchMode(clearResults = false)
+    }
+  }
+
+  private fun showSelectEntryFirstIfSearching() {
+    if (keyboardState.isSearchMode) {
+      HitUtil.toaskShort(getString(R.string.ime_search_select_entry_first))
     }
   }
 
@@ -382,6 +632,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       }
 
       fillData(event.infoStr.toString())
+      finishSearchModeAfterFill()
     }
   }
 
@@ -389,8 +640,12 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     super.onDestroy()
     EventBusHelper.unReg(this)
     scope.cancel()
+    imeSearchJob?.cancel()
+    manualSelectionPolicy.clear()
+    searchSession.clear()
     backspaceButton?.removeCallbacks(backspaceRepeatRunnable)
     backspaceButton = null
+    keyboardBinder = null
   }
 
   /**
@@ -403,27 +658,35 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
    * 会再次进入 [onStartInputView],若新候选与上次同引用,resync 保留用户已选条目;
    * 列表形状变化时 resync 自动 fallback 到 show。详见 issue #86。
    */
-  private fun showEntryList(entries: List<PwEntry>) {
+  private fun showEntryList(
+    entries: List<PwEntry>,
+    forceVisible: Boolean = false
+  ) {
     selectionTracker.resync(entries)
     candidatesData.clear()
     if (selectionTracker.isEmpty) {
       candidatesList.visibility = View.GONE
       return
     }
-    if (selectionTracker.size == 1) {
+    if (selectionTracker.size == 1 && !forceVisible) {
       candidatesList.visibility = View.GONE
       return
     }
     candidatesList.visibility = View.VISIBLE
     val flags = selectionTracker.selectedFlags()
     entries.forEachIndexed { i, pwEntry ->
-      val item = SimpleItemEntity()
-      item.title = pwEntry.title
-      item.obj = pwEntry
-      item.isSelected = flags[i]
-      candidatesData.add(item)
+      candidatesData.add(pwEntry.toImeCandidateItem(flags[i]))
     }
     candidatesAdapter.notifyDataSetChanged()
+  }
+
+  private fun PwEntry.toImeCandidateItem(selected: Boolean): SimpleItemEntity {
+    return SimpleItemEntity().also { item ->
+      item.title = title.orEmpty()
+      item.subTitle = getRealUserName().ifBlank { url.orEmpty() }
+      item.obj = this
+      item.isSelected = selected
+    }
   }
 
   /**
@@ -462,8 +725,9 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     }
     val listStorage = ArrayList<PwEntry>()
     if (W3cHints.isBrowser(pkgName)) {
-      Timber.d("curDomain = ${W3cHints.curDomainUrl}")
-      KdbUtil.searchEntriesByDomain(W3cHints.curDomainUrl, listStorage)
+      val domain = ImeBrowserDomainContext.resolve(pkgName)
+      Timber.d("ime browser domain context available = ${domain != null}")
+      KdbUtil.searchEntriesByDomain(domain, listStorage)
       return listStorage
     }
 

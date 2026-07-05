@@ -27,4 +27,23 @@ class InputIMEServiceSourceTest {
     assertTrue(source.contains("ITEM_TYPE_EMPTY"))
     assertTrue(source.contains("item.obj as? PwEntry"))
   }
+
+  @Test fun service_usesImeKeyboardComponents() {
+    val source = File("src/main/java/com/lyy/keepassa/service/input/InputIMEService.kt").readText()
+
+    assertTrue(source.contains("ImeKeyboardState"))
+    assertTrue(source.contains("ImeKeyboardViewBinder"))
+    assertTrue(source.contains("ImeEntrySearchEngine"))
+    assertTrue(source.contains("ImeSearchSession"))
+    assertTrue(source.contains("ImeManualSelectionPolicy"))
+    assertTrue(source.contains("ImeBrowserDomainContext"))
+  }
+
+  @Test fun service_routesSearchTextWithoutCommitText() {
+    val source = File("src/main/java/com/lyy/keepassa/service/input/InputIMEService.kt").readText()
+
+    assertTrue(source.contains("handleSearchTextInput"))
+    assertTrue(source.contains("keyboardState.isSearchMode"))
+    assertTrue(source.contains("scheduleImeSearch"))
+  }
 }
