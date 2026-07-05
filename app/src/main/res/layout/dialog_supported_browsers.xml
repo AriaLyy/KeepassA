@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+      style="@style/KpaDialogLayoutStyle"
+      android:layout_width="@dimen/dialog_min_width"
+      android:layout_height="match_parent">
+
+    <com.lyy.keepassa.widget.BubbleTextView
+        android:id="@+id/supportedBrowserTitle"
+        style="@style/DialogTitleStyle"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:textColor="@color/text_blue_color"
+        app:icon_size="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Supported browsers (42)" />
+
+    <View
+        android:id="@+id/supportedBrowserLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"
+        app:layout_constraintTop_toBottomOf="@+id/supportedBrowserTitle" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/supportedBrowserScroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:scrollbarStyle="outsideOverlay"
+        app:layout_constraintBottom_toTopOf="@+id/supportedBrowserEnter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/supportedBrowserLine">
+
+      <TextView
+          android:id="@+id/supportedBrowserContent"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingStart="16dp"
+          android:paddingTop="16dp"
+          android:paddingEnd="16dp"
+          android:paddingBottom="16dp"
+          android:textColor="@color/text_black_color"
+          android:textSize="@dimen/text_size_normal"
+          tools:text="Chromium&#10;· Chrome&#10;· Vivaldi" />
+
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/supportedBrowserEnter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/bg_ripple_white_selector"
+        android:text="@android:string/ok"
+        android:textColor="@color/text_blue_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

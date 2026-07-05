@@ -55,6 +55,7 @@
   <color name="color_CCFFFFFF">#CCFFFFFF</color>
   <color name="color_bbbbbb">#bbbbbb</color>
   <color name="color_FCCCB7">#FCCCB7</color>
+  <color name="launcher_on_background_text">#FFFFFF</color>
 
   <color name="ime_keyboard_background">#E7EAED</color>
   <color name="ime_search_background">#FFFFFF</color>

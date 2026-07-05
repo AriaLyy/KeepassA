@@ -68,6 +68,10 @@ interface DialogRouter  {
   @DialogArg(showDialog = true)
   fun showTipDialog()
 
+  @RouterPath(path = "/dialog/supportedBrowsers")
+  @DialogArg(showDialog = true)
+  fun showSupportedBrowsersDialog()
+
   @RouterPath(path = "/dialog/imgViewer")
   @DialogArg(showDialog = true)
   fun showImgViewerDialog(

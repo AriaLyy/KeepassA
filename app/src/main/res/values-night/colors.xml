@@ -51,6 +51,7 @@
   <color name="color_4E85DB">#6FA0E5</color>
   <color name="color_444E85DB">#446FA0E5</color>
   <color name="color_524E85DB">#526FA0E5</color>
+  <color name="launcher_on_background_text">#FFFFFF</color>
 
   <!-- ========== 强调与状态色(夜间降低饱和,避免刺眼) ========== -->
   <color name="highlight">#FF6E9C</color>
