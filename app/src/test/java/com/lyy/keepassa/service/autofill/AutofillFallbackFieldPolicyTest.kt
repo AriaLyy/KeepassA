@@ -12,7 +12,7 @@ import android.view.View
 import android.view.autofill.AutofillId
 import io.mockk.mockk
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -149,7 +149,8 @@ class AutofillFallbackFieldPolicyTest {
     assertSame(requestFocusedId, fallbackId)
   }
 
-  @Test fun miBrowserSearchOrUrlFocusedSessionDoesNotUseParserFallbackAuthPrompt() {
+  @Test fun miBrowserSearchOrUrlFocusedSessionStillAnchorsAuthPrompt() {
+    val strategy = BrowserAutofillStrategyRegistry.forPackage("com.mi.globalbrowser")
     val parserFallbackId = mockk<AutofillId>()
     val requestFocusedId = mockk<AutofillId>()
 
@@ -157,11 +158,11 @@ class AutofillFallbackFieldPolicyTest {
       parserFallbackId = parserFallbackId,
       requestFocusedId = requestFocusedId,
       requestFocusedIdIsSearchOrUrlField = true,
-      strategyAllowsRequestFocusedIdFallback = true,
-      strategyAllowsSearchOrUrlRequestFocusedIdFallback = false,
-      strategyPrefersRequestFocusedIdForAuthPrompt = true
+      strategyAllowsRequestFocusedIdFallback = strategy.allowRequestFocusedIdFallback,
+      strategyAllowsSearchOrUrlRequestFocusedIdFallback = strategy.allowSearchOrUrlRequestFocusedIdFallback,
+      strategyPrefersRequestFocusedIdForAuthPrompt = strategy.preferRequestFocusedIdForAuthPromptFallback
     )
 
-    assertNull(fallbackId)
+    assertNotNull("MI Browser 上聚焦到 URL/搜索栏时也必须产生 fallback id 用于弹出认证 UI", fallbackId)
   }
 }

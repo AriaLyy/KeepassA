@@ -75,6 +75,15 @@ class BrowserAutofillStrategyTest {
     assertTrue(strategy.allowSingleFieldAuthFallback)
   }
 
+  @Test fun freeAdblockerBrowserUsesChromiumStrategy() {
+    val strategy = BrowserAutofillStrategyRegistry.forPackage("com.hsv.freeadblockerbrowser")
+
+    assertEquals(BrowserAutofillEngine.CHROMIUM, strategy.engine)
+    assertTrue(strategy.isBrowser)
+    assertTrue(strategy.allowBrowserFormFieldInference)
+    assertTrue(strategy.allowSingleFieldAuthFallback)
+  }
+
   @Test fun yandexUsesDedicatedSingleFieldFallbackStrategy() {
     val strategy = BrowserAutofillStrategyRegistry.forPackage("com.yandex.browser")
 
@@ -120,9 +129,27 @@ class BrowserAutofillStrategyTest {
     assertTrue(strategy.shouldClassifyNativeEditTextVirtualNodes)
     assertTrue(strategy.allowFocusedNonTextNodeFallback)
     assertTrue(strategy.allowRequestFocusedIdFallback)
+    assertTrue(strategy.allowSearchOrUrlRequestFocusedIdFallback)
+    assertTrue(strategy.preferRequestFocusedIdForAuthPromptFallback)
+    assertTrue(strategy.disableSingleFieldFallbackDatasetFiltering)
+    assertTrue(strategy.useDatasetAuthenticationForFallbackAuthPrompt)
+    assertTrue(strategy.allowBrowserFormFieldInference)
+    assertTrue(strategy.allowSingleFieldAuthFallback)
+    assertTrue(strategy.isSearchOrUrlFieldToken("url_bar"))
+  }
+
+  @Test fun heytapBrowserUsesDedicatedStrategyWithFallbackPromptSupport() {
+    val strategy = BrowserAutofillStrategyRegistry.forPackage("com.heytap.browser")
+
+    assertEquals(BrowserAutofillEngine.ANDROID_BROWSER, strategy.engine)
+    assertTrue(strategy.isBrowser)
+    assertTrue(strategy.shouldClassifyNativeEditTextVirtualNodes)
+    assertTrue(strategy.allowFocusedNonTextNodeFallback)
+    assertTrue(strategy.allowRequestFocusedIdFallback)
     assertFalse(strategy.allowSearchOrUrlRequestFocusedIdFallback)
     assertTrue(strategy.preferRequestFocusedIdForAuthPromptFallback)
     assertTrue(strategy.disableSingleFieldFallbackDatasetFiltering)
+    assertTrue(strategy.useDatasetAuthenticationForFallbackAuthPrompt)
     assertTrue(strategy.allowBrowserFormFieldInference)
     assertTrue(strategy.allowSingleFieldAuthFallback)
     assertTrue(strategy.isSearchOrUrlFieldToken("url_bar"))
@@ -150,7 +177,6 @@ class BrowserAutofillStrategyTest {
     listOf(
       "com.apusapps.browser",
       "com.explore.web.browser",
-      "com.heytap.browser",
       "com.mx.browser",
       "com.talpa.hibrowser",
       "com.uc.browser.en",

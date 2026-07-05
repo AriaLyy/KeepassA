@@ -43,6 +43,7 @@ internal data class BrowserAutofillStrategy(
   val allowSearchOrUrlRequestFocusedIdFallback: Boolean = false,
   val preferRequestFocusedIdForAuthPromptFallback: Boolean = false,
   val disableSingleFieldFallbackDatasetFiltering: Boolean = false,
+  val useDatasetAuthenticationForFallbackAuthPrompt: Boolean = false,
   val ignoreSearchOrUrlOnlyAutofillFields: Boolean = false,
   val allowBrowserFormFieldInference: Boolean,
   val allowSingleFieldAuthFallback: Boolean,
@@ -67,6 +68,7 @@ internal object BrowserAutofillStrategyRegistry {
     "com.google.android.apps.chrome_dev",
     "com.brave.browser",
     "org.adblockplus.browser",
+    "com.hsv.freeadblockerbrowser",
     "com.opera.browser",
     "com.opera.browser.beta",
     "com.opera.mini.native",
@@ -104,6 +106,10 @@ internal object BrowserAutofillStrategyRegistry {
     "com.mi.globalbrowser"
   )
 
+  private val heytapBrowserPackages = setOf(
+    "com.heytap.browser"
+  )
+
   private val ucPackages = setOf(
     "com.UCMobile.intl"
   )
@@ -127,7 +133,6 @@ internal object BrowserAutofillStrategyRegistry {
 
   private val conservativeBrowserPackages = setOf(
     "com.uc.browser.en",
-    "com.heytap.browser",
     "com.vivo.browser",
     "com.mx.browser",
     "com.apusapps.browser",
@@ -152,6 +157,7 @@ internal object BrowserAutofillStrategyRegistry {
     "com.google.android.apps.chrome_dev" to "Chrome Dev",
     "com.brave.browser" to "Brave Browser",
     "org.adblockplus.browser" to "Adblock Browser",
+    "com.hsv.freeadblockerbrowser" to "Free Adblocker Browser",
     "com.opera.browser" to "Opera Browser",
     "com.opera.browser.beta" to "Opera Beta",
     "com.opera.mini.native" to "Opera Mini",
@@ -231,11 +237,12 @@ internal object BrowserAutofillStrategyRegistry {
       val kiwi = kiwiPackages.map { it to BrowserAutofillEngine.KIWI }
       val idm = idmPackages.map { it to BrowserAutofillEngine.IDM }
       val miBrowser = miBrowserPackages.map { it to BrowserAutofillEngine.CHROMIUM }
+      val heytapBrowser = heytapBrowserPackages.map { it to BrowserAutofillEngine.ANDROID_BROWSER }
       val uc = ucPackages.map { it to BrowserAutofillEngine.UC }
       val gecko = geckoPackages.map { it to BrowserAutofillEngine.GECKO }
       val android = androidBrowserPackages.map { it to BrowserAutofillEngine.ANDROID_BROWSER }
       val conservative = conservativeBrowserPackages.map { it to BrowserAutofillEngine.DEFAULT }
-      return (chromium + kiwi + idm + miBrowser + uc + gecko + android + conservative)
+      return (chromium + kiwi + idm + miBrowser + heytapBrowser + uc + gecko + android + conservative)
         .map { (pkg, engine) ->
           SupportedBrowser(
             packageName = pkg,
@@ -321,10 +328,32 @@ internal object BrowserAutofillStrategyRegistry {
     // non-text WebView node. Keep this targeted so other Chromium browsers are not widened.
     allowFocusedNonTextNodeFallback = true,
     allowRequestFocusedIdFallback = true,
+    // MI Browser 经常把 URL 栏或被误判为搜索/URL 的 WebView 字段作为唯一可聚焦节点交给
+    // onFillRequest;若拒绝用它做 auth prompt 锚点,会让 fallbackId 为 null,最终走到
+    // callback.onSuccess(null),自动填充 UI 根本弹不出来。允许它做锚点,先让用户能解锁/
+    // 搜索到条目,后续真正聚焦到登录框时再走正常路径。
+    allowSearchOrUrlRequestFocusedIdFallback = true,
+    preferRequestFocusedIdForAuthPromptFallback = true,
+    disableSingleFieldFallbackDatasetFiltering = true,
+    useDatasetAuthenticationForFallbackAuthPrompt = true,
+    ignoreSearchOrUrlOnlyAutofillFields = true,
+    allowBrowserFormFieldInference = true,
+    allowSingleFieldAuthFallback = true,
+    searchOrUrlTokens = genericSearchOrUrlTokens
+  )
+
+  private val heytapBrowserStrategy = BrowserAutofillStrategy(
+    engine = BrowserAutofillEngine.ANDROID_BROWSER,
+    isBrowser = true,
+    shouldClassifyNativeEditTextVirtualNodes = true,
+    // HeyTap Browser uses com.android.browser activities but exposes some web fields with masked
+    // metadata, so it needs a package-scoped fallback instead of widening conservative browsers.
+    allowFocusedNonTextNodeFallback = true,
+    allowRequestFocusedIdFallback = true,
     allowSearchOrUrlRequestFocusedIdFallback = false,
     preferRequestFocusedIdForAuthPromptFallback = true,
     disableSingleFieldFallbackDatasetFiltering = true,
-    ignoreSearchOrUrlOnlyAutofillFields = true,
+    useDatasetAuthenticationForFallbackAuthPrompt = true,
     allowBrowserFormFieldInference = true,
     allowSingleFieldAuthFallback = true,
     searchOrUrlTokens = genericSearchOrUrlTokens
@@ -402,6 +431,7 @@ internal object BrowserAutofillStrategyRegistry {
       in kiwiPackages -> kiwiStrategy
       in idmPackages -> idmStrategy
       in miBrowserPackages -> miBrowserStrategy
+      in heytapBrowserPackages -> heytapBrowserStrategy
       in ucPackages -> ucStrategy
       in geckoPackages -> geckoStrategy
       in androidBrowserPackages -> androidBrowserStrategy
