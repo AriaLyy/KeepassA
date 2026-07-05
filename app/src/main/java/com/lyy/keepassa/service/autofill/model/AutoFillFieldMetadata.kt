@@ -16,6 +16,8 @@ import android.service.autofill.SaveInfo
 import android.view.View
 import android.view.autofill.AutofillId
 import com.lyy.keepassa.service.autofill.AutoFillHelper
+import com.lyy.keepassa.service.autofill.AutofillFieldRole
+import com.lyy.keepassa.service.autofill.AutofillTotpFieldPolicy
 
 /**
  * A stripped down version of a [ViewNode] that contains only autofill-relevant metadata. It also
@@ -32,7 +34,12 @@ class AutoFillFieldMetadata(viewNode: ViewNode) {
   val autoFillType: Int = viewNode.autofillType
   val autoFillOptions: Array<CharSequence>? = viewNode.autofillOptions
   val isFocused: Boolean = viewNode.isFocused
-  var isPassword: Boolean = false
+  internal var fieldRole: AutofillFieldRole = AutofillFieldRole.USERNAME
+    private set
+  val isPassword: Boolean
+    get() = fieldRole == AutofillFieldRole.PASSWORD
+  val isTotp: Boolean
+    get() = fieldRole == AutofillFieldRole.TOTP
   val autoFillField = FilledAutoFillField(viewNode)
 
   /**
@@ -71,8 +78,12 @@ class AutoFillFieldMetadata(viewNode: ViewNode) {
    */
   private fun updateSaveTypeFromHints() {
     saveType = 0
+    fieldRole = AutofillFieldRole.USERNAME
     for (hint in autoFillHints) {
       when (hint) {
+        AutofillTotpFieldPolicy.AUTOFILL_HINT_TOTP -> {
+          fieldRole = AutofillFieldRole.TOTP
+        }
         View.AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_DATE,
         View.AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_DAY,
         View.AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_MONTH,
@@ -88,7 +99,7 @@ class AutoFillFieldMetadata(viewNode: ViewNode) {
           saveType = saveType or SaveInfo.SAVE_DATA_TYPE_GENERIC
         }
         View.AUTOFILL_HINT_PASSWORD -> {
-          isPassword = true
+          fieldRole = AutofillFieldRole.PASSWORD
           saveType = saveType or SaveInfo.SAVE_DATA_TYPE_PASSWORD
           saveType = saveType and SaveInfo.SAVE_DATA_TYPE_EMAIL_ADDRESS.inv()
           saveType = saveType and SaveInfo.SAVE_DATA_TYPE_USERNAME.inv()
