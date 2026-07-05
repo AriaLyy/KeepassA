@@ -25,10 +25,11 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
 import com.arialyy.frame.router.Routerfit
 import com.arialyy.frame.util.ResUtil
 import com.arialyy.frame.util.adapter.RvItemClickSupport
@@ -83,6 +84,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
   private lateinit var candidatesList: RecyclerView
   private val candidatesData = arrayListOf<SimpleItemEntity>()
   private lateinit var candidatesAdapter: CandidatesAdapter
+  private var imeLockedBanner: View? = null
   private var imeOption = EditorInfo.IME_ACTION_GO
   private var curImeView: View? = null
   private var scope = MainScope()
@@ -115,6 +117,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     initImeSearchBar(layout)
     initKeyboard(layout)
     initCandidatesLayout()
+    initLockedBanner(layout)
     updateImeActionButtons()
 
     layout.findViewById<AppCompatImageView>(R.id.ivSearch).setOnClickListener {
@@ -132,14 +135,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
 
   private fun initImeSearchBar(layout: View) {
     val searchBar = layout.findViewById<View>(R.id.imeSearchBar)
-    val searchInput = layout.findViewById<AppCompatEditText>(R.id.tvImeSearchQuery)
     val clear = layout.findViewById<View>(R.id.btImeSearchClear)
-    searchInput.showSoftInputOnFocus = false
-    searchInput.isCursorVisible = false
-    searchInput.setOnClickListener {
-      keyboardPreferences.performKeyboardHaptic(searchInput)
-      enterImeSearchMode()
-    }
     searchBar.setOnClickListener {
       keyboardPreferences.performKeyboardHaptic(searchBar)
       enterImeSearchMode()
@@ -301,7 +297,9 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       searchSession.clear()
       candidatesData.clear()
       candidatesAdapter.notifyDataSetChanged()
-      candidatesList.visibility = View.GONE
+      animateImeLayoutChanges {
+        candidatesList.visibility = View.GONE
+      }
     }
     updateImeSearchUi()
     updateImeActionButtons()
@@ -310,26 +308,16 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
   private fun updateImeSearchUi() {
     val root = curImeView ?: return
     val query = keyboardState.searchQuery
-    val input = root.findViewById<AppCompatEditText>(R.id.tvImeSearchQuery)
-    if (input.text.toString() != query) {
-      input.setText(query)
-    }
-    input.isCursorVisible = keyboardState.isSearchMode
-    if (keyboardState.isSearchMode) {
-      input.setSelection(input.text?.length ?: 0)
-    } else {
-      input.clearFocus()
+    val input = root.findViewById<TextView>(R.id.tvImeSearchQuery)
+    if (input.text?.toString() != query) {
+      input.text = query
     }
     root.findViewById<View>(R.id.btImeSearchClear).visibility =
       if (keyboardState.isSearchMode) View.VISIBLE else View.GONE
   }
 
   private fun focusImeSearchInput() {
-    val input = curImeView?.findViewById<AppCompatEditText>(R.id.tvImeSearchQuery) ?: return
-    input.showSoftInputOnFocus = false
-    input.isCursorVisible = true
-    input.requestFocus()
-    input.setSelection(input.text?.length ?: 0)
+    curImeView?.findViewById<TextView>(R.id.tvImeSearchQuery)?.requestFocus()
   }
 
   private fun scheduleImeSearch() {
@@ -350,7 +338,9 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
   private fun showImeSearchEmptyOrResults() {
     candidatesData.clear()
     if (searchSession.isEmptyStateVisible) {
-      candidatesList.visibility = View.VISIBLE
+      animateImeLayoutChanges {
+        candidatesList.visibility = View.VISIBLE
+      }
       candidatesData.add(SimpleItemEntity().apply {
         type = CandidatesAdapter.ITEM_TYPE_EMPTY
         title = getString(R.string.ime_search_no_entry)
@@ -363,13 +353,17 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     val results = searchSession.results
     selectionTracker.show(results)
     if (results.isEmpty()) {
-      candidatesList.visibility = View.GONE
+      animateImeLayoutChanges {
+        candidatesList.visibility = View.GONE
+      }
       candidatesAdapter.notifyDataSetChanged()
       updateImeActionButtons()
       return
     }
 
-    candidatesList.visibility = View.VISIBLE
+    animateImeLayoutChanges {
+      candidatesList.visibility = View.VISIBLE
+    }
     val flags = selectionTracker.selectedFlags()
     results.forEachIndexed { index, entry ->
       candidatesData.add(entry.toImeCandidateItem(flags[index]))
@@ -401,6 +395,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
       showImeDatabaseLockedHint()
       return
     }
+    hideImeLockedBanner()
 
     if (W3cHints.isBrowser(appPkgName) && !checkCanOpenAutoFill()) {
       if (curImeView == null) {
@@ -621,16 +616,22 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     selectionTracker.resync(entries)
     candidatesData.clear()
     if (selectionTracker.isEmpty) {
-      candidatesList.visibility = View.GONE
+      animateImeLayoutChanges {
+        candidatesList.visibility = View.GONE
+      }
       updateImeActionButtons()
       return
     }
     if (selectionTracker.size == 1 && !forceVisible) {
-      candidatesList.visibility = View.GONE
+      animateImeLayoutChanges {
+        candidatesList.visibility = View.GONE
+      }
       updateImeActionButtons()
       return
     }
-    candidatesList.visibility = View.VISIBLE
+    animateImeLayoutChanges {
+      candidatesList.visibility = View.VISIBLE
+    }
     val flags = selectionTracker.selectedFlags()
     entries.forEachIndexed { i, pwEntry ->
       candidatesData.add(pwEntry.toImeCandidateItem(flags[i]))
@@ -645,14 +646,47 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
     manualSelectionPolicy.clear()
     selectionTracker.show(emptyList())
     candidatesData.clear()
-    candidatesList.visibility = View.VISIBLE
-    candidatesData.add(SimpleItemEntity().apply {
-      type = CandidatesAdapter.ITEM_TYPE_EMPTY
-      title = getString(R.string.ime_database_locked_hint)
-    })
     candidatesAdapter.notifyDataSetChanged()
+    animateImeLayoutChanges {
+      candidatesList.visibility = View.GONE
+      imeLockedBanner?.visibility = View.VISIBLE
+    }
     updateImeSearchUi()
     updateImeActionButtons()
+  }
+
+  private fun hideImeLockedBanner() {
+    animateImeLayoutChanges {
+      imeLockedBanner?.visibility = View.GONE
+    }
+  }
+
+  /**
+   * 只对候选区 slot 内部的子视图(列表 / 锁定 banner / 搜索图标)做 [Fade] 过渡。
+   * slot 自身高度变化由父 ConstraintLayout 立即重排,按钮行与键盘瞬间到位,
+   * 不参与 transition —— 避免应用层动画与系统 IME 窗口调整不同步导致的键盘抖动。
+   * 搜索栏会随 IME 窗口顶部位置瞬变(系统行为),不做动画。
+   */
+  private fun animateImeLayoutChanges(block: () -> Unit) {
+    val slot = (curImeView as? ViewGroup)?.findViewById<ViewGroup>(R.id.imeCandidatesSlot)
+    if (slot == null) {
+      block()
+      return
+    }
+    TransitionManager.beginDelayedTransition(slot, Fade())
+    block()
+  }
+
+  private fun initLockedBanner(layout: View) {
+    val banner = layout.findViewById<View>(R.id.imeLockedBanner)
+    val unlockButton = layout.findViewById<View>(R.id.btImeUnlock)
+    val unlockClick = View.OnClickListener {
+      keyboardPreferences.performKeyboardHaptic(it)
+      dbIsOpen()
+    }
+    banner.setOnClickListener(unlockClick)
+    unlockButton.setOnClickListener(unlockClick)
+    imeLockedBanner = banner
   }
 
   private fun updateImeActionButtons() {

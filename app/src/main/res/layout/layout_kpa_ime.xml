@@ -16,7 +16,7 @@
   <LinearLayout
       android:id="@+id/imeSearchBar"
       android:layout_width="0dp"
-      android:layout_height="36dp"
+      android:layout_height="44dp"
       android:layout_marginStart="8dp"
       android:layout_marginTop="8dp"
       android:layout_marginEnd="8dp"
@@ -33,27 +33,23 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivImeSearchIcon"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
         app:srcCompat="@drawable/ic_search" />
 
-    <androidx.appcompat.widget.AppCompatEditText
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvImeSearchQuery"
         style="@style/KpaEditTextStyle"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginStart="8dp"
         android:layout_weight="1"
-        android:cursorVisible="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
+        android:clickable="false"
         android:gravity="center_vertical"
         android:hint="@string/ime_search_entry_hint"
         android:includeFontPadding="false"
-        android:inputType="text"
         android:maxLines="1"
-        android:padding="0dp"
-        android:singleLine="true" />
+        android:padding="0dp" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btImeSearchClear"
@@ -64,29 +60,82 @@
         app:srcCompat="@drawable/ic_ime_search_clear" />
   </LinearLayout>
 
-  <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/rvContent"
+  <FrameLayout
+      android:id="@+id/imeCandidatesSlot"
       android:layout_width="0dp"
-      android:layout_height="50dp"
+      android:layout_height="wrap_content"
       android:layout_marginStart="8dp"
       android:layout_marginTop="8dp"
       android:layout_marginEnd="8dp"
-      android:visibility="gone"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/imeSearchBar" />
+      app:layout_constraintTop_toBottomOf="@+id/imeSearchBar">
 
-  <androidx.appcompat.widget.AppCompatImageView
-      android:id="@+id/ivSearch"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:clickable="true"
-      android:focusable="true"
-      android:visibility="gone"
-      app:layout_constraintBottom_toBottomOf="@+id/rvContent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="@+id/rvContent"
-      app:srcCompat="@drawable/ic_search" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvContent"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/imeLockedBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_ime_search_bar"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="8dp"
+        android:visibility="gone">
+
+      <androidx.appcompat.widget.AppCompatImageView
+          android:id="@+id/ivImeLockedIcon"
+          android:layout_width="18dp"
+          android:layout_height="18dp"
+          app:srcCompat="@drawable/ic_ime_lock" />
+
+      <TextView
+          android:id="@+id/tvImeLockedText"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="8dp"
+          android:layout_weight="1"
+          android:includeFontPadding="false"
+          android:singleLine="true"
+          android:text="@string/ime_database_locked_hint"
+          android:textColor="@color/text_black_color"
+          android:textSize="13sp" />
+
+      <TextView
+          android:id="@+id/btImeUnlock"
+          android:layout_width="wrap_content"
+          android:layout_height="28dp"
+          android:background="@drawable/bg_ime_unlock_button"
+          android:clickable="true"
+          android:focusable="true"
+          android:gravity="center"
+          android:paddingStart="14dp"
+          android:paddingEnd="14dp"
+          android:singleLine="true"
+          android:text="@string/ime_database_locked_unlock_button"
+          android:textColor="@android:color/white"
+          android:textSize="13sp" />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_search" />
+  </FrameLayout>
 
   <ImageView
       android:id="@+id/btAccount"
@@ -99,7 +148,7 @@
       app:layout_constraintEnd_toStartOf="@+id/btPass"
       app:layout_constraintHorizontal_bias="0.5"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/rvContent" />
+      app:layout_constraintTop_toBottomOf="@+id/imeCandidatesSlot" />
 
   <TextView
       android:id="@+id/btPass"
