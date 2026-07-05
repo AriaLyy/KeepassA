@@ -75,7 +75,7 @@ class AutoFillSaveEntryBinderTest {
   }
 
   @Test
-  fun applyPackageAssociation_skipsPackageAssociationWhenWebUrlExists() {
+  fun applyPackageAssociation_writesPackageAssociationWhenWebUrlExists() {
     val strings = hashMapOf<String, ProtectedString>()
 
     val changed = AutoFillSaveEntryBinder.applyPackageAssociation(
@@ -87,8 +87,8 @@ class AutoFillSaveEntryBinderTest {
       )
     )
 
-    assertFalse(changed)
-    assertTrue(strings.isEmpty())
+    assertTrue(changed)
+    assertEquals("androidapp://com.webview.host", strings["KP2A_URL_1"].toString())
   }
 
   @Test
@@ -131,7 +131,7 @@ class AutoFillSaveEntryBinderTest {
   }
 
   @Test
-  fun prepareCustomFieldsForCreateUi_doesNotWritePackageAssociationForWebViewSave() {
+  fun prepareCustomFieldsForCreateUi_writesPackageAssociationForWebViewSave() {
     val strings = hashMapOf<String, ProtectedString>()
 
     val shouldShowCustomFields = AutoFillSaveEntryBinder.prepareCustomFieldsForCreateUi(
@@ -143,7 +143,7 @@ class AutoFillSaveEntryBinderTest {
       )
     )
 
-    assertFalse(shouldShowCustomFields)
-    assertTrue(strings.isEmpty())
+    assertTrue(shouldShowCustomFields)
+    assertEquals("androidapp://com.webview.host", strings["KP2A_URL_1"].toString())
   }
 }
