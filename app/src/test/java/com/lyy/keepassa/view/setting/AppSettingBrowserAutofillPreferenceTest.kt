@@ -39,6 +39,16 @@ class AppSettingBrowserAutofillPreferenceTest {
     assertTrue(category.directChildPreferenceKeys().contains("@string/set_key_supported_browsers"))
   }
 
+  @Test fun credentialManagerSettingsPreferenceIsInAutofillCategory() {
+    val category = findCategoryByTitle(appSettingDocument(), "@string/auto_fill_set")
+
+    assertNotNull("Autofill category should be present", category)
+    assertTrue(
+      category!!.directChildPreferenceKeys()
+        .contains("@string/set_key_credential_manager_settings")
+    )
+  }
+
   @Test fun browserAutofillSettingsAreCreatedDynamically() {
     val document = appSettingDocument()
 
@@ -97,6 +107,14 @@ class AppSettingBrowserAutofillPreferenceTest {
     assertFalse(fragment.contains("ChromeAutofillSupport.openSettings"))
   }
 
+  @Test fun appSettingFragmentInitializesCredentialManagerSettings() {
+    val fragment = File("src/main/java/com/lyy/keepassa/view/setting/AppSettingFragment.kt")
+      .readText()
+
+    assertTrue(fragment.contains("setCredentialManagerSettings()"))
+    assertTrue(fragment.contains("CredentialManagerSettingsShortcut.open"))
+  }
+
   @Test fun autofillServiceSwitchUsesUnifiedServiceStatus() {
     val fragment = File("src/main/java/com/lyy/keepassa/view/setting/AppSettingFragment.kt")
       .readText()
@@ -117,6 +135,35 @@ class AppSettingBrowserAutofillPreferenceTest {
 
     assertTrue(defaultTitle.contains("%1\$s"))
     assertTrue(chineseTitle.contains("%1\$s"))
+  }
+
+  @Test fun credentialManagerSettingsStringsExistInDefaultAndChineseResources() {
+    assertEquals(
+      "Credential Manager",
+      stringValue(
+        file = File("src/main/res/values/strings.xml"),
+        name = "credential_manager_settings_title"
+      )
+    )
+    assertEquals(
+      "凭据管理器",
+      stringValue(
+        file = File("src/main/res/values-zh-rCN/strings.xml"),
+        name = "credential_manager_settings_title"
+      )
+    )
+    assertTrue(
+      stringValue(
+        file = File("src/main/res/values/strings.xml"),
+        name = "credential_manager_settings_summary"
+      ).contains("passkey")
+    )
+    assertTrue(
+      stringValue(
+        file = File("src/main/res/values-zh-rCN/strings.xml"),
+        name = "credential_manager_settings_summary"
+      ).contains("通行密钥")
+    )
   }
 
   private fun stringValue(file: File, name: String): String {
