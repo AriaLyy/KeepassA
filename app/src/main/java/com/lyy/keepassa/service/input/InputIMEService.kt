@@ -635,7 +635,7 @@ class InputIMEService : InputMethodService(), View.OnClickListener {
    * 填充数据
    */
   private fun fillData(text: String) {
-    ic?.commitText(text, 0)
+    ic?.commitText(text, 1)
   }
 
   /**

@@ -109,6 +109,13 @@ class InputIMEServiceSourceTest {
     assertTrue(binder.contains("displayShiftedText"))
   }
 
+  @Test fun serviceCommitsTextAfterInsertedTextSoHostCursorMovesForward() {
+    val source = File("src/main/java/com/lyy/keepassa/service/input/InputIMEService.kt").readText()
+
+    assertTrue(source.contains("commitText(text, 1)"))
+    assertFalse(source.contains("commitText(text, 0)"))
+  }
+
   @Test fun imeActionRow_containsOnlyCurrentFirstRowActionsInOrder() {
     val layout = File("src/main/res/layout/layout_kpa_ime.xml").readText()
 
