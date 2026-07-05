@@ -202,7 +202,19 @@ object W3cHints {
     val temp = p.second.lowercase()
     return PASSWORD_HINT_LIST.contains(temp)
       // https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion
-      || (p.first == "autocomplete")
+      || (p.first.equals("autocomplete", ignoreCase = true) && PASSWORD_HINT_LIST.contains(temp))
+  }
+
+  fun isW3cTotpByHints(viewNode: ViewNode): Boolean {
+    if (!viewNode.htmlInfo?.tag.equals("input", true)) {
+      return false
+    }
+    return AutofillTotpFieldPolicy.isTotpField(
+      autofillHints = viewNode.autofillHints,
+      idEntry = viewNode.idEntry,
+      hint = viewNode.hint,
+      htmlAttributes = viewNode.htmlInfo?.attributes
+    )
   }
 
   fun isW3CUserByHints(viewNode: ViewNode): Boolean {
@@ -276,6 +288,9 @@ object W3cHints {
       val name = it.first.lowercase()
       val value = it.second.lowercase()
       if (ATTR_LIST.contains(name) && PASSWORD_HINT_LIST.contains(value)) {
+        return true
+      }
+      if (name == "autocomplete" && PASSWORD_HINT_LIST.contains(value)) {
         return true
       }
       if (name == "label" && value.contains(HINT_PASSWORD_LABEL)) {
