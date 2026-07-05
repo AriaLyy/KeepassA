@@ -71,10 +71,17 @@
         app:order="10" />
 
     <Preference
+        android:title="@string/credential_manager_settings_title"
+        app:icon="@drawable/ic_password"
+        app:key="@string/set_key_credential_manager_settings"
+        app:order="11"
+        app:summary="@string/credential_manager_settings_summary" />
+
+    <Preference
         android:title="@string/supported_browsers_title"
         app:icon="@drawable/ic_browser_adapter"
         app:key="@string/set_key_supported_browsers"
-        app:order="11"
+        app:order="12"
         app:summary="@string/supported_browsers_summary" />
 
   </PreferenceCategory>
