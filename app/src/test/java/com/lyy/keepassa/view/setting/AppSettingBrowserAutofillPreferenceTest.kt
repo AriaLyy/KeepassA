@@ -167,17 +167,19 @@ class AppSettingBrowserAutofillPreferenceTest {
         name = "credential_manager_settings_summary"
       ).contains("通行密钥")
     )
-    assertTrue(
+    assertEquals(
+      "This system does not support KeePassA as a credential provider.",
       stringValue(
         file = File("src/main/res/values/strings.xml"),
         name = "credential_manager_settings_unsupported"
-      ).contains("does not support")
+      )
     )
-    assertTrue(
+    assertEquals(
+      "当前系统不支持将 KeePassA 作为凭据提供程序。",
       stringValue(
         file = File("src/main/res/values-zh-rCN/strings.xml"),
         name = "credential_manager_settings_unsupported"
-      ).contains("不支持")
+      )
     )
   }
 

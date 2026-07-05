@@ -245,7 +245,7 @@ The \n database is encrypted using AES256. No one can open your database without
     <string name="browser_third_party_autofill_settings_open_failed"><![CDATA[Unable to open %1$s autofill settings]]></string>
     <string name="credential_manager_settings_title"><![CDATA[Credential Manager]]></string>
     <string name="credential_manager_settings_summary"><![CDATA[Open system password, passkey, and credential provider settings]]></string>
-    <string name="credential_manager_settings_unsupported"><![CDATA[This system does not support Credential Manager.]]></string>
+    <string name="credential_manager_settings_unsupported"><![CDATA[This system does not support KeePassA as a credential provider.]]></string>
     <string name="credential_manager_settings_fallback"><![CDATA[This system does not support direct Credential Manager settings. Search system settings for "credentials" or "passwords".]]></string>
     <string name="credential_manager_settings_open_failed"><![CDATA[Unable to open system Credential Manager settings.]]></string>
     <string name="set_key_supported_browsers"><![CDATA[set_key_supported_browsers]]></string>
