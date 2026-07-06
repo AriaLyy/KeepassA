@@ -191,7 +191,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     if (specificChinese.any { lower.contains(it) }) return true
     val normalized = lower.replace(Regex("[^a-z0-9]"), "")
     if (normalized.isEmpty()) return false
-    val specificEng = listOf("otp", "totp", "2fa", "mfa", "authenticator", "onetimecode")
+    val specificEng = listOf("otp", "totp", "2fa", "mfa", "authenticator", "onetimecode", "twostep", "twofactor")
     return specificEng.any { normalized == it || normalized.contains(it) }
   }
 
@@ -483,6 +483,11 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     Timber.d(
       "w3c, unknown idEntry = ${viewNode.idEntry}, isFocused = ${viewNode.isFocused}, autofillId = ${viewNode.autofillId}, fillValue = ${viewNode.autofillValue}, inputType =  ${viewNode.inputType}, htmlInfo = ${viewNode.htmlInfo}, autofillType = ${viewNode.autofillType}, hint = ${viewNode.hint}, isAccessibilityFocused =${viewNode.isAccessibilityFocused},  idPackage = ${viewNode.idPackage}, isActivated = ${viewNode.isActivated}, visibility = ${viewNode.visibility}, isAssistBlocked = ${viewNode.isAssistBlocked}, isOpaque = ${viewNode.isOpaque}"
     )
+    val w3cAttrsDump = viewNode.htmlInfo?.attributes
+      ?.joinToString(",") { "${it.first}=${it.second}" }
+    if (!w3cAttrsDump.isNullOrEmpty()) {
+      Timber.d("w3c, unknown attrs: autofillId=${viewNode.autofillId}, tag=${viewNode.htmlInfo?.tag}, attrs=[$w3cAttrsDump]")
+    }
   }
 
   /**

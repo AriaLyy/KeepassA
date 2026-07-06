@@ -43,8 +43,8 @@ class StructureParserSourceTest {
       source.contains("\"两步验证\", \"二次验证\", \"动态码\", \"动态密码\", \"一次性密码\"")
     )
     assertTrue(
-      "Specific English TOTP tokens must include otp / totp / 2fa / mfa / authenticator / onetimecode.",
-      source.contains("\"otp\", \"totp\", \"2fa\", \"mfa\", \"authenticator\", \"onetimecode\"")
+      "Specific English TOTP tokens must include otp / totp / 2fa / mfa / authenticator / onetimecode / twostep / twofactor.",
+      source.contains("\"otp\", \"totp\", \"2fa\", \"mfa\", \"authenticator\", \"onetimecode\", \"twostep\", \"twofactor\"")
     )
     assertTrue(
       "Generic TOTP candidates must be removed from autoFillFields so they are not filled.",

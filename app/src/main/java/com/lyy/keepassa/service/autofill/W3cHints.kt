@@ -209,12 +209,18 @@ object W3cHints {
     if (!viewNode.htmlInfo?.tag.equals("input", true)) {
       return false
     }
-    return AutofillTotpFieldPolicy.isTotpField(
+    val matched = AutofillTotpFieldPolicy.isTotpField(
       autofillHints = viewNode.autofillHints,
       idEntry = viewNode.idEntry,
       hint = viewNode.hint,
       htmlAttributes = viewNode.htmlInfo?.attributes
     )
+    if (matched) {
+      val attrsDump = viewNode.htmlInfo?.attributes
+        ?.joinToString(",") { "${it.first}=${it.second}" } ?: "null"
+      Timber.i("isW3cTotpByHints matched: autofillId=${viewNode.autofillId}, hint=${viewNode.hint}, idEntry=${viewNode.idEntry}, autofillHints=${viewNode.autofillHints?.toList()}, htmlInfo.attrs=[$attrsDump]")
+    }
+    return matched
   }
 
   fun isW3CUserByHints(viewNode: ViewNode): Boolean {

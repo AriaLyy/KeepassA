@@ -13,7 +13,9 @@ internal object AutofillTotpFieldPolicy {
     "2fa",
     "mfa",
     "onetimecode",
-    "authenticator"
+    "authenticator",
+    "twostep",
+    "twofactor"
   )
   private val codeQualifiers = listOf(
     "verification",
