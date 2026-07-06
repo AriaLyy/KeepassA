@@ -63,6 +63,18 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       it.add(HintConstants.AUTOFILL_HINT_NEW_USERNAME)
       it.add(HintConstants.AUTOFILL_HINT_POSTAL_ADDRESS)
       it.add(HintConstants.AUTOFILL_HINT_POSTAL_CODE)
+      // 中文凭证关键字 — 用于识别中文登录页面的用户名输入框,
+      // 也作为 isFocusedUnmarkedBrowserInput 的护栏:hint 含这些词的字段
+      // 走原有 isUserName 流程,不会落到 TOTP 兜底。
+      it.add("账号")
+      it.add("账户")
+      it.add("户名")
+      it.add("用户名")
+      it.add("用户")
+      it.add("邮箱")
+      it.add("电子邮箱")
+      it.add("手机")
+      it.add("电话")
     }
 
     val passHints = HashSet<String>().also {
@@ -71,6 +83,7 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       it.add("passwort")
       it.add("passwordAuto")
       it.add("pswd")
+      it.add("密码")
     }
 
     /**
@@ -467,18 +480,118 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
   }
 
   /**
-   * 判断是否是用户名输入框
+   * 判断是否是 TOTP 输入框。
+   *
+   * 识别路径(按优先级):
+   * 1. autocomplete/autofillHints/idEntry/hint 含 TOTP 关键字 — 适用于保留了 htmlInfo
+   *    或开发者主动设置 autofillHint 的场景。
+   * 2. 浏览器场景下,字段已输入 TOTP 长度(4-8 位)的纯数字内容 — 兜底信号,处理
+   *    Chrome/Edge 把 HTML input 暴露成 native EditText 时 htmlInfo 全部丢失的情况。
+   *    用户首次聚焦空字段时不会触发(因为此时还没有内容可判断),只有当用户输入了
+   *    数字后下次 FillRequest 才会识别为 TOTP。这是有意的:不通过任何会改变原有
+   *    用户名识别的兜底逻辑,只用正向证据扩展 TOTP 识别。
+   * 3. 浏览器场景下,聚焦中的"无 htmlInfo + 有非空 hint + hint 不含凭证关键字"字段
+   *    — 处理用户首次聚焦空 TOTP 输入框的情况。Chrome/Edge 把 HTML input 暴露成
+   *    原生 EditText 时,HTML placeholder 会保留为 hint,而 URL bar 等 Chrome 内部
+   *    EditText 通常 hint 为空,所以"有非空 hint"足以把 HTML input 区分出来。同时
+   *    要求 hint 不含凭证关键字(账号/用户名/邮箱/密码 等),避免误吞登录页用户名框。
    */
   private fun isTotp(f: ViewNode): Boolean {
     if (isLikelySearchOrUrlField(f) || isPassword(f)) {
       return false
     }
-    return AutofillTotpFieldPolicy.isTotpField(
-      autofillHints = f.autofillHints,
-      idEntry = f.idEntry,
-      hint = f.hint,
-      htmlAttributes = f.htmlInfo?.attributes
-    )
+    if (AutofillTotpFieldPolicy.isTotpField(
+        autofillHints = f.autofillHints,
+        idEntry = f.idEntry,
+        hint = f.hint,
+        htmlAttributes = f.htmlInfo?.attributes
+      )
+    ) {
+      return true
+    }
+    if (browserStrategy.isBrowser && isLikelyTotpByContent(f)) {
+      return true
+    }
+    if (browserStrategy.isBrowser && isFocusedUnmarkedBrowserInput(f)) {
+      return true
+    }
+    return false
+  }
+
+  /**
+   * 字段当前已输入的内容是否像 TOTP(纯数字、4-8 位)。
+   * 用于 Chrome/Edge 丢失 htmlInfo 时通过用户已输入内容做兜底识别。
+   *
+   * 注意:Chrome/Edge 的虚拟 EditText 把用户输入放在 [ViewNode.getAutofillValue] 里,
+   * [ViewNode.getText] 通常为空,所以必须从 autofillValue 取值。
+   */
+  private fun isLikelyTotpByContent(f: ViewNode): Boolean {
+    val value = f.autofillValue ?: return false
+    if (!value.isText) return false
+    val text = value.textValue?.toString() ?: return false
+    if (text.length !in 4..8) return false
+    if (!text.all { it.isDigit() }) return false
+    return true
+  }
+
+  /**
+   * 浏览器场景下,聚焦中的"被 Chromium 剥光 htmlInfo 但保留 placeholder hint"的
+   * HTML input 是否应识别为 TOTP。
+   *
+   * 条件:
+   * - htmlInfo == null(Chromium 剥过的 native EditText 才走这条路;有 htmlInfo 的
+   *   走 W3C 路径,不需要这个兜底)
+   * - 字段处于聚焦或无障碍聚焦状态(用户实际在交互的输入框)
+   * - hint 非空(HTML placeholder 翻译,Chrome 内部 EditText 如 URL bar 通常 hint
+   *   为空,这个条件把它们排除)
+   * - 字段身上没有任何凭证关键字(用户名/密码/邮箱/账号 等),否则原 isUserName /
+   *   isPassword 流程已经能识别
+   *
+   * 这个分支是有意的保守:只在"页面把 TOTP 字段渲染为唯一可见输入框,且 placeholder
+   * 与凭证无关"的常见 2FA 场景下触发。如果某些登录页用户名框的 placeholder 也不含
+   * 凭证词,这个分支会误识别;那种场景下用户需要在自动填充 UI 里手动切换为用户名。
+   */
+  private fun isFocusedUnmarkedBrowserInput(f: ViewNode): Boolean {
+    if (f.htmlInfo != null) return false
+    if (!f.isFocused && !f.isAccessibilityFocused) return false
+    val hint = f.hint
+    if (hint.isNullOrBlank()) return false
+    if (hasCredentialMarker(f)) return false
+    return true
+  }
+
+  /**
+   * 字段是否带任何凭证关键字(username/password/TOTP)。
+   * 任意一项命中即返回 true — 表示字段已能被原有路径识别,不需要 TOTP 兜底。
+   */
+  private fun hasCredentialMarker(f: ViewNode): Boolean {
+    if (f.autofillHints?.any { hint ->
+        usernameHints.any { it.equals(hint, ignoreCase = true) } ||
+          passHints.any { it.equals(hint, ignoreCase = true) }
+      } == true
+    ) return true
+    val entry = f.idEntry
+    if (!entry.isNullOrBlank() && (
+        usernameHints.any { entry!!.contains(it, ignoreCase = true) } ||
+          passHints.any { entry!!.contains(it, ignoreCase = true) })
+    ) {
+      return true
+    }
+    val hint = f.hint
+    if (!hint.isNullOrBlank() && (
+        usernameHints.any { hint!!.contains(it, ignoreCase = true) } ||
+          passHints.any { hint!!.contains(it, ignoreCase = true) })
+    ) {
+      return true
+    }
+    if (AutofillTotpFieldPolicy.isTotpField(
+        autofillHints = f.autofillHints,
+        idEntry = f.idEntry,
+        hint = f.hint,
+        htmlAttributes = null
+      )
+    ) return true
+    return false
   }
 
   private fun isUserName(f: ViewNode): Boolean {
@@ -487,7 +600,18 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
     ) {
       return false
     }
-
+    // Defense in depth:即便 isTotp() 漏判(如 Chromium 暴露的 native EditText 没有
+    // htmlInfo 导致 isTotpField 看不到 autocomplete="one-time-code"),只要字段身上
+    // 还能找到任何 TOTP 标记,就绝不能回退识别为 username。
+    if (AutofillTotpFieldPolicy.isTotpField(
+        autofillHints = f.autofillHints,
+        idEntry = f.idEntry,
+        hint = f.hint,
+        htmlAttributes = f.htmlInfo?.attributes
+      )
+    ) {
+      return false
+    }
     val hasUserHint = f.autofillHints?.any { hint ->
       usernameHints.any { uh -> uh.equals(hint, ignoreCase = true) }
     } == true

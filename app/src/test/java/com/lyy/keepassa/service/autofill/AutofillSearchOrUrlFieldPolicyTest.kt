@@ -16,39 +16,48 @@ import org.junit.Test
 
 class AutofillSearchOrUrlFieldPolicyTest {
 
-  @Test fun miBrowserIgnoresClassifiedFieldsWhenOnlySearchOrUrlFieldsWereFound() {
+  @Test fun onlySearchOrUrlClassifiedFields_areIgnored() {
     val urlFieldId = mockk<AutofillId>()
 
     assertTrue(
       AutofillSearchOrUrlFieldPolicy.shouldIgnoreClassifiedFields(
-        strategy = BrowserAutofillStrategyRegistry.forPackage("com.mi.globalbrowser"),
         classifiedIds = setOf(urlFieldId),
         searchOrUrlIds = setOf(urlFieldId)
       )
     )
   }
 
-  @Test fun miBrowserKeepsClassifiedFieldsWhenAWebCredentialFieldWasFound() {
+  @Test fun classifiedWebCredentialField_isKept() {
     val urlFieldId = mockk<AutofillId>()
     val webFieldId = mockk<AutofillId>()
 
     assertFalse(
       AutofillSearchOrUrlFieldPolicy.shouldIgnoreClassifiedFields(
-        strategy = BrowserAutofillStrategyRegistry.forPackage("com.mi.globalbrowser"),
         classifiedIds = setOf(urlFieldId, webFieldId),
         searchOrUrlIds = setOf(urlFieldId)
       )
     )
   }
 
-  @Test fun edgeDoesNotIgnoreSearchOrUrlOnlyFieldsByMiBrowserPolicy() {
+  @Test fun emptyClassifiedFields_areNotIgnored() {
     val urlFieldId = mockk<AutofillId>()
 
     assertFalse(
       AutofillSearchOrUrlFieldPolicy.shouldIgnoreClassifiedFields(
-        strategy = BrowserAutofillStrategyRegistry.forPackage("com.microsoft.emmx"),
-        classifiedIds = setOf(urlFieldId),
+        classifiedIds = emptySet(),
         searchOrUrlIds = setOf(urlFieldId)
+      )
+    )
+  }
+
+  @Test fun emptySearchOrUrlIds_doesNotIgnore() {
+    val webFieldId = mockk<AutofillId>()
+
+    // 没有 URL/搜索栏信息时不应该错误丢弃已分类字段。
+    assertFalse(
+      AutofillSearchOrUrlFieldPolicy.shouldIgnoreClassifiedFields(
+        classifiedIds = setOf(webFieldId),
+        searchOrUrlIds = emptySet()
       )
     )
   }

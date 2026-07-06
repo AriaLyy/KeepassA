@@ -171,7 +171,6 @@ class AutoFillService : AutofillService() {
     }
 
     if (AutofillSearchOrUrlFieldPolicy.shouldIgnoreClassifiedFields(
-        strategy = browserStrategy,
         classifiedIds = autoFillFields.autoFillIds,
         searchOrUrlIds = parser.searchOrUrlAutoFillIds
       )

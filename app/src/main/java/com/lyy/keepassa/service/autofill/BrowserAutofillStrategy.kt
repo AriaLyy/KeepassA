@@ -360,11 +360,10 @@ internal object BrowserAutofillStrategyRegistry {
     // non-text WebView node. Keep this targeted so other Chromium browsers are not widened.
     allowFocusedNonTextNodeFallback = true,
     allowRequestFocusedIdFallback = true,
-    // MI Browser 经常把 URL 栏或被误判为搜索/URL 的 WebView 字段作为唯一可聚焦节点交给
-    // onFillRequest;若拒绝用它做 auth prompt 锚点,会让 fallbackId 为 null,最终走到
-    // callback.onSuccess(null),自动填充 UI 根本弹不出来。允许它做锚点,先让用户能解锁/
-    // 搜索到条目,后续真正聚焦到登录框时再走正常路径。
-    allowSearchOrUrlRequestFocusedIdFallback = true,
+    // 用户聚焦 URL/搜索栏时不应触发自动填充;早期为了让 Mi Browser 偶发把 URL 当作唯一
+    // 可聚焦节点时也能弹出 UI 而开启的兜底,反而让"地址栏聚焦"被误触发。回归正常行为,
+    // 地址栏聚焦不再产生 auth prompt 锚点。
+    allowSearchOrUrlRequestFocusedIdFallback = false,
     preferRequestFocusedIdForAuthPromptFallback = true,
     disableSingleFieldFallbackDatasetFiltering = true,
     useDatasetAuthenticationForFallbackAuthPrompt = true,
@@ -389,7 +388,7 @@ internal object BrowserAutofillStrategyRegistry {
     // for builds/pages where the system does deliver a FillRequest.
     allowFocusedNonTextNodeFallback = true,
     allowRequestFocusedIdFallback = true,
-    allowSearchOrUrlRequestFocusedIdFallback = true,
+    allowSearchOrUrlRequestFocusedIdFallback = false,
     preferRequestFocusedIdForAuthPromptFallback = true,
     disableSingleFieldFallbackDatasetFiltering = true,
     useDatasetAuthenticationForFallbackAuthPrompt = true,
