@@ -20,6 +20,7 @@ import androidx.autofill.HintConstants
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadata
 import com.lyy.keepassa.service.autofill.model.AutoFillFieldMetadataCollection
 import timber.log.Timber
+import java.util.Locale
 
 /**
  * Parser for an AssistStructure object. This is invoked when the Autofill Service receives an
@@ -135,10 +136,63 @@ internal class StructureParser(private val autofillStructure: AssistStructure) {
       parseLocked(autofillStructure.getWindowNodeAt(i).rootViewNode)
     }
     applyBrowserFallbackCredentialFields()
+    applyTotpDisambiguation()
     // 如果密码为空，默认不弹出选择item，这是为了防止遇到editText就弹出item的情况
     if (passFields.isEmpty() && totpFields.isEmpty() && !isManual && !isW3c) {
       autoFillFields.clear()
     }
+  }
+
+  /**
+   * 多 TOTP 候选时的歧义消解(纯扩展,单候选场景不影响)。
+   *
+   * 背景:某些页面会同时出现"验证码"(可能是图片验证码 / 短信验证码)和"两步验证"
+   * (真正的 TOTP)输入框,而 chineseTokens 同时包含"验证码"和"两步验证",导致两个字段
+   * 都被识别为 TOTP,填充时把 TOTP 错填到"验证码"框。
+   *
+   * 策略:若候选中存在"高置信度 TOTP token"(两步验证 / 二次验证 / 动态码 / 动态密码 /
+   * 一次性密码 / otp / totp / 2fa / mfa / authenticator / onetimecode),则丢弃只匹配
+   * 通用 token(验证码 / code)的字段。所有候选都是 specific 或都是 generic 时不处理。
+   */
+  private fun applyTotpDisambiguation() {
+    if (totpFields.size <= 1) return
+
+    val (specific, generic) = totpFields.partition(::hasSpecificTotpToken)
+    if (specific.isEmpty() || generic.isEmpty()) return
+
+    Timber.d("totp disambiguation: ${specific.size} specific + ${generic.size} generic, narrowing to specific")
+    generic.forEach { f ->
+      val autofillId = f.autofillId
+      if (autofillId != null) {
+        autoFillFields.removeField(autofillId, AutofillTotpFieldPolicy.AUTOFILL_HINT_TOTP)
+      }
+      Timber.d("totp disambiguation: drop generic hint=${f.hint} idEntry=${f.idEntry} autofillId=${autofillId}")
+    }
+    totpFields.clear()
+    totpFields.addAll(specific)
+  }
+
+  private fun hasSpecificTotpToken(f: ViewNode): Boolean {
+    val tokens = ArrayList<String>()
+    f.autofillHints?.forEach(tokens::add)
+    f.idEntry?.let(tokens::add)
+    f.hint?.toString()?.let(tokens::add)
+    f.htmlInfo?.attributes?.forEach { attr ->
+      attr.first?.let(tokens::add)
+      attr.second?.let(tokens::add)
+    }
+    return tokens.any(::isSpecificTotpToken)
+  }
+
+  private fun isSpecificTotpToken(value: CharSequence?): Boolean {
+    val raw = value?.toString()?.trim()?.takeIf { it.isNotEmpty() } ?: return false
+    val lower = raw.lowercase(Locale.ROOT)
+    val specificChinese = listOf("两步验证", "二次验证", "动态码", "动态密码", "一次性密码")
+    if (specificChinese.any { lower.contains(it) }) return true
+    val normalized = lower.replace(Regex("[^a-z0-9]"), "")
+    if (normalized.isEmpty()) return false
+    val specificEng = listOf("otp", "totp", "2fa", "mfa", "authenticator", "onetimecode")
+    return specificEng.any { normalized == it || normalized.contains(it) }
   }
 
   private fun parseLocked(viewNode: ViewNode) {

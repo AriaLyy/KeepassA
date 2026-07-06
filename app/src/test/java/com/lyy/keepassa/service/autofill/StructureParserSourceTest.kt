@@ -26,4 +26,29 @@ class StructureParserSourceTest {
       )
     )
   }
+
+  @Test fun totpDisambiguationPrefersSpecificTokensOverGenericCode() {
+    val source = File("src/main/java/com/lyy/keepassa/service/autofill/StructureParser.kt").readText()
+
+    assertTrue(
+      "TOTP disambiguation must be invoked after browser fallback and before the empty-passField check.",
+      source.contains("applyBrowserFallbackCredentialFields()\n    applyTotpDisambiguation()")
+    )
+    assertTrue(
+      "TOTP disambiguation must be a no-op when there is only one candidate.",
+      source.contains("if (totpFields.size <= 1) return")
+    )
+    assertTrue(
+      "Specific TOTP tokens must include 两步验证 / 二次验证 / 动态码 / 动态密码 / 一次性密码.",
+      source.contains("\"两步验证\", \"二次验证\", \"动态码\", \"动态密码\", \"一次性密码\"")
+    )
+    assertTrue(
+      "Specific English TOTP tokens must include otp / totp / 2fa / mfa / authenticator / onetimecode.",
+      source.contains("\"otp\", \"totp\", \"2fa\", \"mfa\", \"authenticator\", \"onetimecode\"")
+    )
+    assertTrue(
+      "Generic TOTP candidates must be removed from autoFillFields so they are not filled.",
+      source.contains("autoFillFields.removeField(autofillId, AutofillTotpFieldPolicy.AUTOFILL_HINT_TOTP)")
+    )
+  }
 }

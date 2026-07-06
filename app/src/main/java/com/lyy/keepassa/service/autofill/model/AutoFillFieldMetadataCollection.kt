@@ -69,4 +69,28 @@ data class AutoFillFieldMetadataCollection @JvmOverloads constructor(
   fun getFieldsForHint(hint: String): MutableList<AutoFillFieldMetadata>? {
     return autoFillHintsToFieldsMap[hint]
   }
+
+  /**
+   * 从指定 hint 的字段列表中移除某个 [autoFillId] 对应的字段。若该 id 不再被任何 hint
+   * 引用,会同时从 [autoFillIds] 中移除。用于多 TOTP 候选歧义消解等"事后修剪"场景。
+   */
+  fun removeField(autoFillId: AutofillId, hint: String) {
+    val list = autoFillHintsToFieldsMap[hint] ?: return
+    val iterator = list.iterator()
+    while (iterator.hasNext()) {
+      if (iterator.next().autoFillId == autoFillId) {
+        iterator.remove()
+        break
+      }
+    }
+    if (list.isEmpty()) {
+      autoFillHintsToFieldsMap.remove(hint)
+    }
+    val stillReferenced = autoFillHintsToFieldsMap.values.any { fields ->
+      fields.any { it.autoFillId == autoFillId }
+    }
+    if (!stillReferenced) {
+      autoFillIds.remove(autoFillId)
+    }
+  }
 }
