@@ -291,7 +291,17 @@ internal object BrowserAutofillStrategyRegistry {
     "url_bar",
     "location_bar",
     "address_bar",
-    "address"
+    "address",
+    // 网页搜索框常见 id/name:百度 = kw / wd,通用 = keyword / query / searchkey / searchword
+    "kw",
+    "keyword",
+    "query",
+    "searchkey",
+    "searchword",
+    // 中文搜索框 placeholder 常见关键字
+    "搜索",
+    "关键字",
+    "关键词"
   )
 
   private val chromiumStrategy = BrowserAutofillStrategy(
