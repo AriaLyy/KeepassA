@@ -47,7 +47,7 @@
     <SwitchPreference
         android:defaultValue="true"
         android:title="@string/set_title_ime_keyboard_haptic_feedback"
-        app:icon="@drawable/ic_keyboard"
+        app:icon="@drawable/ic_vibration"
         app:key="@string/set_key_ime_keyboard_haptic_feedback"
         app:summaryOff="@string/set_summary_ime_keyboard_haptic_feedback_off"
         app:summaryOn="@string/set_summary_ime_keyboard_haptic_feedback_on" />
