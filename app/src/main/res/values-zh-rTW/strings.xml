@@ -222,8 +222,10 @@
     <string name="dropbox_msg"><![CDATA[秉持尊重使用者隱私的原則，KeePassA 不會要求取得存取你所有 Dropbox 檔案的權限，KeePassA<font color=#FF0000> 只存取【應用程式/KeePassA】資料夾</font>。 <br /> 因此： <br /> <b>如果你已經有一個 KeePass 資料庫，那麼，你需要先授權 KeePassA 存取 KeePassA 中的【應用程式/KeePassA】資料夾存取 KeePassA 中的【應用程式/KeePassA】資料夾，並在授權完成後將【PA47777777677777分合本。 </b><br/><br /> 如果你在建立新的 KeepPass 資料庫，不需要上面的操作，在你建立完成資料庫後，KeePassA 會自動建立對應資料夾，並將資料庫上傳到 Dropbox的【應用程式/KPAPAHOLD0016】目錄。]]></string>
     <string name="cover"><![CDATA[覆蓋]]></string>
     <string name="file_conflict_msg"><![CDATA[雲端資料和本機資料出現衝突，請選擇覆蓋方式，衝突的條目有：\n %s]]></string>
-    <string name="cover_local"><![CDATA[本地]]></string>
-    <string name="cover_cloud"><![CDATA[雲端]]></string>
+    <string name="file_conflict_msg_upload"><![CDATA[以下條目在本機和雲端都被修改過：\n%s\n請選擇保留哪一版：\n· 「保留本機版本」：把本機修改上傳覆蓋雲端\n· 「保留雲端版本」：用雲端版本覆蓋本機]]></string>
+    <string name="file_conflict_msg_download"><![CDATA[以下條目在本機和雲端都被修改過：\n%s\n下載將使用雲端版本覆蓋本機的修改。]]></string>
+    <string name="cover_local"><![CDATA[保留雲端版本]]></string>
+    <string name="cover_cloud"><![CDATA[保留本機版本]]></string>
     <string name="merge"><![CDATA[合併]]></string>
     <string name="sync_db"><![CDATA[同步資料庫]]></string>
     <string name="net_error"><![CDATA[網路例外]]></string>

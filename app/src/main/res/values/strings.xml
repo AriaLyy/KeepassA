@@ -304,8 +304,10 @@ The \n database is encrypted using AES256. No one can open your database without
     <string name="dropbox_msg"><![CDATA[In line with the principle of respecting user privacy, KeePassA will not ask for permission to access all your Dropbox files. KeePassA<font color=#FF0000> only accesses the [Application/KeePassA] folder </font>. <br /> Therefore: <br /> <b> If you already have a KeePass database, then you need to authorize KeePassA to access the [Application/KeePassA] folder in KeePassA first, and save the KeePass database to the [Application/KeePassA] folder after the authorization is completed. </b><br/><br /> If you are creating a new KeepPass database, you do not need the above operation. After you create the database, KeePassA will automatically create the corresponding folder and upload the database to the [Application/KeePassA] directory of Dropbox.]]></string>
     <string name="cover"><![CDATA[Cover]]></string>
     <string name="file_conflict_msg"><![CDATA[There is a conflict between cloud data and local data. Please select the overwrite method. The conflicting entries are: \n %s]]></string>
-    <string name="cover_local"><![CDATA[local]]></string>
-    <string name="cover_cloud"><![CDATA[Cloud]]></string>
+    <string name="file_conflict_msg_upload"><![CDATA[The following entries were modified both locally and in the cloud:\n%s\nChoose which version to keep:\n· Keep local: upload local changes to overwrite the cloud\n· Keep cloud: download the cloud version to overwrite this device]]></string>
+    <string name="file_conflict_msg_download"><![CDATA[The following entries were modified both locally and in the cloud:\n%s\nDownloading will overwrite local changes with the cloud version.]]></string>
+    <string name="cover_local"><![CDATA[Keep cloud]]></string>
+    <string name="cover_cloud"><![CDATA[Keep local]]></string>
     <string name="merge"><![CDATA[merge]]></string>
     <string name="sync_db"><![CDATA[Sync database]]></string>
     <string name="net_error"><![CDATA[Network abnormality]]></string>

@@ -163,7 +163,7 @@ object DbMergeDelegate {
     val res = BaseApp.APP.resources
     Routerfit.create(DialogRouter::class.java).showMsgDialog(
       msgTitle = ResUtil.getString(R.string.warning),
-      msgContent = res.getString(R.string.file_conflict_msg, sb.toString()),
+      msgContent = res.getString(R.string.file_conflict_msg_download, sb.toString()),
       showCoverBt = false,
       showCancelBt = false,
       interceptBackKey = true,
@@ -208,7 +208,7 @@ object DbMergeDelegate {
 
     Routerfit.create(DialogRouter::class.java).showMsgDialog(
       msgTitle = ResUtil.getString(R.string.warning),
-      msgContent = res.getString(R.string.file_conflict_msg, sb.toString()),
+      msgContent = res.getString(R.string.file_conflict_msg_upload, sb.toString()),
       showCancelBt = false,
       showCoverBt = true,
       interceptBackKey = true,

@@ -318,8 +318,10 @@
     <string name="dropbox_msg">秉持尊重用户隐私的原则，KeePassA 不会要求获取访问你所有 Dropbox 文件的权限，KeePassA&lt;font color=#FF0000&gt; 只访问【应用/KeePassA】文件夹&lt;/font&gt;。&lt;br /&gt; 因此： &lt;br /&gt; &lt;b&gt;如果你已经有一个 KeePass 数据库，那么，你需要先授权 KeePassA 访问 KeePassA 中的【应用/KeePassA】文件夹，并在授权完成后将 KeePass 数据库保存到【应用/KeePassA】文件夹。&lt;/b&gt;&lt;br/&gt;&lt;br /&gt; 如果你在建立新的 KeepPass 数据库，则不需要上面的操作，在你创建完成数据库后，KeePassA 会自动创建对应文件夹，并将数据库上传到 Dropbox的【应用/KeePassA】目录下。</string>
     <string name="cover">覆盖</string>
     <string name="file_conflict_msg">云端数据和本地数据出现冲突，请选择覆盖方式，冲突的条目有：\n %s</string>
-    <string name="cover_local">本地</string>
-    <string name="cover_cloud">云端</string>
+    <string name="file_conflict_msg_upload">以下条目在本地和云端都被修改过：\n%s\n请选择保留哪一版：\n· 「保留本地版本」：把本地修改上传覆盖云端\n· 「保留云端版本」：用云端版本覆盖本地</string>
+    <string name="file_conflict_msg_download">以下条目在本地和云端都被修改过：\n%s\n下载将使用云端版本覆盖本地的修改。</string>
+    <string name="cover_local">保留云端版本</string>
+    <string name="cover_cloud">保留本地版本</string>
     <string name="merge">合并</string>
     <string name="sync_db">同步数据库</string>
     <string name="net_error">网络异常</string>
