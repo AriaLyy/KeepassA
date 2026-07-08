@@ -56,6 +56,7 @@ import com.lyy.keepassa.util.doClick
 import com.lyy.keepassa.util.handleBottomEdge
 import com.lyy.keepassa.util.hasTOTP
 import com.lyy.keepassa.util.loadImg
+import com.lyy.keepassa.util.loadImgWithInset
 import com.lyy.keepassa.util.takePermission
 import com.lyy.keepassa.util.totp.OtpEnum
 import com.lyy.keepassa.view.create.CreateCustomStrDialog
@@ -542,13 +543,13 @@ class CreateEntryActivity : BaseActivity<ActivityEntryEditNewBinding>() {
         if (it.first == KpaIconType.DEFAULT) {
           module.icon = it.second as PwIconStandard
           module.customIcon = PwIconCustom.ZERO
-          binding.ivIcon.loadImg(ResUtil.getDrawable(IconUtil.getIconById(module.icon.iconId)))
+          binding.ivIcon.loadImgWithInset(ResUtil.getDrawable(IconUtil.getIconById(module.icon.iconId)))
           return@collectLatest
         }
 
         if (it.first == KpaIconType.CUSTOM) {
           module.customIcon = it.second as PwIconCustom
-          binding.ivIcon.loadImg(
+          binding.ivIcon.loadImgWithInset(
             IconUtil.convertCustomIcon2Drawable(
               this@CreateEntryActivity,
               module.customIcon!!

@@ -19,6 +19,7 @@ import android.net.Uri
 import android.view.View
 import android.view.ViewAnimationUtils
 import androidx.core.animation.doOnEnd
+import androidx.core.graphics.ColorUtils
 import androidx.core.animation.doOnStart
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -139,13 +140,29 @@ class EntryDetailModule : BaseModule() {
         else -> ResUtil.getColor(R.color.color_444E85DB)
       }
 
-      val bgColor =
-        if (KpaUtil.isNightMode()) sw.getDarkMutedColor(iconColor) else sw.getLightMutedColor(
-          iconColor
-        )
+      val bgColor = if (KpaUtil.isNightMode()) {
+        darkenForNight(iconColor)
+      } else {
+        sw.getLightMutedColor(iconColor)
+      }
 
       return@with Pair(iconColor, bgColor)
     }
+  }
+
+  /**
+   * 将颜色压暗 + 降饱和,适配夜间模式卡片背景。
+   * 混合策略:比例压缩 + clamp,既保留 icon 间色相差异,又有最低保护。
+   * L: *0.45,clamp [0.16, 0.30]
+   * S: *0.55,clamp [0.10, 0.25]
+   * H: 不动
+   */
+  private fun darkenForNight(color: Int): Int {
+    val hsl = FloatArray(3)
+    ColorUtils.colorToHSL(color, hsl)
+    hsl[2] = (hsl[2] * 0.45f).coerceIn(0.16f, 0.30f)
+    hsl[1] = (hsl[1] * 0.55f).coerceIn(0.10f, 0.25f)
+    return ColorUtils.HSLToColor(hsl)
   }
 
   /**

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.InsetDrawable
 import android.widget.Button
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
@@ -103,5 +104,21 @@ fun AppCompatImageView.loadImg(byteArray: ByteArray?) {
 fun AppCompatImageView.loadImg(drawable: Drawable?) {
   if (checkoutContextEffective(context) && drawable != null) {
     Glide.with(context).load(drawable).into(this)
+  }
+}
+
+/**
+ * 用 InsetDrawable 包装目标 drawable 后再设置,使 ImageView 内的 src 视觉上缩小,
+ * 但 ImageView 自身尺寸 / 圆形剪裁保持不变。
+ *
+ * @param insetDp 四周内缩 dp,默认 16dp(对应 120dp 圆内的 src 渲染区约为 88dp)
+ */
+fun AppCompatImageView.loadImgWithInset(
+  drawable: Drawable?,
+  insetDp: Int = 16,
+) {
+  if (checkoutContextEffective(context) && drawable != null) {
+    val insetPx = (insetDp * resources.displayMetrics.density).toInt()
+    setImageDrawable(InsetDrawable(drawable, insetPx, insetPx, insetPx, insetPx))
   }
 }

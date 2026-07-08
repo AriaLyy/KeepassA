@@ -54,7 +54,7 @@
               android:layout_height="120dp"
               android:background="@color/color_444E85DB"
               android:scaleType="centerCrop"
-              android:src="@drawable/ic_baseline_photo_camera_24"
+              android:src="@drawable/ic_baseline_photo_camera_24_inset"
               app:layout_constraintBottom_toBottomOf="@+id/ivHeadBg"
               app:layout_constraintEnd_toEndOf="@id/ivHeadBg"
               app:layout_constraintStart_toStartOf="@id/ivHeadBg"

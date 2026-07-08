@@ -308,8 +308,13 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     )
     binding.ivIcon.setBackgroundColor(color.first)
 
+    val cardBgColor = if (KpaUtil.isNightMode()) {
+      color.second
+    } else {
+      ColorUtils.setAlphaComponent(color.second, 0.6f)
+    }
     cards.forEach {
-      it.setBackgroundColor(ColorUtils.setAlphaComponent(color.second, 0.6f))
+      it.setBackgroundColor(cardBgColor)
     }
   }
 }

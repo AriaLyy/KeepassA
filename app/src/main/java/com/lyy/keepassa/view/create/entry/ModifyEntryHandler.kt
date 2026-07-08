@@ -20,6 +20,7 @@ import com.lyy.keepassa.util.getRealPass
 import com.lyy.keepassa.util.getRealTitle
 import com.lyy.keepassa.util.getRealUserName
 import com.lyy.keepassa.util.loadImg
+import com.lyy.keepassa.util.loadImgWithInset
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -84,7 +85,7 @@ internal class ModifyEntryHandler(val context: CreateEntryActivity) : ICreateHan
 
   private fun handleIcon(ac: CreateEntryActivity, pwEntry: PwEntryV4) {
     ac.module.icon = pwEntry.icon
-    ac.binding.ivIcon.loadImg(IconUtil.getEntryIconDrawable(ac, pwEntry, zoomIcon = true))
+    ac.binding.ivIcon.loadImgWithInset(IconUtil.getEntryIconDrawable(ac, pwEntry, zoomIcon = true))
   }
 
   override fun getTitle(): String {
