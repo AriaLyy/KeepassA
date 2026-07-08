@@ -118,9 +118,10 @@
 
   <!--toolbar mean的字体颜色和大小-->
   <!--  app:theme="@style/ToolbarTheme"-->
-  <style name="ToolbarMenuTheme" parent="Theme.AppCompat.Light.NoActionBar">
+  <style name="ToolbarMenuTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
     <item name="actionMenuTextColor">@color/text_black_color</item> <!--menu字体颜色-->
     <item name="android:textSize">@dimen/text_size_normal</item> <!--menu字体大小-->
+    <item name="colorControlNormal">@color/color_icon_grey</item> <!--overflow icon 颜色,匹配 menu 中其他 icon -->
   </style>
 
   <style name="Toolbar.Def" parent="Theme.AppCompat.Light.NoActionBar">
@@ -197,6 +198,7 @@
     <item name="tabIndicatorColor">@color/colorPrimary</item>
     <item name="tabSelectedTextColor">@color/colorPrimary</item>
     <item name="tabTextColor">@color/text_gray_color</item>
+    <item name="tabIconTint">@color/selector_tab_text</item>
     <item name="tabBackground">@color/background_color</item>
   </style>
 

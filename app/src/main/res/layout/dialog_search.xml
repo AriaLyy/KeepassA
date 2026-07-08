@@ -20,8 +20,9 @@
         android:background="@drawable/bg_white_radius_2"
         android:elevation="4dp"
         android:imeOptions="actionSearch"
-        app:goIcon="@drawable/ic_search"
+        app:goIcon="@drawable/ic_search_hint"
         app:queryHint="@string/hint_query"
+        app:searchHintIcon="@drawable/ic_search_hint"
         app:searchIcon="@drawable/ic_view_headline_24px"
         />
 

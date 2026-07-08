@@ -73,9 +73,11 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
       fragment = appFm
     }
     toolbar.title = title
-    supportFragmentManager.beginTransaction()
-      .replace(R.id.content, fragment)
-      .commitAllowingStateLoss()
+    if (savedInstanceState == null) {
+      supportFragmentManager.beginTransaction()
+        .replace(R.id.content, fragment)
+        .commitAllowingStateLoss()
+    }
     handleEdge2Edge()
   }
 

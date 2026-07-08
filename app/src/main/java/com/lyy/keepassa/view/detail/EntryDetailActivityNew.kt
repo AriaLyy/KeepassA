@@ -130,7 +130,7 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     if (BaseApp.isV4 && pwEntry.parent == BaseApp.KDB!!.pm.recycleBin) {
       isInRecycleBin = true
     }
-    handleBg()
+    handleBg(startAnim = savedInstanceState == null)
     setTopBar()
     listenerSaveFile()
     module.saveRecord()
@@ -152,7 +152,9 @@ class EntryDetailActivityNew : BaseActivity<ActivityEntryDetailNewBinding>() {
     }
     if (KpaUtil.isNightMode()){
       Timber.i("night mode not use blur background")
-      startBgAnim()
+      if (startAnim) {
+        startBgAnim()
+      }
       return
     }
     Glide.with(this)

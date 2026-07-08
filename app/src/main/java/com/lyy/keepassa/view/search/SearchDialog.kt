@@ -84,7 +84,18 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
     searchAutoComplete.setHintTextColor(ResUtil.getColor(color.text_hint_color))
     // 清除按钮图标颜色同样需要手动覆盖
     val closeBtn = binding.search.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
-    closeBtn.setColorFilter(ResUtil.getColor(color.text_black_color))
+    closeBtn.setColorFilter(ResUtil.getColor(color.text_hint_color))
+    // 左上角搜索图标颜色手动覆盖
+    // SearchView 内部在文字变化时会重置 search_mag_icon 的 drawable(三条横 ↔ 放大镜),需要每次重新 tint
+    val tintColor = ResUtil.getColor(color.text_hint_color)
+    val tintList = android.content.res.ColorStateList.valueOf(tintColor)
+    fun tintSearchMagIcon() {
+      binding.search.findViewById<ImageView>(androidx.appcompat.R.id.search_mag_icon).apply {
+        setImageTintList(tintList)
+        setColorFilter(tintColor)
+      }
+    }
+    binding.search.post { tintSearchMagIcon() }
     binding.search.setOnQueryTextListener(object : OnQueryTextListener {
       /**
        * 当点击搜索按钮时触发该方法
@@ -102,6 +113,7 @@ class SearchDialog : BaseDialog<DialogSearchBinding>() {
        * 当搜索内容改变时触发该方法
        */
       override fun onQueryTextChange(newText: String?): Boolean {
+        binding.search.post { tintSearchMagIcon() }
         if (!newText.isNullOrBlank()) {
           adapter.queryString = newText
           searchData(newText)

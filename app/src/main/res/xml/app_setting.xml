@@ -80,7 +80,7 @@
 
     <Preference
         android:title="@string/credential_manager_settings_title"
-        app:icon="@drawable/ic_password"
+        app:icon="@drawable/ic_confirmation_number"
         app:key="@string/set_key_credential_manager_settings"
         app:order="11"
         app:summary="@string/credential_manager_settings_summary" />
@@ -110,7 +110,7 @@
         app:key="@string/set_key_language" />
 
     <Preference
-        app:icon="@drawable/ic_version"
+        app:icon="@drawable/ic_version_new"
         app:isPreferenceVisible="true"
         app:key="@string/set_key_version_log"
         app:title="@string/version_log" />
