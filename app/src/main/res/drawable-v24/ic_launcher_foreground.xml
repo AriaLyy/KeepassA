@@ -4,7 +4,11 @@
     android:height="108dp"
     android:viewportWidth="928.7037"
     android:viewportHeight="928.7037">
-  <group android:translateX="262.60184"
+  <group android:pivotX="201.85"
+      android:pivotY="254.4"
+      android:scaleX="1.22"
+      android:scaleY="1.22"
+      android:translateX="262.60184"
       android:translateY="213.60185">
     <path
         android:fillColor="#FF000000"

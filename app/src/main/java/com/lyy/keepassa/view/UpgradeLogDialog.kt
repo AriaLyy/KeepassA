@@ -26,7 +26,6 @@ import com.lyy.keepassa.databinding.DialogUpgradeBinding
 import com.lyy.keepassa.router.ActivityRouter
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.FingerprintUtil
-import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.LanguageUtil
 import com.lyy.keepassa.view.dialog.DonateDialog
 import com.lyy.keepassa.view.fingerprint.FingerprintActivity
@@ -55,20 +54,19 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
     super.initData()
     scope.launch {
       var context = ""
-      // val fileName = "version_log/version_log_${getVersionSuffix()}.md"
-      val fileName = "version_log/version_log_${if (KpaUtil.isChina()) "zh_CN" else "en"}.md"
+      val candidates = getVersionLogCandidates()
       withContext(Dispatchers.IO) {
-
-//        val ins  = requireContext().assets.open(fileName)
-//        context = String(ins.readBytes())
-//        ins.close()
-
         var ins: InputStream? = null
-        try {
-          ins = requireContext().assets.open(fileName)
-        } catch (e: Exception) {
+        for (path in candidates) {
+          try {
+            ins = requireContext().assets.open(path)
+            break
+          } catch (e: Exception) {
+            Timber.d("version log '%s' not found, try next", path)
+          }
+        }
+        if (ins == null) {
           ins = requireContext().assets.open("version_log/version_log_en.md")
-          Timber.e(e)
         }
         ins?.let {
           context = String(it.readBytes())
@@ -112,18 +110,21 @@ class UpgradeLogDialog : BaseDialog<DialogUpgradeBinding>() {
   }
 
   /**
-   * 根据语言获取版本日志后缀名
+   * 根据当前语言计算版本日志候选文件路径,优先级:
+   * lang_rCountry → lang → en
    */
-  private fun getVersionSuffix(): String {
-    var defLocal = LanguageUtil.getDefLanguage(requireContext())
-    if (defLocal == null) {
-      defLocal = LanguageUtil.getSysCurrentLan()
+  private fun getVersionLogCandidates(): List<String> {
+    var locale = LanguageUtil.getDefLanguage(requireContext())
+    if (locale == null) {
+      locale = LanguageUtil.getSysCurrentLan()
     }
-    return if (TextUtils.isEmpty(defLocal.country)) {
-      defLocal.language
-    } else {
-      "${defLocal.language}_${defLocal.country}"
+    val list = mutableListOf<String>()
+    if (!TextUtils.isEmpty(locale.country)) {
+      list.add("version_log/version_log_${locale.language}_r${locale.country}.md")
     }
+    list.add("version_log/version_log_${locale.language}.md")
+    list.add("version_log/version_log_en.md")
+    return list
   }
 
   /**
