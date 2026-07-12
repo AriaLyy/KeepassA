@@ -229,7 +229,7 @@ The \n database is encrypted using AES256. No one can open your database without
     <string name="credential_provider_no_match"><![CDATA[No matching credential]]></string>
     <string name="hint_open_backgroun_start"><![CDATA[You have turned on autofill, but in special systems such as MIUI, KeePassA needs to grant <b> background pop-up interface </b> permission to pop up the interface to unlock the database.]]></string>
     <string name="hint_background_start"><![CDATA[Click <font color="#FF0000"><b> below to set </b></font>, and then enable <b> background pop-up interface </b> permission for KeePassA.]]></string>
-    <string name="set_key_ime_keyboard_haptic_feedback"><![CDATA[set_key_ime_keyboard_haptic_feedback]]></string>
+    <string name="set_key_ime_keyboard_haptic_feedback" translatable="false"><![CDATA[set_key_ime_keyboard_haptic_feedback]]></string>
     <string name="set_title_ime_keyboard_haptic_feedback"><![CDATA[Keyboard haptic feedback]]></string>
     <string name="set_summary_ime_keyboard_haptic_feedback_on"><![CDATA[Vibrate lightly when using the KeePassA keyboard]]></string>
     <string name="set_summary_ime_keyboard_haptic_feedback_off"><![CDATA[Do not vibrate when using the KeePassA keyboard]]></string>
@@ -240,7 +240,7 @@ The \n database is encrypted using AES256. No one can open your database without
     <string name="ime_database_locked_unlock_button"><![CDATA[Unlock]]></string>
     <string name="hint_chrome_autofill_third_party_mode"><![CDATA[Chrome has not enabled third-party autofill. KeePassA cannot receive Chrome autofill requests until Chrome allows other password managers.]]></string>
     <string name="hint_browser_third_party_autofill_mode"><![CDATA[%1$s has not enabled third-party autofill. KeePassA cannot receive %1$s autofill requests until the browser allows other password managers.]]></string>
-    <string name="set_key_auto_fill_category"><![CDATA[set_key_auto_fill_category]]></string>
+    <string name="set_key_auto_fill_category" translatable="false"><![CDATA[set_key_auto_fill_category]]></string>
     <string name="set_key_browser_autofill_settings"><![CDATA[set_key_browser_autofill_settings]]></string>
     <string name="browser_autofill_settings_title"><![CDATA[Chrome autofill settings]]></string>
     <string name="browser_autofill_settings_summary_disabled"><![CDATA[Chrome needs to allow third-party autofill before web forms can use KeePassA.]]></string>
@@ -257,7 +257,7 @@ The \n database is encrypted using AES256. No one can open your database without
     <string name="credential_manager_settings_unsupported"><![CDATA[This system does not support KeePassA as a credential provider.]]></string>
     <string name="credential_manager_settings_fallback"><![CDATA[This system does not support direct Credential Manager settings. Search system settings for "credentials" or "passwords".]]></string>
     <string name="credential_manager_settings_open_failed"><![CDATA[Unable to open system Credential Manager settings.]]></string>
-    <string name="set_key_supported_browsers"><![CDATA[set_key_supported_browsers]]></string>
+    <string name="set_key_supported_browsers" translatable="false"><![CDATA[set_key_supported_browsers]]></string>
     <string name="supported_browsers_title"><![CDATA[Supported browsers]]></string>
     <string name="supported_browsers_summary"><![CDATA[Browsers with tailored autofill strategies]]></string>
     <string name="supported_browsers_dialog_title"><![CDATA[Supported browsers (%1$d)]]></string>
@@ -518,6 +518,65 @@ By tapping "Agree", you confirm that you have read and understood this notice an
     <string name="hint_confirm"><![CDATA[Confirm password]]></string>
     <string name="totp"><![CDATA[TOTP]]></string>
     <string name="hint_bracket_char"><![CDATA[()<>{}[]]]></string>
+    <string name="yes"><![CDATA[Yes]]></string>
+    <string name="no"><![CDATA[No]]></string>
+    <string name="merge_conflict_title"><![CDATA[Resolve merge conflicts]]></string>
+    <string name="merge_conflict_progress"><![CDATA[%1$d/%2$d]]></string>
+    <string name="merge_conflict_session_expired"><![CDATA[Merge session expired. Please sync again.]]></string>
+    <string name="pending_merge_notification_channel">Database sync conflicts</string>
+    <string name="pending_merge_notification_title">Database sync needs attention</string>
+    <string name="pending_merge_notification_message">Cloud and local changes conflict. Tap to resolve.</string>
+    <string name="merge_field_cloud"><![CDATA[Cloud]]></string>
+    <string name="merge_field_result"><![CDATA[Result]]></string>
+    <string name="merge_field_local"><![CDATA[Local]]></string>
+    <string name="merge_previous"><![CDATA[Previous]]></string>
+    <string name="merge_next"><![CDATA[Next]]></string>
+    <string name="merge_finish"><![CDATA[Finish]]></string>
+    <string name="merge_not_selected"><![CDATA[Not selected]]></string>
+    <string name="merge_decision_required"><![CDATA[Please choose local or cloud for every conflict field.]]></string>
+    <string name="merge_local_only_title"><![CDATA[Local-only items]]></string>
+    <string name="merge_local_only_desc"><![CDATA[Checked items will be deleted locally; unchecked items will be kept.]]></string>
+    <string name="merge_field_group_name"><![CDATA[Group name]]></string>
+    <string name="merge_field_group_notes"><![CDATA[Group notes]]></string>
+    <string name="merge_field_group_is_expanded"><![CDATA[Expanded]]></string>
+    <string name="merge_field_group_default_auto_type_sequence"><![CDATA[Default auto-type sequence]]></string>
+    <string name="merge_field_group_enable_auto_type"><![CDATA[Enable auto-type]]></string>
+    <string name="merge_field_group_enable_searching"><![CDATA[Enable searching]]></string>
+    <string name="merge_field_group_last_top_visible_entry"><![CDATA[Last top visible entry]]></string>
+    <string name="merge_field_icon"><![CDATA[Icon]]></string>
+    <string name="merge_field_custom_icon"><![CDATA[Custom icon]]></string>
+    <string name="merge_field_tags"><![CDATA[Tags]]></string>
+    <string name="merge_field_expire_date"><![CDATA[Expire date]]></string>
+    <string name="merge_field_expires"><![CDATA[Expires]]></string>
+    <string name="merge_field_uuid"><![CDATA[UUID]]></string>
+    <string name="merge_field_foreground_color"><![CDATA[Foreground color]]></string>
+    <string name="merge_field_background_color"><![CDATA[Background color]]></string>
+    <string name="merge_field_override_url"><![CDATA[Override URL]]></string>
+    <string name="merge_field_auto_type"><![CDATA[Auto-type]]></string>
+    <string name="merge_field_location_changed"><![CDATA[Location changed]]></string>
+    <string name="merge_field_creation_time"><![CDATA[Creation time]]></string>
+    <string name="merge_field_last_modification_time"><![CDATA[Last modified]]></string>
+    <string name="merge_field_last_access_time"><![CDATA[Last access]]></string>
+    <string name="merge_field_usage_count"><![CDATA[Usage count]]></string>
+    <string name="merge_field_internal_url"><![CDATA[Internal URL]]></string>
+    <string name="merge_field_additional"><![CDATA[Additional data]]></string>
+    <string name="merge_field_custom_data"><![CDATA[Custom data]]></string>
+    <string name="merge_field_previous_parent_group"><![CDATA[Previous parent group]]></string>
+    <string name="merge_field_quality_check"><![CDATA[Quality check]]></string>
+    <string name="merge_binary_summary"><![CDATA[Binary, %1$d bytes]]></string>
+    <string name="merge_binary_named_summary"><![CDATA[%1$s
+Binary, %2$d bytes]]></string>
+    <string name="merge_icon_summary"><![CDATA[Icon #%1$d]]></string>
+    <string name="merge_upload_failed_retry_next_time"><![CDATA[Local merge was saved, but upload failed. It will retry on the next sync.]]></string>
+    <string name="merge_field_whole_item"><![CDATA[Whole item]]></string>
+    <string name="merge_legacy_entry_summary"><![CDATA[Title: %1$s
+User name: %2$s
+Password: %3$s
+URL: %4$s
+Notes: %5$s
+Last modified: %6$s]]></string>
+    <string name="merge_legacy_group_summary"><![CDATA[Name: %1$s
+Last modified: %2$s]]></string>
     <string-array name="auth_type">
         <item><![CDATA[Basic]]></item>
         <item><![CDATA[Digest]]></item>

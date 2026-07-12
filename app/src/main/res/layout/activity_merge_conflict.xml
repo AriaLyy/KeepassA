@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:orientation="vertical">
+
+  <com.google.android.material.appbar.MaterialToolbar
+      android:id="@+id/mergeToolbar"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/toolbar_h"
+      android:background="@color/background_color"
+      app:navigationIcon="@drawable/ic_up"
+      app:subtitleTextAppearance="@style/Toolbar.SubTitleText"
+      app:theme="@style/ToolbarMenuTheme"
+      app:titleCentered="false"
+      app:titleTextAppearance="@style/Toolbar.TitleText" />
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="@color/line_color" />
+
+  <LinearLayout
+      android:id="@+id/mergeColumnHeader"
+      android:layout_width="match_parent"
+      android:layout_height="36dp"
+      android:gravity="center_vertical"
+      android:orientation="horizontal"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/mergeCloudHeader"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="6dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:text="@string/merge_field_cloud"
+        android:textColor="@color/text_gray_color"
+        android:textSize="@dimen/text_size_small" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/mergeResultHeader"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:text="@string/merge_field_result"
+        android:textColor="@color/text_gray_color"
+        android:textSize="@dimen/text_size_small" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/mergeLocalHeader"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="6dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:text="@string/merge_field_local"
+        android:textColor="@color/text_gray_color"
+        android:textSize="@dimen/text_size_small" />
+
+  </LinearLayout>
+
+  <androidx.appcompat.widget.AppCompatTextView
+      android:id="@+id/mergeLocalOnlyDesc"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingStart="16dp"
+      android:paddingTop="8dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="8dp"
+      android:text="@string/merge_local_only_desc"
+      android:textColor="@color/text_gray_color"
+      android:textSize="@dimen/text_size_small"
+      android:visibility="gone" />
+
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/mergeConflictList"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:clipToPadding="false"
+      android:paddingStart="16dp"
+      android:paddingTop="8dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="8dp"
+      android:scrollbarStyle="outsideOverlay" />
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="@color/line_color" />
+
+  <LinearLayout
+      android:id="@+id/mergeBottomBar"
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
+      android:gravity="center_vertical|end"
+      android:orientation="horizontal"
+      android:paddingStart="8dp"
+      android:paddingEnd="8dp">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/mergeProgress"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="@string/merge_conflict_progress"
+        android:textColor="@color/text_gray_color"
+        android:textSize="@dimen/text_size_small" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/mergeCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_ripple_white_selector"
+        android:gravity="center"
+        android:minWidth="64dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="@string/cancel"
+        android:textColor="@color/text_gray_color"
+        android:textSize="@dimen/text_size_small" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/mergePrevious"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_ripple_white_selector"
+        android:gravity="center"
+        android:minWidth="64dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="@string/merge_previous"
+        android:textColor="@color/text_gray_color"
+        android:textSize="@dimen/text_size_small" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/mergeNext"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_ripple_white_selector"
+        android:gravity="center"
+        android:minWidth="64dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="@string/merge_next"
+        android:textColor="@color/text_blue_color"
+        android:textSize="@dimen/text_size_small" />
+
+  </LinearLayout>
+
+</LinearLayout>

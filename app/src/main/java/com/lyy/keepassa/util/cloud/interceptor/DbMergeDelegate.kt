@@ -1,28 +1,47 @@
 package com.lyy.keepassa.util.cloud.interceptor
 
-import android.util.Pair
-import android.widget.Button
-import com.arialyy.frame.router.Routerfit
-import com.arialyy.frame.util.ResUtil
+import android.content.Intent
 import com.keepassdroid.database.PwDataInf
 import com.keepassdroid.database.PwDatabase
+import com.keepassdroid.database.PwDatabaseV4
 import com.keepassdroid.database.PwEntry
 import com.keepassdroid.database.PwEntryV4
+import com.keepassdroid.database.PwCustomData
 import com.keepassdroid.database.PwGroup
 import com.keepassdroid.database.PwGroupV4
-import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.entity.DbHistoryRecord
-import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.KpaUtil
+import com.lyy.keepassa.service.feat.MutationOrigin
 import com.lyy.keepassa.util.cloud.DbSynUtil
 import com.lyy.keepassa.util.cloud.PwDataMap
-import com.lyy.keepassa.view.dialog.OnMsgBtClickListener
+import com.lyy.keepassa.util.cloud.merge.AutoMergerImpl
+import com.lyy.keepassa.util.cloud.merge.DbDiffCollector
+import com.lyy.keepassa.util.cloud.merge.Decision
+import com.lyy.keepassa.util.cloud.merge.EntryDifferImpl
+import com.lyy.keepassa.util.cloud.merge.FieldKey
+import com.lyy.keepassa.util.cloud.merge.GroupChildOrderSynchronizer
+import com.lyy.keepassa.util.cloud.merge.LegacyItemMerger
+import com.lyy.keepassa.util.cloud.merge.MergeApplierImpl
+import com.lyy.keepassa.util.cloud.merge.MergeConflictActivity
+import com.lyy.keepassa.util.cloud.merge.MergeConflictItem
+import com.lyy.keepassa.util.cloud.merge.MergeConflictResult
+import com.lyy.keepassa.util.cloud.merge.MergeConflictSession
+import com.lyy.keepassa.util.cloud.merge.MergeConflictSessionStore
+import com.lyy.keepassa.util.cloud.merge.NewEntryApplicator
+import com.lyy.keepassa.util.cloud.merge.syncCode
+import com.lyy.keepassa.util.cloud.merge.pending.FilePendingMergeRepository
+import com.lyy.keepassa.util.cloud.merge.pending.PendingMergeSnapshotStore
+import com.lyy.keepassa.util.cloud.merge.pending.PendingMergeState
+import com.lyy.keepassa.util.cloud.merge.pending.PendingMergeTaskDraft
+import com.lyy.keepassa.util.cloud.merge.pending.PendingMergeTaskStore
+import com.lyy.keepassa.util.cloud.merge.pending.PendingMergeNotificationManager
+import com.lyy.keepassa.util.cloud.merge.pending.PendingMergeDatabaseIdentity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.Date
+import java.io.File
+import java.util.UUID
 
 /**
  * @Author laoyuyu
@@ -30,228 +49,329 @@ import timber.log.Timber
  * @Date 5:42 下午 2021/12/24
  **/
 object DbMergeDelegate {
-  private val scope = MainScope()
-
-  const val COVER_LOCAL = 999
-  const val COVER_CLOUD = 998
-
   /**
    * 对比云端和本地的数据库，并进行合并
    * @param isUpload 是否是上传
-   * @return [COVER_CLOUD]、[COVER_LOCAL]、[VS]
+   * @return [DbSynUtil.STATE_SUCCEED] or [DbSynUtil.STATE_FAIL]
    */
   @ExperimentalCoroutinesApi
   suspend fun compareDb(
     record: DbHistoryRecord,
     cloudDb: PwDatabase,
     localDb: PwDatabase,
-    isUpload: Boolean
+    isUpload: Boolean,
+    onMergeFailed: ((Int) -> Unit)? = null,
+    mergeInteractionMode: MergeInteractionMode = MergeInteractionMode.FOREGROUND,
+    cloudSnapshot: File? = null,
+    cloudModifiedTime: Long? = null
   ): Int {
-    val modifyList = ArrayList<Pair<PwDataInf, PwDataInf>>() // 有改动的条目，first 为云端的条目，second 为本地的条目
-    val delList = ArrayList<PwDataInf>() // 云端没有的条目
-    val newList = ArrayList<PwDataInf>() // 本地没有的条目
-    val moveList = ArrayList<PwDataMap>() // 被移动的条目，first 为云端的条目，second 为本地的条目
-
-    for (cloudEntry in cloudDb.entries.values) {
-      val localEntry = localDb.entries[cloudEntry.uuid]
-      when {
-        localEntry == null -> {
-          newList.add(cloudEntry)
-        }
-        cloudEntry.parent.id != localEntry.parent.id -> {
-          moveList.add(PwDataMap(cloudEntry, localEntry))
-        }
-        localDb.entries[cloudEntry.uuid] == null -> {
-          delList.add(cloudEntry)
-        }
-        cloudEntry != localEntry -> {
-          Timber.d("修改的条目：${cloudEntry.title}")
-          modifyList.add(Pair(cloudEntry, localEntry))
-        }
-      }
-    }
-
-    for (cloudGroup in cloudDb.groups.values) {
-      val localGroup = localDb.groups[cloudGroup.id]
-
-      when {
-        localGroup == null -> {
-          newList.add(cloudGroup)
-        }
-        cloudGroup.parent == null -> {
-          Timber.w("云端数据库的群组的parent为空，群组名：${cloudGroup.name}")
-        }
-        cloudGroup.parent.id != localGroup.parent.id -> {
-          moveList.add(PwDataMap(cloudGroup, localGroup))
-        }
-        localDb.groups[cloudGroup.id] == null -> {
-          delList.add(cloudGroup)
-        }
-        cloudGroup != localGroup -> {
-          Timber.d("修改的群组：${cloudGroup.name}")
-          modifyList.add(Pair(cloudGroup, localGroup))
-        }
-      }
-    }
+    val compareLists = DbDiffCollector().collect(cloudDb, localDb)
+    val modifyList = compareLists.modifyList // 有改动的条目，first 为云端的条目，second 为本地的条目
+    val delList = compareLists.delList // 本地有而云端没有的条目
+    val newList = compareLists.newList // 本地没有的条目
+    val moveList = compareLists.moveList // 被移动的条目，first 为云端的条目，second 为本地的条目
+    val hasOrderChanges = GroupChildOrderSynchronizer().hasDifferences(cloudDb, localDb)
 
     Timber.i(
-      "比对数据完成，newListSize = ${newList.size}，moveListSize = ${moveList.size}，delListSize = ${delList.size}，modifyListSize = ${modifyList.size}"
+      "比对数据完成，newListSize = ${newList.size}，moveListSize = ${moveList.size}，delListSize = ${delList.size}，modifyListSize = ${modifyList.size}，hasOrderChanges = $hasOrderChanges"
     )
 
-    if (newList.size == 0 && moveList.size == 0 && delList.size == 0 && modifyList.size == 0) {
+    if (newList.size == 0 && moveList.size == 0 && delList.size == 0 && modifyList.size == 0 && !hasOrderChanges) {
       Timber.i("对比结果：无新增，无删除，无移动，无修改，忽略该次上传，并更新缓存的云端文件修改时间")
       DbSynUtil.updateServiceModifyTime(record)
       return DbSynUtil.STATE_SUCCEED
     }
 
-    if (newList.size > 0) {
-      // 本地需要新增的条目
-      Timber.i("本地需要新增条目")
-      localAddNewEntry(newList, localDb)
-    }
-
-    if (moveList.size > 0) {
-      // 本地需要移动的条目
-      Timber.i("本地需要移动条目")
-      moveLocalEntry(moveList, localDb)
-    }
-
-    if (modifyList.size <= 0) {
-      KpaUtil.kdbHandlerService.saveDbByBackground()
+    val mergeItems = buildMergeItems(modifyList)
+    val autoResolvedItems = mergeItems.filter { it.autoMerge.conflicts.isEmpty() }
+    val conflictItems = mergeItems.filter { it.autoMerge.conflicts.isNotEmpty() }
+    if (conflictItems.isEmpty() && delList.isEmpty()) {
+      applyAutomaticChanges(newList, moveList, cloudDb, localDb)
+      applyMergeDecisions(autoResolvedItems, emptyMap(), localDb)
+      val saveCode = KpaUtil.kdbHandlerService.saveDbAwait()
+      if (saveCode != DbSynUtil.STATE_SUCCEED) {
+        return saveCode
+      }
       return DbSynUtil.STATE_SUCCEED
     }
 
-    // 有改动提示用户合并数据
-    Timber.i("有改动提示用户合并数据")
-    var code = DbSynUtil.STATE_FAIL
-    val channel = Channel<Int>()
-    if (isUpload) {
-      showUploadCoverDialog(modifyList, channel)
-    } else {
-      showDownloadCoverDialog(modifyList, channel)
+    val snapshot = requireNotNull(cloudSnapshot) {
+      "Merge conflict requires a downloaded cloud snapshot"
     }
-
-    val job = scope.launch {
-      code = channel.receive()
-    }
-    //  等待直到子协程执行结束，完美替换wait single
-    job.join()
-    job.cancel()
-    channel.cancel()
-    Timber.d("compareDb end point, code = $code")
-    return code
-  }
-
-  /**
-   * 显示下载文件时冲突的对话框
-   */
-  @ExperimentalCoroutinesApi
-  private fun showDownloadCoverDialog(
-    modifyList: ArrayList<Pair<PwDataInf, PwDataInf>>,
-    channel: Channel<Int>
-  ) {
-    val sb = StringBuilder()
-    for (p in modifyList) {
-      if (p.second is PwEntry) {
-        sb.append((p.second as PwEntry).title)
-      } else {
-        sb.append((p.second as PwGroup).name)
-      }
-      sb.append("\n")
-    }
-
-    val res = BaseApp.APP.resources
-    Routerfit.create(DialogRouter::class.java).showMsgDialog(
-      msgTitle = ResUtil.getString(R.string.warning),
-      msgContent = res.getString(R.string.file_conflict_msg_download, sb.toString()),
-      showCoverBt = false,
-      showCancelBt = false,
-      interceptBackKey = true,
-      enterText = ResUtil.getString(R.string.cover_local),
-      btnClickListener = object : OnMsgBtClickListener {
-        override fun onCover(v: Button) {
-        }
-
-        override fun onEnter(v: Button) {
-          scope.launch {
-            // 覆盖本地数据
-            coverModifyEntry(modifyList)
-            channel.send(COVER_LOCAL)
-          }
-        }
-
-        override fun onCancel(v: Button) {
-        }
-      }
+    val pendingDirectory = File(BaseApp.APP.filesDir, PendingMergeSnapshotStore.ROOT_DIRECTORY)
+    val pendingRepository = FilePendingMergeRepository(pendingDirectory)
+    val pendingSnapshots = PendingMergeSnapshotStore(BaseApp.APP.filesDir)
+    val databaseIdentity = PendingMergeDatabaseIdentity.resolve(
+      BaseApp.dbRecord?.localDbUri,
+      record.localDbUri
     )
-  }
+    val pendingTask = PendingMergeTaskStore(
+      repository = pendingRepository,
+      snapshots = pendingSnapshots
+    ).create(
+        draft = PendingMergeTaskDraft(
+          id = UUID.randomUUID().toString(),
+          databaseIdentity = databaseIdentity,
+          localDatabaseUri = databaseIdentity,
+          cloudStorageType = record.type,
+          cloudDatabasePath = record.cloudDiskPath.orEmpty(),
+          cloudModifiedTime = cloudModifiedTime,
+          cloudContentHash = null,
+          createdAt = System.currentTimeMillis(),
+          state = PendingMergeState.WAITING_FOR_UNLOCK
+        ),
+        cloudDatabase = snapshot
+      )
 
-  /**
-   * 显示上传文件冲突对话框
-   * @param modifyList 有改动的条目，first 为云端的条目，second 为本地的条目
-   */
-  @ExperimentalCoroutinesApi
-  private fun showUploadCoverDialog(
-    modifyList: ArrayList<Pair<PwDataInf, PwDataInf>>,
-    channel: Channel<Int>
-  ) {
-    val sb = StringBuilder()
-    for (p in modifyList) {
-      if (p.second is PwEntry) {
-        sb.append((p.second as PwEntry).title)
-      } else {
-        sb.append((p.second as PwGroup).name)
-      }
-      sb.append("\n")
+    if (mergeInteractionMode == MergeInteractionMode.BACKGROUND) {
+      PendingMergeNotificationManager.notify(pendingTask.id)
+      return DbSynUtil.STATE_MERGE_PENDING
     }
-    val res = BaseApp.APP.resources
 
-    Routerfit.create(DialogRouter::class.java).showMsgDialog(
-      msgTitle = ResUtil.getString(R.string.warning),
-      msgContent = res.getString(R.string.file_conflict_msg_upload, sb.toString()),
-      showCancelBt = false,
-      showCoverBt = true,
-      interceptBackKey = true,
-      enterText = ResUtil.getString(R.string.cover_local),
-      coverText = ResUtil.getString(R.string.cover_cloud),
-      btnClickListener = object : OnMsgBtClickListener {
-        override fun onCover(v: Button) {
-          // 覆盖云端数据
-          scope.launch {
-            channel.send(COVER_CLOUD)
-          }
+    Timber.i("有字段级冲突或本地独有数据，启动合并冲突界面")
+    val result = showMergeConflictActivity(conflictItems, delList, onMergeFailed)
+    if (result !is MergeConflictResult.Resolved) {
+      pendingRepository.remove(pendingTask.id)
+      pendingSnapshots.remove(pendingTask.id)
+      return result.syncCode
+    }
+
+    applyAutomaticChanges(newList, moveList, cloudDb, localDb)
+    applyMergeDecisions(autoResolvedItems, emptyMap(), localDb)
+    applyMergeDecisions(conflictItems, result.decisions, localDb)
+    val deleteItems = result.deleteLocalOnlyIndexes.mapNotNull(delList::getOrNull)
+    val deleteEntryIds = deleteItems.filterIsInstance<PwEntry>().map { it.uuid }.toSet()
+    val deleteGroupIds = deleteItems.filterIsInstance<PwGroup>().map { it.id }.toSet()
+    result.deleteLocalOnlyIndexes.forEach { index ->
+      delList.getOrNull(index)?.let {
+        if (it is PwGroup) {
+          preserveUnselectedChildren(it, deleteEntryIds, deleteGroupIds, localDb)
         }
-
-        override fun onEnter(v: Button) {
-          scope.launch {
-            // 覆盖本地数据
-            coverModifyEntry(modifyList)
-            channel.send(COVER_LOCAL)
-          }
-        }
-
-        override fun onCancel(v: Button) {
-        }
-      }
-    )
-
-    Timber.d("showUploadCoverDialog endPoint")
-  }
-
-  /**
-   * 覆盖本地数据库有修改冲突的条目和群组
-   * @param modifyList 有改动的条目，first 为云端的条目，second 为本地的条目
-   */
-  private fun coverModifyEntry(modifyList: ArrayList<Pair<PwDataInf, PwDataInf>>): Int {
-    for (p in modifyList) {
-      if (p.first is PwEntry) {
-        (p.second as PwEntry).assign(p.first as PwEntry)
-      } else {
-        (p.second as PwGroup).assign(p.first as PwGroup)
+        deleteLocalOnly(it, localDb)
       }
     }
-    KpaUtil.kdbHandlerService.saveDbByBackground()
+    val saveCode = KpaUtil.kdbHandlerService.saveDbAwait()
+    if (saveCode != DbSynUtil.STATE_SUCCEED) {
+      return saveCode
+    }
+    pendingRepository.remove(pendingTask.id)
+    pendingSnapshots.remove(pendingTask.id)
     return DbSynUtil.STATE_SUCCEED
+  }
+
+  private suspend fun applyAutomaticChanges(
+    newList: ArrayList<PwDataInf>,
+    moveList: ArrayList<PwDataMap>,
+    cloudDb: PwDatabase,
+    localDb: PwDatabase
+  ) {
+    if (newList.isNotEmpty()) {
+      Timber.i("本地需要新增条目")
+      localAddNewEntry(newList, localDb)
+    }
+    if (moveList.isNotEmpty()) {
+      Timber.i("本地需要移动条目")
+      moveLocalEntry(moveList, localDb)
+    }
+    GroupChildOrderSynchronizer().apply(cloudDb, localDb)
+  }
+
+  private fun buildMergeItems(
+    modifyList: ArrayList<Pair<PwDataInf, PwDataInf>>
+  ): ArrayList<MergeConflictItem> {
+    val differ = EntryDifferImpl()
+    val autoMerger = AutoMergerImpl()
+    val items = ArrayList<MergeConflictItem>()
+    for (p in modifyList) {
+      val cloud = p.first
+      val local = p.second
+      when {
+        cloud is PwEntryV4 && local is PwEntryV4 -> {
+          val autoMerge = autoMerger.merge(differ.diff(local, cloud))
+          items.add(MergeConflictItem(cloud, local, autoMerge))
+        }
+        cloud is PwEntry && local is PwEntry -> {
+          items.add(MergeConflictItem(cloud, local, LegacyItemMerger.conflict(local, cloud)))
+        }
+        cloud is PwGroupV4 && local is PwGroupV4 -> {
+          val autoMerge = autoMerger.merge(differ.diff(local, cloud))
+          items.add(MergeConflictItem(cloud, local, autoMerge))
+        }
+        cloud is PwGroup && local is PwGroup -> {
+          items.add(MergeConflictItem(cloud, local, LegacyItemMerger.conflict(local, cloud)))
+        }
+      }
+    }
+    return items
+  }
+
+  private suspend fun showMergeConflictActivity(
+    items: List<MergeConflictItem>,
+    localOnlyItems: List<PwDataInf>,
+    onMergeFailed: ((Int) -> Unit)?
+  ): MergeConflictResult {
+    val session = MergeConflictSession(
+      items = items,
+      localOnlyItems = localOnlyItems,
+      onMergeFailed = onMergeFailed
+    )
+    MergeConflictSessionStore.put(session)
+    BaseApp.APP.startActivity(
+      Intent(BaseApp.APP, MergeConflictActivity::class.java)
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        .putExtra(MergeConflictActivity.KEY_SESSION_ID, session.id)
+    )
+    return try {
+      session.channel.receive()
+    } finally {
+      session.channel.cancel()
+    }
+  }
+
+  private fun applyMergeDecisions(
+    items: List<MergeConflictItem>,
+    decisionsByIndex: Map<Int, Map<FieldKey, Decision>>,
+    localDb: PwDatabase
+  ) {
+    val applier = MergeApplierImpl()
+    items.forEachIndexed { index, item ->
+      val decisions = decisionsByIndex[index].orEmpty()
+      when {
+        item.cloud is PwEntryV4 && item.local is PwEntryV4 -> {
+          assignMergedEntry(
+            local = item.local,
+            merged = applier.apply(
+              local = item.local,
+              autoMerge = item.autoMerge,
+              decisions = decisions,
+              database = localDb as? PwDatabaseV4
+            )
+          )
+        }
+        item.cloud is PwEntry && item.local is PwEntry -> {
+          val decision = decisions[FieldKey.LegacyItem]
+            ?: throw IllegalArgumentException("Missing legacy entry merge decision")
+          assignMergedEntry(
+            local = item.local,
+            merged = LegacyItemMerger.apply(item.local, item.cloud, decision) as PwEntry
+          )
+        }
+        item.cloud is PwGroupV4 && item.local is PwGroupV4 -> {
+          assignMergedGroup(
+            local = item.local,
+            merged = applier.apply(
+              local = item.local,
+              autoMerge = item.autoMerge,
+              decisions = decisions,
+              database = localDb as? PwDatabaseV4
+            )
+          )
+        }
+        item.cloud is PwGroup && item.local is PwGroup -> {
+          val decision = decisions[FieldKey.LegacyItem]
+            ?: throw IllegalArgumentException("Missing legacy group merge decision")
+          assignMergedGroup(
+            local = item.local,
+            merged = LegacyItemMerger.apply(item.local, item.cloud, decision) as PwGroup
+          )
+        }
+      }
+    }
+  }
+
+  private fun assignMergedEntry(
+    local: PwEntry,
+    merged: PwEntry
+  ) {
+    local.assign(merged)
+    if (local is PwEntryV4 && merged is PwEntryV4) {
+      local.tags = merged.tags
+      local.customData = merged.customData.copyForMerge()
+      local.prevParentGroup = merged.prevParentGroup
+      local.qualityCheck = merged.qualityCheck
+    }
+  }
+
+  private fun assignMergedGroup(
+    local: PwGroup,
+    merged: PwGroup
+  ) {
+    local.assign(merged)
+    if (local is PwGroupV4 && merged is PwGroupV4) {
+      local.tags = merged.tags
+      local.customData = merged.customData.copyForMerge()
+      local.prevParentGroup = merged.prevParentGroup
+      local.lastTopVisibleEntry = merged.lastTopVisibleEntry
+    }
+  }
+
+  private fun PwCustomData.copyForMerge(): PwCustomData {
+    return PwCustomData().also { copy ->
+      copy.putAll(this)
+      copy.lastMod = lastMod.mapValues { (_, value) -> Date(value.time) }.toMutableMap()
+    }
+  }
+
+  private fun deleteLocalOnly(
+    item: PwDataInf,
+    localDb: PwDatabase
+  ) {
+    when (item) {
+      is PwEntry -> {
+        if (localDb.canRecycle(item)) {
+          localDb.recycle(item)
+        } else {
+          localDb.deleteEntry(item)
+        }
+      }
+      is PwGroupV4 -> {
+        if (localDb is PwDatabaseV4 && localDb.canRecycle(item)) {
+          localDb.recycle(item)
+        } else {
+          removeGroupTree(item, localDb)
+        }
+      }
+      is PwGroup -> {
+        removeGroupTree(item, localDb)
+      }
+    }
+  }
+
+  private fun preserveUnselectedChildren(
+    group: PwGroup,
+    deleteEntryIds: Set<java.util.UUID>,
+    deleteGroupIds: Set<com.keepassdroid.database.PwGroupId>,
+    localDb: PwDatabase
+  ) {
+    val destination = group.parent ?: localDb.rootGroup
+    group.childEntries.toList().forEach { entry ->
+      if (entry.uuid !in deleteEntryIds) {
+        localDb.moveEntry(entry, destination)
+      }
+    }
+    group.childGroups.toList().forEach { child ->
+      if (child.id in deleteGroupIds) {
+        preserveUnselectedChildren(child, deleteEntryIds, deleteGroupIds, localDb)
+      } else {
+        localDb.moveGroup(child, destination)
+      }
+    }
+  }
+
+  private fun removeGroupTree(
+    group: PwGroup,
+    localDb: PwDatabase
+  ) {
+    for (entry in group.childEntries.toList()) {
+      localDb.entries.remove(entry.uuid)
+    }
+    for (child in group.childGroups.toList()) {
+      removeGroupTree(child, localDb)
+    }
+    group.parent?.let {
+      localDb.removeGroupFrom(group, it)
+    }
+    localDb.groups.remove(group.id)
   }
 
   /**
@@ -280,23 +400,22 @@ object DbMergeDelegate {
     newList: ArrayList<PwDataInf>,
     localDb: PwDatabase
   ) {
-    // 需要先增加群组
-    for (pwData in newList) {
-      if (pwData is PwGroup) {
-        val newGroup = pwData.clone()
-        newGroup.childGroups?.clear()
-        newGroup.childEntries?.clear()
-        newGroup.parent = getParentByCloudPwData(pwData, localDb)
-        KpaUtil.kdbHandlerService.addGroup(newGroup as PwGroupV4)
-      }
+    val plan = NewEntryApplicator().plan(newList, localDb)
+    for (orphan in plan.orphanGroups) {
+      Timber.w("云端新增群组 [${orphan.name}] 的父群组不存在,将该群组回退至根群组并保留其子级结构")
     }
-    // 再增加条目
-    for (pwData in newList) {
-      if (pwData is PwEntry) {
-        val newEntry = pwData.clone(true)
-        newEntry.parent = getParentByCloudPwData(pwData, localDb)
-        KpaUtil.kdbHandlerService.createEntry(newEntry as PwEntryV4)
-      }
+    for (orphan in plan.orphanEntries) {
+      Timber.w("云端新增条目 [${orphan.title}] 的父群组不存在,将该条目回退至根群组")
+    }
+    for (newGroup in plan.groupAdds) {
+      KpaUtil.kdbHandlerService.addGroup(newGroup, localDb, MutationOrigin.CLOUD)
+    }
+    for (newEntry in plan.entryAdds) {
+      KpaUtil.kdbHandlerService.createEntry(
+        newEntry,
+        database = localDb,
+        origin = MutationOrigin.CLOUD
+      )
     }
   }
 

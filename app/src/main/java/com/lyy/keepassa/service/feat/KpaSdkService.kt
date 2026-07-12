@@ -25,7 +25,6 @@ import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.util.KeepassAUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
-import com.lyy.keepassa.view.create.entry.CreateEntryActivity
 import com.tencent.mmkv.MMKV
 import com.zzhoujay.richtext.RichText
 import kotlinx.coroutines.Dispatchers
@@ -80,10 +79,6 @@ class KpaSdkService : IProvider {
       }
 
       override fun onBackground(activity: Activity) {
-        if (activity::class.java.name == CreateEntryActivity::class.java.name){
-          Timber.w("in CreateEntryActivity, not save")
-          return
-        }
         KpaUtil.kdbHandlerService.saveDbByBackground(true)
         XLogFeature.flush()
       }

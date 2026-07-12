@@ -528,4 +528,72 @@
     <string name="icon_select_db">本地图标</string>
     <string name="icon_change">修改图标</string>
     <string name="entry_not_found">未找到条目</string>
+    <string name="merge_conflict_title">解决合并冲突</string>
+    <string name="merge_conflict_progress">%1$d/%2$d</string>
+    <string name="merge_conflict_session_expired">合并会话已过期，请重新同步。</string>
+    <string name="pending_merge_notification_channel">数据库同步冲突</string>
+    <string name="pending_merge_notification_title">数据库同步需要处理</string>
+    <string name="pending_merge_notification_message">发现云端与本地数据冲突，点击解决。</string>
+    <string name="merge_field_cloud">云端</string>
+    <string name="merge_field_result">结果</string>
+    <string name="merge_field_local">本地</string>
+    <string name="merge_previous">上一条</string>
+    <string name="merge_next">下一条</string>
+    <string name="merge_finish">完成</string>
+    <string name="merge_not_selected">未选择</string>
+    <string name="merge_decision_required">请为每个冲突字段选择本地或云端版本。</string>
+    <string name="merge_local_only_title">仅本地存在的条目</string>
+    <string name="merge_local_only_desc">勾选的条目会从本地删除；未勾选的条目会保留。</string>
+    <string name="merge_field_group_name">群组名称</string>
+    <string name="merge_field_group_notes">群组备注</string>
+    <string name="merge_field_group_is_expanded">已展开</string>
+    <string name="merge_field_group_default_auto_type_sequence">默认自动输入序列</string>
+    <string name="merge_field_group_enable_auto_type">启用自动输入</string>
+    <string name="merge_field_group_enable_searching">启用搜索</string>
+    <string name="merge_field_group_last_top_visible_entry">最后顶部可见条目</string>
+    <string name="merge_field_icon">图标</string>
+    <string name="merge_field_custom_icon">自定义图标</string>
+    <string name="merge_field_tags">标签</string>
+    <string name="merge_field_expire_date">过期时间</string>
+    <string name="merge_field_expires">启用过期</string>
+    <string name="merge_field_uuid">UUID</string>
+    <string name="merge_field_foreground_color">前景色</string>
+    <string name="merge_field_background_color">背景色</string>
+    <string name="merge_field_override_url">覆盖 URL</string>
+    <string name="merge_field_auto_type">自动输入</string>
+    <string name="merge_field_location_changed">位置变更时间</string>
+    <string name="merge_field_creation_time">创建时间</string>
+    <string name="merge_field_last_modification_time">最后修改时间</string>
+    <string name="merge_field_last_access_time">最后访问时间</string>
+    <string name="merge_field_usage_count">使用次数</string>
+    <string name="merge_field_internal_url">内部 URL</string>
+    <string name="merge_field_additional">附加数据</string>
+    <string name="merge_field_custom_data">自定义数据</string>
+    <string name="merge_field_previous_parent_group">上一个父群组</string>
+    <string name="merge_field_quality_check">质量检查</string>
+    <string name="merge_binary_summary">附件，%1$d 字节</string>
+    <string name="merge_binary_named_summary">%1$s
+附件，%2$d 字节</string>
+    <string name="merge_icon_summary">图标 #%1$d</string>
+    <string name="merge_upload_failed_retry_next_time">本地合并已保存，但上传失败。下次同步会重试。</string>
+    <string name="merge_field_whole_item">整条数据</string>
+    <string name="merge_legacy_entry_summary">标题：%1$s
+用户名：%2$s
+密码：%3$s
+网址：%4$s
+备注：%5$s
+最后修改：%6$s</string>
+    <string name="merge_legacy_group_summary">名称：%1$s
+最后修改：%2$s</string>
+    <string name="credential_provider_unlock_title">解锁 KeePassA</string>
+    <string name="credential_provider_save_title">保存到 KeePassA</string>
+    <string name="credential_provider_no_match">没有匹配的凭据</string>
+    <string name="hint_confirm">确认密码</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="set_key_browser_autofill_settings">浏览器自动填充设置</string>
+    <string-array name="auth_type">
+        <item>Basic</item>
+        <item>Digest</item>
+    </string-array>
 </resources>

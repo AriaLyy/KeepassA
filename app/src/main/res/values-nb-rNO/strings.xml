@@ -410,7 +410,7 @@
     <string name="webdav_host_name_hint"><![CDATA[Vennligst skriv inn vertsnavnet ditt]]></string>
     <string name="webdav_port_hint"><![CDATA[port]]></string>
     <string name="webdav_port_name_null"><![CDATA[Vertsnavnet kan ikke være tomt]]></string>
-    <string name="privacy_agreement"><![CDATA[personvernavtale]]></string>
+    <string name="privacy_agreement"><![CDATA[Personvern- og sikkerhetsmerknad]]></string>
     <string name="ime_hint_open_auto_fill"><![CDATA[Slå på autofyll-tjenesten]]></string>
     <string name="please_open_proxy"><![CDATA[På grunn av velkjente nettverksårsaker, for å bruke onedrive-tjenester jevnt, vennligst bruk passende nettverksverktøy]]></string>
     <string name="invalid_img"><![CDATA[Ugyldig bilde]]></string>
@@ -449,4 +449,107 @@
     <string name="icon_select_db"><![CDATA[lokalt ikon]]></string>
     <string name="icon_change"><![CDATA[Endre ikon]]></string>
     <string name="entry_not_found"><![CDATA[Ingen oppføring funnet]]></string>
+    <string name="auto_fill_set"><![CDATA[Innstillinger for autofyll]]></string>
+    <string name="autofill_browser_category_android"><![CDATA[AOSP-nettleser]]></string>
+    <string name="autofill_browser_category_chromium"><![CDATA[Chromium-familien]]></string>
+    <string name="autofill_browser_category_default"><![CDATA[Konservativ]]></string>
+    <string name="autofill_browser_category_gecko"><![CDATA[Gecko (Firefox)]]></string>
+    <string name="autofill_browser_category_idm"><![CDATA[IDM]]></string>
+    <string name="autofill_browser_category_kiwi"><![CDATA[Kiwi]]></string>
+    <string name="autofill_browser_category_uc"><![CDATA[UC]]></string>
+    <string name="autofill_browser_category_yandex"><![CDATA[Yandex]]></string>
+    <string name="browser_autofill_settings_open_failed"><![CDATA[Kunne ikke åpne innstillinger for autofyll i Chrome]]></string>
+    <string name="browser_autofill_settings_summary_disabled"><![CDATA[Chrome må tillate autofyll fra tredjeparter før nettskjemaer kan bruke KeePassA.]]></string>
+    <string name="browser_autofill_settings_summary_enabled"><![CDATA[Chrome tillater allerede autofyll fra tredjeparter.]]></string>
+    <string name="browser_autofill_settings_summary_unknown"><![CDATA[Åpne innstillinger for autofyll i Chrome.]]></string>
+    <string name="browser_autofill_settings_title"><![CDATA[Innstillinger for autofyll i Chrome]]></string>
+    <string name="browser_third_party_autofill_settings_open_failed"><![CDATA[Kunne ikke åpne innstillinger for autofyll i %1$s]]></string>
+    <string name="browser_third_party_autofill_settings_summary_disabled"><![CDATA[%1$s må tillate autofyll fra tredjeparter før nettskjemaer kan bruke KeePassA.]]></string>
+    <string name="browser_third_party_autofill_settings_summary_enabled"><![CDATA[%1$s tillater allerede autofyll fra tredjeparter.]]></string>
+    <string name="browser_third_party_autofill_settings_summary_unknown"><![CDATA[Åpne innstillinger for autofyll i %1$s.]]></string>
+    <string name="browser_third_party_autofill_settings_title"><![CDATA[Innstillinger for autofyll i %1$s]]></string>
+    <string name="credential_manager_settings_fallback"><![CDATA[Dette systemet støtter ikke direkte innstillinger for Legitimasjonsbehandling. Søk etter «legitimasjon» eller «passord» i systeminnstillingene.]]></string>
+    <string name="credential_manager_settings_open_failed"><![CDATA[Kunne ikke åpne systeminnstillinger for Legitimasjonsbehandling.]]></string>
+    <string name="credential_manager_settings_summary"><![CDATA[Åpne systeminnstillinger for passord, passkeys og legitimasjonsleverandører]]></string>
+    <string name="credential_manager_settings_title"><![CDATA[Legitimasjonsbehandling]]></string>
+    <string name="credential_manager_settings_unsupported"><![CDATA[Dette systemet støtter ikke KeePassA som legitimasjonsleverandør.]]></string>
+
+    <string name="credential_provider_unlock_title"><![CDATA[Lås opp KeePassA]]></string>
+
+
+    <string name="credential_provider_save_title"><![CDATA[Lagre i KeePassA]]></string>
+
+
+
+    <string name="credential_provider_no_match"><![CDATA[Ingen samsvarende legitimasjon]]></string>
+
+
+
+
+    <string name="hint_confirm"><![CDATA[Bekreft passord]]></string>
+    <string name="file_conflict_msg_download"><![CDATA[Følgende oppføringer ble endret både lokalt og i skyen:\n%s\nNedlasting overskriver lokale endringer med skyversjonen.]]></string>
+    <string name="file_conflict_msg_upload"><![CDATA[Følgende oppføringer ble endret både lokalt og i skyen:\n%s\nVelg hvilken versjon som skal beholdes:\n· Behold lokal: last opp lokale endringer for å overskrive skyen\n· Behold sky: last ned skyversjonen for å overskrive denne enheten]]></string>
+    <string name="hint_browser_third_party_autofill_mode"><![CDATA[%1$s har ikke aktivert autofyll fra tredjeparter. KeePassA kan ikke motta autofyll-forespørsler fra %1$s før nettleseren tillater andre passordbehandlere.]]></string>
+    <string name="hint_chrome_autofill_third_party_mode"><![CDATA[Chrome har ikke aktivert autofyll fra tredjeparter. KeePassA kan ikke motta autofyll-forespørsler fra Chrome før Chrome tillater andre passordbehandlere.]]></string>
+    <string name="ime_database_locked_hint"><![CDATA[Databasen er låst]]></string>
+    <string name="ime_database_locked_unlock_button"><![CDATA[Lås opp]]></string>
+    <string name="ime_search_entry_hint"><![CDATA[Søk i oppføringer]]></string>
+    <string name="ime_search_no_entry"><![CDATA[Ingen samsvarende oppføringer]]></string>
+    <string name="ime_search_select_entry_first"><![CDATA[Velg en oppføring først]]></string>
+    <string name="merge_binary_named_summary"><![CDATA[%1$s
+Binær, %2$d byte]]></string>
+    <string name="merge_binary_summary"><![CDATA[Binærfil, %1$d byte]]></string>
+    <string name="merge_conflict_progress"><![CDATA[%1$d/%2$d]]></string>
+    <string name="merge_conflict_session_expired"><![CDATA[Flettingsøkten er utløpt. Synkroniser på nytt.]]></string>
+    <string name="merge_conflict_title"><![CDATA[Løs flettingskonflikter]]></string>
+    <string name="merge_decision_required"><![CDATA[Velg lokal eller sky for hvert konfliktfelt.]]></string>
+    <string name="merge_field_additional"><![CDATA[Tilleggsdata]]></string>
+    <string name="merge_field_auto_type"><![CDATA[Automatisk skriving]]></string>
+    <string name="merge_field_background_color"><![CDATA[Bakgrunnsfarge]]></string>
+    <string name="merge_field_cloud"><![CDATA[Sky]]></string>
+    <string name="merge_field_creation_time"><![CDATA[Opprettelsestid]]></string>
+    <string name="merge_field_custom_data"><![CDATA[Egendefinerte data]]></string>
+    <string name="merge_field_custom_icon"><![CDATA[Egendefinert ikon]]></string>
+    <string name="merge_field_expire_date"><![CDATA[Utløpsdato]]></string>
+    <string name="merge_field_expires"><![CDATA[Utløper]]></string>
+    <string name="merge_field_foreground_color"><![CDATA[Forgrunnsfarge]]></string>
+    <string name="merge_field_group_default_auto_type_sequence"><![CDATA[Standardsekvens for automatisk skriving]]></string>
+    <string name="merge_field_group_enable_auto_type"><![CDATA[Aktiver automatisk skriving]]></string>
+    <string name="merge_field_group_enable_searching"><![CDATA[Aktiver søk]]></string>
+    <string name="merge_field_group_is_expanded"><![CDATA[Utvidet]]></string>
+    <string name="merge_field_group_last_top_visible_entry"><![CDATA[Siste synlige oppføring øverst]]></string>
+    <string name="merge_field_group_name"><![CDATA[Gruppenavn]]></string>
+    <string name="merge_field_group_notes"><![CDATA[Gruppenotater]]></string>
+    <string name="merge_field_icon"><![CDATA[Ikon]]></string>
+    <string name="merge_field_internal_url"><![CDATA[Intern URL]]></string>
+    <string name="merge_field_last_access_time"><![CDATA[Siste tilgang]]></string>
+    <string name="merge_field_last_modification_time"><![CDATA[Sist endret]]></string>
+    <string name="merge_field_local"><![CDATA[Lokal]]></string>
+    <string name="merge_field_location_changed"><![CDATA[Plassering endret]]></string>
+    <string name="merge_field_override_url"><![CDATA[Override-URL]]></string>
+    <string name="merge_field_previous_parent_group"><![CDATA[Forrige overordnede gruppe]]></string>
+    <string name="merge_field_quality_check"><![CDATA[Kvalitetskontroll]]></string>
+    <string name="merge_field_result"><![CDATA[Resultat]]></string>
+    <string name="merge_field_tags"><![CDATA[Etiketter]]></string>
+    <string name="merge_field_usage_count"><![CDATA[Brukstelling]]></string>
+    <string name="merge_field_uuid"><![CDATA[UUID]]></string>
+    <string name="merge_finish"><![CDATA[Fullfør]]></string>
+    <string name="merge_icon_summary"><![CDATA[Ikon #%1$d]]></string>
+    <string name="merge_local_only_desc"><![CDATA[Merkede elementer slettes lokalt; umerkede elementer beholdes.]]></string>
+    <string name="merge_local_only_title"><![CDATA[Kun lokale elementer]]></string>
+    <string name="merge_next"><![CDATA[Neste]]></string>
+    <string name="merge_not_selected"><![CDATA[Ikke valgt]]></string>
+    <string name="merge_previous"><![CDATA[Forrige]]></string>
+    <string name="merge_upload_failed_retry_next_time"><![CDATA[Lokal fletting ble lagret, men opplasting mislyktes. Det vil bli forsøkt igjen ved neste synkronisering.]]></string>
+
+    <string name="merge_field_whole_item"><![CDATA[Hele elementet]]></string>
+    <string name="privacy_agreement_accept"><![CDATA[Godta]]></string>
+    <string name="privacy_agreement_exit"><![CDATA[Avslutt app]]></string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_off"><![CDATA[Ikke vibrer ved bruk av KeePassA-tastatur]]></string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_on"><![CDATA[Vibrer lett ved bruk av KeePassA-tastatur]]></string>
+    <string name="set_title_ime_keyboard_haptic_feedback"><![CDATA[Tastaturvibrasjon]]></string>
+    <string name="supported_browser_incompatible_suffix"><![CDATA[(inkompatibel)]]></string>
+    <string name="supported_browsers_dialog_title"><![CDATA[Støttede nettlesere (%1$d)]]></string>
+    <string name="supported_browsers_summary"><![CDATA[Nettlesere med skreddersydde autofyll-strategier]]></string>
+    <string name="supported_browsers_title"><![CDATA[Støttede nettlesere]]></string>
 </resources>

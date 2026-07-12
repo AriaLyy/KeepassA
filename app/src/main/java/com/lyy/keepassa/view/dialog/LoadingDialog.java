@@ -10,8 +10,8 @@
 package com.lyy.keepassa.view.dialog;
 
 import android.content.res.AssetManager;
+import android.os.Looper;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import androidx.fragment.app.DialogFragment;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.lyy.keepassa.R;
@@ -50,10 +50,26 @@ public class LoadingDialog extends BaseDialog<DialogLoadingBinding> {
   }
 
   public void dismiss(long delay) {
-    if (delay == 0) {
-      super.dismiss();
+    if (delay <= 0) {
+      dismissNowOnMain();
       return;
     }
-    BaseApp.handler.postDelayed(this::dismiss, delay);
+    BaseApp.handler.postDelayed(this::dismissImmediately, delay);
+  }
+
+  private void dismissNowOnMain() {
+    if (Looper.myLooper() == Looper.getMainLooper()) {
+      dismissImmediately();
+      return;
+    }
+    BaseApp.handler.post(this::dismissImmediately);
+  }
+
+  private void dismissImmediately() {
+    try {
+      dismissAllowingStateLoss();
+    } catch (Exception e) {
+      Timber.e(e);
+    }
   }
 }

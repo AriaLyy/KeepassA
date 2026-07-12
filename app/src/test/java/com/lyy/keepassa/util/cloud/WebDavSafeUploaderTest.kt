@@ -10,6 +10,7 @@ package com.lyy.keepassa.util.cloud
 import com.thegrizzlylabs.sardineandroid.impl.SardineException
 import java.io.File
 import java.io.IOException
+import java.security.MessageDigest
 import java.util.Date
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -107,12 +108,41 @@ class WebDavSafeUploaderTest {
     assertFalse(client.operations.any { it.startsWith("move:") })
   }
 
-  @Test fun finalPutFailure_restoresOriginFromBackupAndKeepsBackup() = runBlocking {
+  @Test fun tempHashMismatch_doesNotReplaceOrigin() = runBlocking {
     val oldInfo = cloudInfo(originUrl, size = 10, time = 1000)
     val client = FakeWebDavUploadClient(
       initialFiles = mutableMapOf(originUrl to oldInfo),
-      failPutUrls = setOf(originUrl),
-      createPartialOnPutFailure = true
+      remoteHashOverrides = mapOf(tempUrl to "different")
+    )
+    val uploader = WebDavSafeUploader(client, idFactory = { "fixed" })
+
+    val result = uploader.upload(localFile(size = 20), originUrl)
+
+    assertFalse(result.success)
+    assertEquals(oldInfo, client.files[originUrl])
+    assertFalse(client.operations.contains("copy:$tempUrl->$originUrl:true"))
+  }
+
+  @Test fun backupHashMismatch_abortsBeforeUploadingTemp() = runBlocking {
+    val oldInfo = cloudInfo(originUrl, size = 10, time = 1000)
+    val client = FakeWebDavUploadClient(
+      initialFiles = mutableMapOf(originUrl to oldInfo),
+      remoteHashOverrides = mapOf(backupUrl to "different")
+    )
+    val uploader = WebDavSafeUploader(client, idFactory = { "fixed" })
+
+    val result = uploader.upload(localFile(size = 20), originUrl)
+
+    assertFalse(result.success)
+    assertEquals(oldInfo, client.files[originUrl])
+    assertFalse(client.operations.contains("put:$tempUrl:20"))
+  }
+
+  @Test fun promotionFailure_restoresOriginFromBackupAndKeepsBackup() = runBlocking {
+    val oldInfo = cloudInfo(originUrl, size = 10, time = 1000)
+    val client = FakeWebDavUploadClient(
+      initialFiles = mutableMapOf(originUrl to oldInfo),
+      failCopySources = setOf(tempUrl)
     )
     val uploader = WebDavSafeUploader(client, idFactory = { "fixed" })
 
@@ -126,28 +156,75 @@ class WebDavSafeUploaderTest {
     assertFalse(client.operations.any { it.startsWith("move:") })
   }
 
-  @Test fun finalPutNetworkFailure_skipsRollbackLeavesBackupAndTempForRecovery() = runBlocking {
+  @Test fun promotionNetworkFailure_neverPutsOrDeletesOrigin() = runBlocking {
     val oldInfo = cloudInfo(originUrl, size = 10, time = 1000)
     val client = FakeWebDavUploadClient(
       initialFiles = mutableMapOf(originUrl to oldInfo),
-      networkFailPutUrls = setOf(originUrl),
-      createPartialOnPutFailure = true
+      networkFailCopySources = setOf(tempUrl)
     )
     val uploader = WebDavSafeUploader(client, idFactory = { "fixed" })
 
     val result = uploader.upload(localFile(size = 20), originUrl)
 
     assertFalse(result.success)
-    // 网络故障:跳过回滚。origin 可能存在 partial 坏数据,backup 保留可手动恢复,temp 也保留
+    assertEquals(oldInfo, client.files[originUrl])
     assertTrue(client.files.containsKey(backupUrl))
     assertTrue(client.files.containsKey(tempUrl))
     assertFalse(client.operations.contains("delete:$tempUrl"))
     assertFalse(client.operations.contains("delete:$backupUrl"))
     assertFalse(client.operations.contains("copy:$backupUrl->$originUrl"))
+    assertFalse(client.operations.contains("put:$originUrl:20"))
+    assertFalse(client.operations.contains("delete:$originUrl"))
     assertFalse(client.operations.any { it.startsWith("move:") })
   }
 
-  @Test fun restoreCopyConflict_deletesOriginThenCopiesBackup() = runBlocking {
+  @Test fun promotionResponseTimeout_afterServerAppliedCopy_isConfirmedAsSuccess() = runBlocking {
+    val client = FakeWebDavUploadClient(
+      initialFiles = mutableMapOf(originUrl to cloudInfo(originUrl, size = 10, time = 1000)),
+      copyThenNetworkFailSources = setOf(tempUrl),
+      uploadedTime = 3000
+    )
+    val uploader = WebDavSafeUploader(client, idFactory = { "fixed" })
+
+    val result = uploader.upload(localFile(size = 20), originUrl)
+
+    assertTrue(result.success)
+    assertEquals(20L, client.files[originUrl]?.size)
+    assertFalse(client.operations.contains("copy:$backupUrl->$originUrl:true"))
+  }
+
+  @Test fun promotionTimeout_withUnknownOrigin_restoresVerifiedBackup() = runBlocking {
+    val oldInfo = cloudInfo(originUrl, size = 10, time = 1000)
+    val client = FakeWebDavUploadClient(
+      initialFiles = mutableMapOf(originUrl to oldInfo),
+      copyThenCorruptAndNetworkFailSources = setOf(tempUrl)
+    )
+    val uploader = WebDavSafeUploader(client, idFactory = { "fixed" })
+
+    val result = uploader.upload(localFile(size = 20), originUrl)
+
+    assertFalse(result.success)
+    assertEquals(oldInfo.size, client.files[originUrl]?.size)
+    assertTrue(client.operations.contains("copy:$backupUrl->$originUrl:true"))
+    assertFalse(client.operations.contains("delete:$originUrl"))
+  }
+
+  @Test fun promotionTimeout_whenVerifiedBackupRestoreFails_requestsRecoveryFuse() = runBlocking {
+    val client = FakeWebDavUploadClient(
+      initialFiles = mutableMapOf(originUrl to cloudInfo(originUrl, size = 10, time = 1000)),
+      copyThenCorruptAndNetworkFailSources = setOf(tempUrl),
+      failCopySources = setOf(backupUrl)
+    )
+    val uploader = WebDavSafeUploader(client, idFactory = { "fixed" })
+
+    val result = uploader.upload(localFile(size = 20), originUrl)
+
+    assertFalse(result.success)
+    assertTrue(result.needsRecovery)
+    assertFalse(client.operations.contains("delete:$originUrl"))
+  }
+
+  @Test fun copyConflict_movesOriginAsideAndNeverDeletesOrigin() = runBlocking {
     val oldInfo = cloudInfo(originUrl, size = 10, time = 1000)
     val client = FakeWebDavUploadClient(
       initialFiles = mutableMapOf(originUrl to oldInfo),
@@ -159,15 +236,14 @@ class WebDavSafeUploaderTest {
 
     val result = uploader.upload(localFile(size = 20), originUrl)
 
-    assertFalse(result.success)
-    assertEquals(oldInfo, client.files[originUrl])
+    assertTrue(result.success)
+    assertEquals(20L, client.files[originUrl]?.size)
     assertTrue(client.files.containsKey(backupUrl))
-    assertTrue(client.operations.contains("copy:$backupUrl->$originUrl:true"))
-    assertTrue(client.operations.contains("delete:$originUrl"))
-    assertFalse(client.operations.any { it.startsWith("move:") })
+    assertFalse(client.operations.contains("delete:$originUrl"))
+    assertTrue(client.operations.any { it.startsWith("move:$originUrl->") })
   }
 
-  @Test fun success_putsOriginKeepsBackupAndReturnsModifyTime() = runBlocking {
+  @Test fun success_promotesVerifiedTempWithoutPuttingOrigin() = runBlocking {
     val client = FakeWebDavUploadClient(
       initialFiles = mutableMapOf(originUrl to cloudInfo(originUrl, size = 10, time = 1000)),
       uploadedTime = 3000
@@ -182,23 +258,67 @@ class WebDavSafeUploaderTest {
     assertFalse(client.files.containsKey(tempUrl))
     assertTrue(client.files.containsKey(backupDirUrl))
     assertTrue(client.files.containsKey(backupUrl))
-    assertFalse(client.operations.any { it.startsWith("move:") })
+    assertFalse(client.operations.contains("put:$originUrl:20"))
+    assertTrue(client.operations.contains("copy:$tempUrl->$originUrl:true"))
     assertFalse(client.operations.contains("delete:$originUrl"))
     assertEquals(
       listOf(
         "info:$originUrl",
+        "hash:$originUrl",
         "info:$backupDirUrl",
         "mkdir:$backupDirUrl",
         "copy:$originUrl->$backupUrl:true",
+        "info:$backupUrl",
+        "hash:$backupUrl",
         "put:$tempUrl:20",
         "info:$tempUrl",
-        "put:$originUrl:20",
+        "hash:$tempUrl",
+        "copy:$tempUrl->$originUrl:true",
         "info:$originUrl",
+        "hash:$originUrl",
         "delete:$tempUrl",
         "list:$backupDirUrl"
       ),
       client.operations
     )
+  }
+
+  @Test fun copyOverwriteConflict_usesMoveAsidePromotionWithoutDeletingOrPuttingOrigin() = runBlocking {
+    val displacedUrl = "$originUrl.kpa-replacing-fixed.tmp"
+    val client = FakeWebDavUploadClient(
+      initialFiles = mutableMapOf(originUrl to cloudInfo(originUrl, size = 10, time = 1000)),
+      copyConflictWhenDestinationExists = true,
+      uploadedTime = 3000
+    )
+    val uploader = WebDavSafeUploader(client, idFactory = { "fixed" })
+
+    val result = uploader.upload(localFile(size = 20), originUrl)
+
+    assertTrue(result.success)
+    assertEquals(20L, client.files[originUrl]?.size)
+    assertFalse(client.files.containsKey(displacedUrl))
+    assertTrue(client.operations.contains("move:$originUrl->$displacedUrl:true"))
+    assertFalse(client.operations.contains("put:$originUrl:20"))
+    assertFalse(client.operations.contains("delete:$originUrl"))
+  }
+
+  @Test fun moveAsidePromotionPartialServerFailure_restoresVerifiedOldOrigin() = runBlocking {
+    val oldInfo = cloudInfo(originUrl, size = 10, time = 1000)
+    val client = FakeWebDavUploadClient(
+      initialFiles = mutableMapOf(originUrl to oldInfo),
+      copyConflictWhenDestinationExists = true,
+      copyThenServerFailSources = setOf(tempUrl)
+    )
+    val uploader = WebDavSafeUploader(client, idFactory = { "fixed" })
+
+    val result = uploader.upload(localFile(size = 20), originUrl)
+
+    assertFalse(result.success)
+    assertEquals(oldInfo.size, client.files[originUrl]?.size)
+    assertEquals("existing-10", client.hashesForTest[originUrl])
+    assertFalse(client.operations.contains("delete:$originUrl"))
+    assertTrue(client.operations.any { it.startsWith("move:$originUrl->$originUrl.kpa-quarantine-") })
+    assertTrue(client.operations.any { it.startsWith("move:$originUrl.kpa-replacing-fixed.tmp->$originUrl") })
   }
 
   @Test fun success_prunesBackupDirectoryToLatestTen() = runBlocking {
@@ -226,7 +346,7 @@ class WebDavSafeUploaderTest {
     assertEquals(10, backups.size)
   }
 
-  @Test fun success_whenOriginMissing_skipsBackupDirectoryAndPutsOrigin() = runBlocking {
+  @Test fun success_whenOriginMissing_promotesVerifiedTempWithoutPuttingOrigin() = runBlocking {
     val client = FakeWebDavUploadClient(uploadedTime = 3000)
     val uploader = WebDavSafeUploader(client, idFactory = { "fixed" })
 
@@ -237,7 +357,8 @@ class WebDavSafeUploaderTest {
     assertEquals(Date(3000), result.serviceModifyTime)
     assertFalse(client.files.containsKey(backupDirUrl))
     assertFalse(client.files.containsKey(backupUrl))
-    assertFalse(client.operations.any { it.startsWith("copy:") })
+    assertFalse(client.operations.contains("put:$originUrl:20"))
+    assertTrue(client.operations.contains("copy:$tempUrl->$originUrl:true"))
     assertFalse(client.operations.any { it.startsWith("move:") })
   }
 
@@ -270,10 +391,18 @@ class WebDavSafeUploaderTest {
     private val uploadedTime: Long = 2000,
     private val createPartialOnPutFailure: Boolean = false,
     private val failInfoUrls: Set<String> = emptySet(),
-    private val copyConflictWhenDestinationExists: Boolean = false
+    private val copyConflictWhenDestinationExists: Boolean = false,
+    private val failCopySources: Set<String> = emptySet(),
+    private val networkFailCopySources: Set<String> = emptySet(),
+    private val remoteHashOverrides: Map<String, String> = emptyMap(),
+    private val copyThenNetworkFailSources: Set<String> = emptySet(),
+    private val copyThenCorruptAndNetworkFailSources: Set<String> = emptySet(),
+    private val copyThenServerFailSources: Set<String> = emptySet()
   ) : WebDavUploadClient {
 
     val files = initialFiles
+    private val hashes = initialFiles.mapValues { "existing-${it.value.size}" }.toMutableMap()
+    val hashesForTest: Map<String, String> get() = hashes
     val operations = mutableListOf<String>()
 
     override suspend fun getFileInfo(url: String): CloudFileInfo? {
@@ -282,6 +411,11 @@ class WebDavSafeUploaderTest {
         throw IOException("info failed")
       }
       return files[url]
+    }
+
+    override suspend fun getSha256(url: String): String {
+      operations.add("hash:$url")
+      return remoteHashOverrides[url] ?: hashes[url] ?: error("Missing hash for $url")
     }
 
     override suspend fun listFiles(url: String): List<CloudFileInfo> {
@@ -319,6 +453,7 @@ class WebDavSafeUploaderTest {
         }
         else -> {
           files[url] = cloudInfo(url, uploadedSizeOverride[url] ?: localFile.length(), uploadedTime)
+          hashes[url] = localFile.sha256()
         }
       }
     }
@@ -329,6 +464,12 @@ class WebDavSafeUploaderTest {
       overwrite: Boolean
     ) {
       operations.add("copy:$sourceUrl->$destinationUrl:$overwrite")
+      if (sourceUrl in failCopySources) {
+        throw SardineException("server copy failed", 500, "")
+      }
+      if (sourceUrl in networkFailCopySources) {
+        throw IOException("network copy failed")
+      }
       if (
         copyConflictWhenDestinationExists &&
         destinationUrl == originUrl &&
@@ -343,11 +484,44 @@ class WebDavSafeUploaderTest {
         time = source.serviceModifyDate.time,
         isDir = source.isDir
       )
+      hashes[destinationUrl] = hashes[sourceUrl] ?: error("Missing source hash for $sourceUrl")
+      if (sourceUrl in copyThenNetworkFailSources) {
+        throw IOException("response timeout after copy")
+      }
+      if (sourceUrl in copyThenCorruptAndNetworkFailSources) {
+        files[destinationUrl] = cloudInfo(destinationUrl, size = 3, time = uploadedTime)
+        hashes[destinationUrl] = "corrupt"
+        throw IOException("response timeout after corrupt copy")
+      }
+      if (sourceUrl in copyThenServerFailSources) {
+        files[destinationUrl] = cloudInfo(destinationUrl, size = 3, time = uploadedTime)
+        hashes[destinationUrl] = "corrupt"
+        throw SardineException("server failed after partial copy", 500, "")
+      }
     }
 
     override suspend fun delete(url: String) {
       operations.add("delete:$url")
       files.remove(url)
+      hashes.remove(url)
     }
+
+    override suspend fun move(sourceUrl: String, destinationUrl: String, overwrite: Boolean) {
+      operations.add("move:$sourceUrl->$destinationUrl:$overwrite")
+      val source = files.remove(sourceUrl) ?: error("Missing source for move: $sourceUrl")
+      val hash = hashes.remove(sourceUrl)
+      files[destinationUrl] = cloudInfo(
+        destinationUrl,
+        size = source.size,
+        time = source.serviceModifyDate.time,
+        isDir = source.isDir
+      )
+      if (hash != null) hashes[destinationUrl] = hash
+    }
+  }
+
+  private fun File.sha256(): String {
+    val digest = MessageDigest.getInstance("SHA-256").digest(readBytes())
+    return digest.joinToString("") { "%02x".format(it) }
   }
 }

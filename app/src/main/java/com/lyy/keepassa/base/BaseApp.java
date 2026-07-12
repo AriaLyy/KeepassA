@@ -31,6 +31,7 @@ import com.lyy.keepassa.router.ServiceRouter;
 import com.lyy.keepassa.service.feat.KpaSdkService;
 import com.lyy.keepassa.util.LanguageUtil;
 import com.lyy.keepassa.util.PrivacyAgreementConsent;
+import com.lyy.keepassa.util.cloud.merge.pending.AppForegroundState;
 import com.lyy.keepassa.view.StorageType;
 import java.util.Locale;
 
@@ -88,6 +89,7 @@ public class BaseApp extends MultiDexApplication {
     super.onCreate();
     AbsFrame.init(this);
     APP = this;
+    registerActivityLifecycleCallbacks(AppForegroundState.INSTANCE.getLifecycleCallbacks());
     handler = new Handler(Looper.getMainLooper());
     ARouter.init(this); // 尽可能早，推荐在Application中初始化
     KpaSdkService kpaSdkService = Routerfit.INSTANCE.create(ServiceRouter.class, null).getKpaSdkService();

@@ -33,6 +33,9 @@ import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.NotificationUtil
 import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
+import com.lyy.keepassa.util.cloud.merge.pending.PendingMergeResumeCoordinator
+import com.lyy.keepassa.util.cloud.merge.pending.FilePendingMergeRepository
+import com.lyy.keepassa.util.cloud.merge.pending.PendingMergeSnapshotStore
 import com.lyy.keepassa.util.cloud.OneDriveUtil
 import com.lyy.keepassa.util.cloud.WebDavUtil
 import com.lyy.keepassa.util.isCollectioned
@@ -164,6 +167,7 @@ class KdbOpenService : IProvider {
         )
         BaseApp.dbRecord = record
         BaseApp.isLocked = false
+        PendingMergeResumeCoordinator.onDatabaseUnlocked()
 
         // 保存并上传数据库到云端
         KpaUtil.kdbHandlerService.saveDbByForeground(
@@ -242,6 +246,7 @@ class KdbOpenService : IProvider {
 
       if (db != null) {
         BaseApp.isLocked = false
+        PendingMergeResumeCoordinator.onDatabaseUnlocked()
         BaseApp.KDB = db
         NotificationUtil.startDbOpenNotify(context)
         withContext(Dispatchers.IO) {
@@ -273,6 +278,11 @@ class KdbOpenService : IProvider {
     record: DbHistoryRecord,
     dbPass: String
   ): Database? {
+    val existingFile = record.getDbUri().toFile()
+    if (existingFile.isFile && hasPendingMerge(record)) {
+      Timber.w("存在待解决冲突，禁止 OneDrive 下载覆盖本地数据库")
+      return openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
+    }
     val channel = Channel<Database?>()
     var db: Database? = null
 
@@ -342,6 +352,10 @@ class KdbOpenService : IProvider {
 
     val cacheFile = record.getDbUri()
       .toFile()
+    if (cacheFile.isFile && hasPendingMerge(record)) {
+      Timber.w("存在待解决冲突，禁止 WebDAV 下载覆盖本地数据库")
+      return openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
+    }
     val cloudFileInfo = DbSynUtil.getFileInfo(record)
     if (cacheFile.exists()
       && (cloudFileInfo == null || DbSynUtil.serviceModifyTime == cloudFileInfo.serviceModifyDate)
@@ -367,6 +381,10 @@ class KdbOpenService : IProvider {
   ): Database? {
     val cacheFile = record.getDbUri()
       .toFile()
+    if (cacheFile.isFile && hasPendingMerge(record)) {
+      Timber.w("存在待解决冲突，禁止 Dropbox 下载覆盖本地数据库")
+      return openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
+    }
     if (cacheFile.exists()
       && DbSynUtil.serviceModifyTime == DbSynUtil.getFileServiceModifyTime(record)
     ) {
@@ -379,6 +397,11 @@ class KdbOpenService : IProvider {
     } else {
       openDbFile(context, record.getDbUri(), dbPass, record.getDbKeyUri(), record)
     }
+  }
+
+  private fun hasPendingMerge(record: DbHistoryRecord): Boolean {
+    val directory = File(BaseApp.APP.filesDir, PendingMergeSnapshotStore.ROOT_DIRECTORY)
+    return FilePendingMergeRepository(directory).findForDatabase(record.localDbUri) != null
   }
 
   /**
@@ -421,6 +444,9 @@ class KdbOpenService : IProvider {
         }
       }
       return db
+    } catch (e: AssertionError) {
+      HitUtil.toaskOpenDbException(java.io.IOException("Malformed or incomplete database", e))
+      Timber.e(e, "Malformed or incomplete database")
     } catch (e: Exception) {
       HitUtil.toaskOpenDbException(e)
       Timber.e(e)
