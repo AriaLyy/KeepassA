@@ -44,6 +44,8 @@ import com.lyy.keepassa.router.FragmentRouter
 import com.lyy.keepassa.util.EventBusHelper
 import com.lyy.keepassa.util.handleTopEdge
 import com.lyy.keepassa.util.loadImg
+import com.lyy.keepassa.util.cloud.merge.pending.PendingMergeNotificationManager
+import com.lyy.keepassa.util.cloud.merge.pending.PendingMergeResumeCoordinator
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import timber.log.Timber
@@ -78,6 +80,7 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
     ARouter.getInstance().inject(this)
     EventBusHelper.reg(this)
     module = ViewModelProvider(this)[LauncherModule::class.java]
+    handlePendingMergeNotificationIntent(intent)
     getAutoFillParam()
 
     module.showPrivacyAgreement(this)
@@ -93,7 +96,14 @@ class LauncherActivity : BaseActivity<ActivityLauncherBinding>() {
   override fun onNewIntent(intent: Intent?) {
     super.onNewIntent(intent)
     setIntent(intent)
+    handlePendingMergeNotificationIntent(intent)
     getAutoFillParam()
+  }
+
+  private fun handlePendingMergeNotificationIntent(intent: Intent?) {
+    if (intent?.action != PendingMergeNotificationManager.ACTION_RESOLVE_PENDING_MERGE) return
+    intent.getStringExtra(PendingMergeNotificationManager.EXTRA_PENDING_MERGE_TASK_ID)
+      ?.let(PendingMergeResumeCoordinator::onNotificationClicked)
   }
 
   private fun getAutoFillParam() {

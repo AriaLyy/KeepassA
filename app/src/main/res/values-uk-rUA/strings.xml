@@ -410,7 +410,7 @@
     <string name="webdav_host_name_hint"><![CDATA[Будь ласка, введіть своє ім\'я хосту]]></string>
     <string name="webdav_port_hint"><![CDATA[порт]]></string>
     <string name="webdav_port_name_null"><![CDATA[Ім’я хосту не може бути пустим]]></string>
-    <string name="privacy_agreement"><![CDATA[угода про конфіденційність]]></string>
+    <string name="privacy_agreement"><![CDATA[Повідомлення про конфіденційність та безпеку]]></string>
     <string name="ime_hint_open_auto_fill"><![CDATA[Увімкніть службу автозаповнення]]></string>
     <string name="please_open_proxy"><![CDATA[Через відомі мережеві причини, щоб безперебійно користуватися послугами onedrive, використовуйте відповідні мережеві інструменти]]></string>
     <string name="invalid_img"><![CDATA[Недійсне зображення]]></string>
@@ -451,4 +451,102 @@
     <string name="entry_not_found"><![CDATA[Запис не знайдено]]></string>
     <string name="hint_confirm"><![CDATA[Підтвердити пароль]]></string>
     <string name="totp"><![CDATA[TOTP]]></string>
+    <string name="auto_fill_set"><![CDATA[Налаштування автозаповнення]]></string>
+    <string name="autofill_browser_category_android"><![CDATA[Браузер AOSP]]></string>
+    <string name="autofill_browser_category_chromium"><![CDATA[Сімейство Chromium]]></string>
+    <string name="autofill_browser_category_default"><![CDATA[Консервативний]]></string>
+    <string name="autofill_browser_category_gecko"><![CDATA[Gecko (Firefox)]]></string>
+    <string name="autofill_browser_category_idm"><![CDATA[IDM]]></string>
+    <string name="autofill_browser_category_kiwi"><![CDATA[Kiwi]]></string>
+    <string name="autofill_browser_category_uc"><![CDATA[UC]]></string>
+    <string name="autofill_browser_category_yandex"><![CDATA[Yandex]]></string>
+    <string name="browser_autofill_settings_open_failed"><![CDATA[Не вдалося відкрити налаштування автозаповнення Chrome]]></string>
+    <string name="browser_autofill_settings_summary_disabled"><![CDATA[Chrome має дозволити автозаповнення від сторонніх постачальників, перш ніж веб-форми зможуть використовувати KeePassA.]]></string>
+    <string name="browser_autofill_settings_summary_enabled"><![CDATA[Chrome вже дозволяє автозаповнення від сторонніх постачальників.]]></string>
+    <string name="browser_autofill_settings_summary_unknown"><![CDATA[Відкрити налаштування автозаповнення Chrome.]]></string>
+    <string name="browser_autofill_settings_title"><![CDATA[Налаштування автозаповнення Chrome]]></string>
+    <string name="browser_third_party_autofill_settings_open_failed"><![CDATA[Не вдалося відкрити налаштування автозаповнення %1$s]]></string>
+    <string name="browser_third_party_autofill_settings_summary_disabled"><![CDATA[%1$s має дозволити автозаповнення від сторонніх постачальників, перш ніж веб-форми зможуть використовувати KeePassA.]]></string>
+    <string name="browser_third_party_autofill_settings_summary_enabled"><![CDATA[%1$s вже дозволяє автозаповнення від сторонніх постачальників.]]></string>
+    <string name="browser_third_party_autofill_settings_summary_unknown"><![CDATA[Відкрити налаштування автозаповнення %1$s.]]></string>
+    <string name="browser_third_party_autofill_settings_title"><![CDATA[Налаштування автозаповнення %1$s]]></string>
+    <string name="credential_manager_settings_fallback"><![CDATA[Ця система не підтримує прямі налаштування Диспетчера облікових даних. Шукайте «облікові дані» або «паролі» в налаштуваннях системи.]]></string>
+    <string name="credential_manager_settings_open_failed"><![CDATA[Не вдалося відкрити системні налаштування Диспетчера облікових даних.]]></string>
+    <string name="credential_manager_settings_summary"><![CDATA[Відкрити системні налаштування паролів, passkeys та постачальників облікових даних]]></string>
+    <string name="credential_manager_settings_title"><![CDATA[Диспетчер облікових даних]]></string>
+    <string name="credential_manager_settings_unsupported"><![CDATA[Ця система не підтримує KeePassA як постачальника облікових даних.]]></string>
+
+    <string name="credential_provider_unlock_title"><![CDATA[Розблокувати KeePassA]]></string>
+
+
+    <string name="credential_provider_save_title"><![CDATA[Зберегти в KeePassA]]></string>
+
+
+
+    <string name="credential_provider_no_match"><![CDATA[Немає відповідних облікових даних]]></string>
+    <string name="file_conflict_msg_download"><![CDATA[Наступні записи було змінено як локально, так і в хмарі:\n%s\nЗавантаження перезапише локальні зміни хмарною версією.]]></string>
+    <string name="file_conflict_msg_upload"><![CDATA[Наступні записи було змінено як локально, так і в хмарі:\n%s\nОберіть версію для збереження:\n· Зберегти локальну: завантажити локальні зміни, щоб перезаписати хмару\n· Зберегти хмарну: завантажити хмарну версію, щоб перезаписати цей пристрій]]></string>
+    <string name="hint_browser_third_party_autofill_mode"><![CDATA[У %1$s не ввімкнено автозаповнення від сторонніх постачальників. KeePassA не може отримувати запити на автозаповнення від %1$s, поки браузер не дозволить інші менеджери паролів.]]></string>
+    <string name="hint_chrome_autofill_third_party_mode"><![CDATA[У Chrome не ввімкнено автозаповнення від сторонніх постачальників. KeePassA не може отримувати запити на автозаповнення від Chrome, поки Chrome не дозволить інші менеджери паролів.]]></string>
+    <string name="ime_database_locked_hint"><![CDATA[Базу даних заблоковано]]></string>
+    <string name="ime_database_locked_unlock_button"><![CDATA[Розблокувати]]></string>
+    <string name="ime_search_entry_hint"><![CDATA[Пошук записів]]></string>
+    <string name="ime_search_no_entry"><![CDATA[Немає відповідних записів]]></string>
+    <string name="ime_search_select_entry_first"><![CDATA[Спочатку оберіть запис]]></string>
+    <string name="merge_binary_named_summary"><![CDATA[%1$s
+Двійкові дані, %2$d байт]]></string>
+    <string name="merge_binary_summary"><![CDATA[Двійкові дані, %1$d байт]]></string>
+    <string name="merge_conflict_progress"><![CDATA[%1$d/%2$d]]></string>
+    <string name="merge_conflict_session_expired"><![CDATA[Час сесії злиття закінчився. Виконайте синхронізацію ще раз.]]></string>
+    <string name="merge_conflict_title"><![CDATA[Вирішити конфлікти злиття]]></string>
+    <string name="merge_decision_required"><![CDATA[Для кожного поля конфлікту оберіть локальну або хмарну версію.]]></string>
+    <string name="merge_field_additional"><![CDATA[Додаткові дані]]></string>
+    <string name="merge_field_auto_type"><![CDATA[Автовведення]]></string>
+    <string name="merge_field_background_color"><![CDATA[Колір фону]]></string>
+    <string name="merge_field_cloud"><![CDATA[Хмара]]></string>
+    <string name="merge_field_creation_time"><![CDATA[Час створення]]></string>
+    <string name="merge_field_custom_data"><![CDATA[Користувацькі дані]]></string>
+    <string name="merge_field_custom_icon"><![CDATA[Користувацький значок]]></string>
+    <string name="merge_field_expire_date"><![CDATA[Термін дії]]></string>
+    <string name="merge_field_expires"><![CDATA[Спливає]]></string>
+    <string name="merge_field_foreground_color"><![CDATA[Колір переднього плану]]></string>
+    <string name="merge_field_group_default_auto_type_sequence"><![CDATA[Типова послідовність автовведення]]></string>
+    <string name="merge_field_group_enable_auto_type"><![CDATA[Увімкнути автовведення]]></string>
+    <string name="merge_field_group_enable_searching"><![CDATA[Увімкнути пошук]]></string>
+    <string name="merge_field_group_is_expanded"><![CDATA[Розгорнуто]]></string>
+    <string name="merge_field_group_last_top_visible_entry"><![CDATA[Останній верхній видимий запис]]></string>
+    <string name="merge_field_group_name"><![CDATA[Назва групи]]></string>
+    <string name="merge_field_group_notes"><![CDATA[Нотатки групи]]></string>
+    <string name="merge_field_icon"><![CDATA[Значок]]></string>
+    <string name="merge_field_internal_url"><![CDATA[Внутрішній URL]]></string>
+    <string name="merge_field_last_access_time"><![CDATA[Останній доступ]]></string>
+    <string name="merge_field_last_modification_time"><![CDATA[Остання зміна]]></string>
+    <string name="merge_field_local"><![CDATA[Локальне]]></string>
+    <string name="merge_field_location_changed"><![CDATA[Розташування змінено]]></string>
+    <string name="merge_field_override_url"><![CDATA[URL перевизначення]]></string>
+    <string name="merge_field_previous_parent_group"><![CDATA[Попередня батьківська група]]></string>
+    <string name="merge_field_quality_check"><![CDATA[Перевірка якості]]></string>
+    <string name="merge_field_result"><![CDATA[Результат]]></string>
+    <string name="merge_field_tags"><![CDATA[Мітки]]></string>
+    <string name="merge_field_usage_count"><![CDATA[Лічильник використання]]></string>
+    <string name="merge_field_uuid"><![CDATA[UUID]]></string>
+    <string name="merge_finish"><![CDATA[Готово]]></string>
+    <string name="merge_icon_summary"><![CDATA[Значок #%1$d]]></string>
+    <string name="merge_local_only_desc"><![CDATA[Позначені елементи буде видалено локально; непозначені буде збережено.]]></string>
+    <string name="merge_local_only_title"><![CDATA[Лише локальні елементи]]></string>
+    <string name="merge_next"><![CDATA[Далі]]></string>
+    <string name="merge_not_selected"><![CDATA[Не обрано]]></string>
+    <string name="merge_previous"><![CDATA[Назад]]></string>
+    <string name="merge_upload_failed_retry_next_time"><![CDATA[Локальне злиття збережено, але завантаження не вдалося. Повтор буде виконано під час наступної синхронізації.]]></string>
+
+    <string name="merge_field_whole_item"><![CDATA[Цілий елемент]]></string>
+    <string name="privacy_agreement_accept"><![CDATA[Прийняти]]></string>
+    <string name="privacy_agreement_exit"><![CDATA[Вийти з застосунку]]></string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_off"><![CDATA[Без вібрації під час використання клавіатури KeePassA]]></string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_on"><![CDATA[Легка вібрація під час використання клавіатури KeePassA]]></string>
+    <string name="set_title_ime_keyboard_haptic_feedback"><![CDATA[Вібрація клавіатури]]></string>
+    <string name="supported_browser_incompatible_suffix"><![CDATA[(несумісно)]]></string>
+    <string name="supported_browsers_dialog_title"><![CDATA[Підтримувані браузери (%1$d)]]></string>
+    <string name="supported_browsers_summary"><![CDATA[Браузери з налаштованими стратегіями автозаповнення]]></string>
+    <string name="supported_browsers_title"><![CDATA[Підтримувані браузери]]></string>
 </resources>

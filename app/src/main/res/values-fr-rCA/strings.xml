@@ -368,7 +368,7 @@ La base de données \n est chiffrée à l\'aide de AES256. Personne ne peut ouvr
     <string name="webdav_host_name_hint"><![CDATA[Veuillez entrer votre nom d\'hôte]]></string>
     <string name="webdav_port_hint"><![CDATA[port]]></string>
     <string name="webdav_port_name_null"><![CDATA[Le nom d\'hôte ne peut pas être vide]]></string>
-    <string name="privacy_agreement"><![CDATA[accord de confidentialité]]></string>
+    <string name="privacy_agreement"><![CDATA[Avis de confidentialité et de sécurité]]></string>
     <string name="ime_hint_open_auto_fill"><![CDATA[Veuillez activer le service de saisie automatique]]></string>
     <string name="please_open_proxy"><![CDATA[Pour des raisons de réseau bien connues, afin d\'utiliser les services onedrive en douceur, veuillez utiliser les outils réseau appropriés.]]></string>
     <string name="invalid_img"><![CDATA[Image invalide]]></string>
@@ -407,4 +407,128 @@ La base de données \n est chiffrée à l\'aide de AES256. Personne ne peut ouvr
     <string name="icon_select_db"><![CDATA[icône locale]]></string>
     <string name="icon_change"><![CDATA[Modifier l\'icône]]></string>
     <string name="entry_not_found"><![CDATA[Aucune entrée trouvée]]></string>
+    <string name="auto_fill_set"><![CDATA[Paramètres de remplissage automatique]]></string>
+    <string name="autofill_browser_category_android"><![CDATA[Navigateur AOSP]]></string>
+    <string name="autofill_browser_category_chromium"><![CDATA[Famille Chromium]]></string>
+    <string name="autofill_browser_category_default"><![CDATA[Conservateur]]></string>
+    <string name="autofill_browser_category_gecko"><![CDATA[Gecko (Firefox)]]></string>
+    <string name="autofill_browser_category_idm"><![CDATA[IDM]]></string>
+    <string name="autofill_browser_category_kiwi"><![CDATA[Kiwi]]></string>
+    <string name="autofill_browser_category_uc"><![CDATA[UC]]></string>
+    <string name="autofill_browser_category_yandex"><![CDATA[Yandex]]></string>
+    <string name="browser_autofill_settings_open_failed"><![CDATA[Impossible d\'ouvrir les paramètres de remplissage automatique de Chrome]]></string>
+    <string name="browser_autofill_settings_summary_disabled"><![CDATA[Chrome doit autoriser le remplissage automatique tiers avant que les formulaires Web puissent utiliser KeePassA.]]></string>
+    <string name="browser_autofill_settings_summary_enabled"><![CDATA[Chrome autorise déjà le remplissage automatique tiers.]]></string>
+    <string name="browser_autofill_settings_summary_unknown"><![CDATA[Ouvrir les paramètres de remplissage automatique de Chrome.]]></string>
+    <string name="browser_autofill_settings_title"><![CDATA[Paramètres de remplissage automatique de Chrome]]></string>
+    <string name="browser_third_party_autofill_settings_open_failed"><![CDATA[Impossible d\'ouvrir les paramètres de remplissage automatique de %1$s]]></string>
+    <string name="browser_third_party_autofill_settings_summary_disabled"><![CDATA[%1$s doit autoriser le remplissage automatique tiers avant que les formulaires Web puissent utiliser KeePassA.]]></string>
+    <string name="browser_third_party_autofill_settings_summary_enabled"><![CDATA[%1$s autorise déjà le remplissage automatique tiers.]]></string>
+    <string name="browser_third_party_autofill_settings_summary_unknown"><![CDATA[Ouvrir les paramètres de remplissage automatique de %1$s.]]></string>
+    <string name="browser_third_party_autofill_settings_title"><![CDATA[Paramètres de remplissage automatique de %1$s]]></string>
+    <string name="credential_manager_settings_fallback"><![CDATA[Ce système ne prend pas en charge les paramètres directs du Gestionnaire d\'identifiants. Recherchez « identifiants » ou « mots de passe » dans les paramètres système.]]></string>
+    <string name="credential_manager_settings_open_failed"><![CDATA[Impossible d\'ouvrir les paramètres du Gestionnaire d\'identifiants système.]]></string>
+    <string name="credential_manager_settings_summary"><![CDATA[Ouvrir les paramètres système de mots de passe, clés d\'accès et fournisseurs d\'identifiants]]></string>
+    <string name="credential_manager_settings_title"><![CDATA[Gestionnaire d\'identifiants]]></string>
+    <string name="credential_manager_settings_unsupported"><![CDATA[Ce système ne prend pas en charge KeePassA comme fournisseur d\'identifiants.]]></string>
+
+    <string name="credential_provider_unlock_title"><![CDATA[Déverrouiller KeePassA]]></string>
+
+
+    <string name="credential_provider_save_title"><![CDATA[Enregistrer dans KeePassA]]></string>
+
+
+
+    <string name="credential_provider_no_match"><![CDATA[Aucune correspondance d\'identifiant]]></string>
+
+
+
+
+    <string name="hint_confirm"><![CDATA[Confirmer le mot de passe]]></string>
+    <string name="file_conflict_msg_download"><![CDATA[Les entrées suivantes ont été modifiées à la fois localement et dans le nuage :\n%s\nLe téléchargement écrasera les modifications locales avec la version du nuage.]]></string>
+    <string name="file_conflict_msg_upload"><![CDATA[Les entrées suivantes ont été modifiées à la fois localement et dans le nuage :\n%s\nChoisissez la version à conserver :\n· Conserver local : téléverser les modifications locales pour écraser le nuage\n· Conserver le nuage : télécharger la version du nuage pour écraser cet appareil]]></string>
+    <string name="hint_browser_third_party_autofill_mode"><![CDATA[%1$s n\'a pas activé le remplissage automatique tiers. KeePassA ne peut pas recevoir les requêtes de %1$s tant que le navigateur n\'autorise pas d\'autres gestionnaires de mots de passe.]]></string>
+    <string name="hint_chrome_autofill_third_party_mode"><![CDATA[Chrome n\'a pas activé le remplissage automatique tiers. KeePassA ne peut pas recevoir les requêtes de Chrome tant que Chrome n\'autorise pas d\'autres gestionnaires de mots de passe.]]></string>
+    <string name="ime_database_locked_hint"><![CDATA[Base de données verrouillée]]></string>
+    <string name="ime_database_locked_unlock_button"><![CDATA[Déverrouiller]]></string>
+    <string name="ime_search_entry_hint"><![CDATA[Rechercher des entrées]]></string>
+    <string name="ime_search_no_entry"><![CDATA[Aucune entrée correspondante]]></string>
+    <string name="ime_search_select_entry_first"><![CDATA[Sélectionnez d\'abord une entrée]]></string>
+    <string name="merge_binary_named_summary"><![CDATA[%1$s
+Binaire, %2$d octets]]></string>
+    <string name="merge_binary_summary"><![CDATA[Binaire, %1$d octets]]></string>
+    <string name="merge_conflict_progress"><![CDATA[%1$d/%2$d]]></string>
+    <string name="merge_conflict_session_expired"><![CDATA[La session de fusion a expiré. Veuillez synchroniser à nouveau.]]></string>
+    <string name="merge_conflict_title"><![CDATA[Résoudre les conflits de fusion]]></string>
+    <string name="merge_decision_required"><![CDATA[Veuillez choisir local ou nuage pour chaque champ en conflit.]]></string>
+    <string name="merge_field_additional"><![CDATA[Données supplémentaires]]></string>
+    <string name="merge_field_auto_type"><![CDATA[Saisie automatique]]></string>
+    <string name="merge_field_background_color"><![CDATA[Couleur d\'arrière-plan]]></string>
+    <string name="merge_field_cloud"><![CDATA[Nuage]]></string>
+    <string name="merge_field_creation_time"><![CDATA[Date et heure de création]]></string>
+    <string name="merge_field_custom_data"><![CDATA[Données personnalisées]]></string>
+    <string name="merge_field_custom_icon"><![CDATA[Icône personnalisée]]></string>
+    <string name="merge_field_expire_date"><![CDATA[Date d\'expiration]]></string>
+    <string name="merge_field_expires"><![CDATA[Expire]]></string>
+    <string name="merge_field_foreground_color"><![CDATA[Couleur de premier plan]]></string>
+    <string name="merge_field_group_default_auto_type_sequence"><![CDATA[Séquence de saisie automatique par défaut]]></string>
+    <string name="merge_field_group_enable_auto_type"><![CDATA[Activer la saisie automatique]]></string>
+    <string name="merge_field_group_enable_searching"><![CDATA[Activer la recherche]]></string>
+    <string name="merge_field_group_is_expanded"><![CDATA[Développé]]></string>
+    <string name="merge_field_group_last_top_visible_entry"><![CDATA[Dernière entrée visible en haut]]></string>
+    <string name="merge_field_group_name"><![CDATA[Nom du groupe]]></string>
+    <string name="merge_field_group_notes"><![CDATA[Notes du groupe]]></string>
+    <string name="merge_field_icon"><![CDATA[Icône]]></string>
+    <string name="merge_field_internal_url"><![CDATA[URL interne]]></string>
+    <string name="merge_field_last_access_time"><![CDATA[Dernier accès]]></string>
+    <string name="merge_field_last_modification_time"><![CDATA[Dernière modification]]></string>
+    <string name="merge_field_local"><![CDATA[Local]]></string>
+    <string name="merge_field_location_changed"><![CDATA[Emplacement modifié]]></string>
+    <string name="merge_field_override_url"><![CDATA[URL de remplacement]]></string>
+    <string name="merge_field_previous_parent_group"><![CDATA[Groupe parent précédent]]></string>
+    <string name="merge_field_quality_check"><![CDATA[Vérification de qualité]]></string>
+    <string name="merge_field_result"><![CDATA[Résultat]]></string>
+    <string name="merge_field_tags"><![CDATA[Étiquettes]]></string>
+    <string name="merge_field_usage_count"><![CDATA[Compteur d\'utilisation]]></string>
+    <string name="merge_field_uuid"><![CDATA[UUID]]></string>
+    <string name="merge_finish"><![CDATA[Terminer]]></string>
+    <string name="merge_icon_summary"><![CDATA[Icône #%1$d]]></string>
+    <string name="merge_local_only_desc"><![CDATA[Les éléments cochés seront supprimés localement ; les éléments décochés seront conservés.]]></string>
+    <string name="merge_local_only_title"><![CDATA[Éléments locaux uniquement]]></string>
+    <string name="merge_next"><![CDATA[Suivant]]></string>
+    <string name="merge_not_selected"><![CDATA[Non sélectionné]]></string>
+    <string name="merge_previous"><![CDATA[Précédent]]></string>
+    <string name="merge_upload_failed_retry_next_time"><![CDATA[La fusion locale a été enregistrée, mais le téléversement a échoué. Une nouvelle tentative aura lieu lors de la prochaine synchronisation.]]></string>
+
+    <string name="merge_field_whole_item"><![CDATA[Élément complet]]></string>
+    <string name="privacy_agreement_accept"><![CDATA[Accepter]]></string>
+    <string name="privacy_agreement_content_html"><![CDATA[<big>Avis de confidentialité et de sécurité</big>
+<br/><br/>
+Avant d\'utiliser KeepassA, veuillez lire et confirmer les points suivants :
+<br/><br/>
+1. KeepassA est un gestionnaire de mots de passe compatible avec le format de base de données KeePass. Si vous n\'avez jamais utilisé de logiciel compatible KeePass ou si vous ne comprenez pas les concepts tels que fichiers de base de données, mots de passe maîtres, fichiers de clés et sauvegardes, renseignez-vous sur ces risques avant d\'utiliser cette application.
+<br/><br/>
+2. Sécurisez votre fichier de base de données, votre mot de passe maître, votre fichier de clés et vos identifiants de déverrouillage. Ne partagez avec personne le mot de passe de la base de données, le fichier de clés ou les identifiants de déverrouillage. En cas de fuite, des tiers pourraient accéder à vos données de mots de passe, et le développeur ne peut pas les récupérer ni les réinitialiser.
+<br/><br/>
+3. Cette application n\'exploite pas son propre serveur. Le développeur ne téléverse, ne collecte, ne stocke ni n\'accède à votre fichier de base de données, mot de passe maître, contenu des entrées, pièces jointes ou fichier de clés. Votre base de données est stockée uniquement sur votre appareil ou dans un service de stockage distant que vous choisissez et configurez vous-même, tel que WebDAV, FTP, Dropbox ou OneDrive.
+<br/><br/>
+4. Si vous activez la synchronisation ou la sauvegarde distante, choisissez un fournisseur de stockage de confiance et assurez-vous que votre compte, votre environnement réseau et vos droits d\'accès sont sécurisés. Par exemple, avec WebDAV, utilisez un fournisseur de confiance et évitez les services provenant de sources inconnues ou non fiables.
+<br/><br/>
+5. Lors de la configuration du stockage distant, cette application peut avoir besoin de l\'autorisation de compte, de l\'adresse du serveur, du nom d\'utilisateur, du jeton ou du mot de passe que vous fournissez pour se connecter au service de stockage choisi. Ces identifiants sont uniquement utilisés pour les fonctions de synchronisation ou de sauvegarde que vous choisissez. Le développeur ne reçoit ni votre base de données ni vos identifiants de stockage distant.
+<br/><br/>
+6. Après votre acceptation, cette application peut initialiser Firebase Crashlytics, un service de rapports de plantage fourni par Google Firebase. Crashlytics est utilisé uniquement pour diagnostiquer les plantages de l\'application et améliorer la stabilité. Les rapports de plantage peuvent inclure le modèle de l\'appareil, la version du système d\'exploitation, la version de l\'application, les traces de pile, les identifiants d\'installation Crashlytics, les journaux d\'erreurs et d\'autres informations de diagnostic liées au plantage. Crashlytics n\'est pas utilisé pour collecter délibérément votre fichier de base de données, votre mot de passe maître, votre fichier de clés, le contenu de vos entrées ou vos pièces jointes.
+<br/><br/>
+7. Cette application est open source et son code source peut être consulté par tout le monde. Pour réduire le risque d\'installer une version modifiée ou non sécurisée, téléchargez cette application depuis Google Play ou un canal de publication officiel du projet et évitez d\'installer des versions provenant de sources inconnues.
+<br/><br/>
+8. Cette application est un outil local de gestion de base de données de mots de passe. Vous êtes responsable de la gestion de votre fichier de base de données, de votre mot de passe maître, de votre fichier de clés, de la sécurité de votre appareil, de votre compte de stockage distant et de votre stratégie de sauvegarde. Le développeur ne peut pas récupérer les données perdues en raison de mots de passe oubliés, d\'identifiants divulgués, d\'appareils perdus, de problèmes de services de stockage tiers ou de versions non officielles modifiées.
+<br/><br/>
+En appuyant sur « Accepter », vous confirmez avoir lu et compris cet avis et acceptez de continuer à utiliser cette application.]]></string>
+    <string name="privacy_agreement_exit"><![CDATA[Quitter l\'application]]></string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_off"><![CDATA[Ne pas vibrer lors de l\'utilisation du clavier KeePassA]]></string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_on"><![CDATA[Vibrer légèrement lors de l\'utilisation du clavier KeePassA]]></string>
+    <string name="set_title_ime_keyboard_haptic_feedback"><![CDATA[Vibrations du clavier]]></string>
+    <string name="supported_browser_incompatible_suffix"><![CDATA[(incompatible)]]></string>
+    <string name="supported_browsers_dialog_title"><![CDATA[Navigateurs pris en charge (%1$d)]]></string>
+    <string name="supported_browsers_summary"><![CDATA[Navigateurs avec stratégies de remplissage automatique adaptées]]></string>
+    <string name="supported_browsers_title"><![CDATA[Navigateurs pris en charge]]></string>
 </resources>

@@ -8,6 +8,8 @@
 package com.lyy.keepassa.service.feat
 
 import android.content.Context
+import android.net.Uri
+import android.content.ContextWrapper
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.facade.template.IProvider
 import com.arialyy.frame.router.Routerfit
@@ -19,6 +21,7 @@ import com.keepassdroid.database.PwGroupV4
 import com.keepassdroid.database.PwIconCustom
 import com.keepassdroid.database.PwIconStandard
 import com.keepassdroid.database.helper.KDBHandlerHelper
+import com.keepassdroid.Database
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.event.CollectionEvent
 import com.lyy.keepassa.event.CollectionEventType
@@ -33,11 +36,17 @@ import com.lyy.keepassa.event.EntryStateChangeEvent
 import com.lyy.keepassa.event.GroupStateChangeEvent
 import com.lyy.keepassa.router.DialogRouter
 import com.lyy.keepassa.util.KdbUtil.isNull
+import com.lyy.keepassa.util.QuickUnLockUtil
 import com.lyy.keepassa.util.cloud.DbSynUtil
+import com.lyy.keepassa.util.cloud.interceptor.MergeInteractionMode
+import com.lyy.keepassa.util.cloud.interceptor.DbSyncResponse
+import com.lyy.keepassa.util.cloud.merge.MergeConflictSessionStore
 import com.lyy.keepassa.util.setCollection
 import com.lyy.keepassa.view.dialog.LoadingDialog
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,6 +56,15 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.concurrent.atomic.AtomicInteger
+import java.io.File
+import java.util.concurrent.atomic.AtomicBoolean
+
+internal data class SaveTransactionResult(
+  val code: Int,
+  val snapshot: SavedDatabaseSnapshot? = null
+)
+
+enum class MutationOrigin { LOCAL, CLOUD }
 
 /**
  * @Author laoyuyu
@@ -61,6 +79,14 @@ class KdbHandlerService : IProvider {
 
   private var scope = MainScope()
   private var collectionNum = AtomicInteger(0)
+  private val syncRevision by lazy {
+    SyncRevisionCoordinator(SharedPreferencesSyncRevisionRepository(BaseApp.APP))
+  }
+
+  fun markLocalChange(): Long {
+    val databaseId = BaseApp.dbRecord?.localDbUri ?: return 0
+    return syncRevision.localChanged(databaseId)
+  }
 
   /**
    * collection state flow
@@ -112,6 +138,7 @@ class KdbHandlerService : IProvider {
    */
   fun collection(pwEntryV4: PwEntryV4, collection: Boolean) {
     pwEntryV4.setCollection(collection)
+    markLocalChange()
     if (collection) {
       collectionEntries.add(pwEntryV4)
     } else {
@@ -169,6 +196,7 @@ class KdbHandlerService : IProvider {
           kdbHelper.deleteGroup(BaseApp.KDB, pwGroup, true)
         }
       }
+      markLocalChange()
       callback.invoke()
       groupStateChangeFlow.emit(GroupStateChangeEvent(DELETE, pwGroup, oldParent))
     }
@@ -180,6 +208,7 @@ class KdbHandlerService : IProvider {
   fun updateEntryStatus(v4Entry: PwEntryV4) {
     scope.launch {
       v4Entry.touch(true, true)
+      markLocalChange()
       entryStateChangeFlow.emit(
         EntryStateChangeEvent(
           MODIFY,
@@ -206,6 +235,7 @@ class KdbHandlerService : IProvider {
           (BaseApp.KDB.pm as PwDatabaseV4).moveEntry(v4Entry, targetParent)
         }
       }
+      markLocalChange()
       entryStateChangeFlow.emit(
         EntryStateChangeEvent(
           MOVE,
@@ -225,6 +255,7 @@ class KdbHandlerService : IProvider {
       withContext(Dispatchers.IO) {
         kdbHelper.deleteEntry(BaseApp.KDB, v4Entry, true)
       }
+      markLocalChange()
       callback.invoke()
       entryStateChangeFlow.emit(EntryStateChangeEvent(DELETE, v4Entry, parent))
     }
@@ -250,6 +281,7 @@ class KdbHandlerService : IProvider {
         }
       }
 
+      markLocalChange()
       callback.invoke()
       groupStateChangeFlow.emit(GroupStateChangeEvent(MODIFY, self))
     }
@@ -280,6 +312,7 @@ class KdbHandlerService : IProvider {
 
         return@withContext group
       }
+      markLocalChange()
       callback.invoke(tempGroup)
       groupStateChangeFlow.emit(GroupStateChangeEvent(CREATE, tempGroup, null))
     }
@@ -291,17 +324,69 @@ class KdbHandlerService : IProvider {
   fun createGroup(group: PwGroup) {
     kdbHelper
       .createGroup(BaseApp.KDB, group.name, group.icon, group.parent)
+    markLocalChange()
   }
 
   fun addGroup(group: PwGroupV4) {
-    BaseApp.KDB?.pm?.addGroupTo(group, group.parent)
+    BaseApp.KDB?.pm?.let { addGroup(group, it) }
+  }
+
+  private val mergeCompletionLoading = AtomicBoolean(false)
+
+  fun showMergeCompletionLoading() {
+    mergeCompletionLoading.set(true)
+    showLoading()
+  }
+
+  fun dismissMergeCompletionLoading() {
+    if (mergeCompletionLoading.compareAndSet(true, false)) {
+      dismissLoading()
+    }
+  }
+
+  suspend fun runForegroundUploadWithLoading(
+    upload: suspend () -> DbSyncResponse
+  ): DbSyncResponse {
+    withContext(Dispatchers.Main) {
+      if (!loadingDialog.isVisible) loadingDialog.show()
+    }
+    var responseCode = DbSynUtil.STATE_FAIL
+    return try {
+      upload().also { responseCode = it.code }
+    } finally {
+      MergeConflictSessionStore.completeResolvedSessions(responseCode)
+      withContext(NonCancellable + Dispatchers.Main) {
+        loadingDialog.dismiss(0)
+      }
+    }
+  }
+
+  fun addGroup(
+    group: PwGroupV4,
+    database: PwDatabase,
+    origin: MutationOrigin = MutationOrigin.LOCAL
+  ) {
+    database.addGroupTo(group, group.parent)
+    (database as? PwDatabaseV4)?.let { target -> registerGroupReference(group, target) }
+    if (origin == MutationOrigin.LOCAL) markLocalChange()
   }
 
   /**
    * add new entry
    */
   fun createEntry(entry: PwEntryV4, parent: PwGroup? = null) {
-    BaseApp.KDB!!.pm.addEntryTo(entry, parent ?: entry.parent)
+    createEntry(entry, parent, BaseApp.KDB!!.pm)
+  }
+
+  fun createEntry(
+    entry: PwEntryV4,
+    parent: PwGroup? = null,
+    database: PwDatabase,
+    origin: MutationOrigin = MutationOrigin.LOCAL
+  ) {
+    database.addEntryTo(entry, parent ?: entry.parent)
+    (database as? PwDatabaseV4)?.let { target -> registerEntryReferences(entry, target) }
+    if (origin == MutationOrigin.LOCAL) markLocalChange()
     scope.launch {
       entryStateChangeFlow.emit(EntryStateChangeEvent(CREATE, entry))
     }
@@ -312,6 +397,7 @@ class KdbHandlerService : IProvider {
    */
   fun addEntryTo(entry: PwEntryV4, parent: PwGroup) {
     BaseApp.KDB!!.pm.addEntryTo(entry, parent)
+    markLocalChange()
   }
 
   suspend fun saveOnly(needShowLoading: Boolean = false, callback: (Int) -> Unit) {
@@ -342,36 +428,162 @@ class KdbHandlerService : IProvider {
     Timber.d("start save db by background")
     if (BaseApp.KDB.isNull()) {
       Timber.d("db is null")
+      callback.invoke(DbSynUtil.STATE_SAVE_DB_FAIL)
       return
     }
     if (BaseApp.isLocked) {
       Timber.d("db is locked")
+      callback.invoke(DbSynUtil.STATE_CANCEL)
+      return
+    }
+    val databaseId = BaseApp.dbRecord?.localDbUri.orEmpty()
+    val needsUpload = databaseId.isNotEmpty() && syncRevision.needsUpload(databaseId)
+    if (uploadDb && !BackgroundSavePolicy.shouldSave(needsUpload || BaseApp.KDB!!.dirty.isNotEmpty())) {
+      Timber.d("database has no unsaved changes, skip background save and upload")
+      callback.invoke(DbSynUtil.STATE_SUCCEED)
       return
     }
     scope.launch(Dispatchers.IO) {
-      mutex.withLock {
-        BaseApp.KDB?.let { kdb ->
-          val b = kdbHelper.save(kdb)
-          Timber.d("保存后的数据库hash：${kdb.hashCode()}，num = ${kdb.pm?.entries?.size ?: 0}")
+      val code = try {
+        if (uploadDb) {
           delay(1000)
-          if (uploadDb) {
-            val response = DbSynUtil.uploadSyn(BaseApp.dbRecord!!, false)
-            Timber.i(response.msg)
-
-            withContext(Dispatchers.Main) {
-              callback.invoke(response.code)
-            }
-            entryStateChangeFlow.emit(EntryStateChangeEvent(SAVE))
-            return@withLock
-          }
-          val code = if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
-          withContext(Dispatchers.Main) {
-            callback.invoke(code)
-          }
-          entryStateChangeFlow.emit(EntryStateChangeEvent(SAVE))
+          val response = saveAndUploadSnapshot(
+            isCreate = false,
+            mergeInteractionMode = MergeInteractionMode.BACKGROUND
+          )
+          Timber.i(response.msg)
+          response.code
+        } else {
+          saveDbAwait()
         }
-
+      } catch (error: CancellationException) {
+        withContext(NonCancellable + Dispatchers.Main) {
+          callback.invoke(DbSynUtil.STATE_CANCEL)
+        }
+        throw error
+      } catch (error: Exception) {
+        Timber.e(error, "后台保存上传失败")
+        DbSynUtil.STATE_FAIL
       }
+      withContext(NonCancellable + Dispatchers.Main) {
+        callback.invoke(code)
+      }
+      if (code != DbSynUtil.STATE_CANCEL) {
+        entryStateChangeFlow.emit(EntryStateChangeEvent(SAVE))
+      }
+    }
+  }
+
+  suspend fun saveDbAwait(): Int {
+    return saveDbTransactionAwait(createSnapshot = false).code
+  }
+
+  private suspend fun saveDbTransactionAwait(createSnapshot: Boolean): SaveTransactionResult {
+    return mutex.withLock {
+      val kdb = BaseApp.KDB
+        ?: return@withLock SaveTransactionResult(DbSynUtil.STATE_SAVE_DB_FAIL)
+      val databaseFile = BaseApp.dbRecord?.getDbUri()?.takeIf { it.scheme == "file" }?.path?.let(::File)
+      val saved = withContext(Dispatchers.IO) {
+        if (databaseFile == null) {
+          kdbHelper.save(kdb)
+        } else {
+          LocalDatabaseSaveGuard().save(
+            database = databaseFile,
+            write = { kdbHelper.save(kdb) },
+            validate = { validateSavedDatabase(databaseFile) }
+          )
+        }
+      }
+      Timber.d("保存后的数据库hash：${kdb.hashCode()}，num = ${kdb.pm?.entries?.size ?: 0}")
+      if (!saved) return@withLock SaveTransactionResult(DbSynUtil.STATE_SAVE_DB_FAIL)
+      if (!createSnapshot || databaseFile == null) {
+        return@withLock SaveTransactionResult(DbSynUtil.STATE_SUCCEED)
+      }
+      val databaseId = BaseApp.dbRecord?.localDbUri.orEmpty()
+      val revision = syncRevision.captureUploadRevision(databaseId)
+      val store = SavedDatabaseSnapshotStore(File(BaseApp.APP.cacheDir, "saved_database_snapshots"))
+      SaveTransactionResult(DbSynUtil.STATE_SUCCEED, store.create(databaseFile, revision))
+    }
+  }
+
+  private suspend fun saveAndUploadSnapshot(
+    isCreate: Boolean,
+    mergeInteractionMode: MergeInteractionMode,
+    onMergeFailed: ((Int) -> Unit)? = null
+  ): com.lyy.keepassa.util.cloud.interceptor.DbSyncResponse {
+    val transaction = saveDbTransactionAwait(createSnapshot = true)
+    val snapshot = transaction.snapshot
+      ?: return com.lyy.keepassa.util.cloud.interceptor.DbSyncResponse(
+        transaction.code,
+        "save database failed"
+      )
+    val store = SavedDatabaseSnapshotStore(File(BaseApp.APP.cacheDir, "saved_database_snapshots"))
+    val response = SavedSnapshotUploadSequence.run(
+      snapshot = snapshot,
+      upload = { frozen ->
+        val record = BaseApp.dbRecord
+          ?: return@run com.lyy.keepassa.util.cloud.interceptor.DbSyncResponse(
+            DbSynUtil.STATE_SAVE_DB_FAIL,
+            "database record missing"
+          )
+        DbSynUtil.uploadSyn(
+          record.copy(localDbUri = Uri.fromFile(frozen.file).toString()),
+          isCreate,
+          onMergeFailed,
+          mergeInteractionMode
+        )
+      },
+      cleanup = store::delete
+    )
+    if (response.code == DbSynUtil.STATE_SUCCEED) {
+      val databaseId = BaseApp.dbRecord?.localDbUri.orEmpty()
+      if (databaseId.isNotEmpty()) {
+        syncRevision.uploadSucceeded(databaseId, snapshot.revision)
+      }
+    }
+    return response
+  }
+
+  private fun validateSavedDatabase(databaseFile: File): Boolean {
+    return try {
+      TemporaryValidationWorkspace(File(BaseApp.APP.cacheDir, "save_validation")).use { directory ->
+        val validationContext = object : ContextWrapper(BaseApp.APP) {
+          override fun getFilesDir(): File = directory
+        }
+        val verified = Database().apply {
+          LoadDataStrict(
+            validationContext,
+            Uri.fromFile(databaseFile),
+            QuickUnLockUtil.decryption(BaseApp.dbPass),
+            BaseApp.dbKeyPath.takeIf { it.isNotEmpty() }
+              ?.let(QuickUnLockUtil::decryption)
+              ?.let(Uri::parse)
+          )
+        }
+        val valid = verified.pm != null
+        verified.clear(validationContext)
+        if (!valid) Timber.e("保存后的数据库无法重新打开，已拒绝该保存结果")
+        valid
+      }
+    } catch (error: CancellationException) {
+      throw error
+    } catch (error: Exception) {
+      Timber.e(error, "保存后的数据库验证失败，已恢复保存前文件")
+      false
+    }
+  }
+
+  private fun registerEntryReferences(entry: PwEntryV4, database: PwDatabaseV4) {
+    entry.binaries.values.forEach(database.binPool::poolAdd)
+    entry.customIcon?.takeIf(CustomIconSavePolicy::isSerializable)?.let { icon ->
+      if (icon !in database.customIcons) database.customIcons.add(icon)
+    }
+    entry.history.filterIsInstance<PwEntryV4>().forEach { registerEntryReferences(it, database) }
+  }
+
+  private fun registerGroupReference(group: PwGroupV4, database: PwDatabaseV4) {
+    group.customIcon?.takeIf(CustomIconSavePolicy::isSerializable)?.let { icon ->
+      if (icon !in database.customIcons) database.customIcons.add(icon)
     }
   }
 
@@ -390,33 +602,42 @@ class KdbHandlerService : IProvider {
   ) {
     Timber.d("saveDbByForeground")
     scope.launch(Dispatchers.Main) {
-      mutex.withLock {
-        Timber.d("保存前的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
-        val b = withContext(Dispatchers.IO) {
-          return@withContext kdbHelper.save(BaseApp.KDB)
-        }
-        Timber.d("保存后的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
-        if (uploadDb) {
-          val startTime = System.currentTimeMillis()
-          if (needShowLoading) {
-            showLoading()
+      Timber.d("保存前的数据库hash：${BaseApp.KDB.hashCode()}，num = ${BaseApp.KDB!!.pm.entries.size}")
+      if (uploadDb) {
+        ForegroundSaveUploadFlow.run(
+          needShowLoading = needShowLoading,
+          minLoadingMs = MIN_TIME,
+          showLoading = { showLoading() },
+          dismissLoading = { dismissLoading(it) },
+          upload = { onMergeFailed ->
+            withContext(Dispatchers.IO) {
+              saveAndUploadSnapshot(
+                isCreate = isCreate,
+                mergeInteractionMode = MergeInteractionMode.FOREGROUND,
+                onMergeFailed = onMergeFailed
+              )
+            }
+          },
+          callback = { code ->
+            callback(code)
+          },
+          emitSave = {
+            entryStateChangeFlow.emit(EntryStateChangeEvent(SAVE))
           }
-          val response = withContext(Dispatchers.IO) {
-            return@withContext DbSynUtil.uploadSyn(BaseApp.dbRecord!!, isCreate)
-          }
-          Timber.i(response.msg)
-          val endTime = System.currentTimeMillis()
-          if (needShowLoading) {
-            dismissLoading(if ((endTime - startTime) < MIN_TIME) MIN_TIME else 0L)
-          }
-          callback.invoke(response.code)
-          entryStateChangeFlow.emit(EntryStateChangeEvent(SAVE))
-          return@launch
-        }
-        val code = if (b) DbSynUtil.STATE_SUCCEED else DbSynUtil.STATE_SAVE_DB_FAIL
-        callback.invoke(code)
-        entryStateChangeFlow.emit(EntryStateChangeEvent(SAVE))
+        )
+        return@launch
       }
+      ForegroundSaveUploadFlow.runLocalSave(
+        needShowLoading = needShowLoading,
+        minLoadingMs = MIN_TIME,
+        showLoading = { showLoading() },
+        dismissLoading = { dismissLoading(it) },
+        save = { saveDbAwait() },
+        callback = callback,
+        emitSave = {
+          entryStateChangeFlow.emit(EntryStateChangeEvent(SAVE))
+        }
+      )
     }
   }
 

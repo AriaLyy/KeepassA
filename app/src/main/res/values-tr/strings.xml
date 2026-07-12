@@ -263,7 +263,7 @@
     <string name="set_key_value"><![CDATA[Dil seçin]]></string>
     <string name="dropbox_msg"><![CDATA[In line with the principle of respecting user privacy, KeePassA will not ask for permission to access all your Dropbox files. KeePassA<font color=#FF0000> only accesses the [Application/KeePassA] folder </font>. <br /> Dolayısıyla: <br /> <b> Zaten bir KeePass veritabanınız varsa, o zaman KeePassA\'deki [Application/KeePassA] klasörüne erişmek için önce KeePassA\'i yetkilendirmeniz ve yetkilendirme tamamlandıktan sonra KeePass veritabanını [Application/KeePassA] klasörüne kaydetmeniz gerekir. </b><br/><br /> If you are creating a new KeepPass database, you do not need the above operation. Veritabanını oluşturduktan sonra, KeePassA otomatik olarak ilgili klasörü oluşturacak ve veritabanını Dropbox\'nin [Application/KeePassA] dizinine yükleyecektir.]]></string>
     <string name="cover"><![CDATA[Kapak]]></string>
-    <string name="file_conflict_msg"><![CDATA[There is a conflict between cloud data and local data. Lütfen üzerine yazma yöntemini seçin. The conflicting entries are: \n %s]]></string>
+    <string name="file_conflict_msg"><![CDATA[Bulut verileri ile yerel veriler arasında bir çatışma var. Lütfen üzerine yazma yöntemini seçin. Çatışan girişler şunlardır: \n %s]]></string>
     <string name="cover_local"><![CDATA[yerel]]></string>
     <string name="cover_cloud"><![CDATA[Cloud]]></string>
     <string name="merge"><![CDATA[merge]]></string>
@@ -410,7 +410,7 @@
     <string name="webdav_host_name_hint"><![CDATA[Lütfen ana makine adınızı girin]]></string>
     <string name="webdav_port_hint"><![CDATA[port]]></string>
     <string name="webdav_port_name_null"><![CDATA[Hostname cannot be empty]]></string>
-    <string name="privacy_agreement"><![CDATA[privacy agreement]]></string>
+    <string name="privacy_agreement"><![CDATA[Gizlilik ve Güvenlik Bildirimi]]></string>
     <string name="ime_hint_open_auto_fill"><![CDATA[Lütfen otomatik doldurma hizmetini açın]]></string>
     <string name="please_open_proxy"><![CDATA[Due to well-known network reasons, in order to use onedrive services smoothly, please use appropriate network tools]]></string>
     <string name="invalid_img"><![CDATA[Invalid image]]></string>
@@ -452,4 +452,102 @@
     <string name="hint_confirm"><![CDATA[Parolayı onayla]]></string>
     <string name="totp"><![CDATA[TOTP]]></string>
     <string name="hint_bracket_char"><![CDATA[()<>{}[]]]></string>
+    <string name="auto_fill_set"><![CDATA[Otomatik doldurma ayarları]]></string>
+    <string name="autofill_browser_category_android"><![CDATA[AOSP tarayıcı]]></string>
+    <string name="autofill_browser_category_chromium"><![CDATA[Chromium ailesi]]></string>
+    <string name="autofill_browser_category_default"><![CDATA[Muhafazakâr]]></string>
+    <string name="autofill_browser_category_gecko"><![CDATA[Gecko (Firefox)]]></string>
+    <string name="autofill_browser_category_idm"><![CDATA[IDM]]></string>
+    <string name="autofill_browser_category_kiwi"><![CDATA[Kiwi]]></string>
+    <string name="autofill_browser_category_uc"><![CDATA[UC]]></string>
+    <string name="autofill_browser_category_yandex"><![CDATA[Yandex]]></string>
+    <string name="browser_autofill_settings_open_failed"><![CDATA[Chrome otomatik doldurma ayarları açılamadı]]></string>
+    <string name="browser_autofill_settings_summary_disabled"><![CDATA[Web formları KeePassA\'yı kullanmadan önce Chrome üçüncü taraf otomatik doldurmaya izin vermelidir.]]></string>
+    <string name="browser_autofill_settings_summary_enabled"><![CDATA[Chrome zaten üçüncü taraf otomatik doldurmaya izin veriyor.]]></string>
+    <string name="browser_autofill_settings_summary_unknown"><![CDATA[Chrome otomatik doldurma ayarlarını açın.]]></string>
+    <string name="browser_autofill_settings_title"><![CDATA[Chrome otomatik doldurma ayarları]]></string>
+    <string name="browser_third_party_autofill_settings_open_failed"><![CDATA[%1$s otomatik doldurma ayarları açılamadı]]></string>
+    <string name="browser_third_party_autofill_settings_summary_disabled"><![CDATA[Web formları KeePassA\'yı kullanmadan önce %1$s üçüncü taraf otomatik doldurmaya izin vermelidir.]]></string>
+    <string name="browser_third_party_autofill_settings_summary_enabled"><![CDATA[%1$s zaten üçüncü taraf otomatik doldurmaya izin veriyor.]]></string>
+    <string name="browser_third_party_autofill_settings_summary_unknown"><![CDATA[%1$s otomatik doldurma ayarlarını açın.]]></string>
+    <string name="browser_third_party_autofill_settings_title"><![CDATA[%1$s otomatik doldurma ayarları]]></string>
+    <string name="credential_manager_settings_fallback"><![CDATA[Bu sistem doğrudan Kimlik Bilgisi Yöneticisi ayarlarını desteklemiyor. Sistem ayarlarında «kimlik bilgileri» veya «şifreler» ifadelerini arayın.]]></string>
+    <string name="credential_manager_settings_open_failed"><![CDATA[Sistem Kimlik Bilgisi Yöneticisi ayarları açılamadı.]]></string>
+    <string name="credential_manager_settings_summary"><![CDATA[Şifre, passkey ve kimlik bilgisi sağlayıcıları sistem ayarlarını aç]]></string>
+    <string name="credential_manager_settings_title"><![CDATA[Kimlik Bilgisi Yöneticisi]]></string>
+    <string name="credential_manager_settings_unsupported"><![CDATA[Bu sistem KeePassA\'yı kimlik bilgisi sağlayıcısı olarak desteklemiyor.]]></string>
+
+    <string name="credential_provider_unlock_title"><![CDATA[KeePassA kilidini aç]]></string>
+
+
+    <string name="credential_provider_save_title"><![CDATA[KeePassA\'ya kaydet]]></string>
+
+
+
+    <string name="credential_provider_no_match"><![CDATA[Eşleşen kimlik bilgisi yok]]></string>
+    <string name="file_conflict_msg_download"><![CDATA[Aşağıdaki girişler hem yerel hem de bulutta değiştirildi:\n%s\nİndirme işlemi yerel değişiklikleri bulut sürümüyle üzerine yazacaktır.]]></string>
+    <string name="file_conflict_msg_upload"><![CDATA[Aşağıdaki girişler hem yerel hem de bulutta değiştirildi:\n%s\nHangi sürümün tutulacağını seçin:\n· Yereli tut: yerel değişiklikleri yükleyip bulutu üzerine yaz\n· Bulutu tut: bulut sürümünü indirip bu cihazın üzerine yaz]]></string>
+    <string name="hint_browser_third_party_autofill_mode"><![CDATA[%1$s üçüncü taraf otomatik doldurmayı etkinleştirmedi. Tarayıcı diğer şifre yöneticilerine izin verene kadar KeePassA, %1$s otomatik doldurma isteklerini alamaz.]]></string>
+    <string name="hint_chrome_autofill_third_party_mode"><![CDATA[Chrome üçüncü taraf otomatik doldurmayı etkinleştirmedi. Chrome diğer şifre yöneticilerine izin verene kadar KeePassA, Chrome otomatik doldurma isteklerini alamaz.]]></string>
+    <string name="ime_database_locked_hint"><![CDATA[Veritabanı kilitli]]></string>
+    <string name="ime_database_locked_unlock_button"><![CDATA[Kilidi aç]]></string>
+    <string name="ime_search_entry_hint"><![CDATA[Girişleri ara]]></string>
+    <string name="ime_search_no_entry"><![CDATA[Eşleşen giriş yok]]></string>
+    <string name="ime_search_select_entry_first"><![CDATA[Önce bir giriş seçin]]></string>
+    <string name="merge_binary_named_summary"><![CDATA[%1$s
+İkili dosya, %2$d bayt]]></string>
+    <string name="merge_binary_summary"><![CDATA[İkili dosya, %1$d bayt]]></string>
+    <string name="merge_conflict_progress"><![CDATA[%1$d/%2$d]]></string>
+    <string name="merge_conflict_session_expired"><![CDATA[Birleştirme oturumu sona erdi. Lütfen tekrar senkronize edin.]]></string>
+    <string name="merge_conflict_title"><![CDATA[Birleştirme çatışmalarını çöz]]></string>
+    <string name="merge_decision_required"><![CDATA[Lütfen her çatışma alanı için yerel veya bulut seçin.]]></string>
+    <string name="merge_field_additional"><![CDATA[Ek veriler]]></string>
+    <string name="merge_field_auto_type"><![CDATA[Otomatik yazma]]></string>
+    <string name="merge_field_background_color"><![CDATA[Arka plan rengi]]></string>
+    <string name="merge_field_cloud"><![CDATA[Bulut]]></string>
+    <string name="merge_field_creation_time"><![CDATA[Oluşturma zamanı]]></string>
+    <string name="merge_field_custom_data"><![CDATA[Özel veriler]]></string>
+    <string name="merge_field_custom_icon"><![CDATA[Özel simge]]></string>
+    <string name="merge_field_expire_date"><![CDATA[Son kullanma tarihi]]></string>
+    <string name="merge_field_expires"><![CDATA[Süre doluyor]]></string>
+    <string name="merge_field_foreground_color"><![CDATA[Ön plan rengi]]></string>
+    <string name="merge_field_group_default_auto_type_sequence"><![CDATA[Varsayılan otomatik yazma dizisi]]></string>
+    <string name="merge_field_group_enable_auto_type"><![CDATA[Otomatik yazmayı etkinleştir]]></string>
+    <string name="merge_field_group_enable_searching"><![CDATA[Aramayı etkinleştir]]></string>
+    <string name="merge_field_group_is_expanded"><![CDATA[Genişletilmiş]]></string>
+    <string name="merge_field_group_last_top_visible_entry"><![CDATA[Son üstte görünür giriş]]></string>
+    <string name="merge_field_group_name"><![CDATA[Grup adı]]></string>
+    <string name="merge_field_group_notes"><![CDATA[Grup notları]]></string>
+    <string name="merge_field_icon"><![CDATA[Simge]]></string>
+    <string name="merge_field_internal_url"><![CDATA[Dahili URL]]></string>
+    <string name="merge_field_last_access_time"><![CDATA[Son erişim]]></string>
+    <string name="merge_field_last_modification_time"><![CDATA[Son değişiklik]]></string>
+    <string name="merge_field_local"><![CDATA[Yerel]]></string>
+    <string name="merge_field_location_changed"><![CDATA[Konum değişti]]></string>
+    <string name="merge_field_override_url"><![CDATA[Geçersiz kılma URL\'si]]></string>
+    <string name="merge_field_previous_parent_group"><![CDATA[Önceki üst grup]]></string>
+    <string name="merge_field_quality_check"><![CDATA[Kalite kontrolü]]></string>
+    <string name="merge_field_result"><![CDATA[Sonuç]]></string>
+    <string name="merge_field_tags"><![CDATA[Etiketler]]></string>
+    <string name="merge_field_usage_count"><![CDATA[Kullanım sayısı]]></string>
+    <string name="merge_field_uuid"><![CDATA[UUID]]></string>
+    <string name="merge_finish"><![CDATA[Bitir]]></string>
+    <string name="merge_icon_summary"><![CDATA[Simge #%1$d]]></string>
+    <string name="merge_local_only_desc"><![CDATA[İşaretli öğeler yerel olarak silinecek; işareti kaldırılan öğeler tutulacaktır.]]></string>
+    <string name="merge_local_only_title"><![CDATA[Yalnızca yerel öğeler]]></string>
+    <string name="merge_next"><![CDATA[İleri]]></string>
+    <string name="merge_not_selected"><![CDATA[Seçilmedi]]></string>
+    <string name="merge_previous"><![CDATA[Geri]]></string>
+    <string name="merge_upload_failed_retry_next_time"><![CDATA[Yerel birleştirme kaydedildi, ancak yükleme başarısız oldu. Bir sonraki senkronizasyonda tekrar denenecek.]]></string>
+
+    <string name="merge_field_whole_item"><![CDATA[Tüm öğe]]></string>
+    <string name="privacy_agreement_accept"><![CDATA[Kabul et]]></string>
+    <string name="privacy_agreement_exit"><![CDATA[Uygulamadan çık]]></string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_off"><![CDATA[KeePassA klavyesini kullanırken titreşim yok]]></string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_on"><![CDATA[KeePassA klavyesini kullanırken hafif titreşim]]></string>
+    <string name="set_title_ime_keyboard_haptic_feedback"><![CDATA[Klavye titreşimi]]></string>
+    <string name="supported_browser_incompatible_suffix"><![CDATA[(uyumsuz)]]></string>
+    <string name="supported_browsers_dialog_title"><![CDATA[Desteklenen tarayıcılar (%1$d)]]></string>
+    <string name="supported_browsers_summary"><![CDATA[Özel otomatik doldurma stratejilerine sahip tarayıcılar]]></string>
+    <string name="supported_browsers_title"><![CDATA[Desteklenen tarayıcılar]]></string>
 </resources>

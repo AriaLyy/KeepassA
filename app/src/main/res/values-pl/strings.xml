@@ -410,7 +410,7 @@ Baza danych \n jest szyfrowana przy użyciu AES256. Nikt nie może otworzyć Two
     <string name="webdav_host_name_hint"><![CDATA[Wprowadź swoją nazwę hosta]]></string>
     <string name="webdav_port_hint"><![CDATA[portu]]></string>
     <string name="webdav_port_name_null"><![CDATA[Nazwa hosta nie może być pusta]]></string>
-    <string name="privacy_agreement"><![CDATA[umowa o ochronie prywatności]]></string>
+    <string name="privacy_agreement"><![CDATA[Informacja o ochronie prywatności i bezpieczeństwie]]></string>
     <string name="ime_hint_open_auto_fill"><![CDATA[Proszę włączyć usługę autouzupełniania]]></string>
     <string name="please_open_proxy"><![CDATA[Ze znanych przyczyn sieciowych, w celu sprawnego korzystania z usług onedrive należy korzystać z odpowiednich narzędzi sieciowych]]></string>
     <string name="invalid_img"><![CDATA[Nieprawidłowy obraz]]></string>
@@ -449,4 +449,107 @@ Baza danych \n jest szyfrowana przy użyciu AES256. Nikt nie może otworzyć Two
     <string name="icon_select_db"><![CDATA[lokalna ikona]]></string>
     <string name="icon_change"><![CDATA[Zmień ikonę]]></string>
     <string name="entry_not_found"><![CDATA[Nie znaleziono wpisu]]></string>
+    <string name="auto_fill_set"><![CDATA[Ustawienia autowypełniania]]></string>
+    <string name="autofill_browser_category_android"><![CDATA[Przeglądarka AOSP]]></string>
+    <string name="autofill_browser_category_chromium"><![CDATA[Rodzina Chromium]]></string>
+    <string name="autofill_browser_category_default"><![CDATA[Ostrożny]]></string>
+    <string name="autofill_browser_category_gecko"><![CDATA[Gecko (Firefox)]]></string>
+    <string name="autofill_browser_category_idm"><![CDATA[IDM]]></string>
+    <string name="autofill_browser_category_kiwi"><![CDATA[Kiwi]]></string>
+    <string name="autofill_browser_category_uc"><![CDATA[UC]]></string>
+    <string name="autofill_browser_category_yandex"><![CDATA[Yandex]]></string>
+    <string name="browser_autofill_settings_open_failed"><![CDATA[Nie można otworzyć ustawień autowypełniania Chrome]]></string>
+    <string name="browser_autofill_settings_summary_disabled"><![CDATA[Chrome musi zezwalać na autowypełnianie przez podmioty zewnętrzne, zanim formularze internetowe będą mogły używać KeePassA.]]></string>
+    <string name="browser_autofill_settings_summary_enabled"><![CDATA[Chrome już zezwala na autowypełnianie przez podmioty zewnętrzne.]]></string>
+    <string name="browser_autofill_settings_summary_unknown"><![CDATA[Otwórz ustawienia autowypełniania Chrome.]]></string>
+    <string name="browser_autofill_settings_title"><![CDATA[Ustawienia autowypełniania Chrome]]></string>
+    <string name="browser_third_party_autofill_settings_open_failed"><![CDATA[Nie można otworzyć ustawień autowypełniania %1$s]]></string>
+    <string name="browser_third_party_autofill_settings_summary_disabled"><![CDATA[%1$s musi zezwalać na autowypełnianie przez podmioty zewnętrzne, zanim formularze internetowe będą mogły używać KeePassA.]]></string>
+    <string name="browser_third_party_autofill_settings_summary_enabled"><![CDATA[%1$s już zezwala na autowypełnianie przez podmioty zewnętrzne.]]></string>
+    <string name="browser_third_party_autofill_settings_summary_unknown"><![CDATA[Otwórz ustawienia autowypełniania %1$s.]]></string>
+    <string name="browser_third_party_autofill_settings_title"><![CDATA[Ustawienia autowypełniania %1$s]]></string>
+    <string name="credential_manager_settings_fallback"><![CDATA[Ten system nie obsługuje bezpośrednich ustawień Menedżera poświadczeń. Wyszukaj „poświadczenia" lub „hasła" w ustawieniach systemu.]]></string>
+    <string name="credential_manager_settings_open_failed"><![CDATA[Nie można otworzyć ustawień systemowego Menedżera poświadczeń.]]></string>
+    <string name="credential_manager_settings_summary"><![CDATA[Otwórz ustawienia systemowe haseł, passkeys i dostawców poświadczeń]]></string>
+    <string name="credential_manager_settings_title"><![CDATA[Menedżer poświadczeń]]></string>
+    <string name="credential_manager_settings_unsupported"><![CDATA[Ten system nie obsługuje KeePassA jako dostawcy poświadczeń.]]></string>
+
+    <string name="credential_provider_unlock_title"><![CDATA[Odblokuj KeePassA]]></string>
+
+
+    <string name="credential_provider_save_title"><![CDATA[Zapisz w KeePassA]]></string>
+
+
+
+    <string name="credential_provider_no_match"><![CDATA[Brak pasujących poświadczeń]]></string>
+
+
+
+
+    <string name="hint_confirm"><![CDATA[Potwierdź hasło]]></string>
+    <string name="file_conflict_msg_download"><![CDATA[Poniższe wpisy zostały zmodyfikowane lokalnie i w chmurze:\n%s\nPobranie zastąpi lokalne zmiany wersją z chmury.]]></string>
+    <string name="file_conflict_msg_upload"><![CDATA[Poniższe wpisy zostały zmodyfikowane lokalnie i w chmurze:\n%s\nWybierz wersję do zachowania:\n· Zachowaj lokalną: prześlij lokalne zmiany, aby nadpisać chmurę\n· Zachowaj chmurę: pobierz wersję z chmury, aby nadpisać to urządzenie]]></string>
+    <string name="hint_browser_third_party_autofill_mode"><![CDATA[%1$s nie ma włączonego autowypełniania przez podmioty zewnętrzne. KeePassA nie może odbierać żądań autowypełniania z %1$s, dopóki przeglądarka nie zezwoli na inne menedżery haseł.]]></string>
+    <string name="hint_chrome_autofill_third_party_mode"><![CDATA[Chrome nie ma włączonego autowypełniania przez podmioty zewnętrzne. KeePassA nie może odbierać żądań autowypełniania z Chrome, dopóki Chrome nie zezwoli na inne menedżery haseł.]]></string>
+    <string name="ime_database_locked_hint"><![CDATA[Baza danych zablokowana]]></string>
+    <string name="ime_database_locked_unlock_button"><![CDATA[Odblokuj]]></string>
+    <string name="ime_search_entry_hint"><![CDATA[Szukaj wpisów]]></string>
+    <string name="ime_search_no_entry"><![CDATA[Brak pasujących wpisów]]></string>
+    <string name="ime_search_select_entry_first"><![CDATA[Najpierw wybierz wpis]]></string>
+    <string name="merge_binary_named_summary"><![CDATA[%1$s
+Plik binarny, %2$d bajtów]]></string>
+    <string name="merge_binary_summary"><![CDATA[Plik binarny, %1$d bajtów]]></string>
+    <string name="merge_conflict_progress"><![CDATA[%1$d/%2$d]]></string>
+    <string name="merge_conflict_session_expired"><![CDATA[Sesja scalania wygasła. Synchronizuj ponownie.]]></string>
+    <string name="merge_conflict_title"><![CDATA[Rozwiąż konflikty scalania]]></string>
+    <string name="merge_decision_required"><![CDATA[Dla każdego konfliktowego pola wybierz wersję lokalną lub z chmury.]]></string>
+    <string name="merge_field_additional"><![CDATA[Dodatkowe dane]]></string>
+    <string name="merge_field_auto_type"><![CDATA[Automatyczne wpisywanie]]></string>
+    <string name="merge_field_background_color"><![CDATA[Kolor tła]]></string>
+    <string name="merge_field_cloud"><![CDATA[Chmura]]></string>
+    <string name="merge_field_creation_time"><![CDATA[Czas utworzenia]]></string>
+    <string name="merge_field_custom_data"><![CDATA[Dane niestandardowe]]></string>
+    <string name="merge_field_custom_icon"><![CDATA[Niestandardowa ikona]]></string>
+    <string name="merge_field_expire_date"><![CDATA[Data wygaśnięcia]]></string>
+    <string name="merge_field_expires"><![CDATA[Wygasa]]></string>
+    <string name="merge_field_foreground_color"><![CDATA[Kolor pierwszego planu]]></string>
+    <string name="merge_field_group_default_auto_type_sequence"><![CDATA[Domyślna sekwencja automatycznego wpisywania]]></string>
+    <string name="merge_field_group_enable_auto_type"><![CDATA[Włącz automatyczne wpisywanie]]></string>
+    <string name="merge_field_group_enable_searching"><![CDATA[Włącz wyszukiwanie]]></string>
+    <string name="merge_field_group_is_expanded"><![CDATA[Rozwinięta]]></string>
+    <string name="merge_field_group_last_top_visible_entry"><![CDATA[Ostatni widoczny na górze wpis]]></string>
+    <string name="merge_field_group_name"><![CDATA[Nazwa grupy]]></string>
+    <string name="merge_field_group_notes"><![CDATA[Notatki grupy]]></string>
+    <string name="merge_field_icon"><![CDATA[Ikona]]></string>
+    <string name="merge_field_internal_url"><![CDATA[Wewnętrzny URL]]></string>
+    <string name="merge_field_last_access_time"><![CDATA[Ostatni dostęp]]></string>
+    <string name="merge_field_last_modification_time"><![CDATA[Ostatnia modyfikacja]]></string>
+    <string name="merge_field_local"><![CDATA[Lokalnie]]></string>
+    <string name="merge_field_location_changed"><![CDATA[Zmieniono lokalizację]]></string>
+    <string name="merge_field_override_url"><![CDATA[URL nadrzędny]]></string>
+    <string name="merge_field_previous_parent_group"><![CDATA[Poprzednia grupa nadrzędna]]></string>
+    <string name="merge_field_quality_check"><![CDATA[Sprawdzenie jakości]]></string>
+    <string name="merge_field_result"><![CDATA[Wynik]]></string>
+    <string name="merge_field_tags"><![CDATA[Tagi]]></string>
+    <string name="merge_field_usage_count"><![CDATA[Licznik użycia]]></string>
+    <string name="merge_field_uuid"><![CDATA[UUID]]></string>
+    <string name="merge_finish"><![CDATA[Zakończ]]></string>
+    <string name="merge_icon_summary"><![CDATA[Ikona #%1$d]]></string>
+    <string name="merge_local_only_desc"><![CDATA[Zaznaczone elementy zostaną usunięte lokalnie; niezaznaczone zostaną zachowane.]]></string>
+    <string name="merge_local_only_title"><![CDATA[Tylko elementy lokalne]]></string>
+    <string name="merge_next"><![CDATA[Dalej]]></string>
+    <string name="merge_not_selected"><![CDATA[Nie wybrano]]></string>
+    <string name="merge_previous"><![CDATA[Wstecz]]></string>
+    <string name="merge_upload_failed_retry_next_time"><![CDATA[Scalenie lokalne zostało zapisane, ale przesyłanie nie powiodło się. Nastąpi ponowna próba przy następnej synchronizacji.]]></string>
+
+    <string name="merge_field_whole_item"><![CDATA[Cały element]]></string>
+    <string name="privacy_agreement_accept"><![CDATA[Akceptuj]]></string>
+    <string name="privacy_agreement_exit"><![CDATA[Zamknij aplikację]]></string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_off"><![CDATA[Brak wibracji podczas używania klawiatury KeePassA]]></string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_on"><![CDATA[Delikatna wibracja podczas używania klawiatury KeePassA]]></string>
+    <string name="set_title_ime_keyboard_haptic_feedback"><![CDATA[Wibracje klawiatury]]></string>
+    <string name="supported_browser_incompatible_suffix"><![CDATA[(niezgodny)]]></string>
+    <string name="supported_browsers_dialog_title"><![CDATA[Obsługiwane przeglądarki (%1$d)]]></string>
+    <string name="supported_browsers_summary"><![CDATA[Przeglądarki z dostosowanymi strategiami autowypełniania]]></string>
+    <string name="supported_browsers_title"><![CDATA[Obsługiwane przeglądarki]]></string>
 </resources>

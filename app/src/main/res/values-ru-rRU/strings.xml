@@ -410,7 +410,7 @@
     <string name="webdav_host_name_hint"><![CDATA[Пожалуйста, введите имя хоста]]></string>
     <string name="webdav_port_hint"><![CDATA[порт]]></string>
     <string name="webdav_port_name_null"><![CDATA[Имя хоста не может быть пустым]]></string>
-    <string name="privacy_agreement"><![CDATA[соглашение о конфиденциальности]]></string>
+    <string name="privacy_agreement"><![CDATA[Уведомление о конфиденциальности и безопасности]]></string>
     <string name="ime_hint_open_auto_fill"><![CDATA[Пожалуйста, включите услугу автозаполнения]]></string>
     <string name="please_open_proxy"><![CDATA[По общеизвестным сетевым причинам для бесперебойного использования услуг onedrive используйте соответствующие сетевые инструменты.]]></string>
     <string name="invalid_img"><![CDATA[Неверное изображение]]></string>
@@ -450,4 +450,102 @@
     <string name="icon_change"><![CDATA[Изменить значок]]></string>
     <string name="entry_not_found"><![CDATA[Запись не найдена]]></string>
     <string name="hint_confirm"><![CDATA[Подтвердить пароль]]></string>
+    <string name="auto_fill_set"><![CDATA[Настройки автозаполнения]]></string>
+    <string name="autofill_browser_category_android"><![CDATA[Браузер AOSP]]></string>
+    <string name="autofill_browser_category_chromium"><![CDATA[Семейство Chromium]]></string>
+    <string name="autofill_browser_category_default"><![CDATA[Консервативный]]></string>
+    <string name="autofill_browser_category_gecko"><![CDATA[Gecko (Firefox)]]></string>
+    <string name="autofill_browser_category_idm"><![CDATA[IDM]]></string>
+    <string name="autofill_browser_category_kiwi"><![CDATA[Kiwi]]></string>
+    <string name="autofill_browser_category_uc"><![CDATA[UC]]></string>
+    <string name="autofill_browser_category_yandex"><![CDATA[Yandex]]></string>
+    <string name="browser_autofill_settings_open_failed"><![CDATA[Не удалось открыть настройки автозаполнения Chrome]]></string>
+    <string name="browser_autofill_settings_summary_disabled"><![CDATA[Chrome должен разрешить автозаполнение от сторонних поставщиков, прежде чем веб-формы смогут использовать KeePassA.]]></string>
+    <string name="browser_autofill_settings_summary_enabled"><![CDATA[Chrome уже разрешает автозаполнение от сторонних поставщиков.]]></string>
+    <string name="browser_autofill_settings_summary_unknown"><![CDATA[Открыть настройки автозаполнения Chrome.]]></string>
+    <string name="browser_autofill_settings_title"><![CDATA[Настройки автозаполнения Chrome]]></string>
+    <string name="browser_third_party_autofill_settings_open_failed"><![CDATA[Не удалось открыть настройки автозаполнения %1$s]]></string>
+    <string name="browser_third_party_autofill_settings_summary_disabled"><![CDATA[%1$s должен разрешить автозаполнение от сторонних поставщиков, прежде чем веб-формы смогут использовать KeePassA.]]></string>
+    <string name="browser_third_party_autofill_settings_summary_enabled"><![CDATA[%1$s уже разрешает автозаполнение от сторонних поставщиков.]]></string>
+    <string name="browser_third_party_autofill_settings_summary_unknown"><![CDATA[Открыть настройки автозаполнения %1$s.]]></string>
+    <string name="browser_third_party_autofill_settings_title"><![CDATA[Настройки автозаполнения %1$s]]></string>
+    <string name="credential_manager_settings_fallback"><![CDATA[Эта система не поддерживает прямые настройки Диспетчера учетных данных. Выполните поиск «учетные данные» или «пароли» в настройках системы.]]></string>
+    <string name="credential_manager_settings_open_failed"><![CDATA[Не удалось открыть системные настройки Диспетчера учетных данных.]]></string>
+    <string name="credential_manager_settings_summary"><![CDATA[Открыть системные настройки паролей, passkeys и поставщиков учетных данных]]></string>
+    <string name="credential_manager_settings_title"><![CDATA[Диспетчер учетных данных]]></string>
+    <string name="credential_manager_settings_unsupported"><![CDATA[Эта система не поддерживает KeePassA в качестве поставщика учетных данных.]]></string>
+
+    <string name="credential_provider_unlock_title"><![CDATA[Разблокировать KeePassA]]></string>
+
+
+    <string name="credential_provider_save_title"><![CDATA[Сохранить в KeePassA]]></string>
+
+
+
+    <string name="credential_provider_no_match"><![CDATA[Нет совпадающих учётных данных]]></string>
+    <string name="file_conflict_msg_download"><![CDATA[Следующие записи были изменены как локально, так и в облаке:\n%s\nЗагрузка перезапишет локальные изменения облачной версией.]]></string>
+    <string name="file_conflict_msg_upload"><![CDATA[Следующие записи были изменены как локально, так и в облаке:\n%s\nВыберите версию для сохранения:\n· Сохранить локальную: загрузить локальные изменения, чтобы перезаписать облако\n· Сохранить облачную: скачать облачную версию, чтобы перезаписать это устройство]]></string>
+    <string name="hint_browser_third_party_autofill_mode"><![CDATA[В %1$s не включено автозаполнение от сторонних поставщиков. KeePassA не может получать запросы на автозаполнение от %1$s, пока браузер не разрешит другие менеджеры паролей.]]></string>
+    <string name="hint_chrome_autofill_third_party_mode"><![CDATA[В Chrome не включено автозаполнение от сторонних поставщиков. KeePassA не может получать запросы на автозаполнение от Chrome, пока Chrome не разрешит другие менеджеры паролей.]]></string>
+    <string name="ime_database_locked_hint"><![CDATA[База данных заблокирована]]></string>
+    <string name="ime_database_locked_unlock_button"><![CDATA[Разблокировать]]></string>
+    <string name="ime_search_entry_hint"><![CDATA[Поиск записей]]></string>
+    <string name="ime_search_no_entry"><![CDATA[Нет совпадающих записей]]></string>
+    <string name="ime_search_select_entry_first"><![CDATA[Сначала выберите запись]]></string>
+    <string name="merge_binary_named_summary"><![CDATA[%1$s
+Двоичные данные, %2$d байт]]></string>
+    <string name="merge_binary_summary"><![CDATA[Двоичные данные, %1$d байт]]></string>
+    <string name="merge_conflict_progress"><![CDATA[%1$d/%2$d]]></string>
+    <string name="merge_conflict_session_expired"><![CDATA[Сессия слияния истекла. Выполните синхронизацию снова.]]></string>
+    <string name="merge_conflict_title"><![CDATA[Разрешить конфликты слияния]]></string>
+    <string name="merge_decision_required"><![CDATA[Для каждого конфликтующего поля выберите локальную или облачную версию.]]></string>
+    <string name="merge_field_additional"><![CDATA[Дополнительные данные]]></string>
+    <string name="merge_field_auto_type"><![CDATA[Автоввод]]></string>
+    <string name="merge_field_background_color"><![CDATA[Цвет фона]]></string>
+    <string name="merge_field_cloud"><![CDATA[Облако]]></string>
+    <string name="merge_field_creation_time"><![CDATA[Время создания]]></string>
+    <string name="merge_field_custom_data"><![CDATA[Пользовательские данные]]></string>
+    <string name="merge_field_custom_icon"><![CDATA[Пользовательский значок]]></string>
+    <string name="merge_field_expire_date"><![CDATA[Срок действия]]></string>
+    <string name="merge_field_expires"><![CDATA[Истекает]]></string>
+    <string name="merge_field_foreground_color"><![CDATA[Цвет переднего плана]]></string>
+    <string name="merge_field_group_default_auto_type_sequence"><![CDATA[Последовательность автоввода по умолчанию]]></string>
+    <string name="merge_field_group_enable_auto_type"><![CDATA[Включить автоввод]]></string>
+    <string name="merge_field_group_enable_searching"><![CDATA[Включить поиск]]></string>
+    <string name="merge_field_group_is_expanded"><![CDATA[Развёрнута]]></string>
+    <string name="merge_field_group_last_top_visible_entry"><![CDATA[Последняя верхняя видимая запись]]></string>
+    <string name="merge_field_group_name"><![CDATA[Имя группы]]></string>
+    <string name="merge_field_group_notes"><![CDATA[Заметки группы]]></string>
+    <string name="merge_field_icon"><![CDATA[Значок]]></string>
+    <string name="merge_field_internal_url"><![CDATA[Внутренний URL]]></string>
+    <string name="merge_field_last_access_time"><![CDATA[Последний доступ]]></string>
+    <string name="merge_field_last_modification_time"><![CDATA[Последнее изменение]]></string>
+    <string name="merge_field_local"><![CDATA[Локальное]]></string>
+    <string name="merge_field_location_changed"><![CDATA[Расположение изменено]]></string>
+    <string name="merge_field_override_url"><![CDATA[Переопределяющий URL]]></string>
+    <string name="merge_field_previous_parent_group"><![CDATA[Предыдущая родительская группа]]></string>
+    <string name="merge_field_quality_check"><![CDATA[Проверка качества]]></string>
+    <string name="merge_field_result"><![CDATA[Результат]]></string>
+    <string name="merge_field_tags"><![CDATA[Метки]]></string>
+    <string name="merge_field_usage_count"><![CDATA[Счётчик использования]]></string>
+    <string name="merge_field_uuid"><![CDATA[UUID]]></string>
+    <string name="merge_finish"><![CDATA[Готово]]></string>
+    <string name="merge_icon_summary"><![CDATA[Значок #%1$d]]></string>
+    <string name="merge_local_only_desc"><![CDATA[Отмеченные элементы будут удалены локально; неотмеченные будут сохранены.]]></string>
+    <string name="merge_local_only_title"><![CDATA[Только локальные элементы]]></string>
+    <string name="merge_next"><![CDATA[Далее]]></string>
+    <string name="merge_not_selected"><![CDATA[Не выбрано]]></string>
+    <string name="merge_previous"><![CDATA[Назад]]></string>
+    <string name="merge_upload_failed_retry_next_time"><![CDATA[Локальное слияние сохранено, но загрузка не удалась. Повтор будет выполнен при следующей синхронизации.]]></string>
+
+    <string name="merge_field_whole_item"><![CDATA[Целый элемент]]></string>
+    <string name="privacy_agreement_accept"><![CDATA[Принять]]></string>
+    <string name="privacy_agreement_exit"><![CDATA[Выйти из приложения]]></string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_off"><![CDATA[Без вибрации при использовании клавиатуры KeePassA]]></string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_on"><![CDATA[Лёгкая вибрация при использовании клавиатуры KeePassA]]></string>
+    <string name="set_title_ime_keyboard_haptic_feedback"><![CDATA[Вибрация клавиатуры]]></string>
+    <string name="supported_browser_incompatible_suffix"><![CDATA[(несовместимо)]]></string>
+    <string name="supported_browsers_dialog_title"><![CDATA[Поддерживаемые браузеры (%1$d)]]></string>
+    <string name="supported_browsers_summary"><![CDATA[Браузеры с настроенными стратегиями автозаполнения]]></string>
+    <string name="supported_browsers_title"><![CDATA[Поддерживаемые браузеры]]></string>
 </resources>

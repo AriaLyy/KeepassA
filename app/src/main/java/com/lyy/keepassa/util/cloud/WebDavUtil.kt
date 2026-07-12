@@ -11,6 +11,7 @@ package com.lyy.keepassa.util.cloud
 
 import android.content.Context
 import android.net.Uri
+import android.system.Os
 import androidx.core.net.toFile
 import com.arialyy.frame.util.FileUtil
 import com.blankj.utilcode.util.ActivityUtils
@@ -22,6 +23,9 @@ import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import com.thegrizzlylabs.sardineandroid.impl.SardineException
 import okhttp3.ConnectionPool
 import okhttp3.OkHttpClient
+import java.io.File
+import java.net.SocketTimeoutException
+import java.util.concurrent.TimeUnit
 import timber.log.Timber
 import java.io.FileOutputStream
 import java.io.IOException
@@ -31,6 +35,7 @@ import java.nio.channels.Channels
 import java.nio.channels.FileChannel
 import java.nio.channels.ReadableByteChannel
 import java.util.Date
+import java.util.UUID
 
 /**
  * webdav工具
@@ -192,20 +197,8 @@ object WebDavUtil : ICloudUtil {
 
   override suspend fun getFileInfo(fileKey: String): CloudFileInfo? {
     Timber.i("获取文件信息，cloudPath：$fileKey")
-    try {
-      sardine ?: return null
-      val resources = sardine!!.list(convertUrl(fileKey))
-      if (resources == null || resources.isEmpty()) {
-        return null
-      }
-      val file = resources[0]
-      return CloudFileInfo(
-        file.path, file.name, file.modified, file.contentLength, file.isDirectory
-      )
-    } catch (e: Exception) {
-      Timber.e(e)
-    }
-    return null
+    val webDav = sardine ?: return null
+    return getStrictFileInfo(webDav, fileKey)
   }
 
   override suspend fun delFile(fileKey: String): Boolean {
@@ -232,11 +225,35 @@ object WebDavUtil : ICloudUtil {
   ): Boolean {
     Timber.d("uploadFile, cloudPath = ${dbRecord.cloudDiskPath}, localPath = ${dbRecord.localDbUri}")
     val webDav = sardine ?: return false
-    try {
+    val originUrl = getConvertedCloudPath(dbRecord)
+    return CloudPathUploadLock.withLock(originUrl) {
+      uploadFileLocked(context, dbRecord, webDav, originUrl)
+    }
+  }
 
-      val originUrl = getConvertedCloudPath(dbRecord)
+  private suspend fun uploadFileLocked(
+    context: Context,
+    dbRecord: DbHistoryRecord,
+    webDav: OkHttpSardine,
+    originUrl: String
+  ): Boolean {
+    val snapshotStore = UploadSnapshotStore(File(context.filesDir, "sync_upload"))
+    val safetyFuse = UploadSafetyFuse(File(context.filesDir, "sync_upload_fuse"))
+    var snapshot: UploadSnapshot? = null
+    try {
+      if (safetyFuse.isTripped(originUrl)) {
+        Timber.e("WebDAV upload blocked by recovery fuse, originUrl=$originUrl")
+        return false
+      }
+      snapshot = snapshotStore.create(
+        Uri.parse(dbRecord.localDbUri).toFile(),
+        "${System.currentTimeMillis()}-${UUID.randomUUID()}"
+      )
       val result = WebDavSafeUploader(createUploadClient(webDav))
-        .upload(Uri.parse(dbRecord.localDbUri).toFile(), originUrl)
+        .upload(snapshot.file, originUrl)
+      if (result.needsRecovery) {
+        safetyFuse.trip(originUrl)
+      }
       if (!result.success) {
         return false
       }
@@ -247,6 +264,8 @@ object WebDavUtil : ICloudUtil {
     } catch (e: Exception) {
       Timber.e(e, "上传文件失败")
       return false
+    } finally {
+      snapshot?.let(snapshotStore::delete)
     }
 
     return true
@@ -256,6 +275,19 @@ object WebDavUtil : ICloudUtil {
     return object : WebDavUploadClient {
       override suspend fun getFileInfo(url: String): CloudFileInfo? {
         return getStrictFileInfo(webDav, url)
+      }
+
+      override suspend fun getSha256(url: String): String {
+        val digest = java.security.MessageDigest.getInstance("SHA-256")
+        webDav.get(url).use { input ->
+          val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+          while (true) {
+            val count = input.read(buffer)
+            if (count < 0) break
+            digest.update(buffer, 0, count)
+          }
+        }
+        return digest.digest().joinToString("") { "%02x".format(it) }
       }
 
       override suspend fun listFiles(url: String): List<CloudFileInfo> {
@@ -282,6 +314,14 @@ object WebDavUtil : ICloudUtil {
         webDav.copy(sourceUrl, destinationUrl, overwrite)
       }
 
+      override suspend fun move(
+        sourceUrl: String,
+        destinationUrl: String,
+        overwrite: Boolean
+      ) {
+        webDav.move(sourceUrl, destinationUrl, overwrite)
+      }
+
       override suspend fun delete(url: String) {
         webDav.delete(url)
       }
@@ -302,13 +342,17 @@ object WebDavUtil : ICloudUtil {
     val connectionPool = ConnectionPool()
     return OkHttpClient.Builder()
       .connectionPool(connectionPool)
+      .connectTimeout(30, TimeUnit.SECONDS)
+      .readTimeout(120, TimeUnit.SECONDS)
+      .writeTimeout(180, TimeUnit.SECONDS)
+      .callTimeout(0, TimeUnit.MILLISECONDS)
       .addInterceptor { chain ->
         try {
           chain.proceed(chain.request())
         } catch (e: IOException) {
           val isStreamReset = e.javaClass.simpleName.equals("StreamResetException", ignoreCase = true)
-          if (isStreamReset) {
-            Timber.w(e, "HTTP/2 stream reset detected, evicting connection pool")
+          if (isStreamReset || e is SocketTimeoutException) {
+            Timber.w(e, "HTTP stream failed, evicting connection pool")
             connectionPool.evictAll()
           }
           throw e
@@ -413,19 +457,18 @@ object WebDavUtil : ICloudUtil {
     Timber.d("start download file, save path: $filePath")
     val cloudPath = convertUrl(dbRecord.cloudDiskPath.toString())
     val fp = filePath.toFile()
-    if (!fp.exists()) {
-      FileUtil.createFile(fp)
-    }
+    fp.parentFile?.mkdirs()
+    val tempFile = File(fp.parentFile, ".${fp.name}.kpa-download-${System.nanoTime()}.tmp")
     sardine?.let {
-      var fic: ReadableByteChannel? = null
-      var foc: FileChannel? = null
       try {
-        val ips = it.get(cloudPath)
-        val fileInfo = getFileInfo(cloudPath)
-        fic = Channels.newChannel(ips)
-        foc = FileOutputStream(fp).channel
-        foc.transferFrom(fic, 0, fileInfo!!.size)
+        val fileInfo = getStrictFileInfo(it, cloudPath)
+          ?: throw IOException("WebDAV file does not exist: $cloudPath")
+        it.get(cloudPath).use { input ->
+          VerifiedDownloadWriter.write(input, tempFile, fileInfo.size)
+        }
+        Os.rename(tempFile.absolutePath, fp.absolutePath)
       } catch (e: Exception) {
+        tempFile.delete()
         Timber.e(e, "下载文件失败")
         return null
       }

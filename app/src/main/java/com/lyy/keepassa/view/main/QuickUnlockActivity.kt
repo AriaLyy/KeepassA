@@ -42,6 +42,8 @@ import com.lyy.keepassa.R
 import com.lyy.keepassa.base.BaseActivity
 import com.lyy.keepassa.base.BaseApp
 import com.lyy.keepassa.databinding.DialogQuickUnlockBinding
+import com.lyy.keepassa.util.cloud.merge.pending.PendingMergeResumeCoordinator
+import com.lyy.keepassa.util.cloud.merge.pending.PendingMergeNotificationManager
 import com.lyy.keepassa.entity.AutoFillParam
 import com.lyy.keepassa.entity.QuickUnLockRecord
 import com.lyy.keepassa.router.ActivityRouter
@@ -122,6 +124,13 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
     BaseApp.isLocked = true
     initUi()
     module.autoFillParam = intent.getParcelableExtra(LauncherActivity.KEY_AUTO_FILL_PARAM)
+    handlePendingMergeNotificationIntent(intent)
+  }
+
+  private fun handlePendingMergeNotificationIntent(intent: Intent?) {
+    if (intent?.action != PendingMergeNotificationManager.ACTION_RESOLVE_PENDING_MERGE) return
+    intent.getStringExtra(PendingMergeNotificationManager.EXTRA_PENDING_MERGE_TASK_ID)
+      ?.let(PendingMergeResumeCoordinator::onNotificationClicked)
   }
 
   private fun initUi() {
@@ -146,6 +155,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
       override fun inputComplete(text: String) {
         if (QuickUnLockUtil.encryptStr(text) == BaseApp.shortPass) {
           BaseApp.isLocked = false
+          PendingMergeResumeCoordinator.onDatabaseUnlocked()
           turnActivity()
           return
         }
@@ -257,6 +267,7 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
    */
   private fun turnActivity() {
     BaseApp.isLocked = false
+    PendingMergeResumeCoordinator.onDatabaseUnlocked()
     NotificationUtil.startDbOpenNotify(this@QuickUnlockActivity)
     if (intent.getBooleanExtra(LauncherActivity.EXTRA_RETURN_UNLOCK_RESULT, false)) {
       setResult(Activity.RESULT_OK)
@@ -304,6 +315,8 @@ class QuickUnlockActivity : BaseActivity<DialogQuickUnlockBinding>() {
 
   override fun onNewIntent(intent: Intent?) {
     super.onNewIntent(intent)
+    setIntent(intent)
+    handlePendingMergeNotificationIntent(intent)
     binding.pass.clean()
   }
 

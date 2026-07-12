@@ -19,7 +19,9 @@ class DbSyncRequest constructor(
   var record: DbHistoryRecord,
   var syncUtil: ICloudUtil,
   val interceptors: List<IDbSyncInterceptor>,
-  val index: Int = 0
+  val index: Int = 0,
+  val mergeFailureCallback: ((Int) -> Unit)? = null,
+  val mergeInteractionMode: MergeInteractionMode = MergeInteractionMode.FOREGROUND
 ) {
 
   fun nextInterceptor(): IDbSyncInterceptor? {
@@ -28,4 +30,9 @@ class DbSyncRequest constructor(
     }
     return interceptors[index + 1]
   }
+}
+
+enum class MergeInteractionMode {
+  FOREGROUND,
+  BACKGROUND
 }

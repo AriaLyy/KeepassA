@@ -20,6 +20,7 @@ import com.lyy.keepassa.view.detail.EntryDetailActivityNew
 import com.lyy.keepassa.view.detail.GroupDetailActivity
 import com.lyy.keepassa.view.launcher.LauncherActivity
 import com.lyy.keepassa.view.setting.SettingActivity
+import com.lyy.keepassa.util.cloud.merge.MergeConflictActivity
 import java.util.UUID
 
 /**
@@ -112,5 +113,10 @@ interface ActivityRouter {
   @RouterPath(path = "/launcher/createDb")
   fun toCreateDbActivity(
     @RouterArgName(name = "opt") opt: ActivityOptionsCompat? = null
+  )
+
+  @RouterPath(path = MergeConflictActivity.ROUTE)
+  fun toMergeConflictActivity(
+    @RouterArgName(name = MergeConflictActivity.KEY_SESSION_ID) sessionId: String
   )
 }

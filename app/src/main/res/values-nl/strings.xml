@@ -410,7 +410,7 @@ De \n-database is gecodeerd met AES256. Niemand kan uw database openen zonder uw
     <string name="webdav_host_name_hint"><![CDATA[Voer uw hostnaam in]]></string>
     <string name="webdav_port_hint"><![CDATA[haven]]></string>
     <string name="webdav_port_name_null"><![CDATA[Hostnaam mag niet leeg zijn]]></string>
-    <string name="privacy_agreement"><![CDATA[privacy overeenkomst]]></string>
+    <string name="privacy_agreement"><![CDATA[Privacy- en beveiligingsverklaring]]></string>
     <string name="ime_hint_open_auto_fill"><![CDATA[Schakel de service voor automatisch aanvullen in]]></string>
     <string name="please_open_proxy"><![CDATA[Om bekende netwerkredenen dient u de juiste netwerktools te gebruiken om de onedrive-services soepel te kunnen gebruiken]]></string>
     <string name="invalid_img"><![CDATA[Ongeldige afbeelding]]></string>
@@ -449,4 +449,107 @@ De \n-database is gecodeerd met AES256. Niemand kan uw database openen zonder uw
     <string name="icon_select_db"><![CDATA[lokaal icoon]]></string>
     <string name="icon_change"><![CDATA[Pictogram wijzigen]]></string>
     <string name="entry_not_found"><![CDATA[Geen vermelding gevonden]]></string>
+    <string name="auto_fill_set"><![CDATA[Instellingen voor automatisch invullen]]></string>
+    <string name="autofill_browser_category_android"><![CDATA[AOSP-browser]]></string>
+    <string name="autofill_browser_category_chromium"><![CDATA[Chromium-familie]]></string>
+    <string name="autofill_browser_category_default"><![CDATA[Conservatief]]></string>
+    <string name="autofill_browser_category_gecko"><![CDATA[Gecko (Firefox)]]></string>
+    <string name="autofill_browser_category_idm"><![CDATA[IDM]]></string>
+    <string name="autofill_browser_category_kiwi"><![CDATA[Kiwi]]></string>
+    <string name="autofill_browser_category_uc"><![CDATA[UC]]></string>
+    <string name="autofill_browser_category_yandex"><![CDATA[Yandex]]></string>
+    <string name="browser_autofill_settings_open_failed"><![CDATA[Kon instellingen voor automatisch invullen van Chrome niet openen]]></string>
+    <string name="browser_autofill_settings_summary_disabled"><![CDATA[Chrome moet automatisch invullen door derden toestaan voordat webformulieren KeePassA kunnen gebruiken.]]></string>
+    <string name="browser_autofill_settings_summary_enabled"><![CDATA[Chrome staat automatisch invullen door derden al toe.]]></string>
+    <string name="browser_autofill_settings_summary_unknown"><![CDATA[Instellingen voor automatisch invullen van Chrome openen.]]></string>
+    <string name="browser_autofill_settings_title"><![CDATA[Instellingen voor automatisch invullen van Chrome]]></string>
+    <string name="browser_third_party_autofill_settings_open_failed"><![CDATA[Kon instellingen voor automatisch invullen van %1$s niet openen]]></string>
+    <string name="browser_third_party_autofill_settings_summary_disabled"><![CDATA[%1$s moet automatisch invullen door derden toestaan voordat webformulieren KeePassA kunnen gebruiken.]]></string>
+    <string name="browser_third_party_autofill_settings_summary_enabled"><![CDATA[%1$s staat automatisch invullen door derden al toe.]]></string>
+    <string name="browser_third_party_autofill_settings_summary_unknown"><![CDATA[Instellingen voor automatisch invullen van %1$s openen.]]></string>
+    <string name="browser_third_party_autofill_settings_title"><![CDATA[Instellingen voor automatisch invullen van %1$s]]></string>
+    <string name="credential_manager_settings_fallback"><![CDATA[Dit systeem ondersteunt geen directe instellingen voor Credential Manager. Zoek in de systeeminstellingen naar „aanmeldingsgegevens" of „wachtwoorden".]]></string>
+    <string name="credential_manager_settings_open_failed"><![CDATA[Kon systeeminstellingen voor Credential Manager niet openen.]]></string>
+    <string name="credential_manager_settings_summary"><![CDATA[Systeeminstellingen openen voor wachtwoorden, passkeys en aanbieders van aanmeldingsgegevens]]></string>
+    <string name="credential_manager_settings_title"><![CDATA[Credential Manager]]></string>
+    <string name="credential_manager_settings_unsupported"><![CDATA[Dit systeem ondersteunt KeePassA niet als aanbieder van aanmeldingsgegevens.]]></string>
+
+    <string name="credential_provider_unlock_title"><![CDATA[KeePassA ontgrendelen]]></string>
+
+
+    <string name="credential_provider_save_title"><![CDATA[Opslaan in KeePassA]]></string>
+
+
+
+    <string name="credential_provider_no_match"><![CDATA[Geen overeenkomende inloggegevens]]></string>
+
+
+
+
+    <string name="hint_confirm"><![CDATA[Wachtwoord bevestigen]]></string>
+    <string name="file_conflict_msg_download"><![CDATA[De volgende vermeldingen zijn zowel lokaal als in de cloud gewijzigd:\n%s\nDownloaden overschrijft de lokale wijzigingen met de cloudversie.]]></string>
+    <string name="file_conflict_msg_upload"><![CDATA[De volgende vermeldingen zijn zowel lokaal als in de cloud gewijzigd:\n%s\nKies welke versie u wilt behouden:\n· Lokaal behouden: lokale wijzigingen uploaden en cloud overschrijven\n· Cloud behouden: cloudversie downloaden en dit apparaat overschrijven]]></string>
+    <string name="hint_browser_third_party_autofill_mode"><![CDATA[%1$s heeft automatisch invullen door derden niet ingeschakeld. KeePassA kan geen autofill-verzoeken van %1$s ontvangen totdat de browser andere wachtwoordbeheerders toestaat.]]></string>
+    <string name="hint_chrome_autofill_third_party_mode"><![CDATA[Chrome heeft automatisch invullen door derden niet ingeschakeld. KeePassA kan geen autofill-verzoeken van Chrome ontvangen totdat Chrome andere wachtwoordbeheerders toestaat.]]></string>
+    <string name="ime_database_locked_hint"><![CDATA[Database vergrendeld]]></string>
+    <string name="ime_database_locked_unlock_button"><![CDATA[Ontgrendelen]]></string>
+    <string name="ime_search_entry_hint"><![CDATA[Vermeldingen doorzoeken]]></string>
+    <string name="ime_search_no_entry"><![CDATA[Geen overeenkomende vermeldingen]]></string>
+    <string name="ime_search_select_entry_first"><![CDATA[Selecteer eerst een vermelding]]></string>
+    <string name="merge_binary_named_summary"><![CDATA[%1$s
+Binair, %2$d bytes]]></string>
+    <string name="merge_binary_summary"><![CDATA[Binair, %1$d bytes]]></string>
+    <string name="merge_conflict_progress"><![CDATA[%1$d/%2$d]]></string>
+    <string name="merge_conflict_session_expired"><![CDATA[Samenvoegsessie verlopen. Synchroniseer opnieuw.]]></string>
+    <string name="merge_conflict_title"><![CDATA[Samenvoegconflicten oplossen]]></string>
+    <string name="merge_decision_required"><![CDATA[Kies voor elk conflictveld lokaal of cloud.]]></string>
+    <string name="merge_field_additional"><![CDATA[Aanvullende gegevens]]></string>
+    <string name="merge_field_auto_type"><![CDATA[Automatisch typen]]></string>
+    <string name="merge_field_background_color"><![CDATA[Achtergrondkleur]]></string>
+    <string name="merge_field_cloud"><![CDATA[Cloud]]></string>
+    <string name="merge_field_creation_time"><![CDATA[Aanmaaktijd]]></string>
+    <string name="merge_field_custom_data"><![CDATA[Aangepaste gegevens]]></string>
+    <string name="merge_field_custom_icon"><![CDATA[Aangepast pictogram]]></string>
+    <string name="merge_field_expire_date"><![CDATA[Vervaldatum]]></string>
+    <string name="merge_field_expires"><![CDATA[Verloopt]]></string>
+    <string name="merge_field_foreground_color"><![CDATA[Voorgrondkleur]]></string>
+    <string name="merge_field_group_default_auto_type_sequence"><![CDATA[Standaardreeks voor automatisch typen]]></string>
+    <string name="merge_field_group_enable_auto_type"><![CDATA[Automatisch typen inschakelen]]></string>
+    <string name="merge_field_group_enable_searching"><![CDATA[Zoeken inschakelen]]></string>
+    <string name="merge_field_group_is_expanded"><![CDATA[Uitgeklapt]]></string>
+    <string name="merge_field_group_last_top_visible_entry"><![CDATA[Laatste bovenste zichtbare vermelding]]></string>
+    <string name="merge_field_group_name"><![CDATA[Groepsnaam]]></string>
+    <string name="merge_field_group_notes"><![CDATA[Groepsnotities]]></string>
+    <string name="merge_field_icon"><![CDATA[Pictogram]]></string>
+    <string name="merge_field_internal_url"><![CDATA[Interne URL]]></string>
+    <string name="merge_field_last_access_time"><![CDATA[Laatste toegang]]></string>
+    <string name="merge_field_last_modification_time"><![CDATA[Laatst gewijzigd]]></string>
+    <string name="merge_field_local"><![CDATA[Lokaal]]></string>
+    <string name="merge_field_location_changed"><![CDATA[Locatie gewijzigd]]></string>
+    <string name="merge_field_override_url"><![CDATA[Override-URL]]></string>
+    <string name="merge_field_previous_parent_group"><![CDATA[Vorige bovenliggende groep]]></string>
+    <string name="merge_field_quality_check"><![CDATA[Kwaliteitscontrole]]></string>
+    <string name="merge_field_result"><![CDATA[Resultaat]]></string>
+    <string name="merge_field_tags"><![CDATA[Tags]]></string>
+    <string name="merge_field_usage_count"><![CDATA[Gebruiksaantal]]></string>
+    <string name="merge_field_uuid"><![CDATA[UUID]]></string>
+    <string name="merge_finish"><![CDATA[Voltooien]]></string>
+    <string name="merge_icon_summary"><![CDATA[Pictogram #%1$d]]></string>
+    <string name="merge_local_only_desc"><![CDATA[Aangevinkte items worden lokaal verwijderd; niet-aangevinkte items blijven behouden.]]></string>
+    <string name="merge_local_only_title"><![CDATA[Alleen lokale items]]></string>
+    <string name="merge_next"><![CDATA[Volgende]]></string>
+    <string name="merge_not_selected"><![CDATA[Niet geselecteerd]]></string>
+    <string name="merge_previous"><![CDATA[Vorige]]></string>
+    <string name="merge_upload_failed_retry_next_time"><![CDATA[Lokale samenvoeging is opgeslagen, maar uploaden is mislukt. Wordt opnieuw geprobeerd bij de volgende synchronisatie.]]></string>
+
+    <string name="merge_field_whole_item"><![CDATA[Volledig item]]></string>
+    <string name="privacy_agreement_accept"><![CDATA[Akkoord]]></string>
+    <string name="privacy_agreement_exit"><![CDATA[App afsluiten]]></string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_off"><![CDATA[Niet trillen bij gebruik van KeePassA-toetsenbord]]></string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_on"><![CDATA[Licht trillen bij gebruik van KeePassA-toetsenbord]]></string>
+    <string name="set_title_ime_keyboard_haptic_feedback"><![CDATA[Trillen van toetsenbord]]></string>
+    <string name="supported_browser_incompatible_suffix"><![CDATA[(incompatibel)]]></string>
+    <string name="supported_browsers_dialog_title"><![CDATA[Ondersteunde browsers (%1$d)]]></string>
+    <string name="supported_browsers_summary"><![CDATA[Browsers met op maat gemaakte strategieën voor automatisch invullen]]></string>
+    <string name="supported_browsers_title"><![CDATA[Ondersteunde browsers]]></string>
 </resources>

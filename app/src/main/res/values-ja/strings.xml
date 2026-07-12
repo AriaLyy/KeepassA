@@ -410,7 +410,7 @@
     <string name="webdav_host_name_hint"><![CDATA[ホスト名を入力してください]]></string>
     <string name="webdav_port_hint"><![CDATA[ポート]]></string>
     <string name="webdav_port_name_null"><![CDATA[ホスト名を空にすることはできません]]></string>
-    <string name="privacy_agreement"><![CDATA[プライバシー規約]]></string>
+    <string name="privacy_agreement"><![CDATA[プライバシーおよびセキュリティに関する通知]]></string>
     <string name="ime_hint_open_auto_fill"><![CDATA[自動入力サービスをオンにしてください]]></string>
     <string name="please_open_proxy"><![CDATA[ネットワーク上のよく知られた理由により、onedrive サービスをスムーズに使用するには、適切なネットワーク ツールを使用してください。]]></string>
     <string name="invalid_img"><![CDATA[無効な画像です]]></string>
@@ -449,4 +449,107 @@
     <string name="icon_select_db"><![CDATA[ローカルアイコン]]></string>
     <string name="icon_change"><![CDATA[アイコンの変更]]></string>
     <string name="entry_not_found"><![CDATA[エントリが見つかりませんでした]]></string>
+    <string name="auto_fill_set"><![CDATA[オートフィル設定]]></string>
+    <string name="autofill_browser_category_android"><![CDATA[AOSP ブラウザ]]></string>
+    <string name="autofill_browser_category_chromium"><![CDATA[Chromium 系]]></string>
+    <string name="autofill_browser_category_default"><![CDATA[保守的]]></string>
+    <string name="autofill_browser_category_gecko"><![CDATA[Gecko（Firefox）]]></string>
+    <string name="autofill_browser_category_idm"><![CDATA[IDM]]></string>
+    <string name="autofill_browser_category_kiwi"><![CDATA[Kiwi]]></string>
+    <string name="autofill_browser_category_uc"><![CDATA[UC]]></string>
+    <string name="autofill_browser_category_yandex"><![CDATA[Yandex]]></string>
+    <string name="browser_autofill_settings_open_failed"><![CDATA[Chrome のオートフィル設定を開けませんでした]]></string>
+    <string name="browser_autofill_settings_summary_disabled"><![CDATA[Web フォームで KeePassA を使用するには、Chrome がサードパーティのオートフィルを許可している必要があります。]]></string>
+    <string name="browser_autofill_settings_summary_enabled"><![CDATA[Chrome はすでにサードパーティのオートフィルを許可しています。]]></string>
+    <string name="browser_autofill_settings_summary_unknown"><![CDATA[Chrome のオートフィル設定を開きます。]]></string>
+    <string name="browser_autofill_settings_title"><![CDATA[Chrome のオートフィル設定]]></string>
+    <string name="browser_third_party_autofill_settings_open_failed"><![CDATA[%1$s のオートフィル設定を開けませんでした]]></string>
+    <string name="browser_third_party_autofill_settings_summary_disabled"><![CDATA[Web フォームで KeePassA を使用するには、%1$s がサードパーティのオートフィルを許可している必要があります。]]></string>
+    <string name="browser_third_party_autofill_settings_summary_enabled"><![CDATA[%1$s はすでにサードパーティのオートフィルを許可しています。]]></string>
+    <string name="browser_third_party_autofill_settings_summary_unknown"><![CDATA[%1$s のオートフィル設定を開きます。]]></string>
+    <string name="browser_third_party_autofill_settings_title"><![CDATA[%1$s のオートフィル設定]]></string>
+    <string name="credential_manager_settings_fallback"><![CDATA[このシステムは Credential Manager の直接設定に対応していません。システム設定で「資格情報」または「パスワード」を検索してください。]]></string>
+    <string name="credential_manager_settings_open_failed"><![CDATA[システムの Credential Manager 設定を開けませんでした。]]></string>
+    <string name="credential_manager_settings_summary"><![CDATA[パスワード、パスキー、資格情報プロバイダのシステム設定を開く]]></string>
+    <string name="credential_manager_settings_title"><![CDATA[Credential Manager]]></string>
+    <string name="credential_manager_settings_unsupported"><![CDATA[このシステムは資格情報プロバイダとしての KeePassA に対応していません。]]></string>
+
+    <string name="credential_provider_unlock_title"><![CDATA[KeePassAのロックを解除]]></string>
+
+
+    <string name="credential_provider_save_title"><![CDATA[KeePassAに保存]]></string>
+
+
+
+    <string name="credential_provider_no_match"><![CDATA[一致する資格情報なし]]></string>
+
+
+
+
+    <string name="hint_confirm"><![CDATA[パスワードを確認]]></string>
+    <string name="file_conflict_msg_download"><![CDATA[以下のエントリはローカルとクラウドの両方で変更されました：\n%s\nダウンロードするとローカルの変更がクラウド版で上書きされます。]]></string>
+    <string name="file_conflict_msg_upload"><![CDATA[以下のエントリはローカルとクラウドの両方で変更されました：\n%s\nどちらのバージョンを保持するか選択してください：\n· ローカルを保持：ローカルの変更をアップロードしてクラウドを上書き\n· クラウドを保持：クラウド版をダウンロードしてこの端末を上書き]]></string>
+    <string name="hint_browser_third_party_autofill_mode"><![CDATA[%1$s はサードパーティのオートフィルを有効にしていません。ブラウザが他のパスワードマネージャを許可するまで、KeePassA は %1$s のオートフィル要求を受信できません。]]></string>
+    <string name="hint_chrome_autofill_third_party_mode"><![CDATA[Chrome はサードパーティのオートフィルを有効にしていません。Chrome が他のパスワードマネージャを許可するまで、KeePassA は Chrome のオートフィル要求を受信できません。]]></string>
+    <string name="ime_database_locked_hint"><![CDATA[データベースはロックされています]]></string>
+    <string name="ime_database_locked_unlock_button"><![CDATA[ロック解除]]></string>
+    <string name="ime_search_entry_hint"><![CDATA[エントリを検索]]></string>
+    <string name="ime_search_no_entry"><![CDATA[一致するエントリなし]]></string>
+    <string name="ime_search_select_entry_first"><![CDATA[先にエントリを選択してください]]></string>
+    <string name="merge_binary_named_summary"><![CDATA[%1$s
+バイナリ、%2$d バイト]]></string>
+    <string name="merge_binary_summary"><![CDATA[バイナリ、%1$d バイト]]></string>
+    <string name="merge_conflict_progress"><![CDATA[%1$d/%2$d]]></string>
+    <string name="merge_conflict_session_expired"><![CDATA[マージセッションが期限切れです。再度同期してください。]]></string>
+    <string name="merge_conflict_title"><![CDATA[マージの競合を解決]]></string>
+    <string name="merge_decision_required"><![CDATA[競合する各フィールドについて、ローカルまたはクラウドを選択してください。]]></string>
+    <string name="merge_field_additional"><![CDATA[追加データ]]></string>
+    <string name="merge_field_auto_type"><![CDATA[自動入力]]></string>
+    <string name="merge_field_background_color"><![CDATA[背景色]]></string>
+    <string name="merge_field_cloud"><![CDATA[クラウド]]></string>
+    <string name="merge_field_creation_time"><![CDATA[作成日時]]></string>
+    <string name="merge_field_custom_data"><![CDATA[カスタムデータ]]></string>
+    <string name="merge_field_custom_icon"><![CDATA[カスタムアイコン]]></string>
+    <string name="merge_field_expire_date"><![CDATA[有効期限]]></string>
+    <string name="merge_field_expires"><![CDATA[有効期限あり]]></string>
+    <string name="merge_field_foreground_color"><![CDATA[前景色]]></string>
+    <string name="merge_field_group_default_auto_type_sequence"><![CDATA[デフォルトの自動入力シーケンス]]></string>
+    <string name="merge_field_group_enable_auto_type"><![CDATA[自動入力を有効化]]></string>
+    <string name="merge_field_group_enable_searching"><![CDATA[検索を有効化]]></string>
+    <string name="merge_field_group_is_expanded"><![CDATA[展開]]></string>
+    <string name="merge_field_group_last_top_visible_entry"><![CDATA[最後に上部に表示されていたエントリ]]></string>
+    <string name="merge_field_group_name"><![CDATA[グループ名]]></string>
+    <string name="merge_field_group_notes"><![CDATA[グループメモ]]></string>
+    <string name="merge_field_icon"><![CDATA[アイコン]]></string>
+    <string name="merge_field_internal_url"><![CDATA[内部 URL]]></string>
+    <string name="merge_field_last_access_time"><![CDATA[最終アクセス]]></string>
+    <string name="merge_field_last_modification_time"><![CDATA[最終更新日時]]></string>
+    <string name="merge_field_local"><![CDATA[ローカル]]></string>
+    <string name="merge_field_location_changed"><![CDATA[場所が変更されました]]></string>
+    <string name="merge_field_override_url"><![CDATA[上書き URL]]></string>
+    <string name="merge_field_previous_parent_group"><![CDATA[前の親グループ]]></string>
+    <string name="merge_field_quality_check"><![CDATA[品質チェック]]></string>
+    <string name="merge_field_result"><![CDATA[結果]]></string>
+    <string name="merge_field_tags"><![CDATA[タグ]]></string>
+    <string name="merge_field_usage_count"><![CDATA[使用回数]]></string>
+    <string name="merge_field_uuid"><![CDATA[UUID]]></string>
+    <string name="merge_finish"><![CDATA[完了]]></string>
+    <string name="merge_icon_summary"><![CDATA[アイコン #%1$d]]></string>
+    <string name="merge_local_only_desc"><![CDATA[オンの項目はローカルで削除され、オフの項目は保持されます。]]></string>
+    <string name="merge_local_only_title"><![CDATA[ローカル専用項目]]></string>
+    <string name="merge_next"><![CDATA[次へ]]></string>
+    <string name="merge_not_selected"><![CDATA[未選択]]></string>
+    <string name="merge_previous"><![CDATA[前へ]]></string>
+    <string name="merge_upload_failed_retry_next_time"><![CDATA[ローカルのマージ結果は保存されましたが、アップロードに失敗しました。次回の同期で再試行されます。]]></string>
+
+    <string name="merge_field_whole_item"><![CDATA[エントリ全体]]></string>
+    <string name="privacy_agreement_accept"><![CDATA[同意]]></string>
+    <string name="privacy_agreement_exit"><![CDATA[アプリを終了]]></string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_off"><![CDATA[KeePassA キーボード使用時に振動しない]]></string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_on"><![CDATA[KeePassA キーボード使用時に軽く振動する]]></string>
+    <string name="set_title_ime_keyboard_haptic_feedback"><![CDATA[キーボードの振動]]></string>
+    <string name="supported_browser_incompatible_suffix"><![CDATA[（非対応）]]></string>
+    <string name="supported_browsers_dialog_title"><![CDATA[対応ブラウザ（%1$d）]]></string>
+    <string name="supported_browsers_summary"><![CDATA[専用オートフィル戦略を持つブラウザ]]></string>
+    <string name="supported_browsers_title"><![CDATA[対応ブラウザ]]></string>
 </resources>

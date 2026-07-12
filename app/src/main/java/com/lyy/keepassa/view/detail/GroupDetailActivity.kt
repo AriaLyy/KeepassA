@@ -352,8 +352,9 @@ class GroupDetailActivity : BaseActivity<ActivityGroupDetailBinding>() {
       fabMenu?.close(true)
     }
     val menuGroup = KpaUtil.buildMenuIcon(this, ResUtil.getDrawable(R.drawable.ic_fab_dir)) {
-      Routerfit.create(DialogRouter::class.java)
-        .showCreateGroupDialog(BaseApp.KDB!!.pm.rootGroup as PwGroupV4)
+      module.curGroupV4?.let { parent ->
+        Routerfit.create(DialogRouter::class.java).showCreateGroupDialog(parent)
+      }
       fabMenu?.close(true)
     }
 

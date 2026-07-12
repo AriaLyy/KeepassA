@@ -93,8 +93,12 @@ internal class ModifyEntryHandler(val context: CreateEntryActivity) : ICreateHan
 
   override fun saveDb(pwEntryV4: PwEntryV4) {
     checkAttr(context, pwEntryV4)
-    context.lifecycleScope.launch {
-      KpaUtil.kdbHandlerService.saveOnly(true) {
+    KpaUtil.kdbHandlerService.markLocalChange()
+    KpaUtil.kdbHandlerService.saveDbByForeground(
+      uploadDb = false,
+      needShowLoading = true
+    ) { state ->
+      if (state == com.lyy.keepassa.util.cloud.DbSynUtil.STATE_SUCCEED) {
         context.finishAfterTransition()
       }
     }

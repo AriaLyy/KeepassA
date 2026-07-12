@@ -26,6 +26,7 @@ import com.lyy.keepassa.util.cloud.interceptor.DbSyncRequest
 import com.lyy.keepassa.util.cloud.interceptor.DbSyncResponse
 import com.lyy.keepassa.util.cloud.interceptor.DbSyncUploadInterceptor
 import com.lyy.keepassa.util.cloud.interceptor.IDbSyncInterceptor
+import com.lyy.keepassa.util.cloud.interceptor.MergeInteractionMode
 import com.lyy.keepassa.view.StorageType
 import com.lyy.keepassa.view.StorageType.AFS
 import timber.log.Timber
@@ -107,7 +108,12 @@ object DbSynUtil : SynStateCode {
   /**
    * 上传同步
    */
-  suspend fun uploadSyn(record: DbHistoryRecord, isCreate: Boolean = false): DbSyncResponse {
+  suspend fun uploadSyn(
+    record: DbHistoryRecord,
+    isCreate: Boolean = false,
+    onMergeFailed: ((Int) -> Unit)? = null,
+    mergeInteractionMode: MergeInteractionMode = MergeInteractionMode.FOREGROUND
+  ): DbSyncResponse {
     val storageType = record.getDbPathType()
     if (storageType == AFS) {
       return DbSyncResponse(STATE_SUCCEED, "")
@@ -117,13 +123,23 @@ object DbSynUtil : SynStateCode {
       val ins = arrayListOf<IDbSyncInterceptor>().apply {
         add(DbSyncUploadInterceptor())
       }
-      return ins[0].intercept(DbSyncRequest(record, util, ins))
+      return ins[0].intercept(
+        DbSyncRequest(
+          record = record,
+          syncUtil = util,
+          interceptors = ins,
+          mergeFailureCallback = onMergeFailed,
+          mergeInteractionMode = mergeInteractionMode
+        )
+      )
     }
     return interceptors[0].intercept(
       DbSyncRequest(
-        record,
-        util,
-        interceptors
+        record = record,
+        syncUtil = util,
+        interceptors = interceptors,
+        mergeFailureCallback = onMergeFailed,
+        mergeInteractionMode = mergeInteractionMode
       )
     )
   }

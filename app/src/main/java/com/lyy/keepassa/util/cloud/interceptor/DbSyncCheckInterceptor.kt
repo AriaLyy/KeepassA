@@ -30,7 +30,9 @@ class DbSyncCheckInterceptor : IDbSyncInterceptor {
           record = record,
           syncUtil = util,
           interceptors = request.interceptors,
-          index = request.index + 1
+          index = request.index + 1,
+          mergeFailureCallback = request.mergeFailureCallback,
+          mergeInteractionMode = request.mergeInteractionMode
         )
       )
     }
@@ -52,7 +54,9 @@ class DbSyncCheckInterceptor : IDbSyncInterceptor {
         record = record,
         syncUtil = util,
         interceptors = request.interceptors,
-        index = request.index + 1
+        index = request.index + 1,
+        mergeFailureCallback = request.mergeFailureCallback,
+        mergeInteractionMode = request.mergeInteractionMode
       )
     )
   }

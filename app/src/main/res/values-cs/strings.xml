@@ -410,7 +410,7 @@ Databáze \n je šifrována pomocí AES256. Nikdo nemůže otevřít vaši datab
     <string name="webdav_host_name_hint"><![CDATA[Zadejte své jméno hostitele]]></string>
     <string name="webdav_port_hint"><![CDATA[přístav]]></string>
     <string name="webdav_port_name_null"><![CDATA[Název hostitele nemůže být prázdný]]></string>
-    <string name="privacy_agreement"><![CDATA[dohoda o ochraně osobních údajů]]></string>
+    <string name="privacy_agreement"><![CDATA[Oznámení o ochraně osobních údajů a zabezpečení]]></string>
     <string name="ime_hint_open_auto_fill"><![CDATA[Zapněte prosím službu automatického vyplňování]]></string>
     <string name="please_open_proxy"><![CDATA[Kvůli dobře známým síťovým důvodům, abyste mohli hladce používat služby onedrive, použijte prosím vhodné síťové nástroje]]></string>
     <string name="invalid_img"><![CDATA[Neplatný obrázek]]></string>
@@ -449,4 +449,107 @@ Databáze \n je šifrována pomocí AES256. Nikdo nemůže otevřít vaši datab
     <string name="icon_select_db"><![CDATA[místní ikona]]></string>
     <string name="icon_change"><![CDATA[Upravit ikonu]]></string>
     <string name="entry_not_found"><![CDATA[Nebyl nalezen žádný záznam]]></string>
+    <string name="auto_fill_set"><![CDATA[Nastavení automatického vyplňování]]></string>
+    <string name="autofill_browser_category_android"><![CDATA[Prohlížeč AOSP]]></string>
+    <string name="autofill_browser_category_chromium"><![CDATA[Rodina Chromium]]></string>
+    <string name="autofill_browser_category_default"><![CDATA[Opatrný]]></string>
+    <string name="autofill_browser_category_gecko"><![CDATA[Gecko (Firefox)]]></string>
+    <string name="autofill_browser_category_idm"><![CDATA[IDM]]></string>
+    <string name="autofill_browser_category_kiwi"><![CDATA[Kiwi]]></string>
+    <string name="autofill_browser_category_uc"><![CDATA[UC]]></string>
+    <string name="autofill_browser_category_yandex"><![CDATA[Yandex]]></string>
+    <string name="browser_autofill_settings_open_failed"><![CDATA[Nepodařilo se otevřít nastavení automatického vyplňování Chrome]]></string>
+    <string name="browser_autofill_settings_summary_disabled"><![CDATA[Chrome musí povolit automatické vyplňování třetích stran, než bude možné KeePassA používat ve webových formulářích.]]></string>
+    <string name="browser_autofill_settings_summary_enabled"><![CDATA[Chrome již povoluje automatické vyplňování třetích stran.]]></string>
+    <string name="browser_autofill_settings_summary_unknown"><![CDATA[Otevřít nastavení automatického vyplňování Chrome.]]></string>
+    <string name="browser_autofill_settings_title"><![CDATA[Nastavení automatického vyplňování Chrome]]></string>
+    <string name="browser_third_party_autofill_settings_open_failed"><![CDATA[Nepodařilo se otevřít nastavení automatického vyplňování %1$s]]></string>
+    <string name="browser_third_party_autofill_settings_summary_disabled"><![CDATA[%1$s musí povolit automatické vyplňování třetích stran, než bude možné KeePassA používat ve webových formulářích.]]></string>
+    <string name="browser_third_party_autofill_settings_summary_enabled"><![CDATA[%1$s již povoluje automatické vyplňování třetích stran.]]></string>
+    <string name="browser_third_party_autofill_settings_summary_unknown"><![CDATA[Otevřít nastavení automatického vyplňování %1$s.]]></string>
+    <string name="browser_third_party_autofill_settings_title"><![CDATA[Nastavení automatického vyplňování %1$s]]></string>
+    <string name="credential_manager_settings_fallback"><![CDATA[Tento systém nepodporuje přímé nastavení Správce přihlašovacích údajů. Vyhledejte v systémovém nastavení „přihlašovací údaje" nebo „hesla".]]></string>
+    <string name="credential_manager_settings_open_failed"><![CDATA[Nepodařilo se otevřít nastavení systémového Správce přihlašovacích údajů.]]></string>
+    <string name="credential_manager_settings_summary"><![CDATA[Otevřít systémová nastavení hesel, passkey a poskytovatelů přihlašovacích údajů]]></string>
+    <string name="credential_manager_settings_title"><![CDATA[Správce přihlašovacích údajů]]></string>
+    <string name="credential_manager_settings_unsupported"><![CDATA[Tento systém nepodporuje KeePassA jako poskytovatele přihlašovacích údajů.]]></string>
+
+    <string name="credential_provider_unlock_title"><![CDATA[Odemknout KeePassA]]></string>
+
+
+    <string name="credential_provider_save_title"><![CDATA[Uložit do KeePassA]]></string>
+
+
+
+    <string name="credential_provider_no_match"><![CDATA[Žádné odpovídající přihlašovací údaje]]></string>
+
+
+
+
+    <string name="hint_confirm"><![CDATA[Potvrdit heslo]]></string>
+    <string name="file_conflict_msg_download"><![CDATA[Následující záznamy byly upraveny místně i v cloudu:\n%s\nStažení přepíše místní změny cloudovou verzí.]]></string>
+    <string name="file_conflict_msg_upload"><![CDATA[Následující záznamy byly upraveny místně i v cloudu:\n%s\nVyberte, kterou verzi chcete ponechat:\n· Ponechat místní: nahrát místní změny a přepsat cloud\n· Ponechat cloud: stáhnout verzi z cloudu a přepsat toto zařízení]]></string>
+    <string name="hint_browser_third_party_autofill_mode"><![CDATA[%1$s nemá povolené automatické vyplňování třetích stran. KeePassA nemůže přijímat požadavky na vyplňování od %1$s, dokud prohlížeč nepovolí ostatní správce hesel.]]></string>
+    <string name="hint_chrome_autofill_third_party_mode"><![CDATA[Chrome nemá povolené automatické vyplňování třetích stran. KeePassA nemůže přijímat požadavky na vyplňování od Chrome, dokud Chrome nepovolí ostatní správce hesel.]]></string>
+    <string name="ime_database_locked_hint"><![CDATA[Databáze je uzamčena]]></string>
+    <string name="ime_database_locked_unlock_button"><![CDATA[Odemknout]]></string>
+    <string name="ime_search_entry_hint"><![CDATA[Prohledat záznamy]]></string>
+    <string name="ime_search_no_entry"><![CDATA[Žádné odpovídající záznamy]]></string>
+    <string name="ime_search_select_entry_first"><![CDATA[Nejprve vyberte záznam]]></string>
+    <string name="merge_binary_named_summary"><![CDATA[%1$s
+Binární soubor, %2$d bajtů]]></string>
+    <string name="merge_binary_summary"><![CDATA[Binární soubor, %1$d bajtů]]></string>
+    <string name="merge_conflict_progress"><![CDATA[%1$d/%2$d]]></string>
+    <string name="merge_conflict_session_expired"><![CDATA[Relace sloučení vypršela. Synchronizujte znovu.]]></string>
+    <string name="merge_conflict_title"><![CDATA[Vyřešit konflikty sloučení]]></string>
+    <string name="merge_decision_required"><![CDATA[U každého konfliktního pole vyberte místní nebo cloudovou verzi.]]></string>
+    <string name="merge_field_additional"><![CDATA[Doplňková data]]></string>
+    <string name="merge_field_auto_type"><![CDATA[Automatické zadávání]]></string>
+    <string name="merge_field_background_color"><![CDATA[Barva pozadí]]></string>
+    <string name="merge_field_cloud"><![CDATA[Cloud]]></string>
+    <string name="merge_field_creation_time"><![CDATA[Čas vytvoření]]></string>
+    <string name="merge_field_custom_data"><![CDATA[Vlastní data]]></string>
+    <string name="merge_field_custom_icon"><![CDATA[Vlastní ikona]]></string>
+    <string name="merge_field_expire_date"><![CDATA[Datum vypršení]]></string>
+    <string name="merge_field_expires"><![CDATA[Vyprší]]></string>
+    <string name="merge_field_foreground_color"><![CDATA[Barva popředí]]></string>
+    <string name="merge_field_group_default_auto_type_sequence"><![CDATA[Výchozí sekvence automatického zadávání]]></string>
+    <string name="merge_field_group_enable_auto_type"><![CDATA[Povolit automatické zadávání]]></string>
+    <string name="merge_field_group_enable_searching"><![CDATA[Povolit vyhledávání]]></string>
+    <string name="merge_field_group_is_expanded"><![CDATA[Rozbalená]]></string>
+    <string name="merge_field_group_last_top_visible_entry"><![CDATA[Poslední nahoře viditelný záznam]]></string>
+    <string name="merge_field_group_name"><![CDATA[Název skupiny]]></string>
+    <string name="merge_field_group_notes"><![CDATA[Poznámky skupiny]]></string>
+    <string name="merge_field_icon"><![CDATA[Ikona]]></string>
+    <string name="merge_field_internal_url"><![CDATA[Interní URL]]></string>
+    <string name="merge_field_last_access_time"><![CDATA[Poslední přístup]]></string>
+    <string name="merge_field_last_modification_time"><![CDATA[Poslední úprava]]></string>
+    <string name="merge_field_local"><![CDATA[Místní]]></string>
+    <string name="merge_field_location_changed"><![CDATA[Umístění změněno]]></string>
+    <string name="merge_field_override_url"><![CDATA[Přepsat URL]]></string>
+    <string name="merge_field_previous_parent_group"><![CDATA[Předchozí nadřazená skupina]]></string>
+    <string name="merge_field_quality_check"><![CDATA[Kontrola kvality]]></string>
+    <string name="merge_field_result"><![CDATA[Výsledek]]></string>
+    <string name="merge_field_tags"><![CDATA[Štítky]]></string>
+    <string name="merge_field_usage_count"><![CDATA[Počet použití]]></string>
+    <string name="merge_field_uuid"><![CDATA[UUID]]></string>
+    <string name="merge_finish"><![CDATA[Dokončit]]></string>
+    <string name="merge_icon_summary"><![CDATA[Ikona #%1$d]]></string>
+    <string name="merge_local_only_desc"><![CDATA[Zaškrtnuté položky budou místně smazány; nezaškrtnuté budou ponechány.]]></string>
+    <string name="merge_local_only_title"><![CDATA[Pouze místní položky]]></string>
+    <string name="merge_next"><![CDATA[Další]]></string>
+    <string name="merge_not_selected"><![CDATA[Nevybráno]]></string>
+    <string name="merge_previous"><![CDATA[Předchozí]]></string>
+    <string name="merge_upload_failed_retry_next_time"><![CDATA[Místní sloučení bylo uloženo, ale nahrávání selhalo. Zkusí se znovu při další synchronizaci.]]></string>
+
+    <string name="merge_field_whole_item"><![CDATA[Celá položka]]></string>
+    <string name="privacy_agreement_accept"><![CDATA[Souhlasit]]></string>
+    <string name="privacy_agreement_exit"><![CDATA[Ukončit aplikaci]]></string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_off"><![CDATA[Nevibrovat při použití klávesnice KeePassA]]></string>
+    <string name="set_summary_ime_keyboard_haptic_feedback_on"><![CDATA[Lehce vibrovat při použití klávesnice KeePassA]]></string>
+    <string name="set_title_ime_keyboard_haptic_feedback"><![CDATA[Vibrování klávesnice]]></string>
+    <string name="supported_browser_incompatible_suffix"><![CDATA[(nekompatibilní)]]></string>
+    <string name="supported_browsers_dialog_title"><![CDATA[Podporované prohlížeče (%1$d)]]></string>
+    <string name="supported_browsers_summary"><![CDATA[Prohlížeče s přizpůsobenou strategií automatického vyplňování]]></string>
+    <string name="supported_browsers_title"><![CDATA[Podporované prohlížeče]]></string>
 </resources>

@@ -23,4 +23,6 @@ interface SynStateCode {
     get() = 4
   val STATE_CANCEL: Int
     get() = 100
+  val STATE_MERGE_PENDING: Int
+    get() = 101
 }
