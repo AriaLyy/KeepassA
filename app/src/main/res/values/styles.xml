@@ -116,6 +116,18 @@
     <item name="android:textColor">@color/text_black_color</item><!--子标题字体颜色-->
   </style>
 
+  <style name="MergeConflict.Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <item name="android:textSize">16sp</item>
+    <item name="android:textColor">@color/text_black_color</item>
+    <item name="android:includeFontPadding">true</item>
+  </style>
+
+  <style name="MergeConflict.Toolbar.SubtitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+    <item name="android:textSize">12sp</item>
+    <item name="android:textColor">@color/text_gray_color</item>
+    <item name="android:includeFontPadding">true</item>
+  </style>
+
   <!--toolbar mean的字体颜色和大小-->
   <!--  app:theme="@style/ToolbarTheme"-->
   <style name="ToolbarMenuTheme" parent="Theme.AppCompat.DayNight.NoActionBar">

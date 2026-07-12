@@ -38,8 +38,9 @@ class MergeConflictUiResourceTest {
       "com.google.android.material.appbar.MaterialToolbar",
       document.nodeById("mergeToolbar").nodeName
     )
-    assertEquals("@style/Toolbar.TitleText", document.nodeById("mergeToolbar").appAttribute("titleTextAppearance"))
-    assertEquals("@style/Toolbar.SubTitleText", document.nodeById("mergeToolbar").appAttribute("subtitleTextAppearance"))
+    assertEquals("52dp", document.nodeById("mergeToolbar").androidAttribute("layout_height"))
+    assertEquals("@style/MergeConflict.Toolbar.TitleText", document.nodeById("mergeToolbar").appAttribute("titleTextAppearance"))
+    assertEquals("@style/MergeConflict.Toolbar.SubtitleText", document.nodeById("mergeToolbar").appAttribute("subtitleTextAppearance"))
     assertEquals("false", document.nodeById("mergeToolbar").appAttribute("titleCentered"))
     assertEquals("androidx.recyclerview.widget.RecyclerView", document.nodeById("mergeConflictList").nodeName)
     assertEquals("40dp", document.nodeById("mergeBottomBar").androidAttribute("layout_height"))

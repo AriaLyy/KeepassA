@@ -9,13 +9,13 @@
   <com.google.android.material.appbar.MaterialToolbar
       android:id="@+id/mergeToolbar"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/toolbar_h"
+      android:layout_height="52dp"
       android:background="@color/background_color"
       app:navigationIcon="@drawable/ic_up"
-      app:subtitleTextAppearance="@style/Toolbar.SubTitleText"
+      app:subtitleTextAppearance="@style/MergeConflict.Toolbar.SubtitleText"
       app:theme="@style/ToolbarMenuTheme"
       app:titleCentered="false"
-      app:titleTextAppearance="@style/Toolbar.TitleText" />
+      app:titleTextAppearance="@style/MergeConflict.Toolbar.TitleText" />
 
   <View
       android:layout_width="match_parent"
