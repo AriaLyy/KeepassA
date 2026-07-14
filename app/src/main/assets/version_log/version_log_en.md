@@ -1,3 +1,20 @@
+### 3.0.0 (2026/07/12)
+* new: Cloud conflict resolution UI — pick cloud or local version per field
+* new: Credential Manager provider support (Android 14+)
+* new: Autofill TOTP fields in browsers and apps
+* new: IME keyboard entry search
+* new: "Supported browsers" entry in settings, grouped by engine
+* new: Version log available in German, Russian, Traditional Chinese
+* opt: Night-mode adaptation for detail card and search dialog
+* opt: WebDAV clears connection pool after HTTP/2 StreamReset
+* fix: Fix #117 group entry first-letter sort broken
+* fix: Fix Edge/Chrome browser autofill startup failure
+* fix: Fix MI Browser showing no autofill UI when URL/search bar is focused
+* fix: Skip remote rollback on WebDAV network failure to avoid data loss
+* fix: Prefer high-confidence token when multiple TOTP candidates detected; drop code-only matches
+* fix: Fix toolbar subtitle clipping
+
+
 ### 2.8.1
 * fix bug
 
