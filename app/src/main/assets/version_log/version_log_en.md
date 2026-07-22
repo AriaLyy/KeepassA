@@ -1,3 +1,10 @@
+### 3.1.0 (2026/07/22)
+* new: Delete custom strings from entry advanced attributes; auto-save and sync to cloud on deletion
+* opt: targetSdk upgraded to API 36
+* fix: Fix night-mode adaptation for focus colors of field name/value in create-custom-field dialog
+* fix: Fix CompoundButton nullability signature in GeneratePassActivity
+
+
 ### 3.0.0 (2026/07/12)
 * new: Cloud conflict resolution UI — pick cloud or local version per field
 * new: Credential Manager provider support (Android 14+)

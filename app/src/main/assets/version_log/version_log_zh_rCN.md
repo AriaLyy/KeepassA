@@ -1,3 +1,10 @@
+### 3.1.0 (2026/07/22)
+* new: 详情页支持删除高级属性中的自定义字符串,删除后自动保存并同步云端
+* opt: targetSdk 升级至 API 36
+* fix: 修复创建自定义字段弹窗中字段名/值获取焦点后颜色不适配夜间模式
+* fix: 修复 GeneratePassActivity 中 CompoundButton 可空性签名问题
+
+
 ### 3.0.0 (2026/07/12)
 * new: 云端冲突解决界面,逐字段选择云端或本地版本
 * new: Credential Manager 凭据管理支持(Android 14+)

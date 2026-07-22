@@ -30,8 +30,8 @@ android {
     applicationId "com.lyy.keepassa"
     minSdkVersion libs.versions.minSdk.get().toInteger()
     targetSdkVersion libs.versions.targetsdk.get().toInteger()
-    versionCode 100013
-    versionName "3.0.0"
+    versionCode 100014
+    versionName "3.1.0"
     multiDexEnabled true
 
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

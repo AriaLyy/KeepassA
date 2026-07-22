@@ -1,3 +1,10 @@
+### 3.1.0 (2026/07/22)
+* Neu: Benutzerdefinierte Zeichenfolgen aus den erweiterten Eigenschaften eines Eintrags löschen; beim Löschen automatisch speichern und mit der Cloud synchronisieren
+* Opt: targetSdk auf API 36 aktualisiert
+* Fix: Nachtmodus-Anpassung für Fokusfarben von Feldname/Wert im Dialog zum Erstellen benutzerdefinierter Felder korrigiert
+* Fix: CompoundButton-Nullability-Signatur in GeneratePassActivity korrigiert
+
+
 ### 3.0.0 (2026/07/12)
 * Neu: Cloud-Konfliktauflösungs-UI — Cloud- oder Local-Version pro Feld wählbar
 * Neu: Credential-Manager-Anbieterunterstützung (Android 14+)
