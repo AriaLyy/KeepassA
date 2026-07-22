@@ -16,7 +16,8 @@ AUTH_API = 'https://www.googleapis.com/auth/androidpublisher'
 
 
 def build_aar(cmd):
-    pack_cmd = f'./gradlew -p app {cmd}'
+    gradlew = '.\\gradlew.bat' if sys.platform == 'win32' else './gradlew'
+    pack_cmd = f'{gradlew} -p app {cmd}'
     print(f'开始打包，打包命令：{pack_cmd}')
     os.system(pack_cmd)
     if cmd == 'bundleRelease':

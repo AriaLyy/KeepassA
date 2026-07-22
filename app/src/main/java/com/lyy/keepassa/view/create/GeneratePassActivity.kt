@@ -171,7 +171,7 @@ class GeneratePassActivity : BaseActivity<ActivityGeneratePassNewBinding>(),
   }
 
   override fun onCheckedChanged(
-    buttonView: CompoundButton?,
+    buttonView: CompoundButton,
     isChecked: Boolean
   ) {
     generatePass(passLen)

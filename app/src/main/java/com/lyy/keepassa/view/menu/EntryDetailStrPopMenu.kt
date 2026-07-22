@@ -33,14 +33,20 @@ class EntryDetailStrPopMenu(
   private val context: FragmentActivity,
   view: View,
   private val str: ProtectedString,
+  private val key: String,
   private var showPass: Boolean = true // true：菜单（显示密码），false：菜单(隐藏密码)
 ) : IPopMenu {
   private val popup: PopupMenu = PopupMenu(context, view, Gravity.END)
   private val help: MenuPopupHelper
   private var showPassCallback: OnShowPassCallback? = null
+  private var deleteCallback: OnDeleteCallback? = null
 
   interface OnShowPassCallback {
     fun showPass(showPass: Boolean)
+  }
+
+  interface OnDeleteCallback {
+    fun onDelete(key: String)
   }
 
   init {
@@ -82,6 +88,12 @@ class EntryDetailStrPopMenu(
             showPassCallback!!.showPass(showPass)
           }
         }
+
+        R.id.delete_str -> {
+          if (deleteCallback != null) {
+            deleteCallback!!.onDelete(key)
+          }
+        }
       }
       popup.dismiss()
 
@@ -101,6 +113,10 @@ class EntryDetailStrPopMenu(
 
   fun setOnShowPassCallback(callback: OnShowPassCallback) {
     this.showPassCallback = callback
+  }
+
+  fun setOnDeleteCallback(callback: OnDeleteCallback) {
+    this.deleteCallback = callback
   }
 
   fun show() {

@@ -2,8 +2,8 @@
 groovy = "3.0.10"
 checkstyle = "8.37"
 minSdk = "23"
-compilesdk = "35"
-targetsdk = "35"
+compilesdk = "36"
+targetsdk = "36"
 ndk = "21.3.6528147"
 buildtools = "34.0.0"
 

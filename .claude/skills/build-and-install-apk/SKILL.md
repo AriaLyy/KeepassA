@@ -75,6 +75,24 @@ adb shell am start -n com.lyy.keepassa/.view.main.MainActivity
 ./gradlew clean installDevDebug
 ```
 
+## 安装 release 包到本地设备
+
+```bash
+# 一条命令:编译 + 装机
+./gradlew installDevRelease
+
+# 或分两步(便于反复刷同一版本,省去每次重编)
+./gradlew assembleDevRelease
+adb install -r app/build/outputs/apk/dev/release/app-dev-release.apk
+```
+
+产物路径: `app/build/outputs/apk/dev/release/app-dev-release.apk`(仅 arm64-v8a)。
+
+和 debug 包的差异:
+- 单 ABI,真机没问题,模拟器(x86_64)装不上
+- 已过 R8 混淆 + 资源压缩,体积更小,但栈轨迹需 mapping.txt 才能解
+- 走 `signingConfigs.release` 签名,和上架包同签名
+
 ## Common Mistakes
 
 | 症状 | 原因 | 解决 |

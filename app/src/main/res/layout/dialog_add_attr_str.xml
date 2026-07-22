@@ -26,6 +26,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
+        app:boxStrokeColor="@color/text_blue_color"
+        app:cursorColor="@color/text_blue_color"
+        app:hintTextColor="@color/text_blue_color"
         app:startIconDrawable="@drawable/ic_title_24px"
         app:startIconTint="@color/color_icon_grey"
         >
@@ -53,6 +56,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
+        app:boxStrokeColor="@color/text_blue_color"
+        app:cursorColor="@color/text_blue_color"
+        app:hintTextColor="@color/text_blue_color"
         app:startIconDrawable="@drawable/ic_text_fields_24px"
         app:startIconTint="@color/color_icon_grey"
         >

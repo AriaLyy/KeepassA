@@ -20,6 +20,7 @@ import com.lyy.keepassa.base.AbsViewBindingAdapter
 import com.lyy.keepassa.base.KeyConstance
 import com.lyy.keepassa.databinding.LayoutEntryCardListBinding
 import com.lyy.keepassa.databinding.LayoutEntryStrBinding
+import com.lyy.keepassa.util.HitUtil
 import com.lyy.keepassa.util.KdbUtil
 import com.lyy.keepassa.util.KpaUtil
 import com.lyy.keepassa.util.doClick
@@ -96,11 +97,36 @@ class EntryStrCard(context: Context, attributeSet: AttributeSet) :
         context as FragmentActivity,
         view,
         entry.value,
+        entry.key,
         tvValue.inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
       )
       pop.setOnShowPassCallback(object : OnShowPassCallback {
         override fun showPass(showPass: Boolean) {
           KpaUtil.handleShowPass(tvValue, showPass)
+        }
+      })
+      pop.setOnDeleteCallback(object : EntryDetailStrPopMenu.OnDeleteCallback {
+        override fun onDelete(key: String) {
+          if (key == KeyConstance.TOTP) {
+            Timber.w("refuse to delete auto-generated TOTP row")
+            return
+          }
+          entryV4.strings.remove(key)
+          val idx = data.indexOfFirst { it.key == key }
+          if (idx >= 0) {
+            data.removeAt(idx)
+            adapter.notifyItemRemoved(idx)
+            adapter.notifyItemRangeChanged(idx, data.size - idx)
+          }
+          if (data.none { it.key != KeyConstance.TOTP }) {
+            visibility = GONE
+          }
+          HitUtil.toaskShort(R.string.hint_attr_str_deleted)
+          KpaUtil.kdbHandlerService.markLocalChange()
+          KpaUtil.kdbHandlerService.saveDbByForeground(
+            uploadDb = true,
+            needShowLoading = true
+          ) { state -> }
         }
       })
       pop.show()

@@ -21,4 +21,10 @@
       android:title="@string/ope_url"
       app:showAsAction="ifRoom" />
 
+  <item
+      android:id="@+id/delete_str"
+      android:icon="@drawable/ic_delete_sweep"
+      android:title="@string/delete"
+      app:showAsAction="ifRoom" />
+
 </menu>

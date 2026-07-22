@@ -491,6 +491,7 @@ By tapping "Agree", you confirm that you have read and understood this notice an
     <string name="collection"><![CDATA[Collection]]></string>
     <string name="add_attr_str"><![CDATA[Add attributes]]></string>
     <string name="delete"><![CDATA[Delete]]></string>
+    <string name="hint_attr_str_deleted"><![CDATA[Attribute deleted]]></string>
     <string name="create_tag"><![CDATA[Create tags]]></string>
     <string name="tag_name"><![CDATA[Tag name]]></string>
     <string name="add_tag"><![CDATA[Add tag]]></string>
